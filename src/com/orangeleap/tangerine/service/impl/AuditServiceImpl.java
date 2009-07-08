@@ -1,23 +1,22 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.impl;
-
-import java.lang.reflect.Field;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.PropertyAccessorUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.AuditDao;
 import com.orangeleap.tangerine.dao.ConstituentDao;
@@ -37,6 +36,23 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.PropertyAccessorUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service("auditService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -44,19 +60,21 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
 
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "relationshipService")
     private RelationshipService relationshipService;
-    
+
     @Resource(name = "constituentDAO")
     private ConstituentDao constituentDao;
 
     @Resource(name = "auditDAO")
     private AuditDao auditDao;
-    
-    @Resource(name="tangerineUserHelper")
+
+    @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
 
     @Override
@@ -77,14 +95,12 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                 logger.debug("auditObject: audit AbstractEntity");
             }
             audits = auditEntity((AbstractEntity) object, userId);
-        } 
-        else if (object instanceof Auditable) {
+        } else if (object instanceof Auditable) {
             if (logger.isDebugEnabled()) {
                 logger.debug("auditObject: audit Auditable");
             }
             audits = auditAuditable((Auditable) object, userId);
-        } 
-        else {
+        } else {
             if (logger.isInfoEnabled()) {
                 logger.info("auditObject: don't know how to audit object " + (object == null ? null : object.getClass().getName()));
             }
@@ -102,7 +118,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         if (logger.isTraceEnabled()) {
             logger.trace("auditEntity: userId = " + userId + " entity = " + entity);
         }
-    	String siteName = tangerineUserHelper.lookupUserSiteName();
+        String siteName = tangerineUserHelper.lookupUserSiteName();
         List<Audit> audits = new ArrayList<Audit>();
         Date date = new Date();
         BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(entity);
@@ -110,14 +126,13 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
             String name = tangerineUserHelper.lookupUserName();
             String desc = replaceCustomFieldSeparatorWithComma(entity.getAuditShortDesc());
             if (StringUtils.trimToNull(desc) == null) {
-                desc =  "" + entity.getId();
+                desc = "" + entity.getId();
             }
             audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(entity) + " " + desc, siteName, getClassName(entity), entity.getId(), userId));
             if (logger.isDebugEnabled()) {
                 logger.debug("audit Site " + siteName + ": added " + getClassName(entity) + " " + entity.getId());
             }
-        } 
-        else {
+        } else {
             Map<String, String> fieldLabels = entity.getFieldLabelMap();
             for (String key : fieldLabels.keySet()) {
                 if (logger.isDebugEnabled()) {
@@ -131,51 +146,47 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                         fieldName = key + ".value";
                         beanProperty = bean.getPropertyValue(fieldName);
                         if (entity instanceof Constituent) {
-                        	FieldDefinition fd = ((Constituent)entity).getFieldTypeMap().get(key);
-                        	if (relationshipService.isRelationship(fd)) {
+                            FieldDefinition fd = ((Constituent) entity).getFieldTypeMap().get(key);
+                            if (relationshipService.isRelationship(fd)) {
                                 if (originalBeanProperty != null) {
                                     originalBeanProperty = dereference(siteName, originalBeanProperty.toString());
                                 }
                                 if (beanProperty != null) {
                                     beanProperty = dereference(siteName, beanProperty.toString());
                                 }
-                        	}
+                            }
                         }
                     }
                     if (beanProperty instanceof String) {
                         beanProperty = StringUtils.trimToNull((String) beanProperty);
-                    } 
-                    else if (beanProperty instanceof Constituent) {
+                    } else if (beanProperty instanceof Constituent) {
                         fieldName = key + ".displayValue";
                         beanProperty = bean.getPropertyValue(fieldName);
                     }
                     if (originalBeanProperty == null && beanProperty == null) {
                         continue;
-                    } 
-                    else if (originalBeanProperty == null && beanProperty != null) {
-                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Add " + fieldLabels.get(key) + " " + replaceCustomFieldSeparatorWithComma(beanProperty.toString()), 
+                    } else if (originalBeanProperty == null && beanProperty != null) {
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Add " + fieldLabels.get(key) + " " + replaceCustomFieldSeparatorWithComma(beanProperty.toString()),
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": added " + fieldLabels.get(key) + " " + beanProperty.toString());
                         }
-                    } 
-                    else if (originalBeanProperty != null && beanProperty == null) {
-                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Delete " + fieldLabels.get(key) + " " + replaceCustomFieldSeparatorWithComma(originalBeanProperty.toString()), 
+                    } else if (originalBeanProperty != null && beanProperty == null) {
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Delete " + fieldLabels.get(key) + " " + replaceCustomFieldSeparatorWithComma(originalBeanProperty.toString()),
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString());
                         }
-                    } 
-                    else if ( !(beanProperty instanceof AbstractEntity) && !originalBeanProperty.toString().equals(beanProperty.toString())) {
+                    } else if (!(beanProperty instanceof AbstractEntity) && !originalBeanProperty.toString().equals(beanProperty.toString())) {
 
                         // if the properties are dates, run them through the formatter and compare the
                         // output first, which will stop some dumb audit events
                         if (beanProperty instanceof java.util.Date) {
                             String newDate = null;
                             String oldDate = null;
-                            synchronized(dateFormat) {
-                                newDate = dateFormat.format( (Date) beanProperty);
-                                oldDate = dateFormat.format( (Date) originalBeanProperty);
+                            synchronized (dateFormat) {
+                                newDate = dateFormat.format((Date) beanProperty);
+                                oldDate = dateFormat.format((Date) originalBeanProperty);
                             }
 
                             if (newDate.equals(oldDate)) {
@@ -183,7 +194,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                             }
                         }
 
-                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Change " + fieldLabels.get(key) + " from " + replaceCustomFieldSeparatorWithComma(originalBeanProperty.toString()) + " to " + replaceCustomFieldSeparatorWithComma(beanProperty.toString()), 
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Change " + fieldLabels.get(key) + " from " + replaceCustomFieldSeparatorWithComma(originalBeanProperty.toString()) + " to " + replaceCustomFieldSeparatorWithComma(beanProperty.toString()),
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": change field " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString());
@@ -194,7 +205,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         }
         return audits;
     }
-    
+
     @SuppressWarnings("unchecked")
     protected boolean isAuditable(BeanWrapper bean, String fieldName) {
         if (logger.isTraceEnabled()) {
@@ -202,7 +213,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         }
         boolean auditable = true;
         try {
-            Class clazz = bean.getWrappedClass(); 
+            Class clazz = bean.getWrappedClass();
             if (PropertyAccessorUtils.isNestedOrIndexedProperty(fieldName)) {
                 int lastNestedClassIndex = PropertyAccessorUtils.getLastNestedPropertySeparatorIndex(fieldName);
                 if (lastNestedClassIndex > -1) {
@@ -213,7 +224,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                     }
                 }
             }
-            
+
             Field field = clazz.getDeclaredField(fieldName);
             if (field.isAnnotationPresent(NotAuditable.class)) {
                 auditable = field.getAnnotation(NotAuditable.class).auditValue();
@@ -226,7 +237,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         }
         return auditable;
     }
-    
+
     // Get Constituent name from id list.
     private String dereference(String siteName, String fieldValue) {
         if (logger.isTraceEnabled()) {
@@ -234,27 +245,27 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         }
         String names = null;
         if (org.springframework.util.StringUtils.hasText(fieldValue)) {
-        	List<Long> list = RelationshipUtil.getIds(fieldValue);
-        	if (list != null && list.isEmpty() == false) {
-        		List<Constituent> constituents = constituentDao.readConstituentsByIds(list);
-            	List<String> displayValues = new ArrayList<String>();
-            	// first name last name, without commas
-            	for (Constituent constituent : constituents) {
+            List<Long> list = RelationshipUtil.getIds(fieldValue);
+            if (list != null && list.isEmpty() == false) {
+                List<Constituent> constituents = constituentDao.readConstituentsByIds(list);
+                List<String> displayValues = new ArrayList<String>();
+                // first name last name, without commas
+                for (Constituent constituent : constituents) {
                     displayValues.add(constituent.getFullName());
-                } 
-            	names = StringUtils.join(displayValues, ", ");
-        	}
+                }
+                names = StringUtils.join(displayValues, ", ");
+            }
         }
-    	return names;
+        return names;
     }
 
     private List<Audit> auditAuditable(Auditable auditable, Long userId) {
         if (logger.isTraceEnabled()) {
             logger.trace("auditAuditable: userId = " + userId + " auditable = " + auditable);
         }
-    	String siteName = tangerineUserHelper.lookupUserSiteName();
-    	String authName = tangerineUserHelper.lookupUserName();
-    	
+        String siteName = tangerineUserHelper.lookupUserSiteName();
+        String authName = tangerineUserHelper.lookupUserName();
+
         List<Audit> audits = new ArrayList<Audit>();
         Date date = new Date();
         Auditable originalObject = auditable.getOriginalObject();
@@ -263,8 +274,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                 logger.debug("audit Site " + siteName + ": added " + getClassName(auditable) + " " + auditable.getId());
             }
             audits.add(new Audit(AuditType.CREATE, authName, date, "Added " + getClassName(auditable) + " " + auditable.getId(), siteName, getClassName(auditable), auditable.getId(), userId));
-        } 
-        else {
+        } else {
             BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(auditable);
             Field[] fields = auditable.getClass().getDeclaredFields();
             if (fields != null && fields.length > 0) {
@@ -282,26 +292,23 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                     }
                     if (newFieldValue == null && oldFieldValue == null) {
                         continue;
-                    } 
-                    else if (newFieldValue == null && oldFieldValue != null) {
+                    } else if (newFieldValue == null && oldFieldValue != null) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + auditable.getId() + ": added " + fieldName + " " + newFieldValue);
                         }
-                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Add " + fieldName + " " + replaceCustomFieldSeparatorWithComma(newFieldValue), 
+                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Add " + fieldName + " " + replaceCustomFieldSeparatorWithComma(newFieldValue),
                                 siteName, getClassName(auditable), auditable.getId(), userId));
-                    } 
-                    else if (newFieldValue != null && oldFieldValue == null) {
+                    } else if (newFieldValue != null && oldFieldValue == null) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + auditable.getId() + ": delete " + fieldName + " " + oldFieldValue);
                         }
-                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Delete " + fieldName + " " + replaceCustomFieldSeparatorWithComma(oldFieldValue), 
+                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Delete " + fieldName + " " + replaceCustomFieldSeparatorWithComma(oldFieldValue),
                                 siteName, getClassName(auditable), auditable.getId(), userId));
-                    } 
-                    else if (!newFieldValue.toString().equals(oldFieldValue.toString())) {
+                    } else if (!newFieldValue.toString().equals(oldFieldValue.toString())) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + auditable.getId() + ": change field " + fieldName + " from " + oldFieldValue.toString() + " to " + newFieldValue.toString());
                         }
-                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Change " + fieldName + " from " + replaceCustomFieldSeparatorWithComma(oldFieldValue) + " to " + replaceCustomFieldSeparatorWithComma(newFieldValue), 
+                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Change " + fieldName + " from " + replaceCustomFieldSeparatorWithComma(oldFieldValue) + " to " + replaceCustomFieldSeparatorWithComma(newFieldValue),
                                 siteName, getClassName(auditable), auditable.getId(), userId));
                     }
                 }
@@ -371,26 +378,24 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     public Audit auditObjectInactive(Object object, Constituent constituent) {
         return auditObjectInactive(object, constituent.getId());
     }
-    
+
     @Override
     public Audit auditObjectInactive(Object object, Long userId) {
         if (logger.isTraceEnabled()) {
             logger.trace("auditObjectInactive: object = " + object);
         }
-    	String siteName = tangerineUserHelper.lookupUserSiteName();
+        String siteName = tangerineUserHelper.lookupUserSiteName();
         Audit audit = null;
         Date date = new Date();
         if (object instanceof AbstractEntity) {
             AbstractEntity entity = (AbstractEntity) object;
             String user = tangerineUserHelper.lookupUserName();
             audit = new Audit(AuditType.UPDATE, user, date, "Inactivated " + getClassName(entity) + " " + entity.getId(), siteName, getClassName(entity), entity.getId(), userId);
-        } 
-        else if (object instanceof Auditable) {
+        } else if (object instanceof Auditable) {
             Auditable auditable = (Auditable) object;
             String user = tangerineUserHelper.lookupUserName();
             audit = new Audit(AuditType.UPDATE, user, date, "Inactivated " + getClassName(auditable) + " " + auditable.getId(), siteName, getClassName(auditable), auditable.getId(), userId);
-        } 
-        else {
+        } else {
             if (logger.isInfoEnabled()) {
                 logger.info("don't know how to audit object " + (object == null ? null : object.getClass().getName()));
             }
@@ -406,14 +411,14 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         String name = object.getClass().getSimpleName();
         return StringUtils.lowerCase(name);
     }
-    
+
     private String replaceCustomFieldSeparatorWithComma(Object text) {
-    	if (text != null) {
-	    	if (text instanceof String) {
-	    		return ((String)text).replaceAll(StringConstants.CUSTOM_FIELD_SEPARATOR, ",");
-	    	}
-	    	return text.toString();
-    	}
-    	return StringConstants.EMPTY;
+        if (text != null) {
+            if (text instanceof String) {
+                return ((String) text).replaceAll(StringConstants.CUSTOM_FIELD_SEPARATOR, ",");
+            }
+            return text.toString();
+        }
+        return StringConstants.EMPTY;
     }
 }

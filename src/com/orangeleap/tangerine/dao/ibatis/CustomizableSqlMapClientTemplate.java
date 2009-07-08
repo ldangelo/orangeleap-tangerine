@@ -1,15 +1,32 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.dao.ibatis;
-
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
+import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.ibatis.SqlMapClientTemplate;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Extends the base SqlMapClientTemplate to know what to do with entities
@@ -21,7 +38,7 @@ import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
  * This class will also correctly handle insertions and deletions in cases
  * where the parameterObject is an AbstractCustomizableEntity. In situations
  * where this is not the case, the Entity is responsible for deleting, updating
- * or inserting the customfields itself. 
+ * or inserting the customfields itself.
  *
  * @version 1.0
  */
@@ -29,14 +46,14 @@ import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 
 public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
 
-	protected ApplicationContext applicationContext;
-    
+    protected ApplicationContext applicationContext;
+
     public void setApplicationContext(ApplicationContext applicationContext) {
-    	this.applicationContext = applicationContext;
+        this.applicationContext = applicationContext;
     }
 
     public ApplicationContext getApplicationContext() {
-    	return applicationContext;
+        return applicationContext;
     }
 
     public CustomizableSqlMapClientTemplate(SqlMapClient sqlMapClient) {
@@ -174,9 +191,9 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
 
             custom.setCustomFieldMap(helper.readCustomFields(custom));
         }
-        
+
         if (entity != null && entity instanceof AbstractCommunicatorEntity) {
-        	AbstractCommunicatorEntity comm = (AbstractCommunicatorEntity) entity;
+            AbstractCommunicatorEntity comm = (AbstractCommunicatorEntity) entity;
             comm.setCommunicationFields(applicationContext);
         }
     }
@@ -196,7 +213,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
 
             AbstractCustomizableEntity custom = (AbstractCustomizableEntity) entity;
             IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this, this.applicationContext);
-            helper.deleteCustomFields( custom );
+            helper.deleteCustomFields(custom);
         }
     }
 

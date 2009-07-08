@@ -1,22 +1,22 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.impl;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -27,6 +27,17 @@ import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -105,7 +116,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         giftDates.add(createGiftDate(giftCal));
 
 
-
         return giftDates;
     }
 
@@ -155,25 +165,25 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
 
     protected Date calculateNextRunDate(T commitment) {
         Calendar nextRun = new GregorianCalendar();
-        nextRun.setTimeInMillis(((RecurringGift)commitment).getNextRunDate().getTime());
+        nextRun.setTimeInMillis(((RecurringGift) commitment).getNextRunDate().getTime());
         logger.debug("start date = " + nextRun.getTime() + " millis = " + nextRun.getTimeInMillis());
         Calendar today = getToday();
-	
-	
-	if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
-	    nextRun.add(Calendar.WEEK_OF_MONTH, 1);
-	} else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
-	    nextRun.add(Calendar.MONTH, 1);
-	} else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
-	    nextRun.add(Calendar.MONTH, 3);
-	} else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
-	    nextRun.add(Calendar.MONTH, 6);
-	} else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
-	    nextRun.add(Calendar.YEAR, 1);
-	} else {
-	    nextRun = null;
-	}
-   
+
+
+        if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
+            nextRun.add(Calendar.WEEK_OF_MONTH, 1);
+        } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
+            nextRun.add(Calendar.MONTH, 1);
+        } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
+            nextRun.add(Calendar.MONTH, 3);
+        } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
+            nextRun.add(Calendar.MONTH, 6);
+        } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
+            nextRun.add(Calendar.YEAR, 1);
+        } else {
+            nextRun = null;
+        }
+
 //        if (nextRun == null || (commitment.getEndDate() != null && nextRun.getTime().after(commitment.getEndDate()))) {
 //            nextRun = null;
 //            logger.debug("no next run scheduled");

@@ -1,21 +1,38 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain;
 
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlType;
-
-import org.springframework.core.style.ToStringCreator;
-
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-
 /**
  * Base class for all Entities. It provides base functionality
  * for keeping track of the ID value and returning the type.
+ *
  * @version 1.0
  */
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
 public abstract class AbstractEntity implements GeneratedId, Serializable {
 
@@ -23,15 +40,16 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     protected Map<String, String> fieldLabelMap = null;
     protected Map<String, Object> fieldValueMap = null;
     protected Map<String, FieldDefinition> fieldTypeMap = null;
-    
+
     protected Date createDate;
     protected Date updateDate;
-    
+
     private transient boolean suppressValidation = false;
     private transient boolean suppressValidationForRequired = false;
-    
+
     /**
      * Returns the ID, or null if the ID has not been set
+     *
      * @return the ID
      */
     public Long getId() {
@@ -40,12 +58,13 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
 
     /**
      * Sets the ID to the specified value.
+     *
      * @param id the ID of the Entity
      */
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     /**
      * Resets the ID to null.  Used only when objects are cloned.
      */
@@ -59,6 +78,7 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
      * return the lowercase version of this class' simple name.
      * Subclasses should override this if more fine-grained typing
      * is required.
+     *
      * @return the type of this Entity
      */
     public String getType() {
@@ -70,6 +90,7 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
      * if the field label maps have not been set. The returned
      * Map is a reference to the internal representation, so modifying
      * the entries in the Map will change the underlying values.
+     *
      * @return a Map<String,String> of field labels
      */
     public Map<String, String> getFieldLabelMap() {
@@ -80,6 +101,7 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
      * Sets the field label map to passed map. This will overwrite
      * any existing field label map, so it is recommended to only
      * call this method one for a given entity instance.
+     *
      * @param fieldLabelMap the Map<String,Sring> of field labels
      */
     public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
@@ -91,6 +113,7 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
      * map has not been set yet. The returned Map is a reference to
      * the internal representation, so modifying the entries in the
      * Map will change the underlying values.
+     *
      * @return a Map<String,Object> of field values
      */
     public Map<String, Object> getFieldValueMap() {
@@ -101,6 +124,7 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
      * Sets the field value map to passed map. This will overwrite
      * any existing field value map, so it is recommended to only
      * call this method one for a given entity instance.
+     *
      * @param fieldValueMap the Map<String,Sring> of field values
      */
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
@@ -112,6 +136,7 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
      * definition map has not been set yet. The returned Map is a
      * reference to the internal representation, so modifying the
      * entriees in the Map will change the underlying values.
+     *
      * @return a Map<String,FieldDefinition> of field types
      */
     public Map<String, FieldDefinition> getFieldTypeMap() {
@@ -122,6 +147,7 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
      * Sets the field type map to passed map. This will overwrite
      * any existing field value map, so it is recommended to only
      * call this method one for a given entity instance.
+     *
      * @param fieldTypeMap the Map<String,FieldDefinition> of field types
      */
     public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
@@ -137,10 +163,10 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     public void prePersist() {
         // no-op in the base implementation
     }
-    
+
     /**
      * Set default values for properties.
-     * Subclasses should implement this method if they want any properties to have defaulted values 
+     * Subclasses should implement this method if they want any properties to have defaulted values
      * when first shown to a user
      */
     public void setDefaults() {
@@ -157,12 +183,12 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     public void postRead() {
         // no-op in base implementation    
     }
-    
+
     /**
      * Short description for audit trail
      */
     public String getAuditShortDesc() {
-    	return "";
+        return "";
     }
 
     @Override
@@ -170,37 +196,37 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
         return new ToStringCreator(this).append("id", id).toString();
     }
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
-	public Date getCreateDate() {
-		return createDate;
-	}
+    public Date getCreateDate() {
+        return createDate;
+    }
 
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
 
-	public Date getUpdateDate() {
-		return updateDate;
-	}
+    public Date getUpdateDate() {
+        return updateDate;
+    }
 
-	public void setSuppressValidation(boolean suppressValidation) {
-		this.suppressValidation = suppressValidation;
-	}
+    public void setSuppressValidation(boolean suppressValidation) {
+        this.suppressValidation = suppressValidation;
+    }
 
-	public boolean isSuppressValidation() {
-		return suppressValidation;
-	}
+    public boolean isSuppressValidation() {
+        return suppressValidation;
+    }
 
-	public void setSuppressValidationForRequired(
-			boolean suppressValidationForRequired) {
-		this.suppressValidationForRequired = suppressValidationForRequired;
-	}
+    public void setSuppressValidationForRequired(
+            boolean suppressValidationForRequired) {
+        this.suppressValidationForRequired = suppressValidationForRequired;
+    }
 
-	public boolean isSuppressValidationForRequired() {
-		return suppressValidationForRequired;
-	}
+    public boolean isSuppressValidationForRequired() {
+        return suppressValidationForRequired;
+    }
 
 }

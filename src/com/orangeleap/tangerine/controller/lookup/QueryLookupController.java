@@ -1,63 +1,81 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.controller.lookup;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.service.QueryLookupService;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.HtmlUtils;
 
-import com.orangeleap.tangerine.domain.QueryLookup;
-import com.orangeleap.tangerine.service.QueryLookupService;
-import com.orangeleap.tangerine.util.TangerinePagedListHolder;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QueryLookupController extends SimpleFormController {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name="queryLookupService")
+    @Resource(name = "queryLookupService")
     protected QueryLookupService queryLookupService;
-    
+
     protected String findFieldDef(HttpServletRequest request) {
         return getParameter(request, "fieldDef");
     }
-    
+
     protected List<Object> executeQueryLookup(HttpServletRequest request, String fieldDef) {
         Map<String, String> queryParams = findQueryParams(request);
         List<Object> objects = queryLookupService.executeQueryLookup(fieldDef, queryParams);
         request.setAttribute("objects", objects);
         return objects;
     }
-    
+
     protected QueryLookup doQueryLookup(HttpServletRequest request, String fieldDef) {
         QueryLookup queryLookup = queryLookupService.readQueryLookup(fieldDef);
         request.setAttribute("queryLookup", queryLookup);
         return queryLookup;
     }
-    
+
     protected void performQuery(HttpServletRequest request, HttpServletResponse response) {
         String fieldDef = findFieldDef(request);
-        
+
         QueryLookup queryLookup = doQueryLookup(request, fieldDef);
         if (logger.isDebugEnabled()) {
-            logger.debug("performQuery: fieldDef = " + fieldDef );
+            logger.debug("performQuery: fieldDef = " + fieldDef);
         }
         List<Object> objects = executeQueryLookup(request, fieldDef);
         sortPaginate(request, objects, queryLookup);
     }
-    
+
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         performQuery(request, response);
@@ -70,7 +88,7 @@ public class QueryLookupController extends SimpleFormController {
         String fieldDef = findFieldDef(request);
         doQueryLookup(request, fieldDef);
         if (logger.isDebugEnabled()) {
-            logger.debug("showForm: fieldDef = " + fieldDef );
+            logger.debug("showForm: fieldDef = " + fieldDef);
         }
         request.setAttribute("fieldDef", fieldDef);
         request.setAttribute("showOtherField", Boolean.valueOf(request.getParameter("showOtherField")));
@@ -96,6 +114,7 @@ public class QueryLookupController extends SimpleFormController {
 
     /**
      * TODO: move to another class or an interceptor or an annotation
+     *
      * @param request
      * @param objects
      * @param queryLookup
@@ -105,7 +124,7 @@ public class QueryLookupController extends SimpleFormController {
         if (searchOption == null) {
             searchOption = queryLookup.getQueryLookupParams().get(0).getName();
         }
-        
+
         Boolean sortAscending = new Boolean(true);
         MutableSortDefinition sortDef = new MutableSortDefinition(searchOption, true, sortAscending);
         TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(objects, sortDef);
@@ -113,7 +132,7 @@ public class QueryLookupController extends SimpleFormController {
 
         request.setAttribute("results", pagedListHolder.getSource());
     }
-    
+
     protected String getParameter(HttpServletRequest request, String parameterName) {
         return StringUtils.trimToNull(HtmlUtils.htmlUnescape(request.getParameter(parameterName)));
     }

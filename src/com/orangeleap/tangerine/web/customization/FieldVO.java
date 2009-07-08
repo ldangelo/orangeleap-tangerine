@@ -1,23 +1,38 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.web.customization;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.util.CollectionUtils;
 
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.util.CollectionUtils;
+
+import java.util.*;
 
 public class FieldVO {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     // TODO: move elsewhere
@@ -68,24 +83,24 @@ public class FieldVO {
     }
 
     public List<String> getAugmentedCodes() {
-    	Object o = getFieldValue();
-    	if (o == null) {
+        Object o = getFieldValue();
+        if (o == null) {
             o = "";
-        } 
-    	String value = StringUtils.trimToEmpty(o.toString());
-    	if ((codes == null || !codes.contains(value)) && value.length() > 0) {
-    		// This picklist item's previously saved value has been deleted from the list of available picklist values.  
-    		// Add it back in as a temporary option so that it doesn't get reset when saving some other change from the gui.  
-    		// We no longer have a display value, so use the code value for the display value in just this case.
+        }
+        String value = StringUtils.trimToEmpty(o.toString());
+        if ((codes == null || !codes.contains(value)) && value.length() > 0) {
+            // This picklist item's previously saved value has been deleted from the list of available picklist values.
+            // Add it back in as a temporary option so that it doesn't get reset when saving some other change from the gui.
+            // We no longer have a display value, so use the code value for the display value in just this case.
             if (codes == null) {
-				codes = new ArrayList<String>();
-			}
+                codes = new ArrayList<String>();
+            }
             if (displayValues == null) {
-				displayValues = new ArrayList<Object>();
-			}
-    		codes.add(""+getFieldValue());
-    		displayValues.add(""+getFieldValue());
-    	}
+                displayValues = new ArrayList<Object>();
+            }
+            codes.add("" + getFieldValue());
+            displayValues.add("" + getFieldValue());
+        }
         return codes;
     }
 
@@ -100,7 +115,7 @@ public class FieldVO {
         return fieldName;
 //        return new StringBuilder(StringConstants.FIELD_MAP_START).append(escapeChars(fieldName)).append(StringConstants.FIELD_MAP_END).toString();
     }
-    
+
     public static String escapeChars(String str) { // TODO: fix
         return str == null ? "" : str.replace('.', '_').replace('[', '-').replace(']', '-');
     }
@@ -108,37 +123,39 @@ public class FieldVO {
     public String getFieldId() {
         return escapeChars(getFieldName());
     }
-    
+
     public String getAdditionalFieldId() {
         return escapeChars(getAdditionalFieldName());
     }
-    
+
     /**
      * Get the 'other' field name, i.e, customFieldMap[reference] --> customFieldMap[additional_reference], motivationCode --> additional_reference, customFieldMap[individual.spouse] --> customFieldMap[individual.additional_spouse]
+     *
      * @param fieldName
      * @return
      */
     public String getAdditionalFieldName() {
         return getAdditionalFieldName(fieldName);
     }
-    
+
     public static String getAdditionalFieldName(String aFieldName) {
         return getPrefixedFieldName(ADDITIONAL_PREFIX, aFieldName);
     }
-    
+
     public String getOtherFieldId() {
         return escapeChars(getOtherFieldName());
     }
-    
+
     /**
      * Get the 'other' field name, i.e, customFieldMap[reference] --> customFieldMap[other_reference], motivationCode --> other_motivationCode, customFieldMap[individual.spouse] --> customFieldMap[individual.other_spouse]
+     *
      * @param fieldName
      * @return
      */
     public String getOtherFieldName() {
         return getOtherFieldName(fieldName);
     }
-    
+
     public static String getOtherFieldName(String aFieldName) {
         return getPrefixedFieldName(OTHER_PREFIX, aFieldName);
     }
@@ -146,21 +163,20 @@ public class FieldVO {
     // TODO: fix for form bean
     public static String getPrefixedFieldName(String prefix, String aFieldName) {
         String prefixedFieldName = null;
-        
+
         boolean endsInValue = false;
         if (aFieldName.endsWith(DOT_VALUE)) {
             aFieldName = aFieldName.substring(0, aFieldName.length() - DOT_VALUE.length());
             endsInValue = true;
         }
-        
+
         int startBracketIndex = aFieldName.lastIndexOf('[');
         if (startBracketIndex > -1) {
             int periodIndex = aFieldName.indexOf('.', startBracketIndex);
             if (periodIndex > -1) {
-                prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + 1)).append(prefix).append(aFieldName.substring(periodIndex + 1, aFieldName.length())).toString(); 
-            }
-            else {
-                prefixedFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + 1)).append(prefix).append(aFieldName.substring(startBracketIndex + 1, aFieldName.length())).toString(); 
+                prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + 1)).append(prefix).append(aFieldName.substring(periodIndex + 1, aFieldName.length())).toString();
+            } else {
+                prefixedFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + 1)).append(prefix).append(aFieldName.substring(startBracketIndex + 1, aFieldName.length())).toString();
             }
         }
         if (prefixedFieldName == null) {
@@ -169,9 +185,9 @@ public class FieldVO {
         if (endsInValue) {
             prefixedFieldName = prefixedFieldName.concat(DOT_VALUE);
         }
-        return prefixedFieldName;      
+        return prefixedFieldName;
     }
-    
+
     public FieldType getFieldType() {
         return fieldType;
     }
@@ -257,8 +273,7 @@ public class FieldVO {
                         addFieldValue(thisVal);
                     }
                 }
-            }
-            else {
+            } else {
                 addFieldValue(fieldValue);
             }
         }
@@ -267,7 +282,7 @@ public class FieldVO {
     public List<String> getReferenceValues() {
         return referenceValues;
     }
-    
+
     @SuppressWarnings("unchecked")
     public String getUniqueReferenceValues() {
         if (referenceValues == null) {
@@ -278,14 +293,14 @@ public class FieldVO {
             if (referenceValues.get(i) != null) {
                 s.addAll(org.springframework.util.StringUtils.commaDelimitedListToSet(referenceValues.get(i)));
             }
-        } 
+        }
         return org.springframework.util.StringUtils.collectionToCommaDelimitedString(s);
     }
 
     public void setReferenceValues(List<String> referenceValues) {
         this.referenceValues = referenceValues;
     }
-    
+
     public void addReferenceValue(String referenceValue) {
         if (this.referenceValues == null) {
             this.referenceValues = new ArrayList<String>();
@@ -308,8 +323,7 @@ public class FieldVO {
                 sb = sb.delete(sb.length() - 2, sb.length());
             }
             return sb.toString();
-        }
-        else {
+        } else {
             return displayValues != null ? displayValues.get(0) : (fieldValues != null ? fieldValues.get(0) : null);
         }
     }
@@ -323,22 +337,21 @@ public class FieldVO {
                         addDisplayValue(thisVal);
                     }
                 }
-            }
-            else {
+            } else {
                 addDisplayValue(displayValue);
             }
         }
     }
 
     public boolean isMultiLine() {
-    	return ("" + getDisplayValue()).contains("\n");
+        return ("" + getDisplayValue()).contains("\n");
     }
-    
+
     public String[] getSplitLineValues() {
-    	String s = "" + getDisplayValue();
+        String s = "" + getDisplayValue();
         return s.split("\\n");
     }
-    
+
     public boolean isCascading() {
         return cascading;
     }
@@ -370,7 +383,7 @@ public class FieldVO {
     public List<Long> getIds() {
         return ids;
     }
-    
+
     public void addId(Long id) {
         if (this.ids == null) {
             this.ids = new ArrayList<Long>();
@@ -396,7 +409,7 @@ public class FieldVO {
     public void setDisplayValues(List<Object> displayValues) {
         this.displayValues = displayValues;
     }
-    
+
     public void addDisplayValue(Object displayValue) {
         if (this.displayValues == null) {
             this.displayValues = new ArrayList<Object>();
@@ -445,18 +458,15 @@ public class FieldVO {
         boolean fieldFound = false;
         if ((fieldValues == null || fieldValues.isEmpty()) && myField == null) {
             fieldFound = true;
-        }
-        else if (fieldValues == null || fieldValues.isEmpty() || myField == null) {
+        } else if (fieldValues == null || fieldValues.isEmpty() || myField == null) {
             fieldFound = false;
-        }
-        else {
+        } else {
             for (Object thisFieldValue : fieldValues) {
                 Class thisClazz = thisFieldValue.getClass();
                 Class checkClazz = myField.getClass();
                 if (thisClazz.equals(checkClazz)) {
                     fieldFound = thisFieldValue.equals(myField);
-                }
-                else {
+                } else {
                     fieldFound = thisFieldValue.toString().equals(myField.toString());
                 }
                 if (fieldFound) {

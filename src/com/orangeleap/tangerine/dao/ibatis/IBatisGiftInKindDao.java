@@ -1,24 +1,43 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.dao.ibatis;
-
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 @Repository("giftInKindDAO")
 public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKindDao {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Autowired
@@ -32,10 +51,10 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
             logger.trace("maintainGiftInKind: giftInKindId = " + giftInKind.getId());
         }
         GiftInKind aGiftInKind = (GiftInKind) insertOrUpdate(giftInKind, "GIFT_IN_KIND");
-        
+
         /* Delete Details first */
         getSqlMapClientTemplate().delete("DELETE_GIFT_IN_KIND_DETAIL", aGiftInKind.getId());
-        
+
         /* Then Insert Details */
         if (aGiftInKind.getDetails() != null) {
             for (GiftInKindDetail detail : aGiftInKind.getDetails()) {
@@ -67,7 +86,7 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
         params.put("constituentId", constituentId);
         return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_IN_KIND_BY_CONSTITUENT_ID", params);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public PaginatedResult readPaginatedGiftsInKindByConstituentId(Long constituentId, SortInfo sortinfo) {
@@ -77,10 +96,10 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);
 
-		params.put("constituentId", constituentId);
+        params.put("constituentId", constituentId);
 
         List rows = getSqlMapClientTemplate().queryForList("SELECT_GIFTS_IN_KIND_BY_CONSTITUENT_ID_PAGINATED", params);
-        Long count = (Long)getSqlMapClientTemplate().queryForObject("GIFTS_IN_KIND_BY_CONSTITUENT_ID_ROWCOUNT",params);
+        Long count = (Long) getSqlMapClientTemplate().queryForObject("GIFTS_IN_KIND_BY_CONSTITUENT_ID_ROWCOUNT", params);
         PaginatedResult resp = new PaginatedResult();
         resp.setRows(rows);
         resp.setRowCount(count);

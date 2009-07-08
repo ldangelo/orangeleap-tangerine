@@ -1,33 +1,53 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.security;
 
-import org.springframework.security.ui.SpringSecurityFilter;
-import org.springframework.security.ui.FilterChainOrder;
-import org.springframework.security.Authentication;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.ldap.LdapUserDetails;
-import org.springframework.security.providers.cas.CasAuthenticationToken;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.web.util.WebUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.ldap.core.ContextSource;
-import org.springframework.ldap.core.simple.SimpleLdapTemplate;
-import org.springframework.ldap.NamingException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.*;
-
-import com.orangeleap.tangerine.util.HttpUtil;
-import com.orangeleap.tangerine.service.ldap.LdapService;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.SessionService;
+import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.service.ldap.LdapService;
 import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.util.HttpUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.NamingException;
+import org.springframework.ldap.core.ContextSource;
+import org.springframework.ldap.core.DirContextOperations;
+import org.springframework.ldap.core.simple.SimpleLdapTemplate;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
+import org.springframework.security.ui.FilterChainOrder;
+import org.springframework.security.ui.SpringSecurityFilter;
+import org.springframework.security.userdetails.ldap.LdapUserDetails;
+import org.springframework.web.util.WebUtils;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This security filter will decorate the web HttpSession with information needed
@@ -90,6 +110,7 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
      * Initialize the TangerineAuthenticationDetails object inside the CasAuthenticationToken.
      * This method will make use of the ConstituentService and PageCustomizationService
      * to load the needed information about the constituent.
+     *
      * @param token the CasAuthenticationToken with the constituent information
      */
     private void loadTangerineDetails(CasAuthenticationToken token) {
@@ -99,7 +120,7 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
 
         String username = user.getUsername();
         String sitename = "";
-        if(user.getUsername().indexOf("@") > -1) {
+        if (user.getUsername().indexOf("@") > -1) {
             String[] split = username.split("@");
             username = split[0];
             sitename = split[1];
@@ -112,18 +133,18 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
 
         List<String> roles = new ArrayList<String>();
 
-        for(GrantedAuthority auth:authorities) {
+        for (GrantedAuthority auth : authorities) {
             roles.add(auth.getAuthority());
         }
 
         Map<String, AccessType> pageAccess = pageCustomizationService.readPageAccess(roles);
         details.setPageAccess(pageAccess);
 
-         /* HACK: this method ensures the authenticated user exists in the Tangerine
-         * database. It will attempt to lookup the user/site, and if not found, it will
-         * create it. Placing this here avoids having to override a base Spring Security
-         * just to do this.
-         */
+        /* HACK: this method ensures the authenticated user exists in the Tangerine
+        * database. It will attempt to lookup the user/site, and if not found, it will
+        * create it. Placing this here avoids having to override a base Spring Security
+        * just to do this.
+        */
         sessionService.lookupSite();
 
         Constituent constituent = constituentService.readConstituentByLoginId(username);
@@ -136,8 +157,9 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
     /**
      * Query LDAP to initialize the firstName and lastName fields of the details object
      * based on the sn and cn values. Needed when creating new users on first login.
+     *
      * @param details the TangerineAuthenticationDetails object to populate fields
-     * @param dn the fully qualified DN for the user
+     * @param dn      the fully qualified DN for the user
      * @throws NamingException if bad things happen
      */
     protected void getLdapDetails(TangerineAuthenticationDetails details, String dn) throws NamingException {
@@ -146,8 +168,8 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
 
         // dn contains the FQDN, so strip off the dc
         int posn = dn.indexOf(",dc=");
-        if(posn != -1) {
-            dn = dn.substring(0,posn);
+        if (posn != -1) {
+            dn = dn.substring(0, posn);
         }
 
         DirContextOperations user = template.lookupContext(dn);

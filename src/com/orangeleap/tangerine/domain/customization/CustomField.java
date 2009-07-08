@@ -1,23 +1,39 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain.customization;
 
+import com.orangeleap.tangerine.domain.GeneratedId;
+import org.joda.time.DateMidnight;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlType;
-
-import org.joda.time.DateMidnight;
-import org.springframework.core.style.ToStringCreator;
-
-import com.orangeleap.tangerine.domain.GeneratedId;
-
 /**
  * Implementation of a Custom Field which tracks the Entity it
  * is associated with via the Enitity ID and Type.
  */
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 public class CustomField implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,7 +47,7 @@ public class CustomField implements GeneratedId, Serializable {
 
     private String entityType;
     private Long entityId;
-    
+
     private int sequenceNumber;
     private Long dataType = new Long(0);
     private Date startDate = PAST_DATE;
@@ -65,27 +81,27 @@ public class CustomField implements GeneratedId, Serializable {
     }
 
     public List<String> getValues() {
-		return values;
-	}
+        return values;
+    }
 
-	public void setValues(List<String> values) {
-		this.values = values;
-	}
-	
-	public void addValue(String value) {
-		if (this.values == null) {
-			this.values = new ArrayList<String>();
-		}
-		this.values.add(value);
-	}
-	
-	public void clearValues() {
-		if (this.values != null) {
-			this.values.clear();
-		}
-	}
+    public void setValues(List<String> values) {
+        this.values = values;
+    }
 
-	public String getValue() {
+    public void addValue(String value) {
+        if (this.values == null) {
+            this.values = new ArrayList<String>();
+        }
+        this.values.add(value);
+    }
+
+    public void clearValues() {
+        if (this.values != null) {
+            this.values.clear();
+        }
+    }
+
+    public String getValue() {
         return value;
     }
 
@@ -99,6 +115,7 @@ public class CustomField implements GeneratedId, Serializable {
 
     /**
      * The type of entity this custom field is associated with
+     *
      * @param entityType the entity type
      */
     public void setEntityType(String entityType) {
@@ -113,6 +130,7 @@ public class CustomField implements GeneratedId, Serializable {
      * The Id of the entity this custom field is associated with.
      * The combination of the EntityType and Entity ID are what
      * can be used to determine the association of this custom field.
+     *
      * @param entityId the Long ID of the associated entity
      */
     public void setEntityId(Long entityId) {
@@ -124,86 +142,84 @@ public class CustomField implements GeneratedId, Serializable {
         return new ToStringCreator(this).append("id", id).append("name", name).append("entityType", entityType).append("entityId", entityId).append("value", value).append("startDate", startDate).append("endDate", endDate).append("sequenceNumber", sequenceNumber).toString();
     }
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
 
-	public Date getStartDate() {
-		return startDate;
-	}
+    public Date getStartDate() {
+        return startDate;
+    }
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 
-	public Date getEndDate() {
-		return endDate;
-	}
+    public Date getEndDate() {
+        return endDate;
+    }
 
-	public void setSequenceNumber(int sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-	}
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
 
-	public int getSequenceNumber() {
-		return sequenceNumber;
-	}
-	
-	private static final String FORMAT = "MM/dd/yyyy";
-	
-	private String getDisplayDate(Date d) {
-		if (d == null || d.equals(PAST_DATE) || d.equals(FUTURE_DATE)) {
-			return "";
-		}
-		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-		return sdf.format(d);
-	}
-	
-	
-	public String getDisplayStartDate() {
-		return getDisplayDate(this.startDate);
-	}
-	
-	public String getDisplayEndDate() {
-		return getDisplayDate(this.endDate);
-	}
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
 
-	public void setDisplayStartDate(String s) {
-		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-		if (s == null || s.trim().length() == 0) {
-			this.startDate = PAST_DATE;
-		} 
-		else {
-			try {
-				this.startDate = sdf.parse(s);
-			} 
-			catch (Exception e) {
-				throw new RuntimeException("Invalid date format " + s);
-			}
-		}
-	}
-	
-	public void setDisplayEndDate(String s) {
-		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-		if (s == null || s.trim().length() == 0) {
-			this.endDate = FUTURE_DATE;
-		} 
-		else {
-			try {
-				this.endDate = sdf.parse(s);
-			} 
-			catch (Exception e) {
-				throw new RuntimeException("Invalid date format " + s);
-			}
-		}
-	}
+    private static final String FORMAT = "MM/dd/yyyy";
 
-	public void setDataType(Long dataType) {
-		this.dataType = dataType;
-	}
+    private String getDisplayDate(Date d) {
+        if (d == null || d.equals(PAST_DATE) || d.equals(FUTURE_DATE)) {
+            return "";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+        return sdf.format(d);
+    }
 
-	public Long getDataType() {
-		return dataType;
-	}
+
+    public String getDisplayStartDate() {
+        return getDisplayDate(this.startDate);
+    }
+
+    public String getDisplayEndDate() {
+        return getDisplayDate(this.endDate);
+    }
+
+    public void setDisplayStartDate(String s) {
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+        if (s == null || s.trim().length() == 0) {
+            this.startDate = PAST_DATE;
+        } else {
+            try {
+                this.startDate = sdf.parse(s);
+            }
+            catch (Exception e) {
+                throw new RuntimeException("Invalid date format " + s);
+            }
+        }
+    }
+
+    public void setDisplayEndDate(String s) {
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+        if (s == null || s.trim().length() == 0) {
+            this.endDate = FUTURE_DATE;
+        } else {
+            try {
+                this.endDate = sdf.parse(s);
+            }
+            catch (Exception e) {
+                throw new RuntimeException("Invalid date format " + s);
+            }
+        }
+    }
+
+    public void setDataType(Long dataType) {
+        this.dataType = dataType;
+    }
+
+    public Long getDataType() {
+        return dataType;
+    }
 }
 
 

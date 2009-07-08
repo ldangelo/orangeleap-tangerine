@@ -1,18 +1,34 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain;
-
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlType;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.lang.StringUtils;
 
-@XmlType (name="constituent", namespace="http://www.orangeleap.com/orangeleap/schemas")
+import javax.xml.bind.annotation.XmlType;
+import java.util.List;
+
+@XmlType(name = "constituent", namespace = "http://www.orangeleap.com/orangeleap/schemas")
 public class Constituent extends AbstractCommunicatorEntity {
 
     private static final long serialVersionUID = 1L;
@@ -23,7 +39,7 @@ public class Constituent extends AbstractCommunicatorEntity {
     public static final String INFORMAL_SALUTATION = "informalSalutation";
     public static final String HEAD_OF_HOUSEHOLD_SALUTATION = "headOfHouseholdSalutation";
     public static final String DONOR_PROFILES = "donorProfiles";
-    
+
     public static final String CONSTITUENT_INDIVIDUAL_ROLES = "constituentIndividualRoles";
     public static final String CONSTITUENT_ORGANIZATION_ROLES = "constituentOrganizationRoles";
     public static final String INDIVIDUAL_SPOUSE = "individual.spouse";
@@ -32,7 +48,7 @@ public class Constituent extends AbstractCommunicatorEntity {
     public static final String INDIVIDUAL_GENDER = "individual.gender";
     public static final String INDIVIDUAL_RACE = "individual.race";
     public static final String INDIVIDUAL_MILITARY = "individual.military";
-    
+
     public static final String ORGANIZATION_WEBSITE = "organization.website";
     public static final String ORGANIZATION_TAX_ID = "organization.taxid";
     public static final String ORGANIZATION_ELIGIBILITY = "organization.eligibility";
@@ -68,7 +84,7 @@ public class Constituent extends AbstractCommunicatorEntity {
     public static final String INDIVIDUAL_CHILDREN = "individual.children";
     public static final String INDIVIDUAL_SIBLINGS = "individual.siblings";
     public static final String INDIVIDUAL_FRIENDS = "individual.friends";
-    
+
     public static final String ORGANIZATION_EMPLOYEES = "organization.employees";
     public static final String ORGANIZATION_PARENT = "organization.parent";
     public static final String ORGANIZATION_SUBSIDIARY_LIST = "organization.subsidiaryList";
@@ -76,7 +92,7 @@ public class Constituent extends AbstractCommunicatorEntity {
     public static final String ORGANIZATION_BILLING_CONTACTS = "organization.billingContacts";
     public static final String ORGANIZATION_SALES_CONTACTS = "organization.salesContacts";
     public static final String ORGANIZATION_PUBLIC_RELATIONS_CONTACTS = "organization.publicRelationsContacts";
-    
+
     private Site site;
     private String constituentType = INDIVIDUAL;
     private String title;
@@ -93,19 +109,20 @@ public class Constituent extends AbstractCommunicatorEntity {
     private String loginId;
     private Long accountNumber;
     private Boolean byPassDuplicateDetection = false;
-    
+
     private List<Gift> gifts;
     private List<RecurringGift> recurringGifts;
     private List<Pledge> pledges;
-    
-    public Constituent() { }
 
-    public Constituent(Long id, Site site) { 
+    public Constituent() {
+    }
+
+    public Constituent(Long id, Site site) {
         this();
         this.id = id;
         this.site = site;
     }
-    
+
     @Override
     public String toString() {
         return getDisplayValue();
@@ -129,8 +146,7 @@ public class Constituent extends AbstractCommunicatorEntity {
         StringBuilder sb = new StringBuilder();
         if (isOrganization()) {
             sb.append(organizationName);
-        } 
-        else {
+        } else {
             if (firstName != null) {
                 sb.append(firstName).append(" ");
             }
@@ -144,8 +160,7 @@ public class Constituent extends AbstractCommunicatorEntity {
     public String getFullName() {
         if (isOrganization()) {
             return organizationName;
-        } 
-        else {
+        } else {
             return createName(false);
         }
     }
@@ -315,7 +330,7 @@ public class Constituent extends AbstractCommunicatorEntity {
     }
 
     public void setConstituentIndividualRoles(String constituentIndividualRoles) {
-    	setCustomFieldValue(CONSTITUENT_INDIVIDUAL_ROLES, constituentIndividualRoles);
+        setCustomFieldValue(CONSTITUENT_INDIVIDUAL_ROLES, constituentIndividualRoles);
     }
 
     public String getConstituentIndividualRoles() {
@@ -328,11 +343,11 @@ public class Constituent extends AbstractCommunicatorEntity {
     }
 
     public void setConstituentOrganizationRoles(String constituentOrganizationRoles) {
-    	setCustomFieldValue(CONSTITUENT_ORGANIZATION_ROLES, constituentOrganizationRoles);
+        setCustomFieldValue(CONSTITUENT_ORGANIZATION_ROLES, constituentOrganizationRoles);
     }
 
     public String getConstituentOrganizationRoles() {
-    	String result = getCustomFieldValue(CONSTITUENT_ORGANIZATION_ROLES);
+        String result = getCustomFieldValue(CONSTITUENT_ORGANIZATION_ROLES);
         if (result == null) {
             return "";
         } else {
@@ -341,72 +356,70 @@ public class Constituent extends AbstractCommunicatorEntity {
     }
 
     public void removeConstituentIndividualRoles(String role) {
-    	String existingValue = getConstituentIndividualRoles();
-    	
-    	//
-    	// if the custom field value does not contain the value
-    	// we are removing simply return
-    	if (existingValue.contains(role) == false) {
+        String existingValue = getConstituentIndividualRoles();
+
+        //
+        // if the custom field value does not contain the value
+        // we are removing simply return
+        if (existingValue.contains(role) == false) {
             return;
         }
-    	
-    	//
-    	// if the existing value is equal to the value we are removing
-    	// then set the field value to an empty string (remove it)
-    	if (existingValue.contains(StringConstants.CUSTOM_FIELD_SEPARATOR) == false) {
-    		if (existingValue.compareTo(role) == 0) {
+
+        //
+        // if the existing value is equal to the value we are removing
+        // then set the field value to an empty string (remove it)
+        if (existingValue.contains(StringConstants.CUSTOM_FIELD_SEPARATOR) == false) {
+            if (existingValue.compareTo(role) == 0) {
                 setConstituentIndividualRoles(StringConstants.EMPTY);
             }
-    	} else {
-    		//
-    		// if the existing value is a custom-field-separator separated list of values
-    		// then find the value we are removing in the string and remove it
-    		// then reset the field value
-    		String[] values = existingValue.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
-    		
-    		StringBuilder sb = new StringBuilder();
-    		for (int i = 0; i < values.length; i++) {
-    			if (values[i].equals(role) == false) {
+        } else {
+            //
+            // if the existing value is a custom-field-separator separated list of values
+            // then find the value we are removing in the string and remove it
+            // then reset the field value
+            String[] values = existingValue.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < values.length; i++) {
+                if (values[i].equals(role) == false) {
                     sb.append(values[i]);
                 }
-    			
-    			if (i != (values.length - 1)) {
+
+                if (i != (values.length - 1)) {
                     sb.append(StringConstants.CUSTOM_FIELD_SEPARATOR);
                 }
-    		}
-    		
-    		setConstituentIndividualRoles(sb.toString());
-    	}
+            }
+
+            setConstituentIndividualRoles(sb.toString());
+        }
     }
-    
+
     public void addConstituentOrganizationRoles(String role) {
-    	String existingValue = getConstituentOrganizationRoles();
+        String existingValue = getConstituentOrganizationRoles();
         if (existingValue == null) {
             setConstituentOrganizationRoles(role);
+        } else {
+            setConstituentOrganizationRoles(existingValue + StringConstants.CUSTOM_FIELD_SEPARATOR + role);
         }
-        else {
-            setConstituentOrganizationRoles(existingValue + StringConstants.CUSTOM_FIELD_SEPARATOR + role); 
-        }
-    	
+
     }
+
     public void addConstituentIndividualRoles(String role) {
-    	String existingValue = getConstituentIndividualRoles();
+        String existingValue = getConstituentIndividualRoles();
         if (existingValue == null) {
             setConstituentIndividualRoles(role);
-        }
-        else {
-            setConstituentIndividualRoles(existingValue + StringConstants.CUSTOM_FIELD_SEPARATOR + role); 
+        } else {
+            setConstituentIndividualRoles(existingValue + StringConstants.CUSTOM_FIELD_SEPARATOR + role);
         }
     }
-    
+
     public void addConstituentRole(String constituentRole) {
         if (constituentRole == null || constituentRole.equals(ORGANIZATION) || constituentRole.equals(INDIVIDUAL)) {
             return;
         }
         if (isOrganization()) {
             setConstituentOrganizationRoles(addToList(getConstituentOrganizationRoles(), constituentRole));
-        } 
-        else {
+        } else {
             setConstituentIndividualRoles(addToList(getConstituentIndividualRoles(), constituentRole));
         }
     }
@@ -436,8 +449,7 @@ public class Constituent extends AbstractCommunicatorEntity {
             if (constituentOrganizationRoles != null && constituentOrganizationRoles.length() > 0) {
                 constituentAttributes = constituentAttributes + StringConstants.CUSTOM_FIELD_SEPARATOR + constituentOrganizationRoles;
             }
-        } 
-        else {
+        } else {
             constituentAttributes = INDIVIDUAL;
             String constituentIndividualRoles = this.getConstituentIndividualRoles();
             if (constituentIndividualRoles != null && constituentIndividualRoles.length() > 0) {
@@ -478,19 +490,19 @@ public class Constituent extends AbstractCommunicatorEntity {
     public void setAccountNumber(Long accountNumber) {
         this.accountNumber = accountNumber;
     }
-    
+
     @Override
     public String getAuditShortDesc() {
-    	return getFullName();
+        return getFullName();
     }
 
-	public Boolean getByPassDuplicateDetection() {
-		return byPassDuplicateDetection;
-	}
+    public Boolean getByPassDuplicateDetection() {
+        return byPassDuplicateDetection;
+    }
 
-	public void setByPassDuplicateDetection(Boolean byPassDuplicateDetection) {
-		this.byPassDuplicateDetection = byPassDuplicateDetection;
-	}
+    public void setByPassDuplicateDetection(Boolean byPassDuplicateDetection) {
+        this.byPassDuplicateDetection = byPassDuplicateDetection;
+    }
 
     @Override
     public void setDefaults() {
@@ -509,8 +521,7 @@ public class Constituent extends AbstractCommunicatorEntity {
             if (StringUtils.isBlank(getLegalName())) {
                 setLegalName(getOrganizationName());
             }
-        }
-        else if (isIndividual()) {
+        } else if (isIndividual()) {
             clearOrganization();
             setConstituentIndividualRoles(StringUtils.trimToEmpty(getConstituentIndividualRoles()).toLowerCase());
             if (StringUtils.isBlank(getCustomFieldValue(HEAD_OF_HOUSEHOLD_SALUTATION))) {
@@ -518,18 +529,16 @@ public class Constituent extends AbstractCommunicatorEntity {
             }
         }
         if (StringUtils.isBlank(getRecognitionName())) {
-            if (isIndividual()) { 
+            if (isIndividual()) {
                 setRecognitionName(createName(false));
-            }
-            else if (isOrganization()) {
+            } else if (isOrganization()) {
                 setRecognitionName(getOrganizationName());
             }
         }
         if (StringUtils.isBlank(getCustomFieldValue(FORMAL_SALUTATION))) {
             if (isOrganization()) {
                 setCustomFieldValue(FORMAL_SALUTATION, legalName);
-            }
-            else if (isIndividual()) {
+            } else if (isIndividual()) {
                 StringBuilder sb = new StringBuilder();
                 if (StringUtils.isBlank(title) == false) {
                     sb.append(title).append(" ");
@@ -541,14 +550,13 @@ public class Constituent extends AbstractCommunicatorEntity {
         if (StringUtils.isBlank(getCustomFieldValue(INFORMAL_SALUTATION))) {
             if (isOrganization()) {
                 setCustomFieldValue(INFORMAL_SALUTATION, organizationName);
-            }
-            else if (isIndividual()) {
+            } else if (isIndividual()) {
                 setCustomFieldValue(INFORMAL_SALUTATION, getFirstName());
             }
         }
         setConstituentType(StringUtils.trimToEmpty(getConstituentType()).toLowerCase());
     }
-    
+
     public void clearIndividual() {
         setTitle(null);
         setSuffix(null);
@@ -564,7 +572,7 @@ public class Constituent extends AbstractCommunicatorEntity {
         removeCustomField(INDIVIDUAL_MILITARY);
         removeCustomField(INDIVIDUAL_RACE);
         removeCustomField(INDIVIDUAL_SPOUSE);
-        
+
         removeCustomField(INDIVIDUAL_ORGANIZATIONS);
         removeCustomField(INDIVIDUAL_EMPLOYMENT_TITLE);
         removeCustomField(INDIVIDUAL_HEAD_OF_HOUSEHOLD);
@@ -580,7 +588,7 @@ public class Constituent extends AbstractCommunicatorEntity {
         removeCustomField(INDIVIDUAL_SIBLINGS);
         removeCustomField(INDIVIDUAL_FRIENDS);
     }
-    
+
     public void clearOrganization() {
         setOrganizationName(null);
         setLegalName(null);

@@ -1,26 +1,44 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.controller.payment;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PaymentManagerFormController extends TangerineConstituentAttributesFormController {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @SuppressWarnings("unchecked")
@@ -34,7 +52,7 @@ public class PaymentManagerFormController extends TangerineConstituentAttributes
     protected AbstractEntity findEntity(HttpServletRequest request) {
         return paymentSourceService.readPaymentSourceCreateIfNull(request.getParameter("paymentSourceId"), super.getConstituent(request));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
@@ -48,21 +66,19 @@ public class PaymentManagerFormController extends TangerineConstituentAttributes
 
             if (existingSource != null) {
                 ModelAndView mav = showForm(request, response, errors);
-                errors.reject("errorPaymentSourceExists", new String[] { existingSource.getProfile() }, "The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
+                errors.reject("errorPaymentSourceExists", new String[]{existingSource.getProfile()}, "The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
                 return mav;
-            }
-            else if (names != null && names.isEmpty() == false && "true".equals(request.getParameter("useConflictingName")) == false) {
+            } else if (names != null && names.isEmpty() == false && "true".equals(request.getParameter("useConflictingName")) == false) {
                 ModelAndView mav = showForm(request, response, errors);
                 mav.addObject("conflictingNames", names);
                 return mav;
-            }
-            else if (dateSources != null && dateSources.isEmpty() == false) {
+            } else if (dateSources != null && dateSources.isEmpty() == false) {
                 existingSource = dateSources.get(0); // should only be 1
                 ModelAndView mav = showForm(request, response, errors);
-                errors.reject("errorCreditCardDateExists", new String[] { existingSource.getProfile(), 
-                        existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() }, 
-                        "The entered credit card information already exists for the profile '" + existingSource.getProfile() + "' but with an expiration date of '" + 
-                        existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");
+                errors.reject("errorCreditCardDateExists", new String[]{existingSource.getProfile(),
+                        existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear()},
+                        "The entered credit card information already exists for the profile '" + existingSource.getProfile() + "' but with an expiration date of '" +
+                                existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");
                 return mav;
             }
         }

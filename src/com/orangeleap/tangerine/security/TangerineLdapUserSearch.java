@@ -1,9 +1,25 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.security;
 
-import javax.naming.directory.SearchControls;
-
-import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
@@ -13,20 +29,26 @@ import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
+import javax.naming.directory.SearchControls;
+
 public class TangerineLdapUserSearch implements LdapUserSearch {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
-	
-	private ContextSource contextSource;
+
+    private ContextSource contextSource;
 
     /**
      * The LDAP SearchControls object used for the search. Shared between searches so shouldn't be modified once the bean has been configured.
      */
     private SearchControls searchControls = new SearchControls();
 
-    /** Context name to search in, relative to the base of the configured ContextSource. */
+    /**
+     * Context name to search in, relative to the base of the configured ContextSource.
+     */
     private String searchBase = "";
 
     /**
@@ -59,6 +81,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
 
     /**
      * Return the LdapUserDetails containing the user's information
+     *
      * @param username the username to search for.
      * @return An LdapUserDetails object containing the details of the located user's directory entry
      * @throws UsernameNotFoundException if no matching entry is found.
@@ -69,7 +92,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
         template.setSearchControls(searchControls);
 
         try {
-            return template.searchForSingleEntry(searchBase, searchFilter, new String[] { username });
+            return template.searchForSingleEntry(searchBase, searchFilter, new String[]{username});
 
         } catch (IncorrectResultSizeDataAccessException notFound) {
             if (notFound.getActualSize() == 0) {
@@ -82,6 +105,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
 
     /**
      * Return the LdapUserDetails containing the user's information
+     *
      * @param username the username to search for.
      * @return An LdapUserDetails object containing the details of the located user's directory entry
      * @throws UsernameNotFoundException if no matching entry is found.
@@ -93,7 +117,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
 
         try {
             String searchBase = "o=" + site;
-            return template.searchForSingleEntry(searchBase, searchFilter, new String[] { username });
+            return template.searchForSingleEntry(searchBase, searchFilter, new String[]{username});
 
         } catch (IncorrectResultSizeDataAccessException notFound) {
             if (notFound.getActualSize() == 0) {
@@ -106,6 +130,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
 
     /**
      * Sets the corresponding property on the {@link SearchControls} instance used in the search.
+     *
      * @param deref the derefLinkFlag value as defined in SearchControls..
      */
     public void setDerefLinkFlag(boolean deref) {
@@ -114,6 +139,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
 
     /**
      * If true then searches the entire subtree as identified by context, if false (the default) then only searches the level identified by the context.
+     *
      * @param searchSubtree true the underlying search controls should be set to SearchControls.SUBTREE_SCOPE rather than SearchControls.ONELEVEL_SCOPE.
      */
     public void setSearchSubtree(boolean searchSubtree) {
@@ -122,6 +148,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
 
     /**
      * The time to wait before the search fails; the default is zero, meaning forever.
+     *
      * @param searchTimeLimit the time limit for the search (in milliseconds).
      */
     public void setSearchTimeLimit(int searchTimeLimit) {
@@ -130,8 +157,9 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
 
     /**
      * Specifies the attributes that will be returned as part of the search.
-     *<p>
+     * <p/>
      * null indicates that all attributes will be returned. An empty array indicates no attributes are returned.
+     *
      * @param attrs An array of attribute names identifying the attributes that will be returned. Can be null.
      */
     public void setReturningAttributes(String[] attrs) {

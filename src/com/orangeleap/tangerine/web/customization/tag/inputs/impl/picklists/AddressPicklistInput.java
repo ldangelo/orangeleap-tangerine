@@ -1,23 +1,39 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
-
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.springframework.stereotype.Component;
 
 import com.orangeleap.tangerine.domain.NewAddressAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.FieldVO;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
+import java.util.List;
 
 @Component("addressPicklistInput")
 public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
-    
+
     private static final String NEW_ADDRESS_REF = "li:has(:input[name^=\"address\"])";
 
     @SuppressWarnings("unchecked")
@@ -29,18 +45,18 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
         StringBuilder sb = new StringBuilder();
         createBeginSelect(request, fieldVO, sb, NEW_ADDRESS_REF);
         createNoneOption(request, fieldVO, sb);
-        createNewOption(request, fieldVO, sb, ((NewAddressAware)fieldVO.getModel()).getAddress(), NEW_ADDRESS_REF);
-        
-        List<Address> addresses = (List<Address>)request.getAttribute(StringConstants.ADDRESSES);
+        createNewOption(request, fieldVO, sb, ((NewAddressAware) fieldVO.getModel()).getAddress(), NEW_ADDRESS_REF);
+
+        List<Address> addresses = (List<Address>) request.getAttribute(StringConstants.ADDRESSES);
         createBeginOptGroup(request, fieldVO, sb, addresses);
         createOptions(request, fieldVO, sb, addresses);
         createEndOptGroup(request, fieldVO, sb, addresses);
-        
+
         createEndSelect(request, fieldVO, sb);
         createSelectedRef(request, fieldVO, sb);
         return sb.toString();
     }
-    
+
     protected void createOptions(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, List<Address> addresses) {
         if (addresses != null) {
             for (Address address : addresses) {
@@ -48,7 +64,7 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
                 checkIfExistingOptionSelected(fieldVO.getModel(), address, sb);
                 sb.append(">");
                 sb.append(address.getShortDisplay());
-                
+
                 if (address.isInactive()) {
                     sb.append("&nbsp;").append(getMessage("inactive"));
                 }
@@ -56,20 +72,20 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
             }
         }
     }
-    
+
     protected void checkIfExistingOptionSelected(Object model, Address addressToCheck, StringBuilder sb) {
         NewAddressAware aware = (NewAddressAware) model;
-        if (FormBeanType.EXISTING.equals(aware.getAddressType()) && aware.getAddress() != null && 
-                aware.getAddress().isUserCreated() == false && aware.getSelectedAddress() != null && 
+        if (FormBeanType.EXISTING.equals(aware.getAddressType()) && aware.getAddress() != null &&
+                aware.getAddress().isUserCreated() == false && aware.getSelectedAddress() != null &&
                 addressToCheck.getId().equals(aware.getSelectedAddress().getId())) {
             sb.append(" selected=\"selected\"");
         }
     }
-    
+
     protected void createSelectedRef(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
         String selectedRef = null;
         if (fieldVO.getModel() instanceof NewAddressAware) {
-            NewAddressAware aware = (NewAddressAware)fieldVO.getModel();
+            NewAddressAware aware = (NewAddressAware) fieldVO.getModel();
             if (aware.getAddress().isUserCreated() || (fieldVO.isRequired() && selectedRef == null)) {
                 selectedRef = NEW_ADDRESS_REF;
             }

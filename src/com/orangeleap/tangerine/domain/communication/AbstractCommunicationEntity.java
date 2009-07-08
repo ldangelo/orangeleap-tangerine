@@ -1,20 +1,37 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain.communication;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-import javax.xml.bind.annotation.XmlType;
-
-import org.joda.time.DateMidnight;
-import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Creatable;
 import com.orangeleap.tangerine.domain.Inactivatible;
 import com.orangeleap.tangerine.type.ActivationType;
 import com.orangeleap.tangerine.util.StringConstants;
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
+import org.joda.time.DateMidnight;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
 public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible, Creatable {
 
@@ -124,7 +141,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     public void setUserCreated(boolean userCreated) {
         this.userCreated = userCreated;
     }
-    
+
     public boolean isPrimary() {
         return isPrimary;
     }
@@ -132,15 +149,15 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     public void setPrimary(boolean isPrimary) {
         this.isPrimary = isPrimary;
     }
-    
-	public void setUndeliverable(boolean undeliverable) {
-		this.undeliverable = undeliverable;
-	}
 
-	public boolean isUndeliverable() {
-		return undeliverable;
-	}
-    
+    public void setUndeliverable(boolean undeliverable) {
+        this.undeliverable = undeliverable;
+    }
+
+    public boolean isUndeliverable() {
+        return undeliverable;
+    }
+
     @Override
     public void setDefaults() {
         super.setDefaults();
@@ -156,26 +173,24 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     @Override
     public void prePersist() {
         super.prePersist();
-        
+
         if (activationStatus == null) {
-        	activationStatus = ActivationType.permanent;
+            activationStatus = ActivationType.permanent;
         }
         if (ActivationType.permanent.equals(getActivationStatus())) {
             setSeasonalEndDate(null);
             setSeasonalStartDate(null);
             setTemporaryEndDate(null);
             setTemporaryStartDate(null);
-            
+
             if (effectiveDate == null) {
                 setEffectiveDate(new DateMidnight().toDate());
             }
-        } 
-        else if (ActivationType.seasonal.equals(getActivationStatus())) {
+        } else if (ActivationType.seasonal.equals(getActivationStatus())) {
             setEffectiveDate(null);
             setTemporaryEndDate(null);
             setTemporaryStartDate(null);
-        } 
-        else if (ActivationType.temporary.equals(getActivationStatus())) {
+        } else if (ActivationType.temporary.equals(getActivationStatus())) {
             setEffectiveDate(null);
             setSeasonalEndDate(null);
             setSeasonalStartDate(null);
@@ -185,17 +200,17 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("constituentId", constituentId).append("createDate", getCreateDate()).
-            append("updateDate", getUpdateDate()).append("activationStatus", activationStatus).append("receiveCorrespondence", receiveCorrespondence).append("temporaryStartDate", temporaryStartDate).
-            append("temporaryEndDate", temporaryEndDate).append("seasonalStartDate", seasonalStartDate).append("seasonalEndDate", seasonalEndDate).append("inactive", inactive).
-            append("isPrimary", isPrimary).append("comments", comments).append("effectiveDate", effectiveDate).append("userCreated", userCreated).
-            toString();
+                append("updateDate", getUpdateDate()).append("activationStatus", activationStatus).append("receiveCorrespondence", receiveCorrespondence).append("temporaryStartDate", temporaryStartDate).
+                append("temporaryEndDate", temporaryEndDate).append("seasonalStartDate", seasonalStartDate).append("seasonalEndDate", seasonalEndDate).append("inactive", inactive).
+                append("isPrimary", isPrimary).append("comments", comments).append("effectiveDate", effectiveDate).append("userCreated", userCreated).
+                toString();
     }
-    
+
     public abstract boolean isValid();
-    
+
     public String getCommunicationType() {
-    	// TODO - this is now multi-valued
-    	return StringConstants.UNKNOWN_LOWER_CASE;
+        // TODO - this is now multi-valued
+        return StringConstants.UNKNOWN_LOWER_CASE;
     }
 
 }

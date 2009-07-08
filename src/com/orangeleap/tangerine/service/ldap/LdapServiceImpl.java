@@ -1,5 +1,37 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.ldap;
 
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.springframework.ldap.core.DirContextOperations;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.Resource;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -9,37 +41,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.annotation.Resource;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.ModificationItem;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-
 @Service("ldapService")
 public class LdapServiceImpl implements LdapService {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    private static SimpleDateFormat getFormat() { return new SimpleDateFormat("yyyyMMddHHmmss"); }
+    private static SimpleDateFormat getFormat() {
+        return new SimpleDateFormat("yyyyMMddHHmmss");
+    }
 
     private static final String LDAP_USER_PASSWORD = "userPassword";
 
     private static final String LDAP_PASSWORD_CHANGE_DATE = "passwordchangedate";
 
     private static final String LDAP_LAST_LOGIN = "lastlogin";
-    
-    @Resource(name="tangerineUserHelper")
+
+    @Resource(name = "tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
 
     public LdapServiceImpl() {
@@ -119,7 +139,7 @@ public class LdapServiceImpl implements LdapService {
         Object lastLogin = dco.getObjectAttribute(LDAP_LAST_LOGIN);
         Date lastDate = null;
         try {
-            if (lastLogin != null && StringUtils.hasText(((String)lastLogin))) {
+            if (lastLogin != null && StringUtils.hasText(((String) lastLogin))) {
                 Date lastLoginDate = getFormat().parse((String) lastLogin);
                 Calendar last = new GregorianCalendar();
                 last.setTimeInMillis(lastLoginDate.getTime());
@@ -155,9 +175,9 @@ public class LdapServiceImpl implements LdapService {
         if (in == null) {
             in = Calendar.getInstance();
         }
-        logger.debug("before convertToUtc() = "+in.getTime());
+        logger.debug("before convertToUtc() = " + in.getTime());
         in.add(Calendar.MILLISECOND, -in.get(Calendar.DST_OFFSET) - in.get(Calendar.ZONE_OFFSET));
-        logger.debug("after convertToUtc() = "+in.getTime());
+        logger.debug("after convertToUtc() = " + in.getTime());
         return in;
     }
 
@@ -165,9 +185,9 @@ public class LdapServiceImpl implements LdapService {
         if (in == null) {
             in = Calendar.getInstance();
         }
-        logger.debug("before convertFromUtc() = "+in.getTime());
+        logger.debug("before convertFromUtc() = " + in.getTime());
         in.add(Calendar.MILLISECOND, in.get(Calendar.DST_OFFSET) + in.get(Calendar.ZONE_OFFSET));
-        logger.debug("after convertFromUtc() = "+in.getTime());
+        logger.debug("after convertFromUtc() = " + in.getTime());
         return in;
     }
 }

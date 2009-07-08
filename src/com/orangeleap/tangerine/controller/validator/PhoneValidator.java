@@ -1,19 +1,38 @@
-package com.orangeleap.tangerine.controller.validator;
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
+package com.orangeleap.tangerine.controller.validator;
 
 import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
 public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @SuppressWarnings("unchecked")
@@ -33,12 +52,10 @@ public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
         String inPath = errors.getNestedPath();
         if (target instanceof Phone) {
             phone = (Phone) target;
-        } 
-        else if (target instanceof NewPhoneAware) {
+        } else if (target instanceof NewPhoneAware) {
             phone = ((NewPhoneAware) target).getPhone();
             errors.setNestedPath("phone");
-        }
-        else if (target instanceof AbstractCommunicatorEntity) {
+        } else if (target instanceof AbstractCommunicatorEntity) {
             phone = ((AbstractCommunicatorEntity) target).getPrimaryPhone();
             errors.setNestedPath("primaryPhone");
         }

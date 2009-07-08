@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.web.common;
 
 import com.orangeleap.tangerine.dao.ibatis.AbstractIBatisDao;
@@ -28,8 +46,8 @@ public class SortInfo {
 
     public void setDir(String dir) {
 
-        if(dir != null) {
-            if(dir.trim().equalsIgnoreCase("DESC")) {
+        if (dir != null) {
+            if (dir.trim().equalsIgnoreCase("DESC")) {
                 sortDir = "DESC";
             }
         }
@@ -48,7 +66,7 @@ public class SortInfo {
     }
 
     public void setLimit(int limit) {
-        if(limit >= MIN_ROWS) {
+        if (limit >= MIN_ROWS) {
             this.limit = limit;
         }
     }
@@ -58,7 +76,7 @@ public class SortInfo {
     }
 
     public void setStart(int start) {
-        if(start >= 0) {
+        if (start >= 0) {
             this.start = start;
         }
     }
@@ -68,30 +86,31 @@ public class SortInfo {
      * from the browser, call this method with an array of the valid
      * column values accepted in this context. Return true if the
      * value for sort matches one of the columns, false if otherwise
+     *
      * @param columnNames array of valid column names for the context
      * @return true if the sort parameter is a valid column name
      */
     public boolean validateSortField(Set<String> columnNames) {
 
-        for(String name : columnNames) {
-            if(name.equalsIgnoreCase(sort)) {
+        for (String name : columnNames) {
+            if (name.equalsIgnoreCase(sort)) {
                 return true;
             }
         }
 
         return false;
     }
-    
+
     /*
-     * Convenience method to add sort info to query params
-     */
+    * Convenience method to add sort info to query params
+    */
     public void addParams(Map<String, Object> params) {
         params.put("sortColumn", AbstractIBatisDao.oneWord(getSort()));
         params.put("sortDir", AbstractIBatisDao.oneWord(getDir()));
         params.put("offset", getStart());
         params.put("limit", getLimit());
     }
-    
+
 
     @Override
     public String toString() {

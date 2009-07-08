@@ -1,15 +1,32 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.dao.RecentlyViewedDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.dao.RecentlyViewedDao;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @version 1.0
@@ -103,7 +120,7 @@ public class IBatisRecentlyViewedDao extends AbstractIBatisDao implements Recent
     @SuppressWarnings("unchecked")
     private List<Map> getRecentlyViewedNames(List<Long> constituentIds, String userName) {
 
-        if(constituentIds.size() == 0) {
+        if (constituentIds.size() == 0) {
             return new ArrayList<Map>();
         }
 
@@ -117,10 +134,10 @@ public class IBatisRecentlyViewedDao extends AbstractIBatisDao implements Recent
         // before returning it.
         List<Map> ret = new ArrayList<Map>();
 
-        for(Long id : constituentIds) {
+        for (Long id : constituentIds) {
 
-            for(Map map : people)  {
-                if( id.equals(map.get("id"))) {
+            for (Map map : people) {
+                if (id.equals(map.get("id"))) {
                     ret.add(map);
                     break;
                 }

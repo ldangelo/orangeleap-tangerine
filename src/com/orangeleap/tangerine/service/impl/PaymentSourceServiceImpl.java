@@ -1,33 +1,46 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.Log;
+import com.orangeleap.tangerine.dao.PaymentSourceDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.PaymentSourceAware;
+import com.orangeleap.tangerine.service.InactivateService;
+import com.orangeleap.tangerine.service.PaymentSourceService;
+import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.orangeleap.tangerine.dao.PaymentSourceDao;
-import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.service.InactivateService;
-import com.orangeleap.tangerine.service.PaymentSourceService;
-import com.orangeleap.tangerine.type.FormBeanType;
+import javax.annotation.Resource;
+import java.util.*;
 
 @Service("paymentSourceService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class PaymentSourceServiceImpl extends AbstractPaymentService implements PaymentSourceService, InactivateService {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "paymentSourceDAO")
@@ -39,15 +52,14 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         if (logger.isTraceEnabled()) {
             logger.trace("maintainPaymentSource: paymentSource = " + paymentSource);
         }
-        
+
         maintainEntityChildren(paymentSource, paymentSource.getConstituent());
-        
+
         paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
 
         if (paymentSource.isInactive()) {
             auditService.auditObjectInactive(paymentSource, paymentSource.getConstituent());
-        }
-        else {
+        } else {
             auditService.auditObject(paymentSource, paymentSource.getConstituent());
         }
         return paymentSource;
@@ -82,7 +94,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
             logger.trace("readAllPaymentSourcesACHCreditCard: constituentId = " + constituentId);
         }
         List<PaymentSource> sources = paymentSourceDao.readAllPaymentSources(constituentId);
-        List<PaymentSource> filteredSources = new ArrayList<PaymentSource>(); 
+        List<PaymentSource> filteredSources = new ArrayList<PaymentSource>();
         for (PaymentSource src : sources) {
             if (PaymentSource.ACH.equals(src.getPaymentType()) || PaymentSource.CREDIT_CARD.equals(src.getPaymentType())) {
                 filteredSources.add(src);
@@ -90,7 +102,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         return filteredSources;
     }
-    
+
     @Override
     public Map<String, List<PaymentSource>> groupPaymentSources(Long constituentId, PaymentSource selectedPaymentSource) {
         if (logger.isTraceEnabled()) {
@@ -98,7 +110,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         Map<String, List<PaymentSource>> groupedSources = new HashMap<String, List<PaymentSource>>();
         List<PaymentSource> sources = filterValidPaymentSources(constituentId);
-        if (sources != null) { 
+        if (sources != null) {
             for (PaymentSource src : sources) {
                 if (src.isInactive() == false || (selectedPaymentSource != null && src.getId().equals(selectedPaymentSource.getId()))) {
                     List<PaymentSource> list = groupedSources.get(src.getPaymentType());
@@ -137,8 +149,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         PaymentSource paymentSource = null;
         if (paymentSourceId == null) {
             paymentSource = new PaymentSource(constituent);
-        }
-        else {
+        } else {
             paymentSource = this.readPaymentSource(Long.valueOf(paymentSourceId));
         }
         return paymentSource;
@@ -162,7 +173,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         return paymentSourceDao.readPaymentSourceByProfile(constituentId, profile);
     }
-    
+
     @Override
     public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSource paymentSource) {
         if (logger.isTraceEnabled()) {
@@ -174,25 +185,22 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
             PaymentSource existingSource = isSameCreditCard(paymentSource, sources);
             if (existingSource != null) {
                 returnMap.put("existingSource", existingSource);
-            }
-            else {
+            } else {
                 returnMap.put("names", checkAccountNamesPaymentSources(paymentSource, sources));
                 returnMap.put("dates", checkCreditCardDatesPaymentSource(paymentSource, sources));
             }
-        }
-        else if (PaymentSource.ACH.equals(paymentSource.getPaymentType())) {
+        } else if (PaymentSource.ACH.equals(paymentSource.getPaymentType())) {
             List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts(paymentSource.getAchAccountNumberEncrypted(), paymentSource.getAchRoutingNumber());
             PaymentSource existingSource = isSameACH(paymentSource, sources);
             if (existingSource != null) {
                 returnMap.put("existingSource", existingSource);
-            }
-            else {
+            } else {
                 returnMap.put("names", checkAccountNamesPaymentSources(paymentSource, sources));
             }
         }
         return returnMap;
     }
-    
+
     @Override
     public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSourceAware paymentSourceAware) {
         if (logger.isTraceEnabled()) {
@@ -205,8 +213,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
                 conflictingPaymentSources.put("names", checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
                 conflictingPaymentSources.put("dates", checkCreditCardDatesPaymentSource(paymentSourceAware.getPaymentSource(), sources));
             }
-        }
-        else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType())) {
+        } else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType())) {
             List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts(paymentSourceAware.getPaymentSource().getAchAccountNumberEncrypted(), paymentSourceAware.getPaymentSource().getAchRoutingNumber());
             if (isSame(paymentSourceAware, sources) == false) {
                 conflictingPaymentSources.put("names", checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
@@ -214,7 +221,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         return conflictingPaymentSources;
     }
-    
+
     private boolean isSame(PaymentSourceAware aware, List<PaymentSource> sources) {
         boolean foundSame = false;
         if (sources != null) {
@@ -229,14 +236,14 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         return foundSame;
     }
-    
+
     private PaymentSource isSameCreditCard(PaymentSource newSource, List<PaymentSource> sources) {
         if (sources != null) {
             for (PaymentSource src : sources) {
                 if (src.getCreditCardNumberEncrypted().equals(newSource.getCreditCardNumberEncrypted()) &&
                         src.getCreditCardType().equals(newSource.getCreditCardType()) &&
-                        src.getCreditCardHolderName().equals(newSource.getCreditCardHolderName()) && 
-                        src.getCreditCardExpirationMonth().equals(newSource.getCreditCardExpirationMonth()) && 
+                        src.getCreditCardHolderName().equals(newSource.getCreditCardHolderName()) &&
+                        src.getCreditCardExpirationMonth().equals(newSource.getCreditCardExpirationMonth()) &&
                         src.getCreditCardExpirationYear().equals(newSource.getCreditCardExpirationYear())) {
                     return src;
                 }
@@ -244,12 +251,12 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         return null;
     }
-    
+
     private PaymentSource isSameACH(PaymentSource newSource, List<PaymentSource> sources) {
         if (sources != null) {
             for (PaymentSource src : sources) {
                 if (src.getAchAccountNumberEncrypted().equals(newSource.getAchAccountNumberEncrypted()) &&
-                        src.getAchHolderName().equals(newSource.getAchHolderName()) && 
+                        src.getAchHolderName().equals(newSource.getAchHolderName()) &&
                         src.getAchRoutingNumber().equals(newSource.getAchRoutingNumber())) {
                     return src;
                 }
@@ -257,7 +264,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         return null;
     }
-        
+
     private Set<String> checkAccountNamesPaymentSources(PaymentSource paymentSource, List<PaymentSource> sources) {
         if (logger.isTraceEnabled()) {
             logger.trace("checkAccountNamesPaymentSources: paymentSource type = " + paymentSource.getPaymentType());
@@ -266,12 +273,11 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         boolean hasName = false;
         if (sources != null) {
             for (PaymentSource thisSource : sources) {
-                if ((PaymentSource.ACH.equals(paymentSource.getPaymentType()) && thisSource.getAchHolderName().equals(paymentSource.getAchHolderName())) || 
-                     (PaymentSource.CREDIT_CARD.equals(paymentSource.getPaymentType())) && thisSource.getCreditCardHolderName().equals(paymentSource.getCreditCardHolderName())) {
+                if ((PaymentSource.ACH.equals(paymentSource.getPaymentType()) && thisSource.getAchHolderName().equals(paymentSource.getAchHolderName())) ||
+                        (PaymentSource.CREDIT_CARD.equals(paymentSource.getPaymentType())) && thisSource.getCreditCardHolderName().equals(paymentSource.getCreditCardHolderName())) {
                     hasName = true;
                     break;
-                }
-                else {
+                } else {
                     names.add(PaymentSource.ACH.equals(paymentSource.getPaymentType()) ? thisSource.getAchHolderName() : thisSource.getCreditCardHolderName());
                 }
             }
@@ -281,7 +287,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         return names;
     }
-    
+
     private List<PaymentSource> checkCreditCardDatesPaymentSource(PaymentSource paymentSource, List<PaymentSource> sources) {
         if (logger.isTraceEnabled()) {
             logger.trace("checkCreditCardDatesPaymentSource:");
@@ -290,9 +296,9 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         if (sources != null) {
             for (PaymentSource thisSource : sources) {
                 // Credit Card numbers are the same
-                if ((thisSource.getCreditCardExpirationMonth().equals(paymentSource.getCreditCardExpirationMonth()) == false || 
-                    thisSource.getCreditCardExpirationYear().equals(paymentSource.getCreditCardExpirationYear()) == false) && 
-                    thisSource.getCreditCardHolderName().equals(paymentSource.getCreditCardHolderName())) {
+                if ((thisSource.getCreditCardExpirationMonth().equals(paymentSource.getCreditCardExpirationMonth()) == false ||
+                        thisSource.getCreditCardExpirationYear().equals(paymentSource.getCreditCardExpirationYear()) == false) &&
+                        thisSource.getCreditCardHolderName().equals(paymentSource.getCreditCardHolderName())) {
                     dates.add(thisSource);
                 }
             }

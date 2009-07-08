@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.impl;
 
 import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
@@ -42,22 +60,24 @@ import java.util.*;
 
 
 @Service("constituentService")
-public class ConstituentServiceImpl extends AbstractTangerineService implements ConstituentService,ApplicationContextAware {
+public class ConstituentServiceImpl extends AbstractTangerineService implements ConstituentService, ApplicationContextAware {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
-    
+
     @Resource(name = "errorLogService")
     private ErrorLogService errorLogService;
 
-    @Resource(name="constituentEntityValidator")
+    @Resource(name = "constituentEntityValidator")
     protected EntityValidator entityValidator;
-   
-    @Resource(name="constituentValidator")
+
+    @Resource(name = "constituentValidator")
     protected ConstituentValidator constituentValidator;
 
-    
-    @Resource(name="tangerineUserHelper")
+
+    @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
 
     @Resource(name = "auditService")
@@ -83,11 +103,11 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
-    
+
     @Resource(name = "communicationHistoryService")
     private CommunicationHistoryService communicationHistoryService;
 
-	private ApplicationContext context;
+    private ApplicationContext context;
 
 
     @Override
@@ -97,105 +117,106 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             logger.trace("maintainConstituent: constituent = " + constituent);
         }
         if (constituent.getSite() == null || tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName()) == false) {
-            throw new ConstituentValidationException(); 
-        }    	
-        
-        if (constituent.getFieldLabelMap() != null && !constituent.isSuppressValidation()) {
-        	
-        	setOptInPrefs(constituent);
-        	setPicklistDefaultsForRequiredFields(constituent, PageType.constituent, tangerineUserHelper.lookupUserRoles());
-        	
-	        BindingResult br = new BeanPropertyBindingResult(constituent, "constituent");
-	        BindException errors = new BindException(br);
-	      
-	        constituentValidator.validate(constituent, errors);
-	        if (errors.getAllErrors().size() > 0) {
-				throw errors;
-			}
-	        
-	        entityValidator.validate(constituent, errors);
-	        if (errors.getAllErrors().size() > 0) {
-				throw errors;
-			}
+            throw new ConstituentValidationException();
         }
-        
-        
+
+        if (constituent.getFieldLabelMap() != null && !constituent.isSuppressValidation()) {
+
+            setOptInPrefs(constituent);
+            setPicklistDefaultsForRequiredFields(constituent, PageType.constituent, tangerineUserHelper.lookupUserRoles());
+
+            BindingResult br = new BeanPropertyBindingResult(constituent, "constituent");
+            BindException errors = new BindException(br);
+
+            constituentValidator.validate(constituent, errors);
+            if (errors.getAllErrors().size() > 0) {
+                throw errors;
+            }
+
+            entityValidator.validate(constituent, errors);
+            if (errors.getAllErrors().size() > 0) {
+                throw errors;
+            }
+        }
+
+
         constituent = constituentDao.maintainConstituent(constituent);
         maintainCorrespondence(constituent);
-        
+
         Address address = constituent.getPrimaryAddress();
         Phone phone = constituent.getPrimaryPhone();
         Email email = constituent.getPrimaryEmail();
-        
+
         if (address != null && address.isAddressEntered()) {
-        	address.setConstituentId(constituent.getId());
-        	addressService.save(address);
+            address.setConstituentId(constituent.getId());
+            addressService.save(address);
         }
         if (phone != null && phone.isPhoneEntered()) {
-        	phone.setConstituentId(constituent.getId());
-        	phoneService.save(phone);
+            phone.setConstituentId(constituent.getId());
+            phoneService.save(phone);
         }
         if (email != null && email.isEmailEntered()) {
-        	email.setConstituentId(constituent.getId());
-        	emailService.save(email);
+            email.setConstituentId(constituent.getId());
+            emailService.save(email);
         }
 
         relationshipService.maintainRelationships(constituent);
         auditService.auditObject(constituent, constituent);
-        
+
         routeConstituent(constituent);
-        
+
         return constituent;
     }
-    
+
     private void setOptInPrefs(Constituent constituent) {
-    	String communicationPreferences = constituent.getCustomFieldValue("communicationPreferences");
-    	String communicationOptInPreferences = constituent.getCustomFieldValue("communicationOptInPreferences");
-    	if ("Opt In".equals(communicationPreferences) && StringUtils.trimToNull(communicationOptInPreferences) == null) {
-    		constituent.setCustomFieldValue("communicationOptInPreferences", "Unknown");
-    	}
-    }
-    
-    
-    private final static String ROUTE_METHOD = "ConstituentServiceImpl.routeConstituent";
-    void routeConstituent(Constituent constituent) throws ConstituentValidationException {
-        
-    	RulesStack.push(ROUTE_METHOD);
-        try {
-        	
-	        try {
-	            NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
-	            newConstituent.routeConstituent(constituent);
-	        } 
-	        catch (DuplicateConstituentException dce) {
-	        	throw dce;
-	        }
-	        catch (ConstituentValidationException cve) {
-	        	throw cve;
-	        }
-	        catch (Exception ex) {
-	            logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
-                // Cannot start new transaction to record error when current transaction has timed out waiting on external connection issue.
-                String msg = ""+ex.getMessage();
-	            if ( !msg.contains("timeout") && !msg.contains("Connection refused") ) {
-                    writeRulesFailureLog(ex.getMessage() + "\r\n" + constituent);
-                }
-	        } 
-        } finally {
-        	RulesStack.pop(ROUTE_METHOD);
+        String communicationPreferences = constituent.getCustomFieldValue("communicationPreferences");
+        String communicationOptInPreferences = constituent.getCustomFieldValue("communicationOptInPreferences");
+        if ("Opt In".equals(communicationPreferences) && StringUtils.trimToNull(communicationOptInPreferences) == null) {
+            constituent.setCustomFieldValue("communicationOptInPreferences", "Unknown");
         }
     }
-    
-    private synchronized void writeRulesFailureLog(String message) {
-    	try {
-            
-    		errorLogService.addErrorMessage(message, "gift.rules");
 
-    	} catch (Exception e) {
-    		logger.error("Unable to write to rules error log file: "+message);
-    	}
+
+    private final static String ROUTE_METHOD = "ConstituentServiceImpl.routeConstituent";
+
+    void routeConstituent(Constituent constituent) throws ConstituentValidationException {
+
+        RulesStack.push(ROUTE_METHOD);
+        try {
+
+            try {
+                NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
+                newConstituent.routeConstituent(constituent);
+            }
+            catch (DuplicateConstituentException dce) {
+                throw dce;
+            }
+            catch (ConstituentValidationException cve) {
+                throw cve;
+            }
+            catch (Exception ex) {
+                logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
+                // Cannot start new transaction to record error when current transaction has timed out waiting on external connection issue.
+                String msg = "" + ex.getMessage();
+                if (!msg.contains("timeout") && !msg.contains("Connection refused")) {
+                    writeRulesFailureLog(ex.getMessage() + "\r\n" + constituent);
+                }
+            }
+        } finally {
+            RulesStack.pop(ROUTE_METHOD);
+        }
     }
-    
+
+    private synchronized void writeRulesFailureLog(String message) {
+        try {
+
+            errorLogService.addErrorMessage(message, "gift.rules");
+
+        } catch (Exception e) {
+            logger.error("Unable to write to rules error log file: " + message);
+        }
+    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     public void maintainCorrespondence(Constituent constituent) {
         if (logger.isTraceEnabled()) {
@@ -207,61 +228,56 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             phoneService.maintainResetReceiveCorrespondence(constituent.getId());
             phoneService.maintainResetReceiveCorrespondenceText(constituent.getId());
             emailService.maintainResetReceiveCorrespondence(constituent.getId());
-            
+
             addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
             phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
             phoneService.resetReceiveCorrespondenceText(constituent.getPrimaryPhone());
             emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
-        }
-        else if (StringConstants.OPT_IN.equals(communicationPref)) {
+        } else if (StringConstants.OPT_IN.equals(communicationPref)) {
             // Mail
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.MAIL_CAMEL_CASE) ||
-                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
-            	if (constituent.getPrimaryAddress() != null) {
-            		constituent.getPrimaryAddress().setReceiveCorrespondence(true);
-            	}
-            }
-            else {
+                if (constituent.getPrimaryAddress() != null) {
+                    constituent.getPrimaryAddress().setReceiveCorrespondence(true);
+                }
+            } else {
                 addressService.maintainResetReceiveCorrespondence(constituent.getId());
                 addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
             }
 
             // Phone (Call)
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.PHONE_CAMEL_CASE) ||
-                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
-            	if (constituent.getPrimaryPhone() != null) {
-            		constituent.getPrimaryPhone().setReceiveCorrespondence(true);
-            	}
-            }
-            else {
+                if (constituent.getPrimaryPhone() != null) {
+                    constituent.getPrimaryPhone().setReceiveCorrespondence(true);
+                }
+            } else {
                 phoneService.maintainResetReceiveCorrespondence(constituent.getId());
                 phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
             }
 
             // Phone Text (SMS)
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.TEXT_CAMEL_CASE) ||
-                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
-            	if (constituent.getPrimaryPhone() != null) {
-            		constituent.getPrimaryPhone().setReceiveCorrespondenceText(true);
-            	}
-            }
-            else {
+                if (constituent.getPrimaryPhone() != null) {
+                    constituent.getPrimaryPhone().setReceiveCorrespondenceText(true);
+                }
+            } else {
                 phoneService.maintainResetReceiveCorrespondenceText(constituent.getId());
                 phoneService.resetReceiveCorrespondenceText(constituent.getPrimaryPhone());
             }
-            
+
             // Email
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.EMAIL_CAMEL_CASE) ||
-                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
-            	if (constituent.getPrimaryEmail() != null) {
-            		constituent.getPrimaryEmail().setReceiveCorrespondence(true);
-            	}
-            }
-            else {
+                if (constituent.getPrimaryEmail() != null) {
+                    constituent.getPrimaryEmail().setReceiveCorrespondence(true);
+                }
+            } else {
                 emailService.maintainResetReceiveCorrespondence(constituent.getId());
                 emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
             }
@@ -289,7 +305,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         addCommunicationEntities(constituent);
         return constituent;
     }
-    
+
     private void addCommunicationEntities(Constituent constituent) {
         if (constituent != null) {
             constituent.setAddresses(addressService.readByConstituentId(constituent.getId()));
@@ -306,7 +322,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
         return constituentDao.readConstituentByLoginId(loginId);
     }
-    
+
 
     @Override
     public List<Constituent> searchConstituents(Map<String, Object> params) {
@@ -339,8 +355,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
         return constituentDao.readAllConstituentsByAccountRange(fromId, toId);
     }
-    
-	
+
 
     @Override
     public Constituent createDefaultConstituent() {
@@ -352,7 +367,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         constituent.setSite(siteDao.readSite(tangerineUserHelper.lookupUserSiteName()));
         BeanWrapper constituentBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(constituent);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[] { EntityType.constituent }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[]{EntityType.constituent}));
         for (EntityDefault ed : entityDefaults) {
             constituentBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
@@ -382,14 +397,14 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         constituentDao.maintainConstituent(constituent);
     }
 
-	@Override
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
-	public List<Constituent> readAllConstituentsBySite() {
+    public List<Constituent> readAllConstituentsBySite() {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite:");
         }
         return constituentDao.readAllConstituentsBySite();
-	}
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -407,69 +422,69 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
         return constituentDao.getConstituentCountBySite();
     }
-    
- /*   @Override
+
+    /*   @Override
     @Transactional(propagation = Propagation.REQUIRED)
-	public boolean hasReceivedCommunication(Long constituentId, String commType) {
-    	SortInfo sortInfo = new SortInfo();
-    	PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId, sortInfo);
-    	List<CommunicationHistory> list = results.getRows();
-    	
-    	for (CommunicationHistory ch: list) {
-			if (ch.getCustomFieldValue("template").compareTo(commType) == 0) return true;
-    	}
-    	
-    	return false;
+    public boolean hasReceivedCommunication(Long constituentId, String commType) {
+        SortInfo sortInfo = new SortInfo();
+        PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId, sortInfo);
+        List<CommunicationHistory> list = results.getRows();
+
+        for (CommunicationHistory ch: list) {
+            if (ch.getCustomFieldValue("template").compareTo(commType) == 0) return true;
+        }
+
+        return false;
     }*/
-    
+
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
-	public boolean hasReceivedCommunication(Long constituentId, String commType,int number,String timeUnit) {
-    	SortInfo sortInfo = new SortInfo();
-    	Calendar cal = Calendar.getInstance();
-    	StringBuilder args = new StringBuilder(timeUnit.toUpperCase());
-    	if (args.toString().equals("DAYS") || args.toString().equals("WEEKS") || args.toString().equals("MONTHS") || args.toString().equals("YEARS")) {
-    		args.deleteCharAt(args.length()-1);
-    	}
-    	if (args.toString().equals("DAY")) {
-    		cal.add(Calendar.DAY_OF_YEAR, -(number));
-    	}
-    	if (args.toString().equals("WEEK")) {
-    		cal.add(Calendar.WEEK_OF_YEAR, -(number));
-    	}
-    	if (args.toString().equals("MONTH")) {
-    		cal.add(Calendar.MONTH, -(number));
-    	}
-    	if (args.toString().equals("YEAR")) {
-    		cal.add(Calendar.YEAR, -(number));
-    	}
-    	
-    	sortInfo.setSort("p.CONSTITUENT_ID");
-    	
-    	PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId,sortInfo);
-    	List<CommunicationHistory> list = results.getRows();
-    	
-    	
-    	while (list != null && list.size() > 0) {
-    		for (CommunicationHistory ch: list) {
-    			if (ch.getCustomFieldValue("template").compareTo(commType) == 0 &&
-					ch.getCreateDate().compareTo(cal.getTime()) > 0) {
+    public boolean hasReceivedCommunication(Long constituentId, String commType, int number, String timeUnit) {
+        SortInfo sortInfo = new SortInfo();
+        Calendar cal = Calendar.getInstance();
+        StringBuilder args = new StringBuilder(timeUnit.toUpperCase());
+        if (args.toString().equals("DAYS") || args.toString().equals("WEEKS") || args.toString().equals("MONTHS") || args.toString().equals("YEARS")) {
+            args.deleteCharAt(args.length() - 1);
+        }
+        if (args.toString().equals("DAY")) {
+            cal.add(Calendar.DAY_OF_YEAR, -(number));
+        }
+        if (args.toString().equals("WEEK")) {
+            cal.add(Calendar.WEEK_OF_YEAR, -(number));
+        }
+        if (args.toString().equals("MONTH")) {
+            cal.add(Calendar.MONTH, -(number));
+        }
+        if (args.toString().equals("YEAR")) {
+            cal.add(Calendar.YEAR, -(number));
+        }
+
+        sortInfo.setSort("p.CONSTITUENT_ID");
+
+        PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId, sortInfo);
+        List<CommunicationHistory> list = results.getRows();
+
+
+        while (list != null && list.size() > 0) {
+            for (CommunicationHistory ch : list) {
+                if (ch.getCustomFieldValue("template").compareTo(commType) == 0 &&
+                        ch.getCreateDate().compareTo(cal.getTime()) > 0) {
                     return true;
                 }
-    		}
-    		sortInfo.setStart(sortInfo.getStart() + sortInfo.getLimit());
-    		results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId, sortInfo);
-    		list = results.getRows();
-    	}
-    	
-    	return false;
+            }
+            sortInfo.setStart(sortInfo.getStart() + sortInfo.getLimit());
+            results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId, sortInfo);
+            list = results.getRows();
+        }
+
+        return false;
     }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.context = applicationContext;
-		
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+        this.context = applicationContext;
+
+    }
 }

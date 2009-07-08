@@ -1,25 +1,42 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.customization;
-
-import java.util.Locale;
-
-import javax.annotation.Resource;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.dao.MessageDao;
 import com.orangeleap.tangerine.type.MessageResourceType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.Locale;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "messageDAO")
@@ -41,7 +58,7 @@ public class MessageServiceImpl implements MessageService {
         Element ele = messageResourceCache.get(key);
         String msg = null;
 
-        if(ele == null) {
+        if (ele == null) {
             msg = messageDao.readMessage(messageResourceType, messageKey, language);
             // use the String "<NULL>" to represent null
             msg = (msg == null ? "<NULL>" : msg);
@@ -58,7 +75,7 @@ public class MessageServiceImpl implements MessageService {
     private String buildKey(MessageResourceType type, String key, Locale locale) {
 
         String site = tangerineUserHelper.lookupUserSiteName();
-        site = (site == null ? "DEFAULT": site);                     
+        site = (site == null ? "DEFAULT" : site);
         StringBuilder builder = new StringBuilder(site);
         builder.append(".").append(type.name()).append(".").append(key).append(".").append(locale.getDisplayLanguage());
 

@@ -1,17 +1,30 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.security;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.logging.Log;
+import com.orangeleap.tangerine.service.SessionService;
+import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.service.ldap.LdapService;
+import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
@@ -21,21 +34,26 @@ import org.springframework.security.util.TextUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.util.WebUtils;
 
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.service.ldap.LdapService;
-import com.orangeleap.tangerine.service.SessionService;
-import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.util.HttpUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class TangerineAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     public static final String SITE_KEY = "sitename";
 
     private String siteParameter = SITE_KEY;
-   
+
     public static final String FULLNAME_KEY = "j_fullname";
 
     private final String fullNameParameter = FULLNAME_KEY;
@@ -110,7 +128,7 @@ public class TangerineAuthenticationProcessingFilter extends AuthenticationProce
 
         WebUtils.setSessionAttribute(request, "passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
         WebUtils.setSessionAttribute(request, "lastLoginDate", ldapService.getLastLogin());
-        WebUtils.setSessionAttribute(request, "currentDate",new Date());
+        WebUtils.setSessionAttribute(request, "currentDate", new Date());
         ldapService.setLastLogin();
     }
 

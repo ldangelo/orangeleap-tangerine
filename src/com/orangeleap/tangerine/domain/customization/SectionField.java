@@ -1,12 +1,29 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain.customization;
-
-import java.io.Serializable;
-
-import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.GeneratedId;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.type.FieldType;
+import org.springframework.core.style.ToStringCreator;
+
+import java.io.Serializable;
 
 public class SectionField implements GeneratedId, Serializable {
 
@@ -72,12 +89,11 @@ public class SectionField implements GeneratedId, Serializable {
     public void setSectionDefinition(SectionDefinition sectionDefinition) {
         this.sectionDefinition = sectionDefinition;
     }
-    
+
     public String getFieldLabelName() {
         if (!isCompoundField()) {
             return fieldDefinition.getId();
-        } 
-        else {
+        } else {
             return secondaryFieldDefinition.getId();
         }
     }
@@ -85,8 +101,7 @@ public class SectionField implements GeneratedId, Serializable {
     public String getPicklistName() {
         if (!isCompoundField()) {
             return fieldDefinition.getFieldName();
-        } 
-        else {
+        } else {
             return secondaryFieldDefinition.getFieldName();
         }
     }
@@ -94,8 +109,7 @@ public class SectionField implements GeneratedId, Serializable {
     public String getFieldRequiredName() {
         if (!isCompoundField()) {
             return fieldDefinition.getId();
-        } 
-        else {
+        } else {
             return fieldDefinition.getEntityType().name() + "." + fieldDefinition.getFieldInfo() + "." + secondaryFieldDefinition.getFieldName();
         }
     }
@@ -103,8 +117,7 @@ public class SectionField implements GeneratedId, Serializable {
     public FieldType getFieldType() {
         if (!isCompoundField()) {
             return fieldDefinition.getFieldType();
-        } 
-        else {
+        } else {
             return secondaryFieldDefinition.getFieldType();
         }
     }
@@ -112,8 +125,7 @@ public class SectionField implements GeneratedId, Serializable {
     public String getFieldPropertyName() {
         if (!isCompoundField()) {
             return fieldDefinition.getFieldName();
-        } 
-        else {
+        } else {
             return fieldDefinition.getFieldName() + "." + secondaryFieldDefinition.getFieldName();
         }
     }

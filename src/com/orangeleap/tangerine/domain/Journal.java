@@ -1,21 +1,33 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain;
-
-import java.util.Date;
-import java.math.BigDecimal;
-import java.io.Serializable;
-
-
-import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.util.StringUtils;
 
-import com.orangeleap.tangerine.type.ActivationType;
-import com.orangeleap.tangerine.util.StringConstants;
+import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 public class Journal implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +57,8 @@ public class Journal implements GeneratedId, Serializable {
     private Date createDate;
     private Date updateDate;
 
-    public Journal() { }
+    public Journal() {
+    }
 
 
     public Long getId() {
@@ -272,29 +285,29 @@ public class Journal implements GeneratedId, Serializable {
         Journal a = (Journal) obj;
         EqualsBuilder eb = new EqualsBuilder();
         eb
-        .append(id, a.getId())
-        .append(postBatchId, a.getPostBatchId())
-        .append(entity, a.getEntity())
-        .append(entityId, a.getEntityId())
-        .append(masterEntity, a.getMasterEntity())
-        .append(masterEntityId, a.getMasterEntityId())
-        .append(origEntity, a.getOrigEntity())
-        .append(origEntityId, a.getOrigEntityId())
-        .append(code, a.getCode())
-        .append(glCode, a.getGlCode())
-        .append(glAccount1, a.getGlAccount1())
-        .append(glAccount2, a.getGlAccount2())
-        .append(amount, a.getAmount())
-        .append(jeType, a.getJeType())
-        .append(paymentMethod, a.getPaymentMethod())
-        .append(ccType, a.getCcType())
-        .append(description, a.getDescription())
-        .append(donationDate, a.getDonationDate())
-        .append(adjustmentDate, a.getAdjustmentDate())
-        .append(postedDate, a.getPostedDate())
-        .append(exportDate, a.getExportDate())
-        .append(siteName, a.getSiteName())
-		;
+                .append(id, a.getId())
+                .append(postBatchId, a.getPostBatchId())
+                .append(entity, a.getEntity())
+                .append(entityId, a.getEntityId())
+                .append(masterEntity, a.getMasterEntity())
+                .append(masterEntityId, a.getMasterEntityId())
+                .append(origEntity, a.getOrigEntity())
+                .append(origEntityId, a.getOrigEntityId())
+                .append(code, a.getCode())
+                .append(glCode, a.getGlCode())
+                .append(glAccount1, a.getGlAccount1())
+                .append(glAccount2, a.getGlAccount2())
+                .append(amount, a.getAmount())
+                .append(jeType, a.getJeType())
+                .append(paymentMethod, a.getPaymentMethod())
+                .append(ccType, a.getCcType())
+                .append(description, a.getDescription())
+                .append(donationDate, a.getDonationDate())
+                .append(adjustmentDate, a.getAdjustmentDate())
+                .append(postedDate, a.getPostedDate())
+                .append(exportDate, a.getExportDate())
+                .append(siteName, a.getSiteName())
+                ;
         return eb.isEquals();
     }
 
@@ -302,59 +315,59 @@ public class Journal implements GeneratedId, Serializable {
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb
-        .append(""+id)
-        .append(""+postBatchId)
-        .append(""+entity)
-        .append(""+entityId)
-        .append(""+masterEntity)
-        .append(""+masterEntityId)
-        .append(""+origEntity)
-        .append(""+origEntityId)
-        .append(""+code)
-        .append(""+glCode)
-        .append(""+glAccount1)
-        .append(""+glAccount2)
-        .append(""+amount)
-        .append(""+jeType)
-        .append(""+paymentMethod)
-        .append(""+ccType)
-        .append(""+description)
-        .append(""+donationDate)
-        .append(""+adjustmentDate)
-        .append(""+postedDate)
-        .append(""+exportDate)
-        .append(""+siteName)
-		;
+                .append("" + id)
+                .append("" + postBatchId)
+                .append("" + entity)
+                .append("" + entityId)
+                .append("" + masterEntity)
+                .append("" + masterEntityId)
+                .append("" + origEntity)
+                .append("" + origEntityId)
+                .append("" + code)
+                .append("" + glCode)
+                .append("" + glAccount1)
+                .append("" + glAccount2)
+                .append("" + amount)
+                .append("" + jeType)
+                .append("" + paymentMethod)
+                .append("" + ccType)
+                .append("" + description)
+                .append("" + donationDate)
+                .append("" + adjustmentDate)
+                .append("" + postedDate)
+                .append("" + exportDate)
+                .append("" + siteName)
+                ;
         return hcb.hashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringCreator(this)
-        .append(super.toString())
-        .append("id", ""+id)
-        .append("postBatchId", ""+postBatchId)
-        .append("entity", ""+entity)
-        .append("entityId", ""+entityId)
-        .append("masterEntity", ""+masterEntity)
-        .append("masterEntityId", ""+masterEntityId)
-        .append("origEntity", ""+origEntity)
-        .append("origEntityId", ""+origEntityId)
-        .append("code", ""+code)
-        .append("glCode", ""+glCode)
-        .append("glAccount1", ""+glAccount1)
-        .append("glAccount2", ""+glAccount2)
-        .append("amount", ""+amount)
-        .append("jeType", ""+jeType)
-        .append("paymentMethod", ""+paymentMethod)
-        .append("ccType", ""+ccType)
-        .append("description", ""+description)
-        .append("donationDate", ""+donationDate)
-        .append("adjustmentDate", ""+adjustmentDate)
-        .append("postedDate", ""+postedDate)
-        .append("exportDate", ""+exportDate)
-        .append("siteName", ""+siteName)
-        .toString();
+                .append(super.toString())
+                .append("id", "" + id)
+                .append("postBatchId", "" + postBatchId)
+                .append("entity", "" + entity)
+                .append("entityId", "" + entityId)
+                .append("masterEntity", "" + masterEntity)
+                .append("masterEntityId", "" + masterEntityId)
+                .append("origEntity", "" + origEntity)
+                .append("origEntityId", "" + origEntityId)
+                .append("code", "" + code)
+                .append("glCode", "" + glCode)
+                .append("glAccount1", "" + glAccount1)
+                .append("glAccount2", "" + glAccount2)
+                .append("amount", "" + amount)
+                .append("jeType", "" + jeType)
+                .append("paymentMethod", "" + paymentMethod)
+                .append("ccType", "" + ccType)
+                .append("description", "" + description)
+                .append("donationDate", "" + donationDate)
+                .append("adjustmentDate", "" + adjustmentDate)
+                .append("postedDate", "" + postedDate)
+                .append("exportDate", "" + exportDate)
+                .append("siteName", "" + siteName)
+                .toString();
     }
 
 }

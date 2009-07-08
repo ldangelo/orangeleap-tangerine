@@ -1,22 +1,22 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.customization;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-
-import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.dao.FieldDao;
@@ -25,21 +25,30 @@ import com.orangeleap.tangerine.dao.QueryLookupDao;
 import com.orangeleap.tangerine.dao.SectionDao;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.domain.customization.FieldValidation;
-import com.orangeleap.tangerine.domain.customization.PageAccess;
-import com.orangeleap.tangerine.domain.customization.SectionDefinition;
-import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.*;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.RoleType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.*;
 
 @Transactional
 @Service("pageCustomizationService")
 public class PageCustomizationServiceImpl implements PageCustomizationService {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     private static final Integer ZERO = Integer.valueOf(0);
@@ -65,11 +74,11 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     public List<String> readDistintSectionDefinitionsRoles() {
         return sectionDao.readDistintSectionDefinitionsRoles();
     }
-    
+
     /*
-     * (non-Javadoc)
-     * @see com.orangeleap.tangerine.service.customization.PageCustomizationService#readSectionDefinitionsByPageTypeRoles(com.orangeleap.tangerine.type.PageType, java.util.List)
-     */
+    * (non-Javadoc)
+    * @see com.orangeleap.tangerine.service.customization.PageCustomizationService#readSectionDefinitionsByPageTypeRoles(com.orangeleap.tangerine.type.PageType, java.util.List)
+    */
     @SuppressWarnings("unchecked")
     @Override
     public List<SectionDefinition> readSectionDefinitionsByPageTypeRoles(PageType pageType, List<String> roles) {
@@ -101,7 +110,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         Element ele = pageCustomizationCache.get(outOfBoxKey);
         List<SectionField> outOfBoxSectionFields = null;
 
-        if(ele == null) {
+        if (ele == null) {
             outOfBoxSectionFields = sectionDao.readOutOfBoxSectionFields(sectionDefinition.getPageType(), sectionDefinition.getSectionName());
             pageCustomizationCache.put(new Element(outOfBoxKey, outOfBoxSectionFields));
         } else {
@@ -111,17 +120,16 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         String customSectionKey = siteName + "." + sectionDefinition.getId();
         ele = pageCustomizationCache.get(customSectionKey);
         List<SectionField> customSectionFields = null;
-        if(ele == null) {
+        if (ele == null) {
             customSectionFields = sectionDao.readCustomizedSectionFields(sectionDefinition.getId());
             pageCustomizationCache.put(new Element(customSectionKey, customSectionFields));
         } else {
-            customSectionFields = (List<SectionField>)ele.getValue();
+            customSectionFields = (List<SectionField>) ele.getValue();
         }
-            
+
         if (customSectionFields.isEmpty()) {
             returnFields = outOfBoxSectionFields;
-        } 
-        else {
+        } else {
             returnFields = new ArrayList<SectionField>(outOfBoxSectionFields);
             for (SectionField customizedField : customSectionFields) {
                 removeMatchingOutOfBoxField(returnFields, customizedField);
@@ -148,6 +156,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     /**
      * Takes a <code>List</code> of <code>SectionDefinition</code> objects and keeps the section name with the highest role
+     *
      * @param sectionDefinitions the original <code>List</code> to filter
      * @return
      */
@@ -158,8 +167,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
                 SectionDefinition sd = nameDefinitionMap.get(sectionDefinition.getSectionName());
                 if (sd == null) {
                     nameDefinitionMap.put(sectionDefinition.getSectionName(), sectionDefinition);
-                } 
-                else {
+                } else {
                     Integer sectionDefinitionRoleRank = sectionDefinition.getRole() == null ? -1 : RoleType.valueOf(sectionDefinition.getRole()).getRoleRank();
                     Integer sdRoleRank = sd.getRole() == null ? -1 : RoleType.valueOf(sd.getRole()).getRoleRank();
                     if ((sd.getSite() == null && sectionDefinition.getSite() != null) || sdRoleRank < sectionDefinitionRoleRank) {
@@ -200,48 +208,48 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         return accessMap;
     }
 
-	@Override
+    @Override
     @Transactional
-	public void maintainFieldDefinition(FieldDefinition fieldDefinition) {
-		fieldDao.maintainFieldDefinition(fieldDefinition);
-	}
-
-	@Override
-    @Transactional
-	public void maintainFieldValidation(FieldValidation fieldValidation) {
-		fieldDao.maintainFieldValidation(fieldValidation);
-	}
-
-	@Override
-    @Transactional
-	public void maintainSectionField(SectionField sectionField) {
-		sectionDao.maintainSectionField(sectionField);
-	}
-	
-	@Override
-    @Transactional
-	public QueryLookup maintainQueryLookup(QueryLookup queryLookup) {
-		return queryLookupDao.maintainQueryLookup(queryLookup);
-	}
-	
-	@Override
-    @Transactional
-	public void maintainQueryLookupParam(QueryLookupParam queryLookupParam) {
-		queryLookupDao.maintainQueryLookupParam(queryLookupParam);
-	}
-	
-	
-	@Override
-    @Transactional
-    public void maintainCustomFieldGuruData(CustomFieldRequest customFieldRequest) {
-    	fieldDao.maintainCustomFieldGuruData(customFieldRequest);
+    public void maintainFieldDefinition(FieldDefinition fieldDefinition) {
+        fieldDao.maintainFieldDefinition(fieldDefinition);
     }
 
-	@Override
-	public SectionDefinition maintainSectionDefinition(
-			SectionDefinition sectionDefinition) {
-		return sectionDao.maintainSectionDefinition(sectionDefinition);
-	}
+    @Override
+    @Transactional
+    public void maintainFieldValidation(FieldValidation fieldValidation) {
+        fieldDao.maintainFieldValidation(fieldValidation);
+    }
+
+    @Override
+    @Transactional
+    public void maintainSectionField(SectionField sectionField) {
+        sectionDao.maintainSectionField(sectionField);
+    }
+
+    @Override
+    @Transactional
+    public QueryLookup maintainQueryLookup(QueryLookup queryLookup) {
+        return queryLookupDao.maintainQueryLookup(queryLookup);
+    }
+
+    @Override
+    @Transactional
+    public void maintainQueryLookupParam(QueryLookupParam queryLookupParam) {
+        queryLookupDao.maintainQueryLookupParam(queryLookupParam);
+    }
+
+
+    @Override
+    @Transactional
+    public void maintainCustomFieldGuruData(CustomFieldRequest customFieldRequest) {
+        fieldDao.maintainCustomFieldGuruData(customFieldRequest);
+    }
+
+    @Override
+    public SectionDefinition maintainSectionDefinition(
+            SectionDefinition sectionDefinition) {
+        return sectionDao.maintainSectionDefinition(sectionDefinition);
+    }
 
 
 }

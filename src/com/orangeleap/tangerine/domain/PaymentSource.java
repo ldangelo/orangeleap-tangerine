@@ -1,21 +1,38 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlType;
-
-import org.springframework.core.style.ToStringCreator;
-import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.annotation.NotAuditable;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.AES;
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
+import org.springframework.core.style.ToStringCreator;
+import org.springframework.util.StringUtils;
+
+import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 public class PaymentSource extends AbstractEntity implements Inactivatible, Creatable, NewAddressAware, NewPhoneAware {
 
     private static final long serialVersionUID = 1L;
@@ -57,7 +74,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     private Address selectedAddress = new Address(); // Created only because spring binds to it
     private Phone selectedPhone = new Phone(); // Created only because spring binds to it
     private boolean userCreated = false;
-  
+
     public PaymentSource() {
     }
 
@@ -159,8 +176,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         this.creditCardNumber = creditCardNumber;
         if (creditCardNumber != null) {
             creditCardNumberEncrypted = AES.encrypt(creditCardNumber);
-        } 
-        else {
+        } else {
             creditCardNumberEncrypted = null;
         }
     }
@@ -188,7 +204,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     public void setAchRoutingNumber(String achRoutingNumber) {
         this.achRoutingNumber = achRoutingNumber;
     }
-    
+
     public String getAchRoutingNumberDisplay() {
         return mask(achRoutingNumber);
     }
@@ -216,8 +232,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         this.achAccountNumber = achAccountNumber;
         if (achAccountNumber != null) {
             achAccountNumberEncrypted = AES.encrypt(achAccountNumber);
-        } 
-        else {
+        } else {
             achAccountNumberEncrypted = null;
         }
     }
@@ -342,7 +357,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         }
         return yearList;
     }
-    
+
     public void setFromAddressAware(AddressAware addressAware) {
         setSelectedAddress(addressAware.getSelectedAddress());
         setAddress(addressAware.getSelectedAddress());
@@ -361,7 +376,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     public void setSelectedAddress(Address selectedAddress) {
         this.selectedAddress = selectedAddress;
     }
-    
+
     public void setFromPhoneAware(PhoneAware phoneAware) {
         setSelectedPhone(phoneAware.getSelectedPhone());
         setPhone(phoneAware.getSelectedPhone());
@@ -423,8 +438,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
                 sb.append("****");
                 sb.append(getLastFourDigits());
                 this.profile = sb.toString();
-            }
-            else if (CREDIT_CARD.equals(paymentType)) {
+            } else if (CREDIT_CARD.equals(paymentType)) {
                 if (creditCardType != null) {
                     sb.append(creditCardType);
                 }
@@ -438,7 +452,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     private String findLastFourDigits(String number) {
         return number == null ? "" : (number.length() > 4 ? number.substring(number.length() - 4, number.length()) : number);
     }
-    
+
     private String decryptAndMask(String encryptedString) {
         String clear = null;
         if (encryptedString != null) {
@@ -447,7 +461,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         }
         return clear;
     }
-    
+
     private String mask(String clear) {
         if (clear != null && clear.length() >= 4) {
             return "****" + clear.substring(clear.length() - 4);
@@ -457,20 +471,19 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
 
     /**
      * Check if this is a dummy object; This is not a dummy object all required fields are populated
+     *
      * @return true if this PaymentSource has all required fields populated
      */
     public boolean isValid() {
         if (ACH.equals(paymentType)) {
             return StringUtils.hasText(getAchHolderName()) &&
-                StringUtils.hasText(getAchAccountNumber()) &&
-                StringUtils.hasText(getAchRoutingNumber());
-        }
-        else if (CREDIT_CARD.equals(paymentType)) {
+                    StringUtils.hasText(getAchAccountNumber()) &&
+                    StringUtils.hasText(getAchRoutingNumber());
+        } else if (CREDIT_CARD.equals(paymentType)) {
             return StringUtils.hasText(getCreditCardHolderName()) &&
-                StringUtils.hasText(getCreditCardType()) &&
-                StringUtils.hasText(getCreditCardNumber());
-        }
-        else if (CASH.equals(paymentType) || CHECK.equals(paymentType)) {
+                    StringUtils.hasText(getCreditCardType()) &&
+                    StringUtils.hasText(getCreditCardNumber());
+        } else if (CASH.equals(paymentType) || CHECK.equals(paymentType)) {
             return true; // TODO: what are the validity constraints for CASH and CHECK?
         }
         return false;
@@ -485,14 +498,12 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
                 if (getLastFourDigits() == null) {
                     setLastFourDigits(findLastFourDigits(getAchAccountNumber()));
                 }
-            }
-            else if (CREDIT_CARD.equals(paymentType)) {
+            } else if (CREDIT_CARD.equals(paymentType)) {
                 clearACH();
                 if (getLastFourDigits() == null) {
                     setLastFourDigits(findLastFourDigits(getCreditCardNumber()));
                 }
-            }
-            else if (CHECK.equals(paymentType) || CASH.equals(paymentType)) {
+            } else if (CHECK.equals(paymentType) || CASH.equals(paymentType)) {
                 clearCredit();
                 clearACH();
                 setLastFourDigits(null);
@@ -500,7 +511,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         }
         createDefaultProfileName();
     }
-    
+
     @Override
     public void setDefaults() {
         super.setDefaults();
@@ -517,25 +528,25 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         setCreditCardExpiration(null);
         setCreditCardNumber(null);
         setCreditCardSecurityCode(null);
-        setCreditCardType(null);       
+        setCreditCardType(null);
     }
-    
+
     private void clearACH() {
         setAchHolderName(null);
         setAchAccountNumber(null);
         setAchRoutingNumber(null);
     }
-    
+
     @Override
     public String getAuditShortDesc() {
-    	return (getProfile() == null || getProfile().length() == 0) ? "" + getId() : getProfile();
+        return (getProfile() == null || getProfile().length() == 0) ? "" + getId() : getProfile();
     }
-    
+
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("profile", profile).append("paymentType", paymentType).append(creditCardHolderName, "creditCardHolderName").
-            append("creditCardType", creditCardType).append("achHolderName", achHolderName).append("inactive", inactive).append("address", address).append("phone", phone).append("constituent", constituent).
-            append("userCreated", userCreated).append("selectedAddress", selectedAddress).append("selectedPhone", selectedPhone).
-            toString();
+                append("creditCardType", creditCardType).append("achHolderName", achHolderName).append("inactive", inactive).append("address", address).append("phone", phone).append("constituent", constituent).
+                append("userCreated", userCreated).append("selectedAddress", selectedAddress).append("selectedPhone", selectedPhone).
+                toString();
     }
 }

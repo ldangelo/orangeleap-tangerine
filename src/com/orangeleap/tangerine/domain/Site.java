@@ -1,18 +1,36 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain;
 
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.xml.bind.annotation.XmlType;
-
-import org.springframework.core.style.ToStringCreator;
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 public class Site implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     public Site() {
         super();
     }
@@ -48,20 +66,20 @@ public class Site implements Serializable {
     private Integer achRuleNumber;
     private String achCompanyName;
     private Integer achTestMode;
-    private String  smtpServerName;
-    private String  smtpAccountName;
-    private String  smtpPassword;
-    private String  smtpFromAddress;
+    private String smtpServerName;
+    private String smtpAccountName;
+    private String smtpPassword;
+    private String smtpFromAddress;
     private Integer majorDonorAccountManagerId;
-    private String  jasperUserId;
-    private String  jasperPassword;
-    
+    private String jasperUserId;
+    private String jasperPassword;
+
     public Locale getLocale() {
-    	return localeString == null?Locale.getDefault():new Locale(localeString);
+        return localeString == null ? Locale.getDefault() : new Locale(localeString);
     }
 
     public TimeZone getTimeZone() {
-    	return timeZoneString == null?TimeZone.getDefault():TimeZone.getTimeZone(timeZoneString);
+        return timeZoneString == null ? TimeZone.getDefault() : TimeZone.getTimeZone(timeZoneString);
     }
 
     public String getName() {
@@ -112,154 +130,153 @@ public class Site implements Serializable {
         this.updateDate = updateDate;
     }
 
-	public void setLocaleString(String localeString) {
-		this.localeString = localeString;
-	}
+    public void setLocaleString(String localeString) {
+        this.localeString = localeString;
+    }
 
-	public String getLocaleString() {
-		return localeString;
-	}
+    public String getLocaleString() {
+        return localeString;
+    }
 
-	public void setTimeZoneString(String timeZoneString) {
-		this.timeZoneString = timeZoneString;
-	}
+    public void setTimeZoneString(String timeZoneString) {
+        this.timeZoneString = timeZoneString;
+    }
 
-	public String getTimeZoneString() {
-		return timeZoneString;
-	}
-	
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public String getTimeZoneString() {
+        return timeZoneString;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-	
+    public boolean isActive() {
+        return active;
+    }
+
+
     @Override
     public String toString() {
         return new ToStringCreator(this).append("name", name).append("merchantNumber", merchantNumber).append("merchantBin", merchantBin)
-        		.append("localeString", localeString).append("timeZoneString", timeZoneString)
-        		.append("parentSite", parentSite).append("createDate", createDate).append("updateDate", updateDate).toString();
+                .append("localeString", localeString).append("timeZoneString", timeZoneString)
+                .append("parentSite", parentSite).append("createDate", createDate).append("updateDate", updateDate).toString();
     }
 
-	public Integer getAchSiteNumber() {
-		return achSiteNumber;
-	}
+    public Integer getAchSiteNumber() {
+        return achSiteNumber;
+    }
 
-	public void setAchSiteNumber(Integer achSiteNumber) {
-		this.achSiteNumber = achSiteNumber;
-	}
+    public void setAchSiteNumber(Integer achSiteNumber) {
+        this.achSiteNumber = achSiteNumber;
+    }
 
-	public Integer getAchMerchantId() {
-		return achMerchantId;
-	}
+    public Integer getAchMerchantId() {
+        return achMerchantId;
+    }
 
-	public void setAchMerchantId(Integer achMerchantId) {
-		this.achMerchantId = achMerchantId;
-	}
+    public void setAchMerchantId(Integer achMerchantId) {
+        this.achMerchantId = achMerchantId;
+    }
 
-	public Integer getAchRuleNumber() {
-		return achRuleNumber;
-	}
+    public Integer getAchRuleNumber() {
+        return achRuleNumber;
+    }
 
-	public void setAchRuleNumber(Integer achRuleNumber) {
-		this.achRuleNumber = achRuleNumber;
-	}
+    public void setAchRuleNumber(Integer achRuleNumber) {
+        this.achRuleNumber = achRuleNumber;
+    }
 
-	public String getAchCompanyName() {
-		return achCompanyName;
-	}
+    public String getAchCompanyName() {
+        return achCompanyName;
+    }
 
-	public void setAchCompanyName(String achCompanyName) {
-		this.achCompanyName = achCompanyName;
-	}
+    public void setAchCompanyName(String achCompanyName) {
+        this.achCompanyName = achCompanyName;
+    }
 
-	public boolean isAchTestMode() {
-		return achTestMode == 1;
-	}
+    public boolean isAchTestMode() {
+        return achTestMode == 1;
+    }
 
-	public void setAchTestMode(Integer achTestMode) {
-		this.achTestMode = achTestMode;
-	}
+    public void setAchTestMode(Integer achTestMode) {
+        this.achTestMode = achTestMode;
+    }
 
-	public Integer getAchTestModeForm() {
-		return achTestMode;
-	}
+    public Integer getAchTestModeForm() {
+        return achTestMode;
+    }
 
-	public void setAchTestModeForm(Integer achTestMode) {
-		this.achTestMode = achTestMode;
-	}
+    public void setAchTestModeForm(Integer achTestMode) {
+        this.achTestMode = achTestMode;
+    }
 
-	public String getSmtpServerName() {
-		return smtpServerName;
-	}
+    public String getSmtpServerName() {
+        return smtpServerName;
+    }
 
-	public void setSmtpServerName(String smtpServerName) {
-		this.smtpServerName = smtpServerName;
-	}
+    public void setSmtpServerName(String smtpServerName) {
+        this.smtpServerName = smtpServerName;
+    }
 
-	public String getSmtpAccountName() {
-		return smtpAccountName;
-	}
+    public String getSmtpAccountName() {
+        return smtpAccountName;
+    }
 
-	public void setSmtpAccountName(String smtpAccountName) {
-		this.smtpAccountName = smtpAccountName;
-	}
+    public void setSmtpAccountName(String smtpAccountName) {
+        this.smtpAccountName = smtpAccountName;
+    }
 
-	public String getSmtpPassword() {
-		return smtpPassword;
-	}
+    public String getSmtpPassword() {
+        return smtpPassword;
+    }
 
-	public void setSmtpPassword(String smtpPassword) {
-		this.smtpPassword = smtpPassword;
-	}
+    public void setSmtpPassword(String smtpPassword) {
+        this.smtpPassword = smtpPassword;
+    }
 
-	public String getSmtpFromAddress() {
-		return smtpFromAddress;
-	}
+    public String getSmtpFromAddress() {
+        return smtpFromAddress;
+    }
 
-	public void setSmtpFromAddress(String smtpFromAddress) {
-		this.smtpFromAddress = smtpFromAddress;
-	}
+    public void setSmtpFromAddress(String smtpFromAddress) {
+        this.smtpFromAddress = smtpFromAddress;
+    }
 
-	public Integer getAchTestMode() {
-		return achTestMode;
-	}
+    public Integer getAchTestMode() {
+        return achTestMode;
+    }
 
-	public Integer getMajorDonorAccountManagerId() {
-		return majorDonorAccountManagerId;
-	}
+    public Integer getMajorDonorAccountManagerId() {
+        return majorDonorAccountManagerId;
+    }
 
-	public void setMajorDonorAccountManagerId(Integer majorDonorAccountManagerId) {
-		this.majorDonorAccountManagerId = majorDonorAccountManagerId;
-	}
+    public void setMajorDonorAccountManagerId(Integer majorDonorAccountManagerId) {
+        this.majorDonorAccountManagerId = majorDonorAccountManagerId;
+    }
 
-	public String getMerchantTerminalId() {
-		return merchantTerminalId;
-	}
+    public String getMerchantTerminalId() {
+        return merchantTerminalId;
+    }
 
-	public void setMerchantTerminalId(String merchantTerminalId) {
-		this.merchantTerminalId = merchantTerminalId;
-	}
+    public void setMerchantTerminalId(String merchantTerminalId) {
+        this.merchantTerminalId = merchantTerminalId;
+    }
 
-	public String getJasperUserId() {
-		return jasperUserId;
-	}
+    public String getJasperUserId() {
+        return jasperUserId;
+    }
 
-	public void setJasperUserId(String jasperUserId) {
-		this.jasperUserId = jasperUserId;
-	}
+    public void setJasperUserId(String jasperUserId) {
+        this.jasperUserId = jasperUserId;
+    }
 
-	public String getJasperPassword() {
-		return jasperPassword;
-	}
+    public String getJasperPassword() {
+        return jasperPassword;
+    }
 
-	public void setJasperPassword(String jasperPassword) {
-		this.jasperPassword = jasperPassword;
-	}
+    public void setJasperPassword(String jasperPassword) {
+        this.jasperPassword = jasperPassword;
+    }
 
 
-	
 }

@@ -1,7 +1,25 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain.checkservice;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 
@@ -13,10 +31,11 @@ import java.util.Date;
  * Also, although this class is called "Batch", it is only designed
  * to contain a single Detail section. The class name is aligned with
  * the name of the XML Element used for the web service.
+ *
  * @version 1.0
  */
 @XmlRootElement(name = "Batch")
-@XmlType(propOrder = {"header","detail", "footer"})
+@XmlType(propOrder = {"header", "detail", "footer"})
 public class Batch {
 
     private int site;
@@ -37,7 +56,7 @@ public class Batch {
     }
 
     public void isTest(boolean test) {
-        if(test) {
+        if (test) {
             header.setType("TEST");
         } else {
             header.setType("H");
@@ -49,11 +68,12 @@ public class Batch {
      * This method will ensure the correct values are set for the
      * Site Number, Rule Number and Merchant ID, based on how it was
      * created in the CheckService#createBatch() method
+     *
      * @param detail
      */
     public void setDetail(Detail detail) {
 
-        if(detail == null) return;
+        if (detail == null) return;
         this.detail = detail;
 
         this.detail.setSiteNumber(site);
@@ -64,8 +84,9 @@ public class Batch {
 
     /**
      * Sets the unique file number for this batch, which must
-     * be a non-negative number with a minimum of one digit and a 
+     * be a non-negative number with a minimum of one digit and a
      * maximum of six digits
+     *
      * @param fileNumber
      */
     public void setFileNumber(int fileNumber) {
@@ -76,7 +97,7 @@ public class Batch {
     }
 
     public void setMerchantId(int merchantId) {
-        Padding.validateNumber("merchandId", merchantId,4,6);
+        Padding.validateNumber("merchandId", merchantId, 4, 6);
         this.merchantId = merchantId;
         header.setMerchantId(merchantId);
         footer.setMerchantId(merchantId);
@@ -88,12 +109,12 @@ public class Batch {
     }
 
     public void setRuleNumber(int ruleNumber) {
-        Padding.validateNumber("ruleNumber",ruleNumber,4,4);
+        Padding.validateNumber("ruleNumber", ruleNumber, 4, 4);
         this.ruleNumber = ruleNumber;
     }
 
     public void setSiteNumber(int site) {
-        Padding.validateNumber("siteNumber",site,3,3);
+        Padding.validateNumber("siteNumber", site, 3, 3);
         this.site = site;
         header.setSiteNumber(site);
         footer.setSiteNumber(site);

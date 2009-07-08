@@ -1,27 +1,44 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.list.LazyList;
+import org.apache.commons.collections.list.UnmodifiableList;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlType;
-
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.list.LazyList;
-import org.apache.commons.collections.list.UnmodifiableList;
-import org.springframework.core.style.ToStringCreator;
-
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.util.StringConstants;
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("unchecked")
 public class GiftInKind extends AbstractCustomizableEntity {
     private static final long serialVersionUID = 1L;
-    
+
     private BigDecimal fairMarketValue;
     private String currencyCode = StringConstants.USD;
     private Date donationDate = new Date();
@@ -30,20 +47,24 @@ public class GiftInKind extends AbstractCustomizableEntity {
     private boolean anonymous = false;
     private String recognitionName;
     private Date transactionDate;
-   
+
     private Long giftId;
     private Constituent constituent;
 
-    /** Form bean representation of the GiftInKindDetails */
+    /**
+     * Form bean representation of the GiftInKindDetails
+     */
     protected List<GiftInKindDetail> mutableDetails = LazyList.decorate(new ArrayList<GiftInKindDetail>(), new Factory() {
         public Object create() {
             return new GiftInKindDetail();
         }
     });
-    
-    /** Domain object representation of the GiftInKindDetails */
+
+    /**
+     * Domain object representation of the GiftInKindDetails
+     */
     private List<GiftInKindDetail> details;
-    
+
     /* Used by the form for cloning */
     protected final List<GiftInKindDetail> dummyDetails;
 
@@ -56,8 +77,8 @@ public class GiftInKind extends AbstractCustomizableEntity {
         dummyDetails = UnmodifiableList.decorate(details);
     }
 
-    public GiftInKind(BigDecimal fairMarketValue, String currencyCode, Date donationDate, String motivationCode, String other_motivationCode, 
-                        boolean anonymous, String recognitionName) {
+    public GiftInKind(BigDecimal fairMarketValue, String currencyCode, Date donationDate, String motivationCode, String other_motivationCode,
+                      boolean anonymous, String recognitionName) {
         this();
         this.fairMarketValue = fairMarketValue;
         this.currencyCode = currencyCode;
@@ -163,7 +184,7 @@ public class GiftInKind extends AbstractCustomizableEntity {
     public void setMutableDetails(List<GiftInKindDetail> mutableDetails) {
         this.mutableDetails = mutableDetails;
     }
-    
+
     public void removeEmptyMutableDetails() {
         Iterator<GiftInKindDetail> mutableDetailsIter = mutableDetails.iterator();
         details = new ArrayList<GiftInKindDetail>();
@@ -172,8 +193,7 @@ public class GiftInKind extends AbstractCustomizableEntity {
             if (detail != null) {
                 if (detail.isFieldEntered() == false) {
                     mutableDetailsIter.remove();
-                }
-                else {
+                } else {
                     details.add(detail);
                 }
             }
@@ -221,9 +241,9 @@ public class GiftInKind extends AbstractCustomizableEntity {
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("fairMarketValue", fairMarketValue).append("currencyCode", currencyCode).
-            append("donationDate", donationDate).
-            append("motivationCode", motivationCode).append("other_motivationCode", other_motivationCode).append("anonymous", anonymous).append("recognitionName", recognitionName).
-            append("constituent", constituent).append("giftId", giftId).append("transactionDate", transactionDate).
-            toString();
+                append("donationDate", donationDate).
+                append("motivationCode", motivationCode).append("other_motivationCode", other_motivationCode).append("anonymous", anonymous).append("recognitionName", recognitionName).
+                append("constituent", constituent).append("giftId", giftId).append("transactionDate", transactionDate).
+                toString();
     }
 }

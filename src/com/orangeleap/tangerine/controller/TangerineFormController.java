@@ -1,66 +1,81 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.service.*;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
+import org.apache.commons.logging.Log;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.service.AddressService;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.EmailService;
-import com.orangeleap.tangerine.service.PhoneService;
-import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public abstract class TangerineFormController extends SimpleFormController {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name="constituentService")
+    @Resource(name = "constituentService")
     protected ConstituentService constituentService;
 
-    @Resource(name="addressService")
+    @Resource(name = "addressService")
     protected AddressService addressService;
 
-    @Resource(name="phoneService")
+    @Resource(name = "phoneService")
     protected PhoneService phoneService;
 
-    @Resource(name="emailService")
+    @Resource(name = "emailService")
     protected EmailService emailService;
 
-    @Resource(name="siteService")
-    protected SiteService siteService;    
-    
-    @Resource(name="tangerineUserHelper")
+    @Resource(name = "siteService")
+    protected SiteService siteService;
+
+    @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
 
-    protected String pageType;    
+    protected String pageType;
 
     /**
      * The default page type is the commandName.  Override for specific page types
+     *
      * @return pageType, the commandName
      */
     protected String getPageType() {
-        return StringUtils.hasText(pageType) ? pageType: getCommandName();
+        return StringUtils.hasText(pageType) ? pageType : getCommandName();
     }
 
     public void setPageType(String pageType) {
@@ -105,7 +120,7 @@ public abstract class TangerineFormController extends SimpleFormController {
     protected void createFieldMaps(HttpServletRequest request, AbstractEntity entity) {
         if (isFormSubmission(request)) {
             List<String> roles = tangerineUserHelper.lookupUserRoles();
-            
+
             Map<String, String> fieldLabelMap = siteService.readFieldLabels(PageType.valueOf(this.getPageType()), roles, request.getLocale());
             entity.setFieldLabelMap(fieldLabelMap);
 
@@ -116,7 +131,7 @@ public abstract class TangerineFormController extends SimpleFormController {
             entity.setFieldTypeMap(typeMap);
         }
     }
-    
+
     protected String appendSaved(String url) {
         return new StringBuilder(url).append("&").append(StringConstants.SAVED_EQUALS_TRUE).toString();
     }

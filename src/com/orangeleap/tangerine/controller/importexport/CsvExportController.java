@@ -1,18 +1,28 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.controller.importexport;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
+import au.com.bytecode.opencsv.CSVWriter;
+import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter;
+import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
@@ -20,16 +30,21 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import au.com.bytecode.opencsv.CSVWriter;
-
-import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter;
-import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class CsvExportController extends SimpleFormController {
 
     protected final Log logger = OLLogger.getLog(getClass());
-    
-    
+
+
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
@@ -40,78 +55,80 @@ public class CsvExportController extends SimpleFormController {
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         return new ExportRequest();
     }
-    
+
     private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     private static Date FUTURE_DATE;
     private static Date PAST_DATE;
+
     static {
-    	try {
-    		FUTURE_DATE = sdf.parse("1/1/2100");
-    		PAST_DATE = sdf.parse("1/1/1900");
-    	} catch (Exception e) {}
+        try {
+            FUTURE_DATE = sdf.parse("1/1/2100");
+            PAST_DATE = sdf.parse("1/1/1900");
+        } catch (Exception e) {
+        }
     }
+
     private static final Long LOW_ID = new Long(-1);
     private static final Long HIGH_ID = Long.MAX_VALUE;
 
-	@Override
-	protected ModelAndView processFormSubmission(
-			HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
-			throws Exception {
+    @Override
+    protected ModelAndView processFormSubmission(
+            HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
+            throws Exception {
 
 
-		
-		ExportRequest er = (ExportRequest)command;
-		if (er.getFromDate() == null) er.setFromDate(PAST_DATE);
-		if (er.getToDate() == null) er.setToDate(FUTURE_DATE);
-		if (er.getFromAccount() == null) er.setFromAccount(LOW_ID);
-		if (er.getToAccount() == null) er.setToAccount(HIGH_ID);
-		
-		if (!CsvImportController.importexportAllowed(request)) {
+        ExportRequest er = (ExportRequest) command;
+        if (er.getFromDate() == null) er.setFromDate(PAST_DATE);
+        if (er.getToDate() == null) er.setToDate(FUTURE_DATE);
+        if (er.getFromAccount() == null) er.setFromAccount(LOW_ID);
+        if (er.getToAccount() == null) er.setToAccount(HIGH_ID);
+
+        if (!CsvImportController.importexportAllowed(request)) {
             return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
         }
-		
-		try {
-			String exportData = getExport(er);
-			response.setContentType("application/x-download"); 
-			String entity = er.getEntity();
-			if (entity.equals("constituent")) entity = "constituent";
-			response.setHeader("Content-Disposition", "attachment; filename=" + entity + "-export.csv");
-			response.setContentLength(exportData.length());
-			PrintWriter out = response.getWriter();
-			out.print(exportData);
-			out.flush();
-			return null;
-		} catch (Exception e) {
-			logger.debug(e);
-			e.printStackTrace();
-			ModelAndView mav = new ModelAndView("redirect:/importexport.htm");
-			mav.addObject("exportmessage", e.getMessage());
-			return mav;
-		}
 
-	}
+        try {
+            String exportData = getExport(er);
+            response.setContentType("application/x-download");
+            String entity = er.getEntity();
+            if (entity.equals("constituent")) entity = "constituent";
+            response.setHeader("Content-Disposition", "attachment; filename=" + entity + "-export.csv");
+            response.setContentLength(exportData.length());
+            PrintWriter out = response.getWriter();
+            out.print(exportData);
+            out.flush();
+            return null;
+        } catch (Exception e) {
+            logger.debug(e);
+            e.printStackTrace();
+            ModelAndView mav = new ModelAndView("redirect:/importexport.htm");
+            mav.addObject("exportmessage", e.getMessage());
+            return mav;
+        }
 
-	private String getExport(ExportRequest er) {
+    }
+
+    private String getExport(ExportRequest er) {
 
 
-		StringWriter sw = new StringWriter();
-		CSVWriter writer = new CSVWriter(sw);
-		
-		ApplicationContext applicationContext = getApplicationContext();
+        StringWriter sw = new StringWriter();
+        CSVWriter writer = new CSVWriter(sw);
 
-		EntityExporter ex = new EntityExporterFactory().getEntityExporter(er, applicationContext);
-		if (ex == null) return "";
-		
-		List<List<String>> data = ex.exportAll();
-		List<String[]> csvdata = new ArrayList<String[]>();
-		for (List<String> line:data) {
-			String[] aline = line.toArray(new String[line.size()]);
-			csvdata.add(aline);
-		}
+        ApplicationContext applicationContext = getApplicationContext();
 
-		writer.writeAll(csvdata);
+        EntityExporter ex = new EntityExporterFactory().getEntityExporter(er, applicationContext);
+        if (ex == null) return "";
 
-		return sw.toString();
-	}
+        List<List<String>> data = ex.exportAll();
+        List<String[]> csvdata = new ArrayList<String[]>();
+        for (List<String> line : data) {
+            String[] aline = line.toArray(new String[line.size()]);
+            csvdata.add(aline);
+        }
+
+        writer.writeAll(csvdata);
+
+        return sw.toString();
+    }
 
 }

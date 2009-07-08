@@ -1,24 +1,41 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.springframework.validation.BindException;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface GiftService {
 
     public Gift maintainGift(Gift gift) throws BindException;
-    
+
     public Gift editGift(Gift gift);
-    
+
     public Gift readGiftById(Long giftId);
 
     public Gift readGiftByIdCreateIfNull(Constituent constituent, String giftId);
@@ -37,17 +54,17 @@ public interface GiftService {
 
     public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Constituent constituent);
 
-	public List<Gift> readAllGiftsBySiteName();
-	
-	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate);
+    public List<Gift> readAllGiftsBySiteName();
 
-	public PaginatedResult readPaginatedGiftList(Long constituentId, SortInfo sortinfo);
-	
-	public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, int numCommitments, Constituent constituent, boolean isPledge);
-	
-	public void checkAssociatedPledgeIds(Gift gift);
-	
-	public void checkAssociatedRecurringGiftIds(Gift gift);
+    public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate);
 
-	Gift reprocessGift(Gift gift) throws BindException;
+    public PaginatedResult readPaginatedGiftList(Long constituentId, SortInfo sortinfo);
+
+    public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, int numCommitments, Constituent constituent, boolean isPledge);
+
+    public void checkAssociatedPledgeIds(Gift gift);
+
+    public void checkAssociatedRecurringGiftIds(Gift gift);
+
+    Gift reprocessGift(Gift gift) throws BindException;
 }

@@ -1,20 +1,22 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.json.controller;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.validator.GenericValidator;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
@@ -22,16 +24,33 @@ import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This controller handles JSON requests for populating
  * the grid of payment history.
+ *
  * @version 1.0
  */
 @Controller
 public class PaymentHistoryListController {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
@@ -47,14 +66,14 @@ public class PaymentHistoryListController {
         NAME_MAP.put("amount", "phis.AMOUNT");
         NAME_MAP.put("currencycode", "phis.CURRENCY_CODE");
     }
-    
-    private Map<String,Object> paymentHistoryToMap(PaymentHistory ph) {
+
+    private Map<String, Object> paymentHistoryToMap(PaymentHistory ph) {
 
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", ph.getId());
-        map.put("date", formatter.format(ph.getTransactionDate()) );
+        map.put("date", formatter.format(ph.getTransactionDate()));
         map.put("constituentid", ph.getConstituent().getId());
         map.put("type", ph.getPaymentHistoryType().name());
         map.put("paymenttype", ph.getPaymentType());
@@ -66,8 +85,8 @@ public class PaymentHistoryListController {
         return map;
 
     }
-    
-    @Resource(name="paymentHistoryService")
+
+    @Resource(name = "paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
 
     @SuppressWarnings("unchecked")
@@ -78,33 +97,32 @@ public class PaymentHistoryListController {
 
         // if we're not getting back a valid column name, possible SQL injection,
         // so send back an empty list.
-        if(!sortInfo.validateSortField(NAME_MAP.keySet())) {
+        if (!sortInfo.validateSortField(NAME_MAP.keySet())) {
             logger.warn("getgetPaymentHistory called with invalid sort column: [" + sortInfo.getSort() + "]");
             return new ModelMap("rows", rows);
         }
 
         // set the sort to the valid column name, based on the map
-        sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
+        sortInfo.setSort((String) NAME_MAP.get(sortInfo.getSort()));
 
         String constituentId = request.getParameter("constituentId");
         PaginatedResult result = null;
         if (GenericValidator.isBlankOrNull(constituentId)) {
-            result = paymentHistoryService.readPaymentHistoryBySite(sortInfo); 
+            result = paymentHistoryService.readPaymentHistoryBySite(sortInfo);
         } else {
-            result = paymentHistoryService.readPaymentHistory(Long.valueOf(constituentId), sortInfo); 
+            result = paymentHistoryService.readPaymentHistory(Long.valueOf(constituentId), sortInfo);
         }
 
         List<PaymentHistory> list = result.getRows();
 
-        for(PaymentHistory ph : list) {
-            rows.add( paymentHistoryToMap(ph) );
+        for (PaymentHistory ph : list) {
+            rows.add(paymentHistoryToMap(ph));
         }
 
         ModelMap map = new ModelMap("rows", rows);
         map.put("totalRows", result.getRowCount());
         return map;
     }
-    
 
 
 }

@@ -7,9 +7,11 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.Resource;
 
-public class TableLoggerImpl implements TableLogger, ApplicationContextAware {
+public class TableLoggerImpl implements TableLogger, ApplicationContextAware, java.io.Serializable {
 
-    private ApplicationContext applicationContext;
+	private static final long serialVersionUID = 1L;
+
+	private ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

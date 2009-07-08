@@ -2,10 +2,10 @@
 -- DELIMITER $$
 
 
--- Create function to set 4-digit year on date.
+-- CREATE DEFINER=`root`@`localhost` FUNCTION to set 4-digit year on date.
 DROP FUNCTION IF EXISTS SET_YEAR$$
 
-CREATE FUNCTION SET_YEAR(ADATE datetime, AYEAR int)
+CREATE DEFINER=`root`@`localhost` FUNCTION SET_YEAR(ADATE datetime, AYEAR int)
     RETURNS datetime  DETERMINISTIC
 BEGIN
 
@@ -14,11 +14,11 @@ BEGIN
 END
 $$
 
--- Create function to determine if as-of date is in the seasonal range determined by start and end date.
+-- CREATE DEFINER=`root`@`localhost` FUNCTION to determine if as-of date is in the seasonal range determined by start and end date.
 -- All years are ignored so the start date can be after the end date.
 DROP FUNCTION IF EXISTS IS_IN_SEASON$$
 
-CREATE FUNCTION IS_IN_SEASON(AS_OF_DATE datetime, START_DATE datetime, END_DATE datetime)
+CREATE DEFINER=`root`@`localhost` FUNCTION IS_IN_SEASON(AS_OF_DATE datetime, START_DATE datetime, END_DATE datetime)
     RETURNS BIT  DETERMINISTIC
 BEGIN
 
@@ -61,9 +61,9 @@ END
 $$
 
 
--- Create function to retrieve custom fields
+-- CREATE DEFINER=`root`@`localhost` FUNCTION to retrieve custom fields
 DROP FUNCTION IF EXISTS ISDONORTYPE$$
-CREATE FUNCTION `ISDONORTYPE`(ENTITYID INT, DONOR_TYPE VARCHAR(255))
+CREATE DEFINER=`root`@`localhost` FUNCTION `ISDONORTYPE`(ENTITYID INT, DONOR_TYPE VARCHAR(255))
         RETURNS BIT
 BEGIN
 
@@ -80,10 +80,10 @@ BEGIN
         
 END$$
 
--- Create function to get next key for a site
+-- CREATE DEFINER=`root`@`localhost` FUNCTION to get next key for a site
 DROP FUNCTION IF EXISTS GENERATEID$$
 
-CREATE FUNCTION GENERATEID(SITENAME VARCHAR(255))
+CREATE DEFINER=`root`@`localhost` FUNCTION GENERATEID(SITENAME VARCHAR(255))
     RETURNS VARCHAR(255)
 BEGIN
     DECLARE CUSTOMID VARCHAR(255);
@@ -106,7 +106,7 @@ END$$
 
 DROP TRIGGER IF EXISTS INSERT_CUSTOM_FIELD_NUMERIC_AND_DATE$$
 
-CREATE TRIGGER INSERT_CUSTOM_FIELD_NUMERIC_AND_DATE 
+CREATE DEFINER=`root`@`localhost` TRIGGER INSERT_CUSTOM_FIELD_NUMERIC_AND_DATE 
 BEFORE INSERT ON `CUSTOM_FIELD` 
 FOR EACH ROW
 BEGIN
@@ -125,7 +125,7 @@ END$$
 
 DROP TRIGGER IF EXISTS UPDATE_CUSTOM_FIELD_NUMERIC_AND_DATE$$
 
-CREATE TRIGGER UPDATE_CUSTOM_FIELD_NUMERIC_AND_DATE 
+CREATE DEFINER=`root`@`localhost` TRIGGER UPDATE_CUSTOM_FIELD_NUMERIC_AND_DATE 
 BEFORE UPDATE ON `CUSTOM_FIELD` 
 FOR EACH ROW
 BEGIN

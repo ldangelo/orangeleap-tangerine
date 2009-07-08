@@ -40,6 +40,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -373,8 +374,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
                     PlatformTransactionManager txManager = (PlatformTransactionManager) applicationContext.getBean("transactionManager");
 
                     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-                    def.setName("TxName");
-                    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+                    def.setName("TxProcessRecurringGifts");
+                    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 
                     TransactionStatus status = null;
                     try {
@@ -390,6 +391,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
                         txManager.commit(status);
 
                         TaskStack.execute();
+                    } catch (TransactionException txe) {
+                        txManager.rollback(status);
                     } catch (Exception e) {
                         logger.error(e.getMessage());
                     }

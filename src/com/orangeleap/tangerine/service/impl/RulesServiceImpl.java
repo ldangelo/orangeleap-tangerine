@@ -30,7 +30,6 @@ import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
-import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
@@ -43,6 +42,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
@@ -74,8 +74,8 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
         this.applicationContext = applicationContext;
     }
 
-    @Override
-    public void executeDailyJobRules() {
+
+    public void executeRules(String schedule, Date compareDate) {
 
         try {
             ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
@@ -84,9 +84,6 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
             SiteService ss = (SiteService) applicationContext.getBean("siteService");
             TangerineUserHelper tuh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 
-            Calendar today = Calendar.getInstance();
-            today.add(Calendar.DATE, -1);
-            Date yesterday = new java.sql.Date(today.getTimeInMillis());
 
             List<Constituent> peopleList = constituentService.readAllConstituentsBySite();
 
@@ -121,7 +118,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
                 workingMemory.setGlobal("constituentService", ps);
                 workingMemory.setGlobal("mailService", ms);
                 workingMemory.setGlobal("applicationContext", applicationContext);
-                workingMemory.setFocus(getSiteName() + "scheduleddaily");
+                workingMemory.setFocus(getSiteName() + schedule);
                 Site s = ss.readSite(tuh.lookupUserSiteName());
 
                 workingMemory.insert(s);
@@ -130,7 +127,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
                 //
                 // if the constituent has been updated or one of their
                 // gifts have been updated
-                if (p.getUpdateDate().compareTo(yesterday) > 0) updated = true;
+                if (p.getUpdateDate().compareTo(compareDate) > 0) updated = true;
 
                 List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
 
@@ -138,7 +135,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
                 // if the constituent has not been updated check to see if any of their
                 // gifts have been...
                 for (Gift g : giftList) {
-                    if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(yesterday) > 0) {
+                    if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(compareDate) > 0) {
                         updated = true;
                         workingMemory.insert(g);
                     }
@@ -159,7 +156,8 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
                     TaskStack.execute();
 
-
+                } catch (TransactionException txe) {
+                    txManager.rollback(status);
                 } catch (Exception e) {
                     // Don't generally log transactions marked as rollback only by service or validation exceptions; logged elsewhere.
                     logger.debug(e);
@@ -173,175 +171,29 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
     }
 
     @Override
+    public void executeDailyJobRules() {
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.DATE, -1);
+        Date yesterday = new java.sql.Date(today.getTimeInMillis());
+
+        executeRules("scheduledaily", yesterday);
+    }
+
+    @Override
     public void executeWeeklyJobRules() {
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.WEEK_OF_YEAR, -1);
+        Date lastweek = new java.sql.Date(today.getTimeInMillis());
 
-        try {
-
-            SiteService ss = (SiteService) applicationContext
-                    .getBean("siteService");
-            ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
-            GiftService gs = (GiftService) applicationContext.getBean("giftService");
-            MailService ms = (MailService) applicationContext.getBean("mailService");
-            TangerineUserHelper th = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
-            //  	    List<Site> siteList = ss.readSites();
-            Calendar today = Calendar.getInstance();
-            today.add(Calendar.WEEK_OF_YEAR, -1);
-            Date lastweek = new java.sql.Date(today.getTimeInMillis());
-
-            //	    for (Site s : siteList) {
-            SortInfo si = new SortInfo();
-
-
-            //		th.setSystemUserAndSiteName(s.getName());
-            List<Constituent> peopleList = constituentService.readAllConstituentsBySite();
-
-
-            RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
-                    .getBean("DroolsRuleAgent")).getRuleAgent(th.lookupUserSiteName())
-                    .getRuleBase();
-
-            StatefulSession workingMemory = ruleBase
-                    .newStatefulSession();
-            if (logger.isInfoEnabled()) {
-                workingMemory
-                        .addEventListener(new DebugAgendaEventListener());
-                workingMemory
-                        .addEventListener(new DebugWorkingMemoryEventListener());
-
-
-            }
-
-            workingMemory.setGlobal("giftService", gs);
-            workingMemory.setGlobal("constituentService", ps);
-            workingMemory.setGlobal("mailService", ms);
-            workingMemory.setGlobal("applicationContext",
-                    applicationContext);
-            workingMemory.setFocus(getSiteName() + "scheduledweekly");
-
-            Site s = ss.readSite(th.lookupUserSiteName());
-
-            workingMemory.insert(s);
-
-            for (Constituent p : peopleList) {
-                Boolean updated = false;
-
-                //
-                // if the constituent has been updated or one of their
-                // gifts have been updated
-                if (p.getCreateDate().compareTo(lastweek) > 0) updated = true;
-
-                List<Gift> giftList = giftService
-                        .readMonetaryGiftsByConstituentId(p.getId());
-
-                //
-                // if the constituent has not been updated check to see if any of their
-                // gifts have been...
-                for (Gift g : giftList) {
-                    if (g.getUpdateDate().compareTo(lastweek) > 0) {
-                        updated = true;
-                        workingMemory.insert(g);
-                    }
-
-                }
-                if (updated) {
-                    p.setGifts(giftList);
-                    ss.populateDefaultEntityEditorMaps(p);
-                    p.setSite(s);
-                    FactHandle pfh = workingMemory.insert(p);
-                }
-
-            }
-            workingMemory.fireAllRules();
-            workingMemory.dispose();
-            //	    }
-        } catch (Throwable t) {
-            logger.error(t);
-            t.printStackTrace();
-        }
+        executeRules("scheduleweekly", lastweek);
     }
 
     @Override
     public void executeMonthlyJobRules() {
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.MONTH, -1);
+        Date lastmonth = new java.sql.Date(today.getTimeInMillis());
 
-        try {
-
-            SiteService ss = (SiteService) applicationContext
-                    .getBean("siteService");
-            ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
-            GiftService gs = (GiftService) applicationContext.getBean("giftService");
-            MailService ms = (MailService) applicationContext.getBean("mailService");
-            TangerineUserHelper th = (TangerineUserHelper) applicationContext
-                    .getBean("tangerineUserHelper");
-            //			List<Site> siteList = ss.readSites();
-            Calendar today = Calendar.getInstance();
-            today.add(Calendar.MONTH, -1);
-            Date lastmonth = new java.sql.Date(today.getTimeInMillis());
-
-            //			for (Site s : siteList) {
-            SortInfo si = new SortInfo();
-
-
-            //				th.setSystemUserAndSiteName(s.getName());
-            List<Constituent> peopleList = constituentService.readAllConstituentsBySite();
-
-
-            RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
-                    .getBean("DroolsRuleAgent")).getRuleAgent(th.lookupUserSiteName())
-                    .getRuleBase();
-
-            StatefulSession workingMemory = ruleBase
-                    .newStatefulSession();
-            workingMemory
-                    .addEventListener(new DebugAgendaEventListener());
-            workingMemory
-                    .addEventListener(new DebugWorkingMemoryEventListener());
-
-            workingMemory.setGlobal("giftService", gs);
-            workingMemory.setGlobal("constituentService", ps);
-            workingMemory.setGlobal("mailService", ms);
-            workingMemory.setGlobal("applicationContext",
-                    applicationContext);
-            workingMemory.setFocus(getSiteName() + "scheduledmonthly");
-            Site s = ss.readSite(th.lookupUserSiteName());
-
-            workingMemory.insert(s);
-
-            for (Constituent p : peopleList) {
-                Boolean updated = false;
-
-                //
-                // if the constituent has been updated or one of their
-                // gifts have been updated
-                if (p.getCreateDate().compareTo(lastmonth) > 0) updated = true;
-
-                List<Gift> giftList = giftService
-                        .readMonetaryGiftsByConstituentId(p.getId());
-
-                //
-                // if the constituent has not been updated check to see if any of their
-                // gifts have been...
-                for (Gift g : giftList) {
-                    if (g.getUpdateDate().compareTo(lastmonth) > 0) {
-                        updated = true;
-                        workingMemory.insert(g);
-                    }
-
-                }
-                if (updated) {
-                    p.setGifts(giftList);
-                    ss.populateDefaultEntityEditorMaps(p);
-                    p.setSite(s);
-                    FactHandle pfh = workingMemory.insert(p);
-                }
-
-            }
-            workingMemory.fireAllRules();
-            workingMemory.dispose();
-            //				}
-        } catch (Throwable t) {
-            logger.error(t);
-            t.printStackTrace();
-        }
+        executeRules("schedulemonthly", lastmonth);
     }
-
 }

@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import com.orangeleap.tangerine.type.PaymentType;
+
 
 /**
  * <p>Java class for paymentSource complex type.

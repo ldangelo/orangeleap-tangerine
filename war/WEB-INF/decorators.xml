@@ -1,0 +1,6 @@
+<decorators defaultdir="/WEB-INF/jsp/decorators/">
+	<decorator name="basic" page="basic.jsp"/>
+	<decorator name="form" page="form.jsp"/>
+
+	<decorator name="errorDecorator" page="errorDecorator.jsp"/>
+</decorators>

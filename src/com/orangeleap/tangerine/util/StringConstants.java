@@ -95,6 +95,9 @@ public final class StringConstants {
     
     public static final String CUSTOM_FIELD_MAP_START = "customFieldMap[";
     public static final String CUSTOM_FIELD_MAP_END = "].value";
+	public static final String OTHER_PREFIX = "other_";
+	public static final String ADDITIONAL_PREFIX = "additional_";
+	public static final String DOT_VALUE = ".value";
     public static final String SITE_NAME = "siteName";
 
     public static final String UNKNOWN_LOWER_CASE = "unknown";
@@ -138,5 +141,7 @@ public final class StringConstants {
     public static final String FIELD_MAP_START = "fieldMap[";
     public static final String FIELD_MAP_END = "]";
     
-    public static final String CUSTOM_FIELD_SEPARATOR = "\u00A7"; //"¤" symbol 
+    public static final String CUSTOM_FIELD_SEPARATOR = "\u00A7"; //"¤" symbol
+	public static final String SECTION_DEFINITIONS = "sectionDefinitions";
+	public static final String FORM = "form";
 }

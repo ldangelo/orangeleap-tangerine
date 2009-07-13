@@ -50,6 +50,7 @@ import com.orangeleap.tangerine.type.AccessType;
 public class CsvImportController extends SimpleFormController {
 
     public static final String IMPORT_RESULT = "importResult";
+    private static int MAX_ERROR_LENGTH = 100;
 
 	protected final Log logger = OLLogger.getLog(getClass());
 
@@ -139,11 +140,21 @@ public class CsvImportController extends SimpleFormController {
 			if (handler.getErrors().size() == 0) {
                 result.add("Import successful.");
             }
-			for (String error : handler.getErrors()) {
-				if (errors.getAllErrors().size() > 1000) {
+			
+			
+			for (int i = 0; i < handler.getErrors().size(); i++) {
+				if (i > 20) {
+					result.add("more...");
+					break;
+				}
+				String error = handler.getErrors().get(i);
+				if (errors.getAllErrors().size() > 20) {
 					result.add("more...");
 					break;
 				} else {
+					if (error.length() > MAX_ERROR_LENGTH) {
+						error = error.substring(0, MAX_ERROR_LENGTH) + "...";
+					}
 					result.add(error);
 				}
 			}

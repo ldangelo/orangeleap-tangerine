@@ -130,6 +130,11 @@ public class ImportHandler {
 			msg = msg.substring(0,msg.indexOf("]"));
 			msg = "Invalid value: "+msg;
 		}
+		if (msg.contains("BeanPropertyBindingResult:")) {
+			msg = msg.substring(msg.indexOf("default message"));
+			msg = msg.substring(msg.indexOf("[")+1);
+			msg = msg.substring(0,msg.indexOf("]"));
+		}
 		return msg;
 	}
 

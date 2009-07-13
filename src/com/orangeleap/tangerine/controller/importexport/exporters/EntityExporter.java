@@ -25,6 +25,7 @@ import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -81,6 +82,7 @@ public abstract class EntityExporter {
             for (int i = 0; i < fields.size(); i++) {
                 FieldDescriptor fd = fields.get(i);
                 String value = getFieldValue(o, fd);
+                value = value.replace(StringConstants.CUSTOM_FIELD_SEPARATOR, ",");
                 //logger.debug("name="+fd.getName()+", value="+value);
                 line.add(value);
             }

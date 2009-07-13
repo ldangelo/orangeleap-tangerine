@@ -27,6 +27,8 @@ import java.util.Map;
 
 public interface PostBatchDao {
 
+    public List<PostBatch> listBatchs();
+
     public PostBatch readPostBatch(Long postBatchId);
 
     public PostBatch maintainPostBatch(PostBatch postBatch);

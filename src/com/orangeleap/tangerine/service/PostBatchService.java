@@ -34,7 +34,7 @@ public interface PostBatchService {
 
     public Map<String, String> readAllowedGiftSelectFields();
     public Map<String, String> readAllowedGiftUpdateFields();
-    public List<PostBatch> listBatchs(PostBatch postbatch);
+    public List<PostBatch> listBatchs();
     public PostBatch readBatch(Long batchId);
     public PostBatch maintainBatch(PostBatch postbatch);
     public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);

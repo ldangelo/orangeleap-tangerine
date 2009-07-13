@@ -112,9 +112,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    public List<PostBatch> listBatchs(PostBatch postbatch) {
-        // TODO implement if we want to list batches for 2-person review, copy create-from, etc.
-        return new ArrayList<PostBatch>();
+    public List<PostBatch> listBatchs() {
+        return postBatchDao.listBatchs();
     }
 
     @Override

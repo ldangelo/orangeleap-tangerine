@@ -29,9 +29,6 @@ import javax.annotation.Resource;
 @Service("versionService")
 public class VersionServiceImpl extends AbstractTangerineService implements VersionService {
 
-    // Increment this value when the tangerine.ddl has an incompatible change for a release.
-    public final static int ORANGE_SCHEMA_MAJOR_VERSION = 1;
-
 
     public final static String ORANGE_ID = "ORANGE";
 
@@ -49,11 +46,11 @@ public class VersionServiceImpl extends AbstractTangerineService implements Vers
         String message = "";
         try {
             int majorVersion = versionDao.selectVersion(ORANGE_ID).getMajorVersion();
-            if (majorVersion == ORANGE_SCHEMA_MAJOR_VERSION) {
+            if (majorVersion == OrangeLeapSchemaVersion.ORANGE_SCHEMA_MAJOR_VERSION) {
                 logger.info("Schema version successfully checked.");
                 return;
             }
-            message = "Invalid database version " + majorVersion + " does not match program schema version " + ORANGE_SCHEMA_MAJOR_VERSION;
+            message = "Invalid database version " + majorVersion + " does not match program schema version " + OrangeLeapSchemaVersion.ORANGE_SCHEMA_MAJOR_VERSION;
         } catch (Exception e) {
             e.printStackTrace();
             message = "Unable to determine database schema version.";

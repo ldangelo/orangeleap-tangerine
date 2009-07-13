@@ -45,4 +45,9 @@
 	<sqlMap resource="sqlmap/cacheGroup.xml"/>
 	<sqlMap resource="sqlmap/errorLog.xml"/>
 
+    <sqlMap resource="sqlmap/postBatch.xml"/>
+    <sqlMap resource="sqlmap/postBatchReviewSetItem.xml"/>
+    <sqlMap resource="sqlmap/journal.xml"/>
+
+
 </sqlMapConfig>

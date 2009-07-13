@@ -18,18 +18,19 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.OLLogger;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.util.Map;
-import java.util.List;
 
 @Repository("postBatchDAO")
 public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDao {
@@ -41,6 +42,17 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 	public IBatisPostBatchDao(SqlMapClient sqlMapClient) {
 		super(sqlMapClient);
 	}
+
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<PostBatch> listBatchs() {
+        if (logger.isTraceEnabled()) {
+            logger.trace("listPostBatchs");
+        }
+        Map<String, Object> params = setupParams();
+        List<PostBatch> result = (List<PostBatch>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCHS", params);
+        return result;
+    }
 
     @Override
     public PostBatch readPostBatch(Long postBatchId) {

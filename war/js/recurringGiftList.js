@@ -51,10 +51,10 @@ Ext.onReady(function() {
             {header: 'End Dt', width: 80, dataIndex: 'enddate', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Status', width: 100, dataIndex: 'status', sortable: true},
             {header: 'Activate', tooltip: 'Activate', width: 55, align: 'center', dataIndex: 'activate', sortable: true, renderer: RecurringGiftList.activateRenderer }, 
-            {header: 'Amt Per Gift', tooltip: 'Amount Per Gift', width: 65, dataIndex: 'amountpergift', sortable: true},
-            {header: 'Amt Total', tooltip: 'Amount Total', width: 65, dataIndex: 'amounttotal', sortable: true},
-            {header: 'Amt Paid', tooltip: 'Amount Paid', width: 65, dataIndex: 'amountpaid', sortable: true},
-            {header: 'Amt Remaining', tooltip: 'Amount Remaining', width: 65, dataIndex: 'amountremaining', sortable: true}
+            {header: 'Amt Per Gift', tooltip: 'Amount Per Gift', width: 65, dataIndex: 'amountpergift', sortable: true, renderer: OrangeLeap.amountRenderer },
+            {header: 'Amt Total', tooltip: 'Amount Total', width: 65, dataIndex: 'amounttotal', sortable: true, renderer: OrangeLeap.amountRenderer },
+            {header: 'Amt Paid', tooltip: 'Amount Paid', width: 65, dataIndex: 'amountpaid', sortable: true, renderer: OrangeLeap.amountRenderer },
+            {header: 'Amt Remaining', tooltip: 'Amount Remaining', width: 65, dataIndex: 'amountremaining', sortable: true, renderer: OrangeLeap.amountRenderer }
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {

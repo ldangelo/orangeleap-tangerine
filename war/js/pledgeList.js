@@ -45,10 +45,10 @@ Ext.onReady(function() {
         columns: [
             {header: '', width: 65, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: PledgeList.entityViewRenderer},
             {header: 'Status', width: 100, dataIndex: 'status', sortable: true},
-            {header: 'Amount Per Gift', width: 65, dataIndex: 'amountpergift', sortable: true},
-            {header: 'Amount Total', width: 65, dataIndex: 'amounttotal', sortable: true},
-            {header: 'Amount Paid', width: 65, dataIndex: 'amountpaid', sortable: true},
-            {header: 'Amount Remaining', width: 65, dataIndex: 'amountremaining', sortable: true}
+            {header: 'Amount Per Gift', width: 65, dataIndex: 'amountpergift', sortable: true, renderer: OrangeLeap.amountRenderer },
+            {header: 'Amount Total', width: 65, dataIndex: 'amounttotal', sortable: true, renderer: OrangeLeap.amountRenderer },
+            {header: 'Amount Paid', width: 65, dataIndex: 'amountpaid', sortable: true, renderer: OrangeLeap.amountRenderer },
+            {header: 'Amount Remaining', width: 65, dataIndex: 'amountremaining', sortable: true, renderer: OrangeLeap.amountRenderer }
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {

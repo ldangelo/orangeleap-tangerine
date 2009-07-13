@@ -597,6 +597,13 @@ var Picklist = {
 var OrangeLeap = {
 
 	customFieldSeparator: String.fromCharCode(167),
+
+	amountRenderer: function(val, meta, record) {
+		if (val && OrangeLeap.isNum(val)) {
+			return val.toFixed(2);
+		}
+		return '';
+	},
 	
 	expandCollapse: function(elem) {
 		$elem = $(elem);

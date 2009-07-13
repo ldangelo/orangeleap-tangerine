@@ -45,7 +45,7 @@ Ext.onReady(function() {
         columns: [
             {header: '', width: 65, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: GiftInKindList.entityViewRenderer},
             {header: 'Donation Date', width: 100, dataIndex: 'donationdate', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
-            {header: 'Fair Market Value', width: 65, dataIndex: 'fairmarketvalue', sortable: true},
+            {header: 'Fair Market Value', width: 65, dataIndex: 'fairmarketvalue', sortable: true, renderer: OrangeLeap.amountRenderer },
             {header: 'Currency Code', width: 65, dataIndex: 'currencycode', sortable: true},
             {header: 'Motivation Code', width: 65, dataIndex: 'motivationcode', sortable: true, renderer: GiftInKindList.motivationRender}
         ],

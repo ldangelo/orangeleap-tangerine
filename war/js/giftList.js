@@ -49,7 +49,7 @@ Ext.onReady(function() {
         columns: [
             {header: '', width: 30, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: GiftList.entityViewRenderer},
             {header: 'Donation Dt', width: 80, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
-            {header: 'Amount', width: 50, dataIndex: 'amount', sortable: true},
+            {header: 'Amount', width: 50, dataIndex: 'amount', sortable: true, renderer: OrangeLeap.amountRenderer },
             {header: 'Curr', width: 40, dataIndex: 'currencycode', sortable: true},
             {header: 'Pay Type', width: 60, dataIndex: 'type', sortable: true},
             {header: 'Pay Status', width: 65, dataIndex: 'status', sortable: true},

@@ -51,7 +51,7 @@ Ext.onReady(function() {
             {header: 'Date', width: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y g:ia')},
             {header: 'Pay Type', width: 65, dataIndex: 'paymentType', sortable: true},
             {header: 'Pay Status', width: 65, dataIndex: 'paymentStatus', sortable: true},
-            {header: 'Amount', width: 65, dataIndex: 'amount', sortable: true},
+            {header: 'Amount', width: 65, dataIndex: 'amount', sortable: true, renderer: OrangeLeap.amountRenderer },
             {header: 'Currency', width: 65, dataIndex: 'currencyCode', sortable: true},
             {header: 'Description', width: 200,  dataIndex: 'description', sortable: true, renderer: PaymentHistory.descriptionRenderer}
         ],

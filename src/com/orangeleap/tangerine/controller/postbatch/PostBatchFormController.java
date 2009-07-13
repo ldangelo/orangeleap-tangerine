@@ -148,8 +148,9 @@ public class PostBatchFormController extends SimpleFormController {
             postbatch = postBatchService.maintainBatch(postbatch);
 
             gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
-            if (update || post) {
+            if (post || update) {
                 postbatch = postBatchService.updateBatch(postbatch, post);
+                errormessage = "Batch successfully " + (post?"posted":"updated") +".";
             }
 
         } catch (Exception e) {

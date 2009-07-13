@@ -88,6 +88,9 @@
             <input type="hidden" id="update" name="update" value="false"  />
 
 			<input type="button" value="Select records for update" class="saveButton" onclick="$('#update').val('false'); $('#post').val('false'); submit();" />
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			
             <!-- TODO add 'Are you sure' confirmations: -->
             <input type="button" value="Update Batch" class="saveButton" onclick=" $('#update').val('true'); $('#post').val('false'); submit();" />
             <input type="button" value="Post Batch" class="saveButton" onclick=" $('#update').val('false'); $('#post').val('true'); submit();" />

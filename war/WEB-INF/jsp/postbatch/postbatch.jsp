@@ -13,10 +13,45 @@
 		<div >
 
         <c:if test="${postbatch.batchUpdated}">
+        
             Batch Id: ${postbatch.id} <br />
             Batch Description: <c:out value='${postbatch.postBatchDesc}'  /><br />
             Batch Type: <c:if test="${postbatch.entity == 'gift'}">Gift</c:if> <c:if test="${postbatch.entity == 'adjustedgift'}">Adjusted Gift</c:if> <br />
-            <br />
+            
+            <br/>Selection Criteria:<br/>
+            
+            <table cellspacing="8" >
+            <c:forEach var="field" varStatus="status" items="${postbatch.whereConditions}" >
+            <tr>
+            <td>
+            <c:out value='${field.key}'/> 
+            </td>
+            <td>
+            <c:out value='${field.value}'/>
+            </td>
+            </tr>
+			</c:forEach>
+            </table>
+			
+			<br/>Update Fields:<br/>
+			
+            <table cellspacing="8" >
+            <c:forEach var="field" varStatus="status" items="${postbatch.updateFields}" >
+            <tr>
+            <td>
+            <c:out value='${field.key}'/> 
+            </td>
+            <td>
+            <c:out value='${field.value}'/>
+            </td>
+            </tr>
+			</c:forEach>
+            </table>
+            
+            <br/><br/>
+            
+            Updated records:
+            
         </c:if>
 
         <c:if test="${!postbatch.batchUpdated}">

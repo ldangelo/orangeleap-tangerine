@@ -150,7 +150,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     @Override
     public Map<String, String> readAllowedGiftUpdateFields() {
        Map<String, String> map = new TreeMap<String, String>();
-       map.put("postedDate", "Posted Date");  // Updating this triggers a post (creates journal entry)
+       map.put("postedDate", "Posted Date (Creates Journal Entry)");  // Updating this triggers a post (creates journal entry)
        map.put("status", "Status");
        map.put("source", "Source");
        return map;

@@ -10,9 +10,9 @@ public class TangerineForm {
 	
 	protected Map<String, Object> fieldMap = new HashMap<String, Object>();
 	protected Object domainObject;
-	private static final String TANG_DOT = "-tangDot-";
-	private static final String TANG_START_BRACKET = "-tangStartBracket-";
-	private static final String TANG_END_BRACKET = "-tangEndBracket-";
+	public static final String TANG_DOT = "-tangDot-";
+	public static final String TANG_START_BRACKET = "-tangStartBracket-";
+	public static final String TANG_END_BRACKET = "-tangEndBracket-";
 
 	public Map<String, Object> getFieldMap() {
 		return fieldMap;
@@ -45,8 +45,8 @@ public class TangerineForm {
 		fieldMap.put(key, value);
 	}
 
-	public Object getFieldValue(String unescapedFieldName) {
-		return fieldMap.get(escapeFieldName(unescapedFieldName));
+	public Object getFieldValue(String escapedFieldName) {
+		return fieldMap.get(escapedFieldName);
 	}
 
 	public Object getDomainObject() {

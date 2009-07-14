@@ -21,7 +21,6 @@ package com.orangeleap.tangerine.controller.postbatch;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -134,10 +133,9 @@ public class PostBatchFormController extends SimpleFormController {
 
             readFields(request, postbatch.getWhereConditions(), "sf");
             readFields(request, postbatch.getUpdateFields(), "uf");
-            validatesFields(postbatch);
-            validateRanges(postbatch);
+            validateFields(postbatch);
             postbatch = postBatchService.maintainBatch(postbatch);
-            gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
+            gifts = postBatchService.createBatchSelectionList(postbatch);  // throw exception if selection set too large.
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,7 +155,7 @@ public class PostBatchFormController extends SimpleFormController {
     }
 
     // Validate fields are on allowed select lists.  May allow duplicate fields in list, for example date > and < for a range.
-    private void validatesFields(PostBatch postbatch) {
+    private void validateFields(PostBatch postbatch) {
         Map<String, String> select = postBatchService.readAllowedGiftSelectFields();
         Map<String, String> update = postBatchService.readAllowedGiftUpdateFields();
         for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
@@ -170,48 +168,13 @@ public class PostBatchFormController extends SimpleFormController {
         }
     }
 
-
-    // Allow some basic range matching formats     
-    // TODO check based on specific field type
-    private void validateRanges(PostBatch postbatch) {
-        for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
-            String value = me.getValue();
-            if (value.startsWith("=") || value.startsWith("!=") || value.startsWith("<") || value.startsWith(">")) {
-
-                String avalue = value.startsWith("!=") ? value.substring(2) : value.substring(1);
-
-                boolean isNull = avalue.equalsIgnoreCase("null");
-
-                boolean isDate = false;
-                try {
-                    DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
-                    Date adate = formatter.parse(avalue);
-                    isDate = avalue.length() == PostBatchServiceImpl.DATE_FORMAT.length();
-                } catch (Exception e) {
-                }
-
-                boolean isNumber = false;
-                try {
-                    Double.parseDouble(avalue);
-                    isNumber = true;
-                } catch (Exception e) {
-                }
-
-                if (!(isDate || isNumber || isNull)) {
-                    throw new RuntimeException("Invalid matching value \"" + value + "\"");
-                }
-
-            }
-        }
-    }
-
-    private void readFields(HttpServletRequest request, Map conditions, String type) {
+  	private void readFields(HttpServletRequest request, Map<String, String> conditions, String type) {
         conditions.clear();
         conditions.putAll(getMap(request, type));
     }
 
     @SuppressWarnings("unchecked")
-    protected Map<String, String> getMap(HttpServletRequest request, String type) {
+    private Map<String, String> getMap(HttpServletRequest request, String type) {
         Map map = new TreeMap<String, String>();
         Enumeration e = request.getParameterNames();
         while (e.hasMoreElements()) {

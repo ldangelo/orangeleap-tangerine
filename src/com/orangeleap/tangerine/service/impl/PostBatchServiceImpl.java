@@ -112,15 +112,53 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         return map;
     }
 
+    // TODO support search params
+    private List<Map<String, Object>> createSearchMap(Map<String, String> map) {
+    	
+    	List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+    	
+        for (Map.Entry<String, String> me : map.entrySet()) {
+            String value = me.getValue();
+            if (value.startsWith("=") || value.startsWith("!=") || value.startsWith("<") || value.startsWith(">")) {
+
+                String avalue = value.startsWith("!=") ? value.substring(2) : value.substring(1);
+
+                boolean isNull = avalue.equalsIgnoreCase("null");
+
+                boolean isDate = false;
+                try {
+                    DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
+                    Date adate = formatter.parse(avalue);
+                    isDate = avalue.length() == PostBatchServiceImpl.DATE_FORMAT.length();
+                } catch (Exception e) {
+                }
+
+                boolean isNumber = false;
+                try {
+                    Double.parseDouble(avalue);
+                    isNumber = true;
+                } catch (Exception e) {
+                }
+
+                if (!(isDate || isNumber || isNull)) {
+                    throw new RuntimeException("Invalid matching value \"" + value + "\"");
+                }
+
+            }
+        }
+        
+        return result;
+    }
+
     @Override
     public Map<String, String> readAllowedGiftUpdateFields() {
-        // TODO read gift entry screen for custom fields?
-        Map<String, String> map = new TreeMap<String, String>();
-       map.put("postedDate", "Posted Date");
+       // TODO read gift entry screen for custom fields?
+       Map<String, String> map = new TreeMap<String, String>();
+       map.put("postedDate", "Posted Date");  // Updating this triggers a post (creates journal entry)
        map.put("giftStatus", "Gift Status");
        return map;
     }
-
+    
     @Override
     public List<PostBatch> listBatchs() {
         return postBatchDao.listBatchs();
@@ -146,12 +184,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         postBatchDao.deletePostBatchItems(postbatch.getId());
         
-        Map<String, Object> searchmap = new HashMap<String, Object>();
-        for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
-            searchmap.put(me.getKey(), me.getValue());
-        }
+        List<Map<String, Object>> searchmap = createSearchMap(postbatch.getWhereConditions());
 
-        // TODO support search params
         if (isGift) {
             postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap); 
         } else {
@@ -167,8 +201,134 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         return getBatchSelectionList(postbatch);
     }
+    
+    private void saveGift(Gift gift) throws BindException {
+        // TODO uncomment once complete TANGERINE-816 gift domain/form object separation
+        //giftService.maintainGift(gift);
+    }
+
+    private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
+        // TODO uncomment once complete TANGERINE-816 adjustedGift domain/form object separation
+        //adjustedGiftService.maintainAdjustedGift(adjustedGift);
+    }
+
+    private BeanWrapper addPropertyEditors(BeanWrapper bw) {
+        bw.registerCustomEditor(java.util.Date.class, new java.beans.PropertyEditorSupport() {
+            private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+            public void setAsText(java.lang.String s) throws java.lang.IllegalArgumentException {
+                try {
+                    this.setValue(dateFormat.parse(s));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            public java.lang.String getAsText() {
+                return  dateFormat.format((Date)this.getValue());
+            }
+
+        });
+        return bw;
+    }
+
+    // Reads previous list of matched gifts. Does not re-evaluate any criteria.
+    @Override
+    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
+         List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
+         List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
+         boolean isGift = GIFT.equals(postbatch.getEntity());
+         for (PostBatchReviewSetItem item : list) {
+             if (isGift) {
+                 result.add(giftService.readGiftById(item.getEntityId()));
+             } else {
+                 result.add(adjustedGiftService.readAdjustedGiftById(item.getEntityId()));
+             }
+         }
+         return result;
+    }
 
 
+
+    @Override
+    public void deleteBatch(PostBatch postbatch) {
+       if (postbatch.isBatchUpdated()) throw new RuntimeException("Cannot delete a batch that has already been updated.");
+       postBatchDao.deletePostBatchItems(postbatch.getId());
+       postBatchDao.deletePostBatch(postbatch.getId());
+    }
+
+    // Sets fields on gifts/adjusted gifts in reviewed batch list
+    @Override
+    public PostBatch updateBatch(PostBatch postbatch) {
+
+        postbatch.getUpdateErrors().clear();
+
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+        boolean post = postbatch.getUpdateFields().get(POSTED_DATE) != null;
+
+        Date postedDate = null;
+        Map<String, String> bankmap = new HashMap<String, String>();
+        Map<String, String> codemap = new HashMap<String, String>();
+
+        if (post) {
+            postbatch.getUpdateFields().put(POSTED, "true");
+            try {
+                postedDate = dateFormat.parse(postbatch.getUpdateFields().get(POSTED_DATE));
+            } catch (Exception e) {
+                throw new RuntimeException("Invalid posted date.");
+            }
+            createMaps(bankmap, codemap);
+        } else {
+           // Can't update these fields if not posting.
+           postbatch.getUpdateFields().remove(POSTED);
+           postbatch.getUpdateFields().remove(POSTED_DATE);
+        }
+        
+
+        // Get list to update
+        // TODO process in single transactions and support partial batch updates.
+        List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
+        if (list.size() > 1000) throw new RuntimeException("Batch size limit exceeded.");   // TODO remove size limit
+
+        for (PostBatchReviewSetItem item: list) {
+            
+            try {
+
+                processUpdateItem(item, postbatch, post, codemap, bankmap);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                String msg = item.getEntityId() + ": " + e.getMessage();
+                logger.error(msg);
+                postbatch.getUpdateErrors().add(msg);
+            }
+
+        }
+
+        if (postbatch.getUpdateErrors().size() > 0) {
+            // rollback entire batch for now.  otherwise we have to support reprocess partial
+            throw new PostBatchUpdateException(postbatch.getUpdateErrors());   
+        }
+
+        if (post) {
+            postbatch.setPosted(true);
+            postbatch.setPostedDate(postedDate);
+            postbatch.setPostedById(tangerineUserHelper.lookupUserId());
+        } else {
+            postbatch.setBatchUpdated(true);
+            postbatch.setBatchUpdatedDate(new java.util.Date());
+            postbatch.setBatchUpdatedById(tangerineUserHelper.lookupUserId());
+        }
+        
+        // Update
+        postbatch.getUpdateFields().remove(POSTED);  // This is a hidden update field for posting - don't show in list.
+        postbatch = postBatchDao.maintainPostBatch(postbatch);
+        
+        return postbatch;
+        
+    }
+    
     private void createMaps(Map<String, String> bankmap, Map<String, String> codemap) {
 
         Picklist bankCodes = picklistItemService.getPicklist("customFieldMap[bank]");
@@ -223,55 +383,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     }
 
-    private void saveGift(Gift gift) throws BindException {
-        // TODO uncomment once complete TANGERINE-816 gift domain/form object separation
-        //giftService.maintainGift(gift);
-    }
-
-    private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
-        // TODO uncomment once complete TANGERINE-816 adjustedGift domain/form object separation
-        //adjustedGiftService.maintainAdjustedGift(adjustedGift);
-    }
-
-    private BeanWrapper addPropertyEditors(BeanWrapper bw) {
-        bw.registerCustomEditor(java.util.Date.class, new java.beans.PropertyEditorSupport() {
-            private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-
-            public void setAsText(java.lang.String s) throws java.lang.IllegalArgumentException {
-                try {
-                    this.setValue(dateFormat.parse(s));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            public java.lang.String getAsText() {
-                return  dateFormat.format((Date)this.getValue());
-            }
-
-        });
-        return bw;
-    }
-
-    // Reads previous list of matched gifts. Does not re-evaluate any criteria.
-    @Override
-    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
-         List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
-         List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
-         boolean isGift = GIFT.equals(postbatch.getEntity());
-         for (PostBatchReviewSetItem item : list) {
-             if (isGift) {
-                 result.add(giftService.readGiftById(item.getEntityId()));
-             } else {
-                 result.add(adjustedGiftService.readAdjustedGiftById(item.getEntityId()));
-             }
-         }
-         return result;
-    }
-
-
-
-    private void processUpdate(PostBatchReviewSetItem item, PostBatch postbatch, boolean post, Map<String, String> codemap, Map<String, String> bankmap) throws Exception {
+    private void processUpdateItem(PostBatchReviewSetItem item, PostBatch postbatch, boolean post, Map<String, String> codemap, Map<String, String> bankmap) throws Exception {
 
         boolean isGift = GIFT.equals(postbatch.getEntity());
         AbstractPaymentInfoEntity apie;
@@ -318,85 +430,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             if (post) createJournalEntries(gift, ag, postbatch, codemap, bankmap);
         }
 
-    }
-
-    @Override
-    public void deleteBatch(PostBatch postbatch) {
-       if (postbatch.isBatchUpdated()) throw new RuntimeException("Cannot delete a batch that has already been updated.");
-       postBatchDao.deletePostBatchItems(postbatch.getId());
-       postBatchDao.deletePostBatch(postbatch.getId());
-    }
-
-    // Sets fields on gifts/adjusted gifts in reviewed batch list
-    @Override
-    public PostBatch updateBatch(PostBatch postbatch) {
-
-        postbatch.getUpdateErrors().clear();
-
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-
-        boolean post = postbatch.getUpdateFields().get(POSTED_DATE) != null;
-
-        Date postedDate = null;
-        Map<String, String> bankmap = new HashMap<String, String>();
-        Map<String, String> codemap = new HashMap<String, String>();
-
-        if (post) {
-            postbatch.getUpdateFields().put(POSTED, "true");
-            try {
-                postedDate = dateFormat.parse(postbatch.getUpdateFields().get(POSTED_DATE));
-            } catch (Exception e) {
-                throw new RuntimeException("Invalid posted date.");
-            }
-            createMaps(bankmap, codemap);
-        } else {
-           // Can't update these fields if not posting.
-           postbatch.getUpdateFields().remove(POSTED);
-           postbatch.getUpdateFields().remove(POSTED_DATE);
-        }
-        
-
-        // Get list to update
-        // TODO process in single transactions and support partial batch updates.
-        List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
-        if (list.size() > 1000) throw new RuntimeException("Batch size limit exceeded.");   // TODO remove size limit
-
-        for (PostBatchReviewSetItem item: list) {
-            
-            try {
-
-                processUpdate(item, postbatch, post, codemap, bankmap);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                String msg = item.getEntityId() + ": " + e.getMessage();
-                logger.error(msg);
-                postbatch.getUpdateErrors().add(msg);
-            }
-
-        }
-
-        if (postbatch.getUpdateErrors().size() > 0) {
-            // rollback entire batch for now.  otherwise we have to support reprocess partial
-            throw new PostBatchUpdateException(postbatch.getUpdateErrors());   
-        }
-
-        if (post) {
-            postbatch.setPosted(true);
-            postbatch.setPostedDate(postedDate);
-            postbatch.setPostedById(tangerineUserHelper.lookupUserId());
-        } else {
-            postbatch.setBatchUpdated(true);
-            postbatch.setBatchUpdatedDate(new java.util.Date());
-            postbatch.setBatchUpdatedById(tangerineUserHelper.lookupUserId());
-        }
-        
-        // Update
-        postbatch.getUpdateFields().remove(POSTED);  // This is a hidden update field for posting - don't show in list.
-        postbatch = postBatchDao.maintainPostBatch(postbatch);
-        
-        return postbatch;
-        
     }
 
     public final static class PostBatchUpdateException extends RuntimeException {

@@ -84,7 +84,8 @@
         	g.GIFT_ID,
         	now(),
         	now()
-        from GIFT g
+        from GIFT g, CONSTITUENT c
+        where g.CONSTITUENT_ID = c.CONSTITUENT_ID and c.SITE_NAME = #siteName#
         ;
     </insert>
 
@@ -101,7 +102,8 @@
         	ag.ADJUSTED_GIFT_ID,
         	now(),
         	now()
-        from ADJUSTED_GIFT ag
+        from ADJUSTED_GIFT ag, CONSTITUENT c
+        where ag.CONSTITUENT_ID = c.CONSTITUENT_ID and c.SITE_NAME = #siteName#
         ;
     </insert>
 

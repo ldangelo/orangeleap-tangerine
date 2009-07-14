@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.web.customization.tag.fields;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.LayoutType;
@@ -32,6 +33,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.customization.tag.AbstractTag;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.grid.GridHandler;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
@@ -46,8 +48,10 @@ public class SectionFieldTag extends AbstractTag {
 	private PageCustomizationService pageCustomizationService;
 	private TangerineUserHelper tangerineUserHelper;
 	private MessageService messageService;
+	private FieldService fieldService;
 	private String pageName;
 	private FieldHandlerHelper fieldHandlerHelper;
+	private GridHandler gridHandler;
 
 	public void setPageName(String pageName) {
 	    this.pageName = pageName;
@@ -59,20 +63,20 @@ public class SectionFieldTag extends AbstractTag {
 		pageCustomizationService = (PageCustomizationService) appContext.getBean("pageCustomizationService");
 		tangerineUserHelper = (TangerineUserHelper) appContext.getBean("tangerineUserHelper");
 		messageService = (MessageService) appContext.getBean("messageService");
+		fieldService = (FieldService) appContext.getBean("fieldService");
 		fieldHandlerHelper = (FieldHandlerHelper) appContext.getBean("fieldHandlerHelper");
+		gridHandler = (GridHandler) appContext.getBean("gridHandler");
 
 		List<SectionDefinition> sectionDefs = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(pageName), tangerineUserHelper.lookupUserRoles());
 
-		StringBuilder sb = new StringBuilder();
-		writeSections(sectionDefs, sb);
-		pageContext.getOut().println(sb.toString());
+		writeSections(sectionDefs);
 
 		pageContext.getRequest().setAttribute(StringConstants.SECTION_DEFINITIONS, sectionDefs);
 		
 		return EVAL_BODY_INCLUDE;
 	}
 
-	protected void writeSections(List<SectionDefinition> sectionDefinitions, StringBuilder sb) {
+	protected void writeSections(List<SectionDefinition> sectionDefinitions) throws Exception {
 		if (sectionDefinitions != null) {
 			int oneColumnCount = 0;
 			for (int x = 0; x < sectionDefinitions.size(); x++) {
@@ -80,6 +84,7 @@ public class SectionFieldTag extends AbstractTag {
 
 				List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
 
+				StringBuilder sb = new StringBuilder();
 				if (LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType())) {
 					writeColumnsStart(sectionDef, sb);
 
@@ -94,7 +99,6 @@ public class SectionFieldTag extends AbstractTag {
 					writeSingleColumnEnd(sb);
 
 					writeColumnsEnd(sb);
-
 				}
 				else if (LayoutType.ONE_COLUMN.equals(sectionDef.getLayoutType()) || LayoutType.ONE_COLUMN_HIDDEN.equals(sectionDef.getLayoutType())) {
 					if (oneColumnCount == 0) {
@@ -129,12 +133,50 @@ public class SectionFieldTag extends AbstractTag {
 				else if (LayoutType.GRID.equals(sectionDef.getLayoutType())) {
 					
 				}
+				else if (LayoutType.DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType())) {
+					gridHandler.writeDistributionLinesGridBegin(pageName, sb);
+					writeSectionHeader(sectionDef, "gridSectionHeader", sb);
+					gridHandler.writeGridTableBegin(sectionDef, "distributionLines", sb);
+
+					boolean hasHiddenGridRow = false;
+					SectionDefinition hiddenSectionDef = null;
+					List<SectionField> hiddenSectionFields = null;
+					int nextIndex = x + 1;
+					if (nextIndex < sectionDefinitions.size()) {
+						hasHiddenGridRow = LayoutType.GRID_HIDDEN_ROW.equals(sectionDefinitions.get(nextIndex).getLayoutType()); 
+
+						if (hasHiddenGridRow) {
+							hiddenSectionDef = sectionDefinitions.get(nextIndex);
+							hiddenSectionFields = pageCustomizationService.readSectionFieldsBySection(hiddenSectionDef);
+
+							x += 1; // skip the next section (the hidden grid row) because we will handle it now
+						}
+					}
+					gridHandler.writeGridCols(sectionFields, hasHiddenGridRow, sb);
+					gridHandler.writeGridHeader(pageContext, sectionFields, hasHiddenGridRow, sb);
+
+					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
+							hiddenSectionDef, hiddenSectionFields,
+							getTangerineForm(), hasHiddenGridRow, true, sb); // this is the DUMMY row
+
+					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
+							hiddenSectionDef, hiddenSectionFields,
+							getTangerineForm(), hasHiddenGridRow, false, sb); // this are the real rows
+
+					gridHandler.writeGridTableEnd(sb);
+					gridHandler.writeGridActions(sectionDef.getLayoutType(), sb);
+					gridHandler.writeDistributionLinesGridEnd(sb);
+				}
+				else if (LayoutType.GIFT_IN_KIND_GRID.equals(sectionDef.getLayoutType())) {
+					
+				}
+				println(sb);
 			}
 		}
 	}
 
-	protected void writeSectionHeader(SectionDefinition sectionDef, StringBuilder sb) {
-		sb.append("<h4 class=\"formSectionHeader\">").append(getSectionHeader(sectionDef)).append("</h4>");
+	protected void writeSectionHeader(SectionDefinition sectionDef, String headerClass, StringBuilder sb) {
+		sb.append("<h4 class=\"").append(headerClass).append("\">").append(getSectionHeader(sectionDef)).append("</h4>");
 	}
 
 	protected String getSectionHeader(SectionDefinition sectionDef) {
@@ -156,7 +198,7 @@ public class SectionFieldTag extends AbstractTag {
 		}
 		sb.append(">");
 		if (LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType())) {
-			writeSectionHeader(sectionDef, sb);
+			writeSectionHeader(sectionDef, "formSectionHeader", sb);
 		}
 	}
 
@@ -178,7 +220,7 @@ public class SectionFieldTag extends AbstractTag {
 		}
 		sb.append(">");
 		if (LayoutType.ONE_COLUMN.equals(sectionDef.getLayoutType()) || LayoutType.ONE_COLUMN_HIDDEN.equals(sectionDef.getLayoutType())) {
-			writeSectionHeader(sectionDef, sb);
+			writeSectionHeader(sectionDef, "formSectionHeader", sb);
 		}
 		sb.append("<ul class=\"formFields width385\">");
 	}
@@ -188,7 +230,7 @@ public class SectionFieldTag extends AbstractTag {
 	}
 
 	protected void writeSectionField(SectionDefinition sectionDef, List<SectionField> sectionFields, StringBuilder sb) {
-		writeSectionField(sectionDef, sectionFields, sb, false);	
+		writeSectionField(sectionDef, sectionFields, sb, false);
 	}
 
 	protected void writeSectionField(SectionDefinition sectionDef, List<SectionField> sectionFields, StringBuilder sb, boolean firstColumn) {
@@ -196,20 +238,24 @@ public class SectionFieldTag extends AbstractTag {
 		int end = sectionFields.size();
 		if (LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType())) {
 			if (firstColumn) {
-				end = (int)Math.ceil((double)(sectionFields.size() / 2));
+				end = (int)Math.floor((double)(sectionFields.size() / 2));
 			}
 			else {
-				begin = (int)Math.floor((double)(sectionFields.size() / 2));
+				begin = (int)Math.ceil((double)(sectionFields.size() / 2));
 			}
 		}
 		for (int x = begin; x < end; x++) {
 			SectionField sectionField = sectionFields.get(x);
 			FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(sectionField.getFieldType());
 			if (fieldHandler != null) {
-				fieldHandler.handleField(getRequest(), getResponse(),
+				fieldHandler.handleField(
 						pageContext, sectionDef, sectionFields, sectionField,
-						(TangerineForm) getRequestAttribute(StringConstants.FORM), sb);
+						getTangerineForm(), sb);
 			}
 		}
+	}
+
+	private TangerineForm getTangerineForm() {
+		return (TangerineForm) getRequestAttribute(StringConstants.FORM);
 	}
 }

@@ -62,6 +62,15 @@ public class FieldServiceImpl implements FieldService {
     @Resource(name = "picklistCache")
     private Cache picklistCache;
 
+	@Override
+	public boolean isFieldRequired(SectionField currentField) {
+		if (logger.isTraceEnabled()) {
+		    logger.trace("isFieldRequired: currentField = " + currentField);
+		}
+		FieldRequired fr = lookupFieldRequired(currentField);
+		return (fr != null && fr.isRequired());
+	}
+
     @Override
     public FieldRequired lookupFieldRequired(SectionField currentField) {
         if (logger.isTraceEnabled()) {

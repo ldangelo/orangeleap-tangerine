@@ -214,7 +214,7 @@ public class QueryLookupHandler extends AbstractFieldHandler {
     }
 
     protected void createHiddenField(SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
-        sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" value=\"").append(fieldValue).append("\" id=\"").append(formFieldName).append("\"/>");
+        sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" value=\"").append(checkForNull(fieldValue)).append("\" id=\"").append(formFieldName).append("\"/>");
     }
 
     protected void createCloneable(StringBuilder sb) {

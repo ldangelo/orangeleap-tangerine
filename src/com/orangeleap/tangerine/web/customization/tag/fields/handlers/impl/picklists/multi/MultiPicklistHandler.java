@@ -149,7 +149,7 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 
     protected void createHiddenInput(SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
         sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" id=\"").append(formFieldName).append("\" value=\"").append(checkForNull(fieldValue));
-	    sb.append("\" additionalFieldId=\"").append(getAdditionalFieldPropertyName(currentField.getFieldPropertyName())).append("\"/>");
+	    sb.append("\" additionalFieldId=\"").append(resolveAdditionalFormFieldName(formFieldName)).append("\"/>");
     }
 
     protected void createContainerEnd(StringBuilder sb) {
@@ -174,10 +174,6 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 
 	protected String getLookupClickHandler() {
 		return "Lookup.loadMultiPicklist(this)";
-	}
-
-	protected String getAdditionalFieldPropertyName(String fieldPropertyName) {
-		return TangerineForm.escapeFieldName(super.resolvedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, fieldPropertyName));
 	}
 
 	@Override

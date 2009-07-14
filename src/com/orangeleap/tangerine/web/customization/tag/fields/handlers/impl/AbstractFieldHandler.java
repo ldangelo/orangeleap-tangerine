@@ -1,13 +1,13 @@
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
-import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.MessageService;
+import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -15,12 +15,15 @@ import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -44,23 +47,79 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	}
 
 	@Override
-	public void handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
+	public void handleField(PageContext pageContext,
 	                     SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, StringBuilder sb) {
-		String unescapedFieldName = currentField.getFieldPropertyName();
-		Object fieldValue = form.getFieldValue(unescapedFieldName);
-		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
+		String formFieldName = TangerineForm.escapeFieldName(currentField.getFieldPropertyName());
+		Object fieldValue = form.getFieldValue(formFieldName);
 
 		writeSideLiElementStart(sectionDefinition, formFieldName, fieldValue, sb);
 		writeLabel(currentField, pageContext, sb);
 
-		doHandler(request, response, pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
+		doHandler((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+				pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
+		
 		writeSideLiElementEnd(sb);
 	}
+
+	@Override
+	public void handleField(PageContext pageContext,
+	                     SectionDefinition sectionDefinition, List<SectionField> sectionFields,
+	                     SectionField currentField, TangerineForm form, boolean showSideAndLabel,
+	                     boolean isDummy, int rowCounter, StringBuilder sb) {
+		String unescapedFieldName = getUnescapedFieldName(sectionDefinition, currentField, form, rowCounter, isDummy);
+		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
+
+		Object fieldValue = null;
+		if ( ! isDummy) {
+			fieldValue = form.getFieldValue(formFieldName);
+		}
+
+		if (showSideAndLabel) {
+			writeSideLiElementStart(sectionDefinition, formFieldName, fieldValue, sb);
+			writeLabel(currentField, pageContext, sb);
+		}
+
+		doHandler((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+				pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
+
+		if (showSideAndLabel) {
+			writeSideLiElementEnd(sb);
+		}
+	}
+
 
 	protected abstract void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                                  SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb);
+
+
+	protected String getUnescapedFieldName(SectionDefinition sectionDef, SectionField currentField, TangerineForm form,
+	                                       int rowCounter, boolean isDummy) {
+		String unescapedFieldName = null;
+		if (LayoutType.isGridType(sectionDef.getLayoutType())) {
+			String collectionFieldName = currentField.getFieldDefinition().getFieldName();
+			BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject());
+
+			if (bean.isReadableProperty(collectionFieldName) && bean.getPropertyValue(collectionFieldName) instanceof Collection) {
+				StringBuilder key = new StringBuilder();
+				if (isDummy) {
+					key.append("tangDummy-");
+				}
+				key.append(collectionFieldName);
+				key.append("[").append(rowCounter).append("]");
+
+				if (currentField.getSecondaryFieldDefinition() != null) {
+					key.append(".").append(currentField.getSecondaryFieldDefinition().getFieldName());
+				}
+				unescapedFieldName = key.toString();
+			}
+		}
+		if (unescapedFieldName == null) {
+			unescapedFieldName = currentField.getFieldPropertyName();
+		}
+		return unescapedFieldName;
+	}                                                                                                           
 
 	protected String getMessage(String code) {
 	    return getMessage(code, null);
@@ -74,61 +133,45 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	    return obj == null ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml(obj.toString());
 	}
 	
-	public String resolveFieldPropertyName(SectionField currentField) {
-	    StringBuilder fieldPropertyName = new StringBuilder(currentField.getFieldPropertyName());
-
-	    if ((currentField.isCompoundField() && currentField.getSecondaryFieldDefinition().isCustom()) ||
-	            ( ! currentField.isCompoundField() && currentField.getFieldDefinition().isCustom())) {
-	        fieldPropertyName.append(StringConstants.DOT_VALUE);
-	    }
-	    return fieldPropertyName.toString();
-	}
-	
 	public String resolvedPrefixedFieldName(String prefix, String aFieldName) {
 	    String prefixedFieldName = null;
 
-	    boolean endsInValue = false;
-	    if (aFieldName.endsWith(StringConstants.DOT_VALUE)) {
-	        aFieldName = aFieldName.substring(0, aFieldName.length() - StringConstants.DOT_VALUE.length());
-	        endsInValue = true;
-	    }
+//	    boolean endsInValue = false;
+//	    if (aFieldName.endsWith(StringConstants.DOT_VALUE)) {
+//	        aFieldName = aFieldName.substring(0, aFieldName.length() - StringConstants.DOT_VALUE.length());
+//	        endsInValue = true;
+//	    }
 
-	    int startBracketIndex = aFieldName.lastIndexOf('[');
+	    int startBracketIndex = aFieldName.lastIndexOf(TangerineForm.TANG_START_BRACKET);
 	    if (startBracketIndex > -1) {
-	        int periodIndex = aFieldName.indexOf('.', startBracketIndex);
+	        int periodIndex = aFieldName.indexOf(TangerineForm.TANG_DOT, startBracketIndex);
 	        if (periodIndex > -1) {
-	            prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + 1)).append(prefix).append(aFieldName.substring(periodIndex + 1, aFieldName.length())).toString();
+	            prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + TangerineForm.TANG_DOT.length())).
+			            append(prefix).append(aFieldName.substring(periodIndex + TangerineForm.TANG_DOT.length(), aFieldName.length())).toString();
 	        }
 	        else {
-	            prefixedFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + 1)).append(prefix).append(aFieldName.substring(startBracketIndex + 1, aFieldName.length())).toString();
+	            prefixedFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + TangerineForm.TANG_START_BRACKET.length())).
+			            append(prefix).append(aFieldName.substring(startBracketIndex + TangerineForm.TANG_START_BRACKET.length(), aFieldName.length())).toString();
 	        }
 	    }
 	    if (prefixedFieldName == null) {
 	        prefixedFieldName = new StringBuilder(prefix).append(aFieldName).toString();
 	    }
-	    if (endsInValue) {
-	        prefixedFieldName = prefixedFieldName.concat(StringConstants.DOT_VALUE);
-	    }
+//	    if (endsInValue) {
+//	        prefixedFieldName = prefixedFieldName.concat(StringConstants.DOT_VALUE);
+//	    }
 	    return prefixedFieldName;
 	}
 
-	protected String resolveUnescapedOtherFieldPropertyName(String fieldPropertyName) {
-		return resolvedPrefixedFieldName(StringConstants.OTHER_PREFIX, fieldPropertyName);
+	public String resolveOtherFormFieldName(String formFieldName) {
+		return resolvedPrefixedFieldName(StringConstants.OTHER_PREFIX, formFieldName);
 	}
 
-	protected String resolveOtherFieldPropertyName(String fieldPropertyName) {
-		return TangerineForm.escapeFieldName(resolveUnescapedOtherFieldPropertyName(fieldPropertyName));
+	public String resolveAdditionalFormFieldName(String formFieldName) {
+		return resolvedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, formFieldName);
 	}
 
-	protected String resolveUnescapedAdditionalFieldPropertyName(String fieldPropertyName) {
-		return resolvedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, fieldPropertyName);
-	}
-
-	protected String resolveAdditionalFieldPropertyName(String fieldPropertyName) {
-		return TangerineForm.escapeFieldName(resolveUnescapedAdditionalFieldPropertyName(fieldPropertyName));
-	}
-
-	protected String resolveEntityAttributes(SectionField currentField) {
+	public String resolveEntityAttributes(SectionField currentField) {
 		String entityAttributes = currentField.getFieldDefinition().getEntityAttributes();
 		StringBuilder entityAttributesStyle = new StringBuilder();
 		if (entityAttributes != null) {
@@ -138,6 +181,20 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		    }
 		}
 		return StringEscapeUtils.escapeHtml(entityAttributesStyle.toString());
+	}
+
+	@Override
+	public String resolveLabelText(PageContext pageContext, SectionField sectionField) {
+		String labelText = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), pageContext.getRequest().getLocale());
+		if ( ! StringUtils.hasText(labelText)) {
+			if (!sectionField.isCompoundField()) {
+				labelText = sectionField.getFieldDefinition().getDefaultLabel();
+			}
+			else {
+				labelText = sectionField.getSecondaryFieldDefinition().getDefaultLabel();
+			}
+		}
+		return labelText;
 	}
 
 	protected void writeErrorClass(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
@@ -174,16 +231,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 			sb.append("<span class=\"required\">*</span>&nbsp;");
 		}
 
-		String labelText = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), pageContext.getRequest().getLocale());
-		if ( ! StringUtils.hasText(labelText)) {
-			if (!sectionField.isCompoundField()) {
-				labelText = sectionField.getFieldDefinition().getDefaultLabel();
-			}
-			else {
-				labelText = sectionField.getSecondaryFieldDefinition().getDefaultLabel();
-			}
-		}
-		sb.append(labelText);
+		sb.append(resolveLabelText(pageContext, sectionField));
 		sb.append("</label>");
 	}
 
@@ -198,8 +246,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	}
 
 	protected boolean isFieldRequired(SectionField currentField) {
-		FieldRequired fr = fieldService.lookupFieldRequired(currentField);
-		return (fr != null && fr.isRequired());
+		return fieldService.isFieldRequired(currentField);
 	}
 
 	protected Object[] splitValuesByCustomFieldSeparator(Object fieldValue) {

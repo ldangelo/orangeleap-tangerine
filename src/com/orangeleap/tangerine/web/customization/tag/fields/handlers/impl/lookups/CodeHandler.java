@@ -23,16 +23,19 @@ import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+import java.util.Collection;
 import java.util.List;
 
 public class CodeHandler extends AbstractFieldHandler {
@@ -63,7 +66,7 @@ public class CodeHandler extends AbstractFieldHandler {
 	                       SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                       TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
 		createLookupWrapperBegin(sb);
-		createDisplayInput(request, pageContext, currentField, formFieldName, fieldValue, sb);
+		createDisplayInput(request, pageContext, sectionDefinition, currentField, form, formFieldName, fieldValue, sb);
 		createHiddenInput(formFieldName, fieldValue, sb);
 		createLookup(sb);
 		createLookupWrapperEnd(sb);
@@ -73,19 +76,44 @@ public class CodeHandler extends AbstractFieldHandler {
         sb.append("<div class=\"lookupWrapper\">");
     }
 
-    protected void createDisplayInput(HttpServletRequest request, PageContext pageContext, 
-                                      SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
-	    String fieldPropertyName = resolveFieldPropertyName(currentField);
-	    String displayValue = resolveCodeValue(fieldPropertyName, fieldValue);
+	protected Object getCodeDisplayValue(SectionDefinition sectionDefinition, SectionField currentField,
+	                                     TangerineForm form, String formFieldName, Object fieldValue) {
+		String fieldPropertyName;
+
+		if (LayoutType.isGridType(sectionDefinition.getLayoutType()) &&
+				PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject()).getPropertyValue(currentField.getFieldDefinition().getFieldName()) instanceof Collection &&
+				currentField.getSecondaryFieldDefinition() != null) {
+			fieldPropertyName = currentField.getSecondaryFieldDefinition().getFieldName();
+		}
+		else {
+			fieldPropertyName = currentField.getFieldPropertyName();
+		}
+		return resolveCodeValue(fieldPropertyName, fieldValue);
+	}
+
+    protected void createDisplayInput(HttpServletRequest request, PageContext pageContext, SectionDefinition sectionDefinition,
+                                      SectionField currentField, TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
+//	    String fieldPropertyName = resolveFieldPropertyName(currentField);
 	    
-        sb.append("<input value=\"").append(checkForNull(displayValue)).append("\" class=\"text code ").append(resolveEntityAttributes(currentField));
+        sb.append("<input value=\"").append(checkForNull(getCodeDisplayValue(sectionDefinition, currentField, form, formFieldName, fieldValue))).
+		        append("\" class=\"text code ").append(resolveEntityAttributes(currentField));
 	    writeErrorClass(request, pageContext, sb); // TODO: fix for errors
 
         sb.append("\" ");
-	    getDisplayAttributes(fieldPropertyName, sb);
+	    getDisplayAttributes(currentField.getFieldPropertyName(), formFieldName, sb);
 	    
         sb.append("name=\"display-").append(formFieldName).append("\" id=\"display-").append(formFieldName).append("\"/>");
     }
+
+//	public String resolveFieldPropertyName(SectionField currentField) {
+//	    StringBuilder fieldPropertyName = new StringBuilder(currentField.getFieldPropertyName());
+//
+//	    if ((currentField.isCompoundField() && currentField.getSecondaryFieldDefinition().isCustom()) ||
+//	            ( ! currentField.isCompoundField() && currentField.getFieldDefinition().isCustom())) {
+//	        fieldPropertyName.append(StringConstants.DOT_VALUE);
+//	    }
+//	    return fieldPropertyName.toString();
+//	}
 
     protected void createHiddenInput(String formFieldName, Object fieldValue, StringBuilder sb) {
         sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" id=\"hidden-");
@@ -107,7 +135,7 @@ public class CodeHandler extends AbstractFieldHandler {
         return "Lookup.loadCodePopup(this)";
     }
 
-    protected void getDisplayAttributes(String fieldPropertyName, StringBuilder sb) {
+    protected void getDisplayAttributes(String fieldPropertyName, String formFieldName, StringBuilder sb) {
 	    String escapedFieldPropertyName = StringEscapeUtils.escapeHtml(fieldPropertyName);
         sb.append("lookup=\"").append(escapedFieldPropertyName).append("\" codeType=\"").append(escapedFieldPropertyName).append("\" ");
     }

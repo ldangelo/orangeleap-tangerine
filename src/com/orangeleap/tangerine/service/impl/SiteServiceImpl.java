@@ -18,28 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.apache.commons.validator.GenericValidator;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeansException;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -60,9 +38,33 @@ import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Collection;
 
 @Service("siteService")
 public class SiteServiceImpl extends AbstractTangerineService implements SiteService {
@@ -155,6 +157,65 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         return siteDao.readSite(site);
     }
 
+	/**
+	 * In addition to resolving the standard bean and map properties in a bean, also resolves indexed grid array values
+	 * @param pageType
+	 * @param roles
+	 * @param locale
+	 * @param entity
+	 * @param fieldLabels
+	 * @param fieldValues
+	 * @param fieldTypes
+	 */
+    @Override
+    public void readFieldInfo(PageType pageType, List<String> roles, Locale locale, Object entity, Map<String, String> fieldLabels, Map<String, Object> fieldValues,
+    		Map<String, FieldDefinition> fieldTypes) {
+
+        List<SectionField> sectionFields = getSectionFields(pageType, roles);
+    	if (sectionFields != null) {
+            BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(entity);
+    		
+            for (SectionField secFld : sectionFields) {
+	            getFieldLabel(secFld, locale, fieldLabels);
+                getFieldType(secFld, fieldTypes);
+
+	            if (LayoutType.isGridType(secFld.getSectionDefinition().getLayoutType())) {
+		            getArrayFieldValues(secFld, fieldValues, bean);
+	            }
+	            else {
+		            getFieldValue(secFld, fieldValues, bean);
+	            }
+            }
+            fieldValues.put(StringConstants.ID, bean.getPropertyValue(StringConstants.ID));
+    	}
+    }
+
+	protected void getArrayFieldValues(SectionField sectionField, Map<String, Object> fieldValues, BeanWrapper bean) {
+		String collectionFieldName = sectionField.getFieldDefinition().getFieldName();
+
+		if (bean.isReadableProperty(collectionFieldName) && bean.getPropertyValue(collectionFieldName) instanceof Collection) {
+			Collection coll = (Collection) bean.getPropertyValue(collectionFieldName);
+
+			for (int x = 0; x < coll.size(); x++) {
+				StringBuilder key = new StringBuilder(collectionFieldName);
+				key.append("[").append(x).append("]");
+
+				if (sectionField.getSecondaryFieldDefinition() != null) {
+				    key.append(".").append(sectionField.getSecondaryFieldDefinition().getFieldName());
+				}
+				getFieldValue(key.toString(), fieldValues, bean);
+			}
+		}
+	}
+    
+    private String getFieldName(SectionField sectionField) {
+        StringBuilder key = new StringBuilder(sectionField.getFieldDefinition().getFieldName());
+        if (sectionField.getSecondaryFieldDefinition() != null) {
+            key.append(".").append(sectionField.getSecondaryFieldDefinition().getFieldName());
+        }
+    	return key.toString();
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, FieldRequired> readRequiredFields(PageType pageType, List<String> roles) {
@@ -163,10 +224,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         if (fields != null) {
             for (SectionField sectionField : fields) {
                 FieldRequired fieldRequired = fieldService.lookupFieldRequired(sectionField);
-                String key = sectionField.getFieldDefinition().getFieldName();
-                if (sectionField.getSecondaryFieldDefinition() != null) {
-                    key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
-                }
+                String key = getFieldName(sectionField);
                 if (fieldRequired != null && fieldRequired.isRequired()) {
                     returnMap.put(key, fieldRequired);
                 }
@@ -181,26 +239,30 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         List<SectionField> sfs = getSectionFields(pageType, roles);
         if (sfs != null) {
             for (SectionField sectionField : sfs) {
-                String labelText = null;
-                // TODO: find out how to get current locale
-                if (locale != null) {
-                    labelText = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), locale);
-                }
-                if (GenericValidator.isBlankOrNull(labelText)) {
-                    if (!sectionField.isCompoundField()) {
-                        labelText = sectionField.getFieldDefinition().getDefaultLabel();
-                    } else {
-                        labelText = sectionField.getSecondaryFieldDefinition().getDefaultLabel();
-                    }
-                }
-                String key = sectionField.getFieldDefinition().getFieldName();
-                if (sectionField.getSecondaryFieldDefinition() != null) {
-                    key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
-                }
-                returnMap.put(key, labelText);
+            	getFieldLabel(sectionField, locale, returnMap);
             }
         }
         return returnMap;
+    }
+    
+    private void getFieldLabel(SectionField sectionField, Locale locale, Map<String, String> fieldLabels) {
+        String labelText = null;
+        // TODO: find out how to get current locale
+        if (locale != null) {
+            labelText = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), locale);
+        }
+        if (GenericValidator.isBlankOrNull(labelText)) {
+            if (!sectionField.isCompoundField()) {
+                labelText = sectionField.getFieldDefinition().getDefaultLabel();
+            } else {
+                labelText = sectionField.getSecondaryFieldDefinition().getDefaultLabel();
+            }
+        }
+        String key = sectionField.getFieldDefinition().getFieldName();
+        if (sectionField.getSecondaryFieldDefinition() != null) {
+            key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
+        }
+        fieldLabels.put(key, labelText);
     }
 
     @Override
@@ -210,10 +272,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         if (fields != null) {
             for (SectionField sectionField : fields) {
                 FieldValidation fieldValidation = fieldService.lookupFieldValidation(sectionField);
-                String key = sectionField.getFieldDefinition().getFieldName();
-                if (sectionField.getSecondaryFieldDefinition() != null) {
-                    key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
-                }
+                String key = getFieldName(sectionField);
                 if (fieldValidation != null && !StringUtils.isEmpty(fieldValidation.getRegex())) {
                     returnMap.put(key, fieldValidation);
                 }
@@ -222,7 +281,8 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         return returnMap;
     }
 
-    private List<SectionField> getSectionFields(PageType pageType, List<String> roles) {
+    @Override
+    public List<SectionField> getSectionFields(PageType pageType, List<String> roles) {
         List<SectionField> fields = new ArrayList<SectionField>();
         List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(pageType, roles);
         if (sectionDefinitions != null) {
@@ -241,26 +301,34 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         Map<String, Object> returnMap = new HashMap<String, Object>();
         List<SectionField> sfs = getSectionFields(pageType, roles);
         if (sfs != null) {
-            BeanWrapperImpl bean = new BeanWrapperImpl(object);
+            BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(object);
             for (SectionField sectionField : sfs) {
-                String key = sectionField.getFieldDefinition().getFieldName();
-                if (sectionField.getSecondaryFieldDefinition() != null) {
-                    key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
-                }
-                try {
-                    Object value = bean.getPropertyValue(key);
-                    if (value instanceof CustomField) {
-                        value = bean.getPropertyValue(key + ".value");
-                    }
-                    returnMap.put(key, value);
-                } catch (BeansException e) {
-                    // it is ok if the property doesn't exist
-                }
+            	getFieldValue(sectionField, returnMap, bean);
             }
-            returnMap.put("id", bean.getPropertyValue("id"));
+            returnMap.put(StringConstants.ID, bean.getPropertyValue(StringConstants.ID));
         }
         return returnMap;
     }
+    
+    private void getFieldValue(SectionField sectionField, Map<String, Object> returnMap, BeanWrapper bean) {
+        String key = getFieldName(sectionField);
+	    getFieldValue(key, returnMap, bean);
+    }
+
+	private void getFieldValue(String key, Map<String, Object> returnMap, BeanWrapper bean) {
+		if (bean.isReadableProperty(key)) {
+			try {
+			    Object value = bean.getPropertyValue(key);
+			    if (value instanceof CustomField) {
+			        value = bean.getPropertyValue(key + ".value");
+			    }
+			    returnMap.put(key, value);
+			}
+			catch (BeansException e) {
+			    // it is ok if the property doesn't exist
+			}
+		}
+	}
 
     @Override
     public Map<String, FieldDefinition> readFieldTypes(PageType pageType, List<String> roles) {
@@ -268,14 +336,14 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         List<SectionField> sfs = getSectionFields(pageType, roles);
         if (sfs != null) {
             for (SectionField sectionField : sfs) {
-                String key = sectionField.getFieldDefinition().getFieldName();
-                if (sectionField.getSecondaryFieldDefinition() != null) {
-                    key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
-                }
-                returnMap.put(key, sectionField.getFieldDefinition());
+            	getFieldType(sectionField, returnMap);
             }
         }
         return returnMap;
+    }
+    
+    private void getFieldType(SectionField sectionField, Map<String, FieldDefinition> fieldTypes) {
+        fieldTypes.put(getFieldName(sectionField), sectionField.getFieldDefinition());
     }
 
     @Override
@@ -283,9 +351,11 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     	List<String> roles = pageCustomizationService.readDistintSectionDefinitionsRoles();
     	List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
     	for (String s: roles) {
-    		if (s!= null && s.length() > 0) list.add(new GrantedAuthorityImpl(s));
+    		if (s!= null && s.length() > 0) {
+				list.add(new GrantedAuthorityImpl(s));
+			}
     	}
-    	return (GrantedAuthority[])list.toArray(new GrantedAuthority[list.size()]);
+    	return list.toArray(new GrantedAuthority[list.size()]);
     }
     
     @Override

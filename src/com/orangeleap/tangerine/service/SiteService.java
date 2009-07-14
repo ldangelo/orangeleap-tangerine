@@ -23,6 +23,7 @@ import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.PageType;
 import org.springframework.security.GrantedAuthority;
 
@@ -95,4 +96,14 @@ public interface SiteService {
      * @return
      */
     public Map<String, FieldDefinition> readFieldTypes(PageType pageType, List<String> roles);
+
+    /**
+     * Return section fields
+     * @param pageType
+     * @param roles
+     * @return
+     */
+	List<SectionField> getSectionFields(PageType pageType, List<String> roles);
+
+	void readFieldInfo(PageType pageType, List<String> roles, Locale locale, Object entity, Map<String, String> fieldLabels, Map<String, Object> fieldValues, Map<String, FieldDefinition> fieldTypes);
 }

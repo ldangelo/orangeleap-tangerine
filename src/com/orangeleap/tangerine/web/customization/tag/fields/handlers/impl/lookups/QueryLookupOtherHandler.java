@@ -26,8 +26,8 @@ public class QueryLookupOtherHandler extends QueryLookupHandler {
 			super.createOptionText(request, currentField, form, formFieldName, fieldValue, sb);
 		}
 		else {
-			String unescapedOtherFieldPropertyName = resolveUnescapedOtherFieldPropertyName(currentField.getFieldPropertyName());
-			otherFieldValue = form.getFieldValue(unescapedOtherFieldPropertyName);
+			String otherFormFieldName = resolveOtherFormFieldName(formFieldName);
+			otherFieldValue = form.getFieldValue(otherFormFieldName);
 
 			if (otherFieldValue != null) {
 				sb.append("<span>").append(otherFieldValue).append("</span>");
@@ -43,8 +43,8 @@ public class QueryLookupOtherHandler extends QueryLookupHandler {
 
 	@Override
 	protected void createHiddenField(SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
-	    sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" value=\"").append(fieldValue).append("\" id=\"").append(formFieldName).append("\" ");
-		sb.append("otherFieldId=\"").append(resolveOtherFieldPropertyName(currentField.getFieldPropertyName())).append("\" ");
+	    sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" value=\"").append(checkForNull(fieldValue)).append("\" id=\"").append(formFieldName).append("\" ");
+		sb.append("otherFieldId=\"").append(resolveOtherFormFieldName(formFieldName)).append("\" ");
 		sb.append("/>");
 	}
 

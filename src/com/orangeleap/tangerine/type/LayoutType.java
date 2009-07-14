@@ -26,5 +26,17 @@ public enum LayoutType {
 	ONE_COLUMN_HIDDEN,
 	TWO_COLUMN,
 	GRID,
-	GRID_HIDDEN_ROW
+	GRID_HIDDEN_ROW,
+	DISTRIBUTION_LINE_GRID,
+	GIFT_IN_KIND_GRID;
+
+	public static boolean isColumnType(LayoutType layoutType) {
+		return ONE_COLUMN.equals(layoutType) || ONE_COLUMN_HIDDEN.equals(layoutType) ||
+				TWO_COLUMN.equals(layoutType);
+	}
+
+	public static boolean isGridType(LayoutType layoutType) {
+		return GRID.equals(layoutType) || GRID_HIDDEN_ROW.equals(layoutType) ||
+				DISTRIBUTION_LINE_GRID.equals(layoutType) || GIFT_IN_KIND_GRID.equals(layoutType);
+	}
 }

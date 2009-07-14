@@ -23,4 +23,8 @@ public abstract class AbstractTag extends RequestContextAwareTag {
 	protected Object getRequestAttribute(String attributeName) {
 		return getRequest().getAttribute(attributeName);
 	}
+
+	protected void println(StringBuilder sb) throws Exception {
+		pageContext.getOut().println(sb.toString());
+	}
 }

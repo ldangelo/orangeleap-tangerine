@@ -29,6 +29,8 @@ public interface FieldService {
 
     public FieldRequired lookupFieldRequired(SectionField currentField);
 
+	public boolean isFieldRequired(SectionField currentField);
+
     public FieldValidation lookupFieldValidation(SectionField currentField);
     
     public boolean isFieldDisabled(SectionField sectionField, Object model);

@@ -1,5 +1,8 @@
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -14,9 +17,9 @@ public class CodeOtherHandler extends CodeHandler {
 	}
 
 	@Override
-	protected void getDisplayAttributes(String fieldPropertyName, StringBuilder sb) {
-	    super.getDisplayAttributes(fieldPropertyName, sb);
-		sb.append(" otherFieldId=\"").append(resolveOtherFieldPropertyName(fieldPropertyName)).append("\" ");
+	protected void getDisplayAttributes(String fieldPropertyName, String formFieldName, StringBuilder sb) {
+	    super.getDisplayAttributes(fieldPropertyName, formFieldName, sb);
+		sb.append(" otherFieldId=\"").append(resolveOtherFormFieldName(formFieldName)).append("\" ");
 	}
 
 	@Override
@@ -24,4 +27,17 @@ public class CodeOtherHandler extends CodeHandler {
 	    return "Lookup.loadCodePopup(this, true)";
 	}
 
+	@Override
+	protected Object getCodeDisplayValue(SectionDefinition sectionDefinition, SectionField currentField,
+	                                  TangerineForm form, String formFieldName, Object fieldValue) {
+		Object displayValue;
+		if (fieldValue != null) {
+			displayValue = super.getCodeDisplayValue(sectionDefinition, currentField, form, formFieldName, fieldValue);
+		}
+		else {
+			String otherFormFieldName = resolveOtherFormFieldName(formFieldName);
+			displayValue = form.getFieldValue(otherFormFieldName);
+		}
+		return displayValue;
+	}
 }

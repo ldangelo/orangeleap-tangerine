@@ -23,12 +23,27 @@ public class HiddenHandler extends AbstractFieldHandler {
 	}
 
 	@Override
-	public void handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField, TangerineForm form, StringBuilder sb) {
+	public void handleField(PageContext pageContext, SectionDefinition sectionDefinition, List<SectionField> sectionFields,
+	                     SectionField currentField, TangerineForm form, StringBuilder sb) {
 		String unescapedFieldName = currentField.getFieldPropertyName();
-		Object fieldValue = form.getFieldValue(unescapedFieldName);
 		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
+		Object fieldValue = form.getFieldValue(formFieldName);
 
-		doHandler(request, response, pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
+		doHandler((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+				pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
+	}
+
+	@Override
+	public void handleField(PageContext pageContext,
+	                     SectionDefinition sectionDefinition, List<SectionField> sectionFields,
+	                     SectionField currentField, TangerineForm form, boolean showSideAndLabel,
+	                     boolean isDummy, int rowCounter, StringBuilder sb) {
+		String unescapedFieldName = getUnescapedFieldName(sectionDefinition, currentField, form, rowCounter, isDummy);
+		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
+		Object fieldValue = form.getFieldValue(formFieldName);
+
+		doHandler((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+				pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
 	}
 
 	@Override

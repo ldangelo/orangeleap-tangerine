@@ -68,8 +68,8 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 	protected void createAdditionalFields(SectionField currentField, TangerineForm form, String formFieldName, StringBuilder sb) {
 		sb.append("<div id=\"div-additional-").append(formFieldName).append("\" class=\"additionalOptions\">");
 
-		String unescapedAdditionalFieldPropertyName = resolveUnescapedAdditionalFieldPropertyName(currentField.getFieldPropertyName());
-		Object additionalFieldValue = form.getFieldValue(unescapedAdditionalFieldPropertyName);
+		String additionalFormFieldName = resolveAdditionalFormFieldName(formFieldName);
+		Object additionalFieldValue = form.getFieldValue(additionalFormFieldName);
 
 		if (additionalFieldValue != null) {
 			Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);

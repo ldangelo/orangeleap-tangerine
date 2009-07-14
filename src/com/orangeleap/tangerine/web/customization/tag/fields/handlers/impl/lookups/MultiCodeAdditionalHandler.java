@@ -84,10 +84,10 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 		if (fieldValue != null) {
 			Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
 
-			String fieldPropertyName = resolveFieldPropertyName(currentField);
+//			String fieldPropertyName = resolveFieldPropertyName(currentField);
 
 			for (Object val : fieldVals) {
-				String displayValue = resolveCodeValue(fieldPropertyName, val.toString());
+				String displayValue = resolveCodeValue(currentField.getFieldPropertyName(), val.toString());
 				sb.append("<div class='multiCodeOption multiOption' id=\"option-").append(val).append("\" code=\"").append(val).append("\">");
 				sb.append("<span>").append(displayValue).append("</span>");
 
@@ -101,8 +101,8 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	protected void createAdditionalOptions(SectionField currentField, TangerineForm form, String formFieldName, StringBuilder sb) {
 		sb.append("<div id=\"div-additional-").append(formFieldName).append("\" class=\"additionalOptions\">");
 
-		String unescapedAdditionalFieldPropertyName = resolveUnescapedAdditionalFieldPropertyName(currentField.getFieldPropertyName());
-		Object additionalFieldValue = form.getFieldValue(unescapedAdditionalFieldPropertyName);
+		String additionalFormFieldName = resolveAdditionalFormFieldName(formFieldName);
+		Object additionalFieldValue = form.getFieldValue(additionalFormFieldName);
 
 		if (additionalFieldValue != null) {
 			Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);
@@ -130,7 +130,7 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	
 	protected void createHiddenInput(SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
 	    sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" id=\"").append(formFieldName).append("\" value=\"").append(checkForNull(fieldValue)).append("\" ");
-		sb.append("additionalFieldId=\"").append(resolveAdditionalFieldPropertyName(currentField.getFieldPropertyName())).append("\"");
+		sb.append("additionalFieldId=\"").append(resolveAdditionalFormFieldName(formFieldName)).append("\"");
 		sb.append("\"/>");
 	}
 

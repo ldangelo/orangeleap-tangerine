@@ -94,6 +94,19 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private final static String ACCOUNT_STRING_2 = "AccountString2";
     private final static String GL_ACCOUNT_CODE = "GLAccountCode";
 
+    private static String DEBIT = "debit";
+    private static String CREDIT = "credit";
+    private static String BANK = "bank";
+    private static String GIFT = "gift";
+    private static String ADJUSTED_GIFT = "adjustedgift";
+    private static String DISTRO_LINE = "distributionline";
+    private static String DEFAULT = "_default";
+    private static String POSTED_DATE = "postedDate";
+    private static String POSTED = "posted";
+    private static String NONE = "none";
+    private static String SOURCE = "source";
+    private static String STATUS = "status";
+
 
 
     @Override
@@ -106,11 +119,11 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         map.put("createdDateBefore", "Created Date Before");
         map.put("createdDateAfter", "Created Date After");
         map.put("constituentId", "Constituent Id");
-        map.put("status", "Status");
+        map.put(STATUS, "Status");
         map.put("paymentType", "Payment Type");
         map.put("donationDate", "Donation Date");
         map.put("postmarkDate", "Postmark Date");
-        map.put("source", "Source");
+        map.put(SOURCE, "Source");
         map.put("designationCode", "Designation Code");
         map.put("motivationCode", "Motivation Code");
 
@@ -146,14 +159,44 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         
         return result;
     }
-
+    
     @Override
     public Map<String, String> readAllowedGiftUpdateFields() {
        Map<String, String> map = new TreeMap<String, String>();
-       map.put("postedDate", "Posted Date (Creates Journal Entry)");  // Updating this triggers a post (creates journal entry)
-       map.put("status", "Status");
-       map.put("source", "Source");
+       map.put(POSTED_DATE, "Posted Date (Creates Journal Entry)");  // Updating this triggers a post (creates journal entry)
+       map.put(STATUS, "Status");
+       map.put(SOURCE, "Source");
        return map;
+    }
+    
+    private void setField(boolean isGift, AbstractPaymentInfoEntity apie, BeanWrapper bw, String key, String value) {
+       if (key.equals(POSTED_DATE)) {
+    	   bw.setPropertyValue(key, value);
+       } else if (key.equals(SOURCE)) {
+    	   apie.setCustomFieldValue(SOURCE, value);
+       } else {
+    	   if (isGift) {
+    		    setGiftField((Gift)apie, key, value);
+    	   } else {
+   		    	setAdjustedGiftField((AdjustedGift)apie, key, value);
+    	   }
+       }
+    }
+    
+    private void setGiftField(Gift gift, String key, String value) {
+       if (key.equals(STATUS)) {
+    	   gift.setGiftStatus(value);
+       } else {
+    	   throw new RuntimeException("Invalid field "+key);
+       }
+    }
+
+    private void setAdjustedGiftField(AdjustedGift ag, String key, String value) {
+        if (key.equals(STATUS)) {
+     	   ag.setAdjustedStatus(value);
+        } else {
+     	   throw new RuntimeException("Invalid field "+key);
+        }
     }
     
     @Override
@@ -412,7 +455,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         // Set update values.  
         for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-            bw.setPropertyValue(me.getKey(), me.getValue());
+        	setField(isGift, apie, bw, me.getKey(), me.getValue());
         }
         
         // Update record.
@@ -428,7 +471,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
 
     }
-
+    
     public final static class PostBatchUpdateException extends RuntimeException {
 
 		private static final long serialVersionUID = 1L;
@@ -452,17 +495,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             createJournalEntry(gift, ag, dl, postbatch, codemap, bankmap);
         }
     }
-
-    private static String DEBIT = "debit";
-    private static String CREDIT = "credit";
-    private static String BANK = "bank";
-    private static String GIFT = "gift";
-    private static String ADJUSTED_GIFT = "adjustedgift";
-    private static String DISTRO_LINE = "distributionline";
-    private static String DEFAULT = "_default";
-    private static String POSTED_DATE = "postedDate";
-    private static String POSTED = "posted";
-    private static String NONE = "none";
 
 
     private void createJournalEntry(Gift gift, AdjustedGift ag, DistributionLine dl, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {

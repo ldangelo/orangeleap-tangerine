@@ -90,22 +90,23 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     protected TangerineUserHelper tangerineUserHelper;
 
 
-    private final static String ACCOUNT_STRING_1 = "AccountString1";
-    private final static String ACCOUNT_STRING_2 = "AccountString2";
-    private final static String GL_ACCOUNT_CODE = "GLAccountCode";
+    public final static String ACCOUNT_STRING_1 = "AccountString1";
+    public final static String ACCOUNT_STRING_2 = "AccountString2";
+    public final static String GL_ACCOUNT_CODE = "GLAccountCode";
 
-    private static String DEBIT = "debit";
-    private static String CREDIT = "credit";
-    private static String BANK = "bank";
-    private static String GIFT = "gift";
-    private static String ADJUSTED_GIFT = "adjustedgift";
-    private static String DISTRO_LINE = "distributionline";
-    private static String DEFAULT = "_default";
-    private static String POSTED_DATE = "postedDate";
-    private static String POSTED = "posted";
-    private static String NONE = "none";
-    private static String SOURCE = "source";
-    private static String STATUS = "status";
+    public final static String DEBIT = "debit";
+    public final static String CREDIT = "credit";
+    public final static String BANK = "bank";
+    public final static String GIFT = "gift";
+    public final static String ADJUSTED_GIFT = "adjustedgift";
+    public final static String DISTRO_LINE = "distributionline";
+    public final static String DEFAULT = "_default";
+    
+    public final static String POSTED_DATE = "postedDate";
+    public final static String POSTED = "posted";
+    public final static String NONE = "none";
+    public final static String SOURCE = "source";
+    public final static String STATUS = "status";
 
 
 

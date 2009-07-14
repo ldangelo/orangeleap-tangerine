@@ -13,7 +13,11 @@
 		<div >
 
         <c:if test="${postbatch.batchUpdated}">
+                    
+            <h4>View Gift Posting Batch</h4>
+		    <br /><strong><a class="action" href="postbatchs.htm">&laquo;Back</a></strong><br/>
         
+            <br />
             Batch Id: ${postbatch.id} <br />
             Batch Description: <c:out value='${postbatch.postBatchDesc}'  /><br />
             Batch Type: <c:if test="${postbatch.entity == 'gift'}">Gift</c:if> <c:if test="${postbatch.entity == 'adjustedgift'}">Adjusted Gift</c:if> <br />
@@ -56,7 +60,7 @@
 
         <c:if test="${!postbatch.batchUpdated}">
 
-		<form:form method="post" commandName="postbatch" >
+        <form id="postbatchform" name="postbatchform" method="post" action="postbatch.htm" >
 
             <h4>Edit Gift Posting Batch</h4>
 		    <br /><strong><a class="action" href="postbatchs.htm">&laquo;Back</a></strong><br/>
@@ -130,13 +134,13 @@
 
             <br/><br/>
 
-			<input type="button" value="Save criteria and select records for update" class="saveButton" onclick="submit();" />
+			<input type="button" value="Save criteria and select records for update" class="saveButton" onclick="$('#postbatchform').submit();" />
 			
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			
 
 
-        </form:form>
+        </form>
 
 		</c:if>
 

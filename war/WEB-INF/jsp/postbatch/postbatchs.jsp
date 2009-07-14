@@ -13,7 +13,6 @@
 
             <h4>Gift Posting Batchs</h4>
 
-
             <span style="color:#ff0000">${errormessage}</span>  <br />
 
             <br/>

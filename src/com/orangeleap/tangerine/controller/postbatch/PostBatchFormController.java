@@ -86,7 +86,7 @@ public class PostBatchFormController extends SimpleFormController {
         String sdate = formatter.format(new java.util.Date());
         postbatch.setPostBatchDesc("Batch for " + sdate);
         // Add some default field settings...
-        postbatch.getWhereConditions().put("giftStatus", "Paid");
+        postbatch.getWhereConditions().put("status", "Paid");
         postbatch.getUpdateFields().put("postedDate", sdate);
         return postbatch;
     }
@@ -136,7 +136,7 @@ public class PostBatchFormController extends SimpleFormController {
             validateFields(postbatch);
             postbatch = postBatchService.maintainBatch(postbatch);
             gifts = postBatchService.createBatchSelectionList(postbatch);  // throw exception if selection set too large.
-
+            if (gifts.size() == 0) errormessage = "No matches.";
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);

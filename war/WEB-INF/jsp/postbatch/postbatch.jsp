@@ -100,7 +100,7 @@
             <input type="button" value="Add" class="saveButton" onclick="BatchCustomizer.addNewRow('selectFieldsTable');" />   <br/><br/>
 
             <br/>
-            Letter values are case-sensitive.  &gt;, =, and &lt; can be used with numeric and date selection values.
+            Note: Alphabetic values are case-sensitive.  
             <br/><br/>
 
 			<br/>

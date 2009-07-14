@@ -71,43 +71,142 @@
         where POST_BATCH_REVIEW_SET_ITEM_ID = #id#
     </update>
 
-
-    <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM_FROM_GIFT_SELECT" parameterClass="map">
+	<sql id="SELECT_INTO_FRAG_1">
         insert into POST_BATCH_REVIEW_SET_ITEM (
         	POST_BATCH_ID,
-        	ENTITY_ID,
         	CREATE_DATE,
-        	UPDATE_DATE
+        	UPDATE_DATE,
+        	ENTITY_ID
         )
         select
         	#postBatchId#,
-        	g.GIFT_ID,
         	now(),
-        	now()
+        	now(),
+	</sql>
+	
+    <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM_FROM_GIFT_SELECT" parameterClass="map">
+        <include refid="SELECT_INTO_FRAG_1"/>
+        	g.GIFT_ID
         from GIFT g, CONSTITUENT c
-        where g.CONSTITUENT_ID = c.CONSTITUENT_ID and c.SITE_NAME = #siteName#
+        where 
+        g.CONSTITUENT_ID = c.CONSTITUENT_ID 
+        and c.SITE_NAME = #siteName#
+        and g.GIFT_TYPE != 'GIFT_IN_KIND'
+        <isNotNull property="amountLessThan"> 
+        and g.AMOUNT &lt; #amountLessThan#
+        </isNotNull>
+        <isNotNull property="amountGreaterThan"> 
+        and g.AMOUNT &gt; #amountGreaterThan#
+        </isNotNull>
+        <isNotNull property="currencyCode"> 
+        and g.CURRENCY_CODE = #currencyCode#
+        </isNotNull>
+        <isNotNull property="createdDateBefore"> 
+        and g.CREATE_DATE &lt; #createdDateBefore#
+        </isNotNull>
+        <isNotNull property="createdDateAfter"> 
+        and g.CREATE_DATE &gt; #createdDateAfter#
+        </isNotNull>
+        <isNotNull property="constituentId"> 
+        and g.CONSTITUENT_ID = #constituentId#
+        </isNotNull>
+        <isNotNull property="status"> 
+        and g.GIFT_STATUS = #status#
+        </isNotNull>
+        <isNotNull property="paymentType"> 
+        and g.PAYMENT_TYPE = #paymentType#
+        </isNotNull>
+        <isNotNull property="donationDate"> 
+        and g.DONATION_DATE = #donationDate#
+        </isNotNull>
+        <isNotNull property="postmarkDate"> 
+        and g.POSTMARK_DATE = #postmarkDate#
+        </isNotNull>
+        <isNotNull property="source"> 
+        and exists ( 
+        select 1 from CUSTOM_FIELD cf
+        where cf.ENTITY_TYPE = 'gift' and cf.ENTITY_ID = g.GIFT_ID
+        and cf.FIELD_NAME = 'source' and cf.FIELD_VALUE = #source#
+        )
+        </isNotNull>
+        <isNotNull property="designationCode"> 
+        and exists ( 
+        select 1 from DISTRIBUTION_LINE dl1
+        where dl1.GIFT_ID = g.GIFT_ID
+        and dl1.PROJECT_CODE = #designationCode#
+        )
+        </isNotNull>
+        <isNotNull property="motivationCode"> 
+        and exists ( 
+        select 1 from DISTRIBUTION_LINE dl2
+        where dl2.GIFT_ID = g.GIFT_ID
+        and dl2.MOTIVATION_CODE = #motivationCode#
+        )
+        </isNotNull>
         ;
     </insert>
-
 
     <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM_FROM_ADJUSTED_GIFT_SELECT" parameterClass="map">
-        insert into POST_BATCH_REVIEW_SET_ITEM (
-        	POST_BATCH_ID,
-        	ENTITY_ID,
-        	CREATE_DATE,
-        	UPDATE_DATE
+        <include refid="SELECT_INTO_FRAG_1"/>
+        	ag.ADJUSTED_GIFT_ID
+        from ADJUSTED_GIFT ag, GIFT g, CONSTITUENT c
+        where 
+        ag.GIFT_ID = g.GIFT_ID 
+        and ag.CONSTITUENT_ID = c.CONSTITUENT_ID 
+        and c.SITE_NAME = #siteName#
+        <isNotNull property="amountLessThan"> 
+        and ag.ADJUSTED_AMOUNT &lt; #amountLessThan#
+        </isNotNull>
+        <isNotNull property="amountGreaterThan"> 
+        and ag.ADJUSTED_AMOUNT &gt; #amountGreaterThan#
+        </isNotNull>
+        <isNotNull property="currencyCode"> 
+        and g.CURRENCY_CODE = #currencyCode#
+        </isNotNull>
+        <isNotNull property="createdDateBefore"> 
+        and ag.CREATE_DATE &lt; #createdDateBefore#
+        </isNotNull>
+        <isNotNull property="createdDateAfter"> 
+        and ag.CREATE_DATE &gt; #createdDateAfter#
+        </isNotNull>
+        <isNotNull property="constituentId"> 
+        and ag.CONSTITUENT_ID = #constituentId#
+        </isNotNull>
+        <isNotNull property="status"> 
+        and ag.ADJUSTED_STATUS = #status#
+        </isNotNull>
+        <isNotNull property="paymentType"> 
+        and ag.PAYMENT_TYPE = #paymentType#
+        </isNotNull>
+        <isNotNull property="donationDate"> 
+        and g.DONATION_DATE = #donationDate#
+        </isNotNull>
+        <isNotNull property="postmarkDate"> 
+        and g.POSTMARK_DATE = #postmarkDate#
+        </isNotNull>
+        <isNotNull property="source"> 
+        and exists ( 
+        select 1 from CUSTOM_FIELD cf
+        where cf.ENTITY_TYPE = 'adjustedgift' and cf.ENTITY_ID = g.GIFT_ID
+        and cf.FIELD_NAME = 'source' and cf.FIELD_VALUE = #source#
         )
-        select
-        	#postBatchId#,
-        	ag.ADJUSTED_GIFT_ID,
-        	now(),
-        	now()
-        from ADJUSTED_GIFT ag, CONSTITUENT c
-        where ag.CONSTITUENT_ID = c.CONSTITUENT_ID and c.SITE_NAME = #siteName#
+        </isNotNull>
+        <isNotNull property="designationCode"> 
+        and exists ( 
+        select 1 from DISTRIBUTION_LINE dl1
+        where dl1.ADJUSTED_GIFT_ID = ag.ADJUSTED_GIFT_ID
+        and dl1.PROJECT_CODE = #designationCode#
+        )
+        </isNotNull>
+        <isNotNull property="motivationCode"> 
+        and exists ( 
+        select 1 from DISTRIBUTION_LINE dl2
+        where dl2.ADJUSTED_GIFT_ID = ag.ADJUSTED_GIFT_ID
+        and dl2.MOTIVATION_CODE = #motivationCode#
+        )
+        </isNotNull>
         ;
     </insert>
-
-
 
 
 </sqlMap>

@@ -98,53 +98,50 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Override
     public Map<String, String> readAllowedGiftSelectFields() {
-        // TODO read gift entry screen for custom fields?
-        Map<String, String> map = new TreeMap<String, String>();
-        map.put("amount", "Amount");
+    	
+    	Map<String, String> map = new TreeMap<String, String>();
+        map.put("amountLessThan", "Amount Less Than");
+        map.put("amountGreaterThan", "Amount Greater Than");
         map.put("currencyCode", "Currency Code");
-        map.put("createDate", "Create date");
-        map.put("constituent.id", "Constituent Id");
-        map.put("giftStatus", "Gift Status");
+        map.put("createdDateBefore", "Created Date Before");
+        map.put("createdDateAfter", "Created Date After");
+        map.put("constituentId", "Constituent Id");
+        map.put("status", "Status");
+        map.put("paymentType", "Payment Type");
         map.put("donationDate", "Donation Date");
         map.put("postmarkDate", "Postmark Date");
-        map.put("paymentStatus", "Payment Status");
+        map.put("source", "Source");
+        map.put("designationCode", "Designation Code");
+        map.put("motivationCode", "Motivation Code");
 
         return map;
     }
 
-    // TODO support search params
-    private List<Map<String, Object>> createSearchMap(Map<String, String> map) {
+    private Map<String, Object> createSearchMap(Map<String, String> map) {
     	
-    	List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-    	
+    	Map<String, Object> result = new HashMap<String, Object>();
         for (Map.Entry<String, String> me : map.entrySet()) {
+        	
+    		String key = me.getKey();
             String value = me.getValue();
-            if (value.startsWith("=") || value.startsWith("!=") || value.startsWith("<") || value.startsWith(">")) {
-
-                String avalue = value.startsWith("!=") ? value.substring(2) : value.substring(1);
-
-                boolean isNull = avalue.equalsIgnoreCase("null");
-
-                boolean isDate = false;
-                try {
-                    DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
-                    Date adate = formatter.parse(avalue);
-                    isDate = avalue.length() == PostBatchServiceImpl.DATE_FORMAT.length();
-                } catch (Exception e) {
-                }
-
-                boolean isNumber = false;
-                try {
-                    Double.parseDouble(avalue);
-                    isNumber = true;
-                } catch (Exception e) {
-                }
-
-                if (!(isDate || isNumber || isNull)) {
-                    throw new RuntimeException("Invalid matching value \"" + value + "\"");
-                }
-
+            if (value == null || value.trim().length() == 0) continue;
+            
+            if (key.toLowerCase().contains("date")) {
+                if (value.length() != PostBatchServiceImpl.DATE_FORMAT.length()) throw new RuntimeException("Invalid Date.");
+            	DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
+            	try {
+            		Date adate = formatter.parse(value);
+            		result.put(key, adate);
+            	} catch (Exception e) {
+            		throw new RuntimeException("Invalid Date.");
+            	}
+            } else if (key.toLowerCase().startsWith("amount")) {
+            	BigDecimal bd = new BigDecimal(value);
+        		result.put(key, bd);
+            } else {
+                result.put(key, value);
             }
+            
         }
         
         return result;
@@ -152,10 +149,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Override
     public Map<String, String> readAllowedGiftUpdateFields() {
-       // TODO read gift entry screen for custom fields?
        Map<String, String> map = new TreeMap<String, String>();
        map.put("postedDate", "Posted Date");  // Updating this triggers a post (creates journal entry)
-       map.put("giftStatus", "Gift Status");
+       map.put("status", "Status");
+       map.put("source", "Source");
        return map;
     }
     
@@ -184,7 +181,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         postBatchDao.deletePostBatchItems(postbatch.getId());
         
-        List<Map<String, Object>> searchmap = createSearchMap(postbatch.getWhereConditions());
+        Map<String, Object> searchmap = createSearchMap(postbatch.getWhereConditions());
 
         if (isGift) {
             postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap); 

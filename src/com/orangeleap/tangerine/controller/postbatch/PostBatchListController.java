@@ -62,7 +62,6 @@ public class PostBatchListController extends SimpleFormController {
         ModelAndView mav = super.showForm(request, response, errors, controlModel);
 
         List<PostBatch> postbatchs = getPostBatchs(request);
-
         mav.addObject("postbatchs", postbatchs);
         return mav;
 
@@ -79,16 +78,39 @@ public class PostBatchListController extends SimpleFormController {
     }
 
     @Override
-    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
+    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
-        if (!accessAllowed(request)) return null;
+    	if (!accessAllowed(request)) return null;
 
-        Long batchId = Long.parseLong(request.getParameter("postbatchid"));
+        Long batchId = Long.parseLong(request.getParameter("id"));
+        boolean update = "true".equals(request.getParameter("update"));
+        boolean delete = "true".equals(request.getParameter("delete"));
 
         PostBatch postbatch = postBatchService.readBatch(batchId);
         if (postbatch == null) return null;
-
-        return new ModelAndView("redirect:/postbatch.htm?id=" + batchId);
+        
+        ModelAndView mav = super.onSubmit(request, response, command, errors);
+        if (update) {
+        	try {
+        		postBatchService.updateBatch(postbatch);
+            	mav.addObject("errormessage", "Batch successfully updated.");
+        	} catch (Exception e) {
+            	mav.addObject("errormessage", e.getMessage());
+        	}
+        } else if (delete) {
+        	try {
+        		postBatchService.deleteBatch(postbatch);
+            	mav.addObject("errormessage", "Batch successfully deleted.");
+        	} catch (Exception e) {
+            	mav.addObject("errormessage", e.getMessage());
+        	}
+        } else {
+        	mav = new ModelAndView("redirect:/postbatch.htm?id=" + batchId);
+        }
+        
+        List<PostBatch> postbatchs = getPostBatchs(request);
+        mav.addObject("postbatchs", postbatchs);
+        return mav;
         	
     }
 

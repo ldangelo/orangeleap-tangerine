@@ -18,6 +18,26 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+
 import com.orangeleap.tangerine.dao.JournalDao;
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -30,23 +50,13 @@ import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.service.*;
+import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.service.PostBatchService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.util.*;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -136,7 +146,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         postBatchDao.deletePostBatchItems(postbatch.getId());
         
-        Map<String, Object> searchmap = new HashMap();
+        Map<String, Object> searchmap = new HashMap<String, Object>();
         for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
             searchmap.put(me.getKey(), me.getValue());
         }
@@ -310,23 +320,29 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     }
 
+    @Override
+    public void deleteBatch(PostBatch postbatch) {
+       if (postbatch.isBatchUpdated()) throw new RuntimeException("Cannot delete a batch that has already been updated.");
+       postBatchDao.deletePostBatchItems(postbatch.getId());
+       postBatchDao.deletePostBatch(postbatch.getId());
+    }
+
     // Sets fields on gifts/adjusted gifts in reviewed batch list
     @Override
-    public PostBatch updateBatch(PostBatch postbatch, boolean post) {
+    public PostBatch updateBatch(PostBatch postbatch) {
 
         postbatch.getUpdateErrors().clear();
+
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+        boolean post = postbatch.getUpdateFields().get(POSTED_DATE) != null;
 
         Date postedDate = null;
         Map<String, String> bankmap = new HashMap<String, String>();
         Map<String, String> codemap = new HashMap<String, String>();
 
-        // Set properties 'posted' and optionally 'postedDate' if posting.
         if (post) {
-            DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             postbatch.getUpdateFields().put(POSTED, "true");
-            if (postbatch.getUpdateFields().get(POSTED_DATE) == null) {
-                postbatch.getUpdateFields().put(POSTED_DATE, dateFormat.format(new java.util.Date()));
-            }
             try {
                 postedDate = dateFormat.parse(postbatch.getUpdateFields().get(POSTED_DATE));
             } catch (Exception e) {
@@ -385,7 +401,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     public final static class PostBatchUpdateException extends RuntimeException {
 
-        private List<String> errors;
+		private static final long serialVersionUID = 1L;
+		private List<String> errors;
 
         public PostBatchUpdateException(List<String> errors) {
             super("Errors exist in batch: " + errors.get(0));
@@ -401,7 +418,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private void createJournalEntries(Gift gift, AdjustedGift ag, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
         createJournalEntry(gift, ag, null, postbatch, codemap, bankmap);
         List<DistributionLine> dls = ag == null ? gift.getDistributionLines() : ag.getDistributionLines();
-        for (DistributionLine dl : gift.getDistributionLines()) {
+        for (DistributionLine dl : dls) {
             createJournalEntry(gift, ag, dl, postbatch, codemap, bankmap);
         }
     }

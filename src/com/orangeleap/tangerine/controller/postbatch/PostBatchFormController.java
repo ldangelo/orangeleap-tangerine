@@ -18,49 +18,42 @@
 
 package com.orangeleap.tangerine.controller.postbatch;
 
-import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.service.PostBatchService;
-import com.orangeleap.tangerine.service.impl.PostBatchServiceImpl;
-import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.util.OLLogger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.service.PostBatchService;
+import com.orangeleap.tangerine.service.impl.PostBatchServiceImpl;
+import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class PostBatchFormController extends SimpleFormController {
-
-    // TODO add batch list with edit existing unposted, view historical and delete
 
     /**
      * Logger for this class and subclasses
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name = "constituentService")
-    private ConstituentService constituentService;
-
-    @Resource(name = "giftService")
-    private GiftService giftService;
-
     @Resource(name = "postBatchService")
     private PostBatchService postBatchService;
-
-    @Resource(name = "fieldDAO")
-    private FieldDao fieldDao;
 
     @SuppressWarnings("unchecked")
     public static boolean accessAllowed(HttpServletRequest request) {
@@ -116,21 +109,19 @@ public class PostBatchFormController extends SimpleFormController {
     }
 
 
-    // First they set the selection criteria and "save" which genertes the list of gifts matching the criteria to review.
+    // First they set the selection criteria and "save" which generates the list of gifts matching the criteria to review.
     // Once they have the criteria they way they want it, they "post" which processes the updates to the list of selected items.
     @Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
 
         if (!accessAllowed(request)) return null;
 
-        boolean post = "true".equals(request.getParameter("post"));
-        boolean update = "true".equals(request.getParameter("update"));
-
         PostBatch requestPostbatch = (PostBatch) command;
         // Read existing
         Long batchId = requestPostbatch.getId();
         PostBatch postbatch = postBatchService.readBatch(batchId);
         if (postbatch == null) postbatch = getNewPostBatch();
+        if (postbatch.isBatchUpdated()) return null; // selection criteria and record set editing not allowed once updated.
 
         String errormessage = "";
         List<AbstractPaymentInfoEntity> gifts = new ArrayList<AbstractPaymentInfoEntity>();
@@ -146,12 +137,7 @@ public class PostBatchFormController extends SimpleFormController {
             validatesFields(postbatch);
             validateRanges(postbatch);
             postbatch = postBatchService.maintainBatch(postbatch);
-
             gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
-            if (post || update) {
-                postbatch = postBatchService.updateBatch(postbatch, post);
-                errormessage = "Batch successfully " + (post?"posted":"updated") +".";
-            }
 
         } catch (Exception e) {
             e.printStackTrace();

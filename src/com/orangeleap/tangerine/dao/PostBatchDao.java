@@ -37,6 +37,8 @@ public interface PostBatchDao {
 
     public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem);
 
+    public void deletePostBatch(Long postBatchId);
+
     public void deletePostBatchItems(Long postBatchId);
 
     public void insertIntoPostBatchFromGiftSelect(PostBatch postbatch, Map<String, Object> searchmap);

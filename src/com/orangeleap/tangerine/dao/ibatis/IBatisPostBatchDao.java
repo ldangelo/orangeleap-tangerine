@@ -78,7 +78,8 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         return aPostBatch;
 	}
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public List<PostBatchReviewSetItem> readPostBatchReviewSetItems(Long postBatchId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readPostBatch: postBatchId = " + postBatchId);
@@ -97,6 +98,16 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         }
         PostBatchReviewSetItem aPostBatchReviewSetItem = (PostBatchReviewSetItem) insertOrUpdate(postBatchReviewSetItem, "POST_BATCH_REVIEW_SET_ITEM");
         return aPostBatchReviewSetItem;
+    }
+
+    @Override
+    public void deletePostBatch(Long postBatchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deletePostBatch: postBatchId = " + postBatchId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", postBatchId);
+        getSqlMapClientTemplate().delete("DELETE_POST_BATCH", params);
     }
 
     @Override

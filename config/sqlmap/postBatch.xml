@@ -57,6 +57,13 @@
         <include refid="SELECT_POST_BATCH_FRAGMENT"/>
         and post_batch.POST_BATCH_ID = #id#
     </select>
+    
+    <delete id="DELETE_POST_BATCH" parameterClass="map" >
+        delete from POST_BATCH 
+        where 
+        post_batch.SITE_NAME = #siteName#
+        and post_batch.POST_BATCH_ID = #id#
+    </delete>
 
     <insert id="INSERT_POST_BATCH" parameterClass="com.orangeleap.tangerine.domain.PostBatch">
         insert into POST_BATCH (

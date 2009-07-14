@@ -6,14 +6,25 @@
 	<tiles:putAttribute name="sidebarNav" value="" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-	
+
 		<div class="simplebox">
 
+        
 		<div >
+
+        <c:if test="${postbatch.batchUpdated}">
+            Batch Id: ${postbatch.id} <br />
+            Batch Description: <c:out value='${postbatch.postBatchDesc}'  /><br />
+            Batch Type: <c:if test="${postbatch.entity == 'gift'}">Gift</c:if> <c:if test="${postbatch.entity == 'adjustedgift'}">Adjusted Gift</c:if> <br />
+            <br />
+        </c:if>
+
+        <c:if test="${!postbatch.batchUpdated}">
+
 		<form:form method="post" commandName="postbatch" >
 
             <h4>Edit Gift Posting Batch</h4>
-
+		    <br /><strong><a class="action" href="postbatchs.htm">&laquo;Back</a></strong><br/>
 
             <span style="color:#ff0000">${errormessage}</span>  <br />
 
@@ -84,20 +95,17 @@
 
             <br/><br/>
 
-            <input type="hidden" id="post" name="post" value="false"  />
-            <input type="hidden" id="update" name="update" value="false"  />
-
-			<input type="button" value="Select records for update" class="saveButton" onclick="$('#update').val('false'); $('#post').val('false'); submit();" />
+			<input type="button" value="Save criteria and select records for update" class="saveButton" onclick="submit();" />
 			
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			
-            <!-- TODO add 'Are you sure' confirmations: -->
-            <input type="button" value="Update Batch" class="saveButton" onclick=" $('#update').val('true'); $('#post').val('false'); submit();" />
-            <input type="button" value="Post Batch" class="saveButton" onclick=" $('#update').val('false'); $('#post').val('true'); submit();" />
 
 
+        </form:form>
 
-     		<hr/>
+		</c:if>
+
+        <hr/>
             
             <table cellspacing="8" border="0" >
                 <tr>
@@ -117,7 +125,6 @@
             </table >
 
 
-        </form:form>
 
         </div>
 		</div>

@@ -52,12 +52,12 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 		String selectedRefs = createMultiPicklistOptions(pageContext, picklist, fieldValue, sb);
 		createLabelTextInput(pageContext, currentField, formFieldName, sb);
 		createRight(sb);
-		createMultiPicklistEnd(sb);
 
 		/* Add the additional elements - only difference between this and MultiPicklistHandler */
 		createAdditionalFields(currentField, form, formFieldName, sb);
 		createAdditionalFieldClone(sb);
 
+		createMultiPicklistEnd(sb);
 		createHiddenInput(currentField, formFieldName, fieldValue, sb);
 		createContainerEnd(sb);
 		createBottom(request, pageContext, sb);

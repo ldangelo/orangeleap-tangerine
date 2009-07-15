@@ -67,29 +67,28 @@ public class GridHandler implements ApplicationContextAware {
 	public void writeGridCols(List<SectionField> sectionFields, boolean hasHiddenGridRow, StringBuilder sb) {
 		if (hasHiddenGridRow) {
 			sb.append("<col class=\"node\"/>");
-
-			for (SectionField field : sectionFields) {
-				if (FieldType.NUMBER.equals(field.getFieldType())) {
-					sb.append("<col class=\"number\"/>");
-				}
-				else if (FieldType.PERCENTAGE.equals(field.getFieldType())) {
-					sb.append("<col class=\"pct\"/>");
-				}
-				else if (FieldType.CODE.equals(field.getFieldType()) || FieldType.CODE_OTHER.equals(field.getFieldType())) {
-					sb.append("<col class=\"code\"/>");
-				}
-				else if (FieldType.QUERY_LOOKUP.equals(field.getFieldType()) || FieldType.QUERY_LOOKUP_OTHER.equals(field.getFieldType())) {
-					sb.append("<col class=\"reference\"/>");
-				}
-				else if (FieldType.TEXT.equals(field.getFieldType())) {
-					sb.append("<col class=\"text\"/>");
-				}
-				else if (FieldType.CHECKBOX.equals(field.getFieldType())) {
-					sb.append("<col class=\"text\"/>");
-				}
-			}
-			sb.append("<col class=\"button\"/>");
 		}
+		for (SectionField field : sectionFields) {
+			if (FieldType.NUMBER.equals(field.getFieldType())) {
+				sb.append("<col class=\"number\"/>");
+			}
+			else if (FieldType.PERCENTAGE.equals(field.getFieldType())) {
+				sb.append("<col class=\"pct\"/>");
+			}
+			else if (FieldType.CODE.equals(field.getFieldType()) || FieldType.CODE_OTHER.equals(field.getFieldType())) {
+				sb.append("<col class=\"code\"/>");
+			}
+			else if (FieldType.QUERY_LOOKUP.equals(field.getFieldType()) || FieldType.QUERY_LOOKUP_OTHER.equals(field.getFieldType())) {
+				sb.append("<col class=\"reference\"/>");
+			}
+			else if (FieldType.TEXT.equals(field.getFieldType())) {
+				sb.append("<col class=\"text\"/>");
+			}
+			else if (FieldType.CHECKBOX.equals(field.getFieldType())) {
+				sb.append("<col class=\"text\"/>");
+			}
+		}
+		sb.append("<col class=\"button\"/>");
 	}
 
 	// TODO: grid sorting
@@ -97,26 +96,26 @@ public class GridHandler implements ApplicationContextAware {
 		sb.append("<thead><tr>");
 		if (hasHiddenGridRow) {
 			sb.append("<th class=\"actionColumn\">&nbsp;</th>");
-
-			for (SectionField field : sectionFields) {
-				if (FieldType.HIDDEN.equals(field.getFieldType())) {
-					sb.append("<th class=\"noDisplay\">&nbsp;</th>");
+		}
+		for (SectionField field : sectionFields) {
+			if (FieldType.HIDDEN.equals(field.getFieldType())) {
+				sb.append("<th class=\"noDisplay\">&nbsp;</th>");
+			}
+			else {
+				sb.append("<th>");
+				if (fieldService.isFieldRequired(field)) {
+					sb.append("<span class=\"required\">*</span>&nbsp;");
 				}
-				else {
-					sb.append("<th>");
-					if (fieldService.isFieldRequired(field)) {
-						sb.append("<span class=\"required\">*</span>&nbsp;");
-					}
-					String label = field.getFieldDefinition().getDefaultLabel();
-					FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(field.getFieldType());
-					if (fieldHandler != null) {
-						label = fieldHandler.resolveLabelText(pageContext, field);
-					}
-					sb.append("<a>").append(label).append("</a>");
-					sb.append("</th>");
+				String label = field.getFieldDefinition().getDefaultLabel();
+				FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(field.getFieldType());
+				if (fieldHandler != null) {
+					label = fieldHandler.resolveLabelText(pageContext, field);
 				}
+				sb.append("<a>").append(label).append("</a>");
+				sb.append("</th>");
 			}
 		}
+		sb.append("<th></th>");
 		sb.append("</tr></thead>");
 	}
 

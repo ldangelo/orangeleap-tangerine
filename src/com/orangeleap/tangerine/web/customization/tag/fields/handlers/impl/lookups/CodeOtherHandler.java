@@ -17,8 +17,8 @@ public class CodeOtherHandler extends CodeHandler {
 	}
 
 	@Override
-	protected void getDisplayAttributes(String fieldPropertyName, String formFieldName, StringBuilder sb) {
-	    super.getDisplayAttributes(fieldPropertyName, formFieldName, sb);
+	protected void getDisplayAttributes(SectionDefinition sectionDefinition, SectionField currentField, TangerineForm form, String formFieldName, StringBuilder sb) {
+	    super.getDisplayAttributes(sectionDefinition, currentField, form, formFieldName, sb);
 		sb.append(" otherFieldId=\"").append(resolveOtherFormFieldName(formFieldName)).append("\" ");
 	}
 

@@ -27,7 +27,6 @@ import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
@@ -76,8 +75,8 @@ public class CodeHandler extends AbstractFieldHandler {
         sb.append("<div class=\"lookupWrapper\">");
     }
 
-	protected Object getCodeDisplayValue(SectionDefinition sectionDefinition, SectionField currentField,
-	                                     TangerineForm form, String formFieldName, Object fieldValue) {
+	protected String resolveCodeLookupName(SectionDefinition sectionDefinition, SectionField currentField,
+	                                     TangerineForm form) {
 		String fieldPropertyName;
 
 		if (LayoutType.isGridType(sectionDefinition.getLayoutType()) &&
@@ -88,6 +87,12 @@ public class CodeHandler extends AbstractFieldHandler {
 		else {
 			fieldPropertyName = currentField.getFieldPropertyName();
 		}
+		return fieldPropertyName;
+	}
+
+	protected Object getCodeDisplayValue(SectionDefinition sectionDefinition, SectionField currentField,
+	                                     TangerineForm form, String formFieldName, Object fieldValue) {
+		String fieldPropertyName = resolveCodeLookupName(sectionDefinition, currentField, form);
 		return resolveCodeValue(fieldPropertyName, fieldValue);
 	}
 
@@ -100,7 +105,7 @@ public class CodeHandler extends AbstractFieldHandler {
 	    writeErrorClass(request, pageContext, sb); // TODO: fix for errors
 
         sb.append("\" ");
-	    getDisplayAttributes(currentField.getFieldPropertyName(), formFieldName, sb);
+	    getDisplayAttributes(sectionDefinition, currentField, form, formFieldName, sb);
 	    
         sb.append("name=\"display-").append(formFieldName).append("\" id=\"display-").append(formFieldName).append("\"/>");
     }
@@ -135,8 +140,9 @@ public class CodeHandler extends AbstractFieldHandler {
         return "Lookup.loadCodePopup(this)";
     }
 
-    protected void getDisplayAttributes(String fieldPropertyName, String formFieldName, StringBuilder sb) {
-	    String escapedFieldPropertyName = StringEscapeUtils.escapeHtml(fieldPropertyName);
-        sb.append("lookup=\"").append(escapedFieldPropertyName).append("\" codeType=\"").append(escapedFieldPropertyName).append("\" ");
+    protected void getDisplayAttributes(SectionDefinition sectionDefinition, SectionField currentField, TangerineForm form,
+                                        String formFieldName, StringBuilder sb) {
+	    String thisCode = resolveCodeLookupName(sectionDefinition, currentField, form);
+        sb.append("lookup=\"").append(thisCode).append("\" codeType=\"").append(thisCode).append("\" ");
     }
 }

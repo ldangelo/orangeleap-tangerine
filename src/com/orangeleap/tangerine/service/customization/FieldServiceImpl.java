@@ -28,6 +28,7 @@ import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -37,6 +38,10 @@ import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // TODO: Need a service to clear the cache and this class needs to observe that class
 @Service("fieldService")
@@ -61,6 +66,26 @@ public class FieldServiceImpl implements FieldService {
 
     @Resource(name = "picklistCache")
     private Cache picklistCache;
+
+	@Override
+	public Map<String,List<SectionField>> groupSectionFields(List<SectionField> sectionFields) {
+		Map<String,List<SectionField>> groupedSectionFields = new HashMap<String,List<SectionField>>();
+
+		List<SectionField> displayedSectionFields = new ArrayList<SectionField>();
+		List<SectionField> hiddenSectionFields = new ArrayList<SectionField>();
+
+		for (SectionField field : sectionFields) {
+			if (FieldType.HIDDEN.equals(field.getFieldType())) {
+				hiddenSectionFields.add(field);
+			}
+			else {
+				displayedSectionFields.add(field);
+			}
+		}
+		groupedSectionFields.put(StringConstants.HIDDEN, hiddenSectionFields);
+		groupedSectionFields.put(StringConstants.DISPLAYED, displayedSectionFields);
+		return groupedSectionFields;
+	}
 
 	@Override
 	public boolean isFieldRequired(SectionField currentField) {

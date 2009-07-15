@@ -27,6 +27,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.AbstractPicklistHandler;
 import com.orangeleap.tangerine.type.FieldType;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +36,7 @@ import java.util.List;
 
 public class PhonePicklistHandler extends AbstractPicklistHandler {
 
-    private static final String NEW_PHONE_REF = "li:has(:input[name^=\"phone\"])";
+    private static final String NEW_PHONE_REF = "li:has(.ea-newPhone)";
 
 	public PhonePicklistHandler(ApplicationContext applicationContext) {
 		super(applicationContext);
@@ -64,6 +65,18 @@ public class PhonePicklistHandler extends AbstractPicklistHandler {
 		if (!FieldType.EXISTING_PHONE_PICKLIST.equals(currentField.getFieldType())) {
 			createSelectedRef(formFieldName, fieldValue, NEW_PHONE_REF, sb);
 		}
+	}
+
+	@Override
+	protected String resolveReferenceValues(SectionField currentField, Picklist picklist) {
+		StringBuilder refValues = new StringBuilder(super.resolveReferenceValues(currentField, picklist));
+		if (!FieldType.EXISTING_PHONE_PICKLIST.equals(currentField.getFieldType())) {
+			if (StringUtils.hasText(refValues.toString())) {
+				refValues.append(",");
+			}
+			refValues.append(NEW_PHONE_REF);
+		}
+		return refValues.toString();
 	}
 
 	protected void createOptions(Object fieldValue, List<Phone> phones, StringBuilder sb) {

@@ -24,6 +24,9 @@ import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.EntityType;
 
+import java.util.List;
+import java.util.Map;
+
 public interface FieldService {
     public Picklist readPicklistByFieldNameEntityType(String fieldName, EntityType entityType);
 
@@ -34,4 +37,6 @@ public interface FieldService {
     public FieldValidation lookupFieldValidation(SectionField currentField);
     
     public boolean isFieldDisabled(SectionField sectionField, Object model);
+
+	Map<String,List<SectionField>> groupSectionFields(List<SectionField> sectionFields);
 }

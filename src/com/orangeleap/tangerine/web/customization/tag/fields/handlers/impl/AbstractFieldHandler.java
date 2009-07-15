@@ -177,7 +177,9 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		if (entityAttributes != null) {
 		    String[] entityAttributesArray = entityAttributes.split(",");
 		    for (String ea : entityAttributesArray) {
-		        entityAttributesStyle.append(" ea-").append(ea);
+			    if (StringUtils.hasText(ea)) {
+		            entityAttributesStyle.append(" ea-").append(ea);
+			    }
 		    }
 		}
 		return StringEscapeUtils.escapeHtml(entityAttributesStyle.toString());

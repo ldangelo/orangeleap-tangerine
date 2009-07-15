@@ -48,7 +48,7 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected String resolveReferenceValues(Picklist picklist) {
+	protected String resolveReferenceValues(SectionField currentField, Picklist picklist) {
 		Set<String> refValues = new TreeSet<String>();
 		if (picklist != null) {
 			for (PicklistItem item : picklist.getActivePicklistItems()) {
@@ -164,7 +164,7 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 		getBeginSelectCssClass(picklist, sb);
 		
 	    sb.append(resolveEntityAttributes(currentField)).append("\" references=\"");
-		sb.append(resolveReferenceValues(picklist)).append("\">");
+		sb.append(resolveReferenceValues(currentField, picklist)).append("\">");
     }
 
     protected void createEndSelect(StringBuilder sb) {

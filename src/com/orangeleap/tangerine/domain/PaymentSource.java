@@ -337,7 +337,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         return constituent != null ? constituent.getSite() : null;
     }
 
-    public List<String> getExpirationMonthList() {
+    public static List<String> getExpirationMonthList() {
         List<String> monthList = new ArrayList<String>();
         for (int i = 1; i <= 12; i++) {
             String month = String.valueOf(i);
@@ -349,7 +349,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         return monthList;
     }
 
-    public List<String> getExpirationYearList() {
+    public static List<String> getExpirationYearList() {
         List<String> yearList = new ArrayList<String>();
         int year = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = 0; i < 10; i++) {

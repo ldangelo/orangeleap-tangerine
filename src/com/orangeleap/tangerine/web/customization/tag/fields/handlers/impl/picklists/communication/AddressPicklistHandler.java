@@ -5,10 +5,11 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.AbstractPicklistHandler;
-import com.orangeleap.tangerine.type.FieldType;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class AddressPicklistHandler extends AbstractPicklistHandler {
 
-    private static final String NEW_ADDRESS_REF = "li:has(:input[name^=\"address\"])";
+    private static final String NEW_ADDRESS_REF = "li:has(.ea-newAddress)";
 
 	public AddressPicklistHandler(ApplicationContext applicationContext) {
 		super(applicationContext);
@@ -46,6 +47,18 @@ public class AddressPicklistHandler extends AbstractPicklistHandler {
 		if (!FieldType.EXISTING_ADDRESS_PICKLIST.equals(currentField.getFieldType())) {
 			createSelectedRef(formFieldName, fieldValue, NEW_ADDRESS_REF, sb);
 		}
+	}
+
+	@Override
+	protected String resolveReferenceValues(SectionField currentField, Picklist picklist) {
+		StringBuilder refValues = new StringBuilder(super.resolveReferenceValues(currentField, picklist));
+		if (!FieldType.EXISTING_ADDRESS_PICKLIST.equals(currentField.getFieldType())) {
+			if (StringUtils.hasText(refValues.toString())) {
+				refValues.append(",");
+			}
+			refValues.append(NEW_ADDRESS_REF);
+		}
+		return refValues.toString();
 	}
 
 	protected void createOptions(Object fieldValue, List<Address> addresses, StringBuilder sb) {

@@ -5,7 +5,6 @@ import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,11 +56,17 @@ public class PaymentSourcePicklistHandler extends AbstractPicklistHandler {
 
         if (achSources != null) {
             for (PaymentSource thisAchSrc : achSources) {
-                sb.append("<option value=\"").append(thisAchSrc.getId()).append("\" address=\"").append(checkForNull(thisAchSrc.getAddress().getId()));
-	            sb.append("\" phone=\"").append(checkForNull(thisAchSrc.getPhone().getId()));
-	            sb.append("\" achholder=\"").append(StringEscapeUtils.escapeHtml(thisAchSrc.getAchHolderName()));
-	            sb.append("\" routing=\"").append(StringEscapeUtils.escapeHtml(thisAchSrc.getAchRoutingNumberDisplay()));
-	            sb.append("\" acct=\"").append(StringEscapeUtils.escapeHtml(thisAchSrc.getAchAccountNumberDisplay())).append("\" ");
+                sb.append("<option value=\"").append(thisAchSrc.getId()).append("\" address=\"");
+	            if (thisAchSrc.getAddress() != null) {
+	                sb.append(checkForNull(thisAchSrc.getAddress().getId()));
+	            }
+	            sb.append("\" phone=\"");
+	            if (thisAchSrc.getPhone() != null) {
+		            sb.append(checkForNull(thisAchSrc.getPhone().getId()));
+	            }
+	            sb.append("\" achholder=\"").append(checkForNull(thisAchSrc.getAchHolderName()));
+	            sb.append("\" routing=\"").append(checkForNull(thisAchSrc.getAchRoutingNumberDisplay()));
+	            sb.append("\" acct=\"").append(checkForNull(thisAchSrc.getAchAccountNumberDisplay())).append("\" ");
                 if (thisAchSrc.getId().equals(fieldValue)) {
                     sb.append("selected=\"selected\"");
                 }
@@ -93,11 +98,17 @@ public class PaymentSourcePicklistHandler extends AbstractPicklistHandler {
         SimpleDateFormat sdf = new SimpleDateFormat("MM / yyyy");
         if (ccSources != null) {
             for (PaymentSource thisCcSrc : ccSources) {
-                sb.append("<option value=\"").append(thisCcSrc.getId()).append("\" address=\"").append(checkForNull(thisCcSrc.getAddress().getId()));
-	            sb.append("\" phone=\"").append(checkForNull(thisCcSrc.getPhone().getId())).append("\"");
-                sb.append(" cardholder=\"").append(StringEscapeUtils.escapeHtml(thisCcSrc.getCreditCardHolderName()));
-	            sb.append("\" cardType=\"").append(StringEscapeUtils.escapeHtml(thisCcSrc.getCreditCardType()));
-	            sb.append("\" number=\"").append(StringEscapeUtils.escapeHtml(thisCcSrc.getCreditCardNumberDisplay()));
+                sb.append("<option value=\"").append(thisCcSrc.getId()).append("\" address=\"");
+	            if (thisCcSrc.getAddress() != null) {
+	                sb.append(checkForNull(thisCcSrc.getAddress().getId()));
+	            }
+	            sb.append("\" phone=\"");
+	            if (thisCcSrc.getPhone() != null) {
+	                sb.append(checkForNull(thisCcSrc.getPhone().getId()));
+	            }
+                sb.append("\" cardholder=\"").append(checkForNull(thisCcSrc.getCreditCardHolderName()));
+	            sb.append("\" cardType=\"").append(checkForNull(thisCcSrc.getCreditCardType()));
+	            sb.append("\" number=\"").append(checkForNull(thisCcSrc.getCreditCardNumberDisplay()));
                 sb.append("\" exp=\"").append(sdf.format(thisCcSrc.getCreditCardExpiration())).append("\"");
                 if (thisCcSrc.getId().equals(fieldValue)) {
                     sb.append(" selected=\"selected\"");

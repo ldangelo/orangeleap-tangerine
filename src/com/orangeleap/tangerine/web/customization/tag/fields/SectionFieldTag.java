@@ -40,6 +40,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.util.List;
+import java.util.Map;
 
 public class SectionFieldTag extends AbstractTag {
 
@@ -79,6 +80,7 @@ public class SectionFieldTag extends AbstractTag {
 	protected void writeSections(List<SectionDefinition> sectionDefinitions) throws Exception {
 		if (sectionDefinitions != null) {
 			int oneColumnCount = 0;
+
 			for (int x = 0; x < sectionDefinitions.size(); x++) {
 				SectionDefinition sectionDef = sectionDefinitions.get(x);
 
@@ -100,27 +102,36 @@ public class SectionFieldTag extends AbstractTag {
 
 					writeColumnsEnd(sb);
 				}
-				else if (LayoutType.ONE_COLUMN.equals(sectionDef.getLayoutType()) || LayoutType.ONE_COLUMN_HIDDEN.equals(sectionDef.getLayoutType())) {
-					if (oneColumnCount == 0) {
+				else if (LayoutType.ONE_COLUMN.equals(sectionDef.getLayoutType()) ||
+						LayoutType.ONE_COLUMN_HIDDEN.equals(sectionDef.getLayoutType())) {
+					int prevIndex = x - 1;
+					if (prevIndex >= 0) {
+						if ( ! LayoutType.isSingleColumnType(sectionDefinitions.get(prevIndex).getLayoutType())) {
+							writeColumnsStart(sectionDef, sb);
+						}
+						else if (oneColumnCount == 0) {
+							writeColumnsStart(sectionDef, sb);
+						}
+					}
+					else {
 						writeColumnsStart(sectionDef, sb);
 					}
 
 					writeSingleColumnStart(sectionDef, sb);
 					writeSectionField(sectionDef, sectionFields, sb);
 					writeSingleColumnEnd(sb);
+
 					oneColumnCount++;
 
 					int nextIndex = x + 1;
 
 					if (nextIndex < sectionDefinitions.size()) {
-						if (!LayoutType.ONE_COLUMN.equals(sectionDefinitions.get(nextIndex).getLayoutType()) &&
-								!LayoutType.ONE_COLUMN_HIDDEN.equals(sectionDefinitions.get(nextIndex).getLayoutType())) {
+						if ( ! LayoutType.isSingleColumnType(sectionDefinitions.get(nextIndex).getLayoutType())) {
 							writeColumnsEnd(sb);
 							oneColumnCount = 0;
 						}
-						else if ((LayoutType.ONE_COLUMN.equals(sectionDefinitions.get(nextIndex).getLayoutType()) ||
-									LayoutType.ONE_COLUMN_HIDDEN.equals(sectionDefinitions.get(nextIndex).getLayoutType())) &&
-									oneColumnCount == 2) {
+						else if (LayoutType.ONE_COLUMN.equals(sectionDefinitions.get(nextIndex).getLayoutType()) &&
+									oneColumnCount >= 2) {
 							writeColumnsEnd(sb);
 							oneColumnCount = 0;
 						}
@@ -234,23 +245,39 @@ public class SectionFieldTag extends AbstractTag {
 	}
 
 	protected void writeSectionField(SectionDefinition sectionDef, List<SectionField> sectionFields, StringBuilder sb, boolean firstColumn) {
+		Map<String, List<SectionField>> groupedSectionFields = fieldService.groupSectionFields(sectionFields);
+		List<SectionField> hiddenFields = groupedSectionFields.get(StringConstants.HIDDEN);
+
+		/* Display the hidden fields in the first column ONLY */
+		if (firstColumn) {
+			for (SectionField hiddenFld : hiddenFields) {
+				FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(hiddenFld.getFieldType());
+				if (fieldHandler != null) {
+					fieldHandler.handleField(pageContext, sectionDef, hiddenFields, hiddenFld,
+							getTangerineForm(), sb);
+				}
+			}
+		}
+
+		List<SectionField> displayedFields = groupedSectionFields.get(StringConstants.DISPLAYED);
+
 		int begin = 0;
-		int end = sectionFields.size();
+		int end = displayedFields.size();
+
 		if (LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType())) {
+			int split = (int) Math.ceil(((float)displayedFields.size()) / ((float)2));
 			if (firstColumn) {
-				end = (int)Math.floor((double)(sectionFields.size() / 2));
+				end = split;
 			}
 			else {
-				begin = (int)Math.ceil((double)(sectionFields.size() / 2));
+				begin = split;
 			}
 		}
 		for (int x = begin; x < end; x++) {
-			SectionField sectionField = sectionFields.get(x);
-			FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(sectionField.getFieldType());
+			SectionField displayFld = displayedFields.get(x);
+			FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(displayFld.getFieldType());
 			if (fieldHandler != null) {
-				fieldHandler.handleField(
-						pageContext, sectionDef, sectionFields, sectionField,
-						getTangerineForm(), sb);
+				fieldHandler.handleField(pageContext, sectionDef, displayedFields, displayFld, getTangerineForm(), sb);
 			}
 		}
 	}

@@ -38,6 +38,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.jsp.PageContext;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: alexlo
@@ -227,24 +228,42 @@ public class GridHandler implements ApplicationContextAware {
 		sb.append("</tr>");
 	}
 
-	public void writeHiddenRowColumn(PageContext pageContext, SectionDefinition hiddenSectionDef,
-	                                 List<SectionField> hiddenSectionFields, TangerineForm form,
+	public void writeHiddenRowColumn(PageContext pageContext, SectionDefinition hiddenRowSectionDef,
+	                                 List<SectionField> hiddenRowSectionFields, TangerineForm form,
 	                                 boolean firstColumn, boolean isDummy, int rowCounter, StringBuilder sb) {
-		int begin = 0;
-		int end = hiddenSectionFields.size();
-		if (firstColumn) {
-			end = (int)Math.floor((double)(hiddenSectionFields.size() / 2));
-		}
-		else {
-			begin = (int)Math.ceil((double)(hiddenSectionFields.size() / 2));
-		}
 		boolean showSideAndLabel = true;
 
+		Map<String, List<SectionField>> groupedSectionFields = fieldService.groupSectionFields(hiddenRowSectionFields);
+		List<SectionField> hiddenFields = groupedSectionFields.get(StringConstants.HIDDEN);
+
+		/* Display the hidden fields in the first column ONLY */
+		if (firstColumn) {
+			for (SectionField hiddenFld : hiddenFields) {
+				FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(hiddenFld.getFieldType());
+				if (fieldHandler != null) {
+					fieldHandler.handleField(pageContext, hiddenRowSectionDef, hiddenFields, hiddenFld, form,
+							showSideAndLabel, isDummy, rowCounter, sb);
+				}
+			}
+		}
+
+		List<SectionField> displayedFields = groupedSectionFields.get(StringConstants.DISPLAYED);
+
+		int begin = 0;
+		int end = displayedFields.size();
+		int split = (int) Math.ceil(((float)displayedFields.size()) / ((float)2));
+		if (firstColumn) {
+			end = split;
+		}
+		else {
+			begin = split;
+		}
+
 		for (int x = begin; x < end; x++) {
-			SectionField hiddenSectionField = hiddenSectionFields.get(x);
-			FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(hiddenSectionField.getFieldType());
+			SectionField displayedFld = displayedFields.get(x);
+			FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(displayedFld.getFieldType());
 			if (fieldHandler != null) {
-				fieldHandler.handleField(pageContext, hiddenSectionDef, hiddenSectionFields, hiddenSectionField, form,
+				fieldHandler.handleField(pageContext, hiddenRowSectionDef, displayedFields, displayedFld, form,
 						showSideAndLabel, isDummy, rowCounter, sb);
 			}
 		}

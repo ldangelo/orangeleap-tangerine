@@ -30,6 +30,14 @@ public enum LayoutType {
 	DISTRIBUTION_LINE_GRID,
 	GIFT_IN_KIND_GRID;
 
+	public static boolean isMultiColumnType(LayoutType layoutType) {
+		return TWO_COLUMN.equals(layoutType);
+	}
+
+	public static boolean isSingleColumnType(LayoutType layoutType) {
+		return ONE_COLUMN.equals(layoutType) || ONE_COLUMN_HIDDEN.equals(layoutType);
+	}
+
 	public static boolean isColumnType(LayoutType layoutType) {
 		return ONE_COLUMN.equals(layoutType) || ONE_COLUMN_HIDDEN.equals(layoutType) ||
 				TWO_COLUMN.equals(layoutType);

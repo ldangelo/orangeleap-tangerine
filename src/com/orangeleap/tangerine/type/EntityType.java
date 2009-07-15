@@ -33,6 +33,7 @@ public enum EntityType {
     giftInKind,
     adjustedGift,
     code,
+	distributionLine,
     picklist,
     recurringGift,
     pledge,

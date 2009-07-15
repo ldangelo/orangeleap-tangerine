@@ -244,13 +244,13 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
     
     private void saveGift(Gift gift) throws BindException {
-        // TODO uncomment once complete TANGERINE-816 gift domain/form object separation
-        //giftService.maintainGift(gift);
+    	gift.setSuppressValidation(true);
+        giftService.editGift(gift);
     }
 
     private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
-        // TODO uncomment once complete TANGERINE-816 adjustedGift domain/form object separation
-        //adjustedGiftService.maintainAdjustedGift(adjustedGift);
+    	adjustedGift.setSuppressValidation(true);
+        adjustedGiftService.maintainAdjustedGift(adjustedGift);
     }
 
     private BeanWrapper addPropertyEditors(BeanWrapper bw) {

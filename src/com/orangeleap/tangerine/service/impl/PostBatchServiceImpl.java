@@ -31,8 +31,6 @@ import java.util.TreeMap;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -170,11 +168,24 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
        return map;
     }
     
-    private void setField(boolean isGift, AbstractPaymentInfoEntity apie, BeanWrapper bw, String key, String value) {
+    private void setField(boolean isGift, AbstractPaymentInfoEntity apie, String key, String value) {
        if (key.equals(POSTED_DATE)) {
-    	   bw.setPropertyValue(key, value);
+           DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+           Date postedDate;
+           try {
+        	   postedDate = dateFormat.parse(value);
+           } catch (Exception e) {
+        	   throw new RuntimeException("Invalid post date: "+value);
+           }
+           if (isGift) {
+               ((Gift)apie).setPostedDate(postedDate);
+           } else {
+               ((AdjustedGift)apie).setPostedDate(postedDate);
+           }
        } else if (key.equals(SOURCE)) {
     	   apie.setCustomFieldValue(SOURCE, value);
+       } else if (key.equals(POSTED)) {
+    	   // ignore.
        } else {
     	   if (isGift) {
     		    setGiftField((Gift)apie, key, value);
@@ -251,26 +262,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
     	adjustedGift.setSuppressValidation(true);
         adjustedGiftService.maintainAdjustedGift(adjustedGift);
-    }
-
-    private BeanWrapper addPropertyEditors(BeanWrapper bw) {
-        bw.registerCustomEditor(java.util.Date.class, new java.beans.PropertyEditorSupport() {
-            private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-
-            public void setAsText(java.lang.String s) throws java.lang.IllegalArgumentException {
-                try {
-                    this.setValue(dateFormat.parse(s));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            public java.lang.String getAsText() {
-                return  dateFormat.format((Date)this.getValue());
-            }
-
-        });
-        return bw;
     }
 
     // Reads previous list of matched gifts. Does not re-evaluate any criteria.
@@ -356,11 +347,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             postbatch.setPosted(true);
             postbatch.setPostedDate(postedDate);
             postbatch.setPostedById(tangerineUserHelper.lookupUserId());
-        } else {
-            postbatch.setBatchUpdated(true);
-            postbatch.setBatchUpdatedDate(new java.util.Date());
-            postbatch.setBatchUpdatedById(tangerineUserHelper.lookupUserId());
-        }
+        } 
+        
+        postbatch.setBatchUpdated(true);
+        postbatch.setBatchUpdatedDate(new java.util.Date());
+        postbatch.setBatchUpdatedById(tangerineUserHelper.lookupUserId());
+        
         
         // Update
         postbatch.getUpdateFields().remove(POSTED);  // This is a hidden update field for posting - don't show in list.
@@ -429,18 +421,17 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         boolean isGift = GIFT.equals(postbatch.getEntity());
         AbstractPaymentInfoEntity apie;
 
+        boolean wasPreviouslyPosted;
         if (isGift) {
             apie = giftService.readGiftById(item.getEntityId());
+            wasPreviouslyPosted = ((Gift)apie).isPosted();
         } else {
             apie = adjustedGiftService.readAdjustedGiftById(item.getEntityId());
+            wasPreviouslyPosted = ((AdjustedGift)apie).isPosted();
         }
 
         // Record previous values for audit trail
         siteService.populateDefaultEntityEditorMaps(apie);
-
-        BeanWrapper bw = addPropertyEditors(new BeanWrapperImpl(apie));
-
-        boolean wasPreviouslyPosted = (Boolean)bw.getPropertyValue(POSTED);
 
         if (post) {
 
@@ -450,13 +441,17 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 throw new RuntimeException(msg);
             }
 
-            bw.setPropertyValue(POSTED, true);
+            if (isGift) {
+                ((Gift)apie).setPosted(true);
+            } else {
+                ((AdjustedGift)apie).setPosted(true);
+            }
 
         }
 
         // Set update values.  
         for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-        	setField(isGift, apie, bw, me.getKey(), me.getValue());
+        	setField(isGift, apie, me.getKey(), me.getValue());
         }
         
         // Update record.

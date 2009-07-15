@@ -29,7 +29,7 @@
     <beans:constructor-arg value="queue.orangeleap.tangerine.gift"/>
   </beans:bean>
   
-  <beans:bean id="ConstituentDestination" class="org.apache.activemq.command.ActiveMQQueue">
+  <beans:bean id="ConstituentDestination" class="org.apache.activemq.command.ActiveMQTopic">
   	<beans:constructor-arg value="queue.orangeleap.tangerine.constituent"/>
   </beans:bean>
   
@@ -85,19 +85,7 @@
   <beans:bean id="marshallingTransformer" class="org.springframework.integration.xml.transformer.XmlPayloadMarshallingTransformer">
       <beans:constructor-arg>
           <beans:bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-            <beans:property name="classesToBeBound">
-            <beans:list>
-                <beans:value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateConstituentRequest</beans:value>
-                <beans:value>com.orangeleap.tangerine.ws.schema.ConstituentResponse</beans:value>
-                <beans:value>com.orangeleap.tangerine.ws.schema.CreateDefaultConstituentRequest</beans:value>
-                <beans:value>com.orangeleap.tangerine.ws.schema.GetSegmentationRequest</beans:value>
-                <beans:value>com.orangeleap.tangerine.ws.schema.GiftResponse</beans:value>
-                <beans:value>com.orangeleap.tangerine.ws.schema.GetConstituentGiftRequest</beans:value>
-                <beans:value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateGiftRequest</beans:value>
-                <beans:value>com.orangeleap.tangerine.ws.schema.SearchConstituentsRequest</beans:value>
-                <beans:value>com.orangeleap.tangerine.ws.schema.FindConstituentsRequest</beans:value>
-            </beans:list>
-        </beans:property>
+              <beans:property name="contextPath" value="com.orangeleap.tangerine.ws.schema"/>
           </beans:bean>
       </beans:constructor-arg>
       <beans:constructor-arg>

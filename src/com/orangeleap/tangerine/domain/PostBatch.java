@@ -18,13 +18,17 @@
 
 package com.orangeleap.tangerine.domain;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
-
-import javax.xml.bind.annotation.XmlType;
-import java.util.*;
-import java.io.Serializable;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class PostBatch extends AbstractCustomizableEntity  {
@@ -199,13 +203,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
 
 
-    /*
-     Fields to select on, e.g.:
-            status         Paid
-            constituentId  123456
-            donation_date  >2009-01-01
-            txRefNum       !=null
-     */
     public Map<String, String> getWhereConditions() {
         return whereConditions;
     }
@@ -214,11 +211,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.whereConditions = whereConditions;
     }
 
-    /*
-     Fields to set. e.g.:
-            status         Posted
-            acustomfield   somevalue
-     */
     public Map<String, String> getUpdateFields() {
         return updateFields;
     }

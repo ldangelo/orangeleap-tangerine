@@ -31,6 +31,8 @@ import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Repository("postBatchDAO")
 public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDao {
@@ -89,7 +91,33 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         List<PostBatchReviewSetItem> result = (List<PostBatchReviewSetItem>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS", params);
         return result;
     }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    public PaginatedResult readPostBatchReviewSetItems(Long postBatchId, SortInfo sortinfo) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPostBatchReviewSetItems: postBatchId = " + postBatchId);
+        }
+        Map<String, Object> params = setupParams();
+        sortinfo.addParams(params);
 
+		params.put("postBatchId", postBatchId);
+
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("POST_BATCH_REVIEW_SET_ITEMS_ROWCOUNT", params);
+        PostBatch postbatch = readPostBatch(postBatchId);
+        if (postbatch == null) return null;
+        List rows;
+        if ("gift".equals(postbatch.getEntity())) {
+           rows = getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS_GIFT_PAGINATED", params);
+        } else {
+           rows = getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS_ADJUSTED_GIFT_PAGINATED", params);
+        }
+        
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
+    }
 
     @Override
     public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem) {

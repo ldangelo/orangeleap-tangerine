@@ -23,6 +23,8 @@ import java.util.Map;
 
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface PostBatchService {
 
@@ -31,9 +33,10 @@ public interface PostBatchService {
     public List<PostBatch> listBatchs();
     public PostBatch readBatch(Long batchId);
     public PostBatch maintainBatch(PostBatch postbatch);
-    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
-    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
 	public PostBatch updateBatch(PostBatch postbatch);
 	public void deleteBatch(PostBatch postbatch);
+    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
+    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
+	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
 
 }

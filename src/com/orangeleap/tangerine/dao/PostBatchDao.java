@@ -18,11 +18,13 @@
 
 package com.orangeleap.tangerine.dao;
 
-import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
-
 import java.util.List;
 import java.util.Map;
+
+import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 
 public interface PostBatchDao {
@@ -34,6 +36,8 @@ public interface PostBatchDao {
     public PostBatch maintainPostBatch(PostBatch postBatch);
 
     public List<PostBatchReviewSetItem> readPostBatchReviewSetItems(Long postBatchId);
+
+    public PaginatedResult readPostBatchReviewSetItems(Long postBatchId, SortInfo sortInfo);
 
     public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem);
 

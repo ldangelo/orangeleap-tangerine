@@ -55,6 +55,8 @@ import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -286,7 +288,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
          return result;
     }
 
-
+    @Override
+	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo) {
+        return postBatchDao.readPostBatchReviewSetItems(postbatchId, sortInfo);
+	}
 
     @Override
     public void deleteBatch(PostBatch postbatch) {

@@ -116,7 +116,7 @@ public class GiftImporter extends EntityImporter {
                         PaymentSource.CHECK.equals(paymentType)
                 ) {
             if (gift.getGiftStatus() == null || gift.getGiftStatus().length() == 0) {
-                gift.setGiftStatus("Processed");
+                gift.setGiftStatus("Paid");
             }
         }
 

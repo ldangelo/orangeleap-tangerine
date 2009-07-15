@@ -153,7 +153,7 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 	protected void createLookupLink(SectionField currentField, StringBuilder sb) {
 		String lookupMsg = getMessage("lookup");
 		sb.append("<a href=\"javascript:void(0)\" onclick=\"").append(getLookupClickHandler()).append("\" class=\"multiLookupLink hideText\" ");
-		sb.append("fieldDef=\"").append(currentField.getFieldPropertyName()).append("\" ");
+		sb.append("fieldDef=\"").append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId())).append("\" ");
 		sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
 	}
 

@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.apache.commons.logging.Log;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -205,7 +206,8 @@ public class SelectionHandler extends AbstractFieldHandler {
 
 	protected void createLookupLink(SectionField currentField, StringBuilder sb) {
 		String lookupMsg = getMessage("lookup");
-		sb.append("<a href=\"javascript:void(0)\" fieldDef=\"").append(currentField.getFieldPropertyName()).append("\" class=\"multiLookupLink hideText selectorLookup\" ");
+		sb.append("<a href=\"javascript:void(0)\" fieldDef=\"").append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId()));
+		sb.append("\" class=\"multiLookupLink hideText selectorLookup\" ");
 		sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
 	}
 }

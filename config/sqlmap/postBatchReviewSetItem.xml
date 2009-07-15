@@ -143,6 +143,9 @@
         and dl2.MOTIVATION_CODE = #motivationCode#
         )
         </isNotNull>
+        <isNotNull property="posted"> 
+        and g.POSTED = #posted#
+        </isNotNull>
         ;
     </insert>
 
@@ -204,6 +207,9 @@
         where dl2.ADJUSTED_GIFT_ID = ag.ADJUSTED_GIFT_ID
         and dl2.MOTIVATION_CODE = #motivationCode#
         )
+        </isNotNull>
+        <isNotNull property="posted"> 
+        and ag.POSTED = #posted#
         </isNotNull>
         ;
     </insert>

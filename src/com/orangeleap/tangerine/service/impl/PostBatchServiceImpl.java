@@ -125,6 +125,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         map.put(SOURCE, "Source");
         map.put("designationCode", "Designation Code");
         map.put("motivationCode", "Motivation Code");
+        map.put(POSTED, "Posted");
 
         return map;
     }
@@ -138,7 +139,14 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             String value = me.getValue();
             if (value == null || value.trim().length() == 0) continue;
             
-            if (key.toLowerCase().contains("date")) {
+            if (key.equals(POSTED)) {
+            	boolean posted = false;
+            	value = value.toLowerCase();
+            	if (value.equals("true") || value.equals("t") || value.equals("y") || value.equals("yes") || value.equals("1")) {
+            		posted = true;
+            	}
+            	result.put(key, posted);
+            } else if (key.toLowerCase().contains("date")) {
                 if (value.length() != PostBatchServiceImpl.DATE_FORMAT.length()) throw new RuntimeException("Invalid Date.");
             	DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
             	try {
@@ -184,8 +192,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
            }
        } else if (key.equals(SOURCE)) {
     	   apie.setCustomFieldValue(SOURCE, value);
-       } else if (key.equals(POSTED)) {
-    	   // ignore.
        } else {
     	   if (isGift) {
     		    setGiftField((Gift)apie, key, value);
@@ -304,7 +310,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         Map<String, String> codemap = new HashMap<String, String>();
 
         if (post) {
-            postbatch.getUpdateFields().put(POSTED, "true");
             try {
                 postedDate = dateFormat.parse(postbatch.getUpdateFields().get(POSTED_DATE));
             } catch (Exception e) {
@@ -313,7 +318,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             createMaps(bankmap, codemap);
         } else {
            // Can't update these fields if not posting.
-           postbatch.getUpdateFields().remove(POSTED);
            postbatch.getUpdateFields().remove(POSTED_DATE);
         }
         
@@ -355,7 +359,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         
         
         // Update
-        postbatch.getUpdateFields().remove(POSTED);  // This is a hidden update field for posting - don't show in list.
         postbatch = postBatchDao.maintainPostBatch(postbatch);
         
         return postbatch;

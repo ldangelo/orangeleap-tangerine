@@ -98,10 +98,10 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
     protected String createMultiPicklistOptions(PageContext pageContext, Picklist picklist, Object fieldValue, StringBuilder sb) {
 	    Set<String> selectedRefs = new TreeSet<String>();
 	    if (picklist != null) {
+		    Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
+
 		    for (PicklistItem item : picklist.getActivePicklistItems()) {
 			    sb.append("<div class=\"multiPicklistOption multiOption\" style=\"");
-			    
-			    Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
 
 			    boolean foundValue = false;
 			    for (Object val : fieldVals) {
@@ -111,11 +111,11 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 				    }
 			    }
 
-				if (foundValue && StringUtils.hasText(item.getReferenceValue())) {
+				if (!foundValue) {
+				    sb.append("display:none");
+			    }
+			    else if (StringUtils.hasText(item.getReferenceValue())) {
 					selectedRefs.add(item.getReferenceValue());
-				}
-				else {
-					sb.append("display:none");
 				}
 			    
 			    String escapedItemName = StringEscapeUtils.escapeHtml(item.getItemName());

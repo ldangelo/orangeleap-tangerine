@@ -88,10 +88,20 @@ public class PostBatchFormController extends SimpleFormController {
         DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
         String sdate = formatter.format(new java.util.Date());
         postbatch.setPostBatchDesc("Batch for " + sdate);
-        // Add some default field settings...
-        postbatch.getWhereConditions().put(PostBatchServiceImpl.POSTED, "false");
-        postbatch.getUpdateFields().put(PostBatchServiceImpl.POSTED_DATE, sdate);
+        checkDefaults(postbatch);
         return postbatch;
+    }
+    
+    // Add some default field settings...
+    private void checkDefaults(PostBatch postbatch) {
+        if (postbatch.getWhereConditions().size() == 0) { 
+        	postbatch.getWhereConditions().put(PostBatchServiceImpl.POSTED, "false");
+        }
+        if (postbatch.getUpdateFields().size() == 0) {
+	        DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
+	        String sdate = formatter.format(new java.util.Date());
+	        postbatch.getUpdateFields().put(PostBatchServiceImpl.POSTED_DATE, sdate);
+        }
     }
 
 
@@ -138,6 +148,7 @@ public class PostBatchFormController extends SimpleFormController {
             readFields(request, postbatch.getWhereConditions(), "sf");
             readFields(request, postbatch.getUpdateFields(), "uf");
             validateFields(postbatch);
+            checkDefaults(postbatch); // make sure they didnt delete all selection criteria or update fields.
             postbatch = postBatchService.maintainBatch(postbatch);
             gifts = postBatchService.createBatchSelectionList(postbatch);  // throw exception if selection set too large.
             if (!isGift && gifts.size() == 0) errormessage = "No matches.";
@@ -188,7 +199,7 @@ public class PostBatchFormController extends SimpleFormController {
                 String fieldnum = parm.substring(6);
                 String key = request.getParameter(parm).trim();
                 String value = request.getParameter(type + "value" + fieldnum).trim();
-                if (key.length() > 0) map.put(key, value);
+                if (key.length() > 0 && value.length() > 0) map.put(key, value);
             }
         }
         return map;

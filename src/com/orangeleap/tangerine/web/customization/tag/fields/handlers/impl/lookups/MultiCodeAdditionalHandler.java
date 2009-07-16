@@ -55,7 +55,12 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 		createClone(sb);
 		createContainerEnd(sb);
 		createBottom(request, pageContext, sb);
-		createLookup(sb);
+		createLookupLink(currentField, sb);
+	}
+
+	@Override
+	protected String getSideCssClass(Object fieldValue) {
+		return "multiOptionLi";
 	}
 
 	protected void createTop(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
@@ -102,7 +107,7 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 		sb.append("<div id=\"div-additional-").append(formFieldName).append("\" class=\"additionalOptions\">");
 
 		String additionalFormFieldName = resolveAdditionalFormFieldName(formFieldName);
-		Object additionalFieldValue = form.getFieldValue(additionalFormFieldName);
+		Object additionalFieldValue = form.getFieldValueFromUnescapedFieldName(additionalFormFieldName);
 
 		if (additionalFieldValue != null) {
 			Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);
@@ -127,8 +132,9 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	protected void createMultiCodeEnd(StringBuilder sb) {
 		sb.append("</div>");
 	}
-	
-	protected void createHiddenInput(SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
+
+	@Override
+	protected void createHiddenInput(String formFieldName, Object fieldValue, StringBuilder sb) {
 	    sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" id=\"").append(formFieldName).append("\" value=\"").append(checkForNull(fieldValue)).append("\" ");
 		sb.append("additionalFieldId=\"").append(resolveAdditionalFormFieldName(formFieldName)).append("\"");
 		sb.append("\"/>");

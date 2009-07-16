@@ -194,13 +194,8 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 
     protected void createLookupLink(SectionField currentField, String formFieldName, StringBuilder sb) {
         sb.append("<a href=\"javascript:void(0)\" onclick=\"").append(getQueryClickHandler()).append("\" fieldDef=\"");
-
 	    sb.append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId()));
-	    // TODO:?
-//        SectionField sectionField = (SectionField) request.getAttribute("sectionField");
-//        if (sectionField != null && sectionField.getFieldDefinition() != null && sectionField.getFieldDefinition().getId() != null) {
-//            sb.append(StringEscapeUtils.escapeHtml(sectionField.getFieldDefinition().getId()));
-//        }
+	    
         String lookupMsg = getMessage("lookup");
         sb.append("\" class=\"hideText\" alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
     }

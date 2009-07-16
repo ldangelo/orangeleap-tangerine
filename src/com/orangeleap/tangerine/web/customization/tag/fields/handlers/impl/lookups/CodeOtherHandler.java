@@ -36,7 +36,7 @@ public class CodeOtherHandler extends CodeHandler {
 		}
 		else {
 			String otherFormFieldName = resolveOtherFormFieldName(formFieldName);
-			displayValue = form.getFieldValue(otherFormFieldName);
+			displayValue = form.getFieldValueFromUnescapedFieldName(otherFormFieldName);
 		}
 		return displayValue;
 	}

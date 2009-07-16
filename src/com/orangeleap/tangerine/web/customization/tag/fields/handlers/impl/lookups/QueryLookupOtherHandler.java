@@ -27,7 +27,7 @@ public class QueryLookupOtherHandler extends QueryLookupHandler {
 		}
 		else {
 			String otherFormFieldName = resolveOtherFormFieldName(formFieldName);
-			otherFieldValue = form.getFieldValue(otherFormFieldName);
+			otherFieldValue = form.getFieldValueFromUnescapedFieldName(otherFormFieldName);
 
 			if (otherFieldValue != null) {
 				sb.append("<span>").append(otherFieldValue).append("</span>");

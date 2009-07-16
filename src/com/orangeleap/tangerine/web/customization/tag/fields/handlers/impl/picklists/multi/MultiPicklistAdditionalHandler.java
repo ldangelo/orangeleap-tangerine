@@ -69,7 +69,7 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 		sb.append("<div id=\"div-additional-").append(formFieldName).append("\" class=\"additionalOptions\">");
 
 		String additionalFormFieldName = resolveAdditionalFormFieldName(formFieldName);
-		Object additionalFieldValue = form.getFieldValue(additionalFormFieldName);
+		Object additionalFieldValue = form.getFieldValueFromUnescapedFieldName(additionalFormFieldName);
 
 		if (additionalFieldValue != null) {
 			Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);

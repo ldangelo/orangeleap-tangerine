@@ -36,14 +36,11 @@
         where
         post_batch_review_set_item.POST_BATCH_ID = #postBatchId#
     </select>
-    
+ 
     <delete id="DELETE_POST_BATCH_REVIEW_SET_ITEMS" parameterClass="map" >
         delete from POST_BATCH_REVIEW_SET_ITEM
         where POST_BATCH_ID = #postBatchId#
     </delete>
-
-
-
 
     <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM" parameterClass="com.orangeleap.tangerine.domain.PostBatchReviewSetItem">
         insert into POST_BATCH_REVIEW_SET_ITEM (

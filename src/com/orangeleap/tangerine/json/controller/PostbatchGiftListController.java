@@ -32,7 +32,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -52,17 +51,17 @@ public class PostbatchGiftListController {
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
+    private final static Map<String, Object> GIFT_NAME_MAP = new HashMap<String, Object>();
+    private final static Map<String, Object> ADJUSTED_GIFT_NAME_MAP = new HashMap<String, Object>();
 
     static {
-        NAME_MAP.put("id", "id");
-        NAME_MAP.put("createdate", "createdate");
-        NAME_MAP.put("donationdate", "donationdate");
-        NAME_MAP.put("amount", "amount");
-        NAME_MAP.put("currencycode", "currencycode");
-        NAME_MAP.put("paymenttype", "paymenttype");
-        NAME_MAP.put("status", "status");
-        NAME_MAP.put("source", "source");
+    	GIFT_NAME_MAP.put("id", "g.GIFT_ID");
+    	GIFT_NAME_MAP.put("createdate", "g.CREATE_DATE");
+    	GIFT_NAME_MAP.put("donationdate", "g.DONATION_DATE");
+    	GIFT_NAME_MAP.put("amount", "g.AMOUNT");
+    	GIFT_NAME_MAP.put("currencycode", "g.CURRENCY_CODE");
+    	GIFT_NAME_MAP.put("paymenttype", "g.PAYMENT_TYPE");
+    	GIFT_NAME_MAP.put("status", "g.GIFT_STATUS");
     }
 
     @Resource(name = "postBatchService")
@@ -71,19 +70,22 @@ public class PostbatchGiftListController {
     @SuppressWarnings("unchecked")
     @RequestMapping("/postbatchGiftList.json")
     public ModelMap getPostbatchGiftList(HttpServletRequest request, SortInfo sortInfo) {
+    	
+        long postbatchId = Long.valueOf(request.getParameter("id"));
+    	PostBatch postbatch = postBatchService.readBatch(postbatchId);
+    	Map namemap = postbatch.getEntity().equals("gift")?GIFT_NAME_MAP:ADJUSTED_GIFT_NAME_MAP;
+    	
         List<Map> rows = new ArrayList<Map>();
 
         // if we're not getting back a valid column name, possible SQL injection,
         // so send back an empty list.
-        if (!sortInfo.validateSortField(NAME_MAP.keySet())) {
-            logger.warn("getPostbatchGiftList called with invalid sort column: [" + sortInfo.getSort() + "]");
+        if (!sortInfo.validateSortField(namemap.keySet())) {
             return new ModelMap("rows", rows);
         }
 
         // set the sort to the valid column name, based on the map
-        sortInfo.setSort((String) NAME_MAP.get(sortInfo.getSort()));
+        sortInfo.setSort((String) namemap.get(sortInfo.getSort()));
 
-        long postbatchId = Long.valueOf(request.getParameter("postbatchId"));
         PaginatedResult result = postBatchService.getBatchSelectionList(postbatchId, sortInfo);
 
         ModelMap map = new ModelMap("rows", result.getRows());

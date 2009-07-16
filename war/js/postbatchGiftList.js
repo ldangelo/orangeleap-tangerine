@@ -4,16 +4,22 @@ Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
+    var batchid = /id=(\d+)/g.exec(document.location.search);
     var baseParams = {};
+
+    if (batchid) {
+        baseParams.id = batchid[1];
+    }
 
     var header = 'Selection List';
 
     PostbatchGiftList.store = new Ext.data.JsonStore({
-        url: 'PostbatchGiftList.json',
+        url: 'postbatchGiftList.json',
         totalProperty: 'totalRows',
         root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
+            {name: 'constituentId', mapping: 'constituent.id', type: 'int'},
             {name: 'createdate', mapping: 'createdate', type: 'date', dateFormat: 'Y-m-d'},
             {name: 'donationdate', mapping: 'donationdate', type: 'date', dateFormat: 'Y-m-d'},
             {name: 'amount', mapping: 'amount', type: 'float'},
@@ -46,7 +52,7 @@ Ext.onReady(function() {
             {header: 'Currency Code', width: 65, dataIndex: 'currencycode', sortable: true},
             {header: 'Pay Method', width: 65, dataIndex: 'paymenttype', sortable: true},
             {header: 'Status', width: 65, dataIndex: 'status', sortable: true},
-            {header: 'Source', width: 65, dataIndex: 'source', sortable: true}
+            {header: 'Source', width: 65, dataIndex: 'source', sortable: false}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {
@@ -59,7 +65,7 @@ Ext.onReady(function() {
         title: header,
         loadMask: true,
         bbar: PostbatchGiftList.pagingBar,
-        renderTo: 'PostbatchGiftsGrid'
+        renderTo: 'postbatchGiftsGrid'
     });
 
     PostbatchGiftList.store.load({params: {start: 0, limit: 100, sort: 'donationdate', dir: 'DESC'}});
@@ -75,7 +81,7 @@ PostbatchGiftList.entityViewRenderer = function(val, meta, record) {
 PostbatchGiftList.navigate = function(id) {
 	var rec = PostbatchGiftList.grid.getSelectionModel().getSelected();
 	PostbatchGiftList.grid.getGridEl().mask('Loading Record');
-	window.location.href='gift.htm?giftId=' + id + '&constituentId=' + rec.data.constituentId;
+	window.location.href='giftView.htm?giftId=' + id + '&constituentId=' + rec.data.constituentId;
 };
 
 

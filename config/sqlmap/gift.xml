@@ -154,6 +154,28 @@
 		and (g.TRANSACTION_DATE between #beginDate# and #currentDate#)
 		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 	</select>
+	
+	<select id="SELECT_POST_BATCH_REVIEW_SET_ITEMS_GIFT_PAGINATED" resultMap="GIFT_RESULT" parameterClass="map" >
+		select
+		<include refid="GIFT_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="ADDRESS_COLS_FRAGMENT" />,
+		<include refid="PHONE_COLS_FRAGMENT" />,
+		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+		from GIFT g
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+		inner join POST_BATCH_REVIEW_SET_ITEM post_batch_review_set_item on g.GIFT_ID = post_batch_review_set_item.ENTITY_ID
+		left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
+		left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
+		left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+		left outer join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
+		where p.SITE_NAME = #siteName#		
+		and post_batch_review_set_item.POST_BATCH_ID = #postBatchId#
+		order by
+		$sortColumn$ $sortDir$, GIFT_TRANSACTION_DATE desc
+        limit $offset$,$limit$
+	</select>    
 
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		insert into GIFT (GIFT_STATUS, GIFT_TYPE, AMOUNT, AUTH_CODE, AVS_MESSAGE, 

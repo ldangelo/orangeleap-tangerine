@@ -103,7 +103,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 
 		params.put("postBatchId", postBatchId);
 
-        Long count = (Long)getSqlMapClientTemplate().queryForObject("POST_BATCH_REVIEW_SET_ITEMS_ROWCOUNT", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_REVIEW_SET_SIZE", params);
         PostBatch postbatch = readPostBatch(postBatchId);
         if (postbatch == null) return null;
         List rows;

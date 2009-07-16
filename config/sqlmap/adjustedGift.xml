@@ -72,6 +72,25 @@
 		<include refid="ADJUSTED_GIFT_QUERY_FRAGMENT" />
 		and ag.GIFT_ID = #originalGiftId#
 	</select>	
+	
+	<select id="SELECT_POST_BATCH_REVIEW_SET_ITEMS_ADJUSTED_GIFT_PAGINATED" resultMap="ADJUSTED_GIFT_RESULT" parameterClass="map" >
+		select
+		<include refid="ADJUSTED_GIFT_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="ADDRESS_COLS_FRAGMENT" />,
+		<include refid="PHONE_COLS_FRAGMENT" />,
+		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+		from ADJUSTED_GIFT ag
+		inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+		inner join GIFT g2 on ag.GIFT_ID = g2.GIFT_ID
+		left outer join ADDRESS addr on ag.ADDRESS_ID = addr.ADDRESS_ID
+		left outer join PHONE ph on ag.PHONE_ID = ph.PHONE_ID
+		left outer join PAYMENT_SOURCE ps on ag.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+		left outer join DISTRO_LINE dl on ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID
+		where p.SITE_NAME = #siteName#
+		and post_batch_review_set_item.POST_BATCH_ID = #postBatchId#
+	</select>   
 
 	<insert id="INSERT_ADJUSTED_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift">
 		insert into ADJUSTED_GIFT (ADJUSTED_AMOUNT, ADJUSTED_REASON, ADJUSTED_STATUS, ADJUSTED_TRANSACTION_DATE, ADJUSTED_TYPE, 

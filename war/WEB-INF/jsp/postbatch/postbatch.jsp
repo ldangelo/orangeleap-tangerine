@@ -1,5 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <tiles:insertDefinition name="base">
+    <tiles:putAttribute name="customHeaderContent" type="string">
+        <script type="text/javascript" src="js/postbatchGiftList.js"></script>
+    </tiles:putAttribute>
 	<tiles:putAttribute name="browserTitle" value="Create Gift Posting Batch" />
 	<tiles:putAttribute name="primaryNav" value="Gifts" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
@@ -60,7 +63,7 @@
 
         <c:if test="${!postbatch.batchUpdated}">
 
-        <form id="postbatchform" name="postbatchform" method="post" action="postbatch.htm" >
+        <form id="postbatchform" name="postbatchform" method="post" action="postbatch.htm?id=${postbatch.id}" >
 
             <h4>Edit Gift Posting Batch</h4>
 		    <br /><strong><a class="action" href="postbatchs.htm">&laquo;Back</a></strong><br/>
@@ -136,9 +139,6 @@
 
 			<input type="button" value="Save criteria and select records for update" class="saveButton" onclick="$('#postbatchform').submit();" />
 			
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			
-
 
         </form>
 
@@ -146,6 +146,11 @@
 
         <hr/>
             
+            <c:if test="${postbatch.entity == 'gift'}" >
+            <div id="postbatchGiftsGrid"></div>
+            </c:if>
+
+            <c:if test="${postbatch.entity != 'gift'}" >
             <table cellspacing="8" border="0" >
                 <tr>
                   <th>Id</th>
@@ -162,8 +167,8 @@
               </tr>
             </c:forEach>
             </table >
-
-
+            <br/>
+            </c:if>
 
         </div>
 		</div>

@@ -86,7 +86,7 @@ public class PostBatchFormController extends SimpleFormController {
         String sdate = formatter.format(new java.util.Date());
         postbatch.setPostBatchDesc("Batch for " + sdate);
         // Add some default field settings...
-        postbatch.getWhereConditions().put(PostBatchServiceImpl.STATUS, "Paid");
+        postbatch.getWhereConditions().put(PostBatchServiceImpl.POSTED, "false");
         postbatch.getUpdateFields().put(PostBatchServiceImpl.POSTED_DATE, sdate);
         return postbatch;
     }

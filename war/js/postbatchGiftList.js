@@ -4,12 +4,9 @@ Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
-    var batchid = /id=(\d+)/g.exec(document.location.search);
     var baseParams = {};
 
-    if (batchid) {
-        baseParams.id = batchid[1];
-    }
+    baseParams.id = $('#id').val();
 
     var header = 'Selection List';
 

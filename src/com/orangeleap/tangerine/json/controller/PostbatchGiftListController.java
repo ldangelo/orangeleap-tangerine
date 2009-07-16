@@ -70,12 +70,15 @@ public class PostbatchGiftListController {
     @SuppressWarnings("unchecked")
     @RequestMapping("/postbatchGiftList.json")
     public ModelMap getPostbatchGiftList(HttpServletRequest request, SortInfo sortInfo) {
+
+    	List<Map> rows = new ArrayList<Map>();
     	
-        long postbatchId = Long.valueOf(request.getParameter("id"));
+        String sid = request.getParameter("id");
+        if (sid == null || sid.trim().length() == 0) return new ModelMap("rows", rows);
+        long postbatchId = Long.valueOf(sid);
     	PostBatch postbatch = postBatchService.readBatch(postbatchId);
     	Map namemap = postbatch.getEntity().equals("gift")?GIFT_NAME_MAP:ADJUSTED_GIFT_NAME_MAP;
     	
-        List<Map> rows = new ArrayList<Map>();
 
         // if we're not getting back a valid column name, possible SQL injection,
         // so send back an empty list.
@@ -87,7 +90,6 @@ public class PostbatchGiftListController {
         sortInfo.setSort((String) namemap.get(sortInfo.getSort()));
 
         PaginatedResult result = postBatchService.getBatchSelectionList(postbatchId, sortInfo);
-
         ModelMap map = new ModelMap("rows", result.getRows());
         map.put("totalRows", result.getRowCount());
         return map;

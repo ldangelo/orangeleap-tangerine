@@ -63,7 +63,7 @@
 
         <c:if test="${!postbatch.batchUpdated}">
 
-        <form id="postbatchform" name="postbatchform" method="post" action="postbatch.htm?id=${postbatch.id}" >
+        <form id="postbatchform" name="postbatchform" method="post" action="postbatch.htm" >
 
             <h4>Edit Gift Posting Batch</h4>
 		    <br /><strong><a class="action" href="postbatchs.htm">&laquo;Back</a></strong><br/>
@@ -72,7 +72,7 @@
 
             <br/>
 
-            <input type="hidden" name="id" value="${postbatch.id}"  />
+            <input id="id" type="hidden" name="id" value="${postbatch.id}"  />
             Batch Id: ${postbatch.id} <br />
             Batch Description: <input type="text" size="60" name="postBatchDesc" value="<c:out value='${postbatch.postBatchDesc}'/>"  /><br />
             Batch Type: 

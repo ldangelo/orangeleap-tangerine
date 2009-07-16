@@ -150,7 +150,7 @@
             <div id="postbatchGiftsGrid"></div>
             </c:if>
 
-            <c:if test="${postbatch.entity != 'gift'}" >
+            <c:if test="${postbatch.entity == 'adjustedgift'}" >
             <table cellspacing="8" border="0" >
                 <tr>
                   <th>Id</th>
@@ -160,7 +160,7 @@
                 </tr>
             <c:forEach var="gift" varStatus="status" items="${gifts}" >
               <tr rowindex="${status.count}">
-                <td><c:out value='${gift.id}'/></td>
+                <td><a href="giftAdjustmentView.htm?adjustedGiftId=<c:out value='${gift.id}'/>&constituentId=<c:out value='${gift.constituent.id}'/>" >View</a></td>
                 <td><c:out value='${gift.constituent.id}'/></td>
                 <td><c:out value='${gift.shortDescription}'/></td>
                 <td><c:out value='${gift.txRefNum}'/></td>

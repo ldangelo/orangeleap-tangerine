@@ -65,7 +65,7 @@ public class Site implements Serializable {
     private Integer achMerchantId;
     private Integer achRuleNumber;
     private String achCompanyName;
-    private Integer achTestMode;
+    private Integer achTestMode = 0;
     private String smtpServerName;
     private String smtpAccountName;
     private String smtpPassword;

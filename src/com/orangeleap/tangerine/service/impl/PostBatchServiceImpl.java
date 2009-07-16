@@ -259,6 +259,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         postbatch.setReviewSetSize(postBatchDao.getReviewSetSize(postbatch.getId()));
         postBatchDao.maintainPostBatch(postbatch);
 
+        // Gift list uses json to display a paginated list.
+        if (isGift) return new ArrayList<AbstractPaymentInfoEntity>();
+        
         return getBatchSelectionList(postbatch);
     }
     

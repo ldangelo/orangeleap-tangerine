@@ -68,8 +68,11 @@ public class PostBatchFormController extends SimpleFormController {
 
         ModelAndView mav = super.showForm(request, response, errors, controlModel);
 
+        List<AbstractPaymentInfoEntity> gifts = new ArrayList<AbstractPaymentInfoEntity>();
         PostBatch postbatch = getPostBatch(request);
-        List<AbstractPaymentInfoEntity> gifts = postBatchService.getBatchSelectionList(postbatch);
+        if (!postbatch.getEntity().equals("gift")) {
+        	gifts = postBatchService.getBatchSelectionList(postbatch);
+        }
 
         mav.addObject("gifts", gifts);
         mav.addObject("postbatch", postbatch);
@@ -122,6 +125,7 @@ public class PostBatchFormController extends SimpleFormController {
         if (postbatch == null) postbatch = getNewPostBatch();
         if (postbatch.isBatchUpdated()) return null; // selection criteria and record set editing not allowed once updated.
 
+        boolean isGift = PostBatchServiceImpl.GIFT.equals(postbatch.getEntity());
         String errormessage = "";
         List<AbstractPaymentInfoEntity> gifts = new ArrayList<AbstractPaymentInfoEntity>();
 
@@ -136,7 +140,8 @@ public class PostBatchFormController extends SimpleFormController {
             validateFields(postbatch);
             postbatch = postBatchService.maintainBatch(postbatch);
             gifts = postBatchService.createBatchSelectionList(postbatch);  // throw exception if selection set too large.
-            if (gifts.size() == 0) errormessage = "No matches.";
+            if (!isGift && gifts.size() == 0) errormessage = "No matches.";
+            
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);

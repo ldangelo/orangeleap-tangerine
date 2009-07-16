@@ -90,6 +90,9 @@
 		left outer join DISTRO_LINE dl on ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID
 		where p.SITE_NAME = #siteName#
 		and post_batch_review_set_item.POST_BATCH_ID = #postBatchId#
+		order by
+		$sortColumn$ $sortDir$, ADJUSTED_TRANSACTION_DATE desc
+        limit $offset$,$limit$
 	</select>   
 
 	<insert id="INSERT_ADJUSTED_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift">

@@ -19,6 +19,7 @@
                     
             <h4>View Gift Posting Batch</h4>
 		    <br /><strong><a class="action" href="postbatchs.htm">&laquo;Back</a></strong><br/>
+            <input id="id" type="hidden" name="id" value="${postbatch.id}"  />
         
             <br />
             Batch Id: ${postbatch.id} <br />

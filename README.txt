@@ -1,7 +1,7 @@
 In order to set up and run the MPower Application do the following:
 
 Database:
-1.  Ensure that MySQL 5.0.x is installed locally.
+1.  Ensure that MySQL 5.1.35 is installed locally.
 2.  Create a new MySQL database schema called 'mpoweropen'
 3.  Create a new MySQL database user called 'mpower' with password 'mpower'
 4.  Assign all permissions for mpoweropen to mpower

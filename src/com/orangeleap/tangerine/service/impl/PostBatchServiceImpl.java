@@ -120,7 +120,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         map.put("createdDateBefore", "Created Date Before");
         map.put("createdDateAfter", "Created Date After");
         map.put("constituentId", "Constituent Id");
-        map.put(STATUS, "Status");
+        map.put(STATUS, "Gift Status");
         map.put("paymentType", "Payment Type");
         map.put("donationDate", "Donation Date");
         map.put("postmarkDate", "Postmark Date");

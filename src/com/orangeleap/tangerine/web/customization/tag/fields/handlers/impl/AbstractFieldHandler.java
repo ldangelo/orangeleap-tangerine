@@ -50,7 +50,9 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	public void handleField(PageContext pageContext,
 	                     SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, StringBuilder sb) {
-		String formFieldName = TangerineForm.escapeFieldName(currentField.getFieldPropertyName());
+
+		String unescapedFieldName = resolveUnescapedFieldName(sectionDefinition, currentField, form);
+		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
 		Object fieldValue = form.getFieldValue(formFieldName);
 
 		writeSideLiElementStart(sectionDefinition, formFieldName, fieldValue, sb);
@@ -67,7 +69,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	                     SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, boolean showSideAndLabel,
 	                     boolean isDummy, int rowCounter, StringBuilder sb) {
-		String unescapedFieldName = getUnescapedFieldName(sectionDefinition, currentField, form, rowCounter, isDummy);
+		String unescapedFieldName = resolveUnescapedFieldName(sectionDefinition, currentField, form, rowCounter, isDummy);
 		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
 
 		Object fieldValue = null;
@@ -94,7 +96,11 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	                     SectionField currentField, TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb);
 
 
-	protected String getUnescapedFieldName(SectionDefinition sectionDef, SectionField currentField, TangerineForm form,
+	protected String resolveUnescapedFieldName(SectionDefinition sectionDef, SectionField currentField, TangerineForm form) {
+		return resolveUnescapedFieldName(sectionDef, currentField, form, 0, false);
+	}
+
+	protected String resolveUnescapedFieldName(SectionDefinition sectionDef, SectionField currentField, TangerineForm form,
 	                                       int rowCounter, boolean isDummy) {
 		String unescapedFieldName = null;
 		if (LayoutType.isGridType(sectionDef.getLayoutType())) {
@@ -118,6 +124,10 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		if (unescapedFieldName == null) {
 			unescapedFieldName = currentField.getFieldPropertyName();
 		}
+		if ((currentField.isCompoundField() && currentField.getSecondaryFieldDefinition().isCustom()) ||
+		        (!currentField.isCompoundField() && currentField.getFieldDefinition().isCustom())) {
+		    unescapedFieldName = new StringBuilder(unescapedFieldName).append(StringConstants.DOT_VALUE).toString();
+		}
 		return unescapedFieldName;
 	}                                                                                                           
 
@@ -136,11 +146,12 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	public String resolvedPrefixedFieldName(String prefix, String aFieldName) {
 	    String prefixedFieldName = null;
 
-//	    boolean endsInValue = false;
-//	    if (aFieldName.endsWith(StringConstants.DOT_VALUE)) {
-//	        aFieldName = aFieldName.substring(0, aFieldName.length() - StringConstants.DOT_VALUE.length());
-//	        endsInValue = true;
-//	    }
+	    boolean endsInValue = false;
+		final String escapedDotValue = TangerineForm.escapeFieldName(StringConstants.DOT_VALUE);
+	    if (aFieldName.endsWith(escapedDotValue)) {
+	        aFieldName = aFieldName.substring(0, aFieldName.length() - escapedDotValue.length());
+	        endsInValue = true;
+	    }
 
 	    int startBracketIndex = aFieldName.lastIndexOf(TangerineForm.TANG_START_BRACKET);
 	    if (startBracketIndex > -1) {
@@ -157,9 +168,9 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	    if (prefixedFieldName == null) {
 	        prefixedFieldName = new StringBuilder(prefix).append(aFieldName).toString();
 	    }
-//	    if (endsInValue) {
-//	        prefixedFieldName = prefixedFieldName.concat(StringConstants.DOT_VALUE);
-//	    }
+	    if (endsInValue) {
+	        prefixedFieldName = prefixedFieldName.concat(escapedDotValue);
+	    }
 	    return prefixedFieldName;
 	}
 

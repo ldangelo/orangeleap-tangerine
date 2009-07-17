@@ -25,7 +25,7 @@ public class HiddenHandler extends AbstractFieldHandler {
 	@Override
 	public void handleField(PageContext pageContext, SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, StringBuilder sb) {
-		String unescapedFieldName = currentField.getFieldPropertyName();
+		String unescapedFieldName = resolveUnescapedFieldName(sectionDefinition, currentField, form);
 		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
 		Object fieldValue = form.getFieldValueFromUnescapedFieldName(formFieldName);
 
@@ -38,7 +38,7 @@ public class HiddenHandler extends AbstractFieldHandler {
 	                     SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, boolean showSideAndLabel,
 	                     boolean isDummy, int rowCounter, StringBuilder sb) {
-		String unescapedFieldName = getUnescapedFieldName(sectionDefinition, currentField, form, rowCounter, isDummy);
+		String unescapedFieldName = resolveUnescapedFieldName(sectionDefinition, currentField, form, rowCounter, isDummy);
 		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
 		Object fieldValue = form.getFieldValueFromUnescapedFieldName(formFieldName);
 

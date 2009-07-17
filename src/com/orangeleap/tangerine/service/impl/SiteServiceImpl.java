@@ -258,10 +258,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
                 labelText = sectionField.getSecondaryFieldDefinition().getDefaultLabel();
             }
         }
-        String key = sectionField.getFieldDefinition().getFieldName();
-        if (sectionField.getSecondaryFieldDefinition() != null) {
-            key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
-        }
+        String key = getFieldName(sectionField);
         fieldLabels.put(key, labelText);
     }
 

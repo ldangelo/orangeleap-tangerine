@@ -2,6 +2,7 @@
 <suite name="MPower Open Test Suite" verbose="2" parallel="false">
 	<test name="mpower-tests">
         <packages>
+	        <package name="com.orangeleap.tangerine.test.controller"></package>
         	<package name="com.orangeleap.tangerine.test.controller.validator"></package>
         	<package name="com.orangeleap.tangerine.test.dao.ibatis"></package>
         	<package name="com.orangeleap.tangerine.test.dao.jdbc"></package>

@@ -96,6 +96,7 @@ public class PostBatchFormController extends SimpleFormController {
     private void checkDefaults(PostBatch postbatch) {
         if (postbatch.getWhereConditions().size() == 0) { 
         	postbatch.getWhereConditions().put(PostBatchServiceImpl.POSTED, "false");
+        	if (postbatch.getEntity().equals("gift")) postbatch.getWhereConditions().put(PostBatchServiceImpl.STATUS, "Paid");
         }
         if (postbatch.getUpdateFields().size() == 0) {
 	        DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);

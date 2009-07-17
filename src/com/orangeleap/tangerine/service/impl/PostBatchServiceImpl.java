@@ -377,7 +377,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         Picklist bankCodes = picklistItemService.getPicklist("customFieldMap[bank]");
         if (bankCodes == null || bankCodes.getActivePicklistItems().size() == 0) {
-            throw new RuntimeException("Bank GL account codes not defined.");
+            throw new RuntimeException("Posting bank GL account codes not defined.  Go to Manage Picklist Items and set up Bank and Designation Code customizations for GL Accounts.");
         }
 
         for (PicklistItem item : bankCodes.getPicklistItems()) {
@@ -515,6 +515,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         journal.setPostedDate(new java.util.Date());
         journal.setPostBatchId(postbatch.getId());
 
+        journal.setDonationDate(gift.getDonationDate());
+        journal.setPaymentMethod(gift.getPaymentType());
+        journal.setCcType(gift.getSelectedPaymentSource().getCreditCardType());
+
         if (isHeader) {
             
             // Gift or Adjusted Gift
@@ -527,10 +531,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 journal.setEntityId(gift.getId());
                 journal.setAmount(gift.getAmount());
                 journal.setCode(getBank(gift, bankmap));
-                journal.setDonationDate(gift.getDonationDate());
                 journal.setDescription("Gift from " + gift.getConstituent().getRecognitionName());   
-                journal.setPaymentMethod(gift.getPaymentType());
-                journal.setCcType(gift.getSelectedPaymentSource().getCreditCardType());
             } else {
                 journal.setEntity(ADJUSTED_GIFT);
                 journal.setEntityId(ag.getId());
@@ -540,8 +541,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 journal.setCode(getBank(ag, bankmap));
                 journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
                 journal.setDescription("Adjustment associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
-                journal.setPaymentMethod(ag.getPaymentType());
-                journal.setCcType(ag.getSelectedPaymentSource().getCreditCardType());
             }
 
             updateJournalCodes(journal, bankmap, journal.getCode(), postbatch);
@@ -565,6 +564,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 journal.setDescription("Associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
             } else {
                 journal.setDescription("Adjusted gift ID " + ag.getId() + ", associated with original gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
+                journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
             }
             
             updateJournalCodes(journal, codemap, journal.getCode(), postbatch);

@@ -22,8 +22,7 @@ Ext.onReady(function() {
             {name: 'amount', mapping: 'amount', type: 'float'},
             {name: 'currencycode', mapping: 'currencyCode', type: 'string'},
             {name: 'paymenttype', mapping: 'paymentType', type: 'string'},
-            {name: 'status', mapping: 'giftStatus', type: 'string'},
-            {name: 'source', mapping: 'source', type: 'string'}
+            {name: 'status', mapping: 'giftStatus', type: 'string'}
         ],
         sortInfo:{field: 'donationdate', direction: "DESC"},
         remoteSort: true,
@@ -48,8 +47,7 @@ Ext.onReady(function() {
             {header: 'Amount', width: 65, dataIndex: 'amount', sortable: true, renderer: OrangeLeap.amountRenderer },
             {header: 'Currency Code', width: 65, dataIndex: 'currencycode', sortable: true},
             {header: 'Pay Method', width: 65, dataIndex: 'paymenttype', sortable: true},
-            {header: 'Status', width: 65, dataIndex: 'status', sortable: true},
-            {header: 'Source', width: 65, dataIndex: 'source', sortable: false}
+            {header: 'Status', width: 65, dataIndex: 'status', sortable: true}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {

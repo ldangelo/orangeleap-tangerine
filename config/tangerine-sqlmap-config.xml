@@ -49,5 +49,6 @@
     <sqlMap resource="sqlmap/postBatchReviewSetItem.xml"/>
     <sqlMap resource="sqlmap/journal.xml"/>
 
+    <sqlMap resource="sqlmap/scheduledItem.xml"/>
 
 </sqlMapConfig>

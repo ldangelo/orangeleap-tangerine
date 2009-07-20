@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SCHEDULED_ITEM">
+
+    <resultMap id="SCHEDULED_ITEM_RESULT" class="com.orangeleap.tangerine.domain.ScheduledItem">
+        <result property="id" column="SCHEDULED_ITEM_SCHEDULED_ITEM_ID" />
+        <result property="sourceEntity" column="SCHEDULED_ITEM_SOURCE_ENTITY" />
+        <result property="sourceEntityId" column="SCHEDULED_ITEM_SOURCE_ENTITY_ID" />
+        <result property="resultEntity" column="SCHEDULED_ITEM_RESULT_ENTITY" />
+        <result property="resultEntityId" column="SCHEDULED_ITEM_RESULT_ENTITY_ID" />
+        <result property="originalScheduledDate" column="SCHEDULED_ITEM_ORIGINAL_SCHEDULED_DATE" />
+        <result property="actualScheduledDate" column="SCHEDULED_ITEM_ACTUAL_SCHEDULED_DATE" />
+        <result property="completionDate" column="SCHEDULED_ITEM_COMPLETION_DATE" />
+        <result property="completionStatus" column="SCHEDULED_ITEM_COMPLETION_STATUS" />
+        <result property="modifiedBy" column="SCHEDULED_ITEM_MODIFIED_BY" />
+        <result property="createDate" column="SCHEDULED_ITEM_CREATE_DATE" />
+        <result property="updateDate" column="SCHEDULED_ITEM_UPDATE_DATE" />
+    </resultMap>
+
+    <sql id="SCHEDULED_ITEM_COLS_FRAGMENT">
+        scheduled_item.SCHEDULED_ITEM_ID as SCHEDULED_ITEM_SCHEDULED_ITEM_ID,
+        scheduled_item.SOURCE_ENTITY as SCHEDULED_ITEM_SOURCE_ENTITY,
+        scheduled_item.SOURCE_ENTITY_ID as SCHEDULED_ITEM_SOURCE_ENTITY_ID,
+        scheduled_item.RESULT_ENTITY as SCHEDULED_ITEM_RESULT_ENTITY,
+        scheduled_item.RESULT_ENTITY_ID as SCHEDULED_ITEM_RESULT_ENTITY_ID,
+        scheduled_item.ORIGINAL_SCHEDULED_DATE as SCHEDULED_ITEM_ORIGINAL_SCHEDULED_DATE,
+        scheduled_item.ACTUAL_SCHEDULED_DATE as SCHEDULED_ITEM_ACTUAL_SCHEDULED_DATE,
+        scheduled_item.COMPLETION_DATE as SCHEDULED_ITEM_COMPLETION_DATE,
+        scheduled_item.COMPLETION_STATUS as SCHEDULED_ITEM_COMPLETION_STATUS,
+        scheduled_item.MODIFIED_BY as SCHEDULED_ITEM_MODIFIED_BY,
+        scheduled_item.CREATE_DATE as SCHEDULED_ITEM_CREATE_DATE,
+        scheduled_item.UPDATE_DATE as SCHEDULED_ITEM_UPDATE_DATE    
+    </sql>
+
+    <sql id="SELECT_SCHEDULED_ITEM_FRAGMENT">
+        select 
+        <include refid="SCHEDULED_ITEM_COLS_FRAGMENT"/>
+        from SCHEDULED_ITEM scheduled_item 
+        where scheduled_item.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_SCHEDULED_ITEM_BY_ID" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
+        <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
+        and scheduled_item.SCHEDULED_ITEM_ID = #id#
+    </select>
+
+    <insert id="INSERT_SCHEDULED_ITEM" parameterClass="com.orangeleap.tangerine.domain.ScheduledItem">
+        insert into SCHEDULED_ITEM (
+        	SCHEDULED_ITEM_ID,
+        	SOURCE_ENTITY,
+        	SOURCE_ENTITY_ID,
+        	RESULT_ENTITY,
+        	RESULT_ENTITY_ID,
+        	ORIGINAL_SCHEDULED_DATE,
+        	ACTUAL_SCHEDULED_DATE,
+        	COMPLETION_DATE,
+        	COMPLETION_STATUS,
+        	MODIFIED_BY,
+        	CREATE_DATE,
+        	UPDATE_DATE        )
+        values (
+        	#id# ,
+        	#sourceEntity# ,
+        	#sourceEntityId# ,
+        	#resultEntity# ,
+        	#resultEntityId# ,
+        	#originalScheduledDate# ,
+        	#actualScheduledDate# ,
+        	#completionDate# ,
+        	#completionStatus# ,
+        	#modifiedBy# ,
+        	now(),
+        	now()        )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_SCHEDULED_ITEM" parameterClass="com.orangeleap.tangerine.domain.ScheduledItem">
+        update SCHEDULED_ITEM
+        SET 
+        	SCHEDULED_ITEM_ID = #id# ,
+        	SOURCE_ENTITY = #sourceEntity# ,
+        	SOURCE_ENTITY_ID = #sourceEntityId# ,
+        	RESULT_ENTITY = #resultEntity# ,
+        	RESULT_ENTITY_ID = #resultEntityId# ,
+        	ORIGINAL_SCHEDULED_DATE = #originalScheduledDate# ,
+        	ACTUAL_SCHEDULED_DATE = #actualScheduledDate# ,
+        	COMPLETION_DATE = #completionDate# ,
+        	COMPLETION_STATUS = #completionStatus# ,
+        	MODIFIED_BY = #modifiedBy# ,
+        	UPDATE_DATE = now()        
+        where SCHEDULED_ITEM_ID = #id#
+    </update>
+
+</sqlMap>
+

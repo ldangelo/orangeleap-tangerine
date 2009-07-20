@@ -18,6 +18,8 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -30,6 +32,7 @@ import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.dao.ScheduledItemDao;
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -67,8 +70,8 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     }
 
     @Override
-    public List<ScheduledItem> readScheduledItemsBySourceEntityId(String sourceEntity, Long sourceEntityId) {
-    	return scheduledItemDao.readScheduledItemsBySourceEntityId(sourceEntity, sourceEntityId);
+    public List<ScheduledItem> readScheduledItemsBySourceEntityId(Schedulable scheduleable) {
+    	return scheduledItemDao.readScheduledItemsBySourceEntityId(scheduleable.getType(), scheduleable.getId());
     }
 
     @Override
@@ -79,5 +82,16 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	return item;
     }
     
+    // Creates (if previousSchedulable == null) or modifies (if previousSchedulable!=null) 
+    // list of associated scheduled items based on schedulable criteria and any existing scheduled item ORIGINAL_SCHEDULED_DATEs.
+    // For a schedulable with no (indefinite) end date, updates schedule thru specified toDate.
+    // Will change ORIGINAL_SCHEDULE_DATEs and/or add new ones.
+    // Does not change any items with null ORIGINAL_SCHEDULE dates (manually added scheduled items).
+    // Also changes ACTUAL_SCHEDULE_DATE only if it previously matched ORIGINAL_SCHEDULE_DATE (if it doesn't match, 
+    // the individual scheduled item was previously changed manually).
+    public List<ScheduledItem> updateSchedule(Schedulable previousSchedulable, Schedulable updatedSchedulable, Date toDate) {
+    	List<ScheduledItem> list = new ArrayList<ScheduledItem>();
+    	return list;
+    }
 
 }

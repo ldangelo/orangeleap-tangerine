@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.service;
 import java.util.List;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 
 public interface ScheduledItemService {
@@ -29,7 +30,7 @@ public interface ScheduledItemService {
 
     public ScheduledItem readScheduledItemById(Long scheduledItemId);
 
-    public List<ScheduledItem> readScheduledItemsBySourceEntityId(String sourceEntity, Long sourceEntityId);
+    public List<ScheduledItem> readScheduledItemsBySourceEntityId(Schedulable scheduleable);
 
     public ScheduledItem getDefaultScheduledItem(AbstractEntity entity);
 

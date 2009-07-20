@@ -29,8 +29,8 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.Map;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 /**
  * User: alexlo
@@ -48,21 +48,19 @@ public class TangerineFormControllerTest extends BaseTest {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 
 		Gift gift = (Gift) form.getDomainObject();
-		Assert.assertEquals(new BigDecimal("45.99"), gift.getAmount(), "Amount = " + gift.getAmount());
-		Assert.assertEquals(new Long(100L), new Long(gift.getId()), "Id = " + gift.getId());
-		Assert.assertEquals("Check", gift.getPaymentType(), "PaymentType = " + gift.getPaymentType());
-		Assert.assertEquals("111", gift.getCheckNumber(), "CheckNumber = " + gift.getCheckNumber());
-		Assert.assertEquals("My gift to you", gift.getComments(), "Comments = " + gift.getComments());
-		Assert.assertEquals("firstname", gift.getConstituent().getFirstName(), "FirstName = " + gift.getConstituent().getFirstName());
-		Assert.assertEquals("lastname", gift.getConstituent().getLastName(), "LastName = " + gift.getConstituent().getLastName());
-		Assert.assertEquals("CREDIT_CARD", gift.getPaymentSource().getPaymentType(), "PaymentType = " + gift.getPaymentSource().getPaymentType());
-		Assert.assertEquals("4111111111111111", gift.getPaymentSource().getCreditCardNumber(), "CreditCardNumber = " + gift.getPaymentSource().getCreditCardNumber());
-		Assert.assertEquals("01/01/1999", format.format(gift.getPostedDate()), "PostedDate = " + gift.getPostedDate());
+		Assert.assertEquals(gift.getAmount(), new BigDecimal("45.99"), "Amount = " + gift.getAmount());
+		Assert.assertEquals(new Long(gift.getId()), new Long(100L), "Id = " + gift.getId());
+		Assert.assertEquals(gift.getPaymentType(), "Check", "PaymentType = " + gift.getPaymentType());
+		Assert.assertEquals(gift.getCheckNumber(), "111", "CheckNumber = " + gift.getCheckNumber());
+		Assert.assertEquals(gift.getComments(), "My gift to you", "Comments = " + gift.getComments());
+		Assert.assertEquals(gift.getConstituent().getFirstName(), "firstname", "FirstName = " + gift.getConstituent().getFirstName());
+		Assert.assertEquals(gift.getConstituent().getLastName(), "lastname", "LastName = " + gift.getConstituent().getLastName());
+		Assert.assertEquals(format.format(gift.getPostedDate()), "01/01/1999", "PostedDate = " + gift.getPostedDate());
 		Assert.assertTrue(gift.isPosted(), "Posted = false");
 		Assert.assertFalse(gift.isDeductible(), "Deductible = true");
-		Assert.assertEquals("Joe Blow", gift.getCustomFieldValue("reference"), "customFieldMap[reference].value = " + gift.getCustomFieldValue("reference"));
-		Assert.assertEquals("787", gift.getCustomFieldValue("daddyo"), "customFieldMap[daddyo].value = " + gift.getCustomFieldValue("daddyo"));
-		Assert.assertEquals("Yo Mama", gift.getCustomFieldValue("momma"), "customFieldMap[momma].value = " + gift.getCustomFieldValue("momma"));
+		Assert.assertEquals(gift.getCustomFieldValue("reference"), "Joe Blow", "customFieldMap[reference].value = " + gift.getCustomFieldValue("reference"));
+		Assert.assertEquals(gift.getCustomFieldValue("daddyo"), "787", "customFieldMap[daddyo].value = " + gift.getCustomFieldValue("daddyo"));
+		Assert.assertEquals(gift.getCustomFieldValue("momma"), "Yo Mama", "customFieldMap[momma].value = " + gift.getCustomFieldValue("momma"));
 	}
 
 	class MockTangerineFormController extends NewTangerineFormController {

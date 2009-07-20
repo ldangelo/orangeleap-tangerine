@@ -1,26 +1,27 @@
 package com.orangeleap.tangerine.controller;
 
-import com.orangeleap.tangerine.domain.AddressAware;
 import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.EmailAware;
 import com.orangeleap.tangerine.domain.NewAddressAware;
 import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.service.AddressService;
+import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
-import com.orangeleap.tangerine.type.FormBeanType;
+import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -31,27 +32,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public abstract class NewTangerineConstituentAttributesFormController extends NewTangerineFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
+	@Resource(name="addressService")
+	protected AddressService addressService;
+
+	@Resource(name="phoneService")
+	protected PhoneService phoneService;
+
+	@Resource(name="emailService")
+	protected EmailService emailService;
+
     @Resource(name="paymentSourceService")
     protected PaymentSourceService paymentSourceService;
 
-    protected boolean bindPaymentSource = true;
     protected boolean bindAddress = true;
     protected boolean bindPhone = true;
     protected boolean bindEmail = true;
-
-    /**
-     * If you do not want to bind to PaymentSources, set to false.  Default is true
-     * @param bindPaymentSource
-     */
-    public void setBindPaymentSource(boolean bindPaymentSource) {
-        this.bindPaymentSource = bindPaymentSource;
-    }
+	protected boolean bindPaymentSource = true;
 
     /**
      * If you do not want to bind to Addresses, set to false.  Default is true
@@ -77,17 +80,13 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
         this.bindEmail = bindEmail;
     }
 
-    protected Constituent getConstituent(HttpServletRequest request) {
-        Long constituentId = getConstituentId(request);
-        Constituent constituent = null;
-        if (constituentId != null) {
-            constituent = constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this constituent (authorization)?
-        }
-        if (constituent == null) {
-            throw new IllegalArgumentException("The constituent ID was not found");
-        }
-        return constituent;
-    }
+	/**
+	 * If you do not want to bind to PaymentSources, set to false.  Default is true
+	 * @param bindPaymentSource
+	 */
+	public void setBindPaymentSource(boolean bindPaymentSource) {
+	    this.bindPaymentSource = bindPaymentSource;
+	}
 
     @SuppressWarnings("unchecked")
     protected void addConstituentToReferenceData(HttpServletRequest request, Map refData) {
@@ -97,41 +96,57 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
         }
     }
 
-//    @Override
-//    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-//        super.initBinder(request, binder);
-//        if (bindPaymentSource) {
-//            binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, this.getConstituentIdString(request)));
-//        }
-//        if (bindAddress) {
-//            binder.registerCustomEditor(Address.class, new AddressEditor(addressService, this.getConstituentIdString(request)));
-//        }
-//        if (bindPhone) {
-//            binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService, this.getConstituentIdString(request)));
-//        }
-//        if (bindEmail) {
-//            binder.registerCustomEditor(Email.class, new EmailEditor(emailService, this.getConstituentIdString(request)));
-//        }
-//    }
+	@Override
+	protected void convertFormToDomain(HttpServletRequest request, TangerineForm form, Map<String, Object> paramMap) throws Exception {
+		form.setFieldMap(new TreeMap<String, Object>());
 
-//    @Override
-//    protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
-//        if (isFormSubmission(request)) {
-//            if (bindAddress && command instanceof AddressAware) {
-//                this.bindAddress(request, (AddressAware)command);
-//            }
-//            if (bindPhone && command instanceof PhoneAware) {
-//                this.bindPhone(request, (PhoneAware)command);
-//            }
-//            if (bindEmail && command instanceof EmailAware) {
-//                this.bindEmail(request, (EmailAware)command);
-//            }
-//            if (bindPaymentSource && command instanceof PaymentSourceAware) {
-//                this.bindPaymentSource(request, (PaymentSourceAware)command);
-//            }
-//        }
-//        super.onBind(request, command, errors);
-//    }
+		ServletRequestDataBinder binder = new ServletRequestDataBinder(form.getDomainObject());
+		initBinder(request, binder);
+
+		MutablePropertyValues propertyValues = new MutablePropertyValues();
+
+		convertAddress(request, form);
+		convertPhone(request, form);
+		convertEmail(request, form);
+		convertPaymentSource(request, form);
+
+		for (Object obj : paramMap.keySet()) {
+			String escapedFormFieldName = obj.toString();
+			String fieldName = TangerineForm.unescapeFieldName(escapedFormFieldName);
+			String paramValue = request.getParameter(escapedFormFieldName);
+
+			if (bindAddress && fieldName.startsWith(StringConstants.ADDRESS)) {
+				if (!"address.id".equals(fieldName) && ((NewAddressAware) form.getDomainObject()).getAddress() != null) {
+					form.addField(escapedFormFieldName, paramValue);
+					propertyValues.addPropertyValue(fieldName, paramValue);
+				}
+			}
+			else if (bindPhone && fieldName.startsWith(StringConstants.PHONE)) {
+				if (!"phone.id".equals(fieldName) && ((NewPhoneAware) form.getDomainObject()).getPhone() != null) {
+					form.addField(escapedFormFieldName, paramValue);
+					propertyValues.addPropertyValue(fieldName, paramValue);
+				}
+			}
+			else if (bindEmail && fieldName.startsWith(StringConstants.EMAIL)) {
+				if (!"email.id".equals(fieldName) && ((NewEmailAware) form.getDomainObject()).getEmail() != null) {
+					form.addField(escapedFormFieldName, paramValue);
+					propertyValues.addPropertyValue(fieldName, paramValue);
+				}
+			}
+			else if (bindPaymentSource && fieldName.startsWith(StringConstants.PAYMENT_SOURCE)) {
+				if (!"paymentSource.id".equals(fieldName) && ((PaymentSourceAware) form.getDomainObject()).getPaymentSource() != null) {
+					form.addField(escapedFormFieldName, paramValue);
+					propertyValues.addPropertyValue(fieldName, paramValue);
+				}
+			}
+			else {
+				form.addField(escapedFormFieldName, paramValue);
+				propertyValues.addPropertyValue(fieldName, paramValue);
+			}
+
+		}
+		binder.bind(propertyValues);
+	}
 
 
     @SuppressWarnings("unchecked")
@@ -140,23 +155,11 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
         Map refData = new HashMap();
         this.addConstituentToReferenceData(request, refData);
 
-        refDataPaymentSources(request, command, errors, refData);
         refDataAddresses(request, command, errors, refData);
         refDataPhones(request, command, errors, refData);
         refDataEmails(request, command, errors, refData);
+	    refDataPaymentSources(request, command, errors, refData);
         return refData;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
-        if (bindPaymentSource) {
-            PaymentSource selectedPaymentSource = null;
-            if (((TangerineForm) command).getDomainObject() instanceof PaymentSourceAware) {
-                selectedPaymentSource = ((PaymentSourceAware)((TangerineForm) command).getDomainObject()).getPaymentSource();
-            }
-            Map<String, List<PaymentSource>> paymentSources = paymentSourceService.groupPaymentSources(this.getConstituentId(request), selectedPaymentSource);
-            refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -204,6 +207,18 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
         }
     }
 
+	@SuppressWarnings("unchecked")
+	protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
+	    if (bindPaymentSource) {
+	        PaymentSource selectedPaymentSource = null;
+	        if (((TangerineForm) command).getDomainObject() instanceof PaymentSourceAware) {
+	            selectedPaymentSource = ((PaymentSourceAware)((TangerineForm) command).getDomainObject()).getPaymentSource();
+	        }
+	        Map<String, List<PaymentSource>> paymentSources = paymentSourceService.groupPaymentSources(this.getConstituentId(request), selectedPaymentSource);
+	        refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
+	    }
+	}
+
     private static <T extends AbstractCommunicationEntity> void filterInactiveNotSelected(T command, List<T> masterList) {
         for (Iterator<T> iterator = masterList.iterator(); iterator.hasNext();) {
             T entity = iterator.next();
@@ -216,130 +231,116 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
         }
     }
 
-    protected void bindAddress(HttpServletRequest request, AddressAware addressAware) {
-        String selectedAddress = request.getParameter(StringConstants.SELECTED_ADDRESS);
-        if (StringConstants.NEW.equals(selectedAddress)) {
-            addressAware.setAddressType(FormBeanType.NEW);
-            if (addressAware instanceof NewAddressAware) {
-                ((NewAddressAware)addressAware).getAddress().setUserCreated(true);
-            }
-        }
-        else if (StringConstants.NONE.equals(selectedAddress)) {
-            addressAware.setAddressType(FormBeanType.NONE);
-            if (addressAware instanceof NewAddressAware) {
-                ((NewAddressAware)addressAware).getAddress().setUserCreated(false);
-            }
-        }
-        else {
-            addressAware.setAddressType(FormBeanType.EXISTING);
-            if (addressAware instanceof NewAddressAware) {
-                ((NewAddressAware)addressAware).getAddress().setUserCreated(false);
-            }
-        }
-    }
+	protected void convertAddress(HttpServletRequest request, TangerineForm form) {
+		if (bindAddress) {
+			final String escapedFormFieldName = TangerineForm.escapeFieldName("address.id");
+			final String addressId = request.getParameter(escapedFormFieldName);
+			form.addField(escapedFormFieldName, addressId);
 
-    protected void bindPhone(HttpServletRequest request, PhoneAware phoneAware) {
-        String selectedPhone = request.getParameter(StringConstants.SELECTED_PHONE);
-        if (StringConstants.NEW.equals(selectedPhone)) {
-            phoneAware.setPhoneType(FormBeanType.NEW);
-            if (phoneAware instanceof NewPhoneAware) {
-                ((NewPhoneAware)phoneAware).getPhone().setUserCreated(true);
-            }
-        }
-        else if (StringConstants.NONE.equals(selectedPhone)) {
-            phoneAware.setPhoneType(FormBeanType.NONE);
-            if (phoneAware instanceof NewPhoneAware) {
-                ((NewPhoneAware)phoneAware).getPhone().setUserCreated(false);
-            }
-        }
-        else {
-            phoneAware.setPhoneType(FormBeanType.EXISTING);
-            if (phoneAware instanceof NewPhoneAware) {
-                ((NewPhoneAware)phoneAware).getPhone().setUserCreated(false);
-            }
-        }
-    }
+			if (addressId != null && NumberUtils.isNumber(addressId)) {
+				final long id = Long.parseLong(addressId);
+				NewAddressAware aware = (NewAddressAware) form.getDomainObject();
+				if (id == -1) { // 'None' address option selected
+					aware.setAddress(null);
+				}
+				else if (id == 0) { // 'New' address option selected
+					aware.setAddress(new Address(getConstituentId(request)));
+				}
+				else { // 'Existing' address option selected
+					final Address address = addressService.readById(id);
+					if (address == null) {
+						throw new IllegalArgumentException("Invalid address ID = " + id);
+					}
+					aware.setAddress(address);
+				}
+			}
+		}
+	}
 
-    protected void bindEmail(HttpServletRequest request, EmailAware emailAware) {
-        String selectedEmail = request.getParameter(StringConstants.SELECTED_EMAIL);
-        if (StringConstants.NEW.equals(selectedEmail)) {
-            emailAware.setEmailType(FormBeanType.NEW);
-            if (emailAware instanceof NewEmailAware) {
-                ((NewEmailAware)emailAware).getEmail().setUserCreated(true);
-            }
-        }
-        else if (StringConstants.NONE.equals(selectedEmail)) {
-            emailAware.setEmailType(FormBeanType.NONE);
-            if (emailAware instanceof NewEmailAware) {
-                ((NewEmailAware)emailAware).getEmail().setUserCreated(false);
-            }
-        }
-        else {
-            emailAware.setEmailType(FormBeanType.EXISTING);
-            if (emailAware instanceof NewEmailAware) {
-                ((NewEmailAware)emailAware).getEmail().setUserCreated(false);
-            }
-        }
-    }
+	protected void convertPhone(HttpServletRequest request, TangerineForm form) {
+		if (bindPhone) {
+			final String escapedFormFieldName = TangerineForm.escapeFieldName("phone.id");
+			final String phoneId = request.getParameter(escapedFormFieldName);
+			form.addField(escapedFormFieldName, phoneId);
 
-    protected void bindPaymentSource(HttpServletRequest request, PaymentSourceAware paymentSourceAware) {
-        String paymentType = request.getParameter(StringConstants.PAYMENT_TYPE);
-        if (PaymentSource.ACH.equals(paymentType) || PaymentSource.CREDIT_CARD.equals(paymentType)) {
-            String selectedPaymentSource = request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE);
-            if (StringConstants.NEW.equals(selectedPaymentSource)) {
-                paymentSourceAware.setPaymentSourceType(FormBeanType.NEW);
-                paymentSourceAware.getPaymentSource().setUserCreated(true);
-                paymentSourceAware.setPaymentSourcePaymentType();
-            }
-            else if (StringConstants.NONE.equals(selectedPaymentSource)) {
-                paymentSourceAware.setPaymentSourceType(FormBeanType.NONE);
-                paymentSourceAware.getPaymentSource().setUserCreated(false);
-            }
-            else {
-                paymentSourceAware.setPaymentSourceType(FormBeanType.EXISTING);
-                paymentSourceAware.getPaymentSource().setUserCreated(false);
-                paymentSourceAware.setPaymentSourceAwarePaymentType();
-            }
-        }
-    }
+			if (phoneId != null && NumberUtils.isNumber(phoneId)) {
+				final long id = Long.parseLong(phoneId);
+				NewPhoneAware aware = (NewPhoneAware) form.getDomainObject();
+				if (id == -1) { // 'None' phone option selected
+					aware.setPhone(null);
+				}
+				else if (id == 0) { // 'New' phone option selected
+					aware.setPhone(new Phone(getConstituentId(request)));
+				}
+				else { // 'Existing' phone option selected
+					final Phone phone = phoneService.readById(id);
+					if (phone == null) {
+						throw new IllegalArgumentException("Invalid phone ID = " + id);
+					}
+					aware.setPhone(phone);
+				}
+			}
+		}
+	}
 
-//    @Override
-//    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-//        Object model = super.formBackingObject(request);
-//
-//        if (model instanceof PaymentSourceAware) {
-//            PaymentSourceAware aware = (PaymentSourceAware) model;
-//            if (aware.getSelectedPaymentSource() != null && aware.getSelectedPaymentSource().getId() != null && aware.getSelectedPaymentSource().getId() > 0 && aware.getPaymentSourceType() == null) {
-//                aware.setPaymentSourceType(FormBeanType.EXISTING);
-//            }
-//        }
-//        if (model instanceof AddressAware) {
-//            AddressAware aware = (AddressAware) model;
-//            if (aware.getSelectedAddress() != null && aware.getSelectedAddress().getId() != null && aware.getSelectedAddress().getId() > 0 && aware.getAddressType() == null) {
-//                aware.setAddressType(FormBeanType.EXISTING);
-//            }
-//        }
-//        if (model instanceof PhoneAware) {
-//            PhoneAware aware = (PhoneAware) model;
-//            if (aware.getSelectedPhone() != null && aware.getSelectedPhone().getId() != null && aware.getSelectedPhone().getId() > 0 && aware.getPhoneType() == null) {
-//                aware.setPhoneType(FormBeanType.EXISTING);
-//            }
-//        }
-//        if (model instanceof EmailAware) {
-//            EmailAware aware = (EmailAware) model;
-//            if (aware.getSelectedEmail() != null && aware.getSelectedEmail().getId() != null && aware.getSelectedEmail().getId() > 0 && aware.getEmailType() == null) {
-//                aware.setEmailType(FormBeanType.EXISTING);
-//            }
-//        }
-//        return model;
-//    }
+	protected void convertEmail(HttpServletRequest request, TangerineForm form) {
+		if (bindEmail) {
+			final String escapedFormFieldName = TangerineForm.escapeFieldName("email.id");
+			final String emailId = request.getParameter(escapedFormFieldName);
+			form.addField(escapedFormFieldName, emailId);
+
+			if (emailId != null && NumberUtils.isNumber(emailId)) {
+				final long id = Long.parseLong(emailId);
+				NewEmailAware aware = (NewEmailAware) form.getDomainObject();
+				if (id == -1) { // 'None' email option selected
+					aware.setEmail(null);
+				}
+				else if (id == 0) { // 'New' email option selected
+					aware.setEmail(new Email(getConstituentId(request)));
+				}
+				else { // 'Existing' email option selected
+					final Email email = emailService.readById(id);
+					if (email == null) {
+						throw new IllegalArgumentException("Invalid email ID = " + id);
+					}
+					aware.setEmail(email);
+				}
+			}
+		}
+	}
+
+	protected void convertPaymentSource(HttpServletRequest request, TangerineForm form) {
+		if (bindPaymentSource) {
+			final String escapedFormFieldName = TangerineForm.escapeFieldName("paymentSource.id");
+			final String paymentSourceId = request.getParameter(escapedFormFieldName);
+			form.addField(escapedFormFieldName, paymentSourceId);
+
+			if (paymentSourceId != null && NumberUtils.isNumber(paymentSourceId)) {
+				final long id = Long.parseLong(paymentSourceId);
+				PaymentSourceAware aware = (PaymentSourceAware) form.getDomainObject();
+				if (id == -1) { // 'None' payment source option selected
+					aware.setPaymentSource(null);
+				}
+				else if (id == 0) { // 'New' payment source option selected
+					aware.setPaymentSource(new PaymentSource(getConstituent(request)));
+				}
+				else { // 'Existing' payment source option selected
+					final PaymentSource paymentSource = paymentSourceService.readPaymentSource(id);
+					if (paymentSource == null) {
+						throw new IllegalArgumentException("Invalid payment source ID = " + id);
+					}
+					aware.setPaymentSource(paymentSource);
+				}
+			}
+		}
+	}
 
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         if (isFormSubmission(request) && !errors.hasErrors() && bindPaymentSource && command instanceof PaymentSourceAware) {
             PaymentSourceAware aware = (PaymentSourceAware) command;
-            if (FormBeanType.NEW.equals(aware.getPaymentSourceType())) {
+            if (aware.getPaymentSource() != null && aware.getPaymentSource().isNew()) {
                 Map<String, Object> conflictingSources = paymentSourceService.checkForSameConflictingPaymentSources(aware);
                 String useConflictingName = request.getParameter("useConflictingName");
                 if (!"true".equals(useConflictingName)) {
@@ -347,11 +348,6 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
                     if (nameSources != null && !nameSources.isEmpty()) {
                         ModelAndView mav = showForm(request, response, errors);
                         mav.addObject("conflictingNames", nameSources);
-
-                        if (command instanceof AbstractPaymentInfoEntity) {
-                            ((AbstractPaymentInfoEntity)command).removeEmptyMutableDistributionLines();
-                        }
-
                         return mav;
                     }
                 }
@@ -360,9 +356,7 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
                     PaymentSource src = dateSources.get(0); // should only be 1
                     src.setCreditCardExpirationMonth(aware.getPaymentSource().getCreditCardExpirationMonth());
                     src.setCreditCardExpirationYear(aware.getPaymentSource().getCreditCardExpirationYear());
-                    aware.setSelectedPaymentSource(src);
-                    aware.setPaymentSourceType(FormBeanType.EXISTING);
-                    aware.setPaymentSource(null);
+                    aware.setPaymentSource(src);
                 }
             }
         }

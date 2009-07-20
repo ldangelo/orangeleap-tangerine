@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.controller;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.ConstituentService;
@@ -13,9 +14,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
 import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -27,7 +26,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -90,47 +88,55 @@ public abstract class NewTangerineFormController extends SimpleFormController {
         return request.getParameter(StringConstants.CONSTITUENT_ID);
     }
 
+	protected Constituent getConstituent(HttpServletRequest request) {
+	    Long constituentId = getConstituentId(request);
+	    Constituent constituent = null;
+	    if (constituentId != null) {
+	        constituent = constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this constituent (authorization)?
+	    }
+	    if (constituent == null) {
+	        throw new IllegalArgumentException("The constituent ID was not found");
+	    }
+	    return constituent;
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void onBind(HttpServletRequest request, Object command, BindException e) throws Exception {
 		TangerineForm form = (TangerineForm) command;
-		convertFormToDomain(request, form, request.getParameterMap());
+		convertFormToDomain(request, form, new TreeMap<String, Object>(request.getParameterMap()));
 	}
 
+	/**
+	 * Converts field names and values from the form bean to the domain object using Spring DataBinders.
+	 * Override for specific conversion rules (lists, nested beans, etc).
+	 * @param request
+	 * @param form
+	 * @param paramMap
+	 * @throws Exception
+	 */
 	protected void convertFormToDomain(HttpServletRequest request, TangerineForm form, Map<String, Object> paramMap)
 			throws Exception {
-		form.setFieldMap(new TreeMap<String, Object>(paramMap));
+		form.setFieldMap(new TreeMap<String, Object>());
 
 		ServletRequestDataBinder binder = new ServletRequestDataBinder(form.getDomainObject());
 		initBinder(request, binder);
 
-		BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject());
-
-		for (String escapedFormFieldName : form.getFieldMap().keySet()) {
+		MutablePropertyValues propertyValues = new MutablePropertyValues();
+		for (Object obj : paramMap.keySet()) {
+			String escapedFormFieldName = obj.toString();
 			String fieldName = TangerineForm.unescapeFieldName(escapedFormFieldName);
-
-			/* Check for grid rows */
-			String gridCollectionName = TangerineForm.getGridCollectionName(fieldName);
-			if (StringUtils.hasText(gridCollectionName)) {
-				if (bean.isReadableProperty(gridCollectionName) &&
-						bean.getPropertyValue(gridCollectionName) instanceof Collection) {
-
-				}
-			}
-			else {
-				MutablePropertyValues propertyValues = new MutablePropertyValues();
-				propertyValues.addPropertyValue(fieldName, form.getFieldMap().get(escapedFormFieldName));
-				binder.bind(propertyValues);
-			}
+			String paramValue = request.getParameter(escapedFormFieldName);
+			form.addField(escapedFormFieldName, paramValue);
+			propertyValues.addPropertyValue(fieldName, paramValue);
 		}
-
+		binder.bind(propertyValues);
 	}
 
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-		/** Not allowed to be overridden - binding done in TangerineForm */
         super.initBinder(request, binder);
-        binder.registerCustomEditor(Date.class, new TangerineCustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); // TODO: custom date format
+        binder.registerCustomEditor(Date.class, new TangerineCustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); 
     }
 
     @Override

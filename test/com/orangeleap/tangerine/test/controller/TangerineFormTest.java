@@ -32,13 +32,13 @@ public class TangerineFormTest extends BaseTest {
 
 	@Test
 	public void testIsGridField() throws Exception {
-		Assert.assertEquals("gift.distributionLines", TangerineForm.getGridCollectionName("gift.distributionLines[1].amount"),
+		Assert.assertEquals(TangerineForm.getGridCollectionName("gift.distributionLines[1].amount"), "gift.distributionLines",
 				"Expected gift.distributionLines, not " + TangerineForm.getGridCollectionName("gift.distributionLines[1].amount"));
-		Assert.assertEquals("distributionLines", TangerineForm.getGridCollectionName("distributionLines[3].amount"),
+		Assert.assertEquals(TangerineForm.getGridCollectionName("distributionLines[3].amount"), "distributionLines",
 				"Expected distributionLines, not " + TangerineForm.getGridCollectionName("distributionLines[3].amount"));
-		Assert.assertEquals("gift.distributionLines", TangerineForm.getGridCollectionName("gift.distributionLines[99]"),
+		Assert.assertEquals(TangerineForm.getGridCollectionName("gift.distributionLines[99]"), "gift.distributionLines",
 				"Expected gift.distributionLines, not " + TangerineForm.getGridCollectionName("gift.distributionLines[99]"));
-		Assert.assertEquals("distributionLines", TangerineForm.getGridCollectionName("distributionLines[0]"),
+		Assert.assertEquals(TangerineForm.getGridCollectionName("distributionLines[0]"), "distributionLines",
 				"Expected distributionLines, not "+ TangerineForm.getGridCollectionName("distributionLines[0]"));
 		Assert.assertNull(TangerineForm.getGridCollectionName("distributionLines"));
 		Assert.assertNull(TangerineForm.getGridCollectionName("distributionLines[]"));

@@ -72,6 +72,10 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
         this.id = null;
     }
 
+	public boolean isNew() {
+		return id == null || id == 0;
+	}
+
     /**
      * Returns the type of the Entity. This is used in persisting
      * associated fields and elements. The default behavior is to

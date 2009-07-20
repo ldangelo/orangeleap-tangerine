@@ -26,17 +26,17 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.testng.annotations.DataProvider;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * User: alexlo
  * Date: Jul 16, 2009
  * Time: 1:04:03 PM
  */
-public class TangerineFormDataProvider {
+public class AbstractPaymentDataProvider {
 
-	@DataProvider(name = "setupTangerineForm")
+	@DataProvider(name = "setupAbstractPaymentForm")
 	public static Object[][] createParameters() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 
@@ -73,12 +73,19 @@ public class TangerineFormDataProvider {
 		addToMap(request, paramMap, "checkNumber", "111");
 		addToMap(request, paramMap, "customFieldMap[reference].value", "Joe Blow");
 		addToMap(request, paramMap, "customFieldMap[daddyo].value", "787");
+		addToMap(request, paramMap, "distributionLines[1].amount", "45");
+		addToMap(request, paramMap, "distributionLines[1].percentage", "98");
+		addToMap(request, paramMap, "distributionLines[1].projectCode", "Trial");
+		addToMap(request, paramMap, "distributionLines[1].customFieldMap[tribute].value", "inMemoryOf");
+		addToMap(request, paramMap, "distributionLines[4].amount", ".99");
+		addToMap(request, paramMap, "distributionLines[4].percentage", "2");
+		addToMap(request, paramMap, "distributionLines[4].customFieldMap[onBehalfOf].value", "Fooey");
 
 		return new Object[][] { new Object[] { request, form, paramMap } };
 	}
 
 	private static void addToMap(MockHttpServletRequest request, Map<String, Object> paramMap, String key, Object value) {
-		request.addParameter(TangerineForm.escapeFieldName(key), value.toString());
+		request.setParameter(TangerineForm.escapeFieldName(key), value.toString());
 		paramMap.put(TangerineForm.escapeFieldName(key), value);
 	}
 }

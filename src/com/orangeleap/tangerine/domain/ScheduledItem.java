@@ -9,7 +9,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class ScheduledItem  {
+public class ScheduledItem extends AbstractCustomizableEntity {
     
     private static final long serialVersionUID = 1L;
 

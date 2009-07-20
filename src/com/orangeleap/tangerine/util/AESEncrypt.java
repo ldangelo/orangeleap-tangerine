@@ -18,7 +18,7 @@ public class AESEncrypt {
 			try {
 	
 				if (args.length < 2) {
-					System.out.println("Parameters: <datafile> <keyfile> ");
+					System.out.println("Parameters: <keyfile> <datafile> ");
 					System.exit(1);
 				}
 					

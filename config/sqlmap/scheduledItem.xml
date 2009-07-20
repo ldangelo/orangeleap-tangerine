@@ -44,6 +44,13 @@
         and scheduled_item.SCHEDULED_ITEM_ID = #id#
     </select>
 
+    <select id="SELECT_SCHEDULED_ITEM_BY_SOURCE_ENTITY" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
+        <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
+        and scheduled_item.SOURCE_ENTITY = #sourceEntity#
+        and scheduled_item.SOURCE_ENTITY_ID = #sourceEntityId#
+        order by scheduled_item.ACTUAL_SCHEDULED_DATE
+    </select>
+
     <insert id="INSERT_SCHEDULED_ITEM" parameterClass="com.orangeleap.tangerine.domain.ScheduledItem">
         insert into SCHEDULED_ITEM (
         	SCHEDULED_ITEM_ID,

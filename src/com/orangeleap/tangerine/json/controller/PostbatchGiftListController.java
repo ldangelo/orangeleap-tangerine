@@ -72,11 +72,15 @@ public class PostbatchGiftListController {
     public ModelMap getPostbatchGiftList(HttpServletRequest request, SortInfo sortInfo) {
     	
     	List<Map> rows = new ArrayList<Map>();
+        ModelMap map = new ModelMap("rows", rows);
+        map.put("totalRows", 0);
     	
     	try {
 
 	        String sid = request.getParameter("id");
-	        if (sid == null || sid.trim().length() == 0) return new ModelMap("rows", rows);
+	        if (sid == null || sid.trim().length() == 0) {
+	        	return map;
+	        }
 	        long postbatchId = Long.valueOf(sid);
 	    	PostBatch postbatch = postBatchService.readBatch(postbatchId);
 	    	Map namemap = postbatch.getEntity().equals("gift")?GIFT_NAME_MAP:ADJUSTED_GIFT_NAME_MAP;
@@ -85,20 +89,20 @@ public class PostbatchGiftListController {
 	        // if we're not getting back a valid column name, possible SQL injection,
 	        // so send back an empty list.
 	        if (!sortInfo.validateSortField(namemap.keySet())) {
-	            return new ModelMap("rows", rows);
+	            return map;
 	        }
 	
 	        // set the sort to the valid column name, based on the map
 	        sortInfo.setSort((String) namemap.get(sortInfo.getSort()));
 	
 	        PaginatedResult result = postBatchService.getBatchSelectionList(postbatchId, sortInfo);
-	        ModelMap map = new ModelMap("rows", result.getRows());
+	        map = new ModelMap("rows", result.getRows());
 	        map.put("totalRows", result.getRowCount());
 	        return map;
         
     	} catch (Exception e) {
     		logger.error(e);
-    		return new ModelMap("rows", rows);
+    		return map;
     	}
     }
 }

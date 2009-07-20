@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import com.orangeleap.tangerine.dao.ScheduledItemDao;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -82,6 +84,8 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	return item;
     }
     
+    private static Date PAST_DATE = new Date(0);
+    
     // Creates (if previousSchedulable == null) or modifies (if previousSchedulable!=null) 
     // list of associated scheduled items based on schedulable criteria and any existing scheduled item ORIGINAL_SCHEDULED_DATEs.
     // For a schedulable with no (indefinite) end date, updates schedule thru specified toDate.
@@ -89,9 +93,89 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     // Does not change any items with null ORIGINAL_SCHEDULE dates (manually added scheduled items).
     // Also changes ACTUAL_SCHEDULE_DATE only if it previously matched ORIGINAL_SCHEDULE_DATE (if it doesn't match, 
     // the individual scheduled item was previously changed manually).
+    @Override
     public List<ScheduledItem> updateSchedule(Schedulable previousSchedulable, Schedulable updatedSchedulable, Date toDate) {
+    	
     	List<ScheduledItem> list = new ArrayList<ScheduledItem>();
+    	
+    	boolean freqchange = !previousSchedulable.getFrequency().equals(updatedSchedulable.getFrequency()); // if true, delete all uncompleted items and regenerate from after last completed. skip rest of logic.
+    	boolean daychange = !previousSchedulable.getStartDate().equals(updatedSchedulable.getStartDate()); // if true, adjust existing uncompleted by diff from old next run to new next run, and add or delete at end.
+    	boolean extension = !daychange && !previousSchedulable.getEndDate().equals(updatedSchedulable.getEndDate()); // only need to add or delete at end, after last completed.
+    	
+    	
+    	List<Date> olddates = getDateList(previousSchedulable, toDate);
+    	List<Date> newdates = getDateList(updatedSchedulable, toDate);
+    	List<Date> adds = subtract(newdates, olddates);
+    	List<Date> deletes = subtract(olddates, newdates);
+    	
+    	Date lastcompleted;
+    	List<ScheduledItem> existingitems = readScheduledItemsBySourceEntityId(updatedSchedulable);
+    	if (existingitems.size() == 0) {
+        	lastcompleted = PAST_DATE;
+    	} else {
+            lastcompleted = existingitems.get(existingitems.size()-1).getActualScheduledDate();
+    	}
+    	
+    	for (ScheduledItem item : existingitems) {
+			if (item.getCompletionDate() == null) {
+	    		Date d = item.getOriginalScheduledDate();
+	    		///
+			}
+    	}
+    	
     	return list;
+    }
+    
+    // Returns items in a that are not in b.
+    private List<Date> subtract(List<Date> a, List<Date> b) {
+    	List<Date> result = new ArrayList<Date>();
+    	for (Date d : a) {
+    		if (!b.contains(a)) result.add(d);
+    	}
+    	return result;
+    }
+    
+    
+    
+    private List<Date> getDateList(Schedulable schedulable, Date toDate) {
+    	
+    	List<Date> result = new ArrayList<Date>();
+    	if (schedulable == null) return result;
+    
+    	String frequency = schedulable.getFrequency();
+    	if (Commitment.FREQUENCY_UNSPECIFIED.equals(frequency)) return result;
+    	
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(schedulable.getStartDate());
+    	
+    	Date enddate = schedulable.getEndDate();
+    	if (enddate == null) enddate = toDate;
+    	if (enddate == null) throw new RuntimeException("No end date specified.");
+    	
+    	while (!cal.after(enddate)) {
+    		
+    		result.add(cal.getTime());
+    		
+	        if (Commitment.FREQUENCY_WEEKLY.equals(frequency)) {
+	            cal.add(Calendar.WEEK_OF_MONTH, 1);
+	        } else if (Commitment.FREQUENCY_MONTHLY.equals(frequency)) {
+	            cal.add(Calendar.MONTH, 1);
+	        } else if (Commitment.FREQUENCY_QUARTERLY.equals(frequency)) {
+	            cal.add(Calendar.MONTH, 3);
+	        } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(frequency)) {
+	            cal.add(Calendar.MONTH, 6);
+	        } else if (Commitment.FREQUENCY_ANNUALLY.equals(frequency)) {
+	            cal.add(Calendar.YEAR, 1);
+	        } else if (Commitment.FREQUENCY_ONE_TIME.equals(frequency)) {
+	        	break;
+	        } else {
+	        	break;
+	        }
+        
+    	}
+    	
+    	return result;
+        
     }
 
 }

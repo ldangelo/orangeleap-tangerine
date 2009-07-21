@@ -22,7 +22,9 @@ import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.test.controller.FakeTestArray;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.validation.BindException;
 import org.testng.annotations.DataProvider;
 
 import java.math.BigDecimal;
@@ -37,7 +39,7 @@ import java.util.Map;
 public class TangerineFormDataProvider {
 
 	@DataProvider(name = "setupTangerineForm")
-	public static Object[][] createParameters() {
+	public static Object[][] createTangerineFormParameters() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 
 		Constituent constituent = new Constituent();
@@ -77,6 +79,39 @@ public class TangerineFormDataProvider {
 		return new Object[][] { new Object[] { request, form, paramMap } };
 	}
 
+	@DataProvider(name = "setupTestArrayForm")
+	public static Object[][] createTestArrayParameters() {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+
+		FakeTestArray array = new FakeTestArray();
+
+		TangerineForm form = new TangerineForm();
+		form.setDomainObject(array);
+
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		addToMap(request, paramMap, "stringArray", "a");
+		addToMap(request, paramMap, "stringArray", "b");
+		addToMap(request, paramMap, "intArray", "1");
+		addToMap(request, paramMap, "intArray", "2");
+
+		return new Object[][] { new Object[] { request, form, paramMap } };
+	}
+
+	@DataProvider(name = "setupBindErrors")
+	public static Object[][] createBindErrorParameters() {
+		Gift gift = new Gift();
+		BindException domainErrors = new BindException(gift, "gift");
+		domainErrors.rejectValue("amount", "exceptionHeading");
+		domainErrors.rejectValue("customFieldMap[reference]", "errorPhoneExists");
+		domainErrors.reject("errorMaxReminders");
+
+		TangerineForm form = new TangerineForm();
+		form.setDomainObject(gift);
+		BindException formErrors = new BindException(form, "form");
+
+		return new Object[][] { new Object[] { formErrors, domainErrors } };
+	}
+	
 	private static void addToMap(MockHttpServletRequest request, Map<String, Object> paramMap, String key, Object value) {
 		request.addParameter(TangerineForm.escapeFieldName(key), value.toString());
 		paramMap.put(TangerineForm.escapeFieldName(key), value);

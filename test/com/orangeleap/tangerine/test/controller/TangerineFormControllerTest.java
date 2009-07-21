@@ -24,6 +24,10 @@ import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.test.dataprovider.TangerineFormDataProvider;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -63,6 +67,37 @@ public class TangerineFormControllerTest extends BaseTest {
 		Assert.assertEquals(gift.getCustomFieldValue("momma"), "Yo Mama", "customFieldMap[momma].value = " + gift.getCustomFieldValue("momma"));
 	}
 
+	@Test(dataProvider = "setupTestArrayForm", dataProviderClass = TangerineFormDataProvider.class)
+	public void testConvertArrayFormToDomain(HttpServletRequest request, TangerineForm form, Map<String, Object> paramMap) throws Exception {
+
+		MockTangerineFormController controller = new MockTangerineFormController();
+		controller.convertFormToDomain(request, form, paramMap);
+		FakeTestArray array = (FakeTestArray) form.getDomainObject();
+
+		Assert.assertEquals(array.getStringArray()[0], "a", "StrArray[0] = " + array.getStringArray()[0]);
+		Assert.assertEquals(array.getStringArray()[1], "b", "StrArray[1] = " + array.getStringArray()[1]);
+
+		Assert.assertEquals(array.getIntArray()[0], 1, "IntArray[0] = " + array.getIntArray()[0]);
+		Assert.assertEquals(array.getIntArray()[1], 2, "IntArray[1] = " + array.getIntArray()[1]);
+	}
+
+	@Test(dataProvider = "setupBindErrors", dataProviderClass = TangerineFormDataProvider.class)
+	public void testBindDomainErrorsToForm(BindException formErrors, BindException domainErrors) throws Exception {
+		MockTangerineFormController controller = new MockTangerineFormController();
+		controller.bindDomainErrorsToForm(formErrors, domainErrors);
+
+		Assert.assertTrue(formErrors.hasErrors(), "No form errors");
+		Assert.assertEquals(formErrors.getGlobalErrors().size(), 1, "Global errors size = " + formErrors.getGlobalErrors().size());
+		Assert.assertEquals(formErrors.getFieldErrors().size(), 2, "Field errors size = " + formErrors.getGlobalErrors().size());
+		Assert.assertEquals(((ObjectError) formErrors.getGlobalErrors().get(0)).getCode(), "errorMaxReminders", "Global error[0] code = " + ((ObjectError) formErrors.getGlobalErrors().get(0)).getCode());
+		Assert.assertEquals(((FieldError) formErrors.getFieldErrors().get(0)).getField(), StringConstants.FIELD_MAP_START + "amount" + StringConstants.FIELD_MAP_END,
+				"Field error[0] fieldName = " + ((FieldError) formErrors.getFieldErrors().get(0)).getField());
+		Assert.assertEquals(((FieldError) formErrors.getFieldErrors().get(1)).getField(), StringConstants.FIELD_MAP_START +
+				TangerineForm.escapeFieldName("customFieldMap[reference]") + StringConstants.FIELD_MAP_END, "Field error[1] fieldName = " + ((FieldError) formErrors.getFieldErrors().get(1)).getField());
+		Assert.assertEquals(((FieldError) formErrors.getFieldErrors().get(0)).getCode(), "exceptionHeading", "Field error[0] code = " + ((FieldError) formErrors.getFieldErrors().get(0)).getCode());
+		Assert.assertEquals(((FieldError) formErrors.getFieldErrors().get(1)).getCode(), "errorPhoneExists", "Field error[1] code = " + ((FieldError) formErrors.getFieldErrors().get(1)).getCode());
+	}
+
 	class MockTangerineFormController extends NewTangerineFormController {
 		
 		@Override
@@ -73,6 +108,11 @@ public class TangerineFormControllerTest extends BaseTest {
 		@Override
 		public void convertFormToDomain(HttpServletRequest request, TangerineForm form, Map<String, Object> paramMap) throws Exception {
 			super.convertFormToDomain(request, form, paramMap);
+		}
+
+		@Override
+		public void bindDomainErrorsToForm(BindException formErrors, BindException domainErrors) {
+			super.bindDomainErrorsToForm(formErrors, domainErrors);
 		}
 	}
 }

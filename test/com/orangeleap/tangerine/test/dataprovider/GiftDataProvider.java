@@ -1,13 +1,12 @@
 package com.orangeleap.tangerine.test.dataprovider;
 
-import java.math.BigDecimal;
-
-import org.testng.annotations.DataProvider;
-
-import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import org.testng.annotations.DataProvider;
+
+import java.math.BigDecimal;
 
 public class GiftDataProvider {
 

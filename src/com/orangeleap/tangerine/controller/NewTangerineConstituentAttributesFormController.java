@@ -19,6 +19,8 @@ import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -104,6 +106,7 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
 		initBinder(request, binder);
 
 		MutablePropertyValues propertyValues = new MutablePropertyValues();
+		BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject());
 
 		convertAddress(request, form);
 		convertPhone(request, form);
@@ -113,7 +116,14 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
 		for (Object obj : paramMap.keySet()) {
 			String escapedFormFieldName = obj.toString();
 			String fieldName = TangerineForm.unescapeFieldName(escapedFormFieldName);
-			String paramValue = request.getParameter(escapedFormFieldName);
+			Object paramValue;
+
+			if (beanWrapper.getPropertyType(fieldName) != null && beanWrapper.getPropertyType(fieldName).isArray()) {
+				paramValue = request.getParameterValues(escapedFormFieldName);
+			}
+			else {
+				paramValue = request.getParameter(escapedFormFieldName);
+			}
 
 			if (bindAddress && fieldName.startsWith(StringConstants.ADDRESS)) {
 				if (!"address.id".equals(fieldName) && ((NewAddressAware) form.getDomainObject()).getAddress() != null) {

@@ -14,9 +14,13 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -122,13 +126,22 @@ public abstract class NewTangerineFormController extends SimpleFormController {
 		ServletRequestDataBinder binder = new ServletRequestDataBinder(form.getDomainObject());
 		initBinder(request, binder);
 
+		BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject());
+
 		MutablePropertyValues propertyValues = new MutablePropertyValues();
 		for (Object obj : paramMap.keySet()) {
 			String escapedFormFieldName = obj.toString();
 			String fieldName = TangerineForm.unescapeFieldName(escapedFormFieldName);
-			String paramValue = request.getParameter(escapedFormFieldName);
-			form.addField(escapedFormFieldName, paramValue);
-			propertyValues.addPropertyValue(fieldName, paramValue);
+
+			Object val;
+			if (beanWrapper.getPropertyType(fieldName) != null && beanWrapper.getPropertyType(fieldName).isArray()) {
+				val = request.getParameterValues(escapedFormFieldName);
+			}
+			else {
+				val = request.getParameter(escapedFormFieldName);
+			}
+			form.addField(escapedFormFieldName, val);
+			propertyValues.addPropertyValue(fieldName, val);
 		}
 		binder.bind(propertyValues);
 	}
@@ -172,6 +185,23 @@ public abstract class NewTangerineFormController extends SimpleFormController {
     protected String appendSaved(String url) {
         return new StringBuilder(url).append("&").append(StringConstants.SAVED_EQUALS_TRUE).toString();
     }
+
+	protected void bindDomainErrorsToForm(BindException formErrors, BindException domainErrors) {
+		if (domainErrors != null && domainErrors.hasErrors()) {
+			for (Object globalError : domainErrors.getGlobalErrors()) {
+				formErrors.addError((ObjectError) globalError);	
+			}
+			for (Object thisError : domainErrors.getFieldErrors()) {
+				FieldError domainFieldError = (FieldError) thisError;
+				formErrors.rejectValue(new StringBuilder(StringConstants.FIELD_MAP_START).
+						append(TangerineForm.escapeFieldName(domainFieldError.getField())).
+						append(StringConstants.FIELD_MAP_END).toString(),
+						domainFieldError.getCode(),
+						domainFieldError.getArguments(),
+						domainFieldError.getDefaultMessage()); 
+			}
+		}
+	}
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {

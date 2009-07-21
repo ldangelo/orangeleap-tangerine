@@ -19,6 +19,9 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.support.RequestContext;
+import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -210,10 +213,14 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		return labelText;
 	}
 
-	protected void writeErrorClass(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
-	    if (pageContext.getAttribute(StringConstants.ERROR_CLASS) != null) {     // TODO
-	        sb.append(" ").append(pageContext.getAttribute(StringConstants.ERROR_CLASS));
-	    }
+	protected void writeErrorClass(PageContext pageContext, String formFieldName, StringBuilder sb) {
+		RequestContext requestContext = (RequestContext) pageContext.getAttribute(RequestContextAwareTag.REQUEST_CONTEXT_PAGE_ATTRIBUTE);
+		Errors errors = requestContext.getErrors(StringConstants.FORM);
+		if (errors != null && errors.hasErrors()) {
+			if (errors.hasFieldErrors(new StringBuilder(StringConstants.FIELD_MAP_START).append(formFieldName).append(StringConstants.FIELD_MAP_END).toString())) {
+				sb.append(" textError ");
+			}
+		}
 	}
 
 	protected void writeDisabled(SectionField currentField, TangerineForm form, StringBuilder sb) {

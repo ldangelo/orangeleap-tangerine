@@ -52,8 +52,8 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
 		Picklist picklist = resolvePicklist(currentField, pageContext);
-		createTop(request, pageContext, sb);
-		createContainerBegin(request, pageContext, sb);
+		createTop(request, pageContext, formFieldName, sb);
+		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiPicklistBegin(currentField, formFieldName, picklist, sb);
 		createLeft(sb);
 		String selectedRefs = createMultiPicklistOptions(pageContext, picklist, fieldValue, sb);
@@ -62,21 +62,21 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 		createMultiPicklistEnd(sb);
 		createHiddenInput(currentField, formFieldName, fieldValue, sb);
 		createContainerEnd(sb);
-		createBottom(request, pageContext, sb);
+		createBottom(request, pageContext, formFieldName, sb);
 		createSelectedRefs(formFieldName, selectedRefs, sb);
 		createLookupLink(sb);
 	}
 
-    protected void createTop(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+    protected void createTop(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
         sb.append("<div class=\"lookupScrollTop ");
-        writeErrorClass(request, pageContext, sb);
+        writeErrorClass(pageContext, formFieldName, sb);
         sb.append("\"></div>");
     }
 
-    protected void createContainerBegin(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+    protected void createContainerBegin(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
         sb.append("<div class=\"lookupScrollContainer ");
 	    sb.append(getContainerCssClass());
-	    writeErrorClass(request, pageContext, sb);
+	    writeErrorClass(pageContext, formFieldName, sb);
 	    sb.append("\">");
     }
 
@@ -156,9 +156,9 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
         sb.append("</div>");
     }
 
-    protected void createBottom(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+    protected void createBottom(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
         sb.append("<div class=\"lookupScrollBottom ");
-	    writeErrorClass(request, pageContext, sb);
+	    writeErrorClass(pageContext, formFieldName, sb);
         sb.append("\"></div>");
     }
 

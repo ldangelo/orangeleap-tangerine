@@ -30,8 +30,8 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		createTop(request, pageContext, sb);
-		createContainerBegin(request, pageContext, sb);
+		createTop(request, pageContext, formFieldName, sb);
+		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiLookupBegin(currentField, sb);
 		createLeft(sb);
 		createMultiLookupOptions(pageContext, currentField, fieldValue, sb);
@@ -44,23 +44,23 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 		}
 		
 		createContainerEnd(sb);
-		createBottom(request, pageContext, sb);
+		createBottom(request, pageContext, formFieldName, sb);
 
 		if (!FieldType.QUERY_LOOKUP_DISPLAY.equals(currentField.getFieldType())) {
 			createLookupLink(currentField, sb);
 		}
 	}
 
-    protected void createTop(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+    protected void createTop(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
         sb.append("<div class=\"lookupScrollTop ");
-        writeErrorClass(request, pageContext, sb);
+        writeErrorClass(pageContext, formFieldName, sb);
         sb.append("\"></div>");
     }
 
-    protected void createContainerBegin(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+    protected void createContainerBegin(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
         sb.append("<div class=\"lookupScrollContainer ");
 	    sb.append(getContainerCssClass());
-	    writeErrorClass(request, pageContext, sb);
+	    writeErrorClass(pageContext, formFieldName, sb);
 	    sb.append("\">");
     }
 
@@ -144,9 +144,9 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
         sb.append("</div>");
     }
 
-    protected void createBottom(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+    protected void createBottom(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
         sb.append("<div class=\"lookupScrollBottom ");
-	    writeErrorClass(request, pageContext, sb);
+	    writeErrorClass(pageContext, formFieldName, sb);
         sb.append("\"></div>");
     }
 

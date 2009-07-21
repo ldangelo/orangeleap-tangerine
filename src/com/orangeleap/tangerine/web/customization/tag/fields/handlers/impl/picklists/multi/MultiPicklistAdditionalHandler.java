@@ -45,8 +45,8 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
 		Picklist picklist = resolvePicklist(currentField, pageContext);
-		createTop(request, pageContext, sb);
-		createContainerBegin(request, pageContext, sb);
+		createTop(request, pageContext, formFieldName, sb);
+		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiPicklistBegin(currentField, formFieldName, picklist, sb);
 		createLeft(sb);
 		String selectedRefs = createMultiPicklistOptions(pageContext, picklist, fieldValue, sb);
@@ -60,7 +60,7 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 		createMultiPicklistEnd(sb);
 		createHiddenInput(currentField, formFieldName, fieldValue, sb);
 		createContainerEnd(sb);
-		createBottom(request, pageContext, sb);
+		createBottom(request, pageContext, formFieldName, sb);
 		createSelectedRefs(formFieldName, selectedRefs, sb);
 		createLookupLink(sb);
 	}

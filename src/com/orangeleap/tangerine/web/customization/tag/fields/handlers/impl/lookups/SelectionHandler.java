@@ -66,8 +66,8 @@ public class SelectionHandler extends AbstractFieldHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		createTop(request, pageContext, sb);
-		createContainerBegin(request, pageContext, sb);
+		createTop(request, pageContext, formFieldName, sb);
+		createContainerBegin(request, pageContext, formFieldName, sb);
 		createSelectionBegin(currentField, sb);
 		createLeft(sb);
 		createSelectionOptions(request, currentField, fieldValue, sb);
@@ -79,7 +79,7 @@ public class SelectionHandler extends AbstractFieldHandler {
 			createClone(sb);
 		}
 		createContainerEnd(sb);
-		createBottom(request, pageContext, sb);
+		createBottom(request, pageContext, formFieldName, sb);
 
 		if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldType())) {
 			createLookupLink(currentField, sb);
@@ -91,15 +91,15 @@ public class SelectionHandler extends AbstractFieldHandler {
 		return new StringBuilder(super.getSideCssClass(fieldValue)).append(" multiOptionLi").toString();
 	}
 
-	protected void createTop(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+	protected void createTop(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
 	    sb.append("<div class=\"lookupScrollTop ");
-	    writeErrorClass(request, pageContext, sb);
+	    writeErrorClass(pageContext, formFieldName, sb);
 	    sb.append("\"></div>");
 	}
 
-	protected void createContainerBegin(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+	protected void createContainerBegin(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
 	    sb.append("<div class=\"lookupScrollContainer ").append(getContainerCssClass());
-		writeErrorClass(request, pageContext, sb);
+		writeErrorClass(pageContext, formFieldName, sb);
 		sb.append("\">");
 	}
 
@@ -136,25 +136,27 @@ public class SelectionHandler extends AbstractFieldHandler {
 			    }
 			}
 			else {
-			    final List<Long> refIds = (List<Long>) fieldValue;
-			    for (Long refId : refIds) {
-			        if (ReferenceType.pledge.equals(referenceType)) {
-			            Pledge pledge = pledgeService.readPledgeById(refId);
-			            displayValues.add(pledge.getShortDescription());
-			        } 
-			        else if (ReferenceType.recurringGift.equals(referenceType)) {
-			            RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(refId);
-			            displayValues.add(recurringGift.getShortDescription());
-			        }
-			        else if (ReferenceType.gift.equals(referenceType)) {
-			            Gift gift = giftService.readGiftById(refId);
-			            displayValues.add(gift.getShortDescription());
-			        }
-			        ids.add(refId);
-				    
-				    links.add(new StringBuilder(referenceType.toString()).append(".htm?").append(referenceType).append("Id=").append(refId).append("&").
-						    append(StringConstants.CONSTITUENT_ID).append("=").append(request.getParameter(StringConstants.CONSTITUENT_ID)).toString());
-			    }
+				if (fieldValue instanceof List) {
+					final List<Long> refIds = (List<Long>) fieldValue;
+					for (Long refId : refIds) {
+						if (ReferenceType.pledge.equals(referenceType)) {
+							Pledge pledge = pledgeService.readPledgeById(refId);
+							displayValues.add(pledge.getShortDescription());
+						}
+						else if (ReferenceType.recurringGift.equals(referenceType)) {
+							RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(refId);
+							displayValues.add(recurringGift.getShortDescription());
+						}
+						else if (ReferenceType.gift.equals(referenceType)) {
+							Gift gift = giftService.readGiftById(refId);
+							displayValues.add(gift.getShortDescription());
+						}
+						ids.add(refId);
+
+						links.add(new StringBuilder(referenceType.toString()).append(".htm?").append(referenceType).append("Id=").append(refId).append("&").
+								append(StringConstants.CONSTITUENT_ID).append("=").append(request.getParameter(StringConstants.CONSTITUENT_ID)).toString());
+					}
+				}
 			}
 			String gotoMsg = getMessage("gotoLink");
 
@@ -198,9 +200,9 @@ public class SelectionHandler extends AbstractFieldHandler {
 	    sb.append("</div>");
 	}
 
-	protected void createBottom(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+	protected void createBottom(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
 	    sb.append("<div class=\"lookupScrollBottom ");
-		writeErrorClass(request, pageContext, sb);
+		writeErrorClass(pageContext, formFieldName, sb);
 	    sb.append("\"></div>");
 	}
 

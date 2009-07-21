@@ -29,7 +29,7 @@ public class TextAreaHandler extends AbstractFieldHandler {
 		sb.append("<textarea rows=\"5\" cols=\"30\" class=\"text ");
 		sb.append(resolveEntityAttributes(currentField));
 
-		writeErrorClass(request, pageContext, sb);
+		writeErrorClass(pageContext, formFieldName, sb);
 
 		sb.append("\" ");
 

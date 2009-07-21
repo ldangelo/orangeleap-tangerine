@@ -43,8 +43,8 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		createTop(request, pageContext, sb);
-		createContainerBegin(request, pageContext, sb);
+		createTop(request, pageContext, formFieldName, sb);
+		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiCodeBegin(currentField, sb);
 		createLeft(sb);
 		createCodeOptions(currentField, fieldValue, sb);
@@ -54,7 +54,7 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 		createHiddenInput(formFieldName, fieldValue, sb);
 		createClone(sb);
 		createContainerEnd(sb);
-		createBottom(request, pageContext, sb);
+		createBottom(request, pageContext, formFieldName, sb);
 		createLookupLink(currentField, sb);
 	}
 
@@ -63,15 +63,15 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 		return "multiOptionLi";
 	}
 
-	protected void createTop(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+	protected void createTop(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
 	    sb.append("<div class=\"lookupScrollTop ");
-	    writeErrorClass(request, pageContext, sb);
+	    writeErrorClass(pageContext, formFieldName, sb);
 	    sb.append("\"></div>");
 	}
 
-	protected void createContainerBegin(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+	protected void createContainerBegin(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
 	    sb.append("<div class=\"lookupScrollContainer ");
-		writeErrorClass(request, pageContext, sb);
+		writeErrorClass(pageContext, formFieldName, sb);
 		sb.append("\">");
 	}
 
@@ -151,9 +151,9 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	    sb.append("</div>");
 	}
 
-	protected void createBottom(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {
+	protected void createBottom(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
 	    sb.append("<div class=\"lookupScrollBottom ");
-		writeErrorClass(request, pageContext, sb);
+		writeErrorClass(pageContext, formFieldName, sb);
 	    sb.append("\"></div>");
 	}
 

@@ -31,13 +31,26 @@ public class DateHandler extends AbstractFieldHandler {
 		sb.append("<div class=\"lookupWrapper\">");
 
 		sb.append("<input id=\"").append(formFieldName).append("\" ");
-		sb.append("class=\"text ").append(resolveEntityAttributes(currentField)).append("\" ");
+		sb.append("class=\"text ");
+		writeErrorClass(pageContext, formFieldName, sb);
+		sb.append(resolveEntityAttributes(currentField)).append("\" ");
 
 		sb.append("type=\"text\" maxlength=\"10\" size=\"16\" value=\"");
 
-		if (fieldValue != null && fieldValue instanceof Date) {
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-			sb.append(sdf.format(fieldValue));
+		if (fieldValue != null) {
+			final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			if (fieldValue instanceof Date) {
+				sb.append(sdf.format(fieldValue));
+			}
+			else if (fieldValue instanceof String) {
+				try {
+					sdf.parse((String) fieldValue);
+					sb.append(fieldValue);
+				}
+				catch (Exception e) {
+					// ignore parsing date exception
+				}
+			}
 		}
 		sb.append("\" name=\"").append(formFieldName).append("\"/>");
 

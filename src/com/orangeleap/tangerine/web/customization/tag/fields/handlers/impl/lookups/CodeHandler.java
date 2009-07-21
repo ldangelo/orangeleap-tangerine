@@ -102,7 +102,7 @@ public class CodeHandler extends AbstractFieldHandler {
 	    
         sb.append("<input value=\"").append(checkForNull(getCodeDisplayValue(sectionDefinition, currentField, form, formFieldName, fieldValue))).
 		        append("\" class=\"text code ").append(resolveEntityAttributes(currentField));
-	    writeErrorClass(request, pageContext, sb); // TODO: fix for errors
+	    writeErrorClass(pageContext, formFieldName, sb); // TODO: fix for errors
 
         sb.append("\" ");
 	    getDisplayAttributes(sectionDefinition, currentField, form, formFieldName, sb);

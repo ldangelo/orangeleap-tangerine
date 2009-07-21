@@ -125,7 +125,8 @@
         #smtpFromAddress#,
         #majorDonorAccountManagerId#,
         #jasperUserId#,
-        #jasperPassword#
+        #jasperPassword#,
+        #fiscalYearStartingMonth#
         )
     </insert>
 
@@ -150,7 +151,8 @@
         SMTP_FROM_ADDRESS = #smtpFromAddress#,
         MAJOR_DONOR_ACCOUNT_MANAGER_ID = #majorDonorAccountManagerId#,
         JASPER_USER_ID = #jasperUserId#,
-        JASPER_PASSWORD = #jasperPassword#
+        JASPER_PASSWORD = #jasperPassword#,
+        FISCAL_YEAR_STARTING_MONTH = #fiscalYearStartingMonth#
         where SITE_NAME = #name:VARCHAR#
     </update>
 

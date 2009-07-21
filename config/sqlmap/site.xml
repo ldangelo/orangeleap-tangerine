@@ -1,137 +1,157 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2009. Orange Leap Inc. Active Constituent
+  ~ Relationship Management Platform.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="SITE">
 
-	<!-- ResultMaps -->
-	<resultMap id="SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
-		<result property="name" column="SITE_NAME" jdbcType="VARCHAR" />
-	</resultMap>
+    <!-- ResultMaps -->
+    <resultMap id="SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
+        <result property="name" column="SITE_NAME" jdbcType="VARCHAR"/>
+    </resultMap>
 
-	<resultMap id="SITE_RESULT" class="com.orangeleap.tangerine.domain.Site" extends="SITE_NAME_RESULT">
-		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="merchantNumber" column="MERCHANT_NUMBER" jdbcType="VARCHAR" />
-		<result property="merchantBin" column="MERCHANT_BIN" jdbcType="VARCHAR" />
-		<result property="merchantTerminalId" column="SITE.MERCHANT_TERMINAL_ID"/>
-		<result property="localeString" column="LOCALE" jdbcType="VARCHAR" />
-		<result property="timeZoneString" column="TIME_ZONE" jdbcType="VARCHAR" />
-		<result property="active" column="ACTIVE" jdbcType="CHAR" />
-		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="parentSite" resultMap="SITE.PARENT_SITE_RESULT" />
-		<result property="achSiteNumber" column="SITE.ACH_SITE_NUMBER" />
-		<result property="achMerchantId" column="SITE.ACH_MERCHANT_ID" />
-		<result property="achRuleNumber" column="SITE.ACH_RULE_NUMBER" />
-		<result property="achCompanyName" column="SITE.ACH_COMPANY_NAME"/>
-		<result property="achTestMode" column="SITE.ACH_TEST_MODE"/>
-		<result property="smtpServerName" column="SITE.SMTP_SERVER_NAME"/>
-		<result property="smtpAccountName" column="SITE.SMTP_USER_NAME"/>
-		<result property="smtpPassword" column="SITE.SMTP_PASSWORD"/>
-		<result property="smtpFromAddress" column="SITE.SMTP_FROM_ADDRESS"/>
-		<result property="majorDonorAccountManagerId" column="SITE.MAJOR_DONOR_ACCOUNT_MANAGER_ID"/>
-		<result property="jasperUserId" column="SITE.JASPER_USER_ID"/>
-		<result property="jasperPassword" column="SITE.JASPER_PASSWORD"/>
-	</resultMap>
+    <resultMap id="SITE_RESULT" class="com.orangeleap.tangerine.domain.Site" extends="SITE_NAME_RESULT">
+        <result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="merchantNumber" column="MERCHANT_NUMBER" jdbcType="VARCHAR"/>
+        <result property="merchantBin" column="MERCHANT_BIN" jdbcType="VARCHAR"/>
+        <result property="merchantTerminalId" column="SITE.MERCHANT_TERMINAL_ID"/>
+        <result property="localeString" column="LOCALE" jdbcType="VARCHAR"/>
+        <result property="timeZoneString" column="TIME_ZONE" jdbcType="VARCHAR"/>
+        <result property="active" column="ACTIVE" jdbcType="CHAR"/>
+        <result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="parentSite" resultMap="SITE.PARENT_SITE_RESULT"/>
+        <result property="achSiteNumber" column="SITE.ACH_SITE_NUMBER"/>
+        <result property="achMerchantId" column="SITE.ACH_MERCHANT_ID"/>
+        <result property="achRuleNumber" column="SITE.ACH_RULE_NUMBER"/>
+        <result property="achCompanyName" column="SITE.ACH_COMPANY_NAME"/>
+        <result property="achTestMode" column="SITE.ACH_TEST_MODE"/>
+        <result property="smtpServerName" column="SITE.SMTP_SERVER_NAME"/>
+        <result property="smtpAccountName" column="SITE.SMTP_USER_NAME"/>
+        <result property="smtpPassword" column="SITE.SMTP_PASSWORD"/>
+        <result property="smtpFromAddress" column="SITE.SMTP_FROM_ADDRESS"/>
+        <result property="majorDonorAccountManagerId" column="SITE.MAJOR_DONOR_ACCOUNT_MANAGER_ID"/>
+        <result property="jasperUserId" column="SITE.JASPER_USER_ID"/>
+        <result property="jasperPassword" column="SITE.JASPER_PASSWORD"/>
+        <result property="fiscalYearStartingMonth" column="SITE.FISCAL_YEAR_STARTING_MONTH"/>
+    </resultMap>
 
-	<resultMap id="PARENT_SITE_RESULT" class="com.orangeleap.tangerine.domain.Site">
-		<result property="name" column="PARENT_SITE_NAME" jdbcType="VARCHAR" />
-	</resultMap>
+    <resultMap id="PARENT_SITE_RESULT" class="com.orangeleap.tangerine.domain.Site">
+        <result property="name" column="PARENT_SITE_NAME" jdbcType="VARCHAR"/>
+    </resultMap>
 
-	<sql id="SITE_COLS_FRAGMENT">
-		SITE_NAME, 
-		CREATE_DATE, 
-		MERCHANT_NUMBER, 
-		MERCHANT_BIN, 
-		MERCHANT_TERMINAL_ID, 
-		LOCALE, 
-		TIME_ZONE, 
-		ACTIVE, 
-		UPDATE_DATE, 
-		PARENT_SITE_NAME,
-		ACH_SITE_NUMBER, 
-		ACH_MERCHANT_ID, 
-		ACH_RULE_NUMBER, 
-		ACH_COMPANY_NAME, 
-		ACH_TEST_MODE,
-		SMTP_SERVER_NAME, 
-		SMTP_USER_NAME, 
-		SMTP_PASSWORD, 
-		SMTP_FROM_ADDRESS,
-		MAJOR_DONOR_ACCOUNT_MANAGER_ID, 
-		JASPER_USER_ID, 
-		JASPER_PASSWORD
-	</sql>
-	
-	<sql id="SELECT_SITE_FRAGMENT">
-		FROM SITE
-		WHERE SITE_NAME = #siteName#
-	</sql>
-			
-	<!-- Selects -->
-	<select id="SELECT_BY_SITE_NAME" resultMap="SITE_RESULT" parameterClass="java.lang.String">
-		select 
-		<include refid="SITE_COLS_FRAGMENT"/>
-		<include refid="SELECT_SITE_FRAGMENT"/>
-	</select>
-	
-	<select id="SELECT_ALL_SITES" resultMap="SITE_RESULT">
-		select 
-		<include refid="SITE_COLS_FRAGMENT"/>
-		from SITE
-	</select>
+    <sql id="SITE_COLS_FRAGMENT">
+        SITE_NAME,
+        CREATE_DATE,
+        MERCHANT_NUMBER,
+        MERCHANT_BIN,
+        MERCHANT_TERMINAL_ID,
+        LOCALE,
+        TIME_ZONE,
+        ACTIVE,
+        UPDATE_DATE,
+        PARENT_SITE_NAME,
+        ACH_SITE_NUMBER,
+        ACH_MERCHANT_ID,
+        ACH_RULE_NUMBER,
+        ACH_COMPANY_NAME,
+        ACH_TEST_MODE,
+        SMTP_SERVER_NAME,
+        SMTP_USER_NAME,
+        SMTP_PASSWORD,
+        SMTP_FROM_ADDRESS,
+        MAJOR_DONOR_ACCOUNT_MANAGER_ID,
+        JASPER_USER_ID,
+        JASPER_PASSWORD,
+        FISCAL_YEAR_STARTING_MONTH
+    </sql>
 
-	<!-- Inserts/Updates -->
-	<insert id="INSERT_SITE" parameterClass="com.orangeleap.tangerine.domain.Site">
-		insert into SITE (
-		<include refid="SITE_COLS_FRAGMENT"/>
-		)
-		values (
-		#name#, 
-		now(), 
-		#merchantNumber#, 
-		#merchantBin#, 
-		#merchantTerminalId#,
-		#localeString#, 
-		#timeZoneString#, 
-		#active#, 
-		now(), 
-		#parentSite.name#,
-		#achSiteNumber#, 
-		#achMerchantId#, 
-		#achRuleNumber#, 
-		#achCompanyName#, 
-		#achTestMode#,
-		#smtpServerName#, 
-		#smtpAccountName#, 
-		#smtpPassword#, 
-		#smtpFromAddress#,
-		#majorDonorAccountManagerId#, 
-		#jasperUserId#, 
-		#jasperPassword#
-		)
-	</insert>
-	
-	<update id="UPDATE_SITE" parameterClass="com.orangeleap.tangerine.domain.Site">
-		update SITE
-		set UPDATE_DATE = now(),
-		MERCHANT_NUMBER = #merchantNumber#,
-		MERCHANT_BIN = #merchantBin#,
-		MERCHANT_TERMINAL_ID = #merchantTerminalId#,
-		LOCALE = #localeString#,
-		TIME_ZONE = #timeZoneString#,
-		ACTIVE = #active#,
-		PARENT_SITE_NAME = #parentSite.name#,
-		ACH_SITE_NUMBER = #achSiteNumber#, 
-		ACH_MERCHANT_ID = #achMerchantId#, 
-		ACH_RULE_NUMBER = #achRuleNumber#, 
-		ACH_COMPANY_NAME = #achCompanyName#, 
-		ACH_TEST_MODE = #achTestMode#,
-		SMTP_SERVER_NAME = #smtpServerName#, 
-		SMTP_USER_NAME = #smtpAccountName#, 
-		SMTP_PASSWORD = #smtpPassword#, 
-		SMTP_FROM_ADDRESS = #smtpFromAddress#,
-		MAJOR_DONOR_ACCOUNT_MANAGER_ID = #majorDonorAccountManagerId#, 
-		JASPER_USER_ID = #jasperUserId#, 
-		JASPER_PASSWORD = #jasperPassword#
-		where SITE_NAME = #name:VARCHAR#
-	</update>
+    <sql id="SELECT_SITE_FRAGMENT">
+        FROM SITE
+        WHERE SITE_NAME = #siteName#
+    </sql>
+
+    <!-- Selects -->
+    <select id="SELECT_BY_SITE_NAME" resultMap="SITE_RESULT" parameterClass="java.lang.String">
+        select
+        <include refid="SITE_COLS_FRAGMENT"/>
+        <include refid="SELECT_SITE_FRAGMENT"/>
+    </select>
+
+    <select id="SELECT_ALL_SITES" resultMap="SITE_RESULT">
+        select
+        <include refid="SITE_COLS_FRAGMENT"/>
+        from SITE
+    </select>
+
+    <!-- Inserts/Updates -->
+    <insert id="INSERT_SITE" parameterClass="com.orangeleap.tangerine.domain.Site">
+        insert into SITE (
+        <include refid="SITE_COLS_FRAGMENT"/>
+        )
+        values (
+        #name#,
+        now(),
+        #merchantNumber#,
+        #merchantBin#,
+        #merchantTerminalId#,
+        #localeString#,
+        #timeZoneString#,
+        #active#,
+        now(),
+        #parentSite.name#,
+        #achSiteNumber#,
+        #achMerchantId#,
+        #achRuleNumber#,
+        #achCompanyName#,
+        #achTestMode#,
+        #smtpServerName#,
+        #smtpAccountName#,
+        #smtpPassword#,
+        #smtpFromAddress#,
+        #majorDonorAccountManagerId#,
+        #jasperUserId#,
+        #jasperPassword#
+        )
+    </insert>
+
+    <update id="UPDATE_SITE" parameterClass="com.orangeleap.tangerine.domain.Site">
+        update SITE
+        set UPDATE_DATE = now(),
+        MERCHANT_NUMBER = #merchantNumber#,
+        MERCHANT_BIN = #merchantBin#,
+        MERCHANT_TERMINAL_ID = #merchantTerminalId#,
+        LOCALE = #localeString#,
+        TIME_ZONE = #timeZoneString#,
+        ACTIVE = #active#,
+        PARENT_SITE_NAME = #parentSite.name#,
+        ACH_SITE_NUMBER = #achSiteNumber#,
+        ACH_MERCHANT_ID = #achMerchantId#,
+        ACH_RULE_NUMBER = #achRuleNumber#,
+        ACH_COMPANY_NAME = #achCompanyName#,
+        ACH_TEST_MODE = #achTestMode#,
+        SMTP_SERVER_NAME = #smtpServerName#,
+        SMTP_USER_NAME = #smtpAccountName#,
+        SMTP_PASSWORD = #smtpPassword#,
+        SMTP_FROM_ADDRESS = #smtpFromAddress#,
+        MAJOR_DONOR_ACCOUNT_MANAGER_ID = #majorDonorAccountManagerId#,
+        JASPER_USER_ID = #jasperUserId#,
+        JASPER_PASSWORD = #jasperPassword#
+        where SITE_NAME = #name:VARCHAR#
+    </update>
 
 </sqlMap>

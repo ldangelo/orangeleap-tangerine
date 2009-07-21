@@ -74,6 +74,9 @@ public class Site implements Serializable {
     private String jasperUserId;
     private String jasperPassword;
 
+
+    private Integer fiscalYearStartingMonth;
+
     public Locale getLocale() {
         return localeString == null ? Locale.getDefault() : new Locale(localeString);
     }
@@ -278,5 +281,12 @@ public class Site implements Serializable {
         this.jasperPassword = jasperPassword;
     }
 
+    public Integer getFiscalYearStartingMonth() {
+        return fiscalYearStartingMonth;
+    }
+
+    public void setFiscalYearStartingMonth(Integer fiscalYearStartingMonth) {
+        this.fiscalYearStartingMonth = fiscalYearStartingMonth;
+    }
 
 }

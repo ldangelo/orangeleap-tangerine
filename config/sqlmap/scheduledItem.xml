@@ -44,6 +44,11 @@
         and scheduled_item.SCHEDULED_ITEM_ID = #id#
     </select>
 
+    <delete id="DELETE_SCHEDULED_ITEM_BY_ID" parameterClass="map" >
+        delete from SCHEDULED_ITEM
+        where SCHEDULED_ITEM_ID = #id#
+    </delete>
+
     <select id="SELECT_SCHEDULED_ITEMS_BY_SOURCE_ENTITY" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
         and scheduled_item.SOURCE_ENTITY = #sourceEntity#

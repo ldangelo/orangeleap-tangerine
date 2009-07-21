@@ -26,6 +26,8 @@ public interface ScheduledItemDao {
 
     public ScheduledItem maintainScheduledItem(ScheduledItem scheduledItem);
 
+    public void deleteScheduledItemById(Long scheduledItemId);
+
     public ScheduledItem readScheduledItemById(Long scheduledItemId);
 
     public List<ScheduledItem> readScheduledItemsBySourceEntityId(String sourceEntity, Long sourceEntityId);

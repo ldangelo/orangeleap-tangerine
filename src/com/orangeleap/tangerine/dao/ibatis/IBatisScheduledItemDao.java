@@ -46,10 +46,24 @@ public class IBatisScheduledItemDao extends AbstractIBatisDao implements Schedul
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("maintainScheduledItem: scheduledItemId = " + scheduledItem.getId());
 	    }
+        Long lookupUserId = tangerineUserHelper.lookupUserId();
+        if (lookupUserId != null) {
+        	scheduledItem.setModifiedBy(tangerineUserHelper.lookupUserId());
+        }
         insertOrUpdate(scheduledItem, "SCHEDULED_ITEM");
         return scheduledItem;
 	}
 
+    public void deleteScheduledItemById(Long scheduledItemId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteScheduledItemById: scheduledItemId = " + scheduledItemId);
+        }
+        Map<String, Object> params = setupParams();
+		params.put("id", scheduledItemId);
+		getSqlMapClientTemplate().delete("DELETE_SCHEDULED_ITEM_BY_ID", params);
+	}
+	
+	
 	@Override
     public ScheduledItem readScheduledItemById(Long scheduledItemId) {
         if (logger.isTraceEnabled()) {
@@ -57,7 +71,7 @@ public class IBatisScheduledItemDao extends AbstractIBatisDao implements Schedul
         }
         Map<String, Object> params = setupParams();
 		params.put("id", scheduledItemId);
-		return (ScheduledItem) getSqlMapClientTemplate().queryForObject("SELECT_SCHEDULE_ITEM_BY_ID", params);
+		return (ScheduledItem) getSqlMapClientTemplate().queryForObject("SELECT_SCHEDULED_ITEM_BY_ID", params);
 	}
 	
     @SuppressWarnings("unchecked")

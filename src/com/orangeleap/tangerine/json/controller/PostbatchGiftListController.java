@@ -31,7 +31,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.PostBatchService;
@@ -114,13 +113,13 @@ public class PostbatchGiftListController {
 	private Map mapGift(Gift g) {
     	Map map = new HashMap();
     	map.put("id", g.getId());
-    	map.put("constituent.id", g.getConstituentId());
-    	map.put("createDate", g.getCreateDate());
+    	map.put("constituentid", g.getConstituentId());
+    	map.put("createdate", g.getCreateDate());
     	map.put("amount", g.getAmount());
-    	map.put("donationDate", g.getDonationDate());
-    	map.put("currencyCode", g.getCurrencyCode());
-    	map.put("paymentType", g.getPaymentType());
-    	map.put("giftStatus", g.getGiftStatus());
+    	map.put("donationdate", g.getDonationDate());
+    	map.put("currencycode", g.getCurrencyCode());
+    	map.put("paymenttype", g.getPaymentType());
+    	map.put("status", g.getGiftStatus());
     	
     	return map;
     }

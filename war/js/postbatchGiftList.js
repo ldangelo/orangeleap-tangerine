@@ -16,13 +16,13 @@ Ext.onReady(function() {
         root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
-            {name: 'constituentId', mapping: 'constituent.id', type: 'int'},
-            {name: 'createdate', mapping: 'createDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-            {name: 'donationdate', mapping: 'donationDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'constituentId', mapping: 'constituentid', type: 'int'},
+            {name: 'createdate', mapping: 'createdate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'donationdate', mapping: 'donationdate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'amount', mapping: 'amount', type: 'float'},
-            {name: 'currencycode', mapping: 'currencyCode', type: 'string'},
-            {name: 'paymenttype', mapping: 'paymentType', type: 'string'},
-            {name: 'status', mapping: 'giftStatus', type: 'string'}
+            {name: 'currencycode', mapping: 'currencycode', type: 'string'},
+            {name: 'paymenttype', mapping: 'paymenttype', type: 'string'},
+            {name: 'status', mapping: 'status', type: 'string'}
         ],
         sortInfo:{field: 'donationdate', direction: "DESC"},
         remoteSort: true,

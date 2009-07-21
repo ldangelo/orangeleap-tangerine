@@ -29,6 +29,8 @@ public interface ScheduledItemService {
 
     public ScheduledItem maintainScheduledItem(ScheduledItem scheduledItem);
 
+    public void deleteScheduledItem(ScheduledItem scheduledItem);
+
     public ScheduledItem readScheduledItemById(Long scheduledItemId);
 
     public List<ScheduledItem> readScheduledItemsBySourceEntityId(Schedulable scheduleable);

@@ -60,6 +60,11 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     }
 
     @Override
+    public void deleteScheduledItem(ScheduledItem scheduledItem) {
+        scheduledItemDao.deleteScheduledItemById(scheduledItem.getId());
+    }
+
+    @Override
     public ScheduledItem readScheduledItemById(Long scheduledItemId) {
     	return scheduledItemDao.readScheduledItemById(scheduledItemId);
     }

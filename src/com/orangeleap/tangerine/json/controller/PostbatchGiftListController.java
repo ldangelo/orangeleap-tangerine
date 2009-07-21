@@ -99,7 +99,7 @@ public class PostbatchGiftListController {
 	
 	        PaginatedResult result = postBatchService.getBatchSelectionList(postbatchId, sortInfo);
 	        List<Gift> giftrows = result.getRows();
-	        for (Gift g : giftrows) stripGift(g);
+	        for (Gift g : giftrows) rows.add(mapGift(g));
 	        map = new ModelMap("rows", giftrows);
 	        map.put("totalRows", result.getRowCount());
 	        return map;
@@ -110,20 +110,19 @@ public class PostbatchGiftListController {
     	}
     }
     
-    // Remove unused fields to reduce burden on json serializer
-    private void stripGift(Gift g) {
-    	Constituent c = new Constituent();
-    	c.setId(g.getConstituentId());
-    	g.setConstituent(c);
-    	g.setAdjustedGifts(null);
-    	g.setMutableDistributionLines(null);
-    	g.setDistributionLines(null);
-    	g.setPaymentSource(null);
-    	g.setAddress(null);
-    	g.setPhone(null);
-    	g.setSelectedPaymentSource(null);
-    	g.setSelectedAddress(null);
-    	g.setSelectedPhone(null);
+    @SuppressWarnings("unchecked")
+	private Map mapGift(Gift g) {
+    	Map map = new HashMap();
+    	map.put("id", g.getId());
+    	map.put("constituent.id", g.getConstituentId());
+    	map.put("createDate", g.getCreateDate());
+    	map.put("amount", g.getAmount());
+    	map.put("donationDate", g.getDonationDate());
+    	map.put("currencyCode", g.getCurrencyCode());
+    	map.put("paymentType", g.getPaymentType());
+    	map.put("giftStatus", g.getGiftStatus());
+    	
+    	return map;
     }
     
 }

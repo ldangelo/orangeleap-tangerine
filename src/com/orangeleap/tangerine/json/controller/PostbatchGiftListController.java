@@ -100,7 +100,7 @@ public class PostbatchGiftListController {
 	        PaginatedResult result = postBatchService.getBatchSelectionList(postbatchId, sortInfo);
 	        List<Gift> giftrows = result.getRows();
 	        for (Gift g : giftrows) rows.add(mapGift(g));
-	        map = new ModelMap("rows", giftrows);
+	        map = new ModelMap("rows", rows);
 	        map.put("totalRows", result.getRowCount());
 	        return map;
         

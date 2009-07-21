@@ -78,7 +78,7 @@ public class PicklistHandler extends AbstractPicklistHandler {
 				        if (StringUtils.hasText(item.getReferenceValue())) {
 					        sb.append("reference=\"").append(item.getReferenceValue()).append("\" ");
 				        }
-				        if (fieldValue != null && fieldValue.equals(item.getItemName())) {
+				        if (fieldValue != null && fieldValue.toString().equals(item.getItemName())) {
 							sb.append("selected=\"selected\" ");
 							selectedRef = item.getReferenceValue();
 				        }

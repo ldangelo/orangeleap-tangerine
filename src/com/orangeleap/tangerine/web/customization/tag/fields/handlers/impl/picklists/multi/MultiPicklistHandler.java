@@ -105,7 +105,7 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 
 			    boolean foundValue = false;
 			    for (Object val : fieldVals) {
-				    if (item.getItemName().equals(val)) {
+				    if (item.getItemName().equals(val.toString())) {
 					    foundValue = true;
 					    break;
 				    }

@@ -137,9 +137,15 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
     }
 
 	protected void checkIfExistingOptionSelected(Object fieldValue, Object valueToCompare, StringBuilder sb) {
-		// TODO: fix for user created values
-		if (valueToCompare.equals(fieldValue)) {
-			sb.append(" selected=\"selected\"");
+		if (valueToCompare != null && fieldValue != null) {
+			if (valueToCompare.getClass().equals(fieldValue.getClass())) {
+				if (valueToCompare.equals(fieldValue)) {
+					sb.append(" selected=\"selected\"");
+				}
+			}
+			else if (valueToCompare.toString().equals(fieldValue.toString())) {
+				sb.append(" selected=\"selected\"");
+			}
 		}
 	}
 

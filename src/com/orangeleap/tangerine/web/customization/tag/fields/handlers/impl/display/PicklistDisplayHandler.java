@@ -82,9 +82,11 @@ public class PicklistDisplayHandler extends PicklistHandler {
 
 			boolean foundValue = false;
 			for (Object val : fieldVals) {
-				if (item.getItemName().equals(val)) {
-					foundValue = true;
-					break;
+				if (val != null) {
+					if (item.getItemName().equals(val.toString())) {
+						foundValue = true;
+						break;
+					}
 				}
 			}
 

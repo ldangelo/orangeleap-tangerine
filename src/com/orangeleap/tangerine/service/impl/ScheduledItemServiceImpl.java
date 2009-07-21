@@ -107,7 +107,14 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     }
     
     // Preserve schedule edits for uncompleted items.  
-    // Extends schedule to toDate for schedulables with no (indefinite) end date.
+    // Extends schedule to toDate for schedulables with no (indefinite) end date one year.
+    @Override
+    public void extendSchedule(Schedulable schedulable) {
+    	extendSchedule(schedulable, getNextYear());
+    }
+    
+    // Preserve schedule edits for uncompleted items.  
+    // Extends schedule to toDate for schedulables with no (indefinite) end date to specified date.
     @Override
     public void extendSchedule(Schedulable schedulable, Date toDate) {
     	
@@ -115,6 +122,12 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	
     	internalExtend(schedulable, toDate);
     	
+    }
+    
+    private Date getNextYear() {
+    	Calendar cal = Calendar.getInstance();
+    	cal.add(Calendar.YEAR, 1);
+    	return cal.getTime();
     }
 
     // Deletes uncompleted items and regenerates schedule after last completed item.

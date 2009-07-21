@@ -41,6 +41,8 @@ public interface ScheduledItemService {
     
     public void regenerateSchedule(Schedulable schedulable, Date toDate);
     
+    public void extendSchedule(Schedulable schedulable);
+    
     public void extendSchedule(Schedulable schedulable, Date toDate);
     
     public ScheduledItem completeItem(ScheduledItem scheduledItem, AbstractEntity resultEntity, String completionStatus);

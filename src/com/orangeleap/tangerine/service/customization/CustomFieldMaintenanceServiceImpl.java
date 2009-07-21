@@ -312,16 +312,22 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         }
         newFieldDefinition.setFieldType(customFieldRequest.getFieldType());
         newFieldDefinition.setSite(site);
-        String fieldName = "customFieldMap[" + customFieldRequest.getFieldName() + "]";
-        newFieldDefinition.setFieldName(fieldName);
-        String id = site.getName() + "-" + customFieldRequest.getEntityType() + "." + fieldName;
-        newFieldDefinition.setId(id);
+        newFieldDefinition.setFieldName(getFieldName(customFieldRequest));
+        newFieldDefinition.setId(getFieldDefinitionId(customFieldRequest, site));
         if (isReferenceType(customFieldRequest)) {
             newFieldDefinition.setReferenceType(ReferenceType.constituent);
         }
         return newFieldDefinition;
     }
+    
+    private String getFieldName(CustomFieldRequest customFieldRequest) {
+        return "customFieldMap[" + customFieldRequest.getFieldName() + "]";
+    }
 
+    private String getFieldDefinitionId(CustomFieldRequest customFieldRequest, Site site) {
+        return site.getName() + "-" + customFieldRequest.getEntityType() + "." + getFieldName(customFieldRequest);
+    }
+    
     private SectionDefinition getDefaultSection(PageType pageType) {
         List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(pageType, tangerineUserHelper.lookupUserRoles());
         Collections.sort(definitions, new Comparator<SectionDefinition>() {

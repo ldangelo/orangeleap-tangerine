@@ -33,8 +33,14 @@ public interface ScheduledItemService {
 
     public List<ScheduledItem> readScheduledItemsBySourceEntityId(Schedulable scheduleable);
 
-    public ScheduledItem getDefaultScheduledItem(AbstractEntity entity);
+    public ScheduledItem getDefaultScheduledItem(Schedulable schedulable, Date d);
     
-    public List<ScheduledItem> updateSchedule(Schedulable previousSchedulable, Schedulable updatedSchedulable, Date toDate);
+    public ScheduledItem getNextItemToRun(Schedulable scheduleable);
     
+    public void regenerateSchedule(Schedulable schedulable, Date toDate);
+    
+    public void extendSchedule(Schedulable schedulable, Date toDate);
+    
+    public ScheduledItem completeItem(ScheduledItem scheduledItem, AbstractEntity resultEntity, String completionStatus);
+
 }

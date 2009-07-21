@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.dao.ScheduledItemDao;
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
@@ -76,6 +77,18 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     		if (item.getCompletionDate() == null && item.getActualScheduledDate() != null) return item;
     	}
     	return null;
+    }
+    
+    // ResultEntity is a Gift if the schedulable was a RecurringGift, for example.
+    // Completion status is for reference only, for example, Gift Payment Status
+    @Override
+    public ScheduledItem completeItem(ScheduledItem scheduledItem, AbstractEntity resultEntity, String completionStatus) {
+    	scheduledItem.setCompletionDate(new Date());
+    	scheduledItem.setCompletionStatus(completionStatus);
+    	scheduledItem.setResultEntity(resultEntity.getType());
+    	scheduledItem.setResultEntityId(resultEntity.getId());
+    	scheduledItemDao.maintainScheduledItem(scheduledItem);
+    	return scheduledItem;
     }
     
     @Override

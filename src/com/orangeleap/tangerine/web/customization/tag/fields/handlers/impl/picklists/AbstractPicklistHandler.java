@@ -183,7 +183,7 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 
 	protected void createSelectedRef(String formFieldName, Object fieldValue, String reference, StringBuilder sb) {
 	    String selectedRef = StringConstants.EMPTY;
-	    if (NEW_ID.equals(fieldValue)) {
+	    if (fieldValue != null && NEW_ID.equals(fieldValue.toString())) {
 	        selectedRef = reference;
 	    }
 	    sb.append("<div style=\"display:none\" id=\"selectedRef-").append(formFieldName).append("\">").append(checkForNull(selectedRef)).append("</div>");

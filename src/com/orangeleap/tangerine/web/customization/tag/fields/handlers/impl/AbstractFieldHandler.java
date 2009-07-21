@@ -58,7 +58,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
 		Object fieldValue = form.getFieldValue(formFieldName);
 
-		writeSideLiElementStart(sectionDefinition, formFieldName, fieldValue, sb);
+		writeSideLiElementStart(currentField, fieldValue, sb);
 		writeLabel(currentField, pageContext, sb);
 
 		doHandler((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
@@ -81,7 +81,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		}
 
 		if (showSideAndLabel) {
-			writeSideLiElementStart(sectionDefinition, formFieldName, fieldValue, sb);
+			writeSideLiElementStart(currentField, fieldValue, sb);
 			writeLabel(currentField, pageContext, sb);
 		}
 
@@ -229,10 +229,10 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		}
 	}
 
-	protected void writeSideLiElementStart(SectionDefinition sectionDefinition, String fieldName, Object fieldValue, StringBuilder sb) {
+	protected void writeSideLiElementStart(SectionField currentField, Object fieldValue, StringBuilder sb) {
 		sb.append("<li class=\"side ");
 		sb.append(getSideCssClass(fieldValue));
-		sb.append("\" id=\"").append(sectionDefinition.getSectionHtmlName()).append("-").append(fieldName).append("\">");
+		sb.append("\" id=\"").append(currentField.getFieldDefinition().getId().replace(".", "-")).append("\">");
 	}
 
 	protected void writeSideLiElementEnd(StringBuilder sb) {

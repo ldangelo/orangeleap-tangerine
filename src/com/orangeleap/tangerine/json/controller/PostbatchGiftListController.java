@@ -31,7 +31,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -96,7 +98,9 @@ public class PostbatchGiftListController {
 	        sortInfo.setSort((String) namemap.get(sortInfo.getSort()));
 	
 	        PaginatedResult result = postBatchService.getBatchSelectionList(postbatchId, sortInfo);
-	        map = new ModelMap("rows", result.getRows());
+	        List<Gift> giftrows = result.getRows();
+	        for (Gift g : giftrows) stripGift(g);
+	        map = new ModelMap("rows", giftrows);
 	        map.put("totalRows", result.getRowCount());
 	        return map;
         
@@ -105,4 +109,21 @@ public class PostbatchGiftListController {
     		return map;
     	}
     }
+    
+    // Remove unused fields to reduce burden on json serializer
+    private void stripGift(Gift g) {
+    	Constituent c = new Constituent();
+    	c.setId(g.getConstituentId());
+    	g.setConstituent(c);
+    	g.setAdjustedGifts(null);
+    	g.setMutableDistributionLines(null);
+    	g.setDistributionLines(null);
+    	g.setPaymentSource(null);
+    	g.setAddress(null);
+    	g.setPhone(null);
+    	g.setSelectedPaymentSource(null);
+    	g.setSelectedAddress(null);
+    	g.setSelectedPhone(null);
+    }
+    
 }

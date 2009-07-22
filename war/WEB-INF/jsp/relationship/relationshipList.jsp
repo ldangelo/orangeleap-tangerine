@@ -21,7 +21,7 @@
 
   		   <c:choose>
       	   <c:when test="${constituent == null}">
-			  <h4>Select Master Constituent Record Field</h4>
+			  <h4>Manage Relationship Fields</h4>
 		      <br/>
            </c:when>
            <c:otherwise>

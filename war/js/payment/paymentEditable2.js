@@ -1,19 +1,19 @@
 $(document).ready(function() {
 	$("#paymentType").bind("change", function() {
-		PaymentEditable.filterPaymentTypes($(this), false);
+		PaymentEditable.filterPaymentTypes($(this));
 	});	
 	$("#ach-paymentSource-tangDot-id").bind("change", function() {
-		PaymentEditable.filterAchPaymentSources($(this), false);
+		PaymentEditable.filterAchPaymentSources($(this));
 	});
 	$("#creditCard-paymentSource-tangDot-id").bind("change", function() {
-		PaymentEditable.filterCreditCardPaymentSources($(this), false);
+		PaymentEditable.filterCreditCardPaymentSources($(this));
 	});
-	PaymentEditable.filterPaymentTypes($("#paymentType"), true);
+	PaymentEditable.filterPaymentTypes($("#paymentType"));
 });
 var PaymentEditable = {
 	commandObject: null,
 	
-	filterPaymentTypes: function($paymentTypeElem, isLoad) {
+	filterPaymentTypes: function($paymentTypeElem) {
 		var paymentTypeVal = $paymentTypeElem.val();
 		if (paymentTypeVal == "Cash" || paymentTypeVal == "Check") {
 			$("#" + PaymentEditable.commandObject + "_ach").hide();
@@ -24,7 +24,7 @@ var PaymentEditable = {
 			$("#" + PaymentEditable.commandObject + "_ach").hide();
 			$("#" + PaymentEditable.commandObject + "_creditCard").show();
 
-			PaymentEditable.filterCreditCardPaymentSources($("#creditCard-paymentSource-tangDot-id"), isLoad);
+			PaymentEditable.filterCreditCardPaymentSources($("#creditCard-paymentSource-tangDot-id"));
 			$("#creditCard-paymentSource-tangDot-id").show();
 		}
 		else if (paymentTypeVal == "ACH") {
@@ -32,7 +32,7 @@ var PaymentEditable = {
 			$("#" + PaymentEditable.commandObject + "_creditCard").hide();
 			$("#" + PaymentEditable.commandObject + "_ach").show();
 
-			PaymentEditable.filterAchPaymentSources($("#ach-paymentSource-tangDot-id"), isLoad);
+			PaymentEditable.filterAchPaymentSources($("#ach-paymentSource-tangDot-id"));
 			$("#ach-paymentSource-tangDot-id").show();
 		}
 		else {
@@ -42,7 +42,7 @@ var PaymentEditable = {
 		}
 	},
 		
-	filterAchPaymentSources: function($achPaymentSourceElem, isLoad) {
+	filterAchPaymentSources: function($achPaymentSourceElem) {
 		var $option = $achPaymentSourceElem.find('option:selected');
 		var optionVal = $option.val();
 		$("#paymentSource-tangDot-id").val(optionVal);
@@ -54,13 +54,11 @@ var PaymentEditable = {
 			$("li:has(.ea-newAch)").hide();
 			$("li:has(.ea-existingAch)").show();
 			
-			if (!isLoad) {
-				PaymentEditable.populatePaymentSourceAttributes($option);
-			}
+			PaymentEditable.populatePaymentSourceAttributes($option);
 		}
 	},
 		
-	filterCreditCardPaymentSources: function($creditCardPaymentSourceElem, isLoad) {
+	filterCreditCardPaymentSources: function($creditCardPaymentSourceElem) {
 		var $option = $creditCardPaymentSourceElem.find('option:selected');
 		var optionVal = $option.val(); 
 		$("#paymentSource-tangDot-id").val(optionVal);
@@ -73,9 +71,7 @@ var PaymentEditable = {
 			$("li:has(.ea-newCredit)").hide();
 			$("li:has(.ea-existingCredit)").show();
 
-			if (!isLoad) {
-				PaymentEditable.populatePaymentSourceAttributes($option);
-			}
+			PaymentEditable.populatePaymentSourceAttributes($option);
 		}
 	},
 		

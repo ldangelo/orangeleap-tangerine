@@ -70,13 +70,13 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     }
 
     @Override
-    public List<ScheduledItem> readScheduledItemsBySourceEntityId(Schedulable scheduleable) {
-    	return scheduledItemDao.readScheduledItemsBySourceEntityId(scheduleable.getType(), scheduleable.getId());
+    public List<ScheduledItem> readScheduledItemsBySourceEntity(Schedulable schedulable) {
+    	return scheduledItemDao.readScheduledItemsBySourceEntityId(schedulable.getType(), schedulable.getId());
     }
 
     @Override
-    public ScheduledItem getNextItemToRun(Schedulable scheduleable) {
-    	List<ScheduledItem> items = scheduledItemDao.readScheduledItemsBySourceEntityId(scheduleable.getType(), scheduleable.getId());
+    public ScheduledItem getNextItemToRun(Schedulable schedulable) {
+    	List<ScheduledItem> items = scheduledItemDao.readScheduledItemsBySourceEntityId(schedulable.getType(), schedulable.getId());
     	// Items are in order of actual scheduled date
     	for (ScheduledItem item : items) {
     		if (item.getCompletionDate() == null && item.getActualScheduledDate() != null) return item;
@@ -134,7 +134,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     @Override
     public void regenerateSchedule(Schedulable schedulable, Date toDate) {
     	
-    	List<ScheduledItem> existingitems = readScheduledItemsBySourceEntityId(schedulable);
+    	List<ScheduledItem> existingitems = readScheduledItemsBySourceEntity(schedulable);
     	
     	// Delete all uncompleted items.
     	Iterator<ScheduledItem> it = existingitems.iterator();
@@ -154,7 +154,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 
     private void internalExtend(Schedulable schedulable, Date toDate) {
     	
-    	List<ScheduledItem> existingitems = readScheduledItemsBySourceEntityId(schedulable);
+    	List<ScheduledItem> existingitems = readScheduledItemsBySourceEntity(schedulable);
     	
     	Date afterdate = PAST_DATE;
     	if (existingitems.size() > 0) {

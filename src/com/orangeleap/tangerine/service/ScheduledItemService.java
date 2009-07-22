@@ -33,11 +33,11 @@ public interface ScheduledItemService {
 
     public ScheduledItem readScheduledItemById(Long scheduledItemId);
 
-    public List<ScheduledItem> readScheduledItemsBySourceEntityId(Schedulable scheduleable);
+    public List<ScheduledItem> readScheduledItemsBySourceEntity(Schedulable schedulable);
 
     public ScheduledItem getDefaultScheduledItem(Schedulable schedulable, Date d);
     
-    public ScheduledItem getNextItemToRun(Schedulable scheduleable);
+    public ScheduledItem getNextItemToRun(Schedulable schedulable);
     
     public void regenerateSchedule(Schedulable schedulable, Date toDate);
     

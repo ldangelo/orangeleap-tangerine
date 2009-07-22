@@ -36,12 +36,12 @@
         select 
         <include refid="SCHEDULED_ITEM_COLS_FRAGMENT"/>
         from SCHEDULED_ITEM scheduled_item 
-        where scheduled_item.SITE_NAME = #siteName#
+        where
     </sql>
 
     <select id="SELECT_SCHEDULED_ITEM_BY_ID" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
-        and scheduled_item.SCHEDULED_ITEM_ID = #id#
+         scheduled_item.SCHEDULED_ITEM_ID = #id#
     </select>
 
     <delete id="DELETE_SCHEDULED_ITEM_BY_ID" parameterClass="map" >
@@ -51,7 +51,7 @@
 
     <select id="SELECT_SCHEDULED_ITEMS_BY_SOURCE_ENTITY" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
-        and scheduled_item.SOURCE_ENTITY = #sourceEntity#
+         scheduled_item.SOURCE_ENTITY = #sourceEntity#
         and scheduled_item.SOURCE_ENTITY_ID = #sourceEntityId#
         order by scheduled_item.ACTUAL_SCHEDULED_DATE
     </select>

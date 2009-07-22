@@ -565,6 +565,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             } else {
                 journal.setDescription("Adjusted gift ID " + ag.getId() + ", associated with original gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
                 journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
+                journal.setOrigEntity(GIFT);
+                journal.setOrigEntityId(gift.getId());
             }
             
             updateJournalCodes(journal, codemap, journal.getCode(), postbatch);

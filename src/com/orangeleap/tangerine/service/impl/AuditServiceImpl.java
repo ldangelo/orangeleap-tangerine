@@ -225,14 +225,14 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                 }
             }
 
-            Field field = clazz.getField(fieldName);
+            Field field = clazz.getDeclaredField(fieldName);
             if (field.isAnnotationPresent(NotAuditable.class)) {
                 auditable = field.getAnnotation(NotAuditable.class).auditValue();
             }
         }
         catch (Exception ex) {
-            if (logger.isInfoEnabled()) {
-                logger.info("isAuditable: Not able to determine if fieldName = " + fieldName + " is auditable, assuming it is");
+            if (logger.isDebugEnabled()) {
+                logger.debug("isAuditable: Not able to determine if fieldName = " + fieldName + " is auditable, assuming it is");
             }
         }
         return auditable;

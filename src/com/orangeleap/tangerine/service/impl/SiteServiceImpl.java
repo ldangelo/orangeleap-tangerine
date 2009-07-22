@@ -136,14 +136,14 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     
     // Create a Constituent object row corresponding to the login user.
     private Constituent createConstituent(TangerineAuthenticationToken authentication, String siteName)  throws ConstituentValidationException, BindException, javax.naming.NamingException {
-        logger.info("Creating user for login id: "+authentication.getName());
+        logger.info("Creating user for login id: "+authentication.getShortName());
         Constituent constituent = constituentService.createDefaultConstituent();
         constituent.setFirstName(authentication.getUserAttributes().get(TangerineLdapAuthoritiesPopulator.FIRST_NAME));
         constituent.setLastName(authentication.getUserAttributes().get(TangerineLdapAuthoritiesPopulator.LAST_NAME));
         constituent.setConstituentIndividualRoles("user");
-        constituent.setLoginId(authentication.getName());
+        constituent.setLoginId(authentication.getShortName());
         constituent = constituentService.maintainConstituent(constituent);
-        logger.info("Created user for login id: "+authentication.getName());
+        logger.info("Created user for login id: "+authentication.getShortName());
         return constituent;
     }
      

@@ -74,7 +74,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     @Override
     public String lookupUserName() {
         TangerineAuthenticationToken token = getToken();
-        return token == null ? null : token.getName();
+        return token == null ? null : token.getShortName();
     }
 
     /* (non-Javadoc)

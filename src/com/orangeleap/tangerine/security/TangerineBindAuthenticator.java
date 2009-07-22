@@ -52,7 +52,7 @@ public class TangerineBindAuthenticator extends AbstractLdapAuthenticator {
         DirContextOperations user = null;
         Assert.isInstanceOf(TangerineAuthenticationToken.class, authentication, "Can only process TangerineAuthenticationToken objects");
 
-        String username = authentication.getName();
+        String username = ((TangerineAuthenticationToken)authentication).getShortName();
         String password = (String) authentication.getCredentials();
         String site = ((TangerineAuthenticationToken) authentication).getSite();
 

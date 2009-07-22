@@ -52,6 +52,13 @@ public class TangerineAuthenticationToken extends UsernamePasswordAuthentication
         super(principal, credentials, authorities);
         this.site = site;
     }
+    
+    public String getShortName() {
+    	String shortname = getName();
+    	int i = shortname.indexOf("@");
+    	if (i > 0) shortname = shortname.substring(0,i);
+    	return shortname;
+    }
 
     public String getSite() {
         return this.site;

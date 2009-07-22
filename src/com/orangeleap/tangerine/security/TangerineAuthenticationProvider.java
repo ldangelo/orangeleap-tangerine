@@ -115,7 +115,7 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
 
         TangerineAuthenticationToken userToken = (TangerineAuthenticationToken)authentication;
 
-        String username = userToken.getName();
+        String username = userToken.getShortName();
         String site = userToken.getSite();
         boolean active = checkSiteActive(site);
 
@@ -143,7 +143,7 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
 
             GrantedAuthority[] extraAuthorities = loadUserAuthorities(userData, username, password, site);
 
-            UserDetails user = userDetailsContextMapper.mapUserFromContext(userData, username, extraAuthorities);
+            UserDetails user = userDetailsContextMapper.mapUserFromContext(userData, username+"@"+site, extraAuthorities);
 
             Authentication authenticationToken = createSuccessfulAuthentication(userToken, user);
             

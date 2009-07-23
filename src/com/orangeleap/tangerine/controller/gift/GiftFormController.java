@@ -1,28 +1,12 @@
-/*
- * Copyright (c) 2009. Orange Leap Inc. Active Constituent
- * Relationship Management Platform.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package com.orangeleap.tangerine.controller.gift;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.PaymentType;
@@ -30,6 +14,7 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -53,10 +38,21 @@ public class GiftFormController extends AbstractGiftController {
 
     @Resource(name = "recurringGiftService")
     protected RecurringGiftService recurringGiftService;
+    
+    @Resource(name = "picklistItemService")
+    protected PicklistItemService picklistItemService;
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        return giftService.readGiftByIdCreateIfNull(getConstituent(request), request.getParameter(StringConstants.GIFT_ID));
+        Gift gift = giftService.readGiftByIdCreateIfNull(getConstituent(request), request.getParameter(StringConstants.GIFT_ID));
+        
+        if (!StringUtils.hasText(gift.getCurrencyCode())) {
+        	Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
+        	if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
+        		gift.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
+        	}
+        }
+        return gift;
     }
 
     private boolean isEnteredGift(Gift gift) {

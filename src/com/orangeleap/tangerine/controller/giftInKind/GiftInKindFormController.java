@@ -1,30 +1,15 @@
-/*
- * Copyright (c) 2009. Orange Leap Inc. Active Constituent
- * Relationship Management Platform.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package com.orangeleap.tangerine.controller.giftInKind;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.service.GiftInKindService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,10 +26,20 @@ public class GiftInKindFormController extends TangerineConstituentAttributesForm
 
     @Resource(name = "giftInKindService")
     protected GiftInKindService giftInKindService;
+    
+    @Resource(name = "picklistItemService")
+    protected PicklistItemService picklistItemService;
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        return giftInKindService.readGiftInKindByIdCreateIfNull(request.getParameter(StringConstants.GIFT_IN_KIND_ID), super.getConstituent(request));
+        GiftInKind giftInKind = giftInKindService.readGiftInKindByIdCreateIfNull(request.getParameter(StringConstants.GIFT_IN_KIND_ID), super.getConstituent(request));
+        if (!StringUtils.hasText(giftInKind.getCurrencyCode())) {
+        	Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
+        	if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
+        		giftInKind.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
+        	}
+        }
+        return giftInKind;
     }
 
     @Override

@@ -18,21 +18,22 @@
 
 package com.orangeleap.tangerine.controller.gift.commitment.recurringGift;
 
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
+import com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
-import com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController;
-import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.util.StringConstants;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public class RecurringGiftFormController extends CommitmentFormController<RecurringGift> {
 
@@ -41,10 +42,21 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
 
     @Resource(name="recurringGiftService")
     protected RecurringGiftService recurringGiftService;
+
+	@Resource(name = "picklistItemService")
+	protected PicklistItemService picklistItemService;
     
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        return recurringGiftService.readRecurringGiftByIdCreateIfNull(request.getParameter(StringConstants.RECURRING_GIFT_ID), super.getConstituent(request));
+        RecurringGift recurringGift = recurringGiftService.readRecurringGiftByIdCreateIfNull(request.getParameter(StringConstants.RECURRING_GIFT_ID), super.getConstituent(request));
+        
+        if (!StringUtils.hasText(recurringGift.getCurrencyCode())) {
+        	Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
+        	if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
+        		recurringGift.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
+        	}
+        }
+        return recurringGift;
     }
 
     @Override

@@ -257,7 +257,10 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
 					aware.setAddress(null);
 				}
 				else if (id == 0) { // 'New' address option selected
-					aware.setAddress(new Address(0L, getConstituentId(request)));
+					Address address = new Address(getConstituentId(request));
+					address.setId(0L);
+					aware.setAddress(address);
+//					aware.setAddress(new Address(0L, getConstituentId(request)));
 				}
 				else { // 'Existing' address option selected
 					final Address address = addressService.readById(id);
@@ -283,7 +286,10 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
 					aware.setPhone(null);
 				}
 				else if (id == 0) { // 'New' phone option selected
-					aware.setPhone(new Phone(0L, getConstituentId(request)));
+					Phone phone = new Phone(getConstituentId(request));
+					phone.setId(0L);
+					aware.setPhone(phone);
+//					aware.setPhone(new Phone(0L, getConstituentId(request)));
 				}
 				else { // 'Existing' phone option selected
 					final Phone phone = phoneService.readById(id);
@@ -309,7 +315,10 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
 					aware.setEmail(null);
 				}
 				else if (id == 0) { // 'New' email option selected
-					aware.setEmail(new Email(0L, getConstituentId(request)));
+					Email email = new Email(getConstituentId(request));
+					email.setId(0L);
+					aware.setEmail(email);
+//					aware.setEmail(new Email(0L, getConstituentId(request)));
 				}
 				else { // 'Existing' email option selected
 					final Email email = emailService.readById(id);
@@ -337,7 +346,10 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
 						aware.setPaymentSource(null);
 					}
 					else if (id == 0) { // 'New' payment source option selected
-						aware.setPaymentSource(new PaymentSource(0L, getConstituent(request)));
+						PaymentSource paymentSource = new PaymentSource(getConstituent(request));
+						paymentSource.setId(0L);
+						aware.setPaymentSource(paymentSource);
+//						aware.setPaymentSource(new PaymentSource(0L, getConstituent(request)));
 					}
 					else { // 'Existing' payment source option selected
 						final PaymentSource paymentSource = paymentSourceService.readPaymentSource(id);

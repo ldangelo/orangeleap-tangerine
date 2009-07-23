@@ -6,6 +6,7 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,14 +23,14 @@ public class QueryLookupOtherHandler extends QueryLookupHandler {
 	protected String createOptionText(HttpServletRequest request, SectionField currentField, TangerineForm form, String formFieldName,
 		                  Object fieldValue, StringBuilder sb) {
 		Object otherFieldValue = null;
-		if (fieldValue != null) {
+		if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
 			super.createOptionText(request, currentField, form, formFieldName, fieldValue, sb);
 		}
 		else {
 			String otherFormFieldName = resolveOtherFormFieldName(formFieldName);
 			otherFieldValue = form.getFieldValueFromUnescapedFieldName(otherFormFieldName);
 
-			if (otherFieldValue != null) {
+			if (otherFieldValue != null && StringUtils.hasText(otherFieldValue.toString())) {
 				sb.append("<span>").append(otherFieldValue).append("</span>");
 			}
 		}

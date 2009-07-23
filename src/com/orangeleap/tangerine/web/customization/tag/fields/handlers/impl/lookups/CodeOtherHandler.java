@@ -1,9 +1,10 @@
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
-import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 /**
  * User: alexlo
@@ -31,7 +32,7 @@ public class CodeOtherHandler extends CodeHandler {
 	protected Object getCodeDisplayValue(SectionDefinition sectionDefinition, SectionField currentField,
 	                                  TangerineForm form, String formFieldName, Object fieldValue) {
 		Object displayValue;
-		if (fieldValue != null) {
+		if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
 			displayValue = super.getCodeDisplayValue(sectionDefinition, currentField, form, formFieldName, fieldValue);
 		}
 		else {

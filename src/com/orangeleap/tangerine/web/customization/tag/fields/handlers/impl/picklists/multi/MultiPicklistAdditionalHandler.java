@@ -23,6 +23,7 @@ import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,12 +76,14 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 			Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);
 
 			for (Object additionalVal : additionalVals) {
-				sb.append("<div class='multiPicklistOption multiOption' id=\"\">");
-				sb.append("<span>").append(additionalVal).append("</span>");
+				if (additionalVal != null && StringUtils.hasText(additionalVal.toString())) {
+					sb.append("<div class='multiPicklistOption multiOption' id=\"\">");
+					sb.append("<span>").append(additionalVal).append("</span>");
 
-				writeDeleteLink(sb, "Lookup.deleteAdditionalOption(this)");
+					writeDeleteLink(sb, "Lookup.deleteAdditionalOption(this)");
 
-				sb.append("</div>");
+					sb.append("</div>");
+				}
 			}
 		}
 		sb.append("</div>");

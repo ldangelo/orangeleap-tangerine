@@ -66,3 +66,27 @@ INSERT INTO payment_source (ach_account_number
     ,1
     ,1
 );
+INSERT INTO payment_source (credit_card_expiration
+    ,credit_card_holder_name
+    ,credit_card_number
+    ,credit_card_type
+    ,inactive
+    ,last_four_digits
+    ,payment_profile
+    ,payment_type
+    ,address_id
+    ,constituent_id
+	,phone_id
+) VALUES ({ts '2009-10-31 23:59:59.0'}
+    ,'Nolan Ryan'
+    ,'WtTCOtiBPGT1PrW9563Or+punfyjRmotxM4JizvBdWI='
+    ,'Discover'
+    ,'0'
+    ,'0000'
+    ,'discover'
+    ,'Credit Card'
+    ,1
+    ,1
+	,1
+);
+

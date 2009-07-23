@@ -18,6 +18,9 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import com.orangeleap.tangerine.util.StringConstants;
+
+import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -25,10 +28,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import javax.xml.bind.annotation.XmlType;
-
-import com.orangeleap.tangerine.util.StringConstants;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
 public class AdjustedGift extends AbstractPaymentInfoEntity {
@@ -64,6 +63,7 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
         setSelectedAddress(originalGift.getSelectedAddress());
         setSelectedPhone(originalGift.getSelectedPhone());
         setPaymentType(originalGift.getPaymentType());
+        setCurrencyCode(originalGift.getCurrencyCode());
         
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         if (originalGift.getDistributionLines() != null) {

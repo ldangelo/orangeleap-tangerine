@@ -40,7 +40,7 @@ public class GiftInKind extends AbstractCustomizableEntity {
     private static final long serialVersionUID = 1L;
 
     private BigDecimal fairMarketValue;
-    private String currencyCode = StringConstants.USD;
+    private String currencyCode;
     private Date donationDate = new Date();
     private String motivationCode;
     private String other_motivationCode;

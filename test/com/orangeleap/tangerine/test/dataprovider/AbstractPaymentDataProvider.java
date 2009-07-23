@@ -73,6 +73,10 @@ public class AbstractPaymentDataProvider {
 		addToMap(request, paramMap, "checkNumber", "111");
 		addToMap(request, paramMap, "customFieldMap[reference].value", "Joe Blow");
 		addToMap(request, paramMap, "customFieldMap[daddyo].value", "787");
+		addToMap(request, paramMap, "distributionLines[0].amount", "");
+		addToMap(request, paramMap, "distributionLines[0].percentage", "");
+		addToMap(request, paramMap, "distributionLines[0].projectCode", "");
+		addToMap(request, paramMap, "distributionLines[0].customFieldMap[tribute].value", "");
 		addToMap(request, paramMap, "distributionLines[1].amount", "45");
 		addToMap(request, paramMap, "distributionLines[1].percentage", "98");
 		addToMap(request, paramMap, "distributionLines[1].projectCode", "Trial");
@@ -85,7 +89,7 @@ public class AbstractPaymentDataProvider {
 	}
 
 	private static void addToMap(MockHttpServletRequest request, Map<String, Object> paramMap, String key, Object value) {
-		request.setParameter(TangerineForm.escapeFieldName(key), value.toString());
+		request.setParameter(TangerineForm.escapeFieldName(key), value != null ? value.toString() : null);
 		paramMap.put(TangerineForm.escapeFieldName(key), value);
 	}
 }

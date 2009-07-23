@@ -18,16 +18,14 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import java.math.BigDecimal;
-
-import javax.xml.bind.annotation.XmlType;
-
-import org.springframework.core.style.ToStringCreator;
-import org.springframework.util.StringUtils;
-
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.springframework.core.style.ToStringCreator;
+import org.springframework.util.StringUtils;
+
+import javax.xml.bind.annotation.XmlType;
+import java.math.BigDecimal;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class DistributionLine extends AbstractCustomizableEntity {  
  
@@ -43,7 +41,8 @@ public class DistributionLine extends AbstractCustomizableEntity {
     private Long adjustedGiftId;
     private Constituent constituent;
 
-    public DistributionLine() { }
+    public DistributionLine() {
+    }
 
     public DistributionLine(BigDecimal amount, BigDecimal percentage, String projectCode, String motivationCode, String other_motivationCode) {
         this(amount);
@@ -64,6 +63,11 @@ public class DistributionLine extends AbstractCustomizableEntity {
         this();
         this.constituent = constituent;
     }
+
+	public DistributionLine(Long id, Constituent constituent) {
+	    this(constituent);
+	    this.id = id;
+	}
 
     public DistributionLine(BigDecimal amount) {
         this();

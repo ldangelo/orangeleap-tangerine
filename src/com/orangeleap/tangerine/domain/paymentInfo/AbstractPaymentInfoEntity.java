@@ -18,11 +18,16 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import com.orangeleap.tangerine.domain.*;
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.NewAddressAware;
+import com.orangeleap.tangerine.domain.NewPhoneAware;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.PaymentSourceAware;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
-import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.list.UnmodifiableList;
@@ -39,7 +44,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     private static final long serialVersionUID = 1L;
 
     protected String comments;
-    protected String currencyCode = StringConstants.USD;
+    protected String currencyCode;
     protected String paymentType;
     protected String checkNumber;
     protected Long constituentId; // This variable is used by webservices instead of passing the entire constituent object
@@ -110,9 +115,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     public String getCurrencyCode() {
-        if (currencyCode == null) {
-            currencyCode = StringConstants.USD;
-        }
         return currencyCode;
     }
 
@@ -145,6 +147,27 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     public void setDistributionLines(List<DistributionLine> distributionLines) {
         this.distributionLines = distributionLines;
     }
+
+	public void clearDistributionLines() {
+		if (this.distributionLines != null) {
+			this.distributionLines.clear();
+		}
+	}
+
+	public void addDistributionLine(DistributionLine distributionLine) {
+		if (this.distributionLines == null) {
+			setDistributionLines(new ArrayList<DistributionLine>());
+		}
+		this.distributionLines.add(distributionLine);
+	}
+
+	public void addDistributionLines(int listSize, Constituent constituent) {
+		for (int i = 0; i < listSize; i++) {
+			DistributionLine distributionLine = new DistributionLine(0L, constituent);
+			distributionLine.setDefaults();
+			addDistributionLine(distributionLine);
+		}
+	}
 
     public List<DistributionLine> getMutableDistributionLines() {
         return mutableDistributionLines;

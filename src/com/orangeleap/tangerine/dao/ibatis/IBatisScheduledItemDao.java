@@ -63,6 +63,16 @@ public class IBatisScheduledItemDao extends AbstractIBatisDao implements Schedul
 		getSqlMapClientTemplate().delete("DELETE_SCHEDULED_ITEM_BY_ID", params);
 	}
 	
+    public void deleteSchedule(String sourceEntity, Long sourceEntityId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteSchedule: " + sourceEntity+" "+sourceEntityId);
+        }
+        Map<String, Object> params = setupParams();
+		params.put("sourceEntity", sourceEntity);
+		params.put("sourceEntityId", sourceEntityId);
+		getSqlMapClientTemplate().delete("DELETE_SCHEDULE", params);
+	}
+	
 	
 	@Override
     public ScheduledItem readScheduledItemById(Long scheduledItemId) {

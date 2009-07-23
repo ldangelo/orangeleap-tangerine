@@ -31,9 +31,11 @@ public interface ScheduledItemService {
 
     public void deleteScheduledItem(ScheduledItem scheduledItem);
 
+    public void deleteSchedule(Schedulable schedulable);
+
     public ScheduledItem readScheduledItemById(Long scheduledItemId);
 
-    public List<ScheduledItem> readScheduledItemsBySourceEntity(Schedulable schedulable);
+    public List<ScheduledItem> readSchedule(Schedulable schedulable);
 
     public ScheduledItem getDefaultScheduledItem(Schedulable schedulable, Date d);
     

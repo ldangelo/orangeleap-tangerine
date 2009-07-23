@@ -28,6 +28,8 @@ public interface ScheduledItemDao {
 
     public void deleteScheduledItemById(Long scheduledItemId);
 
+    public void deleteSchedule(String sourceEntity, Long sourceEntityId);
+
     public ScheduledItem readScheduledItemById(Long scheduledItemId);
 
     public List<ScheduledItem> readScheduledItemsBySourceEntityId(String sourceEntity, Long sourceEntityId);

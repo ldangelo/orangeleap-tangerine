@@ -49,6 +49,13 @@
         where SCHEDULED_ITEM_ID = #id#
     </delete>
 
+	<!-- For testing only - completed items shouldn't be deleted.  -->
+    <delete id="DELETE_SCHEDULE" parameterClass="map" >
+        delete from SCHEDULED_ITEM where
+         SOURCE_ENTITY = #sourceEntity#
+        and SOURCE_ENTITY_ID = #sourceEntityId#
+    </delete>
+
     <select id="SELECT_SCHEDULED_ITEMS_BY_SOURCE_ENTITY" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
          scheduled_item.SOURCE_ENTITY = #sourceEntity#

@@ -65,12 +65,17 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     }
 
     @Override
+    public void deleteSchedule(Schedulable schedulable) {
+        scheduledItemDao.deleteSchedule(schedulable.getType(), schedulable.getId());
+    }
+
+    @Override
     public ScheduledItem readScheduledItemById(Long scheduledItemId) {
     	return scheduledItemDao.readScheduledItemById(scheduledItemId);
     }
 
     @Override
-    public List<ScheduledItem> readScheduledItemsBySourceEntity(Schedulable schedulable) {
+    public List<ScheduledItem> readSchedule(Schedulable schedulable) {
     	return scheduledItemDao.readScheduledItemsBySourceEntityId(schedulable.getType(), schedulable.getId());
     }
 
@@ -134,7 +139,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     @Override
     public void regenerateSchedule(Schedulable schedulable, Date toDate) {
     	
-    	List<ScheduledItem> existingitems = readScheduledItemsBySourceEntity(schedulable);
+    	List<ScheduledItem> existingitems = readSchedule(schedulable);
     	
     	// Delete all uncompleted items.
     	Iterator<ScheduledItem> it = existingitems.iterator();
@@ -154,7 +159,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 
     private void internalExtend(Schedulable schedulable, Date toDate) {
     	
-    	List<ScheduledItem> existingitems = readScheduledItemsBySourceEntity(schedulable);
+    	List<ScheduledItem> existingitems = readSchedule(schedulable);
     	
     	Date afterdate = PAST_DATE;
     	if (existingitems.size() > 0) {

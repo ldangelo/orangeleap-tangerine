@@ -145,4 +145,11 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
     public String getLongDescription() {
         return longDescription;
     }
+
+	public String resolveDisplayValue() {
+		if (StringUtils.hasText(longDescription)) {
+			return longDescription;
+		}
+		return defaultDisplayValue;
+	}
 }

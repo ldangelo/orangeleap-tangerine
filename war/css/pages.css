@@ -45,6 +45,7 @@
 	border: 1px solid #AAAAAA;
 	/*border-top:1px solid #d4d4d4;*/
 	margin-bottom:12px;
+	min-height: 600px;
 }
 .sideBar h3 {
 	margin:0;

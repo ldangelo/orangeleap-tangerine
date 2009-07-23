@@ -81,7 +81,8 @@ public class TangerineForm {
 	 */
 	public Object getFieldValueFromUnescapedFieldName(String unescapedFieldName) {
 		String escapedFieldName = escapeFieldName(unescapedFieldName);
-		return fieldMap.get(removeCustomFieldDotValueSuffix(escapedFieldName));
+		return fieldMap.get(escapedFieldName);
+//		return fieldMap.get(removeCustomFieldDotValueSuffix(escapedFieldName));
 	}
 
 	/**
@@ -90,7 +91,8 @@ public class TangerineForm {
 	 * @return field value
 	 */
 	public Object getFieldValue(String escapedFieldName) {
-		return fieldMap.get(removeCustomFieldDotValueSuffix(escapedFieldName));
+		return fieldMap.get(escapedFieldName);
+//		return fieldMap.get(removeCustomFieldDotValueSuffix(escapedFieldName));
 	}
 
 	/**

@@ -523,16 +523,18 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             
             // Gift or Adjusted Gift
 
-            journal.setJeType(isDebit ? DEBIT : CREDIT);
-
 
             if (isGift) {
+                journal.setJeType(isDebit ? DEBIT : CREDIT);
+
                 journal.setEntity(GIFT);
                 journal.setEntityId(gift.getId());
                 journal.setAmount(gift.getAmount());
                 journal.setCode(getBank(gift, bankmap));
                 journal.setDescription("Gift from " + gift.getConstituent().getRecognitionName());   
             } else {
+                journal.setJeType(isDebit ? CREDIT : DEBIT);
+
                 journal.setEntity(ADJUSTED_GIFT);
                 journal.setEntityId(ag.getId());
                 journal.setOrigEntity(GIFT);
@@ -549,8 +551,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
             // Distribution lines
 
-            journal.setJeType(isDebit ? CREDIT : DEBIT);
-
             journal.setEntity(DISTRO_LINE);
             journal.setEntityId(dl.getId());
 
@@ -561,8 +561,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             journal.setCode(getProjectCode(dl, codemap));
 
             if (isGift) {
+                journal.setJeType(isDebit ? CREDIT : DEBIT);
+
                 journal.setDescription("Associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
             } else {
+                journal.setJeType(isDebit ? DEBIT : CREDIT);
+
                 journal.setDescription("Adjusted gift ID " + ag.getId() + ", associated with original gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
                 journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
                 journal.setOrigEntity(GIFT);

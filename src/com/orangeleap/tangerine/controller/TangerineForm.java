@@ -71,7 +71,7 @@ public class TangerineForm {
 		if (fieldMap == null) {
 			fieldMap = new HashMap<String, Object>();
 		}
-		fieldMap.put(escapeFieldName(key), value);
+		fieldMap.put(removeCustomFieldDotValueSuffix(escapeFieldName(key)), value);
 	}
 
 	/**
@@ -81,8 +81,7 @@ public class TangerineForm {
 	 */
 	public Object getFieldValueFromUnescapedFieldName(String unescapedFieldName) {
 		String escapedFieldName = escapeFieldName(unescapedFieldName);
-		return fieldMap.get(escapedFieldName);
-//		return fieldMap.get(removeCustomFieldDotValueSuffix(escapedFieldName));
+		return fieldMap.get(removeCustomFieldDotValueSuffix(escapedFieldName));
 	}
 
 	/**
@@ -91,8 +90,7 @@ public class TangerineForm {
 	 * @return field value
 	 */
 	public Object getFieldValue(String escapedFieldName) {
-		return fieldMap.get(escapedFieldName);
-//		return fieldMap.get(removeCustomFieldDotValueSuffix(escapedFieldName));
+		return fieldMap.get(removeCustomFieldDotValueSuffix(escapedFieldName));
 	}
 
 	/**
@@ -101,7 +99,7 @@ public class TangerineForm {
 	 * @param escapedFieldName the field name, escaped of '[', ']', and '.' chars
 	 * @return escapedFieldName, minus the escaped '.value'
 	 */
-	private String removeCustomFieldDotValueSuffix(String escapedFieldName) {
+	public String removeCustomFieldDotValueSuffix(String escapedFieldName) {
 		if (escapedFieldName.endsWith(TANG_DOT_VALUE)) {
 			escapedFieldName = escapedFieldName.substring(0, escapedFieldName.length() - TANG_DOT_VALUE.length());
 		}

@@ -80,10 +80,10 @@ public class AbstractPaymentFormControllerTest extends BaseTest {
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[0].amount"), "45", "form.distributionLines[0].amount = " + form.getFieldValueFromUnescapedFieldName("distributionLines[0].amount"));
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[0].percentage"), "98", "form.distributionLines[0].percentage = " + form.getFieldValueFromUnescapedFieldName("distributionLines[0].percentage"));
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[0].projectCode"), "Trial", "form.distributionLines[0].projectCode = " + form.getFieldValueFromUnescapedFieldName("distributionLines[0].projectCode"));
-		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[0].customFieldMap[tribute].value"), "inMemoryOf", "form.distributionLines[0].customFieldMap[tribute].value = " + form.getFieldValueFromUnescapedFieldName("distributionLines[0].customFieldMap[tribute].value"));
+		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[0].customFieldMap[tribute]"), "inMemoryOf", "form.distributionLines[0].customFieldMap[tribute] = " + form.getFieldValueFromUnescapedFieldName("distributionLines[0].customFieldMap[tribute]"));
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].amount"), ".99", "form.distributionLines[1].amount = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].amount"));
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].percentage"), "2", "form.distributionLines[1].percentage = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].percentage"));
-		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[onBehalfOf].value"), "Fooey", "form.distributionLines[1].customFieldMap[onBehalfOf].value = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[onBehalfOf].value"));
+		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[onBehalfOf]"), "Fooey", "form.distributionLines[1].customFieldMap[onBehalfOf] = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[onBehalfOf]"));
 	}
 
 	class MockPaymentFormController extends AbstractPaymentFormController {

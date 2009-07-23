@@ -6,12 +6,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.test.BaseTest;
-import com.orangeleap.tangerine.test.SwitchTest;
 
 public class ScheduledItemServiceImplTest 
 //extends SwitchTest
@@ -118,6 +118,12 @@ extends BaseTest
     @SuppressWarnings("deprecation")
 	@Test
     public void testModifySchedule() throws Exception {
+    	
+    	AbstractEntity dummyResult = new AbstractEntity() {
+			private static final long serialVersionUID = 1L;
+			public String getType() { return "gift"; }
+    		public Long getId() { return 100L; }
+    	};
       
     	TestSchedulableImpl schedulable = new TestSchedulableImpl();
     	schedulable.setType(RECURRING_GIFT_TYPE);
@@ -129,11 +135,11 @@ extends BaseTest
     	scheduledItemService.deleteSchedule(schedulable);
     	scheduledItemService.extendSchedule(schedulable);
     	
-    	// Save a custom field with completion date on one item.
+    	// Save a custom field and complete one item.
     	List<ScheduledItem> items = scheduledItemService.readSchedule(schedulable);
-    	items.get(0).setCompletionDate(new Date());
     	items.get(0).setCustomFieldValue(MYVALUE, AVALUE);
     	scheduledItemService.maintainScheduledItem(items.get(0));
+    	scheduledItemService.completeItem(items.get(0), dummyResult, "done"); 
     	items = scheduledItemService.readSchedule(schedulable);
     	assert items.get(0).getCompletionDate() != null;
     	assert items.get(0).getCustomFieldValue(MYVALUE).equals(AVALUE);
@@ -154,22 +160,32 @@ extends BaseTest
     	assert items.get(2).getActualScheduledDate().equals(new Date("2009/03/02"));
     	assert items.get(3).getActualScheduledDate().equals(new Date("2009/04/02"));
     	assert items.get(4).getActualScheduledDate().equals(new Date("2009/05/02"));
-    	assert items.get(5).getActualScheduledDate().equals(new Date("2009/06/02"));    	
+    	assert items.get(5).getActualScheduledDate().equals(new Date("2009/06/02"));  
+    	
+    	
 
-    	// Make a manual change and use an indefinite end date.
+    	// Make a manual change and addition.
     	items.get(1).setActualScheduledDate(new Date("2009/02/03"));
     	scheduledItemService.maintainScheduledItem(items.get(1));
+    	ScheduledItem newitem = scheduledItemService.getDefaultScheduledItem(schedulable, new Date("2009/01/15"));
+    	scheduledItemService.maintainScheduledItem(newitem);
+    	scheduledItemService.completeItem(newitem, dummyResult, "ok");
+    	
+    	// Set to an indefinite end date and extend.
     	schedulable.setEndDate(null);
     	scheduledItemService.extendSchedule(schedulable, new Date("2010/01/02"));
     	items = scheduledItemService.readSchedule(schedulable);
-    	assert items.size() == 13;
+    	assert items.size() == 14;
     	assert items.get(0).getActualScheduledDate().equals(new Date("2009/01/01"));
-    	assert scheduledItemService.getNextItemToRun(schedulable).getActualScheduledDate().equals(new Date("2009/02/03"));
+    	ScheduledItem nextRun = scheduledItemService.getNextItemToRun(schedulable);
+    	assert nextRun.getOriginalScheduledDate().equals(new Date("2009/02/02"));
+    	assert nextRun.getActualScheduledDate().equals(new Date("2009/02/03"));
 
+    	printSchedule(items);
     }
     
-    private static void printSchedule(List<ScheduledItem> items) {
-    	for (ScheduledItem item: items) System.out.println(""+item);
+    private void printSchedule(List<ScheduledItem> items) {
+    	for (ScheduledItem item: items) logger.debug(""+item);
     }
     
 }

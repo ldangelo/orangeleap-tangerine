@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlType;
@@ -179,7 +180,9 @@ public class ScheduledItem extends AbstractCustomizableEntity {
 
     @Override
     public String toString() {
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return new ToStringCreator(this)
+        .append("ActualScheduledDate", sdf.format(actualScheduledDate))
         .append(super.toString())
         .append("id", ""+id)
         .append("sourceEntity", ""+sourceEntity)

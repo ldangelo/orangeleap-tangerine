@@ -18,15 +18,14 @@
 
 package com.orangeleap.tangerine.domain.communication;
 
-import javax.xml.bind.annotation.XmlType;
-
+import com.orangeleap.tangerine.type.ActivationType;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
-import com.orangeleap.tangerine.type.ActivationType;
-import com.orangeleap.tangerine.util.StringConstants;
+import javax.xml.bind.annotation.XmlType;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class Email extends AbstractCommunicationEntity  { //SiteAware, ConstituentInfo { TODO: put back for IBatis
 
@@ -41,6 +40,11 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
         this.constituentId = constituentId;
         this.activationStatus = ActivationType.permanent;
     }
+
+	public Email(Long id, Long constituentId) {
+		this(constituentId);
+	    this.id = id;
+	}
 
     public Email(Long constituentId, String emailAddress) {
         this(constituentId);

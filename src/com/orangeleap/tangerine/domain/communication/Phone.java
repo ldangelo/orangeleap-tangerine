@@ -45,6 +45,11 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
         this.activationStatus = ActivationType.permanent;
     }
 
+	public Phone(Long id, Long constituentId) {
+		this(constituentId);
+	    this.id = id;
+	}
+
     public Phone(Long constituentId, String number) {
         this(constituentId);
         this.number = number;

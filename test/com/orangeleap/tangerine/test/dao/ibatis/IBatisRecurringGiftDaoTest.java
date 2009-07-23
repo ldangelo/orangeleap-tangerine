@@ -1,24 +1,22 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
+import com.orangeleap.tangerine.dao.RecurringGiftDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.junit.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.junit.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import com.orangeleap.tangerine.dao.RecurringGiftDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
 
@@ -57,7 +55,6 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert recurringGift.getUpdateDate() == null;
 //        assert recurringGift.getFrequency() == null;
         assert recurringGift.getDistributionLines() != null && recurringGift.getDistributionLines().isEmpty();
-        assert StringConstants.USD.equals(recurringGift.getCurrencyCode());
     }
     
     public static void testId300L(RecurringGift recurringGift) throws Exception {

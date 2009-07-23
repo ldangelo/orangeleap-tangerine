@@ -1,23 +1,22 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.junit.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.junit.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class IBatisPledgeDaoTest extends AbstractIBatisTest {
     
@@ -123,7 +122,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert pledge.getId().equals(readPledge.getId());
         assert "comments".equals(readPledge.getComments());
         assert 12 == readPledge.getAmountPerGift().intValue();
-        assert StringConstants.USD.equals(readPledge.getCurrencyCode());
         assert readPledge.getAmountTotal() == null;
         assert readPledge.isRecurring();
 
@@ -192,7 +190,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert pledge.getUpdateDate() == null;
         assert pledge.getFrequency() == null;
         assert pledge.getProjectedDate() == null;
-        assert StringConstants.USD.equals(pledge.getCurrencyCode());
     }
     
     @Test(groups = { "testReadPledge" })

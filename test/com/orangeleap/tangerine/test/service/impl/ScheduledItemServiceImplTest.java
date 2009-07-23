@@ -161,6 +161,8 @@ extends BaseTest
     	scheduledItemService.extendSchedule(schedulable, new Date("2010/01/02"));
     	items = scheduledItemService.readSchedule(schedulable);
     	assert items.size() == 13;
+    	assert items.get(0).getActualScheduledDate().equals(new Date("2009/01/01"));
+    	assert scheduledItemService.getNextItemToRun(schedulable).getActualScheduledDate().equals(new Date("2009/02/02"));
 
     }
     

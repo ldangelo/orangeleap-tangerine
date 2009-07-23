@@ -18,16 +18,16 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.dao.SiteDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.customization.EntityDefault;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -35,9 +35,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.*;
+import com.orangeleap.tangerine.dao.SiteDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -75,83 +81,11 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         commitment.setConstituent(constituent);
     }
 
-    // TODO: refactor; this method is a mess!!!
-    public List<Calendar> getCommitmentGiftDates(T commitment) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("getCommitmentGiftDates: commitment = " + commitment);
-        }
-        List<Calendar> giftDates = null;
-        if (commitment.getStartDate() == null) {
-            logger.debug("Commitment start date is null");
-            return giftDates;
-        }
-        if (commitment.getEndDate() == null) {
-            logger.debug("Commitment end date is null");
-            return giftDates;
-        }
-        giftDates = new ArrayList<Calendar>();
-        Calendar startDateCal = new GregorianCalendar();
-        startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
-        Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
-        giftDates.add(createGiftDate(firstGiftCal));
-
-
-        Calendar giftCal = firstGiftCal;
-
-        if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
-            giftCal.add(Calendar.WEEK_OF_MONTH, 1);
-        } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
-            giftCal.add(Calendar.MONTH, 1);
-        } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
-            giftCal.add(Calendar.MONTH, 3);
-        } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
-            giftCal.add(Calendar.MONTH, 6);
-        } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
-            giftCal.add(Calendar.YEAR, 1);
-        } else {
-            logger.debug("Unknown frequency");
-            return giftDates;
-        }
-
-        giftDates.add(createGiftDate(giftCal));
-
-
-        return giftDates;
-    }
-
-    public Calendar createGiftDate(Calendar giftCal) {
-        return new GregorianCalendar(giftCal.get(Calendar.YEAR), giftCal.get(Calendar.MONTH), giftCal.get(Calendar.DAY_OF_MONTH));
-    }
-
-    public boolean isPastEndDate(T commitment, Date date) {
-        return commitment.getEndDate() == null ? false : date.after(commitment.getEndDate());
-    }
-
-    public Calendar getBimonthlyCalendar(int year, int month, int day) {
-        Calendar next = new GregorianCalendar();
-        next.clear();
-        if (month > 11) {
-            next.set(year + 1, month - 12, 1);
-        } else {
-            next.set(year, month, 1);
-        }
-        int maxMonthDay = next.getActualMaximum(Calendar.DAY_OF_MONTH);
-        if (maxMonthDay >= day) {
-            next.set(Calendar.DAY_OF_MONTH, day);
-        } else {
-            next.set(Calendar.DAY_OF_MONTH, maxMonthDay);
-        }
-        logger.debug("getBimonthlyCalendar() = " + next.getTime() + " millis=" + next.getTimeInMillis());
-        return next;
-    }
-
     protected Date getNextGiftDate(T commitment) {
         Date nextGiftDate = new Date();
         if (commitment.getEndDate() != null && commitment.getEndDate().before(Calendar.getInstance().getTime())) {
             nextGiftDate = null;
         } else if (commitment instanceof RecurringGift && ((RecurringGift) commitment).isActivate()) {
-            nextGiftDate = calculateNextRunDate(commitment);
-        } else if (commitment instanceof Pledge && Commitment.STATUS_ACTIVE.equals(((Pledge) commitment).getPledgeStatus())) {
             nextGiftDate = calculateNextRunDate(commitment);
         } else {
             nextGiftDate = null;

@@ -56,6 +56,7 @@
         and SOURCE_ENTITY_ID = #sourceEntityId#
     </delete>
 
+    <!-- NOTE: Do not change sort order here or nextrun calcs will be wrong!  -->
     <select id="SELECT_SCHEDULED_ITEMS_BY_SOURCE_ENTITY" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
          scheduled_item.SOURCE_ENTITY = #sourceEntity#

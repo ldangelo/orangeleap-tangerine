@@ -1,22 +1,8 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import junit.framework.Assert;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -25,7 +11,19 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import junit.framework.Assert;
+import org.apache.commons.logging.Log;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class IBatisGiftDaoTest extends AbstractIBatisTest {
     
@@ -55,7 +53,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getTxRefNum() == null;
         assert gift.getPaymentStatus() == null;
         assert gift.getPaymentMessage() == null;
-        assert StringConstants.USD.equals(gift.getCurrencyCode());
         assert gift.getCheckNumber() == null;
         assert GiftType.MONETARY_GIFT.equals(gift.getGiftType());
         
@@ -95,7 +92,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getTxRefNum() == null;
         assert gift.getPaymentStatus() == null;
         assert gift.getPaymentMessage() == null;
-        assert StringConstants.USD.equals(gift.getCurrencyCode());
         assert gift.getCheckNumber() == null;
         
         assert gift.getDistributionLines() != null && gift.getDistributionLines().size() == 4;
@@ -158,7 +154,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getTxRefNum() == null;
         assert gift.getPaymentStatus() == null;
         assert gift.getPaymentMessage() == null;
-        assert StringConstants.USD.equals(gift.getCurrencyCode());
         assert gift.getCheckNumber() == null;
         
         assert gift.getSelectedAddress() != null && gift.getSelectedAddress().getId() == 100L;

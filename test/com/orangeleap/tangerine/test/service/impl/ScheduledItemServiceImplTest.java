@@ -156,13 +156,15 @@ extends BaseTest
     	assert items.get(4).getActualScheduledDate().equals(new Date("2009/05/02"));
     	assert items.get(5).getActualScheduledDate().equals(new Date("2009/06/02"));    	
 
-    	// Use an indefinite end date.
+    	// Make a manual change and use an indefinite end date.
+    	items.get(1).setActualScheduledDate(new Date("2009/02/03"));
+    	scheduledItemService.maintainScheduledItem(items.get(1));
     	schedulable.setEndDate(null);
     	scheduledItemService.extendSchedule(schedulable, new Date("2010/01/02"));
     	items = scheduledItemService.readSchedule(schedulable);
     	assert items.size() == 13;
     	assert items.get(0).getActualScheduledDate().equals(new Date("2009/01/01"));
-    	assert scheduledItemService.getNextItemToRun(schedulable).getActualScheduledDate().equals(new Date("2009/02/02"));
+    	assert scheduledItemService.getNextItemToRun(schedulable).getActualScheduledDate().equals(new Date("2009/02/03"));
 
     }
     

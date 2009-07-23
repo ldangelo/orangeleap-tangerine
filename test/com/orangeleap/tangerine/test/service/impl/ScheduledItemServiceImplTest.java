@@ -11,8 +11,13 @@ import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.test.BaseTest;
+//import com.orangeleap.tangerine.test.SwitchTest;
 
-public class ScheduledItemServiceImplTest extends BaseTest {
+public class ScheduledItemServiceImplTest 
+//extends SwitchTest
+extends BaseTest
+{
+	
 	
     @Autowired
     private ScheduledItemService scheduledItemService;
@@ -82,9 +87,7 @@ public class ScheduledItemServiceImplTest extends BaseTest {
     	
     	items = scheduledItemService.readScheduledItemsBySourceEntity(schedulable);
     	
-    	/*
     	assert items != null;
-    	
     	assert items.size() == 6;
     	
     	assert items.get(0).getActualScheduledDate().equals(schedulable.getStartDate());
@@ -92,21 +95,18 @@ public class ScheduledItemServiceImplTest extends BaseTest {
     	assert items.get(0).getCompletionDate() == null;
     	assert items.get(0).getResultEntity() == null;
     	assert items.get(0).getResultEntityId() == null;
-    	assert items.get(0).getSourceEntity() == RECURRING_GIFT_TYPE;
-    	assert items.get(0).getSourceEntityId() == 1;
+    	assert items.get(0).getSourceEntity().equals(schedulable.getType());
+    	assert items.get(0).getSourceEntityId().equals(schedulable.getId());
 
     	assert items.get(1).getActualScheduledDate().equals(new Date("2009/02/01"));
     	assert items.get(2).getActualScheduledDate().equals(new Date("2009/03/01"));
     	assert items.get(3).getActualScheduledDate().equals(new Date("2009/04/01"));
     	assert items.get(4).getActualScheduledDate().equals(new Date("2009/05/01"));
-
     	assert items.get(5).getActualScheduledDate().equals(schedulable.getEndDate());
-    	*/
     	
     	for (ScheduledItem item : items) scheduledItemService.deleteScheduledItem(item);
-    	
     	items = scheduledItemService.readScheduledItemsBySourceEntity(schedulable);
-    	//assert items.size() == 0;
+    	assert items.size() == 0;
     	
     }
     

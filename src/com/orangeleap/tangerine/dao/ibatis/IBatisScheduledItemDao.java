@@ -48,7 +48,7 @@ public class IBatisScheduledItemDao extends AbstractIBatisDao implements Schedul
 	    }
         Long lookupUserId = tangerineUserHelper.lookupUserId();
         if (lookupUserId != null) {
-        	scheduledItem.setModifiedBy(tangerineUserHelper.lookupUserId());
+        	scheduledItem.setModifiedBy(lookupUserId);
         }
         insertOrUpdate(scheduledItem, "SCHEDULED_ITEM");
         return scheduledItem;

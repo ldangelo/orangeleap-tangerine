@@ -118,7 +118,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     @Override
     public void extendSchedule(Schedulable schedulable, Date toDate) {
     	
-    	if (schedulable.getEndDate() != null) return;  // can only extend if no end date
+    	if (schedulable.getEndDate() != null) toDate = schedulable.getEndDate();  // can only extend at most to end date, if one exists
     	
     	internalExtend(schedulable, toDate);
     	
@@ -187,7 +187,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	if (enddate == null) enddate = toDate;
     	if (enddate == null) throw new RuntimeException("No end date specified.");
     	
-    	while (!cal.after(enddate)) {
+    	while (!cal.getTime().after(enddate)) {
     		
     		result.add(cal.getTime());
     		

@@ -89,6 +89,12 @@
         g.CONSTITUENT_ID = c.CONSTITUENT_ID 
         and c.SITE_NAME = #siteName#
         and g.GIFT_TYPE != 'GIFT_IN_KIND'
+        <isNotNull property="ids"> 
+           and g.GIFT_ID in 
+		   <iterate property="ids" conjunction="," open="(" close=")">
+           #ids[]#
+           </iterate>
+        </isNotNull>
         <isNotNull property="amountLessThan"> 
         and g.AMOUNT &lt; #amountLessThan#
         </isNotNull>
@@ -154,6 +160,12 @@
         ag.GIFT_ID = g.GIFT_ID 
         and ag.CONSTITUENT_ID = c.CONSTITUENT_ID 
         and c.SITE_NAME = #siteName#
+        <isNotNull property="ids"> 
+           and ag.ADJUSTED_GIFT_ID in 
+		   <iterate property="ids" conjunction="," open="(" close=")">
+           #ids[]#
+           </iterate>
+        </isNotNull>
         <isNotNull property="amountLessThan"> 
         and ag.ADJUSTED_AMOUNT &lt; #amountLessThan#
         </isNotNull>

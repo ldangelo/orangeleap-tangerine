@@ -107,6 +107,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public final static String NONE = "none";
     public final static String SOURCE = "source";
     public final static String STATUS = "status";
+    public final static String IDS = "ids";
 
 
 
@@ -114,6 +115,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public Map<String, String> readAllowedGiftSelectFields() {
     	
     	Map<String, String> map = new TreeMap<String, String>();
+        map.put(IDS, "IDs");
         map.put("amountLessThan", "Amount Less Than");
         map.put("amountGreaterThan", "Amount Greater Than");
         map.put("currencyCode", "Currency Code");
@@ -148,6 +150,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             		posted = true;
             	}
             	result.put(key, posted);
+            } else if (key.equals(IDS)) {
+            	result.put(key, value.split(","));
             } else if (key.toLowerCase().contains("date")) {
                 if (value.length() != PostBatchServiceImpl.DATE_FORMAT.length()) throw new RuntimeException("Invalid Date.");
             	DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);

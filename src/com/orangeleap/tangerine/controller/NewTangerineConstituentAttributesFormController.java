@@ -153,7 +153,10 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
 				form.addField(escapedFormFieldName, paramValue);
 				propertyValues.addPropertyValue(fieldName, paramValue);
 			}
-
+		}
+		// Bind paymentType back to paymentSource
+		if (bindPaymentSource && ((PaymentSourceAware) form.getDomainObject()).getPaymentSource() != null && ((PaymentSourceAware) form.getDomainObject()).getPaymentSource().isNew()) {
+			propertyValues.addPropertyValue(new StringBuilder(StringConstants.PAYMENT_SOURCE).append(".").append(StringConstants.PAYMENT_TYPE).toString(), request.getParameter(StringConstants.PAYMENT_TYPE));
 		}
 		binder.bind(propertyValues);
 	}

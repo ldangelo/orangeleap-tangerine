@@ -51,7 +51,7 @@ public class TangerineFormConstituentAttributesDataProvider {
 		paymentSource.setCreditCardExpirationYear(2010);
 		paymentSource.setCreditCardHolderName("John Q. Test");
 		paymentSource.setCreditCardNumber("4111111111111111");
-		paymentSource.setPaymentType("CREDIT_CARD");
+		paymentSource.setPaymentType("Credit Card");
 
 		Gift gift = new Gift();
 		gift.setComments("My gift to you");
@@ -71,6 +71,8 @@ public class TangerineFormConstituentAttributesDataProvider {
 		addToMap(request, paramMap, "dummyProperty", "foo");
 		addToMap(request, paramMap, "postedDate", "01/01/1999");
 		addToMap(request, paramMap, "posted", "true");
+		addToMap(request, paramMap, "paymentType", "Credit Card");
+		addToMap(request, paramMap, "paymentSource.id", "1");
 		addToMap(request, paramMap, "paymentSource.creditCardHolderName", "Big Brown One");
 		addToMap(request, paramMap, "paymentSource.creditCardSecurityCode", "202");
 		addToMap(request, paramMap, "customFieldMap[reference].value", "Joe Blow");
@@ -94,7 +96,7 @@ public class TangerineFormConstituentAttributesDataProvider {
 		paymentSource.setCreditCardExpirationYear(2010);
 		paymentSource.setCreditCardHolderName("John Q. Test");
 		paymentSource.setCreditCardNumber("4111111111111111");
-		paymentSource.setPaymentType("CREDIT_CARD");
+		paymentSource.setPaymentType("Credit Card");
 
 		Gift gift = new Gift();
 		gift.setComments("My gift to you");
@@ -136,7 +138,7 @@ public class TangerineFormConstituentAttributesDataProvider {
 		paymentSource.setCreditCardExpirationYear(2010);
 		paymentSource.setCreditCardHolderName("John Q. Test");
 		paymentSource.setCreditCardNumber("4111111111111111");
-		paymentSource.setPaymentType("CREDIT_CARD");
+		paymentSource.setPaymentType("Credit Card");
 
 		Gift gift = new Gift();
 		gift.setComments("My gift to you");
@@ -157,7 +159,7 @@ public class TangerineFormConstituentAttributesDataProvider {
 		addToMap(request, paramMap, "postedDate", "01/01/1999");
 		addToMap(request, paramMap, "posted", "true");
 		addToMap(request, paramMap, "paymentSource.id", "0");
-		addToMap(request, paramMap, "paymentSource.paymentType", "ACH");
+		addToMap(request, paramMap, "paymentType", "ACH");
 		addToMap(request, paramMap, "paymentSource.achHolderName", "Big Brown One");
 		addToMap(request, paramMap, "paymentSource.achRoutingNumber", "12100005");
 		addToMap(request, paramMap, "paymentSource.achAccountNumber", "8");

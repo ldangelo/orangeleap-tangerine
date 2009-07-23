@@ -25,3 +25,44 @@ INSERT INTO GIFT (COMMENTS, GIFT_TYPE, AMOUNT, DEDUCTIBLE_AMOUNT, PAYMENT_TYPE, 
 INSERT INTO GIFT (COMMENTS, GIFT_TYPE, AMOUNT, DEDUCTIBLE_AMOUNT, PAYMENT_TYPE, TRANSACTION_DATE, CONSTITUENT_ID) VALUES ('', 'MONETARY_GIFT', 1000, 1000, 'Cash', '2008-04-21 10:50:57', 5);
 
 UPDATE GIFT SET ENTRY_TYPE = 'MANUAL', GIFT_TYPE = 'MONETARY_GIFT';
+
+INSERT INTO payment_source (credit_card_expiration
+    ,credit_card_holder_name
+    ,credit_card_number
+    ,credit_card_type
+    ,inactive
+    ,last_four_digits
+    ,payment_profile
+    ,payment_type
+    ,address_id
+    ,constituent_id
+) VALUES ({ts '2009-10-31 23:59:59.0'}
+    ,'Nolan Ryan'
+    ,'AYP2f/+rHTOhfvJ2cNWzAepunfyjRmotxM4JizvBdWI='
+    ,'Visa'
+    ,'0'
+    ,'1111'
+    ,'visa'
+    ,'Credit Card'
+    ,1
+    ,1
+);
+INSERT INTO payment_source (ach_account_number
+    ,ach_holder_name
+    ,ach_routing_number
+    ,inactive
+    ,last_four_digits
+    ,payment_profile
+    ,payment_type
+    ,constituent_id
+    ,phone_id
+) VALUES ('11gBa9SPjQ3leD/GJZzjvQ=='
+    ,'Nolan Ryan'
+    ,'12100035'
+    ,'0'
+    ,'8'
+    ,'ach'
+    ,'ACH'
+    ,1
+    ,1
+);

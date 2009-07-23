@@ -22,11 +22,14 @@ import com.orangeleap.tangerine.controller.NewTangerineConstituentAttributesForm
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.test.dataprovider.TangerineFormConstituentAttributesDataProvider;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.apache.commons.lang.math.NumberUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -62,7 +65,7 @@ public class TangerineConstituentAttributesFormControllerTest extends BaseTest {
 		Assert.assertEquals(gift.getCustomFieldValue("momma"), "Yo Mama", "customFieldMap[momma].value = " + gift.getCustomFieldValue("momma"));
 
 		Assert.assertEquals(gift.getPaymentSource().getId(), new Long(1L), "PaymentSource.id = " + gift.getPaymentSource().getId());
-		Assert.assertEquals(gift.getPaymentSource().getPaymentType(), "CREDIT_CARD", "PaymentType = " + gift.getPaymentSource().getPaymentType());
+		Assert.assertEquals(gift.getPaymentSource().getPaymentType(), "Credit Card", "PaymentType = " + gift.getPaymentSource().getPaymentType());
 		Assert.assertEquals(gift.getPaymentSource().getCreditCardHolderName(), "Big Brown One", "CreditCardHolderName = " + gift.getPaymentSource().getCreditCardHolderName());
 		Assert.assertEquals(gift.getPaymentSource().getCreditCardSecurityCode(), "202", "CreditCardSecurityCode = " + gift.getPaymentSource().getCreditCardSecurityCode());
 	}
@@ -87,6 +90,7 @@ public class TangerineConstituentAttributesFormControllerTest extends BaseTest {
 		Assert.assertEquals(gift.getCustomFieldValue("reference"), "Joe Blow", "customFieldMap[reference].value = " + gift.getCustomFieldValue("reference"));
 		Assert.assertEquals(gift.getCustomFieldValue("daddyo"), "787", "customFieldMap[daddyo].value = " + gift.getCustomFieldValue("daddyo"));
 		Assert.assertEquals(gift.getCustomFieldValue("momma"), "Yo Mama", "customFieldMap[momma].value = " + gift.getCustomFieldValue("momma"));
+		Assert.assertEquals(gift.getPaymentType(), "Cash", "Gift paymentType = " + gift.getPaymentType());
 
 		Assert.assertNull(gift.getPaymentSource(), "paymentSource != null");
 	}
@@ -139,6 +143,25 @@ public class TangerineConstituentAttributesFormControllerTest extends BaseTest {
 		@Override
 		public void convertFormToDomain(HttpServletRequest request, TangerineForm form, Map<String, Object> paramMap) throws Exception {
 			super.convertFormToDomain(request, form, paramMap);
+		}
+
+		@Override
+		protected void convertPaymentSource(HttpServletRequest request, TangerineForm form) {
+			final String escapedFormFieldName = TangerineForm.escapeFieldName("paymentSource.id");
+			final String paymentSourceId = request.getParameter(escapedFormFieldName);
+
+			if (paymentSourceId != null && NumberUtils.isNumber(paymentSourceId)) {
+				final long id = Long.parseLong(paymentSourceId);
+				PaymentSourceAware aware = (PaymentSourceAware) form.getDomainObject();
+				if (id > 0) {
+					PaymentSource paymentSource = new PaymentSource(new Constituent());
+					paymentSource.setId(id);
+					aware.setPaymentSource(paymentSource);
+				}
+				else {
+					super.convertPaymentSource(request, form);
+				}
+			}
 		}
 	}
 }

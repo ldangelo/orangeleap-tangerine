@@ -324,26 +324,33 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
 
 	protected void convertPaymentSource(HttpServletRequest request, TangerineForm form) {
 		if (bindPaymentSource) {
-			final String escapedFormFieldName = TangerineForm.escapeFieldName("paymentSource.id");
-			final String paymentSourceId = request.getParameter(escapedFormFieldName);
-			form.addField(escapedFormFieldName, paymentSourceId);
+			String paymentType = request.getParameter(StringConstants.PAYMENT_TYPE);
+			if (PaymentSource.CREDIT_CARD.equals(paymentType) || PaymentSource.ACH.equals(paymentType)) {
+				final String escapedFormFieldName = TangerineForm.escapeFieldName("paymentSource.id");
+				final String paymentSourceId = request.getParameter(escapedFormFieldName);
+				form.addField(escapedFormFieldName, paymentSourceId);
 
-			if (paymentSourceId != null && NumberUtils.isNumber(paymentSourceId)) {
-				final long id = Long.parseLong(paymentSourceId);
-				PaymentSourceAware aware = (PaymentSourceAware) form.getDomainObject();
-				if (id == -1) { // 'None' payment source option selected
-					aware.setPaymentSource(null);
-				}
-				else if (id == 0) { // 'New' payment source option selected
-					aware.setPaymentSource(new PaymentSource(getConstituent(request)));
-				}
-				else { // 'Existing' payment source option selected
-					final PaymentSource paymentSource = paymentSourceService.readPaymentSource(id);
-					if (paymentSource == null) {
-						throw new IllegalArgumentException("Invalid payment source ID = " + id);
+				if (paymentSourceId != null && NumberUtils.isNumber(paymentSourceId)) {
+					final long id = Long.parseLong(paymentSourceId);
+					PaymentSourceAware aware = (PaymentSourceAware) form.getDomainObject();
+					if (id == -1) { // 'None' payment source option selected
+						aware.setPaymentSource(null);
 					}
-					aware.setPaymentSource(paymentSource);
+					else if (id == 0) { // 'New' payment source option selected
+						aware.setPaymentSource(new PaymentSource(getConstituent(request)));
+					}
+					else { // 'Existing' payment source option selected
+						final PaymentSource paymentSource = paymentSourceService.readPaymentSource(id);
+						if (paymentSource == null) {
+							throw new IllegalArgumentException("Invalid payment source ID = " + id);
+						}
+						aware.setPaymentSource(paymentSource);
+					}
 				}
+			}
+			else {
+				PaymentSourceAware aware = (PaymentSourceAware) form.getDomainObject();
+				aware.setPaymentSource(null);
 			}
 		}
 	}

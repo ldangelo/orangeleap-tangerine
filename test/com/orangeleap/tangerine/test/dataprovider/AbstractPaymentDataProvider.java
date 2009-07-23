@@ -49,7 +49,7 @@ public class AbstractPaymentDataProvider {
 		paymentSource.setCreditCardExpirationYear(2010);
 		paymentSource.setCreditCardHolderName("John Q. Test");
 		paymentSource.setCreditCardNumber("4111111111111111");
-		paymentSource.setPaymentType("CREDIT_CARD");
+		paymentSource.setPaymentType("Credit Card");
 
 		Gift gift = new Gift();
 		gift.setComments("My gift to you");

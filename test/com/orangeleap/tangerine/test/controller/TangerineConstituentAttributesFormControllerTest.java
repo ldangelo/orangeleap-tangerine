@@ -116,7 +116,7 @@ public class TangerineConstituentAttributesFormControllerTest extends BaseTest {
 		Assert.assertEquals(gift.getCustomFieldValue("daddyo"), "787", "customFieldMap[daddyo].value = " + gift.getCustomFieldValue("daddyo"));
 		Assert.assertEquals(gift.getCustomFieldValue("momma"), "Yo Mama", "customFieldMap[momma].value = " + gift.getCustomFieldValue("momma"));
 
-		Assert.assertNull(gift.getPaymentSource().getId(), "PaymentSource.id = " + gift.getPaymentSource().getId());
+		Assert.assertEquals(gift.getPaymentSource().getId(), new Long(0), "PaymentSource.id = " + gift.getPaymentSource().getId());
 		Assert.assertEquals(gift.getPaymentSource().getPaymentType(), "ACH", "PaymentType = " + gift.getPaymentSource().getPaymentType());
 		Assert.assertEquals(gift.getPaymentSource().getAchHolderName(), "Big Brown One", "AchHolderName = " + gift.getPaymentSource().getAchHolderName());
 		Assert.assertEquals(gift.getPaymentSource().getAchRoutingNumber(), "12100005", "AchRoutingNumber = " + gift.getPaymentSource().getAchRoutingNumber());

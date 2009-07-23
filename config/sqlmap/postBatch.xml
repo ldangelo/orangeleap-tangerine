@@ -61,8 +61,8 @@
     <delete id="DELETE_POST_BATCH" parameterClass="map" >
         delete from POST_BATCH 
         where 
-        post_batch.SITE_NAME = #siteName#
-        and post_batch.POST_BATCH_ID = #id#
+        SITE_NAME = #siteName#
+        and POST_BATCH_ID = #id#
     </delete>
 
     <insert id="INSERT_POST_BATCH" parameterClass="com.orangeleap.tangerine.domain.PostBatch">

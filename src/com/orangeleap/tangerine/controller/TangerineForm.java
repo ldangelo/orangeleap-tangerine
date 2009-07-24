@@ -33,9 +33,9 @@ public class TangerineForm {
 	public static final String DOT = "\\.";
 	public static final String START_BRACKET = "\\[";
 	public static final String END_BRACKET = "\\]";
-	public static final String TANG_DOT = "-tangDot-";
-	public static final String TANG_START_BRACKET = "-tangStartBracket-";
-	public static final String TANG_END_BRACKET = "-tangEndBracket-";
+	public static final String TANG_DOT = "-td-";
+	public static final String TANG_START_BRACKET = "-tsb-";
+	public static final String TANG_END_BRACKET = "-teb-";
 	public static final String TANG_DOT_VALUE = escapeFieldName(StringConstants.DOT_VALUE);
 
 	public Map<String, Object> getFieldMap() {
@@ -95,7 +95,7 @@ public class TangerineForm {
 
 	/**
 	 * If the field name is a custom field, removes the
-	 * '.value' (escaped to -tangDot-value) from the end of the name, since field names are not stored with '.value' at the end
+	 * '.value' (escaped to -td-value) from the end of the name, since field names are not stored with '.value' at the end
 	 * @param escapedFieldName the field name, escaped of '[', ']', and '.' chars
 	 * @return escapedFieldName, minus the escaped '.value'
 	 */

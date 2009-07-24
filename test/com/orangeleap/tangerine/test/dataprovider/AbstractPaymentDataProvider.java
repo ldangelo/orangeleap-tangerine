@@ -84,6 +84,8 @@ public class AbstractPaymentDataProvider {
 		addToMap(request, paramMap, "distributionLines[4].amount", ".99");
 		addToMap(request, paramMap, "distributionLines[4].percentage", "2");
 		addToMap(request, paramMap, "distributionLines[4].customFieldMap[onBehalfOf].value", "Fooey");
+		addToMap(request, paramMap, "_distributionLines[4].customFieldMap[taxDeductible]", "");
+		addToMap(request, paramMap, "distributionLines[4].customFieldMap[taxDeductible]", "true");
 
 		return new Object[][] { new Object[] { request, form, paramMap } };
 	}

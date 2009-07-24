@@ -75,6 +75,7 @@ public class AbstractPaymentFormControllerTest extends BaseTest {
 		Assert.assertEquals(gift.getDistributionLines().get(1).getAmount(), new BigDecimal(".99"), "DistroLine[1].amount = " + gift.getDistributionLines().get(1).getAmount());
 		Assert.assertEquals(gift.getDistributionLines().get(1).getPercentage(), new BigDecimal(2), "DistroLine[1].percentage = " + gift.getDistributionLines().get(1).getPercentage());
 		Assert.assertEquals(gift.getDistributionLines().get(1).getCustomFieldValue("onBehalfOf"), "Fooey", "DistroLine[1].customFieldMap[onBehalfOf].value = " + gift.getDistributionLines().get(1).getCustomFieldValue("onBehalfOf"));
+		Assert.assertEquals(gift.getDistributionLines().get(1).getCustomFieldValue("taxDeductible"), "true", "DistroLine[1].customFieldMap[taxDeductible].value = " + gift.getDistributionLines().get(1).getCustomFieldValue("taxDeductible"));
 
 		/* Check the form bean to see if the re-indexing was correct */
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[0].amount"), "45", "form.distributionLines[0].amount = " + form.getFieldValueFromUnescapedFieldName("distributionLines[0].amount"));
@@ -84,6 +85,8 @@ public class AbstractPaymentFormControllerTest extends BaseTest {
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].amount"), ".99", "form.distributionLines[1].amount = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].amount"));
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].percentage"), "2", "form.distributionLines[1].percentage = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].percentage"));
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[onBehalfOf]"), "Fooey", "form.distributionLines[1].customFieldMap[onBehalfOf] = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[onBehalfOf]"));
+		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("_distributionLines[1].customFieldMap[taxDeductible]"), "", "form._distributionLines[1].customFieldMap[taxDeductible] = " + form.getFieldValueFromUnescapedFieldName("_distributionLines[1].customFieldMap[taxDeductible]"));
+		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[taxDeductible]"), "true", "form.distributionLines[1].customFieldMap[taxDeductible] = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[taxDeductible]"));
 	}
 
 	class MockPaymentFormController extends AbstractPaymentFormController {

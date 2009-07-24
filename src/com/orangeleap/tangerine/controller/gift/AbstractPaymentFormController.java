@@ -49,7 +49,7 @@ public abstract class AbstractPaymentFormController extends NewTangerineConstitu
 		while (paramEntry.hasNext()) {
 			Map.Entry<String, Object> entry = paramEntry.next();
 
-			if (entry.getKey().startsWith(StringConstants.DISTRIBUTION_LINES)) {
+			if (entry.getKey().indexOf(StringConstants.DISTRIBUTION_LINES) > -1) {
 				distributionLinesMap.put(entry.getKey(), request.getParameter(entry.getKey()));
 				paramEntry.remove();
 			}
@@ -114,7 +114,7 @@ public abstract class AbstractPaymentFormController extends NewTangerineConstitu
 	}
 
 	protected int findDistroLineIndex(String fieldName) {
-		Matcher matcher = Pattern.compile("^" + StringConstants.DISTRIBUTION_LINES + TangerineForm.TANG_START_BRACKET + "(\\d+)" + TangerineForm.TANG_END_BRACKET + ".+$").matcher(fieldName);
+		Matcher matcher = Pattern.compile("^_{0,1}" + StringConstants.DISTRIBUTION_LINES + TangerineForm.TANG_START_BRACKET + "(\\d+)" + TangerineForm.TANG_END_BRACKET + ".+$").matcher(fieldName);
 		int start = 0;
 		String s = null;
 		if (matcher != null) {

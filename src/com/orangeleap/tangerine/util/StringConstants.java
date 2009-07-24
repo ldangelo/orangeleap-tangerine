@@ -148,4 +148,6 @@ public final class StringConstants {
 
 	public static final String HIDDEN = "hidden";
 	public static final String DISPLAYED = "displayed";
+	public static final String BEAN_PREFIX = "bean:";
+	public static final String NOW_COLON = "now:";
 }

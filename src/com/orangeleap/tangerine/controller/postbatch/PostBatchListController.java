@@ -33,6 +33,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -46,6 +47,9 @@ public class PostBatchListController extends SimpleFormController {
 
     @Resource(name = "postBatchService")
     private PostBatchService postBatchService;
+
+    @Resource(name = "constituentService")
+    private ConstituentService constituentService;
 
     @SuppressWarnings("unchecked")
     public static boolean accessAllowed(HttpServletRequest request) {
@@ -74,7 +78,15 @@ public class PostBatchListController extends SimpleFormController {
     }
 
     private List<PostBatch> getPostBatchs(HttpServletRequest request) {
-         return postBatchService.listBatchs();
+    	List<PostBatch> list = postBatchService.listBatchs();
+    	for (PostBatch b : list) {
+    		Long id = b.getBatchUpdatedById();
+    		if (id != null) {
+    			String loginid = constituentService.readConstituentById(id).getLoginId();
+    			b.setCustomFieldValue("loginid", loginid); // set just for the ui to use, not saved
+    		}
+    	}
+    	return list;
     }
 
     @Override

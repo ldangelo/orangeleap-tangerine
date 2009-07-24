@@ -41,7 +41,7 @@
 				</c:if>
             	<c:if test="${postbatch.batchUpdated}">
 				<td>${postbatch.batchUpdatedDate}</td>
-				<td>${postbatch.batchUpdatedById}</td>
+				<td>${postbatch.customFieldMap['loginid'].value}</td>
 				<td><a href="postbatch.htm?id=${postbatch.id}">View Updated Records</a></td>
 				<td></td>
 				</c:if>

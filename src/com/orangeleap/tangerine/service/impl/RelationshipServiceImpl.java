@@ -199,10 +199,12 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
         if (fieldAttributes == null) {
             return;
         }
+        fieldAttributes = fieldAttributes.replaceAll(",", StringConstants.CUSTOM_FIELD_SEPARATOR);
+        
         // If it's a field that applies to only a single attribute, make sure the attribute is set on the constituent.
         // For multiple attributes, take the first as the default.
-        if (fieldAttributes.contains(",")) {
-            fieldAttributes = fieldAttributes.substring(0, fieldAttributes.indexOf(","));
+        if (fieldAttributes.contains(StringConstants.CUSTOM_FIELD_SEPARATOR)) {
+            fieldAttributes = fieldAttributes.substring(0, fieldAttributes.indexOf(StringConstants.CUSTOM_FIELD_SEPARATOR));
         }
         constituent.addConstituentRole(fieldAttributes);
     }

@@ -288,7 +288,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
         validate(picklist);
 
         if (StringUtils.trimToNull(picklistItem.getItemName()) == null) {
-            picklistItem.setItemName(picklistItem.getDefaultDisplayValue());
+            picklistItem.setItemName((""+picklistItem.getDefaultDisplayValue()).toLowerCase().replaceAll(" ", ""));
             checkUnique(picklist, picklistItem);
         }
 

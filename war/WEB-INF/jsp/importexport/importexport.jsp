@@ -12,7 +12,6 @@
 		    	if ( val === 'constituent' || val === 'address' )  { $('#nameRange').show(); } else { $('#nameRange').hide(); }
 		    	if ( val === 'gift' || val === 'distributionLine' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }
 		    	if ( val === 'address' )  { $('#exportNcoaCassDate').show(); } else { $('#exportNcoaCassDate').hide(); }
-		    	
 		    }
 		    </script>
 		
@@ -102,6 +101,7 @@
 		    <script>
 		    function Import_hideShow(val) {
 		    	if ( val === 'address' )  { $('#importDates').show(); } else { $('#importDates').hide(); }
+		    	if ( val === 'constituent' )  { $('#divBypassDuplicateDetection').show(); } else { $('#divBypassDuplicateDetection').hide(); }
 		    }
 		    </script>
 			
@@ -143,7 +143,9 @@
                     </script>
 		        </div>
 
-	            
+	            <div id="divBypassDuplicateDetection" style="display:none">
+	            	Bypass Duplicate Detection: <input type="checkbox" name="bypassDuplicateDetection" value="bypassDuplicateDetection" />
+	            </div>
 	            
 	        </form>
 	        

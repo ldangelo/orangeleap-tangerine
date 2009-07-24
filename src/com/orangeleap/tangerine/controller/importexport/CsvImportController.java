@@ -82,6 +82,7 @@ public class CsvImportController extends SimpleFormController {
 		
 		ImportRequest importRequest = new ImportRequest();
 		importRequest.setEntity(request.getParameter("entity"));
+		importRequest.setBypassDuplicateDetection(null != request.getParameter("bypassDuplicateDetection"));
 		try {
 			importRequest.setNcoaDate(getDate(request.getParameter("ncoaDate")));
 			importRequest.setCassDate(getDate(request.getParameter("cassDate")));

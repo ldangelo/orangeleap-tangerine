@@ -26,6 +26,7 @@ public class ImportRequest {
 	private Date ncoaDate;
 	private Date cassDate;
 	private boolean convertToProperCase = true;
+	private boolean bypassDuplicateDetection = false;
 	
 	
 	
@@ -52,6 +53,12 @@ public class ImportRequest {
 	}
 	public boolean isConvertToProperCase() {
 		return convertToProperCase;
+	}
+	public void setBypassDuplicateDetection(boolean bypassDuplicateDetection) {
+		this.bypassDuplicateDetection = bypassDuplicateDetection;
+	}
+	public boolean isBypassDuplicateDetection() {
+		return bypassDuplicateDetection;
 	}
 	
 }

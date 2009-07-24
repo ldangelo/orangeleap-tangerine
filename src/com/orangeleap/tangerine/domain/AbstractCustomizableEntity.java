@@ -23,6 +23,9 @@ import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.xml.bind.annotation.XmlType;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -139,6 +142,25 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
             customField.setValue(value);
         }
     }
+
+    private static final String FMT = "MM/dd/yyyy";
+
+    public Date getCustomFieldAsDate(String field) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FMT);
+		String value = getCustomFieldValue(field);
+		try {
+			return value == null?null:sdf.parse(value);
+		} catch (Exception e) {
+			return null;
+		}
+    }
+    
+    public void setCustomFieldAsDate(String field, Date d) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FMT);
+		String value = (d == null)?null:sdf.format(d);
+    	setCustomFieldValue(field, value);
+    }
+    
 
     /**
      * Default set the custom field to a specified value if an existing value is null.

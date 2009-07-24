@@ -10,7 +10,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class ScheduledItem extends AbstractCustomizableEntity {
+public class ScheduledItem extends AbstractCustomizableEntity implements Schedulable {
     
     private static final long serialVersionUID = 1L;
 
@@ -196,5 +196,46 @@ public class ScheduledItem extends AbstractCustomizableEntity {
         .append("modifiedBy", ""+modifiedBy)
         .toString();
     }
+
+    // Schedulable interface (used for reminders, which are based off of scheduled items)
+    
+    private static final String START_DATE = "startDate";
+    private static final String END_DATE = "endDate";
+    private static final String FREQUENCY = "frequency";
+    
+	@Override
+	public Date getEndDate() {
+		return getCustomFieldAsDate(END_DATE);
+	}
+
+
+	@Override
+	public String getFrequency() {
+		return getCustomFieldValue(FREQUENCY);
+	}
+
+
+	@Override
+	public Date getStartDate() {
+		return getCustomFieldAsDate(START_DATE);
+	}
+
+
+	@Override
+	public void setEndDate(Date endDate) {
+		setCustomFieldAsDate(END_DATE, endDate);
+	}
+
+
+	@Override
+	public void setFrequency(String frequency) {
+		setCustomFieldValue(FREQUENCY, frequency);
+	}
+
+
+	@Override
+	public void setStartDate(Date startDate) {
+		setCustomFieldAsDate(START_DATE, startDate);
+	}
 
 }

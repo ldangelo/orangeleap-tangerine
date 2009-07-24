@@ -44,13 +44,19 @@ public abstract class AbstractPaymentFormController extends NewTangerineConstitu
 	@SuppressWarnings("unchecked")
 	protected void convertFormToDomain(HttpServletRequest request, TangerineForm form, Map<String, Object> paramMap) throws Exception {
 		Map<String, Object> distributionLinesMap = new TreeMap<String, Object>();
+		Map<String, Object> hiddenDistributionLineFieldMap = new TreeMap<String, Object>();
 
 		Iterator<Map.Entry<String, Object>> paramEntry = paramMap.entrySet().iterator();
 		while (paramEntry.hasNext()) {
 			Map.Entry<String, Object> entry = paramEntry.next();
 
-			if (entry.getKey().indexOf(StringConstants.DISTRIBUTION_LINES) > -1) {
+			// Filter for distributionLines or _distributionLines (hidden fields) 
+			if (entry.getKey().startsWith(StringConstants.DISTRIBUTION_LINES)) {
 				distributionLinesMap.put(entry.getKey(), request.getParameter(entry.getKey()));
+				paramEntry.remove();
+			}
+			else if (entry.getKey().startsWith("_" + StringConstants.DISTRIBUTION_LINES)) {
+				hiddenDistributionLineFieldMap.put(entry.getKey(), request.getParameter(entry.getKey()));
 				paramEntry.remove();
 			}
 		}
@@ -97,6 +103,14 @@ public abstract class AbstractPaymentFormController extends NewTangerineConstitu
 					form.addField(newDistroLineKey, distroLineEntry.getValue());
 
 					propertyValues.addPropertyValue(TangerineForm.unescapeFieldName(newDistroLineKey), distroLineEntry.getValue());
+
+					String hiddenDistroLineKey = "_" + distroLineEntry.getKey();
+					if (hiddenDistributionLineFieldMap.containsKey(hiddenDistroLineKey)) {
+						Object hiddenDistroLineValue = hiddenDistributionLineFieldMap.get(hiddenDistroLineKey);
+
+						form.addField(hiddenDistroLineKey, hiddenDistroLineValue);
+						propertyValues.addPropertyValue(TangerineForm.unescapeFieldName(hiddenDistroLineKey), hiddenDistroLineValue);
+					}
 				}
 			}
 
@@ -114,7 +128,7 @@ public abstract class AbstractPaymentFormController extends NewTangerineConstitu
 	}
 
 	protected int findDistroLineIndex(String fieldName) {
-		Matcher matcher = Pattern.compile("^_{0,1}" + StringConstants.DISTRIBUTION_LINES + TangerineForm.TANG_START_BRACKET + "(\\d+)" + TangerineForm.TANG_END_BRACKET + ".+$").matcher(fieldName);
+		Matcher matcher = Pattern.compile("^" + StringConstants.DISTRIBUTION_LINES + TangerineForm.TANG_START_BRACKET + "(\\d+)" + TangerineForm.TANG_END_BRACKET + ".+$").matcher(fieldName);
 		int start = 0;
 		String s = null;
 		if (matcher != null) {

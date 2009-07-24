@@ -57,7 +57,7 @@ var Distribution = {
 	index: 1,
 	
 	reInitDistribution: function() {
-		$("table.distributionLines tbody.gridRow input.amount", "form").each(function() {
+		$("table.distributionLines tbody.gridRow input[id$='-amount']", "form").each(function() {
 			var $amtElem = $(this);
 			var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
 			var rowId = $amtElem.attr('id').replace('-amount', '');
@@ -85,7 +85,7 @@ var Distribution = {
 	},
 	
 	recalculatePcts: function() {
-		$("table.distributionLines tbody.gridRow input.amount", "form").each(function(){
+		$("table.distributionLines tbody.gridRow input[id$='-amount']", "form").each(function(){
 			Distribution.calculatePct($(this));
 		});
 	},
@@ -204,13 +204,13 @@ var Distribution = {
 			Distribution.deleteRow($(this).parent().parent());
 			return false;
 		}).show();
-		$("input.number, input.amount, input.percentage", $newRow).numeric();
-		$("input.number, input.amount, input.percentage", $newRow).bind("keyup", function(event) {
+		$("input.number, input[id$='-amount'], input.percentage", $newRow).numeric();
+		$("input.number, input[id$='-amount'], input.percentage", $newRow).bind("keyup", function(event) {
 			if (event.keyCode != 9) { // ignore tab
 				Distribution.updateFields($(event.target));
 			}
 		});		
-		$("input.number, input.amount, input.percentage", $newRow).bind("change", function(event) {
+		$("input.number, input[id$='-amount'], input.percentage", $newRow).bind("change", function(event) {
 			Distribution.updateFields($(event.target));
 		});		
 		$("input.code", $newRow).each(function(){
@@ -242,7 +242,7 @@ var Distribution = {
 		if ($("table.distributionLines tbody.gridRow", "form").length > 1) {
 			row.parent().fadeOut("fast", function() {
 				var $elem = $(this);
-				var rowId = row.find("input.amount").attr('id').replace('-amount', '');
+				var rowId = row.find("input[id$='-amount']").attr('id').replace('-amount', '');
 				delete Distribution.amtPctMap[rowId];
 				$elem.remove();
 				Distribution.updateTotals();

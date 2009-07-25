@@ -85,6 +85,7 @@ public class AbstractPaymentFormControllerTest extends BaseTest {
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].amount"), ".99", "form.distributionLines[1].amount = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].amount"));
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].percentage"), "2", "form.distributionLines[1].percentage = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].percentage"));
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[onBehalfOf]"), "Fooey", "form.distributionLines[1].customFieldMap[onBehalfOf] = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[onBehalfOf]"));
+		Assert.assertTrue(form.getFieldMap().containsKey(TangerineForm.escapeFieldName("_distributionLines[1].customFieldMap[taxDeductible]")), "_distributionLines[1].customFieldMap[taxDeductible] not in form fieldMap");
 		Assert.assertEquals(form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[taxDeductible]"), "true", "form.distributionLines[1].customFieldMap[taxDeductible] = " + form.getFieldValueFromUnescapedFieldName("distributionLines[1].customFieldMap[taxDeductible]"));
 	}
 

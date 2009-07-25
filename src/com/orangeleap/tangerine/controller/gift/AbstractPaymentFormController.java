@@ -93,8 +93,26 @@ public abstract class AbstractPaymentFormController extends NewTangerineConstitu
 					oldIndex = distroLineIndex;
 					if (hasAmount) {
 						newIndex++;
+
+						/* Hidden fields need to have their indexes replaced also */
+						Iterator<Map.Entry<String, Object>> hiddenIter = hiddenDistributionLineFieldMap.entrySet().iterator();
+						while (hiddenIter.hasNext()) {
+							Map.Entry<String, Object> hiddenEntry = hiddenIter.next();
+
+							if (hiddenEntry.getKey().indexOf(TangerineForm.TANG_START_BRACKET + oldIndex + TangerineForm.TANG_END_BRACKET) > -1) {
+								// re-index
+								String newHiddenKey = hiddenEntry.getKey().replaceFirst(TangerineForm.TANG_START_BRACKET + oldIndex + TangerineForm.TANG_END_BRACKET,
+										TangerineForm.TANG_START_BRACKET + newIndex + TangerineForm.TANG_END_BRACKET);
+
+								form.addField(newHiddenKey, hiddenEntry.getValue());
+								propertyValues.addPropertyValue(TangerineForm.unescapeFieldName(newHiddenKey), hiddenEntry.getValue());
+
+								hiddenIter.remove();
+							}
+						}
 					}
 				}
+
 				if (hasAmount) {
 					String newDistroLineKey = distroLineEntry.getKey().replaceFirst(TangerineForm.TANG_START_BRACKET + "(\\d+)" + TangerineForm.TANG_END_BRACKET,
 							TangerineForm.TANG_START_BRACKET + newIndex + TangerineForm.TANG_END_BRACKET);
@@ -103,14 +121,6 @@ public abstract class AbstractPaymentFormController extends NewTangerineConstitu
 					form.addField(newDistroLineKey, distroLineEntry.getValue());
 
 					propertyValues.addPropertyValue(TangerineForm.unescapeFieldName(newDistroLineKey), distroLineEntry.getValue());
-
-					String hiddenDistroLineKey = "_" + distroLineEntry.getKey();
-					if (hiddenDistributionLineFieldMap.containsKey(hiddenDistroLineKey)) {
-						Object hiddenDistroLineValue = hiddenDistributionLineFieldMap.get(hiddenDistroLineKey);
-
-						form.addField(hiddenDistroLineKey, hiddenDistroLineValue);
-						propertyValues.addPropertyValue(TangerineForm.unescapeFieldName(hiddenDistroLineKey), hiddenDistroLineValue);
-					}
 				}
 			}
 

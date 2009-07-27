@@ -1,0 +1,77 @@
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.amountPerGift', 'pledge', 'amountPerGift', 'Amount Per Gift', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.frequency', 'pledge', 'frequency', 'Frequency', 'PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.currencyCode', 'pledge', 'currencyCode', 'Currency Code', 'CODE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.startDate', 'pledge', 'startDate', 'Start Date', 'DATE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.endDate', 'pledge', 'endDate', 'End Date', 'DATE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.comments', 'pledge', 'comments', 'Comments', 'LONG_TEXT');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.pledgeStatus', 'pledge', 'pledgeStatus', 'Status', 'PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.pledgeDate', 'pledge', 'pledgeDate', 'Pledge Date', 'DATE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.pledgeCancelDate', 'pledge', 'pledgeCancelDate', 'Pledge Cancel Date', 'DATE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.pledgeCancelReason', 'pledge', 'pledgeCancelReason', 'Pledge Cancel Reason', 'LONG_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.associatedGiftIdsReadOnly', 'pledge', 'gift', 'associatedGiftIds', 'Associated Gifts', 'SELECTION_DISPLAY');
+
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.customFieldMap[initialReminder]', 'pledge', 'customFieldMap[initialReminder]', 'Initial Reminder (days)', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.customFieldMap[maximumReminders]', 'pledge', 'customFieldMap[maximumReminders]', 'Maximum Reminders', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.customFieldMap[reminderInterval]', 'pledge', 'customFieldMap[reminderInterval]', 'Reminder Interval (days)', 'NUMBER');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.amountPerGiftReadOnly', 'pledge', 'amountPerGift', 'Amount Per Gift', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.amountPaidReadOnly', 'pledge', 'amountPaid', 'Amount Paid', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.amountRemainingReadOnly', 'pledge', 'amountRemaining', 'Amount Remaining', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.frequencyReadOnly', 'pledge', 'frequency', 'Frequency', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.startDateReadOnly', 'pledge', 'startDate', 'Start Date', 'DATE_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.endDateReadOnly', 'pledge', 'endDate', 'End Date', 'DATE_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.currencyCodeReadOnly', 'pledge', 'currencyCode', 'Currency Code', 'CODE_OTHER_DISPLAY');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.amountTotal', 'pledge', 'amountTotal', 'Amount Total', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.amountPaid', 'pledge', 'amountPaid', 'Amount Paid', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.amountRemaining', 'pledge', 'amountRemaining', 'Amount Remaining', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.projectedDate', 'pledge', 'projectedDate', 'Projected Date', 'DATE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.dues', 'pledge', 'amountTotal', 'Dues', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.recurring', 'pledge', 'recurring', 'Recurring', 'PICKLIST');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.amountTotalReadOnly', 'pledge', 'amountTotal', 'Amount Total', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.recurringReadOnly', 'pledge', 'recurring', 'Recurring', 'PICKLIST_DISPLAY');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.amount', 'pledge', 'distributionLines', 'Amt', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.percentage', 'pledge', 'distributionLines', 'Pct', 'PERCENTAGE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.projectCode', 'pledge', 'distributionLines', 'Designation', 'CODE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.motivationCode', 'pledge', 'distributionLines', 'Motivation', 'CODE_OTHER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.other_motivationCode', 'pledge', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[reference]', 'pledge', 'constituent', 'distributionLines', 'Reference', 'QUERY_LOOKUP_OTHER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[other_reference]', 'pledge', 'constituent', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[tribute]', 'pledge', 'distributionLines', 'Tribute Type', 'PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[tributeReference]', 'pledge', 'constituent', 'distributionLines', 'Tribute Reference', 'QUERY_LOOKUP_OTHER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[other_tributeReference]', 'pledge', 'constituent', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[tributeOccasion]', 'pledge', 'distributionLines', 'Tribute Occasion', 'MULTI_PICKLIST_ADDITIONAL');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[additional_tributeOccasion]', 'pledge', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[onBehalfOf]', 'pledge', 'constituent', 'distributionLines', 'On Behalf Of', 'QUERY_LOOKUP_OTHER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[other_onBehalfOf]', 'pledge', 'constituent', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[anonymous]', 'pledge', 'distributionLines', 'Anonymous', 'CHECKBOX');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[recognitionName]', 'pledge', 'distributionLines', 'Recognition Name', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[notified]', 'pledge', 'constituent', 'distributionLines', 'To Be Notified', 'QUERY_LOOKUP_OTHER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[other_notified]', 'pledge', 'constituent', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[message]', 'pledge', 'distributionLines', 'Message', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[taxDeductible]', 'pledge', 'distributionLines', 'Tax Ded', 'CHECKBOX');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.amountReadOnly', 'pledge', 'distributionLines', 'Amt', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.percentageReadOnly', 'pledge', 'distributionLines', 'Pct', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.projectCodeReadOnly', 'pledge', 'distributionLines', 'Designation', 'CODE_OTHER_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.motivationCodeReadOnly', 'pledge', 'distributionLines', 'Motivation', 'CODE_OTHER_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.other_motivationCodeReadOnly', 'pledge', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[referenceReadOnly]', 'pledge', 'constituent', 'distributionLines', 'Reference', 'QUERY_LOOKUP_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[other_referenceReadOnly]', 'pledge', 'constituent', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[tributeReadOnly]', 'pledge', 'distributionLines', 'Tribute Type', 'PICKLIST_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[tributeReferenceReadOnly]', 'pledge', 'constituent', 'distributionLines', 'Tribute Reference', 'QUERY_LOOKUP_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', 'pledge', 'constituent', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[tributeOccasionReadOnly]', 'pledge', 'distributionLines', 'Tribute Occasion', 'MULTI_PICKLIST_ADDITIONAL_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', 'pledge', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[onBehalfOfReadOnly]', 'pledge', 'constituent', 'distributionLines', 'On Behalf Of', 'QUERY_LOOKUP_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', 'pledge', 'constituent', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[anonymousReadOnly]', 'pledge', 'distributionLines', 'Anonymous', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[recognitionNameReadOnly]', 'pledge', 'distributionLines', 'Recognition Name', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[notifiedReadOnly]', 'pledge', 'constituent', 'distributionLines', 'To Be Notified', 'QUERY_LOOKUP_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[other_notifiedReadOnly]', 'pledge', 'constituent', 'distributionLines', ' ', 'HIDDEN');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[messageReadOnly]', 'pledge', 'distributionLines', 'Message', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[taxDeductibleReadOnly]', 'pledge', 'distributionLines', 'Tax Ded', 'READ_ONLY_TEXT');

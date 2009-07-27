@@ -35,9 +35,10 @@ public class MultiPicklistAdditionalDisplayHandler extends MultiPicklistAddition
 		String selectedRefs = createMultiPicklistOptions(pageContext, picklist, fieldValue, sb);
 		createLabelTextInput(pageContext, currentField, formFieldName, sb);
 		createRight(sb);
-		createMultiPicklistEnd(sb);
 
 		createAdditionalFields(currentField, form, formFieldName, sb);
+
+		createMultiPicklistEnd(sb);
 
 		createContainerEnd(sb);
 		createBottom(request, pageContext, formFieldName, sb);

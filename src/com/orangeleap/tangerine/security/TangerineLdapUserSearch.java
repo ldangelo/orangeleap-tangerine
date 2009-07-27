@@ -92,8 +92,21 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
         template.setSearchControls(searchControls);
 
         try {
-            return template.searchForSingleEntry(searchBase, searchFilter, new String[]{username});
+        	
+        	String[] filterArgs;
+        	String aSearchBase;
 
+            if(username.indexOf("@") > -1)  {
+                String[] split = username.split("@");
+                filterArgs = new String[] {split[0]};
+                aSearchBase = "o=" + split[1];
+            } else {
+                filterArgs = new String[]{username};
+                aSearchBase = searchBase;
+            }
+
+            return template.searchForSingleEntry(aSearchBase, searchFilter, filterArgs);
+            
         } catch (IncorrectResultSizeDataAccessException notFound) {
             if (notFound.getActualSize() == 0) {
                 throw new UsernameNotFoundException("User " + username + " not found in directory.", username);

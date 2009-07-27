@@ -376,7 +376,7 @@ p.gridActions #subTotal {
 form input[type=text], form input.text {
 	height: 16px;
 }
-form table.tablesorter input.number, form table.tablesorter input.amount, form table.tablesorter input.percentage {
+form table.tablesorter input.number, form table.tablesorter input.percentage {
 	text-align:right; 
 }
 table.tablesorter col.node { width: 16px; }
@@ -540,5 +540,9 @@ tr.hiddenRow td table ul.width350 .readOnlyField { width: 63.8%; }
 tr.hiddenRow td table td { border-bottom: 0; }
 
 table.distributionLines tbody:hover tr td, table.giftInKindDetails tbody:hover tr td { background-color: #FFD; }
-tbody.expandable tr.expanded td { border-bottom: 0; } 
+tbody.expandable tr.expanded td { border-bottom: 0; }
+tbody.gridRow tr.lineRow div.readOnlyField { width: 85%; }
+tbody.gridRow tr.lineRow div.readOnlyField.code { width: 97%; }
+tbody.gridRow tr.lineRow td div.lookupScrollTop, tbody.gridRow tr.lineRow td div.lookupScrollBottom { left: 0; position: static; }
+tbody.gridRow tr.lineRow td div.lookupScrollContainer, div.multiLookupField { padding: 0; }
 

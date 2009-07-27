@@ -45,7 +45,7 @@ public class CodeOtherDisplayHandler extends CodeOtherHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		sb.append("<div id=\"").append(formFieldName).append("\" class=\"readOnlyField ");
+		sb.append("<div id=\"").append(formFieldName).append("\" class=\"readOnlyField code ");
 		sb.append(resolveEntityAttributes(currentField)).append("\">");
 
 		Object codeValue = getCodeDisplayValue(sectionDefinition, currentField, form, formFieldName, fieldValue);

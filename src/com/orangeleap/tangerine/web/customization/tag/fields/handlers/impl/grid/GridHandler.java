@@ -199,7 +199,7 @@ public class GridHandler implements ApplicationContextAware {
 	                           List<SectionField> hiddenSectionFields, TangerineForm form,
 	                           boolean isDummy, int rowCounter, int colspan, StringBuilder sb) {
 		sb.append("<tr class=\"hiddenRow noDisplay\">");
-		sb.append("<td colspan=\"").append(colspan + 2).append("\">");
+		sb.append("<td colspan=\"").append(colspan).append("\">");
 		sb.append("<table>");
 		sb.append("<tr>");
 		sb.append("<td>");

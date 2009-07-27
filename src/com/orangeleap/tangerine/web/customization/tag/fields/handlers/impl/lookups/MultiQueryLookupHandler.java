@@ -34,7 +34,7 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiLookupBegin(currentField, sb);
 		createLeft(sb);
-		createMultiLookupOptions(pageContext, currentField, fieldValue, sb);
+		createMultiLookupOptions(pageContext, currentField, form, formFieldName, fieldValue, sb);
 		createRight(sb);
 		createMultiLookupEnd(sb);
 		createHiddenInput(formFieldName, fieldValue, sb);
@@ -78,7 +78,8 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
         sb.append("<div class=\"lookupScrollLeft\"></div>");
     }
 
-    protected void createMultiLookupOptions(PageContext pageContext, SectionField currentField, Object fieldValue, StringBuilder sb) {
+    protected void createMultiLookupOptions(PageContext pageContext, SectionField currentField, TangerineForm form, String formFieldName,
+                                            Object fieldValue, StringBuilder sb) {
 	    if (fieldValue != null) {
 		    Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
 		    for (Object val : fieldVals) {

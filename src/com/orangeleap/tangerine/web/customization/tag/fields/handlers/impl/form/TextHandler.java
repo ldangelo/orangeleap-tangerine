@@ -31,7 +31,7 @@ public class TextHandler extends AbstractFieldHandler {
 		sb.append("<input value=\"").append(checkForNull(fieldValue)).append("\" class=\"").append(StringEscapeUtils.escapeHtml(getCssClass()));
 		sb.append(" ").append(resolveEntityAttributes(currentField));
 
-		writeErrorClass(pageContext, formFieldName, sb); // TODO: fix for errors
+		writeErrorClass(pageContext, formFieldName, sb);
 
 		sb.append("\" ");
 

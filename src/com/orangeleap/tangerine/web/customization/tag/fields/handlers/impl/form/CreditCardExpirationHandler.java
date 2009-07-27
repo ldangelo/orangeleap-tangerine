@@ -55,13 +55,15 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
 		if (domainObject instanceof PaymentSourceAware) {
 			paymentSource = ((PaymentSourceAware) domainObject).getPaymentSource(); // TODO: use the formValue instead?
 		}
-		createMonthSelect(currentField, paymentSource, formFieldName, fieldValue, sb);
-		createYearSelect(currentField, paymentSource, formFieldName, fieldValue, sb);
+		createMonthSelect(pageContext, currentField, paymentSource, formFieldName, fieldValue, sb);
+		createYearSelect(pageContext, currentField, paymentSource, formFieldName, fieldValue, sb);
 	}
 
-    protected void createMonthSelect(SectionField currentField, PaymentSource paymentSource, String formFieldName, Object fieldValue, StringBuilder sb) {
+    protected void createMonthSelect(PageContext pageContext, SectionField currentField, PaymentSource paymentSource, String formFieldName, Object fieldValue, StringBuilder sb) {
         sb.append("<select name=\"").append(formFieldName).append("Month\" id=\"").append(formFieldName);
-	    sb.append("Month\" class=\"expMonth ").append(resolveEntityAttributes(currentField)).append("\">");
+	    sb.append("Month\" class=\"expMonth ").append(resolveEntityAttributes(currentField));
+	    writeErrorClass(pageContext, formFieldName, sb); // TODO: fix for errors
+	    sb.append("\">");
 
 	    String expirationMonth = null;
         if (paymentSource != null) {
@@ -83,9 +85,11 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
         sb.append("</select>");
     }
 
-    protected void createYearSelect(SectionField currentField, PaymentSource paymentSource, String formFieldName, Object fieldValue, StringBuilder sb) {
+    protected void createYearSelect(PageContext pageContext, SectionField currentField, PaymentSource paymentSource, String formFieldName, Object fieldValue, StringBuilder sb) {
         sb.append("<select name=\"").append(formFieldName).append("Year\" id=\"").append(formFieldName);
-	    sb.append("Year\" class=\"expYear ").append(resolveEntityAttributes(currentField)).append("\">");
+	    sb.append("Year\" class=\"expYear ").append(resolveEntityAttributes(currentField));
+	    writeErrorClass(pageContext, formFieldName, sb); // TODO: fix for errors
+	    sb.append("\">");
 	    Integer expirationYear = null;
         if (paymentSource != null) {
             expirationYear = paymentSource.getCreditCardExpirationYear();

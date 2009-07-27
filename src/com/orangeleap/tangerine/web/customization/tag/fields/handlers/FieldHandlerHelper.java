@@ -11,6 +11,7 @@ import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.displ
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.ReadOnlyTextHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.SelectionDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.SpacerHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.CodeOtherDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.CheckboxHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.CreditCardExpirationHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.DateHandler;
@@ -212,8 +213,9 @@ public class FieldHandlerHelper implements ApplicationContextAware {
 
 		FieldHandler readOnlyTextHandler = new ReadOnlyTextHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.READ_ONLY_TEXT, readOnlyTextHandler);
-		fieldTypeToHandlerMap.put(FieldType.PAYMENT_TYPE_READ_ONLY_TEXT, readOnlyTextHandler);
-		//if (FieldType.READ_ONLY_TEXT.equals(ft) || FieldType.PAYMENT_TYPE_READ_ONLY_TEXT.equals(ft) || FieldType.CODE_OTHER_DISPLAY.equals(ft)) {
+
+		FieldHandler codeOtherDisplayHandler = new CodeOtherDisplayHandler(appContext);
+		fieldTypeToHandlerMap.put(FieldType.CODE_OTHER_DISPLAY, codeOtherDisplayHandler);
 
 		FieldHandler dateDisplayHandler = new DateDisplayHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.DATE_DISPLAY, dateDisplayHandler);

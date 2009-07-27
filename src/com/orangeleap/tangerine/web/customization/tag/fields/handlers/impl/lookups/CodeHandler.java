@@ -98,8 +98,6 @@ public class CodeHandler extends AbstractFieldHandler {
 
     protected void createDisplayInput(HttpServletRequest request, PageContext pageContext, SectionDefinition sectionDefinition,
                                       SectionField currentField, TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-//	    String fieldPropertyName = resolveFieldPropertyName(currentField);
-	    
         sb.append("<input value=\"").append(checkForNull(getCodeDisplayValue(sectionDefinition, currentField, form, formFieldName, fieldValue))).
 		        append("\" class=\"text code ").append(resolveEntityAttributes(currentField));
 	    writeErrorClass(pageContext, formFieldName, sb); // TODO: fix for errors
@@ -109,16 +107,6 @@ public class CodeHandler extends AbstractFieldHandler {
 	    
         sb.append("name=\"display-").append(formFieldName).append("\" id=\"display-").append(formFieldName).append("\"/>");
     }
-
-//	public String resolveFieldPropertyName(SectionField currentField) {
-//	    StringBuilder fieldPropertyName = new StringBuilder(currentField.getFieldPropertyName());
-//
-//	    if ((currentField.isCompoundField() && currentField.getSecondaryFieldDefinition().isCustom()) ||
-//	            ( ! currentField.isCompoundField() && currentField.getFieldDefinition().isCustom())) {
-//	        fieldPropertyName.append(StringConstants.DOT_VALUE);
-//	    }
-//	    return fieldPropertyName.toString();
-//	}
 
     protected void createHiddenInput(String formFieldName, Object fieldValue, StringBuilder sb) {
         sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" id=\"hidden-");

@@ -75,35 +75,37 @@ public class PicklistDisplayHandler extends PicklistHandler {
 
 	protected String createPicklistOptions(PageContext pageContext, Picklist picklist, Object fieldValue, StringBuilder sb) {
 		Set<String> selectedRefs = new TreeSet<String>();
-		for (PicklistItem item : picklist.getActivePicklistItems()) {
-			sb.append("<div class=\"multiPicklistOption multiOption\" style=\"");
+		if (picklist != null) {
+			for (PicklistItem item : picklist.getActivePicklistItems()) {
+				sb.append("<div class=\"multiPicklistOption multiOption\" style=\"");
 
-			Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
+				Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
 
-			boolean foundValue = false;
-			for (Object val : fieldVals) {
-				if (val != null) {
-					if (item.getItemName().equals(val.toString())) {
-						foundValue = true;
-						break;
+				boolean foundValue = false;
+				for (Object val : fieldVals) {
+					if (val != null) {
+						if (item.getItemName().equals(val.toString())) {
+							foundValue = true;
+							break;
+						}
 					}
 				}
-			}
 
-			if (foundValue) {
-				if (StringUtils.hasText(item.getReferenceValue())) {
-					selectedRefs.add(item.getReferenceValue());
+				if (foundValue) {
+					if (StringUtils.hasText(item.getReferenceValue())) {
+						selectedRefs.add(item.getReferenceValue());
+					}
 				}
-			}
-			else {
-				sb.append("display:none");
-			}
-			String itemName = StringEscapeUtils.escapeHtml(item.getItemName());
-			sb.append("\" id=\"option-").append(itemName).append("\" selectedId=\"").append(itemName).append("\" reference=\"").append(checkForNull(item.getReferenceValue())).append("\">");
+				else {
+					sb.append("display:none");
+				}
+				String itemName = StringEscapeUtils.escapeHtml(item.getItemName());
+				sb.append("\" id=\"option-").append(itemName).append("\" selectedId=\"").append(itemName).append("\" reference=\"").append(checkForNull(item.getReferenceValue())).append("\">");
 
-			String displayValue = resolvePicklistItemDisplayValue(item, pageContext);
-			sb.append(displayValue);
-			sb.append("</div>");
+				String displayValue = resolvePicklistItemDisplayValue(item, pageContext);
+				sb.append(displayValue);
+				sb.append("</div>");
+			}
 		}
 		return StringUtils.collectionToCommaDelimitedString(selectedRefs);
 	}

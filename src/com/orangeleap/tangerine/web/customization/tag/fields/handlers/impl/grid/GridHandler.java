@@ -75,16 +75,13 @@ public class GridHandler implements ApplicationContextAware {
 			else if (FieldType.PERCENTAGE.equals(field.getFieldType())) {
 				sb.append("<col class=\"pct\"/>");
 			}
-			else if (FieldType.CODE.equals(field.getFieldType()) || FieldType.CODE_OTHER.equals(field.getFieldType())) {
+			else if (FieldType.CODE.equals(field.getFieldType()) || FieldType.CODE_OTHER.equals(field.getFieldType()) || FieldType.CODE_OTHER_DISPLAY.equals(field.getFieldType())) {
 				sb.append("<col class=\"code\"/>");
 			}
-			else if (FieldType.QUERY_LOOKUP.equals(field.getFieldType()) || FieldType.QUERY_LOOKUP_OTHER.equals(field.getFieldType())) {
+			else if (FieldType.QUERY_LOOKUP.equals(field.getFieldType()) || FieldType.QUERY_LOOKUP_OTHER.equals(field.getFieldType()) || FieldType.QUERY_LOOKUP_DISPLAY.equals(field.getFieldType())) {
 				sb.append("<col class=\"reference\"/>");
 			}
-			else if (FieldType.TEXT.equals(field.getFieldType())) {
-				sb.append("<col class=\"text\"/>");
-			}
-			else if (FieldType.CHECKBOX.equals(field.getFieldType())) {
+			else if (!FieldType.HIDDEN.equals(field.getFieldType())) {
 				sb.append("<col class=\"text\"/>");
 			}
 		}

@@ -47,7 +47,7 @@ public class VersionServiceImpl extends AbstractTangerineService implements Vers
         try {
             int majorVersion = versionDao.selectVersion(ORANGE_ID).getMajorVersion();
             if (majorVersion == OrangeLeapSchemaVersion.ORANGE_SCHEMA_MAJOR_VERSION) {
-                logger.info("Schema version successfully checked.");
+                logger.debug("Schema version successfully checked.");
                 return;
             }
             message = "Invalid database version " + majorVersion + " does not match program schema version " + OrangeLeapSchemaVersion.ORANGE_SCHEMA_MAJOR_VERSION;

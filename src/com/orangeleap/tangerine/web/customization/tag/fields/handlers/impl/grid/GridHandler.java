@@ -191,7 +191,7 @@ public class GridHandler implements ApplicationContextAware {
 
 		String removeMsg = TangerineMessageAccessor.getMessage("removeThisOption");
 		sb.append("<td><a href=\"#\" class=\"deleteButton");
-		if (rowCounter == 0 || (rowCounter == 1 && totalSize == 1)) {
+		if (rowCounter == 0 && totalSize == 1) {
 			sb.append(" noDisplay");
 		}
 		sb.append("\"><img src=\"images/icons/deleteRow.png\" alt=\"").append(removeMsg).append("\" title=\"").append(removeMsg).append("\"/></a></td>");

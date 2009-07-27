@@ -23,7 +23,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.ldap.NamingException;
 import org.springframework.ldap.core.DirContextOperations;
@@ -35,7 +34,7 @@ import org.springframework.security.GrantedAuthority;
 import org.springframework.security.SpringSecurityMessageSource;
 import org.springframework.security.ldap.LdapAuthoritiesPopulator;
 import org.springframework.security.providers.AuthenticationProvider;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.providers.ldap.LdapAuthenticationProvider;
 import org.springframework.security.providers.ldap.LdapAuthenticator;
 import org.springframework.security.userdetails.UserDetails;
@@ -45,8 +44,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class TangerineAuthenticationProvider implements AuthenticationProvider {
     private static final Log logger = OLLogger.getLog(LdapAuthenticationProvider.class);
@@ -61,9 +60,6 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
     @Resource(name="siteService")
     private SiteService siteService;
 
-    @Resource(name="constituentService")
-    private ConstituentService constituentService;
-    
     public TangerineAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator) {
         this.setAuthenticator(authenticator);
         this.setAuthoritiesPopulator(authoritiesPopulator);
@@ -109,14 +105,15 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
     }
 
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Assert.isInstanceOf(UsernamePasswordAuthenticationToken.class, authentication,
+        Assert.isInstanceOf(CasAuthenticationToken.class, authentication,
             messages.getMessage("AbstractUserDetailsAuthenticationProvider.onlySupports",
-                "Only UsernamePasswordAuthenticationToken is supported"));
+                "Only CasAuthenticationToken is supported"));
 
-        TangerineAuthenticationToken userToken = (TangerineAuthenticationToken)authentication;
+        CasAuthenticationToken userToken = (CasAuthenticationToken)authentication;
+        TangerineAuthenticationDetails details = (TangerineAuthenticationDetails)userToken.getDetails();
 
-        String username = userToken.getShortName();
-        String site = userToken.getSite();
+        String username = details.getUserName();
+        String site = details.getSite();
         boolean active = checkSiteActive(site);
 
         if (!StringUtils.hasLength(username)) {
@@ -152,7 +149,8 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
 	            // otherwise the TangerineDataSource will not have access to the siteName to change databases.
 	            try {
         			Map<String, String> map = ((TangerineLdapAuthoritiesPopulator)authoritiesPopulator).populateUserAttributesMapFromLdap(userData, username, site);
-	            	((TangerineAuthenticationToken)authenticationToken).setUserAttributes(map);
+        			details.setFirstName(map.get(TangerineLdapAuthoritiesPopulator.FIRST_NAME));
+        			details.setLastName(map.get(TangerineLdapAuthoritiesPopulator.LAST_NAME));
 				} catch (javax.naming.NamingException e) {
 					e.printStackTrace();
 					throw new RuntimeException("Unable to read user attributes.", e);
@@ -185,16 +183,18 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
         return ((TangerineLdapAuthoritiesPopulator)getAuthoritiesPopulator()).getGrantedAuthorities(userData, username, site);
     }
 
-    protected Authentication createSuccessfulAuthentication(TangerineAuthenticationToken authentication,
+    protected Authentication createSuccessfulAuthentication(CasAuthenticationToken authentication,
             UserDetails user) {
         Object password = useAuthenticationRequestCredentials ? authentication.getCredentials() : user.getPassword();
 
-        return new TangerineAuthenticationToken(user, password, authentication.getSite(), user.getAuthorities());
+        TangerineAuthenticationToken token = new TangerineAuthenticationToken(user, password, ((TangerineAuthenticationDetails)authentication.getDetails()).getSite(), user.getAuthorities());
+        token.setDetails(authentication.getDetails());
+        return token;
     }
 
     @SuppressWarnings("unchecked")
     public boolean supports(Class authentication) {
-        return (TangerineAuthenticationToken.class.isAssignableFrom(authentication));
+        return (CasAuthenticationToken.class.isAssignableFrom(authentication));
     }
 
 	private static class NullAuthoritiesPopulator implements LdapAuthoritiesPopulator {

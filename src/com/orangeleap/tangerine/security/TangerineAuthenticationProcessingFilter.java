@@ -18,30 +18,34 @@
 
 package com.orangeleap.tangerine.security;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationException;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.ui.WebAuthenticationDetails;
+import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
+import org.springframework.security.util.TextUtils;
+import org.springframework.util.Assert;
+import org.springframework.web.util.WebUtils;
+
 import com.orangeleap.tangerine.service.SessionService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.ldap.LdapService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.OLLogger;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.Authentication;
-import org.springframework.security.AuthenticationException;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
-import org.springframework.security.util.TextUtils;
-import org.springframework.util.Assert;
-import org.springframework.web.util.WebUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class TangerineAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
 
@@ -87,7 +91,7 @@ public class TangerineAuthenticationProcessingFilter extends AuthenticationProce
 
         username = username.trim();
 
-        TangerineAuthenticationToken authRequest = new TangerineAuthenticationToken(username, password, site);
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
 
         // Place the last username attempted into HttpSession for views
         HttpSession session = request.getSession(false);
@@ -98,7 +102,16 @@ public class TangerineAuthenticationProcessingFilter extends AuthenticationProce
 
         // Allow subclasses to set the "details" property
         setDetails(request, authRequest);
-        return getAuthenticationManager().authenticate(authRequest);
+        WebAuthenticationDetails webdetails = (WebAuthenticationDetails)authRequest.getDetails();
+        
+        TangerineAuthenticationToken token = new TangerineAuthenticationToken(fullName, authRequest.getCredentials(), site);
+        TangerineAuthenticationDetails details = new TangerineAuthenticationDetails();
+        details.setSessionId(webdetails.getSessionId());
+        details.setSite(site);
+        details.setUserName(username);
+        token.setDetails(details);
+        
+        return getAuthenticationManager().authenticate(token);
     }
 
     @Override
@@ -118,7 +131,8 @@ public class TangerineAuthenticationProcessingFilter extends AuthenticationProce
         }
         Map<String, AccessType> pageAccess = pageCustomizationService.readPageAccess(roles);
         WebUtils.setSessionAttribute(request, "pageAccess", pageAccess);
-        ((TangerineAuthenticationToken) authResult).setPageAccess(pageAccess);
+    	TangerineAuthenticationDetails details = (TangerineAuthenticationDetails)authResult.getDetails();
+        details.setPageAccess(pageAccess);
         logger.trace(pageAccess);
 
         // Call to ensure user is setup in the database. This comes into play
@@ -140,7 +154,7 @@ public class TangerineAuthenticationProcessingFilter extends AuthenticationProce
         return request.getParameter(fullNameParameter);
     }
 
-    protected void setDetails(HttpServletRequest request, TangerineAuthenticationToken authRequest) {
+    protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
         authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
     }
 

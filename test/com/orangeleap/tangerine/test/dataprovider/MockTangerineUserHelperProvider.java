@@ -28,7 +28,7 @@ public class MockTangerineUserHelperProvider {
             allowing (tangerineUserHelper).lookupUserSiteName(); will(returnValue("company1"));
             allowing (tangerineUserHelper).lookupUserPassword(); will(returnValue("password"));
             allowing (tangerineUserHelper).lookupUserRoles(); will(returnValue(roles));
-            allowing (tangerineUserHelper).getToken(); will(returnValue(new TangerineAuthenticationToken("", "", "company1")));
+            allowing (tangerineUserHelper).getToken(); will(returnValue(new TangerineAuthenticationToken("test", "test", "company1")));
         }});
         return tangerineUserHelper;
     }

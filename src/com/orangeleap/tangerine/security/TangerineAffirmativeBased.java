@@ -24,6 +24,7 @@ import org.springframework.security.AccessDeniedException;
 import org.springframework.security.Authentication;
 import org.springframework.security.ConfigAttributeDefinition;
 import org.springframework.security.intercept.web.FilterInvocation;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.vote.AffirmativeBased;
 
 import com.orangeleap.tangerine.type.AccessType;
@@ -40,12 +41,12 @@ public class TangerineAffirmativeBased extends AffirmativeBased {
     public void decide(Authentication authentication, Object object, ConfigAttributeDefinition config) throws AccessDeniedException {
         int deny = 0;
 
-        if (authentication instanceof TangerineAuthenticationToken) {
+        if (authentication instanceof CasAuthenticationToken) {
             if (object instanceof FilterInvocation) {
                 String requestUrl = ((FilterInvocation) object).getRequestUrl();
                 // chop off request parameters
                 requestUrl = (requestUrl != null && requestUrl.indexOf('?') > -1) ? requestUrl.substring(0, requestUrl.indexOf('?')) : requestUrl;
-                Map<String, AccessType> pageAccess = ((TangerineAuthenticationToken) authentication).getPageAccess();
+                Map<String, AccessType> pageAccess = ((TangerineAuthenticationDetails) authentication.getDetails()).getPageAccess();
                 AccessType accessType = null;
                 if (pageAccess != null) {
                     accessType = pageAccess.get(requestUrl);

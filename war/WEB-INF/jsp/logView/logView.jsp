@@ -10,7 +10,7 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 
-            <h1 class="x-hidden" id="auditSiteName"><security:authentication property="site"/></h1>
+            <h1 class="x-hidden" id="auditSiteName"><security:authentication property="details.site"/></h1>
 
 
 		    <div id="logViewGrid"></div>

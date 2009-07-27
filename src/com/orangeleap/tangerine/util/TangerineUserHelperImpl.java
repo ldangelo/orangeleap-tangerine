@@ -18,20 +18,25 @@
 
 package com.orangeleap.tangerine.util;
 
-import com.orangeleap.tangerine.security.TangerineAuthenticationToken;
-import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.type.RoleType;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
+import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.AbstractAuthenticationToken;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
+import org.springframework.security.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
+import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.type.RoleType;
 
 public class TangerineUserHelperImpl implements TangerineUserHelper, ApplicationContextAware {
 
@@ -51,12 +56,19 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
 
 
     @Override
-    public TangerineAuthenticationToken getToken() {
+    public CasAuthenticationToken getToken() {
         AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication instanceof TangerineAuthenticationToken) {
-            return (TangerineAuthenticationToken) authentication;
+        if (authentication != null && authentication instanceof CasAuthenticationToken) {
+            return (CasAuthenticationToken) authentication;
         }
         return null;
+    }
+
+    @Override
+    public TangerineAuthenticationDetails getDetails() {
+    	CasAuthenticationToken cat = getToken();
+    	if (cat == null) return null;
+    	return (TangerineAuthenticationDetails)cat.getDetails();
     }
 
     /* (non-Javadoc)
@@ -64,8 +76,8 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     */
     @Override
     public String lookupUserSiteName() {
-        TangerineAuthenticationToken token = getToken();
-        return token == null ? null : token.getSite();
+    	TangerineAuthenticationDetails details = getDetails();
+        return details == null ? null : details.getSite();
     }
 
     /* (non-Javadoc)
@@ -73,8 +85,8 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
      */
     @Override
     public String lookupUserName() {
-        TangerineAuthenticationToken token = getToken();
-        return token == null ? null : token.getShortName();
+    	TangerineAuthenticationDetails details = getDetails();
+        return details == null ? null : details.getUserName();
     }
 
     /* (non-Javadoc)
@@ -82,7 +94,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
      */
     @Override
     public String lookupUserPassword() {
-        TangerineAuthenticationToken token = getToken();
+    	CasAuthenticationToken token = getToken();
         return token == null ? null : (String) token.getCredentials();
     }
 
@@ -91,8 +103,8 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     */
     @Override
     public Long lookupUserId() {
-        TangerineAuthenticationToken token = getToken();
-        return token == null ? null : token.getConstituentId();
+    	TangerineAuthenticationDetails details = getDetails();
+        return details == null ? null : details.getConstituentId();
     }
 
     /* (non-Javadoc)
@@ -127,7 +139,20 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
         // Give system user all roles used by screen definitions
         SiteService siteservice = (SiteService) applicationContext.getBean("siteService");
         GrantedAuthority[] ga = siteservice.readDistinctRoles();
-        TangerineAuthenticationToken token = new TangerineAuthenticationToken("system", "", siteName, ga);
+        User user = new User("system","",true,true,true,true,ga);
+        Assertion assertion = new AssertionImpl("system");
+
+        // Create a fake CAS authentication token
+        CasAuthenticationToken token = new CasAuthenticationToken("tangerine-client-key", user, "none",ga,user,assertion);
+
+        // Set the details so that the operations on this class will still work with one
+        // of our fabricated auth tokens
+        TangerineAuthenticationDetails details = new TangerineAuthenticationDetails();
+        details.setUserName("system");
+        details.setSite(siteName);
+        details.setConstituentId(0L);
+        token.setDetails(details);
+        
         SecurityContextHolder.getContext().setAuthentication(token);
     }
 

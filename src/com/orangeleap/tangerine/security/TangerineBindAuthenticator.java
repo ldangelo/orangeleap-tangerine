@@ -23,7 +23,6 @@ import java.util.Iterator;
 import javax.naming.directory.DirContext;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.ldap.NamingException;
 import org.springframework.ldap.core.ContextSource;
@@ -33,8 +32,11 @@ import org.springframework.security.Authentication;
 import org.springframework.security.BadCredentialsException;
 import org.springframework.security.ldap.SpringSecurityContextSource;
 import org.springframework.security.ldap.SpringSecurityLdapTemplate;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.providers.ldap.authenticator.AbstractLdapAuthenticator;
 import org.springframework.util.Assert;
+
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class TangerineBindAuthenticator extends AbstractLdapAuthenticator {
     private static final Log logger = OLLogger.getLog(TangerineBindAuthenticator.class);
@@ -50,11 +52,12 @@ public class TangerineBindAuthenticator extends AbstractLdapAuthenticator {
     @SuppressWarnings("unchecked")
     public DirContextOperations authenticate(Authentication authentication) {
         DirContextOperations user = null;
-        Assert.isInstanceOf(TangerineAuthenticationToken.class, authentication, "Can only process TangerineAuthenticationToken objects");
+        Assert.isInstanceOf(CasAuthenticationToken.class, authentication, "Can only process CasAuthenticationToken objects");
+    	TangerineAuthenticationDetails details = (TangerineAuthenticationDetails)authentication.getDetails();
 
-        String username = ((TangerineAuthenticationToken)authentication).getShortName();
+        String username = details.getUserName();
         String password = (String) authentication.getCredentials();
-        String site = ((TangerineAuthenticationToken) authentication).getSite();
+        String site = details.getSite();
 
         // If DN patterns are configured, try authenticating with them directly
         Iterator dns = getUserDns(username).iterator();

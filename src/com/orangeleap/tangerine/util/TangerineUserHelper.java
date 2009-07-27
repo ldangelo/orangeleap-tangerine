@@ -18,13 +18,17 @@
 
 package com.orangeleap.tangerine.util;
 
-import com.orangeleap.tangerine.security.TangerineAuthenticationToken;
-
 import java.util.List;
+
+import org.springframework.security.providers.cas.CasAuthenticationToken;
+
+import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 
 public interface TangerineUserHelper {
 
-    public TangerineAuthenticationToken getToken();
+    public CasAuthenticationToken getToken();
+    
+    public TangerineAuthenticationDetails getDetails();
 
     public String lookupUserSiteName();
 

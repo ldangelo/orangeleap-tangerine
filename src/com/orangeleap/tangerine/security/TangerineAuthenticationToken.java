@@ -18,15 +18,15 @@
 
 package com.orangeleap.tangerine.security;
 
-import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
+import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.security.GrantedAuthority;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
+import org.springframework.security.userdetails.User;
 
-import java.util.Map;
+import com.orangeleap.tangerine.util.OLLogger;
 
-public class TangerineAuthenticationToken extends UsernamePasswordAuthenticationToken {
+public class TangerineAuthenticationToken extends CasAuthenticationToken {
 
     /**
      * Logger for this class and subclasses
@@ -35,56 +35,16 @@ public class TangerineAuthenticationToken extends UsernamePasswordAuthentication
 
     private static final long serialVersionUID = 1L;
 
-    private String site;
-
-    private Map<String, AccessType> pageAccess;
-
-    private Long constituentId;
-
-    private Map<String, String> userAttributes;
 
     public TangerineAuthenticationToken(Object principal, Object credentials, String site) {
-        super(principal, credentials);
-        this.site = site;
+        this(principal, credentials, site, new GrantedAuthority[0]);
     }
 
     public TangerineAuthenticationToken(Object principal, Object credentials, String site, GrantedAuthority[] authorities) {
-        super(principal, credentials, authorities);
-        this.site = site;
+        super("tangerine-client-key", principal, credentials, authorities, new User(principal.toString(),credentials.toString(),true,true,true,true,authorities), new AssertionImpl(principal.toString()));
+        TangerineAuthenticationDetails details = new TangerineAuthenticationDetails();
+        this.setDetails(details);
+        details.setSite(site);
     }
     
-    public String getShortName() {
-    	String shortname = getName();
-    	int i = shortname.indexOf("@");
-    	if (i > 0) shortname = shortname.substring(0,i);
-    	return shortname;
-    }
-
-    public String getSite() {
-        return this.site;
-    }
-
-    public Map<String, AccessType> getPageAccess() {
-        return pageAccess;
-    }
-
-    public void setPageAccess(Map<String, AccessType> pageAccess) {
-        this.pageAccess = pageAccess;
-    }
-
-    public void setConstituentId(Long constituentId) {
-        this.constituentId = constituentId;
-    }
-
-    public Long getConstituentId() {
-        return constituentId;
-    }
-
-    public void setUserAttributes(Map<String, String> userAttributes) {
-        this.userAttributes = userAttributes;
-    }
-
-    public Map<String, String> getUserAttributes() {
-        return userAttributes;
-    }
 }

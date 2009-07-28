@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.controller;
 
 import com.orangeleap.tangerine.domain.Constituent;
@@ -370,8 +388,8 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        if (isFormSubmission(request) && !errors.hasErrors() && bindPaymentSource && command instanceof PaymentSourceAware) {
-            PaymentSourceAware aware = (PaymentSourceAware) command;
+        if (isFormSubmission(request) && !errors.hasErrors() && bindPaymentSource && ((TangerineForm) command).getDomainObject() instanceof PaymentSourceAware) {
+            PaymentSourceAware aware = (PaymentSourceAware) ((TangerineForm) command).getDomainObject();
             if (aware.getPaymentSource() != null && aware.getPaymentSource().isNew()) {
                 Map<String, Object> conflictingSources = paymentSourceService.checkForSameConflictingPaymentSources(aware);
                 String useConflictingName = request.getParameter("useConflictingName");
@@ -388,6 +406,7 @@ public abstract class NewTangerineConstituentAttributesFormController extends Ne
                     PaymentSource src = dateSources.get(0); // should only be 1
                     src.setCreditCardExpirationMonth(aware.getPaymentSource().getCreditCardExpirationMonth());
                     src.setCreditCardExpirationYear(aware.getPaymentSource().getCreditCardExpirationYear());
+	                paymentSourceService.maintainPaymentSource(src);
                     aware.setPaymentSource(src);
                 }
             }

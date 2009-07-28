@@ -25,20 +25,19 @@ import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.type.PaymentType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-public class NewGiftFormController extends AbstractPaymentFormController {//AbstractGiftController {
+public class NewGiftFormController extends NewAbstractGiftController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -59,30 +58,6 @@ public class NewGiftFormController extends AbstractPaymentFormController {//Abst
 
 	@Resource(name = "picklistItemService")
 	protected PicklistItemService picklistItemService;
-
-	// TODO: remove below
-	@Resource(name="giftService")
-	protected GiftService giftService;
-
-	protected String giftUrl;
-	protected String giftViewUrl;
-
-	public void setGiftUrl(String giftUrl) {
-		this.giftUrl = giftUrl;
-	}
-
-	public void setGiftViewUrl(String giftViewUrl) {
-		this.giftViewUrl = giftViewUrl;
-	}
-
-	protected String appendGiftParameters(HttpServletRequest request, String viewName, Gift gift) {
-		StringBuilder sb = new StringBuilder(viewName).append("?");
-		if (gift != null && gift.getId() != null && gift.getId() > 0) {
-			sb.append(StringConstants.GIFT_ID).append("=").append(gift.getId()).append("&");
-		}
-		return sb.append(StringConstants.CONSTITUENT_ID).append("=").append(super.getConstituentId(request)).toString();
-	}
-	// TODO: remove above
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
@@ -108,7 +83,10 @@ public class NewGiftFormController extends AbstractPaymentFormController {//Abst
     }
 
     private boolean showGiftView(Gift gift) {
-    	return isEnteredGift(gift) && (PaymentType.CASH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CHECK.getPaymentName().equals(gift.getPaymentType()) ||
+    	return isEnteredGift(gift) &&
+			    (PaymentType.OTHER.getPaymentName().equals(gift.getPaymentType()) || 
+			    PaymentType.CASH.getPaymentName().equals(gift.getPaymentType()) ||
+			    PaymentType.CHECK.getPaymentName().equals(gift.getPaymentType()) ||
     			((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&
     					Gift.STATUS_PAID.equals(gift.getGiftStatus()) && Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
     }
@@ -119,9 +97,9 @@ public class NewGiftFormController extends AbstractPaymentFormController {//Abst
         TangerineForm form = (TangerineForm) formBackingObject(request);
 		Gift gift = (Gift) form.getDomainObject();
 
-//        if (showGiftView(gift)) {
-//        	mav = new ModelAndView(appendGiftParameters(request, giftViewUrl, gift));
-//        }
+        if (showGiftView(gift)) {
+        	mav = new ModelAndView(appendGiftParameters(request, giftViewUrl, gift));
+        }
 		return mav;
 	}
 

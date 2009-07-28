@@ -1,8 +1,25 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.controller;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
@@ -31,7 +48,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -157,7 +173,6 @@ public abstract class NewTangerineFormController extends SimpleFormController {
         request.setAttribute(StringConstants.COMMAND_OBJECT, this.getCommandName()); // To be used by input.jsp to check for errors
         request.setAttribute("pageType", this.getPageType());
         AbstractEntity entity = findEntity(request);
-        entity.setDefaults();
 
         this.createFieldMaps(request, entity);
         TangerineForm form = new TangerineForm();
@@ -167,19 +182,8 @@ public abstract class NewTangerineFormController extends SimpleFormController {
     }
 
     protected void createFieldMaps(HttpServletRequest request, AbstractEntity entity) {
-//        if (!isFormSubmission(request)) {
-            List<String> roles = tangerineUserHelper.lookupUserRoles();
-
-            Map<String, String> labelMap = new HashMap<String, String>();
-            Map<String, Object> valueMap = new HashMap<String, Object>();
-            Map<String, FieldDefinition> typeMap = new HashMap<String, FieldDefinition>();
-
-            siteService.readFieldInfo(PageType.valueOf(this.getPageType()), roles, request.getLocale(), entity, labelMap, valueMap, typeMap);
-
-            entity.setFieldLabelMap(labelMap);
-            entity.setFieldValueMap(valueMap);
-            entity.setFieldTypeMap(typeMap);
-//        }
+		List<String> roles = tangerineUserHelper.lookupUserRoles();
+		siteService.readFieldInfo(PageType.valueOf(this.getPageType()), roles, request.getLocale(), entity);
     }
 
     protected String appendSaved(String url) {

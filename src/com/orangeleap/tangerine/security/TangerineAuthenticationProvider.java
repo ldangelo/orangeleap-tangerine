@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.security;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -149,10 +148,10 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
 	            // IMPORTANT: Can't write to the database until this authentication token is set in the session, 
 	            // otherwise the TangerineDataSource will not have access to the siteName to change databases.
 	            try {
-        			Map<String, String> map = populateUserAttributesMapFromLdap(userData, username, site);
-        			details.setFirstName(map.get(FIRST_NAME));
-        			details.setLastName(map.get(LAST_NAME));
-				} catch (Exception e) {
+        			Map<String, String> map = ((TangerineLdapAuthoritiesPopulator)authoritiesPopulator).populateUserAttributesMapFromLdap(userData, username, site);
+        			details.setFirstName(map.get(TangerineLdapAuthoritiesPopulator.FIRST_NAME));
+        			details.setLastName(map.get(TangerineLdapAuthoritiesPopulator.LAST_NAME));
+				} catch (javax.naming.NamingException e) {
 					e.printStackTrace();
 					throw new RuntimeException("Unable to read user attributes.", e);
 				}
@@ -181,33 +180,8 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
     }
     
     protected GrantedAuthority[] loadUserAuthorities(DirContextOperations userData, String username, String password, String site) {
-        return ((TangerineLdapAuthoritiesPopulator)getAuthoritiesPopulator()).getGrantedAuthorities(userData, username+"@"+site);
+        return ((TangerineLdapAuthoritiesPopulator)getAuthoritiesPopulator()).getGrantedAuthorities(userData, username, site);
     }
-    
-    public static String FIRST_NAME = "firstName";
-    public static String LAST_NAME = "lastName";
-    
-    public Map<String, String> populateUserAttributesMapFromLdap(DirContextOperations user, String username, String site) throws NamingException {
-    	Map<String, String> map = new HashMap<String, String>();
-    	Object attribute = user.getObjectAttribute("cn");
-    	if (attribute != null) {
-    		String cn = ("" + attribute).trim();
-    		int i = cn.indexOf(" ");
-    		if (i == -1) {
-            	map.put(LAST_NAME, cn);
-    		} else {
-    			map.put(FIRST_NAME, cn.substring(0,i));
-            	map.put(LAST_NAME, cn.substring(i+1));
-    		}
-    	}
-    	attribute = user.getObjectAttribute("sn");
-    	if (attribute != null) {
-    		String sn = ("" + attribute).trim();
-    		map.put(LAST_NAME, sn);
-    	}
-    	return map;
-    }
-
 
     protected Authentication createSuccessfulAuthentication(CasAuthenticationToken authentication,
             UserDetails user) {

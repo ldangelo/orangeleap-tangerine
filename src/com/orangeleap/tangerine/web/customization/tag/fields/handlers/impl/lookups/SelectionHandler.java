@@ -33,8 +33,9 @@ import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
-import org.apache.commons.logging.Log;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -139,22 +140,19 @@ public class SelectionHandler extends AbstractFieldHandler {
 				if (fieldValue instanceof List) {
 					final List<Long> refIds = (List<Long>) fieldValue;
 					for (Long refId : refIds) {
-						if (ReferenceType.pledge.equals(referenceType)) {
-							Pledge pledge = pledgeService.readPledgeById(refId);
-							displayValues.add(pledge.getShortDescription());
-						}
-						else if (ReferenceType.recurringGift.equals(referenceType)) {
-							RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(refId);
-							displayValues.add(recurringGift.getShortDescription());
-						}
-						else if (ReferenceType.gift.equals(referenceType)) {
-							Gift gift = giftService.readGiftById(refId);
-							displayValues.add(gift.getShortDescription());
-						}
-						ids.add(refId);
-
-						links.add(new StringBuilder(referenceType.toString()).append(".htm?").append(referenceType).append("Id=").append(refId).append("&").
-								append(StringConstants.CONSTITUENT_ID).append("=").append(request.getParameter(StringConstants.CONSTITUENT_ID)).toString());
+						addIdLink(request, referenceType, refId, displayValues, ids, links);
+					}
+				}
+				else {
+					Long refId = null;
+					if (fieldValue instanceof String && NumberUtils.isNumber((String) fieldValue)) {
+						refId = new Long((String) fieldValue);
+					}
+					else if (fieldValue instanceof Number) {
+						refId = ((Number) fieldValue).longValue();
+					}
+					if (refId != null) {
+						addIdLink(request, referenceType, refId, displayValues, ids, links);
 					}
 				}
 			}
@@ -175,6 +173,26 @@ public class SelectionHandler extends AbstractFieldHandler {
 				sb.append("</div>");
 			}
 		}
+	}
+
+	private void addIdLink(HttpServletRequest request, final ReferenceType referenceType, final Long refId, final List<String> displayValues, 
+	                       final List<Long> ids, final List<String> links) {
+		if (ReferenceType.pledge.equals(referenceType)) {
+			Pledge pledge = pledgeService.readPledgeById(refId);
+			displayValues.add(pledge.getShortDescription());
+		}
+		else if (ReferenceType.recurringGift.equals(referenceType)) {
+			RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(refId);
+			displayValues.add(recurringGift.getShortDescription());
+		}
+		else if (ReferenceType.gift.equals(referenceType)) {
+			Gift gift = giftService.readGiftById(refId);
+			displayValues.add(gift.getShortDescription());
+		}
+		ids.add(refId);
+
+		links.add(new StringBuilder(referenceType.toString()).append(".htm?").append(referenceType).append("Id=").append(refId).append("&").
+				append(StringConstants.CONSTITUENT_ID).append("=").append(request.getParameter(StringConstants.CONSTITUENT_ID)).toString());
 	}
 
 	protected void createRight(StringBuilder sb) {

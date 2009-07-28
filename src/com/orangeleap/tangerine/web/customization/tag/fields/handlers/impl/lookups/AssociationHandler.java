@@ -46,5 +46,4 @@ public class AssociationHandler extends QueryLookupHandler {
 	protected String getDeleteClickHandler() {
 	    return "Lookup.deleteAssociation(this)";
 	}
-
 }

@@ -138,22 +138,13 @@ public class SelectionHandler extends AbstractFieldHandler {
 			}
 			else {
 				if (fieldValue instanceof List) {
-					final List<Long> refIds = (List<Long>) fieldValue;
-					for (Long refId : refIds) {
-						addIdLink(request, referenceType, refId, displayValues, ids, links);
+					final List fVals = (List) fieldValue;
+					for (Object thisVal : fVals) {
+						addIdLink(request, referenceType, thisVal, displayValues, ids, links);
 					}
 				}
 				else {
-					Long refId = null;
-					if (fieldValue instanceof String && NumberUtils.isNumber((String) fieldValue)) {
-						refId = new Long((String) fieldValue);
-					}
-					else if (fieldValue instanceof Number) {
-						refId = ((Number) fieldValue).longValue();
-					}
-					if (refId != null) {
-						addIdLink(request, referenceType, refId, displayValues, ids, links);
-					}
+					addIdLink(request, referenceType, fieldValue, displayValues, ids, links);
 				}
 			}
 			String gotoMsg = getMessage("gotoLink");
@@ -175,24 +166,33 @@ public class SelectionHandler extends AbstractFieldHandler {
 		}
 	}
 
-	private void addIdLink(HttpServletRequest request, final ReferenceType referenceType, final Long refId, final List<String> displayValues, 
+	private void addIdLink(HttpServletRequest request, final ReferenceType referenceType, final Object fieldValue, final List<String> displayValues, 
 	                       final List<Long> ids, final List<String> links) {
-		if (ReferenceType.pledge.equals(referenceType)) {
-			Pledge pledge = pledgeService.readPledgeById(refId);
-			displayValues.add(pledge.getShortDescription());
+		Long refId = null;
+		if (fieldValue instanceof String && NumberUtils.isNumber((String) fieldValue)) {
+			refId = new Long((String) fieldValue);
 		}
-		else if (ReferenceType.recurringGift.equals(referenceType)) {
-			RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(refId);
-			displayValues.add(recurringGift.getShortDescription());
+		else if (fieldValue instanceof Number) {
+			refId = ((Number) fieldValue).longValue();
 		}
-		else if (ReferenceType.gift.equals(referenceType)) {
-			Gift gift = giftService.readGiftById(refId);
-			displayValues.add(gift.getShortDescription());
-		}
-		ids.add(refId);
+		if (refId != null) {
+			if (ReferenceType.pledge.equals(referenceType)) {
+				Pledge pledge = pledgeService.readPledgeById(refId);
+				displayValues.add(pledge.getShortDescription());
+			}
+			else if (ReferenceType.recurringGift.equals(referenceType)) {
+				RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(refId);
+				displayValues.add(recurringGift.getShortDescription());
+			}
+			else if (ReferenceType.gift.equals(referenceType)) {
+				Gift gift = giftService.readGiftById(refId);
+				displayValues.add(gift.getShortDescription());
+			}
+			ids.add(refId);
 
-		links.add(new StringBuilder(referenceType.toString()).append(".htm?").append(referenceType).append("Id=").append(refId).append("&").
-				append(StringConstants.CONSTITUENT_ID).append("=").append(request.getParameter(StringConstants.CONSTITUENT_ID)).toString());
+			links.add(new StringBuilder(referenceType.toString()).append(".htm?").append(referenceType).append("Id=").append(refId).append("&").
+					append(StringConstants.CONSTITUENT_ID).append("=").append(request.getParameter(StringConstants.CONSTITUENT_ID)).toString());
+		}
 	}
 
 	protected void createRight(StringBuilder sb) {

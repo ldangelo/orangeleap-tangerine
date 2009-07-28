@@ -106,7 +106,7 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 	                      Object fieldValue, StringBuilder sb) {
 		createLookupWrapperBegin(sb);
 		createLookupFieldBegin(currentField, sb);
-		createLookupOptionBegin(formFieldName, sb);
+		createLookupOptionBegin(formFieldName, fieldValue, sb);
 		String displayValue = createOptionText(request, currentField, form, formFieldName, fieldValue, sb);
 
 		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
@@ -143,8 +143,8 @@ public class QueryLookupHandler extends AbstractFieldHandler {
         sb.append("<div class=\"lookupField ").append(resolveEntityAttributes(currentField)).append("\">");
     }
 
-    protected void createLookupOptionBegin(String formFieldName, StringBuilder sb) {
-        sb.append("<div id=\"lookup-").append(formFieldName).append("\" class=\"queryLookupOption\" selectedId=\"").append(formFieldName).append("\">");
+    protected void createLookupOptionBegin(String formFieldName, Object fieldValue, StringBuilder sb) {
+        sb.append("<div id=\"lookup-").append(formFieldName).append("\" class=\"queryLookupOption\" selectedId=\"").append(checkForNull(fieldValue)).append("\">");
     }
 
     protected String createOptionText(HttpServletRequest request, SectionField currentField, TangerineForm form, String formFieldName,

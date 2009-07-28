@@ -168,31 +168,34 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 	 * @param roles
 	 * @param locale
 	 * @param entity
-	 * @param fieldLabels
-	 * @param fieldValues
-	 * @param fieldTypes
 	 */
     @Override
-    public void readFieldInfo(PageType pageType, List<String> roles, Locale locale, Object entity, Map<String, String> fieldLabels, Map<String, Object> fieldValues,
-    		Map<String, FieldDefinition> fieldTypes) {
+    public void readFieldInfo(PageType pageType, List<String> roles, Locale locale, AbstractEntity entity) {
+		Map<String, String> labelMap = new HashMap<String, String>();
+		Map<String, Object> valueMap = new HashMap<String, Object>();
+		Map<String, FieldDefinition> typeMap = new HashMap<String, FieldDefinition>();
 
         List<SectionField> sectionFields = getSectionFields(pageType, roles);
     	if (sectionFields != null) {
             BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(entity);
     		
             for (SectionField secFld : sectionFields) {
-	            getFieldLabel(secFld, locale, fieldLabels);
-                getFieldType(secFld, fieldTypes);
+	            getFieldLabel(secFld, locale, labelMap);
+                getFieldType(secFld, typeMap);
 
 	            if (LayoutType.isGridType(secFld.getSectionDefinition().getLayoutType())) {
-		            getArrayFieldValues(secFld, fieldValues, bean);
+		            getArrayFieldValues(secFld, valueMap, bean);
 	            }
 	            else {
-		            getFieldValue(secFld, fieldValues, bean);
+		            getFieldValue(secFld, valueMap, bean);
 	            }
             }
-            fieldValues.put(StringConstants.ID, bean.getPropertyValue(StringConstants.ID));
+            valueMap.put(StringConstants.ID, bean.getPropertyValue(StringConstants.ID));
     	}
+
+		entity.setFieldLabelMap(labelMap);
+		entity.setFieldValueMap(valueMap);
+		entity.setFieldTypeMap(typeMap);
     }
 
 	protected void getArrayFieldValues(SectionField sectionField, Map<String, Object> fieldValues, BeanWrapper bean) {

@@ -105,5 +105,7 @@ public interface SiteService {
      */
 	List<SectionField> getSectionFields(PageType pageType, List<String> roles);
 
-	void readFieldInfo(PageType pageType, List<String> roles, Locale locale, Object entity, Map<String, String> fieldLabels, Map<String, Object> fieldValues, Map<String, FieldDefinition> fieldTypes);
+	void readFieldInfo(PageType pageType, List<String> roles, Locale locale, AbstractEntity entity);
+
+	Object getDefaultValue(EntityDefault entityDefault, BeanWrapper bean, String key);
 }

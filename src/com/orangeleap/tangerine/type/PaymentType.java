@@ -25,7 +25,8 @@ public enum PaymentType {
     ACH("ACH"),
     CASH("Cash"),
     CHECK("Check"),
-    CREDIT_CARD("Credit Card");
+    CREDIT_CARD("Credit Card"),
+	OTHER("Other");
     
     private String paymentName;
 

@@ -115,7 +115,7 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 
 		createLookupOptionEnd(sb);
 
-		if (!FieldType.ASSOCIATION.equals(currentField.getFieldType())) {
+		if (!FieldType.ASSOCIATION.equals(currentField.getFieldType()) && !FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
 			createLookupLink(currentField, formFieldName, sb);
 		}
 

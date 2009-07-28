@@ -18,7 +18,8 @@
 
 package com.orangeleap.tangerine.security;
 
-import com.orangeleap.tangerine.util.OLLogger;
+import javax.naming.directory.SearchControls;
+
 import org.apache.commons.logging.Log;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.ldap.core.ContextSource;
@@ -29,7 +30,7 @@ import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
-import javax.naming.directory.SearchControls;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class TangerineLdapUserSearch implements LdapUserSearch {
 
@@ -73,6 +74,16 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
         this.searchFilter = searchFilter;
         this.contextSource = contextSource;
         this.searchBase = searchBase;
+
+        setSearchSubtree(true);
+    }
+
+    public TangerineLdapUserSearch(String searchFilter, BaseLdapPathContextSource contextSource) {
+        Assert.notNull(contextSource, "contextSource must not be null");
+        Assert.notNull(searchFilter, "searchFilter must not be null.");
+
+        this.searchFilter = searchFilter;
+        this.contextSource = contextSource;
 
         setSearchSubtree(true);
     }

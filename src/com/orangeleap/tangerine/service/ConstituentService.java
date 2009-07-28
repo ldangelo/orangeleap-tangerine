@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.validation.BindException;
@@ -60,7 +61,9 @@ public interface ConstituentService {
     /*	boolean hasReceivedCommunication(Long constituentId, String commType);
 
     */
-    boolean hasReceivedCommunication(Long constituentId, String commType,
-                                     int number, String timeUnits);
+    public boolean hasReceivedCommunication(Constituent c, Gift g, String commType);
+
+    public boolean hasReceivedCommunication(Long constituentId, String commType,
+                                            int number, String timeUnits);
 
 }

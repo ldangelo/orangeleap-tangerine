@@ -17,7 +17,7 @@
 			</c:otherwise>
 		</c:choose>
 		<p class="legal">
-			<spring:message code="companyPhone"/> | &#169; <spring:message code="copyright"/> <c:out value="${copyrightRange}"/> <spring:message code="companyRightsReserved"/>
+			<spring:message code="companyPhone"/> | <spring:message code="poweredBy"/> &#169; <spring:message code="copyright"/> <c:out value="${copyrightRange}"/> <spring:message code="companyRightsReserved"/>
 		</p>
 	</div>
 </div>

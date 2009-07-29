@@ -30,21 +30,6 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 		EntityType entityType = currentField.getSecondaryFieldDefinition() != null ?
 				currentField.getSecondaryFieldDefinition().getEntityType() : currentField.getFieldDefinition().getEntityType();
 		return fieldService.readPicklistByFieldNameEntityType(currentField.getPicklistName(), entityType);
-//			for (PicklistItem item : picklist.getActivePicklistItems()) {
-//				fieldVO.addCode(item.getItemName());
-//				String displayValue = messageService.lookupMessage(MessageResourceType.PICKLIST_VALUE, item.getItemName(), pageContext.getRequest().getLocale());
-//				if ( ! StringUtils.hasText(displayValue)) {
-//				    displayValue = item.getDefaultDisplayValue();
-//				}
-//				fieldVO.addDisplayValue(displayValue);
-//				fieldVO.addReferenceValue(item.getReferenceValue());
-//			}
-//		    if (fieldVO.getReferenceValues() != null) for (Iterator<String> iterator = fieldVO.getReferenceValues().iterator(); iterator.hasNext();) {
-//		        String refVal = iterator.next();
-//		        if (StringUtils.hasText(refVal)) {
-//		            fieldVO.setCascading(true);
-//		        }
-//		    }
 	}
 
 	@SuppressWarnings("unchecked")

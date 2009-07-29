@@ -64,7 +64,6 @@ public class PicklistHandler extends AbstractPicklistHandler {
 	}
 
     protected String createOptions(PageContext pageContext, Object fieldValue, Picklist picklist, StringBuilder sb) {
-//        List<String> augmentedCodes = fieldVO.getAugmentedCodes(); // TODO: fix for augmented codes?
 	    String selectedRef = null;
 
         if (picklist != null) {

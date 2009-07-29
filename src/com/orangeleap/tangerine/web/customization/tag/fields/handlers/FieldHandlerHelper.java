@@ -3,6 +3,7 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.AssociationDisplayHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.CodeOtherDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.CreditCardExpirationDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.DateDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.MultiPicklistAdditionalDisplayHandler;
@@ -11,7 +12,6 @@ import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.displ
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.ReadOnlyTextHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.SelectionDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.SpacerHandler;
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.CodeOtherDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.CheckboxHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.CreditCardExpirationHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.DateHandler;
@@ -30,6 +30,8 @@ import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.looku
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.QueryLookupHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.QueryLookupOtherHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.SelectionHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.AdjustedGiftPaymentSourcePicklistHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.AdjustedGiftPaymentTypePicklistHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.PaymentSourcePicklistHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.PicklistHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.communication.AddressPicklistHandler;
@@ -92,6 +94,8 @@ public class FieldHandlerHelper implements ApplicationContextAware {
 	    initPaymentSourcePicklistHandler(appContext);
 	    initCommunicationPicklistHandlers(appContext);
 
+	    initAdjustedPicklistHandler(appContext);
+	    
 	    initDisplayHandlers(appContext);
     }
 
@@ -205,6 +209,14 @@ public class FieldHandlerHelper implements ApplicationContextAware {
 	private void initPaymentSourcePicklistHandler(ApplicationContext appContext) {
 		FieldHandler paymentSourcePicklistHandler = new PaymentSourcePicklistHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.PAYMENT_SOURCE_PICKLIST, paymentSourcePicklistHandler);
+	}
+
+	private void initAdjustedPicklistHandler(ApplicationContext appContext) {
+		FieldHandler adjustedGiftPaymentTypePicklistHandler = new AdjustedGiftPaymentTypePicklistHandler(appContext);
+		fieldTypeToHandlerMap.put(FieldType.ADJUSTED_GIFT_PAYMENT_TYPE_PICKLIST, adjustedGiftPaymentTypePicklistHandler);
+
+		FieldHandler adjustedGiftPaymentSourcePicklistHandler = new AdjustedGiftPaymentSourcePicklistHandler(appContext);
+		fieldTypeToHandlerMap.put(FieldType.ADJUSTED_GIFT_PAYMENT_SOURCE_PICKLIST, adjustedGiftPaymentSourcePicklistHandler);
 	}
 
 	private void initDisplayHandlers(ApplicationContext appContext) {

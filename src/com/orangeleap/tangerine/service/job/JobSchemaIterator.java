@@ -109,9 +109,14 @@ public class JobSchemaIterator extends QuartzJobBean {
 
             List<String> schemas = schemaService.readSchemas();
             for (String schema : schemas) {
-                logger.info("Processing jobs for "+schema);
-                schemaService.setSchema(schema);  //  sets tangerine user helper with site name for TangerineDatasource to read.
-                executeInternalForSchema(context, applicationContext);
+            	try {
+	                logger.info("Processing jobs for "+schema);
+	                schemaService.setSchema(schema);  //  sets tangerine user helper with site name for TangerineDatasource to read.
+	                executeInternalForSchema(context, applicationContext);
+            	} catch (Exception e) {
+            		e.printStackTrace();
+            		logger.error("Error processing job for "+schema, e);
+            	}
             }
 
         }

@@ -49,11 +49,13 @@ public class AdjustedGiftPaymentSourcePicklistHandler extends PaymentSourcePickl
 		createHiddenField(formFieldName, fieldValue, sb);
 		if (form.getDomainObject() instanceof AdjustedGift) {
 			PaymentSource selectedPaymentSource = ((AdjustedGift) form.getDomainObject()).getPaymentSource();
-			if (PaymentSource.ACH.equals(fieldValue)) {
-				createAchSelectField(currentField, selectedPaymentSource, formFieldName, sb);
-			}
-			else if (PaymentSource.CREDIT_CARD.equals(fieldValue)) {
-				createCreditCardSelectField(currentField, selectedPaymentSource, formFieldName, sb);
+			if (selectedPaymentSource != null) {
+				if (PaymentSource.ACH.equals(selectedPaymentSource.getPaymentType())) {
+					createAchSelectField(currentField, selectedPaymentSource, formFieldName, sb);
+				}
+				else if (PaymentSource.CREDIT_CARD.equals(selectedPaymentSource.getPaymentType())) {
+					createCreditCardSelectField(currentField, selectedPaymentSource, formFieldName, sb);
+				}
 			}
 		}
 	}

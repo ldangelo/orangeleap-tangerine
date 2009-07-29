@@ -109,19 +109,19 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 		createLookupOptionBegin(formFieldName, fieldValue, sb);
 		String displayValue = createOptionText(request, currentField, form, formFieldName, fieldValue, sb);
 
-		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
+		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
 			createDeleteOption(sb, displayValue);
 		}
 
 		createLookupOptionEnd(sb);
 
-		if (!FieldType.ASSOCIATION.equals(currentField.getFieldType()) && !FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
+		if (!FieldType.ASSOCIATION.equals(currentField.getFieldDefinition().getFieldType()) && !FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
 			createLookupLink(currentField, formFieldName, sb);
 		}
 
 		createLookupFieldEnd(sb);
 
-		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
+		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
 			createHiddenField(currentField, formFieldName, fieldValue, sb);
 			createCloneable(sb);
 		}

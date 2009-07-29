@@ -58,7 +58,7 @@ public class PicklistDisplayHandler extends PicklistHandler {
 	}
 
 	protected void createPicklistBegin(SectionField currentField, Picklist picklist, String formFieldName, StringBuilder sb)  {
-		sb.append("<div class=\"readOnlyField multiPicklist ").append(checkForNull(currentField.getFieldDefinition().getEntityAttributes())).append("\" ");
+		sb.append("<div class=\"readOnlyField multiPicklist ").append(resolveEntityAttributes(currentField)).append("\" ");
 		sb.append("id=\"") .append(formFieldName).append("\" references=\"");
 
 		Set<String> refSb = new TreeSet<String>();

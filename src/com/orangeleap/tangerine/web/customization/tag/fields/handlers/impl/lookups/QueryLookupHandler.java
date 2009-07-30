@@ -109,19 +109,19 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 		createLookupOptionBegin(formFieldName, fieldValue, sb);
 		String displayValue = createOptionText(request, currentField, form, formFieldName, fieldValue, sb);
 
-		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
 			createDeleteOption(sb, displayValue);
 		}
 
 		createLookupOptionEnd(sb);
 
-		if (!FieldType.ASSOCIATION.equals(currentField.getFieldDefinition().getFieldType()) && !FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+		if (!FieldType.ASSOCIATION.equals(currentField.getFieldType()) && !FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
 			createLookupLink(currentField, formFieldName, sb);
 		}
 
 		createLookupFieldEnd(sb);
 
-		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
 			createHiddenField(currentField, formFieldName, fieldValue, sb);
 			createCloneable(sb);
 		}
@@ -225,7 +225,8 @@ public class QueryLookupHandler extends AbstractFieldHandler {
     protected void createHiearchy(HttpServletRequest request, SectionField currentField, String formFieldName, StringBuilder sb) {
         if (relationshipService.isHierarchy(currentField.getFieldDefinition())) {
             sb.append("<a href=\"javascript:void(0)\" onclick=\"Lookup.loadTreeView(this)\" divid=\"treeview-").append(formFieldName).append("\" ");
-            sb.append("constituentid=\"").append(request.getParameter(StringConstants.CONSTITUENT_ID)).append("\" fieldDef=\"").append(formFieldName).append("\">");
+            sb.append("constituentid=\"").append(request.getParameter(StringConstants.CONSTITUENT_ID)).append("\" fieldDef=\"");
+	        sb.append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId())).append("\">");
             sb.append(getMessage("viewHierarchy"));
             sb.append("</a>");
             sb.append("<div id=\"treeview-").append(formFieldName).append("\"></div>");

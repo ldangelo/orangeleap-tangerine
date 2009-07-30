@@ -87,7 +87,7 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
     protected void createMultiPicklistBegin(SectionField currentField, String formFieldName, Picklist picklist, StringBuilder sb) {
         sb.append("<div class=\"multiPicklist multiLookupField ");
 	    sb.append(resolveEntityAttributes(currentField));
-	    //sb.append("\" id=\"").append(formFieldName);                       // TODO: check if ID is messed up
+	    sb.append("\" id=\"div-").append(formFieldName);
 	    sb.append("\" references=\"").append(resolveReferenceValues(currentField, picklist)).append("\">");
     }
 

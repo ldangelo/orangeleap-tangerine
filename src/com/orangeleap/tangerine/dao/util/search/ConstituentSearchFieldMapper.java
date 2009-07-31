@@ -39,7 +39,7 @@ public class ConstituentSearchFieldMapper extends SearchFieldMapper {
         MAP.put("organizationName", "ORGANIZATION_NAME");
 
         // Email
-        MAP.put("email", "EMAIL_ADDRESS");
+        MAP.put("emailAddress", "EMAIL_ADDRESS");
 
         // Address
         MAP.put("addressLine1", "ADDRESS_LINE_1");

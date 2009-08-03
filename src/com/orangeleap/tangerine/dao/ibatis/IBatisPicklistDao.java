@@ -173,7 +173,11 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         params.put("picklistNameId", picklistNameId);
         params.put("picklistDefaultDisplayValue", defaultDisplayValue);
         List<PicklistItem> l = getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_DEFAULT_DISPLAY_VALUE", params);
-        return (l.isEmpty() ? null : l.get(l.size() - 1));
+        PicklistItem item = (l.isEmpty() ? null : l.get(l.size() - 1));
+        if (item != null) {
+        	loadCustomFields(item);
+        }
+        return item;
     }
 
     @Override

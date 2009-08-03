@@ -165,27 +165,31 @@ public class EmailService implements ApplicationContextAware {
 
         File tempFile = runReport();
 
-        FileSystemResource file = new FileSystemResource(tempFile);
-        try {
-            helper.addAttachment(getTemplateName() + ".pdf", file);
-            helper.setText("Thank you for your recent donation!");
-            helper.setSubject(subject);
-            helper.setFrom(site.getSmtpFromAddress());
+        if (tempFile != null){
+        	FileSystemResource file = new FileSystemResource(tempFile);
+            try {
+                helper.addAttachment(getTemplateName() + ".pdf", file);
+                helper.setText("Thank you for your recent donation!");
+                helper.setSubject(subject);
+                helper.setFrom(site.getSmtpFromAddress());
 
-            String emailAddresses[] = addresses.split(",");
-            for (int i = 0; i < emailAddresses.length; i++)
-                helper.addTo(emailAddresses[i]);
+                String emailAddresses[] = addresses.split(",");
+                for (int i = 0; i < emailAddresses.length; i++)
+                    helper.addTo(emailAddresses[i]);
 
-            //
-            // finally we mail the message
-            sender.send(message);
+                //
+                // finally we mail the message
+                sender.send(message);
 
 
-            tempFile.delete();
-        } catch (MessagingException e1) {
-            logger.error(e1.getMessage());
-            return;
-        }
+                tempFile.delete();
+            } catch (MessagingException e1) {
+                logger.error(e1.getMessage());
+                return;
+            }
+
+        }else
+        	logger.error("Failed to generate report.");
 
 
     }

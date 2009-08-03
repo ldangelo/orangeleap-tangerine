@@ -368,17 +368,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultConstituent:");
         }
-        // get initial constituent with built-in defaults
         Constituent constituent = new Constituent();
         constituent.setSite(siteDao.readSite(tangerineUserHelper.lookupUserSiteName()));
-//        BeanWrapper constituentBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(constituent);
 
-//        List<EntityDefault> entityDefaults = fieldDao.readEntityDefaults(Arrays.asList(new EntityType[]{EntityType.constituent}));
-//        for (EntityDefault ed : entityDefaults) {
-//            constituentBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
-//        }
-
-        // TODO: consider caching techniques for the default Constituent
         return constituent;
     }
 

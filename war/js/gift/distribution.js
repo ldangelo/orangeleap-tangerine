@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	var $gridRows = $("table.distributionLines tbody.gridRow");
-	Distribution.index = $gridRows.length + 1;
+	Distribution.index = $gridRows.length;
 
 	$("#amount, #amountPerGift, #amountTotal").each(function() {
 		var $elem = $(this);
@@ -17,7 +17,7 @@ $(document).ready(function() {
 	Distribution.rowCloner("table.distributionLines tbody.gridRow:last");
 	
 	$("#amount, #amountPerGift, #amountTotal").bind("keyup change", function(event) {
-		var amounts = $("table.distributionLines tbody.gridRow input.amount", "form");
+		var amounts = $("table.distributionLines tbody.gridRow :input[id$='-amount']", "form");
 		var amtVal = $(this).val();
 		if (OrangeLeap.isNum(amtVal)) {
 			Distribution.enteredAmt = amtVal;
@@ -57,7 +57,7 @@ var Distribution = {
 	index: 1,
 	
 	reInitDistribution: function() {
-		$("table.distributionLines tbody.gridRow input.amount", "form").each(function() {
+		$("table.distributionLines tbody.gridRow input[id$='-amount']", "form").each(function() {
 			var $amtElem = $(this);
 			var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
 			var rowId = $amtElem.attr('id').replace('-amount', '');
@@ -85,7 +85,7 @@ var Distribution = {
 	},
 	
 	recalculatePcts: function() {
-		$("table.distributionLines tbody.gridRow input.amount", "form").each(function(){
+		$("table.distributionLines tbody.gridRow input[id$='-amount']", "form").each(function(){
 			Distribution.calculatePct($(this));
 		});
 	},
@@ -96,7 +96,7 @@ var Distribution = {
 	},
 	
 	updateCorrespondingAmtPct: function($target) {		
-		if ($target.attr("id") == "amount" || $target.hasClass("amount")) {
+		if ($target.attr("id") == "amount" || $target.hasClass("number")) {
 			Distribution.calculatePct($target);
 		}
 		else {
@@ -204,20 +204,20 @@ var Distribution = {
 			Distribution.deleteRow($(this).parent().parent());
 			return false;
 		}).show();
-		$("input.number, input.amount, input.percentage", $newRow).numeric();
-		$("input.number, input.amount, input.percentage", $newRow).bind("keyup", function(event) {
+		$("input.number, input[id$='-amount'], input.percentage", $newRow).numeric();
+		$("input.number, input[id$='-amount'], input.percentage", $newRow).bind("keyup", function(event) {
 			if (event.keyCode != 9) { // ignore tab
 				Distribution.updateFields($(event.target));
 			}
 		});		
-		$("input.number, input.amount, input.percentage", $newRow).bind("change", function(event) {
+		$("input.number, input[id$='-amount'], input.percentage", $newRow).bind("change", function(event) {
 			Distribution.updateFields($(event.target));
 		});		
 		$("input.code", $newRow).each(function(){
 			Lookup.codeAutoComplete($(this));
 		});
 		$("a.treeNodeLink", $newRow).bind("click", function(event) {
-			return OrangeLeap.expandCollapse(this);
+			return OrangeLeap.expandCollapse(this);                                                                      
 		});
 	},
 	
@@ -229,7 +229,7 @@ var Distribution = {
 		}
 		else {
 			$newRow.html($newRow.html().replace(new RegExp("\\[0\\]","g"), "[" + Distribution.index + "]").replace(new RegExp("\\-0\\-","g"), "-" + Distribution.index + "-").
-				replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + Distribution.index + '"'));
+				replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + Distribution.index + '"').replace(new RegExp("tangDummy\\-", "g"), ""));
 		}
 		$("table.distributionLines tbody.gridRow:last .deleteButton", "form").removeClass("noDisplay"); // show the previous last row's delete button
 		$("table.distributionLines", "form").append($newRow);
@@ -242,7 +242,7 @@ var Distribution = {
 		if ($("table.distributionLines tbody.gridRow", "form").length > 1) {
 			row.parent().fadeOut("fast", function() {
 				var $elem = $(this);
-				var rowId = row.find("input.amount").attr('id').replace('-amount', '');
+				var rowId = row.find("input[id$='-amount']").attr('id').replace('-amount', '');
 				delete Distribution.amtPctMap[rowId];
 				$elem.remove();
 				Distribution.updateTotals();

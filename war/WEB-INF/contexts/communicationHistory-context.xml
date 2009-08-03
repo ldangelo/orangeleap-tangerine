@@ -7,7 +7,7 @@
 
     <!-- CommunicationHistory -->
 	<bean id="communicationHistoryFormController" class="com.orangeleap.tangerine.controller.communicationHistory.CommunicationHistoryFormController"
-	      parent="newTangerineConstituentAttributesFormController">
+	      parent="tangerineConstituentAttributesFormController">
 		<property name="bindAddress" value="true"/>
 		<property name="bindPhone" value="true"/>
 		<property name="bindEmail" value="true"/>

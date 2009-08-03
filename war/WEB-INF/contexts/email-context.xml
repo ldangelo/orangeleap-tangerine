@@ -6,7 +6,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
 	<bean id="emailManager" class="com.orangeleap.tangerine.controller.communication.email.EmailFormController"
-          parent="newTangerineConstituentAttributesFormController">
+          parent="tangerineConstituentAttributesFormController">
     	<property name="formView" value="email/emailManager"/>
     	<property name="successView" value="redirect:/emailManagerEdit.htm"/>
     </bean>

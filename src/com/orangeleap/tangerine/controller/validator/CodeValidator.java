@@ -58,7 +58,7 @@ public class CodeValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return AbstractEntity.class.isAssignableFrom(clazz) || TangerineForm.class.equals(clazz); // TODO
+        return AbstractEntity.class.isAssignableFrom(clazz);
     }
 
     @SuppressWarnings("unchecked")

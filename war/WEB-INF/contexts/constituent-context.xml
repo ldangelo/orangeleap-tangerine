@@ -16,7 +16,7 @@
         <property name="successView" value="constituent/constituentSearch"/>
     </bean>
 
-	<bean id="constituentFormController" class="com.orangeleap.tangerine.controller.constituent.ConstituentFormController" parent="newTangerineFormController">
+	<bean id="constituentFormController" class="com.orangeleap.tangerine.controller.constituent.ConstituentFormController" parent="tangerineFormController">
 	    <property name="formView" value="constituent/constituent" />
 	    <property name="successView" value="redirect:/constituent.htm" />
 	</bean>

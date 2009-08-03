@@ -39,18 +39,18 @@
     <context:component-scan base-package="com.orangeleap.tangerine.controller"/>
 
 	<!-- Abstract Controllers for Tangerine -->
-	<bean id="newTangerineFormController" class="com.orangeleap.tangerine.controller.TangerineFormController" abstract="true">
+	<bean id="tangerineFormController" class="com.orangeleap.tangerine.controller.TangerineFormController" abstract="true">
 		<property name="commandName" value="form"/>
 		<property name="commandClass" value="com.orangeleap.tangerine.controller.TangerineForm"/>
 	</bean>                                                                                                                          
 
-	<bean id="newTangerineConstituentAttributesFormController" class="com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController"
-	      abstract="true" parent="newTangerineFormController"/>
+	<bean id="tangerineConstituentAttributesFormController" class="com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController"
+	      abstract="true" parent="tangerineFormController"/>
 
 	<bean id="tangerineListController" class="com.orangeleap.tangerine.controller.TangerineListController" abstract="true"/>
 
 	<bean id="abstractDistributionLineFormController" class="com.orangeleap.tangerine.controller.gift.AbstractMutableGridFormController" abstract="true"
-			parent="newTangerineConstituentAttributesFormController">
+			parent="tangerineConstituentAttributesFormController">
 		<property name="gridCollectionName" value="distributionLines"/>
 		<property name="amountKey" value="amount"/>
 	</bean>

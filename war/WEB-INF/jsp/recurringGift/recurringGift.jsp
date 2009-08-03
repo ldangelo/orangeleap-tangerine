@@ -43,10 +43,10 @@
 				</div>
 			</form:form>
 			<page:param name="scripts">
-				<script type="text/javascript" src="js/recurringGiftCalc.js"></script>
-				<script type="text/javascript" src="js/payment/paymentEditable2.js"></script>
+				<script type="text/javascript" src="js/gift/recurringGiftCalc.js"></script>
+				<script type="text/javascript" src="js/payment/paymentEditable.js"></script>
 				<script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
-				<script type="text/javascript" src="js/gift/distribution2.js"></script>
+				<script type="text/javascript" src="js/gift/distribution.js"></script>
 			</page:param>
 		</body>
 	</html>

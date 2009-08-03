@@ -46,8 +46,7 @@ public class PaymentSourceValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return PaymentSource.class.equals(clazz)
-		         || TangerineForm.class.equals(clazz); // TODO;
+        return PaymentSource.class.equals(clazz);
     }
 
     @Override

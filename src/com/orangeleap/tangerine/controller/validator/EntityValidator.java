@@ -92,8 +92,7 @@ public class EntityValidator implements Validator {
         || Address.class.equals(clazz) 
         || Email.class.equals(clazz) 
         || Phone.class.equals(clazz) 
-        || PaymentSource.class.equals(clazz)
-		        || TangerineForm.class.equals(clazz); // TODO: fix
+        || PaymentSource.class.equals(clazz);
     }
 
     @SuppressWarnings("unchecked")

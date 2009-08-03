@@ -6,7 +6,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
  
    	<bean id="addressManager" class="com.orangeleap.tangerine.controller.communication.address.AddressFormController"
-             parent="newTangerineConstituentAttributesFormController">
+             parent="tangerineConstituentAttributesFormController">
     	<property name="formView" value="address/addressManager"/>
     	<property name="successView" value="redirect:/addressManagerEdit.htm"/>
     </bean>

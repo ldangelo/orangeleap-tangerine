@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="newAbstractGiftController" class="com.orangeleap.tangerine.controller.gift.AbstractGiftController" parent="abstractDistributionLineFormController" abstract="true">
+	<bean id="abstractGiftController" class="com.orangeleap.tangerine.controller.gift.AbstractGiftController" parent="abstractDistributionLineFormController" abstract="true">
 		<property name="bindAddress" value="true"/>
 		<property name="bindPhone" value="true"/>
         <property name="bindPaymentSource" value="true"/>
@@ -13,12 +13,12 @@
         <property name="giftViewUrl" value="redirect:/giftView.htm" />
     </bean>
 
-	<bean id="newGiftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="newAbstractGiftController">
+	<bean id="giftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="abstractGiftController">
         <property name="formView" value="gift/gift" />
         <property name="successView" value="redirect:/gift.htm" />
     </bean>
 
-	<bean id="newGiftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="newAbstractGiftController">
+	<bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="abstractGiftController">
 	    <property name="formView" value="gift/giftView"/>
 	    <property name="successView" value="redirect:/giftView.htm"/>
 	</bean>
@@ -41,7 +41,7 @@
 	</bean>
 
 	<bean id="adjustedGiftController" class="com.orangeleap.tangerine.controller.gift.adjustment.GiftAdjustmentController"
-	      parent="newTangerineConstituentAttributesFormController">
+	      parent="tangerineConstituentAttributesFormController">
 		<property name="bindAddress" value="true"/>
 		<property name="bindPhone" value="true"/>
         <property name="bindPaymentSource" value="true"/>
@@ -50,7 +50,7 @@
 	</bean>
 
 	<bean id="adjustedGiftViewController" class="com.orangeleap.tangerine.controller.gift.adjustment.GiftAdjustmentViewController"
-			parent="newTangerineConstituentAttributesFormController">
+			parent="tangerineConstituentAttributesFormController">
 		<property name="bindAddress" value="true"/>
 		<property name="bindPhone" value="true"/>
         <property name="bindPaymentSource" value="true"/>
@@ -61,8 +61,8 @@
     <bean id="giftUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-			    <prop key="/gift.htm">newGiftFormController</prop>
-			    <prop key="/giftView.htm">newGiftViewController</prop>
+			    <prop key="/gift.htm">giftFormController</prop>
+			    <prop key="/giftView.htm">giftViewController</prop>
 			    <prop key="/giftAdjustment.htm">adjustedGiftController</prop>
 			    <prop key="/giftAdjustmentView.htm">adjustedGiftViewController</prop>
 			    <prop key="/giftCombinedDistributionLines.htm">giftPledgeRecurringGiftLinesController</prop>

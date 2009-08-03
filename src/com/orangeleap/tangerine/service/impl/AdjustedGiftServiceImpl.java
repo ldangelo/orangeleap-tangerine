@@ -1,5 +1,8 @@
 package com.orangeleap.tangerine.service.impl;
 
+import com.orangeleap.tangerine.controller.validator.AdjustedDistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.AdjustedGiftDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
@@ -16,6 +19,9 @@ import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -42,6 +48,15 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
 
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
+	
+	@Resource(name = "adjustedGiftEntityValidator")
+	protected EntityValidator entityValidator;
+
+	@Resource(name = "codeValidator")
+	protected CodeValidator codeValidator;
+
+	@Resource(name = "adjustedDistributionLinesValidator")
+	protected AdjustedDistributionLinesValidator adjustedDistributionLinesValidator;
 
     @Override
     public AdjustedGift createdDefaultAdjustedGift(Long originalGiftId) {
@@ -57,22 +72,60 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         return aAdjustedGift;
     }
 
+	private void validateAdjustedGift(AdjustedGift adjustedGift, boolean doValidateDistributionLines)
+	        throws BindException {
+		if (adjustedGift.getFieldLabelMap() != null && !adjustedGift.isSuppressValidation()) {
+			BindingResult br = new BeanPropertyBindingResult(adjustedGift, StringConstants.ADJUSTED_GIFT);
+			BindException errors = new BindException(br);
+
+			entityValidator.validate(adjustedGift, errors);
+			codeValidator.validate(adjustedGift, errors);
+			if (doValidateDistributionLines) {
+				adjustedDistributionLinesValidator.validate(adjustedGift, errors);
+			}
+
+			if (errors.hasErrors()) {
+				throw errors;
+			}
+		}
+	}
+
+	private AdjustedGift saveAuditAdjustedGift(AdjustedGift adjustedGift) throws BindException {
+		maintainEntityChildren(adjustedGift, adjustedGift.getConstituent());
+		adjustedGift = adjustedGiftDao.maintainAdjustedGift(adjustedGift);
+		pledgeService.updatePledgeForAdjustedGift(adjustedGift);
+		recurringGiftService.updateRecurringGiftForAdjustedGift(adjustedGift);
+
+		if (adjustedGift.isAdjustedPaymentRequired()) {
+		    paymentHistoryService.addPaymentHistory(createPaymentHistoryForAdjustedGift(adjustedGift));
+		}
+
+		auditService.auditObject(adjustedGift, adjustedGift.getConstituent());
+		return adjustedGift;
+	}
+
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public AdjustedGift maintainAdjustedGift(AdjustedGift adjustedGift) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public AdjustedGift maintainAdjustedGift(AdjustedGift adjustedGift) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainAdjustedGift: adjustedGiftId = " + adjustedGift.getId());
         }
-        maintainEntityChildren(adjustedGift, adjustedGift.getConstituent());
-        adjustedGift = adjustedGiftDao.maintainAdjustedGift(adjustedGift);
-        pledgeService.updatePledgeForAdjustedGift(adjustedGift);
-        recurringGiftService.updateRecurringGiftForAdjustedGift(adjustedGift);
-        if (adjustedGift.isAdjustedPaymentRequired()) {
-            paymentHistoryService.addPaymentHistory(createPaymentHistoryForAdjustedGift(adjustedGift));
-        }
-        auditService.auditObject(adjustedGift, adjustedGift.getConstituent());
+	    validateAdjustedGift(adjustedGift, true);
+	    adjustedGift = saveAuditAdjustedGift(adjustedGift);
         return adjustedGift;
     }
+
+	@Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+	public AdjustedGift editAdjustedGift(AdjustedGift adjustedGift) throws BindException {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("editAdjustedGift: adjustedGiftId = " + adjustedGift.getId());
+	    }
+		validateAdjustedGift(adjustedGift, false);
+
+		adjustedGift = saveAuditAdjustedGift(adjustedGift);
+	    return adjustedGift;
+	}
 
     private PaymentHistory createPaymentHistoryForAdjustedGift(AdjustedGift adjustedGift) {
         PaymentHistory paymentHistory = new PaymentHistory();

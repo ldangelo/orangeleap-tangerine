@@ -5,8 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="commitmentFormController" class="com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController" parent="tangerineConstituentAttributesFormController" abstract="true">
-    	<property name="handleEmptyDistributionLines" value="true"/>
-    </bean>
+	<bean id="newCommitmentFormController" class="com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController"
+	      parent="abstractDistributionLineFormController" abstract="true"/>
 
 </beans>

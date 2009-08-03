@@ -33,7 +33,7 @@ public class AddressPicklistHandler extends AbstractPicklistHandler {
 		createBeginSelect(currentField, formFieldName, picklist, sb);
 		createNoneOption(currentField, fieldValue, sb);
 
-		if (!FieldType.EXISTING_ADDRESS_PICKLIST.equals(currentField.getFieldDefinition().getFieldType())) {
+		if (!FieldType.EXISTING_ADDRESS_PICKLIST.equals(currentField.getFieldType())) {
 			createNewOption(fieldValue, NEW_ADDRESS_REF, sb);
 		}
 
@@ -44,7 +44,7 @@ public class AddressPicklistHandler extends AbstractPicklistHandler {
 
 		createEndSelect(sb);
 
-		if (!FieldType.EXISTING_ADDRESS_PICKLIST.equals(currentField.getFieldDefinition().getFieldType())) {
+		if (!FieldType.EXISTING_ADDRESS_PICKLIST.equals(currentField.getFieldType())) {
 			createSelectedRef(formFieldName, fieldValue, NEW_ADDRESS_REF, sb);
 		}
 	}
@@ -52,7 +52,7 @@ public class AddressPicklistHandler extends AbstractPicklistHandler {
 	@Override
 	protected String resolveReferenceValues(SectionField currentField, Picklist picklist) {
 		StringBuilder refValues = new StringBuilder(super.resolveReferenceValues(currentField, picklist));
-		if (!FieldType.EXISTING_ADDRESS_PICKLIST.equals(currentField.getFieldDefinition().getFieldType())) {
+		if (!FieldType.EXISTING_ADDRESS_PICKLIST.equals(currentField.getFieldType())) {
 			if (StringUtils.hasText(refValues.toString())) {
 				refValues.append(",");
 			}

@@ -1,20 +1,7 @@
 package com.orangeleap.tangerine.test.service.impl;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.list.LazyList;
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.annotations.Test;
-
-import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -24,7 +11,19 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.list.LazyList;
+import org.apache.commons.logging.Log;
+import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.Test;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GiftServiceTest extends BaseTest {
 
@@ -46,110 +45,6 @@ public class GiftServiceTest extends BaseTest {
                 return line;
             }
         });
-    }
-
-    @Test(groups="testRemove")
-    public void testRemoveDefaultDistributionLine() throws Exception {
-        Constituent constituent = new Constituent();
-        List<DistributionLine> lines = initLazyListDistributionLines();
-        lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null));
-        
-        List<DistributionLine> returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.isEmpty();
-        
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30.01"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
-
-        lines = initLazyListDistributionLines();
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.isEmpty();
-
-        lines = initLazyListDistributionLines();
-        lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null));
-        lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 2 && returnLines.get(0).getAmount().equals(new BigDecimal("30")) && returnLines.get(1).getAmount().equals(new BigDecimal("30"));
-        
-        lines = initLazyListDistributionLines();
-        lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), "foo", null, null));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
-
-        lines = initLazyListDistributionLines();
-        lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, "foo", null));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
-
-        lines = initLazyListDistributionLines();
-        lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, "foo"));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
-
-        lines = initLazyListDistributionLines();
-        lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("99.99"), null, null, null));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
-
-        lines = initLazyListDistributionLines();
-        DistributionLine line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        line.addCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "false");
-        lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
-
-        lines = initLazyListDistributionLines();
-        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        line.setCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "true");
-        lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.isEmpty();
-
-        lines = initLazyListDistributionLines();
-        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        line.setCustomFieldValue("anonymous", "true");
-        lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
-        
-        lines = initLazyListDistributionLines();
-        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        line.setCustomFieldValue("anonymous", null);
-        lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.isEmpty();
-        
-        lines = initLazyListDistributionLines();
-        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        line.setCustomFieldValue("anonymous", StringConstants.EMPTY);
-        lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.isEmpty();
-        
-        lines = initLazyListDistributionLines();
-        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        line.setDefaultCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "100");
-        lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
-        
-        lines = initLazyListDistributionLines();
-        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        constituent.setRecognitionName("foo");
-        line.setConstituent(constituent);
-        line.setDefaults();
-        lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.isEmpty();
-        
-        lines = initLazyListDistributionLines();
-        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        Constituent newConstituent = new Constituent();
-        newConstituent.setRecognitionName("foo2");
-        line.setConstituent(newConstituent);
-        line.setDefaults();
-        lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
-        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
     }
 
     @Test
@@ -411,10 +306,10 @@ public class GiftServiceTest extends BaseTest {
         gift.setGiftType(GiftType.MONETARY_GIFT);
         Address addr = new Address();
         addr.setId(100L);
-        gift.setSelectedAddress(addr);
+        gift.setAddress(addr);
         PaymentSource src = new PaymentSource();
         src.setId(100L);
-        gift.setSelectedPaymentSource(src);
+        gift.setPaymentSource(src);
         Site site = new Site("company1");
         Constituent constituent = new Constituent();
         constituent.setId(100L);
@@ -441,43 +336,35 @@ public class GiftServiceTest extends BaseTest {
     @Test
     public void testCheckAssociatedPledgeIds() throws Exception {
         Gift gift = new Gift();
-        List<DistributionLine> lines = initLazyListDistributionLines();
         DistributionLine aLine = new DistributionLine();
         aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "1");
-        lines.add(aLine);
-        gift.setMutableDistributionLines(lines);
-        giftService.checkAssociatedPledgeIds(gift);   
+        gift.addDistributionLine(aLine);
+        giftService.checkAssociatedPledgeIds(gift);
         assert gift.getAssociatedPledgeIds().size() == 1 && gift.getAssociatedPledgeIds().get(0) == 1L;
         
         gift = new Gift();
-        lines = initLazyListDistributionLines();
         aLine = new DistributionLine();
         aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "1");
-        lines.add(aLine);
-        gift.setMutableDistributionLines(lines);
+	    gift.addDistributionLine(aLine);
         gift.addAssociatedPledgeId(1L);
         giftService.checkAssociatedPledgeIds(gift);
         assert gift.getAssociatedPledgeIds().size() == 1 && gift.getAssociatedPledgeIds().get(0) == 1L;
 
         gift = new Gift();
-        lines = initLazyListDistributionLines();
         aLine = new DistributionLine();
         aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "2");
-        lines.add(aLine);
-        gift.setMutableDistributionLines(lines);
+	    gift.addDistributionLine(aLine);
         gift.addAssociatedPledgeId(1L);
         giftService.checkAssociatedPledgeIds(gift);
         assert gift.getAssociatedPledgeIds().size() == 1 && gift.getAssociatedPledgeIds().get(0) == 2L;
 
         gift = new Gift();
-        lines = initLazyListDistributionLines();
         aLine = new DistributionLine();
         aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "2");
-        lines.add(aLine);
+	    gift.addDistributionLine(aLine);
         aLine = new DistributionLine();
         aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "3");
-        lines.add(aLine);
-        gift.setMutableDistributionLines(lines);
+	    gift.addDistributionLine(aLine);
         gift.addAssociatedPledgeId(3L);
         giftService.checkAssociatedPledgeIds(gift);
         assert gift.getAssociatedPledgeIds().size() == 2;
@@ -486,14 +373,12 @@ public class GiftServiceTest extends BaseTest {
         }
 
         gift = new Gift();
-        lines = initLazyListDistributionLines();
         aLine = new DistributionLine();
         aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "2");
-        lines.add(aLine);
+	    gift.addDistributionLine(aLine);
         aLine = new DistributionLine();
         aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "3");
-        lines.add(aLine);
-        gift.setMutableDistributionLines(lines);
+	    gift.addDistributionLine(aLine);
         gift.addAssociatedPledgeId(2L);
         gift.addAssociatedPledgeId(3L);
         giftService.checkAssociatedPledgeIds(gift);
@@ -503,16 +388,12 @@ public class GiftServiceTest extends BaseTest {
         }
 
         gift = new Gift();
-        lines = initLazyListDistributionLines();
-        gift.setMutableDistributionLines(lines);
         gift.addAssociatedPledgeId(1L);
         gift.addAssociatedPledgeId(5L);
         giftService.checkAssociatedPledgeIds(gift);
         assert gift.getAssociatedPledgeIds().isEmpty();
 
         gift = new Gift();
-        lines = initLazyListDistributionLines();
-        gift.setMutableDistributionLines(lines);
         giftService.checkAssociatedPledgeIds(gift);
         assert gift.getAssociatedPledgeIds() == null;
     }

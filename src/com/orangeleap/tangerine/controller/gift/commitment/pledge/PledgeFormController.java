@@ -18,8 +18,8 @@
 
 package com.orangeleap.tangerine.controller.gift.commitment.pledge;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController;
-import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -44,15 +44,16 @@ public class PledgeFormController extends CommitmentFormController<Pledge> {
     @Resource(name = "pledgeService")
     protected PledgeService pledgeService;
 
-    @Override
-    protected AbstractEntity findEntity(HttpServletRequest request) {
-        return pledgeService.readPledgeByIdCreateIfNull(request.getParameter(StringConstants.PLEDGE_ID), super.getConstituent(request));
-    }
+	@Override
+	protected Pledge readCommitmentCreateIfNull(HttpServletRequest request) {
+		return pledgeService.readPledgeByIdCreateIfNull(request.getParameter(StringConstants.PLEDGE_ID), super.getConstituent(request));
+	}
 
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
         ModelAndView mv = super.showForm(request, response, errors);
-        Pledge pledge = (Pledge) formBackingObject(request);
+	    TangerineForm form = (TangerineForm) formBackingObject(request);
+        Pledge pledge = (Pledge) form.getDomainObject();
 
         if (usePledgeView(pledge)) {
             mv = new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + pledge.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
@@ -69,7 +70,9 @@ public class PledgeFormController extends CommitmentFormController<Pledge> {
     @Override
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refData = super.referenceData(request, command, errors);
-        refData.put(StringConstants.CAN_APPLY_PAYMENT, pledgeService.canApplyPayment((Pledge) command));
+	    TangerineForm form = (TangerineForm) command;
+        Pledge pledge = (Pledge) form.getDomainObject();
+        refData.put(StringConstants.CAN_APPLY_PAYMENT, pledgeService.canApplyPayment(pledge));
         return refData;
     }
 

@@ -18,36 +18,46 @@
 
 package com.orangeleap.tangerine.domain.customization;
 
-import java.io.Serializable;
-
+import com.orangeleap.tangerine.domain.GeneratedId;
 import org.springframework.core.style.ToStringCreator;
 
-import com.orangeleap.tangerine.domain.GeneratedId;
+import java.io.Serializable;
 
 public class EntityDefault implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public EntityDefault() {
+	private Long id;
+	private String defaultValue;
+	/**
+	 * Should be a field on the specified entity (e.g. "lastName" for Constituent)
+	 */
+	private String entityFieldName;
+	private String entityType;
+	private SectionDefinition sectionDefinition;
+	private String conditionExp;
+	private String siteName;
+
+	public EntityDefault() {
         super();
     }
 
-    public EntityDefault(String defaultValue, String entityFieldName, String entityType, String siteName) {
-        this();
-        this.defaultValue = defaultValue;
+	public EntityDefault(String defaultValue) {
+		this();
+		this.defaultValue = defaultValue;
+	}
+
+	public EntityDefault(String defaultValue, String conditionExp) {
+		this(defaultValue);
+		this.conditionExp = conditionExp;
+	}
+
+	public EntityDefault(String defaultValue, String entityFieldName, String entityType, String siteName) {
+        this(defaultValue);
         this.entityFieldName = entityFieldName;
         this.entityType = entityType;
         this.siteName = siteName;
     }
-
-    private Long id;
-    private String defaultValue;
-    /**
-     * Should be a field on the specified entity (e.g. "lastName" for Constituent)
-     */
-    private String entityFieldName;
-    private String entityType;
-    private String siteName;
 
     @Override
     public Long getId() {
@@ -67,7 +77,15 @@ public class EntityDefault implements GeneratedId, Serializable {
         this.defaultValue = defaultValue;
     }
 
-    public String getEntityFieldName() {
+	public String getConditionExp() {
+		return conditionExp;
+	}
+
+	public void setConditionExp(String conditionExp) {
+		this.conditionExp = conditionExp;
+	}
+
+	public String getEntityFieldName() {
         return entityFieldName;
     }
 
@@ -83,7 +101,15 @@ public class EntityDefault implements GeneratedId, Serializable {
         this.entityType = entityType;
     }
 
-    public String getSiteName() {
+	public SectionDefinition getSectionDefinition() {
+		return sectionDefinition;
+	}
+
+	public void setSectionDefinition(SectionDefinition sectionDefinition) {
+		this.sectionDefinition = sectionDefinition;
+	}
+
+	public String getSiteName() {
         return siteName;
     }
 
@@ -93,7 +119,9 @@ public class EntityDefault implements GeneratedId, Serializable {
 
     @Override
     public String toString() {
-        return new ToStringCreator(this).append("id", id).append("defaultValue", defaultValue).append("entityFieldName", entityFieldName).append("entityType", entityType).
+        return new ToStringCreator(this).append("id", id).append("defaultValue", defaultValue).
+		        append("conditionExp", conditionExp).
+		        append("entityFieldName", entityFieldName).append("entityType", entityType).
                 append("siteName", siteName).toString();
     }
 }

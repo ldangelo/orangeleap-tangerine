@@ -18,16 +18,14 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -35,15 +33,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.orangeleap.tangerine.dao.SiteDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.customization.EntityDefault;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -57,23 +53,15 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     @Resource(name = "giftService")
     protected GiftService giftService;
 
-    @Resource(name = "siteDAO")
-    private SiteDao siteDao;
+    @Resource(name = "fieldDAO")
+    private FieldDao fieldDao;
 
     public void createDefault(Constituent constituent, T commitment, EntityType entityType, String lineIdProperty) {
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultCommitment: constituent = " + (constituent == null ? null : constituent.getId()));
         }
-        // get initial commitment with built-in defaults
-        BeanWrapper commitmentWrapper = PropertyAccessorFactory.forBeanPropertyAccess(commitment);
-
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[]{entityType}));
-        for (EntityDefault ed : entityDefaults) {
-            commitmentWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
-        }
         List<DistributionLine> lines = new ArrayList<DistributionLine>(1);
         DistributionLine line = new DistributionLine(constituent);
-        line.setDefaults();
         BeanWrapper lineWrapper = PropertyAccessorFactory.forBeanPropertyAccess(line);
         lineWrapper.setPropertyValue(lineIdProperty, commitment.getId());
         lines.add(line);

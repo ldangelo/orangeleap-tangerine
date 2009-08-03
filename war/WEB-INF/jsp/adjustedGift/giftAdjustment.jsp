@@ -7,8 +7,7 @@
 
 	<html>
 		<head>
-			<title><c:out value="${titleText}"/></title>
-			<script type="text/javascript" src="js/gift/adjustedDistribution.js"></script>
+			<title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
 		</head>
 		<body>
 			<form:form method="post" commandName="${requestScope.commandObject}">
@@ -26,7 +25,9 @@
 					</c:if>
 				</div>
 			</form:form>
+			<page:param name="scripts">
+				<script type="text/javascript" src="js/gift/adjustedDistribution.js"></script>
+			</page:param>
 		</body>
 	</html>
 </page:applyDecorator>
-<body>

@@ -35,7 +35,7 @@ public interface PledgeService extends CommitmentService<Pledge> {
 
     public Pledge maintainPledge(Pledge pledge) throws BindException;
 
-    public Pledge editPledge(Pledge pledge);
+    public Pledge editPledge(Pledge pledge) throws BindException;
 
     public Pledge readPledgeById(Long pledgeId);
 

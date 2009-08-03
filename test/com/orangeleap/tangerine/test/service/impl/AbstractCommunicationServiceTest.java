@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.joda.time.DateMidnight;
 import org.testng.annotations.Test;
+import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.dao.CommunicationDao;
 import com.orangeleap.tangerine.domain.communication.Address;
@@ -121,6 +122,10 @@ public class AbstractCommunicationServiceTest extends BaseTest {
     class MockCommunicationServiceImpl extends AbstractCommunicationService<Address> {
         public List<Address> filter(List<Address> entities, boolean mailOnly) {
             return filterByActivationType(entities, mailOnly);
+        }
+
+        @Override
+        protected void validate(Address entity) throws BindException {
         }
 
         @Override

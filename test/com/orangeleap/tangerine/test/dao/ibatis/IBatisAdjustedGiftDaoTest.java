@@ -1,21 +1,20 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.dao.AdjustedGiftDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
     
@@ -55,7 +54,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         adjustedGift.setConstituent(new Constituent(100L, new Site("company1")));
         Address addr = new Address();
         addr.setId(100L);
-        adjustedGift.setSelectedAddress(addr);
+        adjustedGift.setAddress(addr);
         setupDistributionLines(adjustedGift);
         
         adjustedGift = adjustedGiftDao.maintainAdjustedGift(adjustedGift);
@@ -68,12 +67,12 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert "01/01/2010".equals(sdf.format(readAdjustedGift.getAdjustedTransactionDate()));
         assert "foo".equals(readAdjustedGift.getAdjustedType());
         assert 100L == readAdjustedGift.getConstituent().getId();
-        assert 100L == readAdjustedGift.getSelectedAddress().getId();
+        assert 100L == readAdjustedGift.getAddress().getId();
         assert readAdjustedGift.getDistributionLines().size() == 1;
         assert new BigDecimal("-9.99").floatValue() == readAdjustedGift.getDistributionLines().get(0).getAmount().floatValue();
         assert 600L == readAdjustedGift.getOriginalGiftId();
         
-        assert readAdjustedGift.getSelectedPhone().getId() == null;
+        assert readAdjustedGift.getPhone() == null;
         assert readAdjustedGift.getAuthCode() == null;
         assert readAdjustedGift.getCheckNumber() == null;
         assert readAdjustedGift.getComments() == null;
@@ -81,7 +80,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert readAdjustedGift.getPaymentStatus() == null;
         assert readAdjustedGift.getTxRefNum() == null;
         assert readAdjustedGift.getPaymentType() == null;
-        assert readAdjustedGift.getSelectedPaymentSource().getId() == null;
+        assert readAdjustedGift.getPaymentSource() == null;
         
         adjustedGift = readAdjustedGift;
         adjustedGift.setAdjustedPaymentRequired(true);
@@ -99,7 +98,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert "01/01/2010".equals(sdf.format(readAdjustedGift.getAdjustedTransactionDate()));
         assert "foo".equals(readAdjustedGift.getAdjustedType());
         assert 100L == readAdjustedGift.getConstituent().getId();
-        assert 100L == readAdjustedGift.getSelectedAddress().getId();
+        assert 100L == readAdjustedGift.getAddress().getId();
         assert readAdjustedGift.getDistributionLines().size() == 1;
         assert new BigDecimal("-9.99").floatValue() == readAdjustedGift.getDistributionLines().get(0).getAmount().floatValue();
         assert 600L == readAdjustedGift.getOriginalGiftId();
@@ -107,12 +106,12 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert "012345".equals(readAdjustedGift.getTxRefNum());
         assert "I have paid".equals(readAdjustedGift.getPaymentMessage());
         
-        assert readAdjustedGift.getSelectedPhone().getId() == null;
+        assert readAdjustedGift.getPhone() == null;
         assert readAdjustedGift.getCheckNumber() == null;
         assert readAdjustedGift.getComments() == null;
         assert readAdjustedGift.getPaymentStatus() == null;
         assert readAdjustedGift.getPaymentType() == null;
-        assert readAdjustedGift.getSelectedPaymentSource().getId() == null;
+        assert readAdjustedGift.getPaymentSource() == null;
         
     }
     

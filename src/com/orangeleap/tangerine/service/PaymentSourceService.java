@@ -24,10 +24,11 @@ import java.util.Map;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Constituent;
+import org.springframework.validation.BindException;
 
 public interface PaymentSourceService {
 
-    public PaymentSource maintainPaymentSource(PaymentSource paymentSource);
+    public PaymentSource maintainPaymentSource(PaymentSource paymentSource) throws BindException;
 
     public List<PaymentSource> readPaymentSources(Long constituentId);
 

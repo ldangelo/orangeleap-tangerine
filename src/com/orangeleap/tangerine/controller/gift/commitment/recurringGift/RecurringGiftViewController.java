@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.controller.gift.commitment.recurringGift;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.controller.TangerineForm;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,9 +37,15 @@ public class RecurringGiftViewController extends RecurringGiftFormController {
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        RecurringGift recurringGift = (RecurringGift) command;
-        RecurringGift current = recurringGiftService.editRecurringGift(recurringGift);
-        return new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
+	    TangerineForm form = (TangerineForm) command;
+        RecurringGift recurringGift = (RecurringGift) form.getDomainObject();
+	    try {
+            recurringGift = recurringGiftService.editRecurringGift(recurringGift);
+	    }
+	    catch (BindException domainErrors) {
+		    bindDomainErrorsToForm(request, formErrors, domainErrors, form, recurringGift);
+	    }
+        return new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + recurringGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
     }
 }

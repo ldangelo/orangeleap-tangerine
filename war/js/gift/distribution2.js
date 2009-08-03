@@ -217,7 +217,7 @@ var Distribution = {
 			Lookup.codeAutoComplete($(this));
 		});
 		$("a.treeNodeLink", $newRow).bind("click", function(event) {
-			return OrangeLeap.expandCollapse(this);
+			return OrangeLeap.expandCollapse(this);                                                                      
 		});
 	},
 	

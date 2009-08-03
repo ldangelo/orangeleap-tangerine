@@ -51,10 +51,15 @@
                 <li><a href="constituentList.htm"><spring:message code="viewMenu.constituentList"/></a></li>
                 <c:if test="${requestScope.constituent.id != null}">
 					<li class="sectionTitle"><spring:message code='for'/> <c:out value="${constituent.firstLast}"/>...</li>
+                    <li><a href="addressList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.addressList"/></a></li>
+                    <li><a href="phoneList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.phoneList"/></a></li>
+                    <li><a href="emailList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.emailList"/></a></li>
+                    <li><a href="relationships.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.relationships"/></a></li>
                     <li><a href="giftList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.gifts"/></a></li>
                     <li><a href="recurringGiftList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.recurringGifts"/></a></li>
                     <li><a href="pledgeList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.pledges"/></a></li>
                     <li><a href="giftInKindList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.giftsInKind"/></a></li>
+                    <li><a href="paymentSourceList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.paymentMethodList"/></a></li>
                     <li><a href="paymentHistory.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.paymentHistory"/></a></li>
                     <li><a href="communicationHistoryList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.touchPoints"/></a></li>
                 </c:if>
@@ -68,6 +73,9 @@
 					</li>
 					<c:if test="${requestScope.constituent.id != null}">
 						<li class="sectionTitle"><spring:message code='for'/> <c:out value="${constituent.firstLast}"/>...</li>
+                        <li><a href="addressManager.htm?constituentId=${constituent.id}"><spring:message code="address"/></a></li>
+                        <li><a href="phoneManager.htm?constituentId=${constituent.id}"><spring:message code="phone"/></a></li>
+                        <li><a href="emailManager.htm?constituentId=${constituent.id}"><spring:message code="email"/></a></li>
 						<li><a href="gift.htm?constituentId=${constituent.id}"><spring:message code="gift"/></a></li>
 						<li><a href="recurringGift.htm?constituentId=${constituent.id}"><spring:message code="recurringGift"/></a></li>
 						<li><a href="pledge.htm?constituentId=${constituent.id}"><spring:message code="pledge"/></a></li>

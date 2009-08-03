@@ -30,6 +30,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -54,13 +55,24 @@ public class PhoneFormController extends TangerineConstituentAttributesFormContr
     }
 
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Phone phone = (Phone) command;
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response,
+                                    Object command, BindException formErrors) throws Exception {
+        TangerineForm form = (TangerineForm) command;
+        Phone phone = (Phone) form.getDomainObject();
         if (phoneService.alreadyExists(phone) != null) {
-            errors.reject("errorPhoneExists");
-            return showForm(request, response, errors);
+            formErrors.reject("errorPhoneExists");
+            return showForm(request, response, formErrors);
         }
-        phoneService.save(phone);
-        return super.onSubmit(request, response, command, errors);
+        ModelAndView mav;
+        try {
+            phone = phoneService.save(phone);
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.PHONE_ID + "=" + phone.getId() +
+                    "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+        }
+        catch (BindException domainErrors) {
+            bindDomainErrorsToForm(request, formErrors, domainErrors, form, phone);
+            mav = showForm(request, formErrors, getFormView());
+        }
+        return mav;
     }
 }

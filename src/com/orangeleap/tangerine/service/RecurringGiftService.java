@@ -43,7 +43,7 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
 
     public RecurringGift maintainRecurringGift(RecurringGift recurringGift) throws BindException;
 
-    public RecurringGift editRecurringGift(RecurringGift recurringGift);
+    public RecurringGift editRecurringGift(RecurringGift recurringGift) throws BindException;
     
     public List<RecurringGift> readRecurringGiftsForConstituent(Constituent constituent);
     

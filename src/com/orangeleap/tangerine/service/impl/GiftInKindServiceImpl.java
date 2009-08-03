@@ -18,21 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator;
@@ -43,8 +28,20 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.service.GiftInKindService;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
+import javax.annotation.Resource;
+import java.util.Calendar;
+import java.util.List;
 
 @Service("giftInKindService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -59,7 +56,7 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
     
-    @Resource(name="giftEntityValidator")
+    @Resource(name="giftInKindEntityValidator")
     protected EntityValidator entityValidator;
 
     @Resource(name="codeValidator")
@@ -67,8 +64,6 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
 
     @Resource(name="giftInKindDetailsValidator")
     protected GiftInKindDetailsValidator giftInKindDetailsValidator;
-
-
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
@@ -78,26 +73,23 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         }
         
         if (giftInKind.getFieldLabelMap() != null && !giftInKind.isSuppressValidation()) {
-
 	        BindingResult br = new BeanPropertyBindingResult(giftInKind, "giftInKind");
 	        BindException errors = new BindException(br);
 	      
-	        codeValidator.validate(giftInKind, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
-	        giftInKindDetailsValidator.validate(giftInKind, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
-	        
 	        entityValidator.validate(giftInKind, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
+	        codeValidator.validate(giftInKind, errors);
+	        giftInKindDetailsValidator.validate(giftInKind, errors);
+
+	        if (errors.hasErrors()) {
+		        throw errors;
+	        }
         }
 
-        
         maintainEntityChildren(giftInKind, giftInKind.getConstituent());
         giftInKind.setTransactionDate(Calendar.getInstance().getTime());
         Gift gift = createGiftForGiftInKind(giftInKind);
         gift = giftDao.maintainGift(gift); // save a row in the gift table
         giftInKind.setGiftId(gift.getId());
-        giftInKind.filterValidDetails();
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
         auditService.auditObject(giftInKind, giftInKind.getConstituent());
 
@@ -149,10 +141,7 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         }
         GiftInKind giftInKind = new GiftInKind();
         giftInKind.setConstituent(constituent);
-        List<GiftInKindDetail> details = new ArrayList<GiftInKindDetail>(1);
-        GiftInKindDetail detail = new GiftInKindDetail();
-        details.add(detail);
-        giftInKind.setDetails(details);
+        giftInKind.addDetail(new GiftInKindDetail());
         return giftInKind;
     }
     

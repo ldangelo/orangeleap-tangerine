@@ -19,10 +19,10 @@ $(document).ready(function() {
 			AdjustedDistribution.updateTotals();
 		}
 	});
-	$("input.amount, input.percentage", $("#adjustedGift_distribution")).bind("keyup", function(event) {
+	$("input[id$='-amount'], input.percentage", $("#adjustedGift_distribution")).bind("keyup", function(event) {
 		if (event.keyCode != 9) { // ignore tab
 			var $elem = $(this);
-			if ($elem.hasClass("amount")) {
+			if ($elem.hasClass("number")) {
 				AdjustedDistribution.appendDash($elem);
 			}
 			AdjustedDistribution.updateFields($(event.target));
@@ -41,7 +41,7 @@ var AdjustedDistribution = {
 	amtPctMap: { }, // hash of idPrefix (distributionLines-1) --> amount & percent
 	
 	reInitDistribution: function() {
-		$("table.distributionLines tbody.gridRow input.amount", "form").each(function() {
+		$("table.distributionLines tbody.gridRow input[id$='-amount']", "form").each(function() {
 			var $amtElem = $(this);
 			var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
 			var rowId = $amtElem.attr('id').replace('-amount', '');
@@ -80,7 +80,7 @@ var AdjustedDistribution = {
 	},
 	
 	updateCorrespondingAmtPct: function($target) {		
-		if ($target.attr("id") == "amount" || $target.hasClass("amount")) {
+		if ($target.attr("id") == "amount" || $target.hasClass("number")) {
 			AdjustedDistribution.calculatePct($target);
 		}
 		else {
@@ -104,7 +104,7 @@ var AdjustedDistribution = {
 	
 	calculateAmt: function($elem) {
 		var thisPct = $elem.val();
-		if (isNaN(parseFloat(thisPct)) == false) {
+		if (!isNaN(parseFloat(thisPct))) {
 			var rowId = $elem.attr('id').replace('-percentage', '');
 			var amtElemId = $elem.attr('id').replace('percentage', 'amount');
 			
@@ -122,7 +122,7 @@ var AdjustedDistribution = {
 	
 	calculatePct: function($elem) {
 		var thisAmt = $elem.val();
-		if (isNaN(parseFloat(thisAmt)) == false) {
+		if (!isNaN(parseFloat(thisAmt))) {
 			var rowId = $elem.attr('id').replace('-amount', '');
 			var pctElemId = $elem.attr('id').replace('amount', 'percentage');
 			

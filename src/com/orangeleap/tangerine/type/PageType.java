@@ -40,7 +40,7 @@ public enum PageType {
     queryLookup("/queryLookup.htm"),
     addressManager("/addressManager.htm"),
     addressManagerEdit("/addressManagerEdit.htm"),
-    address("/address.htm"),
+    addressList("/addressList.htm"),
     recurringGift("/recurringGift.htm"),
     recurringGiftList("/recurringGiftList.htm"),
     recurringGiftSearch("/recurringGiftSearch.htm"),
@@ -95,4 +95,13 @@ public enum PageType {
     public String getPageName() {
         return pageName;
     }
+
+	public static PageType findByUrl(String url) {
+		for (PageType type : PageType.values()) {
+			if (type.getPageName().equalsIgnoreCase(url)) {
+				return type;
+			}
+		}
+		return null;
+	}
 }

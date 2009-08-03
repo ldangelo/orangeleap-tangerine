@@ -176,13 +176,6 @@ public class DistributionLine extends AbstractCustomizableEntity {
     }
 
     @Override
-    public void setDefaults() {
-        super.setDefaults();
-        setDefaultCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "true"); 
-        setDefaultCustomFieldValue(StringConstants.RECOGNITION_NAME, constituent == null ? null : constituent.getRecognitionName());
-    }
-
-    @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("amount", amount).
             append(super.toString()).append("percentage", percentage).append("projectCode", projectCode).

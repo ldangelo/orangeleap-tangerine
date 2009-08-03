@@ -24,9 +24,9 @@
 		<result property="txRefNum" column="ADJUSTED_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
 		<result property="paymentType" column="ADJUSTED_PAYMENT_TYPE" jdbcType="VARCHAR" />
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
-		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
-		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
-		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
+		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="createDate" column="ADJUSTED_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="ADJUSTED_UPDATE_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
@@ -111,7 +111,7 @@
 		#comments#, #originalGiftId#, #paymentMessage#,
 		#paymentStatus#, #txRefNum#, #paymentType#,
 		#posted#, #postedDate#, 
-		#selectedAddress.id#, #selectedPaymentSource.id#, #constituent.id#, #selectedPhone.id#, 
+		#address.id#, #paymentSource.id#, #constituent.id#, #phone.id#, 
 		now(), now())
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -138,10 +138,10 @@
 		ag.PAYMENT_TYPE = #paymentType#,
 		ag.POSTED = #posted#,
 		ag.POSTED_DATE = #postedDate#,
-		ag.ADDRESS_ID = #selectedAddress.id#,
-		ag.PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
+		ag.ADDRESS_ID = #address.id#,
+		ag.PAYMENT_SOURCE_ID = #paymentSource.id#,
 		ag.CONSTITUENT_ID = #constituent.id#,
-		ag.PHONE_ID = #selectedPhone.id#,
+		ag.PHONE_ID = #phone.id#,
 		ag.UPDATE_DATE = now()
 		where 
 		p.CONSTITUENT_ID = ag.CONSTITUENT_ID

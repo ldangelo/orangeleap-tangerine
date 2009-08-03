@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import org.springframework.validation.BindException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,7 +33,9 @@ public interface AdjustedGiftService {
 
     public List<AdjustedGift> readAdjustedGiftsForOriginalGiftId(Long originalGiftId);
 
-    public AdjustedGift maintainAdjustedGift(AdjustedGift adjustedGift);
+    public AdjustedGift maintainAdjustedGift(AdjustedGift adjustedGift) throws BindException;
+
+	AdjustedGift editAdjustedGift(AdjustedGift adjustedGift) throws BindException;
 
     public BigDecimal findCurrentTotalAdjustedAmount(Long originalGiftId);
 

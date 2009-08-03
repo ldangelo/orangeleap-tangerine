@@ -28,6 +28,10 @@
         <filter-name>openSpringTransactionInView</filter-name>
         <filter-class>com.orangeleap.tangerine.web.filters.OpenSpringTransactionInViewFilter</filter-class>
     </filter>
+    <filter>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+    </filter>
 	<filter>
         <filter-name>cacheGroup</filter-name>
         <filter-class>com.orangeleap.tangerine.web.filters.CacheGroupFilter</filter-class>
@@ -77,6 +81,14 @@
         <filter-name>gzipFilter</filter-name>
         <url-pattern>*.json</url-pattern>
 	</filter-mapping>
+
+	<filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
 
 	<listener>
 		<listener-class>org.springframework.security.ui.session.HttpSessionEventPublisher</listener-class>
@@ -145,8 +157,8 @@
 
 	<jsp-config>
 		<taglib>
-			<taglib-uri>/tangerine</taglib-uri>
-			<taglib-location>/WEB-INF/tld/tangerine.tld</taglib-location>
+			<taglib-uri>/tangerine-old</taglib-uri>
+			<taglib-location>/WEB-INF/tld/tangerine-old.tld</taglib-location>
 		</taglib>
 	</jsp-config>
 

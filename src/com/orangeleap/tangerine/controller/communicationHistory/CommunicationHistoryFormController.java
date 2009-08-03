@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.controller.communicationHistory;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
@@ -53,24 +54,26 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
     }
 
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        CommunicationHistory communicationHistory = (CommunicationHistory) command;
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
+	    TangerineForm form = (TangerineForm) command;
+        CommunicationHistory communicationHistory = (CommunicationHistory) form.getDomainObject();
 
         boolean saved = true;
-        CommunicationHistory current = null;
         try {
-            current = communicationHistoryService.maintainCommunicationHistory(communicationHistory);
-        } catch (BindException e) {
+            communicationHistory = communicationHistoryService.maintainCommunicationHistory(communicationHistory);
+        }
+        catch (BindException domainErrors) {
             saved = false;
-            current = communicationHistory;
-            errors.addAllErrors(e);
+            bindDomainErrorsToForm(domainErrors, formErrors);
         }
 
         ModelAndView mav = null;
         if (saved) {
-            mav = new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
-        } else {
-            mav = super.showForm(request, errors, getFormView());
+            mav = new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" +
+		            StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+        }
+        else {
+            mav = super.showForm(request, formErrors, getFormView());
         }
         return mav;
     }

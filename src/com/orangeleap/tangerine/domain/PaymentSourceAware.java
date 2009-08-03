@@ -30,12 +30,16 @@ public interface PaymentSourceAware {
 
     public void setPaymentSource(PaymentSource paymentSource);
 
+    @Deprecated
     public PaymentSource getSelectedPaymentSource();
 
+    @Deprecated
     public void setSelectedPaymentSource(PaymentSource paymentSource);
 
+    @Deprecated
     public void setPaymentSourceType(FormBeanType type);
     
+    @Deprecated
     public FormBeanType getPaymentSourceType();
     
     public void setPaymentSourcePaymentType();

@@ -18,7 +18,9 @@
 
 package com.orangeleap.tangerine.json.controller;
 
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -67,6 +69,9 @@ public class GiftListController {
     @Resource(name = "giftService")
     private GiftService giftService;
 
+	@Resource(name = "picklistItemService")
+	private PicklistItemService picklistItemService;
+
     @SuppressWarnings("unchecked")
     @RequestMapping("/giftList.json")
     public ModelMap getGiftList(HttpServletRequest request, SortInfo sortInfo) {
@@ -84,6 +89,14 @@ public class GiftListController {
 
         String constituentId = request.getParameter("constituentId");
         PaginatedResult result = giftService.readPaginatedGiftList(Long.valueOf(constituentId), sortInfo);
+	    for (Object row : result.getRows()) {
+		    Map thisGift = (Map) row;
+
+		    PicklistItem item = picklistItemService.getPicklistItem("gift.paymentType", (String) thisGift.get("type"));
+		    if (item != null) {
+			    thisGift.put("type", item.resolveDisplayValue());
+		    }
+	    }
 
         ModelMap map = new ModelMap("rows", result.getRows());
         map.put("totalRows", result.getRowCount());

@@ -62,9 +62,9 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert sdf.parse("02/14/2008").equals(recurringGift.getNextRunDate());
         assert 10 == recurringGift.getAmountPerGift().intValue();
         assert RecurringGift.STATUS_PENDING.equals(recurringGift.getRecurringGiftStatus());
-        assert recurringGift.getSelectedAddress() != null && recurringGift.getSelectedAddress().getId() == null;
-        assert recurringGift.getSelectedPhone() != null && recurringGift.getSelectedPhone().getId() == null;
-        assert recurringGift.getSelectedPaymentSource() != null && recurringGift.getSelectedPaymentSource().getId() == null;
+        assert recurringGift.getAddress() == null;
+        assert recurringGift.getPhone() == null;
+        assert recurringGift.getPaymentSource() == null;
         assert recurringGift.getConstituent() != null && recurringGift.getConstituent().getId() == 200L;
         IBatisConstituentDaoTest.testConstituentId200(recurringGift.getConstituent());
     }

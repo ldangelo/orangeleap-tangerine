@@ -105,7 +105,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             request.setFieldValue("BIN", gift.getSite().getMerchantBin());
             request.setFieldValue("TerminalID", gift.getSite().getMerchantTerminalId());
             request.setFieldValue("OrderID", gift.getId().toString());
-            request.setFieldValue("AccountNum", gift.getSelectedPaymentSource()
+            request.setFieldValue("AccountNum", gift.getPaymentSource()
                     .getCreditCardNumber());
 
             String amount = gift.getAmount().toString();
@@ -118,8 +118,8 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 
             request.setFieldValue("Amount", amount);
 
-            month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();
-            year = gift.getSelectedPaymentSource().getCreditCardExpirationYear().toString();
+            month = gift.getPaymentSource().getCreditCardExpirationMonthText();
+            year = gift.getPaymentSource().getCreditCardExpirationYear().toString();
 
             if (month.length() == 1) {
                 month = "0" + month;
@@ -128,10 +128,10 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             request.setFieldValue("Exp", month + year);
 
             // AVS Information
-            Address addr = gift.getSelectedAddress();
+            Address addr = gift.getAddress();
 
             if (addr != null && addr.isValid()) {
-                request.setFieldValue("AVSname", gift.getSelectedPaymentSource()
+                request.setFieldValue("AVSname", gift.getPaymentSource()
                         .getCreditCardHolderName());
                 request.setFieldValue("AVSaddress1", addr.getAddressLine1());
                 request.setFieldValue("AVSaddress2", addr.getAddressLine2());
@@ -141,9 +141,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 //                request.setFieldValue("AVScountrycode",addr.getCountry());
             }
 
-            if (gift.getSelectedPaymentSource().getCreditCardSecurityCode() != null &&
-                    !gift.getSelectedPaymentSource().getCreditCardSecurityCode().equals("")) {
-                request.setFieldValue("CardVerifyNumber", gift.getSelectedPaymentSource().getCreditCardSecurityCode().toString());
+            if (gift.getPaymentSource().getCreditCardSecurityCode() != null &&
+                    !gift.getPaymentSource().getCreditCardSecurityCode().equals("")) {
+                request.setFieldValue("CardVerifyNumber", gift.getPaymentSource().getCreditCardSecurityCode().toString());
             }
 
             if (logger.isInfoEnabled()) {
@@ -263,7 +263,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             request.setFieldValue("BIN", gift.getSite().getMerchantBin());
             request.setFieldValue("TerminalID", gift.getSite().getMerchantTerminalId());
             request.setFieldValue("OrderID", gift.getId().toString());
-            request.setFieldValue("AccountNum", gift.getSelectedPaymentSource()
+            request.setFieldValue("AccountNum", gift.getPaymentSource()
                     .getCreditCardNumber());
 
             String amount = gift.getAmount().toString();
@@ -276,8 +276,8 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 
             request.setFieldValue("Amount", amount);
 
-            month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();
-            year = gift.getSelectedPaymentSource().getCreditCardExpirationYear().toString();
+            month = gift.getPaymentSource().getCreditCardExpirationMonthText();
+            year = gift.getPaymentSource().getCreditCardExpirationYear().toString();
 
             if (month.length() == 1) {
                 month = "0" + month;
@@ -286,9 +286,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             request.setFieldValue("Exp", month + year);
 
             // AVS Information
-            Address addr = gift.getSelectedAddress();
+            Address addr = gift.getAddress();
             if (addr != null && addr.isValid()) {
-                request.setFieldValue("AVSname", gift.getSelectedPaymentSource()
+                request.setFieldValue("AVSname", gift.getPaymentSource()
                         .getCreditCardHolderName());
                 request.setFieldValue("AVSaddress1", addr.getAddressLine1());
                 request.setFieldValue("AVScity", addr.getCity());
@@ -296,9 +296,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
                 request.setFieldValue("AVSzip", addr.getPostalCode());
             }
 
-            if (gift.getSelectedPaymentSource().getCreditCardSecurityCode() != null &&
-                    !gift.getSelectedPaymentSource().getCreditCardSecurityCode().equals("")) {
-                request.setFieldValue("CardVerifyNumber", gift.getSelectedPaymentSource().getCreditCardSecurityCode().toString());
+            if (gift.getPaymentSource().getCreditCardSecurityCode() != null &&
+                    !gift.getPaymentSource().getCreditCardSecurityCode().equals("")) {
+                request.setFieldValue("CardVerifyNumber", gift.getPaymentSource().getCreditCardSecurityCode().toString());
             }
 
             if (logger.isInfoEnabled()) {

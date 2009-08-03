@@ -15,9 +15,12 @@
 						<a class="groupHeader"><spring:message code="profile"/></a>
 						<span class="secondary ${requestScope.thisUrl eq '/constituent.htm' ? 'active' : ''}">
 							<a class="${requestScope.thisUrl eq '/constituent.htm' ? 'active' : ''}" href="constituent.htm?constituentId=${requestScope.constituent.id}"><spring:message code="summary"/></a>
-							<a class="${requestScope.thisUrl eq '/addressManager.htm' ? 'active' : ''}" href="addressManager.htm?constituentId=${requestScope.constituent.id}"><spring:message code="addresses"/></a>
-							<a class="${requestScope.thisUrl eq '/emailManager.htm' ? 'active' : ''}" href="emailManager.htm?constituentId=${requestScope.constituent.id}"><spring:message code="emails"/></a>
-							<a class="${requestScope.thisUrl eq '/phoneManager.htm' ? 'active' : ''}" href="phoneManager.htm?constituentId=${requestScope.constituent.id}"><spring:message code="phoneNumbers"/></a>
+                            <a class="${(requestScope.thisUrl eq '/addressManager.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="addressManager.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newAddress"/></a>
+							<a class="${(requestScope.thisUrl eq '/addressList.htm' || requestScope.thisUrl eq '/addressManagerEdit.htm') ? 'active' : ''}" href="addressList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="addresses"/></a>
+                            <a class="${(requestScope.thisUrl eq '/phoneManager.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="phoneManager.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newPhone"/></a>
+                            <a class="${(requestScope.thisUrl eq '/phoneList.htm' || requestScope.thisUrl eq '/phoneManagerEdit.htm') ? 'active' : ''}" href="phoneList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="phoneNumbers"/></a>
+                            <a class="${(requestScope.thisUrl eq '/emailManager.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="emailManager.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newEmail"/></a>
+							<a class="${(requestScope.thisUrl eq '/emailList.htm' || requestScope.thisUrl eq '/emailManagerEdit.htm') ? 'active' : ''}" href="emailList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="emails"/></a>
          				    <a class="${requestScope.thisUrl eq '/relationships.htm'?'active' : ''}" href="relationships.htm?constituentId=${requestScope.constituent.id}"><spring:message code="relationships"/></a>
 						</span>
 					</div>
@@ -50,9 +53,10 @@
 		            </div>
 					<div class="navGroup">
 						<a class="groupHeader"><spring:message code="paymentManager"/></a>
-						<span class="secondary ${requestScope.thisUrl eq '/paymentManager.htm' ? 'active' : ''}">
-							<a class="${requestScope.thisUrl eq '/paymentManager.htm' ? 'active' : ''}" href="paymentManager.htm?constituentId=${requestScope.constituent.id}"><spring:message code="paymentMethods"/></a>
-							<a class="${(requestScope.thisUrl eq '/paymentHistory.htm' || requestScope.thisUrl eq '/paymentManagerEdit.htm') ? 'active' : ''}" href="paymentHistory.htm?constituentId=${requestScope.constituent.id}"><spring:message code="paymentHistory"/></a>
+						<span class="secondary ${requestScope.thisUrl eq '/paymentSourceList.htm' ? 'active' : ''}">
+                            <a class="${(requestScope.thisUrl eq '/paymentManager.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="paymentManager.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newPaymentMethod"/></a>
+							<a class="${(requestScope.thisUrl eq '/paymentSourceList.htm' || requestScope.thisUrl eq '/paymentManagerEdit.htm') ? 'active' : ''}" href="paymentSourceList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="paymentMethods"/></a>
+							<a class="${(requestScope.thisUrl eq '/paymentHistory.htm') ? 'active' : ''}" href="paymentHistory.htm?constituentId=${requestScope.constituent.id}"><spring:message code="paymentHistory"/></a>
 						</span>
 					</div>					
 					<div class="navGroup">

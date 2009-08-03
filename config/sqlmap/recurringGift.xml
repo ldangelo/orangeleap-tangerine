@@ -21,9 +21,9 @@
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
 		<result property="recurringGiftStatus" column="RECURRING_GIFT_STATUS" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
-		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
-		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
+		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
@@ -125,7 +125,7 @@
 		#autoPay#, #checkNumber#, #comments#, now(), #currencyCode#, 
 		#endDate#, #frequency#, #activate#,  #paymentType#,
 		#startDate#, #recurringGiftStatus#, now(), 
-		#selectedAddress.id#, #selectedPaymentSource.id#, #constituent.id#, #selectedPhone.id#)
+		#address.id#, #paymentSource.id#, #constituent.id#, #phone.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -149,10 +149,10 @@
 		RECURRING_GIFT_STATUS = #recurringGiftStatus#,
 		START_DATE = #startDate#,
 		UPDATE_DATE = now(),
-		ADDRESS_ID = #selectedAddress.id#,
-		PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
+		ADDRESS_ID = #address.id#,
+		PAYMENT_SOURCE_ID = #paymentSource.id#,
 		CONSTITUENT_ID = #constituent.id#,
-		PHONE_ID = #selectedPhone.id#		
+		PHONE_ID = #phone.id#
 		where RECURRING_GIFT_ID = #id#
 	</update>
 	

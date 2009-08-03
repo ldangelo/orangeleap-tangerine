@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.controller.communication.address;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -54,13 +55,24 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
     }
 
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Address address = (Address) command;
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response,
+                                    Object command, BindException formErrors) throws Exception {
+        TangerineForm form = (TangerineForm) command;
+        Address address = (Address) form.getDomainObject();
         if (addressService.alreadyExists(address) != null) {
-            errors.reject("errorAddressExists");
-            return showForm(request, response, errors);
+            formErrors.reject("errorAddressExists");
+            return showForm(request, response, formErrors);
         }
-        addressService.save(address);
-        return super.onSubmit(request, response, command, errors);
+        ModelAndView mav;
+        try {
+            address = addressService.save(address);
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.ADDRESS_ID + "=" + address.getId() +
+                    "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+        }
+        catch (BindException domainErrors) {
+            bindDomainErrorsToForm(request, formErrors, domainErrors, form, address);
+            mav = showForm(request, formErrors, getFormView());
+        }
+        return mav;
     }
 }

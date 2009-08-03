@@ -7,9 +7,7 @@
 
 	<html>
 		<head>
-			<title><c:out value="${titleText}"/></title>
-			<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
-			<script type="text/javascript">var PaymentTypeCommandObject = '<c:out value="${commandObject}"/>';</script>
+			<title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
 		</head>
 		<body>
 			<form:form method="post" commandName="${requestScope.commandObject}">
@@ -27,9 +25,13 @@
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
-					<a class="newAccountButton" href="recurringGift.htm?constituentId=${constituent.id}"><spring:message code='enterANewRecurringGift'/></a>
+					<a class="newAccountButton" href="recurringGift.htm?constituentId=${constituent.id}"><spring:message code='enterNew'/></a>
 				</div>
 			</form:form>
+			<page:param name="scripts">
+				<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
+				<script type="text/javascript">var PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
+			</page:param>
 		</body>
 	</html>
 </page:applyDecorator>

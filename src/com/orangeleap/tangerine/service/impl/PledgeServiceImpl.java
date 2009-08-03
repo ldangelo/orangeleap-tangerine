@@ -18,31 +18,10 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.PledgeValidator;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
@@ -52,9 +31,29 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("unchecked")
 @Service("pledgeService")
@@ -66,7 +65,10 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 
     @Resource(name = "pledgeDAO")
     private PledgeDao pledgeDao;
-    
+
+	@Resource(name="pledgeValidator")
+	protected PledgeValidator pledgeValidator;
+
     @Resource(name="pledgeEntityValidator")
     protected EntityValidator entityValidator;
 
@@ -77,7 +79,6 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     protected DistributionLinesValidator distributionLinesValidator;
 
 
-
     // Used for create new only
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
@@ -86,35 +87,42 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
             logger.trace("maintainPledge: pledge = " + pledge);
         }
         
-        if (pledge.getFieldLabelMap() != null && !pledge.isSuppressValidation()) {
+		validatePledge(pledge, true);
 
-	        BindingResult br = new BeanPropertyBindingResult(pledge, "pledge");
-	        BindException errors = new BindException(br);
-	      
-	        codeValidator.validate(pledge, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
-	        distributionLinesValidator.validate(pledge, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
-	        
-	        entityValidator.validate(pledge, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
-        }
-        
-        pledge.filterValidDistributionLines();
         return save(pledge);
     }
+
+	private void validatePledge(Pledge pledge, boolean validateDistributionLines) throws BindException {
+		if (pledge.getFieldLabelMap() != null && !pledge.isSuppressValidation()) {
+			BindingResult br = new BeanPropertyBindingResult(pledge, "pledge");
+			BindException errors = new BindException(br);
+
+			entityValidator.validate(pledge, errors);
+			pledgeValidator.validate(pledge, errors);
+			codeValidator.validate(pledge, errors);
+
+			if (validateDistributionLines) {
+				distributionLinesValidator.validate(pledge, errors);
+			}
+
+			if (errors.hasErrors()) {
+				throw errors;
+			}
+		}
+	}
 
     // Used for modify existing only
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Pledge editPledge(Pledge pledge) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public Pledge editPledge(Pledge pledge) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("editPledge: pledgeId = " + pledge.getId());
         }
+	    validatePledge(pledge, false);
         return save(pledge);
     }
     
-    private Pledge save(Pledge pledge) {
+    private Pledge save(Pledge pledge) throws BindException {
         maintainEntityChildren(pledge, pledge.getConstituent());
         pledge = pledgeDao.maintainPledge(pledge);
         auditService.auditObject(pledge, pledge.getConstituent());
@@ -217,7 +225,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         if (logger.isTraceEnabled()) {
             logger.trace("findDistributionLinesForPledges: pledgeIds = " + pledgeIds);
         }
-        if (pledgeIds != null && pledgeIds.isEmpty() == false) {
+        if (pledgeIds != null && !pledgeIds.isEmpty()) {
             return pledgeDao.findDistributionLinesForPledges(new ArrayList<String>(pledgeIds));
         }
         return null;
@@ -228,7 +236,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         if (logger.isTraceEnabled()) {
             logger.trace("canApplyPayment: pledge.id = " + pledge.getId() + " status = " + pledge.getPledgeStatus());
         }
-        return pledge.getId() != null && pledge.getId() > 0 && Commitment.STATUS_CANCELLED.equals(pledge.getPledgeStatus()) == false;
+        return pledge.getId() != null && pledge.getId() > 0 && !Commitment.STATUS_CANCELLED.equals(pledge.getPledgeStatus());
     }
     
     @Override

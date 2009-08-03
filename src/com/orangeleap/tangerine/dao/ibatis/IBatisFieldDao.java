@@ -35,7 +35,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Corresponds to the FIELD tables
@@ -181,7 +185,6 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         }
         return (FieldRelationship) insertOrUpdate(fieldRelationship, "FIELD_RELATIONSHIP");
     }
-
 
     private FieldDefinition insertOrUpdateFieldDefinition(final FieldDefinition o) {
         if (logger.isTraceEnabled()) {

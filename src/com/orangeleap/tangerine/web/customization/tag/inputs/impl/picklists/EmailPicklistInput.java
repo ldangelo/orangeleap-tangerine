@@ -18,7 +18,8 @@
 
 package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 
-import com.orangeleap.tangerine.domain.NewEmailAware;
+import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.OldEmailAware;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -45,7 +46,7 @@ public class EmailPicklistInput extends AbstractSingleValuedPicklistInput {
         StringBuilder sb = new StringBuilder();
         createBeginSelect(request, fieldVO, sb, NEW_EMAIL_REF);
         createNoneOption(request, fieldVO, sb);
-        createNewOption(request, fieldVO, sb, ((NewEmailAware) fieldVO.getModel()).getEmail(), NEW_EMAIL_REF);
+        createNewOption(request, fieldVO, sb, ((EmailAware) fieldVO.getModel()).getEmail(), NEW_EMAIL_REF);
 
         List<Email> emails = (List<Email>) request.getAttribute(StringConstants.EMAILS);
         createBeginOptGroup(request, fieldVO, sb, emails);
@@ -74,7 +75,7 @@ public class EmailPicklistInput extends AbstractSingleValuedPicklistInput {
     }
 
     protected void checkIfExistingOptionSelected(Object model, Email emailToCheck, StringBuilder sb) {
-        NewEmailAware aware = (NewEmailAware) model;
+        OldEmailAware aware = (OldEmailAware) model;
         if (FormBeanType.EXISTING.equals(aware.getEmailType()) && aware.getEmail() != null &&
                 aware.getEmail().isUserCreated() == false && aware.getSelectedEmail() != null &&
                 emailToCheck.getId().equals(aware.getSelectedEmail().getId())) {
@@ -84,8 +85,8 @@ public class EmailPicklistInput extends AbstractSingleValuedPicklistInput {
 
     protected void createSelectedRef(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
         String selectedRef = null;
-        if (fieldVO.getModel() instanceof NewEmailAware) {
-            NewEmailAware aware = (NewEmailAware) fieldVO.getModel();
+        if (fieldVO.getModel() instanceof EmailAware) {
+            EmailAware aware = (EmailAware) fieldVO.getModel();
             if (aware.getEmail().isUserCreated() || (fieldVO.isRequired() && selectedRef == null)) {
                 selectedRef = NEW_EMAIL_REF;
             }

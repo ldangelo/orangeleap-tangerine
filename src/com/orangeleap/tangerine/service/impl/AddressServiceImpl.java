@@ -25,11 +25,16 @@ import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import com.orangeleap.tangerine.dao.AddressDao;
 import com.orangeleap.tangerine.dao.CommunicationDao;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.service.AddressService;
+import com.orangeleap.tangerine.controller.validator.AddressValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
 
 @Service("addressService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -41,6 +46,12 @@ public class AddressServiceImpl extends AbstractCommunicationService<Address> im
     @Resource(name = "addressDAO")
     private AddressDao addressDao;
 
+    @Resource(name = "addressValidator")
+    private AddressValidator addressValidator;
+
+    @Resource(name = "addressManagerEntityValidator")
+    private EntityValidator entityValidator;
+
     @Override
     protected CommunicationDao<Address> getDao() {
         return addressDao;
@@ -49,5 +60,20 @@ public class AddressServiceImpl extends AbstractCommunicationService<Address> im
     @Override
     protected Address createEntity(Long constituentId) {
         return new Address(constituentId);
+    }
+
+    @Override
+    protected void validate(Address entity) throws BindException {
+        if (entity.getFieldLabelMap() != null && !entity.isSuppressValidation()) {
+            BindingResult br = new BeanPropertyBindingResult(entity, "address");
+            BindException errors = new BindException(br);
+
+            entityValidator.validate(entity, errors);
+            addressValidator.validate(entity, errors);
+
+            if (errors.hasErrors()) {
+                throw errors;
+            }
+        }
     }
 }

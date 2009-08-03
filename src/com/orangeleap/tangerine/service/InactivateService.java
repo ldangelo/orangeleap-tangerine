@@ -18,6 +18,8 @@
 
 package com.orangeleap.tangerine.service;
 
+import org.springframework.validation.BindException;
+
 public interface InactivateService {
-    public void inactivate(Long id);
+    public void inactivate(Long id) throws BindException;
 }

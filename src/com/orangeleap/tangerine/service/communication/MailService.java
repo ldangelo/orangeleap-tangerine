@@ -231,7 +231,7 @@ public class MailService {
             ch.setEntryType("Mail");
             ch.setRecordDate(new Date());
             ch.setCustomFieldValue("template", getTemplateName());
-            ch.setSelectedAddress(constituent.getPrimaryAddress());
+            ch.setAddress(constituent.getPrimaryAddress());
 
             ch.setSuppressValidation(true);
             try {

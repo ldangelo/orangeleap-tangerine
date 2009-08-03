@@ -5,7 +5,6 @@
 <input type="hidden" id="thisConstituentId" name="thisConstituentId" value="<c:out value='${requestScope.constituent.id}'/>"/>
 
 <div class="columns iconHeader">
-	<div class="column"><img src="images/dude2.gif" alt="" title=""/></div>
 	<div class="column">
 		<c:choose>
 			<c:when test="${requestScope.constituent.id != null}">

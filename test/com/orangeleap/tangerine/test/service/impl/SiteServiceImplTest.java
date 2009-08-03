@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.test.service.impl;
 
+import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -7,15 +8,19 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.impl.SiteServiceImpl;
 import com.orangeleap.tangerine.test.BaseTest;
+import com.orangeleap.tangerine.test.dataprovider.SiteServiceDataProvider;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +66,7 @@ public class SiteServiceImplTest extends BaseTest {
 
 	    Map<String, Object> fieldValMap = new HashMap<String, Object>();
 
-	    invoke(sectionFieldLineAmt, fieldValMap, gift);
+	    invokeGetArrayFieldValues(sectionFieldLineAmt, fieldValMap, gift);
 
 	    Assert.assertTrue(fieldValMap.size() == 3, "FieldValMap size is " + fieldValMap.size());
 
@@ -86,7 +91,7 @@ public class SiteServiceImplTest extends BaseTest {
 
 	    sectionFieldLineRef.setFieldDefinition(fieldDef);
 	    sectionFieldLineRef.setSecondaryFieldDefinition(secondaryFieldDef);
-	    invoke(sectionFieldLineRef, fieldValMap, gift);
+	    invokeGetArrayFieldValues(sectionFieldLineRef, fieldValMap, gift);
 
 	    Assert.assertTrue(fieldValMap.size() == 3, "FieldValMap size is " + fieldValMap.size());
 
@@ -107,7 +112,7 @@ public class SiteServiceImplTest extends BaseTest {
         fieldDef.setFieldName("associatedPledgeIds");
 
         sectionFieldPledgeIds.setFieldDefinition(fieldDef);
-        invoke(sectionFieldPledgeIds, fieldValMap, gift);
+        invokeGetArrayFieldValues(sectionFieldPledgeIds, fieldValMap, gift);
 
         Assert.assertTrue(fieldValMap.size() == 4, "FieldValMap size is " + fieldValMap.size());
 	    Assert.assertTrue(fieldValMap.containsKey("associatedPledgeIds[0]"), "Could not find key associatedPledgeIds[0], keys = " + fieldValMap.keySet());
@@ -121,9 +126,96 @@ public class SiteServiceImplTest extends BaseTest {
 	    Assert.assertEquals(1000L, fieldValMap.get("associatedPledgeIds[3]"), "Value for associatedPledgeIds[3] is = " + fieldValMap.get("associatedPledgeIds[3]"));
     }
 
-    private Object invoke(SectionField sectionField, Map returnMap, Object bean) throws Exception {
+	@Test(dataProvider = "setupEntityDefault", dataProviderClass = SiteServiceDataProvider.class)
+	public void testGetDefaultValue(Gift gift) throws Exception {
+		// no conditions
+		EntityDefault def = new EntityDefault("Paid");
+		Object val = invokeGetDefaultValue(def, gift, "giftStatus");
+		Assert.assertEquals(val.toString(), "Paid", "val = " + val);
+		Assert.assertEquals(gift.getGiftStatus(), "Paid", "giftStatus = " + gift.getGiftStatus());
+
+		def = new EntityDefault("dude");
+		val = invokeGetDefaultValue(def, gift, "customFieldMap[other_reference]");
+		Assert.assertEquals(val.toString(), "dude", "val = " + val);
+		Assert.assertEquals(gift.getCustomFieldValue("other_reference"), "dude", "customFieldMap[other_reference] = " + gift.getCustomFieldValue("other_reference"));
+
+		def = new EntityDefault(StringConstants.NOW_COLON);
+		val = invokeGetDefaultValue(def, gift, "customFieldMap[giftTime]");
+		Assert.assertTrue(Date.class.equals(val.getClass()), "val class = " + val.getClass());
+		Assert.assertTrue(String.class.equals(gift.getCustomFieldValue("giftTime").getClass()), "giftTime class = " + gift.getCustomFieldValue("giftTime").getClass());
+
+		def = new EntityDefault(StringConstants.BEAN_PREFIX + "customFieldMap[momma]");
+		val = invokeGetDefaultValue(def, gift, "customFieldMap[papa]");
+		Assert.assertEquals(val.toString(), "Yo Mama", "val = " + val);
+		Assert.assertEquals(gift.getCustomFieldValue("papa"), "Yo Mama", "customFieldMap[papa] = " + gift.getCustomFieldValue("papa"));
+
+		def = new EntityDefault(StringConstants.BEAN_PREFIX + "constituent.firstLast");
+		val = invokeGetDefaultValue(def, gift, "customFieldMap[personResponsible]");
+		Assert.assertEquals(val.toString(), "Joe Blow", "val = " + val);
+		Assert.assertEquals(gift.getCustomFieldValue("personResponsible"), "Joe Blow", "customFieldMap[personResponsible] = " + gift.getCustomFieldValue("personResponsible"));
+
+		def = new EntityDefault("true");
+		val = invokeGetDefaultValue(def, gift, "distributionLines[0].customFieldMap[taxDeductible]");
+		Assert.assertEquals(val.toString(), "true", "val = " + val);
+		Assert.assertEquals(gift.getDistributionLines().get(0).getCustomFieldValue("taxDeductible"), "true", "gift.distributionLines[0].customFieldMap[taxDeductible] = " + gift.getDistributionLines().get(0).getCustomFieldValue("taxDeductible"));
+
+		// Conditions
+		def = new EntityDefault("Finished", "giftStatus == 'Not Paid'"); // set paymentStatus to 'Finished' if giftStatus is 'Not Paid'
+		val = invokeGetDefaultValue(def, gift, "paymentStatus");
+		Assert.assertNull(val, "val != null");
+		Assert.assertFalse(StringUtils.hasText(gift.getPaymentStatus()), "paymentStatus = " + gift.getPaymentStatus());
+
+		def = new EntityDefault("Finished", "giftStatus == 'Paid'"); // set paymentStatus to 'Finished' if giftStatus is 'Not Paid'
+		val = invokeGetDefaultValue(def, gift, "paymentStatus");
+		Assert.assertEquals(val.toString(), "Finished", "val = " + val);
+		Assert.assertEquals(gift.getPaymentStatus(), "Finished", "paymentStatus = " + gift.getPaymentStatus());
+
+		def = new EntityDefault(":now", "posted == 'true'"); // set postmarkDate to 'now' if posted = true
+		val = invokeGetDefaultValue(def, gift, "postmarkDate");
+		Assert.assertNull(val, "val != null");
+		Assert.assertNull(gift.getPostmarkDate(), "postmarkDate != null");
+
+		def = new EntityDefault(StringConstants.BEAN_PREFIX + "customFieldMap[momma]", "posted == 'true'"); // set customField[blarg] to value of customFieldMap[momma] if posted = true
+		val = invokeGetDefaultValue(def, gift, "customFieldMap[blarg]");
+		Assert.assertNull(val, "val != null");
+		Assert.assertFalse(StringUtils.hasText(gift.getCustomFieldValue("blarg")), "customFieldMap[blarg] = " + gift.getCustomFieldValue("blarg"));
+
+		gift.setPosted(true);
+
+		def = new EntityDefault(StringConstants.NOW_COLON, "posted == 'true'"); // set postmarkDate to 'now' if posted = true
+		val = invokeGetDefaultValue(def, gift, "postmarkDate");
+		Assert.assertTrue(Date.class.equals(val.getClass()), "val.class = " + val.getClass());
+		Assert.assertTrue(Date.class.equals(gift.getPostmarkDate().getClass()), "postmarkDate.class = " + gift.getPostmarkDate().getClass());
+		
+		def = new EntityDefault(StringConstants.BEAN_PREFIX + "customFieldMap[momma]", "posted == 'true'"); // set customField[blarg] to value of customFieldMap[momma] if posted = true
+		val = invokeGetDefaultValue(def, gift, "customFieldMap[blarg]");
+		Assert.assertEquals(val.toString(), "Yo Mama", "val = " + val);
+		Assert.assertEquals(gift.getCustomFieldValue("blarg"), "Yo Mama", "customFieldMap[blarg] = " + gift.getCustomFieldValue("blarg"));
+
+
+		// No defaults
+		val = invokeGetDefaultValue(null, gift, "txRefNum");
+		Assert.assertNull(val, "val != null");
+		Assert.assertNull(gift.getTxRefNum(), "txRefNum = " + gift.getTxRefNum());
+
+		def = new EntityDefault();
+		val = invokeGetDefaultValue(def, gift, "transactionDate");
+		Assert.assertNull(val, "val != null");
+		Assert.assertNull(gift.getTransactionDate(), "transactionDate != null");
+
+		def = new EntityDefault("   ");
+		val = invokeGetDefaultValue(def, gift, "transactionDate");
+		Assert.assertNull(val, "val != null");
+		Assert.assertNull(gift.getTransactionDate(), "transactionDate != null");
+	}
+	
+    private Object invokeGetArrayFieldValues(SectionField sectionField, Map returnMap, Object bean) throws Exception {
         Method method = ((SiteServiceImpl) siteService).getClass().getDeclaredMethod("getArrayFieldValues", SectionField.class, Map.class, BeanWrapper.class);
         method.setAccessible(true);
         return method.invoke(siteService, sectionField, returnMap, PropertyAccessorFactory.forBeanPropertyAccess(bean));
     }
+
+	private Object invokeGetDefaultValue(EntityDefault entityDefault, Object bean, String key) throws Exception {
+	    return siteService.getDefaultValue(entityDefault, PropertyAccessorFactory.forBeanPropertyAccess(bean), key);
+	}
 }

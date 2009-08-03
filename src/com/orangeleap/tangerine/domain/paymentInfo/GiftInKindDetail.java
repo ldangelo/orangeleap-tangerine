@@ -18,14 +18,12 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import java.math.BigDecimal;
-
-import javax.xml.bind.annotation.XmlType;
-
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import javax.xml.bind.annotation.XmlType;
+import java.math.BigDecimal;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class GiftInKindDetail extends AbstractCustomizableEntity {
     private static final long serialVersionUID = 1L;
@@ -44,7 +42,8 @@ public class GiftInKindDetail extends AbstractCustomizableEntity {
         super();
     }
 
-    public GiftInKindDetail(BigDecimal fairMarketValue, String description, String projectCode, boolean taxDeductible, Long giftInKindId, String fmvMethod, String gikCategory, Integer quantity) {
+    public GiftInKindDetail(BigDecimal fairMarketValue, String description, String projectCode, boolean taxDeductible,
+                            Long giftInKindId, String fmvMethod, String gikCategory, Integer quantity) {
         super();
         this.description = description;
         this.detailFairMarketValue = fairMarketValue;
@@ -55,8 +54,13 @@ public class GiftInKindDetail extends AbstractCustomizableEntity {
         this.taxDeductible = taxDeductible;
         this.giftInKindId = giftInKindId;
     }
-    
-    public BigDecimal getDetailFairMarketValue() {
+
+	public GiftInKindDetail(Long id) {
+		this();
+		this.id = id;
+	}
+
+	public BigDecimal getDetailFairMarketValue() {
         return detailFairMarketValue;
     }
     

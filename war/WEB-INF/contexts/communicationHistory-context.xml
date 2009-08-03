@@ -4,15 +4,22 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
     <!-- CommunicationHistory -->
-	<bean id="communicationHistoryFormController" class="com.orangeleap.tangerine.controller.communicationHistory.CommunicationHistoryFormController" parent="tangerineConstituentAttributesFormController">
-        <property name="commandName" value="communicationHistory"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.CommunicationHistory"/>
+	<bean id="communicationHistoryFormController" class="com.orangeleap.tangerine.controller.communicationHistory.CommunicationHistoryFormController"
+	      parent="newTangerineConstituentAttributesFormController">
+		<property name="bindAddress" value="true"/>
+		<property name="bindPhone" value="true"/>
+		<property name="bindEmail" value="true"/>
         <property name="formView" value="communicationHistory/communicationHistory" />
         <property name="successView" value="redirect:/communicationHistoryView.htm" />
     </bean>
 
-    <bean id="communicationHistoryViewController" class="com.orangeleap.tangerine.controller.communicationHistory.CommunicationHistoryViewController" parent="communicationHistoryFormController">
+    <bean id="communicationHistoryViewController" class="com.orangeleap.tangerine.controller.communicationHistory.CommunicationHistoryViewController"
+          parent="communicationHistoryFormController">
+	    <property name="bindAddress" value="true"/>
+	    <property name="bindPhone" value="true"/>
+	    <property name="bindEmail" value="true"/>
         <property name="formView" value="communicationHistory/communicationHistoryView"/>
         <property name="successView" value="redirect:/communicationHistoryView.htm"/>
     </bean>

@@ -50,9 +50,9 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     private FormBeanType addressType;
     private FormBeanType phoneType;
     private FormBeanType emailType;
-    private Address selectedAddress;
-    private Phone selectedPhone;
-    private Email selectedEmail;
+    private Address address;
+    private Phone phone;
+    private Email email;
 
     public Site getSite() {
         return getConstituent().getSite();
@@ -131,65 +131,90 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
         return entryType;
     }
 
-    public Address getSelectedAddress() {
-        return selectedAddress;
+	@Override
+    public Address getAddress() {
+        return address;
     }
 
-    public void setSelectedAddress(Address selectedAddress) {
-        this.selectedAddress = selectedAddress;
+	@Override
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    public Phone getSelectedPhone() {
-        return selectedPhone;
+	@Override
+    public Phone getPhone() {
+        return phone;
     }
 
-    public void setSelectedPhone(Phone selectedPhone) {
-        this.selectedPhone = selectedPhone;
+	@Override
+    public void setPhone(Phone phone) {
+        this.phone = phone;
     }
 
-    public Email getSelectedEmail() {
-        return selectedEmail;
+	@Override
+    public Email getEmail() {
+        return email;
     }
 
-    public void setSelectedEmail(Email selectedEmail) {
-        this.selectedEmail = selectedEmail;
+	@Override
+    public void setEmail(Email email) {
+        this.email = email;
     }
 
-    @Override
+	public Long getConstituentId() {
+	    return constituentId;
+	}
+
+	public void setConstituentId(Long id) {
+	    constituentId = id;
+	}
+
+	/* TODO: remove below */
+	public Address getSelectedAddress() {
+		return null;
+	}
+
+	public void setSelectedAddress(Address address) {
+
+	}
+
+	public Phone getSelectedPhone() {
+		return null;
+	}
+
+	public void setSelectedPhone(Phone phone) {
+
+	}
+
+	public Email getSelectedEmail() {
+		return null;
+	}
+
+	public void setSelectedEmail(Email email) {
+
+	}
+
     public FormBeanType getAddressType() {
         return addressType;
     }
 
-    @Override
     public void setAddressType(FormBeanType type) {
         this.addressType = type;
     }
 
-    @Override
     public FormBeanType getPhoneType() {
         return phoneType;
     }
 
-    @Override
     public void setPhoneType(FormBeanType type) {
         this.phoneType = type;
     }
 
-    @Override
     public FormBeanType getEmailType() {
         return emailType;
     }
 
-    @Override
     public void setEmailType(FormBeanType type) {
         this.emailType = type;
-    }
-
-    public Long getConstituentId() {
-        return constituentId;
-    }
-
-    public void setConstituentId(Long id) {
-        constituentId = id;
     }
 }

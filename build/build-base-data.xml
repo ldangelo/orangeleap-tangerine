@@ -18,22 +18,24 @@
 	     	<transaction src="${basedir}/db/prod/domain/initKeys.sql"/>
             
 	     	<!-- Field Definitions -->
-	     	<transaction src="${basedir}/db/prod/domain/address.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/email.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/phone.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/constituent.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/adjustment.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/giftInKind.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/pledge.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/recurringGift.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/fieldRelationship.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/paymentHistory.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/communicationHistory.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/dashboard.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/cacheGroup.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/addressDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/emailDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/phoneDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/commonDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/constituentDomain.sql"/>
+		    <transaction src="${basedir}/db/prod/domain/distributionLinesDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/giftDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/adjustmentDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/giftInKindDomain.sql"/>
+		    <transaction src="${basedir}/db/prod/domain/giftInKindDetailsDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/pledgeDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/recurringGiftDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/paymentSourceDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/fieldRelationshipDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/paymentHistoryDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/communicationHistoryDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/dashboardDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/cacheGroupDomain.sql"/>
 	     	
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>
@@ -82,13 +84,17 @@
 		    <transaction src="${basedir}/db/prod/pages/communicationHistorySearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/communicationHistorySearchResults.sql"/>
 		    <transaction src="${basedir}/db/prod/pages/communicationHistoryView.sql"/>
+		    <transaction src="${basedir}/db/prod/pages/giftCombinedDistributionLines.sql"/>
 
 	     	<!-- Query Lookups -->
-	     	<transaction src="${basedir}/db/prod/domain/queryLookup.sql"/>
+	     	<transaction src="db/prod/domain/queryLookupDomain.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/queryLookup.sql"/>
 	     	
 	     	<!-- Field Validation -->
 	     	<transaction src="${basedir}/db/prod/pages/fieldValidation.sql"/>
+
+		     <!-- Entity Defaults -->
+	     	<transaction src="${basedir}/db/prod/domain/entityDefaultDomain.sql"/>
 
 	     	<!-- Picklists -->
             <transaction src="${basedir}/db/prod/picklists/projectCodePicklist.sql"/>

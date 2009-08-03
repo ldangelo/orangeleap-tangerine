@@ -18,21 +18,19 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import com.orangeleap.tangerine.type.GiftEntryType;
+import com.orangeleap.tangerine.type.GiftType;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import javax.xml.bind.annotation.XmlType;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.core.style.ToStringCreator;
-
-import com.orangeleap.tangerine.type.GiftEntryType;
-import com.orangeleap.tangerine.type.GiftType;
-import com.orangeleap.tangerine.util.StringConstants;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class Gift extends AbstractPaymentInfoEntity {
 
@@ -310,9 +308,9 @@ public class Gift extends AbstractPaymentInfoEntity {
 		}
 		this.setCurrencyCode(recurringGift.getCurrencyCode());
 
-		this.setSelectedPaymentSource(recurringGift.getSelectedPaymentSource());
-		this.setSelectedAddress(recurringGift.getSelectedAddress());
-		this.setSelectedPhone(recurringGift.getSelectedPhone());
+		this.setPaymentSource(recurringGift.getPaymentSource());
+		this.setAddress(recurringGift.getAddress());
+		this.setPhone(recurringGift.getPhone());
 	}
 
 	public String getShortDescription() {
@@ -332,7 +330,7 @@ public class Gift extends AbstractPaymentInfoEntity {
 		if (deductibleAmount == null) {
 			deductibleAmount = amount;
 		}
-		if (posted == false) {
+		if (!posted) {
 			setPostedDate(null);
 		}
 	}

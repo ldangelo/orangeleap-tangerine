@@ -18,7 +18,8 @@
 
 package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 
-import com.orangeleap.tangerine.domain.NewAddressAware;
+import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.OldAddressAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -30,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 import java.util.List;
-
+                                                                                                     
 @Component("addressPicklistInput")
 public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
 
@@ -45,7 +46,7 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
         StringBuilder sb = new StringBuilder();
         createBeginSelect(request, fieldVO, sb, NEW_ADDRESS_REF);
         createNoneOption(request, fieldVO, sb);
-        createNewOption(request, fieldVO, sb, ((NewAddressAware) fieldVO.getModel()).getAddress(), NEW_ADDRESS_REF);
+        createNewOption(request, fieldVO, sb, ((AddressAware) fieldVO.getModel()).getAddress(), NEW_ADDRESS_REF);
 
         List<Address> addresses = (List<Address>) request.getAttribute(StringConstants.ADDRESSES);
         createBeginOptGroup(request, fieldVO, sb, addresses);
@@ -74,7 +75,7 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
     }
 
     protected void checkIfExistingOptionSelected(Object model, Address addressToCheck, StringBuilder sb) {
-        NewAddressAware aware = (NewAddressAware) model;
+        OldAddressAware aware = (OldAddressAware) model;
         if (FormBeanType.EXISTING.equals(aware.getAddressType()) && aware.getAddress() != null &&
                 aware.getAddress().isUserCreated() == false && aware.getSelectedAddress() != null &&
                 addressToCheck.getId().equals(aware.getSelectedAddress().getId())) {
@@ -84,8 +85,8 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
 
     protected void createSelectedRef(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
         String selectedRef = null;
-        if (fieldVO.getModel() instanceof NewAddressAware) {
-            NewAddressAware aware = (NewAddressAware) fieldVO.getModel();
+        if (fieldVO.getModel() instanceof AddressAware) {
+            AddressAware aware = (AddressAware) fieldVO.getModel();
             if (aware.getAddress().isUserCreated() || (fieldVO.isRequired() && selectedRef == null)) {
                 selectedRef = NEW_ADDRESS_REF;
             }

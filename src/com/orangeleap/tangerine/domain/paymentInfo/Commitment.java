@@ -199,14 +199,6 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     public void setAssociatedGiftIds(List<Long> associatedGiftIds) {
         this.associatedGiftIds = associatedGiftIds;
     }
-    
-    @Override
-    public void setDefaults() {
-        super.setDefaults();
-        setDefaultCustomFieldValue(StringConstants.INITIAL_REMINDER, "5");
-        setDefaultCustomFieldValue(StringConstants.MAXIMUM_REMINDERS, "1");
-        setDefaultCustomFieldValue(StringConstants.REMINDER_INTERVAL, "0");
-    }
 
     @Override
     public String toString() {

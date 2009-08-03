@@ -23,7 +23,6 @@ import com.orangeleap.tangerine.util.StringConstants;
 import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -59,22 +58,20 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
         setOriginalGiftId(originalGift.getId());
         setConstituent(originalGift.getConstituent());
         setAdjustedTransactionDate(Calendar.getInstance(Locale.getDefault()).getTime());
-        setSelectedPaymentSource(originalGift.getSelectedPaymentSource());
-        setSelectedAddress(originalGift.getSelectedAddress());
-        setSelectedPhone(originalGift.getSelectedPhone());
+        setPaymentSource(originalGift.getPaymentSource());
+        setAddress(originalGift.getAddress());
+        setPhone(originalGift.getPhone());
         setPaymentType(originalGift.getPaymentType());
         setCurrencyCode(originalGift.getCurrencyCode());
         
-        List<DistributionLine> lines = new ArrayList<DistributionLine>();
         if (originalGift.getDistributionLines() != null) {
             for (DistributionLine originalLine : originalGift.getDistributionLines()) {
                 originalLine.resetIdToNull();
                 originalLine.setAmount(null);
                 originalLine.setGiftId(null);
-                lines.add(originalLine);
+                addDistributionLine(originalLine);
             }
         }
-        setDistributionLines(lines);
     }
 
     public AdjustedGift(BigDecimal adjustedAmount) {
@@ -219,17 +216,9 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
 	}
 
     @Override
-    public void setDefaults() {
-        super.setDefaults();
-        if (adjustedPaymentTo == null && constituent != null) {
-            setAdjustedPaymentTo(constituent.getFirstLast());
-        }
-    }
-
-    @Override
     public void prePersist() {
         super.prePersist();
-        if (adjustedPaymentRequired == false) {
+        if (!adjustedPaymentRequired) {
             setAdjustedPaymentTo(null);
             setAuthCode(null);
             setCheckNumber(null);
@@ -237,9 +226,9 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
             setPaymentStatus(null);
             setTxRefNum(null);
             setPaymentType(null);
-            setSelectedPaymentSource(null);
+            setPaymentSource(null);
         }
-		if (posted == false) {
+		if (!posted) {
 			setPostedDate(null);
 		}
     }

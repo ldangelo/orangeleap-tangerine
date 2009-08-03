@@ -43,9 +43,9 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
         assert history.getGiftId() == 600L;
         assert null == history.getRecurringGiftId();
         assert history.getPledgeId() == null;
-        assert history.getSelectedAddress() != null && history.getSelectedAddress().getId() == 100L;
-        assert history.getSelectedPhone() != null && history.getSelectedPhone().getId() == 100L;
-        assert history.getSelectedEmail() != null && history.getSelectedEmail().getId() == 100L;
+        assert history.getAddress() != null && history.getAddress().getId() == 100L;
+        assert history.getPhone() != null && history.getPhone().getId() == 100L;
+        assert history.getEmail() != null && history.getEmail().getId() == 100L;
     }
     
     @Test(groups = { "testMaintainCommunicationHistory" }, dependsOnGroups = { "testReadCommunicationHistory" })

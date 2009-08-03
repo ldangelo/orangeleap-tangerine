@@ -54,8 +54,8 @@ public class TangerineCustomDateEditor extends CustomDateEditor {
     public void setAsText(String text) throws IllegalArgumentException {
         try {
             super.setAsText(text);
-        } catch (IllegalArgumentException ex) {
-
+        }
+        catch (IllegalArgumentException ex) {
             try {
                 // need to add a year component if
                 Date d = this.alternateDateFormat.parse(text);

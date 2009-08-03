@@ -1,10 +1,12 @@
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.type.LayoutType;
@@ -38,6 +40,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	
 	protected final Log logger = OLLogger.getLog(getClass());
 	protected FieldService fieldService;
+	protected SiteService siteService;
 	protected MessageService messageService;
 	protected ConstituentService constituentService;
 	protected RelationshipService relationshipService;
@@ -46,6 +49,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		constituentService = (ConstituentService) applicationContext.getBean("constituentService");
 		messageService = (MessageService) applicationContext.getBean("messageService");
 		fieldService = (FieldService) applicationContext.getBean("fieldService");
+		siteService = (SiteService) applicationContext.getBean("siteService");
 		relationshipService = (RelationshipService) applicationContext.getBean("relationshipService");
 	}
 
@@ -76,7 +80,13 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		String formFieldName = TangerineForm.escapeFieldName(unescapedFieldName);
 
 		Object fieldValue = null;
-		if ( ! isDummy) {
+		if (isDummy) {
+			EntityDefault entityDefault = siteService.readEntityDefaultByTypeNameSectionDef(currentField);
+			if (entityDefault != null) {
+				fieldValue = siteService.getDefaultValue(entityDefault, PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject()), null);
+			}
+		}
+		else {
 			fieldValue = form.getFieldValue(formFieldName);
 		}
 
@@ -143,7 +153,18 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	}
 
 	protected String checkForNull(Object obj) {
-	    return obj == null ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml(obj.toString());
+		String escVal = StringConstants.EMPTY;
+		if (obj != null) {
+			if (obj instanceof Collection) {
+				if (!((Collection) obj).isEmpty()) {
+					escVal = StringUtils.collectionToCommaDelimitedString((Collection) obj);
+				}
+			}
+			else {
+				escVal = obj.toString();
+			}
+		}
+	    return StringEscapeUtils.escapeHtml(escVal);
 	}
 	
 	public String resolvedPrefixedFieldName(String prefix, String aFieldName) {
@@ -232,7 +253,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	protected void writeSideLiElementStart(SectionField currentField, Object fieldValue, StringBuilder sb) {
 		sb.append("<li class=\"side ");
 		sb.append(getSideCssClass(fieldValue));
-		sb.append("\" id=\"").append(currentField.getFieldDefinition().getId().replace(".", "-")).append("\">");
+		sb.append("\" id=\"").append(currentField.getFieldDefinition().getId().replace(".", "-").replace("[", "-").replace("]", "-")).append("\">");
 	}
 
 	protected void writeSideLiElementEnd(StringBuilder sb) {

@@ -5,52 +5,45 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="recurringGiftFormController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftFormController" parent="commitmentFormController">
-        <property name="pageType" value="recurringGift"/>
-        <property name="commandName" value="recurringGift"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift"/>
-        <property name="bindEmail" value="false"/>
-        <property name="formView" value="gift/recurringGift" />
-        <property name="successView" value="redirect:/recurringGiftView.htm" />
-        <property name="formUrl" value="redirect:/recurringGift.htm" />
-    </bean>
+	<bean id="recurringGiftFormController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftFormController" parent="newCommitmentFormController">
+		<property name="bindAddress" value="true"/>
+		<property name="bindPhone" value="true"/>
+        <property name="bindPaymentSource" value="true"/>
+	    <property name="formView" value="recurringGift/recurringGift" />
+	    <property name="successView" value="redirect:/recurringGiftView.htm" />
+	    <property name="formUrl" value="redirect:/recurringGift.htm" />
+	</bean>
 
-    <bean id="recurringGiftViewController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftViewController" parent="recurringGiftFormController">
-        <property name="formView" value="gift/recurringGiftView" />
-        <property name="successView" value="redirect:/recurringGiftView.htm" />
-    	<property name="handleEmptyDistributionLines" value="false"/>
-        <property name="bindEmail" value="false"/>
-		<property name="validators">
-			<list>
-	            <ref bean="recurringGiftValidator"/>
-	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
-			        <property name="pageType" value="recurringGift"/>
-	            </bean>
-	            <ref bean="codeValidator"/>	            
-			</list>
-        </property>
-    </bean>
+	<bean id="recurringGiftViewController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftViewController" parent="recurringGiftFormController">
+		<property name="bindAddress" value="true"/>
+		<property name="bindPhone" value="true"/>
+        <property name="bindPaymentSource" value="true"/>
+	    <property name="formView" value="recurringGift/recurringGiftView" />
+	    <property name="successView" value="redirect:/recurringGiftView.htm" />
+	</bean>
+
 
     <bean id="recurringGiftSearchController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftSearchFormController">
         <property name="commandName" value="recurringGift"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift"/>
-        <property name="formView" value="gift/recurringGiftSearch"/>
-        <property name="successView" value="gift/recurringGiftSearch"/>
+        <property name="formView" value="recurringGift/recurringGiftSearch"/>
+        <property name="successView" value="recurringGift/recurringGiftSearch"/>
     </bean>
 
     <bean id="recurringGiftListController" class="com.orangeleap.tangerine.controller.DummyController">
-        <property name="viewName" value="gift/recurringGiftList"/>
+        <property name="viewName" value="recurringGift/recurringGiftList"/>
     </bean>
     
     <bean id="recurringGiftSelectorController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftSelectorController">
-        <property name="viewName" value="gift/recurringGiftSelector"/>
+        <property name="viewName" value="recurringGift/recurringGiftSelector"/>
     </bean>
     
     <bean id="recurringGiftUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-		        <prop key="/recurringGift.htm">recurringGiftFormController</prop>
-		    	<prop key="/recurringGiftView.htm">recurringGiftViewController</prop>
+			    <prop key="/recurringGift.htm">recurringGiftFormController</prop>
+				<prop key="/recurringGiftView.htm">recurringGiftViewController</prop>
+
 		        <prop key="/recurringGiftSearch.htm">recurringGiftSearchController</prop>
 		        <prop key="/recurringGiftList.htm">recurringGiftListController</prop>
 		        <prop key="/recurringGiftSelector.htm">recurringGiftSelectorController</prop>

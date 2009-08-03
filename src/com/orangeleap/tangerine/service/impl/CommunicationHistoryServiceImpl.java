@@ -76,7 +76,9 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
             BindException errors = new BindException(br);
 
             entityValidator.validate(communicationHistory, errors);
-            if (errors.getAllErrors().size() > 0) throw errors;
+            if (errors.hasErrors()) {
+	            throw errors;
+            }
         }
 
 

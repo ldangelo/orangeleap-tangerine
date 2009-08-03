@@ -14,6 +14,7 @@ Form decorator that inherits from the basic layout.
 				<decorator:body/>
 
 			</div>
+			<page:param name="scripts"><decorator:getProperty property="scripts"/></page:param>			
 		</body>
 	</html>
 </page:applyDecorator>

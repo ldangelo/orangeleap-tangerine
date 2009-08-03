@@ -4,7 +4,8 @@
 <c:set var="totalFields" value="${sectionFieldCount}" scope="request"/>
 <c:choose>
 	<c:when test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
-		<div class="columns">
+		<div class="columns" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>">
+			<h4 class="formSectionHeader" id="h4-<c:out value='${sectionDefinition.sectionHtmlName}'/>"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 			<div class="column">
 				<ul class="formFields width385">
 					<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">

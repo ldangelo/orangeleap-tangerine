@@ -18,36 +18,51 @@
 
 package com.orangeleap.tangerine.controller.gift.commitment;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
+import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.gift.AbstractMutableGridFormController;
+import com.orangeleap.tangerine.controller.gift.AssociationEditor;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
-import com.orangeleap.tangerine.controller.gift.AssociationEditor;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.util.StringConstants;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-public abstract class CommitmentFormController<T extends Commitment> extends TangerineConstituentAttributesFormController {
+public abstract class CommitmentFormController<T extends Commitment> extends AbstractMutableGridFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
     protected String formUrl;
-    protected boolean handleEmptyDistributionLines = true;
 
     public void setFormUrl(String formUrl) {
         this.formUrl = formUrl;
     }
 
-    public void setHandleEmptyDistributionLines(boolean handleEmptyDistributionLines) {
-        this.handleEmptyDistributionLines = handleEmptyDistributionLines;
+	@Resource(name = "picklistItemService")
+	protected PicklistItemService picklistItemService;
+
+    @Override
+    protected AbstractEntity findEntity(HttpServletRequest request) {
+	    T commitment = readCommitmentCreateIfNull(request);
+
+        if (!StringUtils.hasText(commitment.getCurrencyCode())) {
+        	Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
+        	if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
+        		commitment.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
+        	}
+        }
+        return commitment;
     }
 
     @Override
@@ -58,38 +73,38 @@ public abstract class CommitmentFormController<T extends Commitment> extends Tan
 
     @SuppressWarnings("unchecked")
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        T commitment = (T) command;        
-  
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command,
+                                    BindException formErrors) throws Exception {
+	    TangerineForm form = (TangerineForm) command;
+	    T commitment = (T) form.getDomainObject();
+
         boolean saved = true;
-        T current = null;
         try {
-            current = maintainCommitment(commitment);
-        } 
-        catch (BindException e) {
+            commitment = maintainCommitment(commitment);
+        }
+        catch (BindException domainErrors) {
             saved = false;
-            current = commitment;
-            errors.addAllErrors(e);
+	        bindDomainErrorsToForm(request, formErrors, domainErrors, form, commitment);
         }
 
-        ModelAndView mav = null;
+        ModelAndView mav;
         if (saved) {
-            mav = new ModelAndView(super.appendSaved(getReturnView(current) + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+            mav = new ModelAndView(super.appendSaved(getReturnView(commitment) + "?" + getParamId() + "=" + commitment.getId() + "&" +
+		            StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
         }
         else {
-            if (handleEmptyDistributionLines) {
-                current.removeEmptyMutableDistributionLines();
-            }
-			mav = showForm(request, errors, getFormView());
+			mav = showForm(request, formErrors, getFormView());
         }
         return mav;
     }
-    
+
     protected String getReturnView(T entity) {
         return formUrl;
     }
-    
-    protected abstract T maintainCommitment(T entity) throws BindException; 
-    
+
+	protected abstract T readCommitmentCreateIfNull(HttpServletRequest request);
+
+    protected abstract T maintainCommitment(T entity) throws BindException;
+
     protected abstract String getParamId();
 }

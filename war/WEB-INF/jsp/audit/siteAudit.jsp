@@ -1,17 +1,17 @@
-<%@ include file="/WEB-INF/jsp/include.jsp"%>
+<%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
-<tiles:insertDefinition name="base">
-	<tiles:putAttribute name="customHeaderContent" type="string">
-        <script type="text/javascript" src="js/auditlist.js"></script>
-    </tiles:putAttribute>
-    <tiles:putAttribute name="browserTitle" value="Site Audit" />
-	<tiles:putAttribute name="primaryNav" value="Administration" />
-	<tiles:putAttribute name="secondaryNav" value="Auditing" />
-	<tiles:putAttribute name="mainContent" type="string">
-		<div class="content760 mainForm">
-
+<page:applyDecorator name="form">
+    <spring:message code='siteAudit' var="titleText" />
+    <html>
+        <head>
+            <title><c:out value="${titleText}"/></title>
+        </head>
+        <body>
             <h1 class="x-hidden" id="auditSiteName"><security:authentication property="details.site"/></h1>
-		<div id="auditHistoryGrid"></div>
-        </div>
-	</tiles:putAttribute>
-</tiles:insertDefinition>
+             <div id="auditHistoryGrid"></div>
+        </body>
+    </html>
+    <page:param name="scripts">
+        <script type="text/javascript" src="js/lists/auditlist.js"></script>
+    </page:param>
+</page:applyDecorator>

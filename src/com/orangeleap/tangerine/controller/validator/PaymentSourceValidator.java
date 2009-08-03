@@ -18,20 +18,19 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
-
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.util.CalendarUtils;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class PaymentSourceValidator implements Validator {
 
@@ -47,7 +46,8 @@ public class PaymentSourceValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return PaymentSource.class.equals(clazz);
+        return PaymentSource.class.equals(clazz)
+		         || TangerineForm.class.equals(clazz); // TODO;
     }
 
     @Override
@@ -69,14 +69,7 @@ public class PaymentSourceValidator implements Validator {
             errors.setNestedPath("paymentSource");
         }
 
-        if (PaymentSource.ACH.equals(source.getPaymentType())) {
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "achAccountNumber", "invalidAchAccountNumber");
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "achRoutingNumber", "invalidAchRoutingNumber");
-        }
-        else if (PaymentSource.CREDIT_CARD.equals(source.getPaymentType())) {
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardType", "invalidCreditCardNumber");
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardNumber", "invalidCreditCardNumber");
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardExpiration", "invalidCreditCardExpiration");
+        if (source != null && PaymentSource.CREDIT_CARD.equals(source.getPaymentType())) {
             Date expirationDate = source.getCreditCardExpiration();
             Calendar today = CalendarUtils.getToday(false);
             if (expirationDate == null || today.getTime().after(expirationDate)) {
@@ -91,7 +84,7 @@ public class PaymentSourceValidator implements Validator {
         if (target instanceof PaymentSource) {
             source = (PaymentSource) target;
             if (source.getProfile() != null) {
-                if (StringUtils.hasText(source.getProfile()) == false) {
+                if (!StringUtils.hasText(source.getProfile())) {
                     errors.rejectValue("profile", "blankPaymentProfile");
                 }
                 else if (source.getId() == null){

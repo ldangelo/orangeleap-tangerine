@@ -47,12 +47,12 @@ public class GiftInKindDetailsValidator implements Validator {
         logger.trace("validate:");
 
         GiftInKind gik = (GiftInKind) target;
-        BigDecimal total = getTotal(gik.getMutableDetails());
+        BigDecimal total = getTotal(gik.getDetails());
         BigDecimal fairMarketValue = gik.getFairMarketValue();
         if (total == null || fairMarketValue == null || total.compareTo(fairMarketValue) != 0) {
             errors.reject("giftInKindFairMarketValues");
         }
-        validateDescription(gik.getMutableDetails(), errors);
+        validateDescription(gik.getDetails(), errors);
     }
 
     private BigDecimal getTotal(List<GiftInKindDetail> details) {
@@ -68,7 +68,7 @@ public class GiftInKindDetailsValidator implements Validator {
     private void validateDescription(List<GiftInKindDetail> details, Errors errors) {
         for (GiftInKindDetail detail : details) {
             if (detail != null) {
-                if (detail.getDetailFairMarketValue() != null && StringUtils.hasText(detail.getDescription()) == false) {
+                if (detail.getDetailFairMarketValue() != null && !StringUtils.hasText(detail.getDescription())) {
                     errors.reject("giftInKindDescription");
                     break;
                 }

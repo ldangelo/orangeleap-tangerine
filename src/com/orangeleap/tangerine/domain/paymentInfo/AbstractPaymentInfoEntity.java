@@ -18,19 +18,12 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.NewAddressAware;
-import com.orangeleap.tangerine.domain.NewPhoneAware;
-import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.*;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
-import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.xml.bind.annotation.XmlType;
@@ -40,7 +33,7 @@ import java.util.List;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings({"unchecked"})
-public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, NewAddressAware, NewPhoneAware {
+public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, MutableGrid {
     private static final long serialVersionUID = 1L;
 
     protected String comments;
@@ -49,21 +42,22 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected String checkNumber;
     protected Long constituentId; // This variable is used by webservices instead of passing the entire constituent object
     protected Constituent constituent;
+
+	protected Address address;
+	protected Phone phone;
+	protected PaymentSource paymentSource;
+
+	protected List<DistributionLine> distributionLines = new ArrayList<DistributionLine>();
+
     /**
      * Form bean representation of the DistributionLines
      */
     protected List<DistributionLine> mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
         public Object create() {
             DistributionLine line = new DistributionLine(getConstituent());
-            line.setDefaults();
             return line;
         }
     });
-
-    /**
-     * Domain object representation of the DistributionLines
-     */
-    protected List<DistributionLine> distributionLines;
 
     /* Used by the form for cloning */
     protected List<DistributionLine> dummyDistributionLines;
@@ -71,10 +65,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     private FormBeanType addressType;
     private FormBeanType phoneType;
     private FormBeanType paymentSourceType;
-
-    protected Address address = new Address();
-    protected Phone phone = new Phone();
-    protected PaymentSource paymentSource = new PaymentSource(constituent);
 
     protected Address selectedAddress = new Address();
     protected Phone selectedPhone = new Phone();
@@ -84,7 +74,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         super();
     }
 
-    public Constituent getConstituent() {
+	public Constituent getConstituent() {
         return constituent;
     }
 
@@ -94,16 +84,16 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             if (paymentSource != null) {
                 paymentSource.setConstituent(constituent);
             }
-            if (selectedPaymentSource != null) {
-                selectedPaymentSource.setConstituent(constituent);
-            }
+//            if (selectedPaymentSource != null) {
+//                selectedPaymentSource.setConstituent(constituent);
+//            }
             constituentId = constituent.getId();
         }
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         DistributionLine line = new DistributionLine(constituent);
         line.setDefaults();
         lines.add(line);
-        dummyDistributionLines = UnmodifiableList.decorate(lines);
+//        dummyDistributionLines = UnmodifiableList.decorate(lines);
     }
 
     public String getComments() {
@@ -161,10 +151,14 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 		this.distributionLines.add(distributionLine);
 	}
 
-	public void addDistributionLines(int listSize, Constituent constituent) {
+	@Override
+	public void resetAddGridRows(int listSize, Constituent constituent) {
+		clearDistributionLines();
+		if (listSize == 0) {
+			listSize = 1;
+		}
 		for (int i = 0; i < listSize; i++) {
 			DistributionLine distributionLine = new DistributionLine(0L, constituent);
-			distributionLine.setDefaults();
 			addDistributionLine(distributionLine);
 		}
 	}
@@ -192,7 +186,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         }
         if (distributionLines.isEmpty()) {
             DistributionLine line = new DistributionLine(constituent);
-            line.setDefaults();
             distributionLines.add(line);
         }
     }
@@ -208,22 +201,18 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         }
     }
 
-    @Override
     public FormBeanType getAddressType() {
         return this.addressType;
     }
 
-    @Override
     public void setAddressType(FormBeanType type) {
         this.addressType = type;
     }
 
-    @Override
     public FormBeanType getPhoneType() {
         return this.phoneType;
     }
 
-    @Override
     public void setPhoneType(FormBeanType type) {
         this.phoneType = type;
     }
@@ -280,7 +269,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.selectedPaymentSource = selectedPaymentSource;
     }
 
-    @Override
     public Address getSelectedAddress() {
         if (selectedAddress == null) {
             selectedAddress = new Address(); // created only because spring needs to bind to it
@@ -292,7 +280,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.selectedAddress = selectedAddress;
     }
 
-    @Override
     public Phone getSelectedPhone() {
         if (selectedPhone == null) {
             selectedPhone = new Phone(); // created only because spring needs to bind to it
@@ -327,26 +314,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     @Override
-    public void setDefaults() {
-        super.setDefaults();
-        if (paymentSource != null) {
-            paymentSource.setDefaults();
-        }
-        if (distributionLines != null) {
-            for (DistributionLine line : distributionLines) {
-                if (line != null) {
-                    line.setDefaults();
-                }
-            }
-        }
-    }
-
-    @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("paymentType", paymentType).append("currencyCode", currencyCode).
                 append("checkNumber", checkNumber).append("comments", comments).
-                append("paymentSourceType", paymentSourceType).
-                append("phoneType", phoneType).append("addressType", addressType).
                 toString();
     }
 

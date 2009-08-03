@@ -23,6 +23,7 @@
 	border:1px solid #aaa;
 	background: #eee;
 	margin-bottom:12px;
+    padding-left: 20px;
 	background: #eee url(../images/sideBarGradient3.gif) repeat-x 0 -50px;
 }
 .iconHeader img {

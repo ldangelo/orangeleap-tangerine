@@ -36,7 +36,6 @@ public class GiftDataProvider {
         gift.setConstituent(constituent);
         gift.setId(100L);
         gift.setPaymentSource(paymentSource);
-        gift.setSelectedPaymentSource(paymentSource);
         return new Object[][] { new Object[] { site, constituent, gift } };
     }
 }

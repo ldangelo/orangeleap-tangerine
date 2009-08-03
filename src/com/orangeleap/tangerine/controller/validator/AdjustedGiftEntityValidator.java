@@ -18,12 +18,10 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.validation.Errors;
-
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.type.FormBeanType;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.springframework.validation.Errors;
 
 /**
  * This class is a bit of hack to get EntityValidator to validate paymentSource, address, and phone only when adjustedPaymentRequired is true.
@@ -40,33 +38,10 @@ public class AdjustedGiftEntityValidator extends EntityValidator {
         if (logger.isTraceEnabled()) {
             logger.trace("validateSubEntities:");
         }
-        boolean validateSubEntities = true;
         AdjustedGift adjustedGift = (AdjustedGift)target;
-        if (adjustedGift.isAdjustedPaymentRequired() == false) {
-            validateSubEntities = false;
-        }
-
-        if (validateSubEntities) {
-            if (FormBeanType.NEW.equals(adjustedGift.getPaymentSourceType())) {
-                paymentSourceValidator.validatePaymentSource(adjustedGift, errors);
-            }
-            else if (FormBeanType.EXISTING.equals(adjustedGift.getPaymentSourceType())) {
-                // TODO: validate ID > 0
-            }
-            
-            if (FormBeanType.NEW.equals(adjustedGift.getAddressType())) {
-                addressValidator.validateAddress(adjustedGift, errors);
-            }
-            else if (FormBeanType.EXISTING.equals(adjustedGift.getAddressType())) {
-                // TODO: validate ID > 0
-            }
-
-            if (FormBeanType.NEW.equals(adjustedGift.getPhoneType())) {
-                phoneValidator.validatePhone(adjustedGift, errors);
-            }
-            else if (FormBeanType.EXISTING.equals(adjustedGift.getPhoneType())) {
-                // TODO: validate ID > 0
-            }
+	    
+        if (adjustedGift.isAdjustedPaymentRequired()) {
+            super.validateSubEntities(target, errors);
         }
     }
 }

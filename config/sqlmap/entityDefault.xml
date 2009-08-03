@@ -6,28 +6,52 @@
 	<resultMap id="ENTITY_DEFAULT" class="com.orangeleap.tangerine.domain.customization.EntityDefault">
 		<result property="id" column="ENTITY_DEFAULT_ID" jdbcType="BIGINT" />
 		<result property="defaultValue" column="DEFAULT_VALUE" jdbcType="VARCHAR" />
+		<result property="conditionExp" column="CONDITION_EXP" jdbcType="VARCHAR" />
 		<result property="entityFieldName" column="ENTITY_FIELD_NAME" jdbcType="VARCHAR" />
 		<result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
-		<result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
+		<result property="sectionDefinition" resultMap="SECTION_DEFINITION.SECTION_DEFINITION_RESULT" />
+		<result property="siteName" column="ENTITY_DEF_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
-	
+
+	<sql id="SELECT_ENT_DEF_FRAGMENT">
+		select ed.ENTITY_DEFAULT_ID, ed.DEFAULT_VALUE, ed.CONDITION_EXP, ed.ENTITY_FIELD_NAME,
+		ed.ENTITY_TYPE, ed.SITE_NAME as ENTITY_DEF_SITE_NAME, 
+		<include refid="SECTION_DEF_COLS_FRAGMENT" />
+
+		from ENTITY_DEFAULT ed
+	</sql>
+
 	<!-- Selects -->
-	<select id="SELECT_BY_ENTITY_TYPE_AND_SITE" resultMap="ENTITY_DEFAULT"	parameterClass="map">
-		select ENTITY_DEFAULT_ID, DEFAULT_VALUE, ENTITY_FIELD_NAME,	ENTITY_TYPE, SITE_NAME
-		from ENTITY_DEFAULT
-		where SITE_NAME = #siteName#
-		<isNotNull prepend="AND" property="entityTypes">
-			ENTITY_TYPE in 
-			<iterate property="entityTypes" conjunction="," open="(" close=")">
-				#entityTypes[]#
-			</iterate>
+	<select id="SELECT_BY_ENTITY_TYPE_NAME_SECT_DEF_SITE" resultMap="ENTITY_DEFAULT" parameterClass="map">
+		<include refid="SELECT_ENT_DEF_FRAGMENT"/>
+		left outer join SECTION_DEFINITION sd on ed.SECTION_DEFINITION_ID = sd.SECTION_DEFINITION_ID AND sd.SECTION_DEFINITION_ID = #sectionDefinition.id#
+
+		where (ed.SITE_NAME = #siteName# or ed.SITE_NAME is null)
+		<isNotNull prepend="AND" property="entityType">
+			ENTITY_TYPE = #entityType#
 		</isNotNull>
+
+		AND ed.ENTITY_FIELD_NAME = #entityFieldName#
+
+		order by ENTITY_FIELD_NAME, ENTITY_TYPE, ed.SITE_NAME desc, SECTION_DEFINITION_ID desc
+	</select>
+
+	<select id="SELECT_BY_ENTITY_TYPE_AND_SITE" resultMap="ENTITY_DEFAULT" parameterClass="map">
+		<include refid="SELECT_ENT_DEF_FRAGMENT"/>
+		left outer join SECTION_DEFINITION sd on ed.SECTION_DEFINITION_ID = sd.SECTION_DEFINITION_ID AND sd.SECTION_DEFINITION_ID = #sectionDefinition.id#
+
+		where (ed.SITE_NAME = #siteName# or ed.SITE_NAME is null)
+		<isNotNull prepend="AND" property="entityType">
+			ENTITY_TYPE = #entityType#
+		</isNotNull>
+
+		order by ENTITY_FIELD_NAME, ENTITY_TYPE, ed.SITE_NAME desc, SECTION_DEFINITION_ID desc
 	</select>
 
 	<!-- Inserts -->
 	<insert id="INSERT_ENTITY_DEFAULT" parameterClass="com.orangeleap.tangerine.domain.customization.EntityDefault">
-		insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
-		values (#defaultValue#, #entityFieldName#, #entityType#, #siteName#)
+		insert into ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE, SECTION_DEFINITION_ID, SITE_NAME)
+		values (#defaultValue#, #conditionExp#, #entityFieldName#, #entityType#, #sectionDefinition.id#, #siteName#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -38,8 +62,10 @@
 		update ENTITY_DEFAULT 
 		SET 
 		DEFAULT_VALUE = #defaultValue#,
+		CONDITION_EXP = #conditionExp#,
 		ENTITY_FIELD_NAME = #entityFieldName#,
 		ENTITY_TYPE = #entityType#,
+		SECTION_DEFINITION_ID = #sectionDefinition.id#,
 		SITE_NAME = #siteName#
 		where ENTITY_DEFAULT_ID = #id:BIGINT#
 	</update>

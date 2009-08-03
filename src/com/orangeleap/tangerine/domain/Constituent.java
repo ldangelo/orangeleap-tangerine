@@ -505,14 +505,6 @@ public class Constituent extends AbstractCommunicatorEntity {
     }
 
     @Override
-    public void setDefaults() {
-        super.setDefaults();
-        if (isOrganization()) {
-            setDefaultCustomFieldValue(ORGANIZATION_ELIGIBILITY, StringConstants.UNKNOWN_LOWER_CASE);
-        }
-    }
-
-    @Override
     public void prePersist() {
         super.prePersist();
         if (isOrganization()) {

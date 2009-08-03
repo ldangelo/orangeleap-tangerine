@@ -544,5 +544,5 @@ tbody.expandable tr.expanded td { border-bottom: 0; }
 tbody.gridRow tr.lineRow div.readOnlyField { width: 85%; }
 tbody.gridRow tr.lineRow div.readOnlyField.code { width: 97%; }
 tbody.gridRow tr.lineRow td div.lookupScrollTop, tbody.gridRow tr.lineRow td div.lookupScrollBottom { left: 0; position: static; }
-tbody.gridRow tr.lineRow td div.lookupScrollContainer, div.multiLookupField { padding: 0; }
+tbody.gridRow tr.lineRow td div.lookupScrollContainer, tbody.gridRow tr.lineRow td div.multiLookupField { padding: 0; }
 

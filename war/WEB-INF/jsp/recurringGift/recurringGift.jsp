@@ -10,11 +10,7 @@
 
 	<html>
 		<head>
-			<title><c:out value="${titleText}"/></title>
-			<script type="text/javascript" src="js/recurringGiftCalc.js"></script>
-			<script type="text/javascript" src="js/payment/paymentEditable2.js"></script>
-			<script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${requestScope.pageType}"/>';</script>
-			<script type="text/javascript" src="js/gift/distribution2.js"></script>
+			<title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
 		</head>
 		<body>
 			<form:form method="post" commandName="${requestScope.commandObject}">
@@ -41,11 +37,17 @@
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
-					<c:if test="${param.recurringGiftId > 0}">
-						<a class="newAccountButton" href="recurringGift.htm?constituentId=${constituent.id}"><spring:message code='enterANewRecurringGift'/></a>
+					<c:if test="${form.domainObject.id > 0}">
+						<a class="newAccountButton" href="recurringGift.htm?constituentId=${constituent.id}"><spring:message code='enterNew'/></a>
 					</c:if>
 				</div>
 			</form:form>
+			<page:param name="scripts">
+				<script type="text/javascript" src="js/recurringGiftCalc.js"></script>
+				<script type="text/javascript" src="js/payment/paymentEditable2.js"></script>
+				<script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
+				<script type="text/javascript" src="js/gift/distribution2.js"></script>
+			</page:param>
 		</body>
 	</html>
 </page:applyDecorator>

@@ -18,15 +18,12 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import com.orangeleap.tangerine.domain.NewPhoneAware;
+import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 
 public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
 
@@ -52,18 +49,20 @@ public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
         String inPath = errors.getNestedPath();
         if (target instanceof Phone) {
             phone = (Phone) target;
-        } else if (target instanceof NewPhoneAware) {
-            phone = ((NewPhoneAware) target).getPhone();
+        }
+        else if (target instanceof PhoneAware) {
+            phone = ((PhoneAware) target).getPhone();
             errors.setNestedPath("phone");
-        } else if (target instanceof AbstractCommunicatorEntity) {
+        }
+        else if (target instanceof AbstractCommunicatorEntity) {
             phone = ((AbstractCommunicatorEntity) target).getPrimaryPhone();
             errors.setNestedPath("primaryPhone");
         }
 
-        if (StringUtils.hasText(phone.getCustomFieldValue(StringConstants.PHONE_TYPE)) == false) {
-            errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + StringConstants.PHONE_TYPE + StringConstants.CUSTOM_FIELD_MAP_END, "errorPhoneTypeRequired");
-        }
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Phone number is required");
+//        if (StringUtils.hasText(phone.getCustomFieldValue(StringConstants.PHONE_TYPE)) == false) {
+//            errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + StringConstants.PHONE_TYPE + StringConstants.CUSTOM_FIELD_MAP_END, "errorPhoneTypeRequired");
+//        }
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Phone number is required");
         validateDates(phone, errors);
         errors.setNestedPath(inPath);
     }

@@ -22,12 +22,14 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -81,35 +83,69 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
         return getSqlMapClientTemplate().update("UPDATE_SITE", site);
     }
 
-    @Override
-    public EntityDefault createEntityDefault(EntityDefault entityDefault) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("createEntityDefault: entityDefault = " + entityDefault);
-        }
-        Long id = (Long) getSqlMapClientTemplate().insert("INSERT_ENTITY_DEFAULT", entityDefault);
-        entityDefault.setId(id);
-        if (logger.isDebugEnabled()) {
-            logger.debug("createEntityDefault: id = " + id);
-        }
-        return entityDefault;
-    }
+	@Override
+	public EntityDefault createEntityDefault(EntityDefault entityDefault) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("createEntityDefault: entityDefault = " + entityDefault);
+	    }
+	    Long id = (Long) getSqlMapClientTemplate().insert("INSERT_ENTITY_DEFAULT", entityDefault);
+	    entityDefault.setId(id);
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("createEntityDefault: id = " + id);
+	    }
+	    return entityDefault;
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<EntityDefault> readEntityDefaults(List<EntityType> entityTypes) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readEntityDefaults: entityTypes = " + entityTypes);
-        }
-        Map<String, Object> params = setupParams();
-        params.put("entityTypes", entityTypes);
-        return getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_AND_SITE", params);
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<EntityDefault> readEntityDefaults(EntityType entityType, SectionDefinition sectionDefinition) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readEntityDefaults: entityTypes = " + entityType + " sectionDefinition = " + sectionDefinition);
+	    }
+	    Map<String, Object> params = setupParams();
+	    params.put("entityType", entityType);
+		params.put("sectionDefinition", sectionDefinition);
+	    List<EntityDefault> defaults = getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_AND_SITE", params);
 
-    @Override
-    public int updateEntityDefault(EntityDefault entityDefault) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("updateEntityDefault: entityDefault = " + entityDefault);
-        }
-        return getSqlMapClientTemplate().update("UPDATE_ENTITY_DEFAULT", entityDefault);
-    }
+		String prevFieldName = null;
+		// Use only the first EntityDefault with the same field name (ordered desc by sectDef and siteName)
+		List<EntityDefault> filteredDefaults = new ArrayList<EntityDefault>();
+		if (defaults != null) {
+			for (EntityDefault aDefault : defaults) {
+				if (prevFieldName == null || !prevFieldName.equals(aDefault.getEntityFieldName())) {
+					prevFieldName = aDefault.getEntityFieldName();
+					filteredDefaults.add(aDefault);
+				}
+			}
+		}
+		return filteredDefaults;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public EntityDefault readEntityDefaultByTypeNameSectionDef(EntityType entityType, String entityFieldName, SectionDefinition sectionDefinition) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readEntityDefaultByTypeNameSectionDef: entityType = " + entityType + " entityFieldName = " + entityFieldName +
+			        " sectionDefinition.id = " + (sectionDefinition != null ? sectionDefinition.getId() : null));
+	    }
+	    Map<String, Object> params = setupParams();
+	    params.put("entityType", entityType);
+		params.put("entityFieldName", entityFieldName);
+		params.put("sectionDefinition", sectionDefinition);
+	    List<EntityDefault> entityDefaults = getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_NAME_SECT_DEF_SITE", params);
+
+		EntityDefault entityDef = null;
+		if (entityDefaults != null && !entityDefaults.isEmpty()) {
+			entityDef = entityDefaults.get(0);
+		}
+		return entityDef;
+	}
+
+	@Override
+	public int updateEntityDefault(EntityDefault entityDefault) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("updateEntityDefault: entityDefault = " + entityDefault);
+	    }
+	    return getSqlMapClientTemplate().update("UPDATE_ENTITY_DEFAULT", entityDefault);
+	}
 }

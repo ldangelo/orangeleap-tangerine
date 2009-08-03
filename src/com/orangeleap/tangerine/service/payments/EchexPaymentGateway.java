@@ -80,7 +80,7 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 			Batch batch = getTestBatch(ss.readSite(g.getSite().getName()));
 	        Detail detail = new Detail();
 	        detail.setDateTime(g.getDonationDate());
-	        detail.setAccountNumber(g.getSelectedPaymentSource().getAchRoutingNumber()+g.getSelectedPaymentSource().getAchAccountNumber());
+	        detail.setAccountNumber(g.getPaymentSource().getAchRoutingNumber()+g.getPaymentSource().getAchAccountNumber());
 	        detail.setCheckAmount(g.getAmount());
 	        detail.setTransactionNumber(g.getId().intValue());
 	        batch.setDetail(detail);

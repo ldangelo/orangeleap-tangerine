@@ -18,30 +18,8 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.Validator;
-
-import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.AddressAware;
-import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.EmailAware;
-import com.orangeleap.tangerine.domain.NewAddressAware;
-import com.orangeleap.tangerine.domain.NewEmailAware;
-import com.orangeleap.tangerine.domain.NewPhoneAware;
-import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.*;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -52,10 +30,25 @@ import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
+
+import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class EntityValidator implements Validator {
 
@@ -99,7 +92,8 @@ public class EntityValidator implements Validator {
         || Address.class.equals(clazz) 
         || Email.class.equals(clazz) 
         || Phone.class.equals(clazz) 
-        || PaymentSource.class.equals(clazz);
+        || PaymentSource.class.equals(clazz)
+		        || TangerineForm.class.equals(clazz); // TODO: fix
     }
 
     @SuppressWarnings("unchecked")
@@ -140,40 +134,28 @@ public class EntityValidator implements Validator {
         }
         if (target instanceof PaymentSourceAware) {
             PaymentSourceAware obj = (PaymentSourceAware) target;
-            if (FormBeanType.NEW.equals(obj.getPaymentSourceType())) {
-                paymentSourceValidator.validatePaymentSource(target, errors);
-            }
-            else if (FormBeanType.EXISTING.equals(obj.getPaymentSourceType())) {
-                // TODO: validate ID > 0
-            }
+			if (isNew(obj.getPaymentSource())) {
+				paymentSourceValidator.validatePaymentSource(target, errors);
+			}
         }
         if (target instanceof AddressAware) {
             AddressAware obj = (AddressAware) target;
-            if (FormBeanType.NEW.equals(obj.getAddressType()) && obj instanceof NewAddressAware) {
+	        if (isNew(obj.getAddress())) {
                 addressValidator.validateAddress(target, errors);
-            }
-            else if (FormBeanType.EXISTING.equals(obj.getAddressType())) {
-                // TODO: validate ID > 0
             }
         }
 
         if (target instanceof PhoneAware) {
             PhoneAware obj = (PhoneAware) target;
-            if (FormBeanType.NEW.equals(obj.getPhoneType()) && obj instanceof NewPhoneAware) {
+	        if (isNew(obj.getPhone())) {
                 phoneValidator.validatePhone(target, errors);
-            }
-            else if (FormBeanType.EXISTING.equals(obj.getPhoneType())) {
-                // TODO: validate ID > 0
             }
         }
 
         if (target instanceof EmailAware) {
             EmailAware obj = (EmailAware) target;
-            if (FormBeanType.NEW.equals(obj.getEmailType()) && obj instanceof NewEmailAware) {
+	        if (isNew(obj.getEmail())) {
                 emailValidator.validateEmail(target, errors);
-            }
-            else if (FormBeanType.EXISTING.equals(obj.getEmailType())) {
-                // TODO: validate ID > 0
             }
         }
     }
@@ -297,4 +279,8 @@ public class EntityValidator implements Validator {
         Object property = getProperty(key, entity, fieldValueMap);
         return property == null ? StringConstants.EMPTY : property.toString();
     }
+
+	protected boolean isNew(AbstractEntity entity) {
+		return entity != null && entity.isNew(); 
+	}
 }

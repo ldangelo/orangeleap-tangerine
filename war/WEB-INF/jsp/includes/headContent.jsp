@@ -9,8 +9,4 @@
 <![endif]-->
 
 <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
-<script type="text/javascript" src="js/tangerine.js.ycomp.js"></script>
-<script type="text/javascript" src="js/sidebar.js"></script>
-<script type="text/javascript" src="js/history.js"></script>
-<script type="text/javascript" src="js/orangeleap.js"></script>
         

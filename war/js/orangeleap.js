@@ -286,7 +286,11 @@ var Picklist = {
 			$picklists.each(function() {
 				var $myPicklist = $(this);
 				var selectors = $myPicklist.attr("references");
-				var selectedRefs = jQuery.trim($("div#selectedRef-" + $myPicklist.attr("id")).text());
+				var thisPicklistId = $myPicklist.attr("id");
+				if (thisPicklistId.indexOf("div-") == 0) {
+					thisPicklistId = thisPicklistId.substring(4);
+				}
+				var selectedRefs = jQuery.trim($("div#selectedRef-" + thisPicklistId).text());
 				if (selectors && $.trim(selectors) != '') {
 					var $targets = $(selectors, "form"); 
 					if ($targets) {
@@ -568,7 +572,7 @@ var Picklist = {
 		var tree = Picklist.getTree($liElem);
 		
 		// If no numeric ID selected, use "none"
-		if (isNaN(parseInt(value, 10)) || $select.containsOption(value) == false) {
+		if (isNaN(parseInt(value, 10)) || !$select.containsOption(value)) {
 			value = "none";
 		}
 
@@ -626,16 +630,16 @@ var OrangeLeap = {
 		$("input, select, textbox", $newRow).each(function() {
 			var $elem = $(this);
 			var thisId = $elem.attr("id");
-			$elem.attr("id", thisId.replace(new RegExp("\\-0\\-","g"), "-" + index + "-"));
+			$elem.attr("id", thisId.replace(new RegExp("\\-0\\-","g"), "-" + index + "-").replace(new RegExp("tangDummy\\-", "g"), ""));
 			var thisName = $elem.attr("name");
-			$elem.attr("name", thisName.replace(new RegExp("\\[0\\]","g"), "[" + index + "]"));
+			$elem.attr("name", thisName.replace(new RegExp("\\-0\\-","g"), "-" + index + "-").replace(new RegExp("tangDummy\\-", "g"), ""));
 			var otherFieldAttr = $elem.attr("otherFieldId");
 			if (otherFieldAttr) {
-				$elem.attr("otherFieldId", otherFieldAttr.replace(new RegExp("\\-0\\-","g"), "-" + index + "-"));
+				$elem.attr("otherFieldId", otherFieldAttr.replace(new RegExp("\\-0\\-","g"), "-" + index + "-").replace(new RegExp("tangDummy\\-", "g"), ""));
 			}
 			var additionalFieldAttr = $elem.attr("additionalFieldId");
 			if (additionalFieldAttr) {
-				$elem.attr("additionalFieldId", additionalFieldAttr.replace(new RegExp("\\-0\\-","g"), "-" + index + "-"));
+				$elem.attr("additionalFieldId", additionalFieldAttr.replace(new RegExp("\\-0\\-","g"), "-" + index + "-").replace(new RegExp("tangDummy\\-", "g"), ""));
 			}
 		});
 		$("a.treeNodeLink", $newRow).each(function() {
@@ -645,12 +649,12 @@ var OrangeLeap = {
 		$("tr.hiddenRow li, tr.hiddenRow div", $newRow).each(function() {
 			var $elem = $(this);
 			var thisId = $elem.attr("id");
-			$elem.attr("id", thisId.replace(new RegExp("\\-0\\-","g"), "-" + index + "-"));
+			$elem.attr("id", thisId.replace(new RegExp("\\-0\\-","g"), "-" + index + "-").replace(new RegExp("tangDummy\\-", "g"), ""));
 		});
 		$("tr.hiddenRow label", $newRow).each(function() {
 			var $elem = $(this);
 			var thisId = $elem.attr("for");
-			$elem.attr("for", thisId.replace(new RegExp("\\[0\\]","g"), "-" + index + "-"));
+			$elem.attr("for", thisId.replace(new RegExp("\\-0\\-","g"), "-" + index + "-").replace(new RegExp("tangDummy\\-", "g"), ""));
 		});
 	},
 	
@@ -1496,7 +1500,7 @@ var MultiSelect = {
 	}
 };
 // Create a placeholder console object in case Firebug is not present.
-if (typeof console == "undefined" || typeof console.log == "undefined") var console = { log: function() {} };
+if (typeof console == "undefined" || typeof console.log == "undefined") console = { log: function() {} };
 // Initialize the console (workaround for current Firebug defect)
 console.log();
 

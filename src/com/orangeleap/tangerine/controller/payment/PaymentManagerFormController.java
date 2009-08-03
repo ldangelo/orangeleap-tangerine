@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.controller.payment;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -36,53 +37,66 @@ import java.util.Set;
 
 public class PaymentManagerFormController extends TangerineConstituentAttributesFormController {
 
-    /**
-     * Logger for this class and subclasses
-     */
-    protected final Log logger = OLLogger.getLog(getClass());
+	/**
+	 * Logger for this class and subclasses
+	 */
+	protected final Log logger = OLLogger.getLog(getClass());
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
-        List<PaymentSource> paymentSources = paymentSourceService.readAllPaymentSourcesACHCreditCard(this.getConstituentId(request));
-        refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
+		List<PaymentSource> paymentSources = paymentSourceService.readAllPaymentSourcesACHCreditCard(this.getConstituentId(request));
+		refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
+	}
 
-    @Override
-    protected AbstractEntity findEntity(HttpServletRequest request) {
-        return paymentSourceService.readPaymentSourceCreateIfNull(request.getParameter("paymentSourceId"), super.getConstituent(request));
-    }
+	@Override
+	protected AbstractEntity findEntity(HttpServletRequest request) {
+		return paymentSourceService.readPaymentSourceCreateIfNull(request.getParameter("paymentSourceId"), super.getConstituent(request));
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        PaymentSource source = (PaymentSource) command;
-        if (source.getId() == null) {
-            Map<String, Object> sources = paymentSourceService.checkForSameConflictingPaymentSources(source);
+	@SuppressWarnings("unchecked")
+	@Override
+	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
+		TangerineForm form = (TangerineForm) command;
+		PaymentSource source = (PaymentSource) form.getDomainObject();
+		if (source.getId() == null) {
+			Map<String, Object> sources = paymentSourceService.checkForSameConflictingPaymentSources(source);
 
-            PaymentSource existingSource = (PaymentSource) sources.get("existingSource");
-            Set<String> names = (Set<String>) sources.get("names");
-            List<PaymentSource> dateSources = (List<PaymentSource>) sources.get("dates");
+			PaymentSource existingSource = (PaymentSource) sources.get("existingSource");
+			Set<String> names = (Set<String>) sources.get("names");
+			List<PaymentSource> dateSources = (List<PaymentSource>) sources.get("dates");
 
-            if (existingSource != null) {
-                ModelAndView mav = showForm(request, response, errors);
-                errors.reject("errorPaymentSourceExists", new String[]{existingSource.getProfile()}, "The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
-                return mav;
-            } else if (names != null && names.isEmpty() == false && "true".equals(request.getParameter("useConflictingName")) == false) {
-                ModelAndView mav = showForm(request, response, errors);
-                mav.addObject("conflictingNames", names);
-                return mav;
-            } else if (dateSources != null && dateSources.isEmpty() == false) {
-                existingSource = dateSources.get(0); // should only be 1
-                ModelAndView mav = showForm(request, response, errors);
-                errors.reject("errorCreditCardDateExists", new String[]{existingSource.getProfile(),
-                        existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear()},
-                        "The entered credit card information already exists for the profile '" + existingSource.getProfile() + "' but with an expiration date of '" +
-                                existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");
-                return mav;
-            }
-        }
-        paymentSourceService.maintainPaymentSource(source);
-        return super.onSubmit(request, response, command, errors);
-    }
+			if (existingSource != null) {
+				ModelAndView mav = showForm(request, response, formErrors);
+				formErrors.reject("errorPaymentSourceExists", new String[]{existingSource.getProfile()}, "The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
+				return mav;
+			}
+			else if (names != null && !names.isEmpty() && !"true".equals(request.getParameter("useConflictingName"))) {
+				ModelAndView mav = showForm(request, response, formErrors);
+				mav.addObject("conflictingNames", names);
+				return mav;
+			}
+			else if (dateSources != null && !dateSources.isEmpty()) {
+				existingSource = dateSources.get(0); // should only be 1
+				ModelAndView mav = showForm(request, response, formErrors);
+				formErrors.reject("errorCreditCardDateExists", new String[]{existingSource.getProfile(),
+						existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear()},
+						"The entered credit card information already exists for the profile '" + existingSource.getProfile() + "' but with an expiration date of '" +
+								existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");
+				return mav;
+			}
+		}
+
+		ModelAndView mav;
+		try {
+			source = paymentSourceService.maintainPaymentSource(source);
+			mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.PAYMENT_SOURCE_ID + "=" + source.getId() +
+					"&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+		}
+		catch (BindException domainErrors) {
+			bindDomainErrorsToForm(request, formErrors, domainErrors, form, source);
+			mav = showForm(request, formErrors, getFormView());
+		}
+		return mav;
+	}
 }

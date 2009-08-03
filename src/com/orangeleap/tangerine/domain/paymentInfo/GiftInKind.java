@@ -20,23 +20,20 @@ package com.orangeleap.tangerine.domain.paymentInfo;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.MutableGrid;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.list.LazyList;
-import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("unchecked")
-public class GiftInKind extends AbstractCustomizableEntity {
+public class GiftInKind extends AbstractCustomizableEntity implements MutableGrid {
     private static final long serialVersionUID = 1L;
 
     private BigDecimal fairMarketValue;
@@ -52,29 +49,12 @@ public class GiftInKind extends AbstractCustomizableEntity {
     private Constituent constituent;
 
     /**
-     * Form bean representation of the GiftInKindDetails
-     */
-    protected List<GiftInKindDetail> mutableDetails = LazyList.decorate(new ArrayList<GiftInKindDetail>(), new Factory() {
-        public Object create() {
-            return new GiftInKindDetail();
-        }
-    });
-
-    /**
      * Domain object representation of the GiftInKindDetails
      */
     private List<GiftInKindDetail> details;
 
-    /* Used by the form for cloning */
-    protected final List<GiftInKindDetail> dummyDetails;
-
     public GiftInKind() {
         super();
-        List<GiftInKindDetail> details = new ArrayList<GiftInKindDetail>();
-        GiftInKindDetail detail = new GiftInKindDetail();
-        detail.setDefaults();
-        details.add(detail);
-        dummyDetails = UnmodifiableList.decorate(details);
     }
 
     public GiftInKind(BigDecimal fairMarketValue, String currencyCode, Date donationDate, String motivationCode, String other_motivationCode,
@@ -177,56 +157,31 @@ public class GiftInKind extends AbstractCustomizableEntity {
         this.details = details;
     }
 
-    public List<GiftInKindDetail> getMutableDetails() {
-        return mutableDetails;
-    }
+	public void addDetail(GiftInKindDetail detail) {
+		if (details == null) {
+			details = new ArrayList<GiftInKindDetail>();
+		}
+		details.add(detail);
+	}
 
-    public void setMutableDetails(List<GiftInKindDetail> mutableDetails) {
-        this.mutableDetails = mutableDetails;
-    }
+	public void clearDetails() {
+		if (this.details != null) {
+			this.details.clear();
+		}
+	}
 
-    public void removeEmptyMutableDetails() {
-        Iterator<GiftInKindDetail> mutableDetailsIter = mutableDetails.iterator();
-        details = new ArrayList<GiftInKindDetail>();
-        while (mutableDetailsIter.hasNext()) {
-            GiftInKindDetail detail = mutableDetailsIter.next();
-            if (detail != null) {
-                if (detail.isFieldEntered() == false) {
-                    mutableDetailsIter.remove();
-                } else {
-                    details.add(detail);
-                }
-            }
-        }
-        if (details.isEmpty()) {
-            details.add(new GiftInKindDetail());
-        }
-    }
+	@Override
+	public void resetAddGridRows(int listSize, Constituent constituent) {
+		clearDetails();
+		if (listSize == 0) {
+			listSize = 1;
+		}
+		for (int i = 0; i < listSize; i++) {
+			addDetail(new GiftInKindDetail(0L));
+		}
+	}
 
-    public void filterValidDetails() {
-        details = new ArrayList<GiftInKindDetail>();
-        Iterator<GiftInKindDetail> mutableDetailsIter = mutableDetails.iterator();
-        while (mutableDetailsIter.hasNext()) {
-            GiftInKindDetail detail = mutableDetailsIter.next();
-            if (detail != null && detail.isValid()) {
-                details.add(detail);
-            }
-        }
-    }
-
-    public List<GiftInKindDetail> getDummyDetails() {
-        return dummyDetails;
-    }
-
-    @Override
-    public void setDefaults() {
-        super.setDefaults();
-        if (recognitionName == null) {
-            setRecognitionName(constituent.getRecognitionName());
-        }
-    }
-
-    @Override
+	@Override
     public void prePersist() {
         super.prePersist();
         if (this.anonymous) {

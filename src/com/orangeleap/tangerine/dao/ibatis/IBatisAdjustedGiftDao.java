@@ -1,17 +1,16 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.AdjustedGiftDao;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 @Repository("adjustedGiftDAO")
 public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<AdjustedGift> implements AdjustedGiftDao {
@@ -51,8 +50,8 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
         if (adjustedGift != null) {
             loadDistributionLinesCustomFields(adjustedGift);
             loadCustomFields(adjustedGift.getConstituent());
-            loadCustomFields(adjustedGift.getSelectedAddress());
-            loadCustomFields(adjustedGift.getSelectedPhone());
+            loadCustomFields(adjustedGift.getAddress());
+            loadCustomFields(adjustedGift.getPhone());
         }
         return adjustedGift;
     }

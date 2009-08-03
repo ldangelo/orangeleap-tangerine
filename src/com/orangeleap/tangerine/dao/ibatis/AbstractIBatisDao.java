@@ -48,7 +48,11 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    protected String getSiteName() {
+	public void setTangerineUserHelper(TangerineUserHelper tangerineUserHelper) {
+		this.tangerineUserHelper = tangerineUserHelper;
+	}
+
+	protected String getSiteName() {
         return tangerineUserHelper.lookupUserSiteName();
     }
 

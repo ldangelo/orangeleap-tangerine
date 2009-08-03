@@ -18,7 +18,7 @@
 
 package com.orangeleap.tangerine.test.controller;
 
-import com.orangeleap.tangerine.controller.NewTangerineFormController;
+import com.orangeleap.tangerine.controller.TangerineFormController;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -98,7 +98,7 @@ public class TangerineFormControllerTest extends BaseTest {
 		Assert.assertEquals(((FieldError) formErrors.getFieldErrors().get(1)).getCode(), "errorPhoneExists", "Field error[1] code = " + ((FieldError) formErrors.getFieldErrors().get(1)).getCode());
 	}
 
-	class MockTangerineFormController extends NewTangerineFormController {
+	class MockTangerineFormController extends TangerineFormController {
 		
 		@Override
 		protected AbstractEntity findEntity(HttpServletRequest request) {

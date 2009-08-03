@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.service.impl;
 import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
+import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
@@ -28,13 +29,18 @@ import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.integration.NewConstituent;
-import com.orangeleap.tangerine.service.*;
+import com.orangeleap.tangerine.service.AddressService;
+import com.orangeleap.tangerine.service.AuditService;
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.EmailService;
+import com.orangeleap.tangerine.service.ErrorLogService;
+import com.orangeleap.tangerine.service.PhoneService;
+import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
-import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
@@ -44,9 +50,7 @@ import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -57,7 +61,10 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 @Service("constituentService")
@@ -76,7 +83,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Resource(name = "constituentValidator")
     protected ConstituentValidator constituentValidator;
-
 
     @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
@@ -97,10 +103,13 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     private RelationshipService relationshipService;
 
     @Resource(name = "constituentDAO")
-    private ConstituentDao constituentDao;
+    private ConstituentDao constituentDao;                                                                                                    
 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
+
+	@Resource(name = "fieldDAO")
+	private FieldDao fieldDao;
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
@@ -117,7 +126,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (logger.isTraceEnabled()) {
             logger.trace("maintainConstituent: constituent = " + constituent);
         }
-        if (constituent.getSite() == null || tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName()) == false) {
+        if (constituent.getSite() == null || !tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName())) {
             throw new ConstituentValidationException();
         }
 
@@ -129,17 +138,13 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             BindingResult br = new BeanPropertyBindingResult(constituent, "constituent");
             BindException errors = new BindException(br);
 
+	        entityValidator.validate(constituent, errors);
             constituentValidator.validate(constituent, errors);
-            if (errors.getAllErrors().size() > 0) {
-                throw errors;
-            }
 
-            entityValidator.validate(constituent, errors);
-            if (errors.getAllErrors().size() > 0) {
+            if (errors.hasErrors()) {
                 throw errors;
             }
         }
-
 
         constituent = constituentDao.maintainConstituent(constituent);
         maintainCorrespondence(constituent);
@@ -366,12 +371,12 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         // get initial constituent with built-in defaults
         Constituent constituent = new Constituent();
         constituent.setSite(siteDao.readSite(tangerineUserHelper.lookupUserSiteName()));
-        BeanWrapper constituentBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(constituent);
+//        BeanWrapper constituentBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(constituent);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[]{EntityType.constituent}));
-        for (EntityDefault ed : entityDefaults) {
-            constituentBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
-        }
+//        List<EntityDefault> entityDefaults = fieldDao.readEntityDefaults(Arrays.asList(new EntityType[]{EntityType.constituent}));
+//        for (EntityDefault ed : entityDefaults) {
+//            constituentBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
+//        }
 
         // TODO: consider caching techniques for the default Constituent
         return constituent;

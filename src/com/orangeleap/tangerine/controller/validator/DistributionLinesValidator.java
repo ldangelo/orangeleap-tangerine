@@ -18,12 +18,14 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -40,7 +42,7 @@ public class DistributionLinesValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return RecurringGift.class.equals(clazz) || Pledge.class.equals(clazz) || Gift.class.isAssignableFrom(clazz);
+        return AbstractPaymentInfoEntity.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -49,26 +51,34 @@ public class DistributionLinesValidator implements Validator {
 
         BigDecimal total = null;
         BigDecimal amount = null;
+	    List<DistributionLine> lines = null;
+
         if (target instanceof Gift) {
             Gift gift = (Gift) target;
-            total = getTotal(gift.getMutableDistributionLines());
+            total = getTotal(gift.getDistributionLines());
             amount = gift.getAmount();
-        } else if (target instanceof Pledge) {
+	        lines = gift.getDistributionLines();
+        }
+        else if (target instanceof Pledge) {
             Pledge pledge = (Pledge) target;
-            total = getTotal(pledge.getMutableDistributionLines());
+            total = getTotal(pledge.getDistributionLines());
             if (pledge.isRecurring()) {
                 amount = pledge.getAmountPerGift();
             } else {
                 amount = pledge.getAmountTotal();
             }
-        } else if (target instanceof RecurringGift) {
+	        lines = pledge.getDistributionLines();
+        }
+        else if (target instanceof RecurringGift) {
             RecurringGift recurringGift = (RecurringGift) target;
-            total = getTotal(recurringGift.getMutableDistributionLines());
+            total = getTotal(recurringGift.getDistributionLines());
             amount = recurringGift.getAmountPerGift();
+	        lines = recurringGift.getDistributionLines();
         }
         if (total == null || amount == null || total.compareTo(amount) != 0) {
             errors.reject("errorDistributionLineAmounts");
         }
+	    validateDesignationCode(lines, errors);
     }
 
     protected BigDecimal getTotal(List<DistributionLine> lines) {
@@ -80,4 +90,17 @@ public class DistributionLinesValidator implements Validator {
         }
         return total;
     }
+
+	private void validateDesignationCode(List<DistributionLine> lines, Errors errors) {
+		if (lines != null) {
+		    for (DistributionLine line : lines) {
+		        if (line != null) {
+		            if (line.getAmount() != null && !StringUtils.hasText(line.getProjectCode())) {
+		                errors.reject("distributionLineDesignationCode");
+		                break;
+		            }
+		        }
+		    }
+		}
+	}
 }

@@ -34,7 +34,7 @@ public interface GiftService {
 
     public Gift maintainGift(Gift gift) throws BindException;
 
-    public Gift editGift(Gift gift);
+    public Gift editGift(Gift gift) throws BindException;
 
     public Gift readGiftById(Long giftId);
 
@@ -51,8 +51,6 @@ public interface GiftService {
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId);
-
-    public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Constituent constituent);
 
     public List<Gift> readAllGiftsBySiteName();
 

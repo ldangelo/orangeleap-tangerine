@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<c:set var="thisUrl" value='<%=pageContext.getRequest().getAttribute("javax.servlet.forward.servlet_path")%>' scope="request"/>
 	<head>
 		<title><tiles:getAsString name="browserTitle"/> - Orange Leap</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

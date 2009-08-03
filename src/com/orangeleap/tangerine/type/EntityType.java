@@ -31,6 +31,7 @@ public enum EntityType {
     phone,
     gift,
     giftInKind,
+	giftInKindDetail,
     adjustedGift,
     code,
 	distributionLine,

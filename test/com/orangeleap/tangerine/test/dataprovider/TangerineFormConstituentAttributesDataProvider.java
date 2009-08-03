@@ -22,12 +22,13 @@ import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.AbstractPicklistHandler;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.testng.annotations.DataProvider;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: alexlo
@@ -116,7 +117,7 @@ public class TangerineFormConstituentAttributesDataProvider {
 		addToMap(request, paramMap, "dummyProperty", "foo");
 		addToMap(request, paramMap, "postedDate", "01/01/1999");
 		addToMap(request, paramMap, "posted", "true");
-		addToMap(request, paramMap, "paymentSource.id", "-1");
+		addToMap(request, paramMap, "paymentSource.id", AbstractPicklistHandler.NONE_ID);
 		addToMap(request, paramMap, "customFieldMap[reference].value", "Joe Blow");
 		addToMap(request, paramMap, "customFieldMap[daddyo].value", "787");
 

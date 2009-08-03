@@ -18,21 +18,31 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.PaymentSourceValidator;
 import com.orangeleap.tangerine.dao.PaymentSourceDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.service.InactivateService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Service("paymentSourceService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -46,13 +56,20 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     @Resource(name = "paymentSourceDAO")
     private PaymentSourceDao paymentSourceDao;
 
+	@Resource(name = "paymentManagerEntityValidator")
+	private EntityValidator entityValidator;
+
+	@Resource(name = "paymentSourceValidator")
+	private PaymentSourceValidator paymentSourceValidator;
+
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public PaymentSource maintainPaymentSource(PaymentSource paymentSource) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public PaymentSource maintainPaymentSource(PaymentSource paymentSource) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainPaymentSource: paymentSource = " + paymentSource);
         }
 
+	    validatePaymentSource(paymentSource);
         maintainEntityChildren(paymentSource, paymentSource.getConstituent());
 
         paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
@@ -64,6 +81,20 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         }
         return paymentSource;
     }
+
+	private void validatePaymentSource(PaymentSource paymentSource) throws BindException {
+		if (paymentSource.getFieldLabelMap() != null && !paymentSource.isSuppressValidation()) {
+			BindingResult br = new BeanPropertyBindingResult(paymentSource, StringConstants.PAYMENT_SOURCE);
+			BindException errors = new BindException(br);
+
+			entityValidator.validate(paymentSource, errors);
+			paymentSourceValidator.validate(paymentSource, errors);
+
+			if (errors.hasErrors()) {
+				throw errors;
+			}
+		}
+	}
 
     @Override
     public List<PaymentSource> readPaymentSources(Long constituentId) {
@@ -112,7 +143,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         List<PaymentSource> sources = filterValidPaymentSources(constituentId);
         if (sources != null) {
             for (PaymentSource src : sources) {
-                if (src.isInactive() == false || (selectedPaymentSource != null && src.getId().equals(selectedPaymentSource.getId()))) {
+                if (!src.isInactive() || (selectedPaymentSource != null && src.getId().equals(selectedPaymentSource.getId()))) {
                     List<PaymentSource> list = groupedSources.get(src.getPaymentType());
                     if (list == null) {
                         list = new ArrayList<PaymentSource>();
@@ -156,8 +187,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void inactivate(Long id) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public void inactivate(Long id) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("inactivate: id = " + id);
         }
@@ -209,13 +240,13 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         Map<String, Object> conflictingPaymentSources = new HashMap<String, Object>();
         if (PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) {
             List<PaymentSource> sources = paymentSourceDao.readExistingCreditCards(paymentSourceAware.getPaymentSource().getCreditCardNumberEncrypted());
-            if (isSame(paymentSourceAware, sources) == false) {
+            if ( ! isSame(paymentSourceAware, sources)) {
                 conflictingPaymentSources.put("names", checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
                 conflictingPaymentSources.put("dates", checkCreditCardDatesPaymentSource(paymentSourceAware.getPaymentSource(), sources));
             }
         } else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType())) {
             List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts(paymentSourceAware.getPaymentSource().getAchAccountNumberEncrypted(), paymentSourceAware.getPaymentSource().getAchRoutingNumber());
-            if (isSame(paymentSourceAware, sources) == false) {
+            if ( ! isSame(paymentSourceAware, sources)) {
                 conflictingPaymentSources.put("names", checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
             }
         }
@@ -229,9 +260,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
 
             if (existingSource != null) {
                 foundSame = true;
-                aware.setSelectedPaymentSource(existingSource);
-                aware.setPaymentSourceType(FormBeanType.EXISTING);
-                aware.setPaymentSource(null);
+                aware.setPaymentSource(existingSource);
             }
         }
         return foundSame;
@@ -296,8 +325,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         if (sources != null) {
             for (PaymentSource thisSource : sources) {
                 // Credit Card numbers are the same
-                if ((thisSource.getCreditCardExpirationMonth().equals(paymentSource.getCreditCardExpirationMonth()) == false ||
-                        thisSource.getCreditCardExpirationYear().equals(paymentSource.getCreditCardExpirationYear()) == false) &&
+                if ((!thisSource.getCreditCardExpirationMonth().equals(paymentSource.getCreditCardExpirationMonth()) ||
+                        !thisSource.getCreditCardExpirationYear().equals(paymentSource.getCreditCardExpirationYear())) &&
                         thisSource.getCreditCardHolderName().equals(paymentSource.getCreditCardHolderName())) {
                     dates.add(thisSource);
                 }

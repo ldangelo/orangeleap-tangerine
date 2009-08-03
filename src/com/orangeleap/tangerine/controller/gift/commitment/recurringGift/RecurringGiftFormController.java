@@ -18,16 +18,14 @@
 
 package com.orangeleap.tangerine.controller.gift.commitment.recurringGift;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController;
-import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
@@ -45,19 +43,11 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
 
 	@Resource(name = "picklistItemService")
 	protected PicklistItemService picklistItemService;
-    
-    @Override
-    protected AbstractEntity findEntity(HttpServletRequest request) {
-        RecurringGift recurringGift = recurringGiftService.readRecurringGiftByIdCreateIfNull(request.getParameter(StringConstants.RECURRING_GIFT_ID), super.getConstituent(request));
-        
-        if (!StringUtils.hasText(recurringGift.getCurrencyCode())) {
-        	Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
-        	if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
-        		recurringGift.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
-        	}
-        }
-        return recurringGift;
-    }
+
+	@Override
+	protected RecurringGift readCommitmentCreateIfNull(HttpServletRequest request) {
+		return recurringGiftService.readRecurringGiftByIdCreateIfNull(request.getParameter(StringConstants.RECURRING_GIFT_ID), super.getConstituent(request));
+	}
 
     @Override
     protected RecurringGift maintainCommitment(RecurringGift entity) throws BindException {
@@ -68,7 +58,9 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
     @Override
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refData = super.referenceData(request, command, errors);
-        refData.put(StringConstants.CAN_APPLY_PAYMENT, recurringGiftService.canApplyPayment((RecurringGift)command));
+	    TangerineForm form = (TangerineForm) command;
+        RecurringGift recurringGift = (RecurringGift) form.getDomainObject();
+        refData.put(StringConstants.CAN_APPLY_PAYMENT, recurringGiftService.canApplyPayment(recurringGift));
         return refData;
     }
 

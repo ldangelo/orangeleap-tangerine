@@ -116,7 +116,6 @@
 	     	<transaction src="${basedir}/db/dev/devSetup/giftSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/commitmentSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/businessRulesSetup.sql"/>
-	     	<transaction src="${basedir}/db/dev/giftPaymentTypeDefault.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/constituentSearch.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/constituentSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/giftSearchResults.sql"/>
@@ -202,6 +201,7 @@
 	<target name="reloadDb">
 		<antcall target="9.1. Clear Schema"/>
 		<antcall target="9.3 Load Schema"/>
+		<antcall target="9.4 Load Extra Schema"/>
 		<antcall target="9. Load Data"/>
 	</target>
 

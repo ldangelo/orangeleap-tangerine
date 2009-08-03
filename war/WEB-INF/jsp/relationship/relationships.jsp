@@ -1,28 +1,24 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<spring:message code='manageRelationships' var='titleText'/>
-<spring:message code='submit' var='submitText'/>
-<tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="${titleText}" />
-	<tiles:putAttribute name="primaryNav" value="People" />
-	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="Relationships" />
-    <tiles:putAttribute name="customHeaderContent" type="string">
-		<script type="text/javascript" src="js/relationship/relationships.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/relationships.css" />
-    </tiles:putAttribute>
-	<tiles:putAttribute name="mainContent" type="string">
-		<div class="content760 mainForm">
-			<c:set var="constituent" value="${constituent}" scope="request" />
-		
-			<c:if test="${constituent.id != null}">
-				<c:set var="viewingConstituent" value="true" scope="request" />
-			</c:if>
+<page:applyDecorator name="form">
+	<spring:message code='manageRelationships' var="titleText" scope="request" />
+	<spring:message code='submit' var="submitText" />
+    <c:set var="headerText" value="${titleText}" scope="request"/>
+
+    <html>
+        <head>
+            <title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
+            <link rel="stylesheet" type="text/css" href="css/relationships.css" />
+        </head>
+        <body>
 			<div>
 				<form name="relationshipsForm" id="relationshipsForm" action="relationships.htm" method="POST">
-				    <jsp:include page="../snippets/constituentHeader.jsp">
-						<jsp:param name="currentFunctionTitleText" value="${titleText}" />
-						<jsp:param name="submitButtonText" value="${submitText}" />
-				    </jsp:include>
+                    <c:set var="topButtons" scope="request">
+                        <input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/>
+                    </c:set>
+
+                    <c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
+                    <%@ include file="/WEB-INF/jsp/includes/constituentHeader.jsp"%>
+
 					<c:if test="${not empty requestScope.validationErrors}">
 						<div class="globalFormErrors">
 							<h5><spring:message code='errorsPleaseCorrect'/></h5>
@@ -210,6 +206,9 @@
 					</div>
 				</form>
 			</div>
- 		</div>
-	</tiles:putAttribute>
-</tiles:insertDefinition>
+            <page:param name="scripts">
+                <script type="text/javascript" src="js/relationship/relationships.js"></script>
+            </page:param>
+        </body>
+    </html>
+</page:applyDecorator>

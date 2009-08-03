@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
 
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class AddressImporter extends EntityImporter {
 
     @Override
     protected PageType getPageType() {
-        return PageType.address;
+        return PageType.addressManager;
     }
 
     @Override
@@ -95,7 +96,7 @@ public class AddressImporter extends EntityImporter {
     }
 
     @Override
-    public void importValueMap(String action, Map<String, String> values) throws ConstituentValidationException {
+    public void importValueMap(String action, Map<String, String> values) throws ConstituentValidationException, BindException {
 
         Address address;
 
@@ -148,7 +149,6 @@ public class AddressImporter extends EntityImporter {
 
 
         addressService.save(address);
-
     }
 
     private void setCleanseDates(Address address) {

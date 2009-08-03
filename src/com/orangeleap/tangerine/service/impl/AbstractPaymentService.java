@@ -23,12 +23,16 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
-import com.orangeleap.tangerine.service.*;
-import com.orangeleap.tangerine.type.FormBeanType;
+import com.orangeleap.tangerine.service.AddressService;
+import com.orangeleap.tangerine.service.AuditService;
+import com.orangeleap.tangerine.service.EmailService;
+import com.orangeleap.tangerine.service.PaymentSourceService;
+import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.validation.BindException;
 
 import javax.annotation.Resource;
 
@@ -54,7 +58,7 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
     @Resource(name = "paymentSourceService")
     protected PaymentSourceService paymentSourceService;
 
-    public void maintainEntityChildren(AbstractEntity entity, Constituent constituent) {
+    public void maintainEntityChildren(AbstractEntity entity, Constituent constituent) throws BindException {
         if (entity instanceof AddressAware) {
             AddressAware addressAware = (AddressAware) entity;
             maintainAddressChild(addressAware, constituent);
@@ -72,102 +76,75 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         }
     }
 
-    private void maintainAddressChild(AddressAware addressAware, Constituent constituent) {
-        if (FormBeanType.NEW.equals(addressAware.getAddressType()) && addressAware instanceof NewAddressAware) {
-            NewAddressAware newAddressAware = (NewAddressAware) addressAware;
-            Address newAddress = newAddressAware.getAddress();
-            newAddress.setConstituentId(constituent.getId());
+    private void maintainAddressChild(AddressAware addressAware, Constituent constituent) throws BindException {
+	    if (addressAware.getAddress() != null && addressAware.getAddress().isNew()) {
+		    Address newAddress = addressAware.getAddress();
+		    newAddress.setConstituentId(constituent.getId());
 
-            Address existingAddress = addressService.alreadyExists(newAddress);
-            if (existingAddress != null) {
-                newAddressAware.setAddress(existingAddress);
-                newAddressAware.setSelectedAddress(existingAddress);
-                newAddressAware.setAddressType(FormBeanType.EXISTING);
-            } else {
-                newAddressAware.setAddress(addressService.save(newAddress));
-                newAddressAware.setSelectedAddress(newAddressAware.getAddress());
+		    Address existingAddress = addressService.alreadyExists(newAddress);
+		    if (existingAddress != null) {
+		        addressAware.setAddress(existingAddress);
+		    }
+		    else {
+                addressAware.setAddress(addressService.save(newAddress));
             }
-        } else if (FormBeanType.NONE.equals(addressAware.getAddressType())) {
-            addressAware.setSelectedAddress(null);
-
-            if (addressAware instanceof NewAddressAware) {
-                ((NewAddressAware) addressAware).setAddress(null);
-            }
-        }
+	    }
     }
 
-    private void maintainPhoneChild(PhoneAware phoneAware, Constituent constituent) {
-        if (FormBeanType.NEW.equals(phoneAware.getPhoneType()) && phoneAware instanceof NewPhoneAware) {
-            NewPhoneAware newPhoneAware = (NewPhoneAware) phoneAware;
-            Phone newPhone = newPhoneAware.getPhone();
-            newPhone.setConstituentId(constituent.getId());
+    private void maintainPhoneChild(PhoneAware phoneAware, Constituent constituent) throws BindException {
+	    if (phoneAware.getPhone() != null && phoneAware.getPhone().isNew()) {
+		    Phone newPhone = phoneAware.getPhone();
+		    newPhone.setConstituentId(constituent.getId());
 
-            Phone existingPhone = phoneService.alreadyExists(newPhone);
-            if (existingPhone != null) {
-                newPhoneAware.setPhone(existingPhone);
-                newPhoneAware.setSelectedPhone(existingPhone);
-                newPhoneAware.setPhoneType(FormBeanType.EXISTING);
-            } else {
-                newPhoneAware.setPhone(phoneService.save(newPhone));
-                newPhoneAware.setSelectedPhone(newPhoneAware.getPhone());
+		    Phone existingPhone = phoneService.alreadyExists(newPhone);
+		    if (existingPhone != null) {
+		        phoneAware.setPhone(existingPhone);
+		    }
+		    else {
+                phoneAware.setPhone(phoneService.save(newPhone));
             }
-        } else if (FormBeanType.NONE.equals(phoneAware.getPhoneType())) {
-            phoneAware.setSelectedPhone(null);
-            if (phoneAware instanceof NewPhoneAware) {
-                ((NewPhoneAware) phoneAware).setPhone(null);
-            }
-        }
+	    }
     }
 
-    private void maintainEmailChild(EmailAware emailAware, Constituent constituent) {
-        if (FormBeanType.NEW.equals(emailAware.getEmailType()) && emailAware instanceof NewEmailAware) {
-            NewEmailAware newEmailAware = (NewEmailAware) emailAware;
-            Email newEmail = newEmailAware.getEmail();
-            newEmail.setConstituentId(constituent.getId());
+    private void maintainEmailChild(EmailAware emailAware, Constituent constituent) throws BindException {
+	    if (emailAware.getEmail() != null && emailAware.getEmail().isNew()) {
+		    Email newEmail = emailAware.getEmail();
+		    newEmail.setConstituentId(constituent.getId());
 
-            Email existingEmail = emailService.alreadyExists(newEmail);
-            if (existingEmail != null) {
-                newEmailAware.setEmail(existingEmail);
-                newEmailAware.setSelectedEmail(existingEmail);
-                newEmailAware.setEmailType(FormBeanType.EXISTING);
-            } else {
-                newEmailAware.setEmail(emailService.save(newEmail));
-                newEmailAware.setSelectedEmail(newEmailAware.getEmail());
+		    Email existingEmail = emailService.alreadyExists(newEmail);
+		    if (existingEmail != null) {
+		        emailAware.setEmail(existingEmail);
+		    }
+		    else {
+                emailAware.setEmail(emailService.save(newEmail));
             }
-        } else if (FormBeanType.NONE.equals(emailAware.getEmailType())) {
-            emailAware.setSelectedEmail(null);
-            if (emailAware instanceof NewEmailAware) {
-                ((NewEmailAware) emailAware).setEmail(null);
-            }
-        }
+	    }
     }
 
-    private void maintainPaymentSourceChild(AbstractEntity entity, Constituent constituent) {
+    private void maintainPaymentSourceChild(AbstractEntity entity, Constituent constituent) throws BindException {
         PaymentSourceAware paymentSourceAware = (PaymentSourceAware) entity;
         if (PaymentSource.CASH.equals(paymentSourceAware.getPaymentType()) ||
-                PaymentSource.CHECK.equals(paymentSourceAware.getPaymentType()) ||
-                FormBeanType.NONE.equals(paymentSourceAware.getPaymentSourceType())) {
-            paymentSourceAware.setSelectedPaymentSource(null);
+                PaymentSource.CHECK.equals(paymentSourceAware.getPaymentType())) {
             paymentSourceAware.setPaymentSource(null);
-        } else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType()) ||
+        }
+        else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType()) ||
                 PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) {
-            if (FormBeanType.NEW.equals(paymentSourceAware.getPaymentSourceType())) {
-                PaymentSource newPaymentSource = paymentSourceAware.getPaymentSource();
-                newPaymentSource.setConstituent(constituent);
-                newPaymentSource.setPaymentType(paymentSourceAware.getPaymentType());
+            if (paymentSourceAware.getPaymentSource() != null) {
 
-                if (entity instanceof AddressAware && FormBeanType.NONE.equals(((AddressAware) entity).getAddressType()) == false) {
-                    newPaymentSource.setFromAddressAware((AddressAware) entity);
-                }
-                if (entity instanceof PhoneAware && FormBeanType.NONE.equals(((PhoneAware) entity).getPhoneType()) == false) {
-                    newPaymentSource.setFromPhoneAware((PhoneAware) entity);
-                }
+	            paymentSourceAware.setPaymentType(paymentSourceAware.getPaymentSource().getPaymentType());
+	            if (paymentSourceAware.getPaymentSource().isNew()) {
+					PaymentSource newPaymentSource = paymentSourceAware.getPaymentSource();
+					newPaymentSource.setConstituent(constituent);
 
-                paymentSourceAware.setPaymentSource(paymentSourceService.maintainPaymentSource(newPaymentSource));
-                paymentSourceAware.setSelectedPaymentSource(paymentSourceAware.getPaymentSource());
-            } else if (FormBeanType.EXISTING.equals(paymentSourceAware.getPaymentSourceType())) {
-                paymentSourceService.maintainPaymentSource(paymentSourceAware.getSelectedPaymentSource());
-                paymentSourceAware.setPaymentSource(paymentSourceAware.getSelectedPaymentSource());
+					if (entity instanceof AddressAware) {
+						newPaymentSource.setFromAddressAware((AddressAware) entity);
+					}
+					if (entity instanceof PhoneAware) {
+						newPaymentSource.setFromPhoneAware((PhoneAware) entity);
+					}
+
+                    paymentSourceAware.setPaymentSource(paymentSourceService.maintainPaymentSource(newPaymentSource));
+	            }
             }
         }
     }
@@ -177,17 +154,17 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
 
         if (PaymentSource.ACH.equals(entity.getPaymentType())) {
             sb.append(TangerineMessageAccessor.getMessage("achNumberColon"));
-            sb.append(" ").append(entity.getSelectedPaymentSource().getAchAccountNumberDisplay());
+            sb.append(" ").append(entity.getPaymentSource().getAchAccountNumberDisplay());
         }
         if (PaymentSource.CREDIT_CARD.equals(entity.getPaymentType())) {
             sb.append(TangerineMessageAccessor.getMessage("creditCardNumberColon"));
-            sb.append(" ").append(entity.getSelectedPaymentSource().getCreditCardType()).append(" ").append(entity.getSelectedPaymentSource().getCreditCardNumberDisplay());
+            sb.append(" ").append(entity.getPaymentSource().getCreditCardType()).append(" ").append(entity.getPaymentSource().getCreditCardNumberDisplay());
             sb.append(" ");
-            sb.append(entity.getSelectedPaymentSource().getCreditCardExpirationMonth());
+            sb.append(entity.getPaymentSource().getCreditCardExpirationMonth());
             sb.append(" / ");
-            sb.append(entity.getSelectedPaymentSource().getCreditCardExpirationYear());
+            sb.append(entity.getPaymentSource().getCreditCardExpirationYear());
             sb.append(" ");
-            sb.append(entity.getSelectedPaymentSource().getCreditCardHolderName());
+            sb.append(entity.getPaymentSource().getCreditCardHolderName());
         }
         if (PaymentSource.CHECK.equals(entity.getPaymentType())) {
             sb.append("\n");
@@ -195,8 +172,8 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
             sb.append(" ");
             sb.append(entity.getCheckNumber());
         }
-        if (FormBeanType.NONE.equals(entity.getAddressType()) == false) {
-            Address address = entity.getSelectedAddress();
+	    if (entity.getAddress() != null && entity.getAddress().getId() != null && entity.getAddress().getId() > 0) {
+		    Address address = entity.getAddress();
             if (address != null) {
                 sb.append("\n");
                 sb.append(TangerineMessageAccessor.getMessage("addressColon"));
@@ -211,8 +188,8 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
                 sb.append(" ").append(StringUtils.trimToEmpty(address.getPostalCode()));
             }
         }
-        if (FormBeanType.NONE.equals(entity.getPhoneType()) == false) {
-            Phone phone = entity.getSelectedPhone();
+	    if (entity.getPhone() != null && entity.getPhone().getId() != null && entity.getPhone().getId() > 0) {
+            Phone phone = entity.getPhone();
             if (phone != null) {
                 sb.append("\n");
                 sb.append(TangerineMessageAccessor.getMessage("phoneColon"));

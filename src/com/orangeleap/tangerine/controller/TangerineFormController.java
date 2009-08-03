@@ -19,16 +19,25 @@
 package com.orangeleap.tangerine.controller;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.service.*;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.service.AddressService;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.EmailService;
+import com.orangeleap.tangerine.service.PhoneService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -41,46 +50,30 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class TangerineFormController extends SimpleFormController {
 
-    /**
-     * Logger for this class and subclasses
-     */
+    /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name = "constituentService")
+    @Resource(name="constituentService")
     protected ConstituentService constituentService;
 
-    @Resource(name = "addressService")
+    @Resource(name="addressService")
     protected AddressService addressService;
 
-    @Resource(name = "phoneService")
+    @Resource(name="phoneService")
     protected PhoneService phoneService;
 
-    @Resource(name = "emailService")
+    @Resource(name="emailService")
     protected EmailService emailService;
 
-    @Resource(name = "siteService")
+    @Resource(name="siteService")
     protected SiteService siteService;
 
-    @Resource(name = "tangerineUserHelper")
+    @Resource(name="tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
-
-    protected String pageType;
-
-    /**
-     * The default page type is the commandName.  Override for specific page types
-     *
-     * @return pageType, the commandName
-     */
-    protected String getPageType() {
-        return StringUtils.hasText(pageType) ? pageType : getCommandName();
-    }
-
-    public void setPageType(String pageType) {
-        this.pageType = pageType;
-    }
 
     public Long getIdAsLong(HttpServletRequest request, String id) {
         if (logger.isTraceEnabled()) {
@@ -101,40 +94,119 @@ public abstract class TangerineFormController extends SimpleFormController {
         return request.getParameter(StringConstants.CONSTITUENT_ID);
     }
 
-    @Override
+	protected Constituent getConstituent(HttpServletRequest request) {
+	    Long constituentId = getConstituentId(request);
+	    Constituent constituent = null;
+	    if (constituentId != null) {
+	        constituent = constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this constituent (authorization)?
+	    }
+	    if (constituent == null) {
+	        throw new IllegalArgumentException("The constituent ID was not found");
+	    }
+	    return constituent;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	protected void onBind(HttpServletRequest request, Object command, BindException e) throws Exception {
+		TangerineForm form = (TangerineForm) command;
+		convertFormToDomain(request, form, new TreeMap<String, Object>(request.getParameterMap()));
+	}
+
+	/**
+	 * Converts field names and values from the form bean to the domain object using Spring DataBinders.
+	 * Override for specific conversion rules (lists, nested beans, etc).
+	 * @param request
+	 * @param form
+	 * @param paramMap
+	 * @throws Exception
+	 */
+	protected void convertFormToDomain(HttpServletRequest request, TangerineForm form, Map<String, Object> paramMap)
+			throws Exception {
+		form.setFieldMap(new TreeMap<String, Object>());
+
+		ServletRequestDataBinder binder = new ServletRequestDataBinder(form.getDomainObject());
+		initBinder(request, binder);
+
+		BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject());
+
+		MutablePropertyValues propertyValues = new MutablePropertyValues();
+		for (Object obj : paramMap.keySet()) {
+			String escapedFormFieldName = obj.toString();
+			String fieldName = TangerineForm.unescapeFieldName(escapedFormFieldName);
+
+			Object val;
+			if (beanWrapper.getPropertyType(fieldName) != null && beanWrapper.getPropertyType(fieldName).isArray()) {
+				val = request.getParameterValues(escapedFormFieldName);
+			}
+			else {
+				val = request.getParameter(escapedFormFieldName);
+			}
+			form.addField(escapedFormFieldName, val);
+			propertyValues.addPropertyValue(fieldName, val);
+		}
+		binder.bind(propertyValues);
+	}
+
+	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
-        binder.registerCustomEditor(Date.class, new TangerineCustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); // TODO: custom date format
-        binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
+        binder.registerCustomEditor(Date.class, new TangerineCustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); 
+		binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
     }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         request.setAttribute(StringConstants.COMMAND_OBJECT, this.getCommandName()); // To be used by input.jsp to check for errors
         AbstractEntity entity = findEntity(request);
-        entity.setDefaults();
+
         this.createFieldMaps(request, entity);
-        return entity;
+        TangerineForm form = new TangerineForm();
+        form.setDomainObject(entity);
+        form.setFieldMapFromEntity(entity);
+
+	    request.setAttribute("domainObjectName", StringUtils.uncapitalize(entity.getClass().getSimpleName()));
+        return form;
     }
 
     protected void createFieldMaps(HttpServletRequest request, AbstractEntity entity) {
-        if (isFormSubmission(request)) {
-            List<String> roles = tangerineUserHelper.lookupUserRoles();
-
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(PageType.valueOf(this.getPageType()), roles, request.getLocale());
-            entity.setFieldLabelMap(fieldLabelMap);
-
-            Map<String, Object> valueMap = siteService.readFieldValues(PageType.valueOf(this.getPageType()), roles, entity);
-            entity.setFieldValueMap(valueMap);
-
-            Map<String, FieldDefinition> typeMap = siteService.readFieldTypes(PageType.valueOf(this.getPageType()), roles);
-            entity.setFieldTypeMap(typeMap);
-        }
+		List<String> roles = tangerineUserHelper.lookupUserRoles();
+		siteService.readFieldInfo(PageType.findByUrl(request.getServletPath()), roles, request.getLocale(), entity);
     }
+
+	protected void rebindEntityValuesToForm(HttpServletRequest request, TangerineForm form, AbstractEntity entity) {
+		createFieldMaps(request, entity);
+		form.setFieldMapFromEntity(entity);
+	}
 
     protected String appendSaved(String url) {
         return new StringBuilder(url).append("&").append(StringConstants.SAVED_EQUALS_TRUE).toString();
     }
+
+	protected void bindDomainErrorsToForm(HttpServletRequest request, BindException formErrors, BindException domainErrors,
+	                                      TangerineForm form, AbstractEntity entity) {
+		bindDomainErrorsToForm(formErrors, domainErrors);
+		rebindEntityValuesToForm(request, form, entity);
+	}
+
+	protected void bindDomainErrorsToForm(BindException formErrors, BindException domainErrors) {
+		if (domainErrors != null && domainErrors.hasErrors()) {
+			for (Object thisError : domainErrors.getAllErrors()) {
+				if (thisError instanceof FieldError) {
+					FieldError domainFieldError = (FieldError) thisError;
+					formErrors.rejectValue(new StringBuilder(StringConstants.FIELD_MAP_START).
+							append(TangerineForm.escapeFieldName(domainFieldError.getField())).
+							append(StringConstants.FIELD_MAP_END).toString(),
+							domainFieldError.getCode(),
+							domainFieldError.getArguments(),
+							domainFieldError.getDefaultMessage());
+				}
+				else {
+					formErrors.addError((ObjectError) thisError);
+				}
+			}
+		}
+	}
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {

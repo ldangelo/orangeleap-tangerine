@@ -27,6 +27,7 @@ import org.springframework.context.ApplicationContext;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class FieldHandlerHelper {
 
     /**

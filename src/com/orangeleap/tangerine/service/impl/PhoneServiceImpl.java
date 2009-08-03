@@ -23,10 +23,15 @@ import com.orangeleap.tangerine.dao.PhoneDao;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.PhoneValidator;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -42,6 +47,12 @@ public class PhoneServiceImpl extends AbstractCommunicationService<Phone> implem
 
     @Resource(name = "phoneDAO")
     private PhoneDao phoneDao;
+
+    @Resource(name = "phoneValidator")
+    private PhoneValidator phoneValidator;
+
+    @Resource(name = "phoneManagerEntityValidator")
+    private EntityValidator entityValidator;
 
     @Override
     protected CommunicationDao<Phone> getDao() {
@@ -78,4 +89,18 @@ public class PhoneServiceImpl extends AbstractCommunicationService<Phone> implem
         }
     }
 
+    @Override
+    protected void validate(Phone entity) throws BindException {
+        if (entity.getFieldLabelMap() != null && !entity.isSuppressValidation()) {
+            BindingResult br = new BeanPropertyBindingResult(entity, "phone");
+            BindException errors = new BindException(br);
+
+            entityValidator.validate(entity, errors);
+            phoneValidator.validate(entity, errors);
+
+            if (errors.hasErrors()) {
+                throw errors;
+            }
+        }
+    }
 }

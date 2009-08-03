@@ -15,8 +15,8 @@
 		<result property="lastFourDigits" column="PAYMENT_SRC_LAST_FOUR_DIGITS" jdbcType="VARCHAR" />
 		<result property="profile" column="PAYMENT_SRC_PROFILE" jdbcType="VARCHAR" />
 		<result property="paymentType" column="PAYMENT_SRC_TYPE" jdbcType="VARCHAR" />
-		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" /> 
-		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" /> 
+		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="phone" resultMap="PHONE.PHONE_RESULT" /> 
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 		
         <result property="createDate" column="PAYMENT_SRC_CREATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="updateDate" column="PAYMENT_SRC_UPDATE_DATE" jdbcType="TIMESTAMP"/>
@@ -103,8 +103,8 @@
 		values (#achAccountNumberEncrypted#, #achHolderName#,
 		#achRoutingNumber#, #creditCardExpiration#, #creditCardHolderName#,
 		#creditCardNumberEncrypted#, #creditCardType#, #inactive#, #lastFourDigits#, 
-		#profile#, #paymentType#, #selectedAddress.id#, #constituent.id#,
-		#selectedPhone.id#, now(), now())
+		#profile#, #paymentType#, #address.id#, #constituent.id#,
+		#phone.id#, now(), now())
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
         </selectKey>
@@ -123,9 +123,9 @@
 		LAST_FOUR_DIGITS = #lastFourDigits#, 
 		PAYMENT_PROFILE = #profile#,
 		PAYMENT_TYPE = #paymentType#,
-		ADDRESS_ID = #selectedAddress.id#,
+		ADDRESS_ID = #address.id#,
 		CONSTITUENT_ID = #constituent.id#,
-		PHONE_ID = #selectedPhone.id#,
+		PHONE_ID = #phone.id#,
 	    UPDATE_DATE = now()
 		where PAYMENT_SOURCE_ID = #id#
 	</update>

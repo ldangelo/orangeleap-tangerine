@@ -90,8 +90,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
         if (pledge != null) {
             pledge.setAssociatedGiftIds(readAssociatedGiftIdsForPledge(pledge.getId()));
             loadCustomFields(pledge.getConstituent());
-            loadCustomFields(pledge.getSelectedAddress());
-            loadCustomFields(pledge.getSelectedPhone());
+            loadCustomFields(pledge.getAddress());
+            loadCustomFields(pledge.getPhone());
         }
 
         return pledge;

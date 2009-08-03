@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <tiles:insertDefinition name="base">
     <tiles:putAttribute name="customHeaderContent" type="string">
-        <script type="text/javascript" src="js/postbatchGiftList.js"></script>
+        <script type="text/javascript" src="js/lists/postbatchGiftList.js"></script>
     </tiles:putAttribute>
 	<tiles:putAttribute name="browserTitle" value="Create Gift Posting Batch" />
 	<tiles:putAttribute name="primaryNav" value="Gifts" />

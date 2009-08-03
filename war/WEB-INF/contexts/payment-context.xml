@@ -5,26 +5,21 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="paymentManager" class="com.orangeleap.tangerine.controller.payment.PaymentManagerFormController" parent="tangerineConstituentAttributesFormController">
-    	<property name="commandName" value="paymentSource" />
-    	<property name="commandClass" value="com.orangeleap.tangerine.domain.PaymentSource" />
-        <property name="bindEmail" value="false"/>
-		<property name="validators">
-			<list>
-	            <ref bean="paymentSourceValidator"/>
-	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
-			        <property name="pageType" value="paymentManager"/>
-	            </bean>
-			</list>
-        </property>
+	<bean id="paymentManager" class="com.orangeleap.tangerine.controller.payment.PaymentManagerFormController"
+	      parent="newTangerineConstituentAttributesFormController">
+		<property name="bindAddress" value="true"/>
+		<property name="bindPhone" value="true"/>
     	<property name="formView" value="payment/paymentManager" />
-    	<property name="successView" value="redirect:/paymentManager.htm"/>
-   		<property name="pageType" value="paymentManager"/>
+    	<property name="successView" value="redirect:/paymentManagerEdit.htm"/>
    	</bean>
 
-    <bean id="paymentManagerEdit" class="com.orangeleap.tangerine.controller.payment.PaymentManagerFormController" parent="paymentManager">
+    <bean id="paymentManagerEdit" class="com.orangeleap.tangerine.controller.payment.PaymentManagerFormController"
+          parent="paymentManager">
     	<property name="formView" value="payment/paymentManagerEdit" />
-   		<property name="pageType" value="paymentManagerEdit"/>
+    </bean>
+
+    <bean id="paymentSourceListController" class="com.orangeleap.tangerine.controller.DummyController">
+        <property name="viewName" value="payment/paymentSourceList"/>
     </bean>
     
     <bean id="paymentLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
@@ -32,6 +27,7 @@
 		    <props>
 		        <prop key="/paymentManager.htm">paymentManager</prop>
                 <prop key="/paymentManagerEdit.htm">paymentManagerEdit</prop>
+                <prop key="/paymentSourceList.htm">paymentSourceListController</prop>
 			</props>
 		</property>
 	</bean>

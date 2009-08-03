@@ -5,34 +5,26 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-	<bean id="emailManager" class="com.orangeleap.tangerine.controller.communication.email.EmailFormController" parent="tangerineConstituentAttributesFormController">
-    	<property name="commandName" value="email" />
-    	<property name="commandClass" value="com.orangeleap.tangerine.domain.communication.Email" />
-        <property name="bindAddress" value="false"/>
-        <property name="bindPaymentSource" value="false"/>
-        <property name="bindPhone" value="false"/>
-        <property name="bindEmail" value="false"/>
-		<property name="validators">
-			<list>
-	            <ref bean="emailValidator"/>
-	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
-			        <property name="pageType" value="emailManager"/>
-	            </bean>
-			</list>
-        </property>
+	<bean id="emailManager" class="com.orangeleap.tangerine.controller.communication.email.EmailFormController"
+          parent="newTangerineConstituentAttributesFormController">
     	<property name="formView" value="email/emailManager"/>
-    	<property name="successView" value="redirect:/emailManager.htm"/>
+    	<property name="successView" value="redirect:/emailManagerEdit.htm"/>
     </bean>
 
     <bean id="emailManagerEdit" class="com.orangeleap.tangerine.controller.communication.email.EmailFormController" parent="emailManager">
     	<property name="formView" value="email/emailManagerEdit"/>
     </bean>
     
+    <bean id="emailListController" class="com.orangeleap.tangerine.controller.DummyController">
+        <property name="viewName" value="email/emailList"/>
+    </bean>
+
     <bean id="emailUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/emailManager.htm">emailManager</prop>
                 <prop key="/emailManagerEdit.htm">emailManagerEdit</prop>
+                <prop key="/emailList.htm">emailListController</prop>
 			</props>
 		</property>
 	</bean>

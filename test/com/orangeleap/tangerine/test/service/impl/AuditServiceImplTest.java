@@ -1,17 +1,16 @@
 package com.orangeleap.tangerine.test.service.impl;
 
-import java.lang.reflect.Method;
-
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.impl.AuditServiceImpl;
 import com.orangeleap.tangerine.test.BaseTest;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.Test;
+
+import java.lang.reflect.Method;
 
 public class AuditServiceImplTest extends BaseTest {
 
@@ -22,7 +21,6 @@ public class AuditServiceImplTest extends BaseTest {
     public void testIsAuditable() throws Exception {
         PaymentSource ps = new PaymentSource();
         assert Boolean.TRUE.equals(invoke(ps, "profile"));
-        assert Boolean.TRUE.equals(invoke(ps, "type"));
         assert Boolean.TRUE.equals(invoke(ps, "creditCardHolderName"));
         assert Boolean.TRUE.equals(invoke(ps, "creditCardType"));
 
@@ -34,6 +32,7 @@ public class AuditServiceImplTest extends BaseTest {
         assert Boolean.FALSE.equals(invoke(ps, "achAccountNumberEncrypted"));
         
         Gift gift = new Gift();
+	    gift.setPaymentSource(ps);
         assert Boolean.TRUE.equals(invoke(gift, "comments"));
         assert Boolean.TRUE.equals(invoke(gift, "amount"));
         assert Boolean.TRUE.equals(invoke(gift, "paymentSource.creditCardHolderName"));

@@ -26,7 +26,7 @@ public class TextAreaHandler extends AbstractFieldHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                                  SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		sb.append("<textarea rows=\"5\" cols=\"30\" class=\"text ");
+		sb.append("<textarea rows=\"7\" cols=\"30\" class=\"text ");
 		sb.append(resolveEntityAttributes(currentField));
 
 		writeErrorClass(pageContext, formFieldName, sb);

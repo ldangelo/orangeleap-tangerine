@@ -42,7 +42,7 @@ $(document).ready(function() {
 			PledgeRecurringGiftSelector.deleteAssociated(recurringGiftId, "recurringGift");
 		}
 		ddrFunct(row);
-	}
+	};
 	
 	/* Decorator pattern in JS - check if a pledge needs to be dis-associated based on pledgeId/recurringGiftId */
 	var ldaFunct = Lookup.deleteAssociation;
@@ -61,7 +61,7 @@ $(document).ready(function() {
 			PledgeRecurringGiftSelector.deleteAssociated(thisId, thisType);
 		}
 		ldaFunct(elem);
-	}
+	};
 	
 	$("#amount").one("blur", function(event) {
 		var value = $(this).val(); 
@@ -193,18 +193,17 @@ var PledgeRecurringGiftSelector = {
 	
 	updateDistribution: function(queryString) {
 		var giftDistElem = Ext.get("giftDistributionLinesDiv");
-		giftDistElem.mask("Updating Distribution Lines...")
+		giftDistElem.mask("Updating Distribution Lines...");
 		
 		$.ajax({
 			type: "POST",
-			url: "giftPledgeRecurringGiftLines.htm?constituentId=" + $("#thisConstituentId").val(),
+			url: "giftCombinedDistributionLines.htm?constituentId=" + $("#thisConstituentId").val(),
 			data: queryString,
 			success: function(html) {
-				$("tbody.gridRow", $("#gift_distribution")).each(function() {
-					$(this).remove();
-				});
+				var $giftDistributionLinesDiv = $("#giftDistributionLinesDiv");
+				$giftDistributionLinesDiv.empty();
 				Distribution.amtPctMap = {};
-				$("#gift_distribution").append(html);
+				$giftDistributionLinesDiv.append(html);
 				var $gridRows = $("table.distributionLines tbody.gridRow");
 				Distribution.index = $gridRows.length + 1;
 				Distribution.distributionLineBuilder($gridRows);

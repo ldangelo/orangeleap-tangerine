@@ -7,7 +7,7 @@ $(document).ready(function() {
 
 		/* Done on load for previously entered giftInKindDetails */
 		var val = $elem.val();
-		if (isNaN(parseFloat(val)) == false) {
+		if (!isNaN(parseFloat(val))) {
 			GiftInKindDetails.setEnteredFmv(val);
 			GiftInKindDetails.addNewRow();
 			GiftInKindDetails.updateTotals();
@@ -19,7 +19,7 @@ $(document).ready(function() {
 	$("#fairMarketValue").bind("keyup", function(event) {
 		var fairMarketVal = $(this).val();
 		GiftInKindDetails.setEnteredFmv(fairMarketVal);
-		var values = $("table.giftInKindDetails tbody.gridRow input.detailFairMarketValue", "form");
+		var values = $("table.giftInKindDetails tbody.gridRow input[id$='-detailFairMarketValue']", "form");
 		 
 		if (values.length == 1) {
 			values.val(fairMarketVal);
@@ -44,7 +44,7 @@ var GiftInKindDetails = {
 	
 	updateTotals: function() {
 		var totalValue = parseFloat(0);
-		$("table.giftInKindDetails tbody.gridRow input.detailFairMarketValue", "form").each(function() {
+		$("table.giftInKindDetails tbody.gridRow input[id$='-detailFairMarketValue']", "form").each(function() {
 			var $fmvElem = $(this);
 			
 			var fairMarketVal = parseFloat($fmvElem.val());
@@ -81,7 +81,7 @@ var GiftInKindDetails = {
 			return false;
 		}).show();
 		$("input.number", $newRow).numeric();
-		$("input.detailFairMarketValue", $newRow).bind("keyup change", function(event) {
+		$("input[id$='-detailFairMarketValue']", $newRow).bind("keyup change", function(event) {
 			GiftInKindDetails.updateTotals();
 		});		
 		$("input.code", $newRow).each(function(){
@@ -100,7 +100,7 @@ var GiftInKindDetails = {
 		}
 		else {
 			$newRow.html($newRow.html().replace(new RegExp("\\[0]","g"), "[" + GiftInKindDetails.index + "]").replace(new RegExp("\\-0-","g"), "-" + GiftInKindDetails.index + "-").
-				replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + GiftInKindDetails.index + '"'));
+				replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + GiftInKindDetails.index + '"').replace(new RegExp("tangDummy\\-", "g"), ""));
 		}
 		$("table.giftInKindDetails tbody.gridRow:last .deleteButton", "form").removeClass("noDisplay"); // show the previous last row's delete button
 		$("table.giftInKindDetails", "form").append($newRow);

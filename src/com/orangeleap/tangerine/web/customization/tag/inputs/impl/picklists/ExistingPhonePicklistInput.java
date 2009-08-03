@@ -18,7 +18,7 @@
 
 package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 
-import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.domain.OldPhoneAware;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -55,7 +55,7 @@ public class ExistingPhonePicklistInput extends PhonePicklistInput {
 
     @Override
     protected void checkIfExistingOptionSelected(Object model, Phone phoneToCheck, StringBuilder sb) {
-        PhoneAware aware = (PhoneAware) model;
+        OldPhoneAware aware = (OldPhoneAware) model;
         if (FormBeanType.EXISTING.equals(aware.getPhoneType()) && aware.getSelectedPhone() != null &&
                 phoneToCheck.getId().equals(aware.getSelectedPhone().getId())) {
             sb.append(" selected=\"selected\"");

@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
-public class PaymentSource extends AbstractEntity implements Inactivatible, Creatable, NewAddressAware, NewPhoneAware {
+public class PaymentSource extends AbstractEntity implements Inactivatible, Creatable, AddressAware, PhoneAware {
 
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";
@@ -82,6 +82,11 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         this();
         this.constituent = constituent;
     }
+
+	public PaymentSource(Long id, Constituent constituent) {
+	    this(constituent);
+	    this.id = id;
+	}
 
     public Constituent getConstituent() {
         return constituent;
@@ -359,12 +364,9 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     }
 
     public void setFromAddressAware(AddressAware addressAware) {
-        setSelectedAddress(addressAware.getSelectedAddress());
-        setAddress(addressAware.getSelectedAddress());
-        setAddressType(addressAware.getAddressType());
+        setAddress(addressAware.getAddress());
     }
 
-    @Override
     public Address getSelectedAddress() {
         if (selectedAddress == null) {
             selectedAddress = new Address(); // created only because spring needs to bind to it
@@ -372,18 +374,14 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         return selectedAddress;
     }
 
-    @Override
     public void setSelectedAddress(Address selectedAddress) {
         this.selectedAddress = selectedAddress;
     }
 
     public void setFromPhoneAware(PhoneAware phoneAware) {
-        setSelectedPhone(phoneAware.getSelectedPhone());
-        setPhone(phoneAware.getSelectedPhone());
-        setPhoneType(phoneAware.getPhoneType());
+        setPhone(phoneAware.getPhone());
     }
 
-    @Override
     public Phone getSelectedPhone() {
         if (selectedPhone == null) {
             selectedPhone = new Phone(); // created only because spring needs to bind to it
@@ -391,27 +389,22 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         return selectedPhone;
     }
 
-    @Override
     public void setSelectedPhone(Phone selectedPhone) {
         this.selectedPhone = selectedPhone;
     }
 
-    @Override
     public FormBeanType getAddressType() {
         return this.addressType;
     }
 
-    @Override
     public void setAddressType(FormBeanType type) {
         this.addressType = type;
     }
 
-    @Override
     public FormBeanType getPhoneType() {
         return this.phoneType;
     }
 
-    @Override
     public void setPhoneType(FormBeanType type) {
         this.phoneType = type;
     }
@@ -510,17 +503,6 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
             }
         }
         createDefaultProfileName();
-    }
-
-    @Override
-    public void setDefaults() {
-        super.setDefaults();
-        if (creditCardHolderName == null && constituent != null) {
-            creditCardHolderName = constituent.getFirstLast();
-        }
-        if (achHolderName == null && constituent != null) {
-            achHolderName = constituent.getFirstLast();
-        }
     }
 
     private void clearCredit() {

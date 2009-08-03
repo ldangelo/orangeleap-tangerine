@@ -143,7 +143,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
         }
     }
 
-    private static final String FMT = "MM/dd/yyyy";
+    public static final String FMT = "MM/dd/yyyy";
 
     public Date getCustomFieldAsDate(String field) {
 		SimpleDateFormat sdf = new SimpleDateFormat(FMT);

@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.controller.giftInKind;
 
-import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
+import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.gift.AbstractMutableGridFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
@@ -17,7 +18,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class GiftInKindFormController extends TangerineConstituentAttributesFormController {
+public class GiftInKindFormController extends AbstractMutableGridFormController {
 
     /**
      * Logger for this class and subclasses
@@ -30,7 +31,7 @@ public class GiftInKindFormController extends TangerineConstituentAttributesForm
     @Resource(name = "picklistItemService")
     protected PicklistItemService picklistItemService;
 
-    @Override
+	@Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         GiftInKind giftInKind = giftInKindService.readGiftInKindByIdCreateIfNull(request.getParameter(StringConstants.GIFT_IN_KIND_ID), super.getConstituent(request));
         if (!StringUtils.hasText(giftInKind.getCurrencyCode())) {
@@ -43,26 +44,26 @@ public class GiftInKindFormController extends TangerineConstituentAttributesForm
     }
 
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        GiftInKind giftInKind = (GiftInKind) command;
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
+	    TangerineForm form = (TangerineForm) command;
+        GiftInKind giftInKind = (GiftInKind) form.getDomainObject();
 
         boolean saved = true;
-        GiftInKind current = null;
         try {
-            current = giftInKindService.maintainGiftInKind(giftInKind);
+            giftInKind = giftInKindService.maintainGiftInKind(giftInKind);
         }
-        catch (BindException e) {
+        catch (BindException domainErrors) {
             saved = false;
-            current = giftInKind;
-            errors.addAllErrors(e);
+            bindDomainErrorsToForm(request, formErrors, domainErrors, form, giftInKind);
         }
 
-        ModelAndView mav = null;
+        ModelAndView mav;
         if (saved) {
-            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_IN_KIND_ID + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
-        } else {
-            current.removeEmptyMutableDetails();
-            mav = showForm(request, errors, getFormView());
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_IN_KIND_ID + "=" + giftInKind.getId() + "&" +
+		            StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+        }
+        else {
+            mav = showForm(request, formErrors, getFormView());
         }
         return mav;
     }

@@ -19,7 +19,7 @@ import java.util.TreeSet;
 
 public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 
-	public static final String NONE_ID = "-1";
+	public static final String NONE_ID = StringConstants.NONE;
 	public static final String NEW_ID = "0";
 
 	protected AbstractPicklistHandler(ApplicationContext applicationContext) {

@@ -18,11 +18,12 @@
 
 package com.orangeleap.tangerine.dao;
 
-import java.util.List;
-
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.type.EntityType;
+
+import java.util.List;
 
 public interface SiteDao {
 
@@ -33,10 +34,12 @@ public interface SiteDao {
 	public List<Site> readSites();
 
 	public int updateSite(Site site);
-	
-    public EntityDefault createEntityDefault(EntityDefault entityDefault);
 
-    public List<EntityDefault> readEntityDefaults(List<EntityType> entityTypes);
-    
-    public int updateEntityDefault(EntityDefault entityDefault);
+	EntityDefault createEntityDefault(EntityDefault entityDefault);
+
+	List<EntityDefault> readEntityDefaults(EntityType entityType, SectionDefinition sectionDefinition);
+
+	int updateEntityDefault(EntityDefault entityDefault);
+
+	EntityDefault readEntityDefaultByTypeNameSectionDef(EntityType entityType, String entityFieldName, SectionDefinition sectionDefinition);
 }

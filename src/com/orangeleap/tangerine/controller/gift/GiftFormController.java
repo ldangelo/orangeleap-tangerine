@@ -1,5 +1,24 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.controller.gift;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
@@ -28,9 +47,7 @@ import java.util.Map;
 
 public class GiftFormController extends AbstractGiftController {
 
-    /**
-     * Logger for this class and subclasses
-     */
+    /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "pledgeService")
@@ -38,48 +55,53 @@ public class GiftFormController extends AbstractGiftController {
 
     @Resource(name = "recurringGiftService")
     protected RecurringGiftService recurringGiftService;
-    
-    @Resource(name = "picklistItemService")
-    protected PicklistItemService picklistItemService;
+
+	@Resource(name = "picklistItemService")
+	protected PicklistItemService picklistItemService;
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         Gift gift = giftService.readGiftByIdCreateIfNull(getConstituent(request), request.getParameter(StringConstants.GIFT_ID));
-        
-        if (!StringUtils.hasText(gift.getCurrencyCode())) {
-        	Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
-        	if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
-        		gift.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
-        	}
-        }
-        return gift;
+
+	    if (!StringUtils.hasText(gift.getCurrencyCode())) {
+		    Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
+		    if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
+			    gift.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
+		    }
+	    }
+
+	    return gift;
     }
 
     private boolean isEnteredGift(Gift gift) {
-        return gift != null && gift.getId() != null && gift.getId() > 0;
+    	return gift != null && gift.getId() != null && gift.getId() > 0;
     }
 
     private boolean canReprocessGift(Gift gift) {
-        return isEnteredGift(gift) && (Gift.STATUS_NOT_PAID.equals(gift.getGiftStatus()) || Commitment.STATUS_PENDING.equals(gift.getGiftStatus())) &&
-                (Gift.PAY_STATUS_DECLINED.equals(gift.getPaymentStatus()) || Gift.PAY_STATUS_ERROR.equals(gift.getPaymentStatus()));
+    	return isEnteredGift(gift) && (Gift.STATUS_NOT_PAID.equals(gift.getGiftStatus()) || Commitment.STATUS_PENDING.equals(gift.getGiftStatus())) &&
+			(Gift.PAY_STATUS_DECLINED.equals(gift.getPaymentStatus()) || Gift.PAY_STATUS_ERROR.equals(gift.getPaymentStatus()));
     }
 
     private boolean showGiftView(Gift gift) {
-        return isEnteredGift(gift) && (PaymentType.CASH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CHECK.getPaymentName().equals(gift.getPaymentType()) ||
-                ((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&
-                        Gift.STATUS_PAID.equals(gift.getGiftStatus()) && Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
+    	return isEnteredGift(gift) &&
+			    (PaymentType.OTHER.getPaymentName().equals(gift.getPaymentType()) || 
+			    PaymentType.CASH.getPaymentName().equals(gift.getPaymentType()) ||
+			    PaymentType.CHECK.getPaymentName().equals(gift.getPaymentType()) ||
+    			((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&
+    					Gift.STATUS_PAID.equals(gift.getGiftStatus()) && Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
     }
 
-    @Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
-        ModelAndView mav = super.showForm(request, response, errors);
-        Gift gift = (Gift) formBackingObject(request);
+	@Override
+	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+		ModelAndView mav = super.showForm(request, response, errors);
+        TangerineForm form = (TangerineForm) formBackingObject(request);
+		Gift gift = (Gift) form.getDomainObject();
 
         if (showGiftView(gift)) {
-            mav = new ModelAndView(appendGiftParameters(request, giftViewUrl, gift));
+        	mav = new ModelAndView(appendGiftParameters(request, giftViewUrl, gift));
         }
-        return mav;
-    }
+		return mav;
+	}
 
     @SuppressWarnings("unchecked")
     @Override
@@ -91,51 +113,54 @@ public class GiftFormController extends AbstractGiftController {
         if (NumberUtils.isDigits(selectedPledgeId)) {
             Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
             refMap.put("associatedPledge", pledge);
-        } else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
+        }
+        else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
             RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
             refMap.put("associatedRecurringGift", recurringGift);
         }
 
-        Gift gift = (Gift) command;
+        TangerineForm form = (TangerineForm) command;
+	    Gift gift = (Gift) form.getDomainObject();
         if (canReprocessGift(gift)) {
-            refMap.put("allowReprocess", Boolean.TRUE);
+        	refMap.put("allowReprocess", Boolean.TRUE);
         }
         return refMap;
     }
 
-    @Override
+	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
         binder.registerCustomEditor(List.class, "associatedPledgeIds", new AssociationEditor());
         binder.registerCustomEditor(List.class, "associatedRecurringGiftIds", new AssociationEditor());
     }
 
-    @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Gift gift = (Gift) command;
+	@Override
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
+		TangerineForm form = (TangerineForm) command;
+		Gift gift = (Gift) form.getDomainObject();
         checkAssociations(gift);
-        gift.filterValidDistributionLines();
 
         boolean saved = true;
         try {
-            if ("true".equals(request.getParameter("doReprocess")) && canReprocessGift(gift)) {
-                gift = giftService.reprocessGift(gift);
-            } else {
-                gift = giftService.maintainGift(gift);
-            }
+        	if ("true".equals(request.getParameter("doReprocess")) && canReprocessGift(gift)) {
+        		gift = giftService.reprocessGift(gift);
+        	}
+        	else {
+        		gift = giftService.maintainGift(gift);
+        	}
         }
-        catch (BindException e) {
+        catch (BindException domainErrors) {
             saved = false;
-            errors.addAllErrors(e);
+	        bindDomainErrorsToForm(request, formErrors, domainErrors, form, gift);
         }
 
-        ModelAndView mav = null;
+        ModelAndView mav;
         if (saved) {
             mav = new ModelAndView(super.appendSaved(appendGiftParameters(request, getSuccessView(), gift)));
-        } else {
-            gift.removeEmptyMutableDistributionLines();
-            checkAssociations(gift);
-            mav = showForm(request, errors, getFormView());
+        }
+        else {
+			checkAssociations(gift);
+			mav = showForm(request, formErrors, getFormView());
         }
         return mav;
     }

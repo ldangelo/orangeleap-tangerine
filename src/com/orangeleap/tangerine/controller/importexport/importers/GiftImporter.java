@@ -27,7 +27,6 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
@@ -120,21 +119,10 @@ public class GiftImporter extends EntityImporter {
             }
         }
 
-        DistributionLine dl = new DistributionLine();
+        DistributionLine dl = new DistributionLine(0L, constituent);
         dl.setAmount(gift.getAmount());
         dl.setPercentage(new BigDecimal("100.00"));
-        gift.getMutableDistributionLines().add(dl);
-        gift.filterValidDistributionLines();
-
-
-        gift.setSelectedAddress(gift.getAddress());
-        gift.setSelectedPhone(gift.getPhone());
-        gift.setSelectedPaymentSource(gift.getPaymentSource());
-
-
-        gift.setPaymentSourceType(FormBeanType.NEW);
-        gift.setAddressType(FormBeanType.NEW);
-        gift.setPhoneType(FormBeanType.NEW);
+        gift.addDistributionLine(dl);
 
         giftservice.maintainGift(gift);
 

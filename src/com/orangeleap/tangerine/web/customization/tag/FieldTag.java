@@ -35,6 +35,7 @@ import com.orangeleap.tangerine.web.customization.FieldVO;
 import com.orangeleap.tangerine.web.customization.handler.FieldHandler;
 import com.orangeleap.tangerine.web.customization.handler.FieldHandlerHelper;
 
+@Deprecated
 public class FieldTag extends TagSupport {
     private static final long serialVersionUID = 1L;
 
@@ -52,11 +53,12 @@ public class FieldTag extends TagSupport {
         if (fieldHandler == null) {
         	logger.error("No field handler found for "+sectionField.getFieldPropertyName());
         }
+        else {
+            Object modelParam = model != null ? model : pageContext.getRequest().getAttribute(fieldDefinition.getEntityType().toString());
+            FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), modelParam);
 
-        Object modelParam = model != null ? model : pageContext.getRequest().getAttribute(fieldDefinition.getEntityType().toString());
-        FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), modelParam);
-
-        pageContext.getRequest().setAttribute("fieldVO", fieldVO);
+            pageContext.getRequest().setAttribute("fieldVO", fieldVO);
+        }
         return Tag.SKIP_BODY;
     }
 

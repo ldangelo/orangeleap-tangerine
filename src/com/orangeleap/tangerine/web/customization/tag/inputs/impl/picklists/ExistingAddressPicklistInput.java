@@ -26,7 +26,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.springframework.stereotype.Component;
 
-import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.OldAddressAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -57,7 +57,7 @@ public class ExistingAddressPicklistInput extends AddressPicklistInput {
 
     @Override
     protected void checkIfExistingOptionSelected(Object model, Address addressToCheck, StringBuilder sb) {
-        AddressAware aware = (AddressAware) model;
+        OldAddressAware aware = (OldAddressAware) model;
         if (FormBeanType.EXISTING.equals(aware.getAddressType()) && aware.getSelectedAddress() != null && 
                 addressToCheck.getId().equals(aware.getSelectedAddress().getId())) {
             sb.append(" selected=\"selected\"");

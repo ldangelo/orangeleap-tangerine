@@ -75,14 +75,14 @@ public class SelectionHandler extends AbstractFieldHandler {
 		createRight(sb);
 		createSelectionEnd(sb);
 
-		if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+		if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldType())) {
 			createHiddenInput(formFieldName, fieldValue, sb);
 			createClone(sb);
 		}
 		createContainerEnd(sb);
 		createBottom(request, pageContext, formFieldName, sb);
 
-		if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+		if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldType())) {
 			createLookupLink(currentField, sb);
 		}
 	}
@@ -157,7 +157,7 @@ public class SelectionHandler extends AbstractFieldHandler {
 				sb.append("<div class='multiQueryLookupOption multiOption' id=\"lookup-").append(thisId).append("\" selectedId=\"").append(thisId).append("\">");
 				sb.append("<a href=\"").append(link).append("\" target=\"_blank\" alt=\"").append(gotoMsg).append("\" title=\"").append(gotoMsg).append("\">").append(displayVal).append("</a>");
 
-				if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+				if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldType())) {
 					writeDeleteLink(sb, "PledgeRecurringGiftSelector.deleteThis(this)");
 				}
 

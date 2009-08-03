@@ -18,15 +18,15 @@
 
 package com.orangeleap.tangerine.controller.gift;
 
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
+
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.util.StringUtils;
 
 public class AssociationEditor extends PropertyEditorSupport {
 
@@ -41,7 +41,7 @@ public class AssociationEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         Set<String> idsStrings = StringUtils.commaDelimitedListToSet(text);
-        if (idsStrings != null && idsStrings.isEmpty() == false) {
+        if (idsStrings != null && !idsStrings.isEmpty()) {
             List<Long> idsLongs = new ArrayList<Long>();
             for (String s : idsStrings) {
                 if (NumberUtils.isDigits(s)) {

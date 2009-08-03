@@ -28,6 +28,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
+@Deprecated
 public class FieldVO {
 
     /**

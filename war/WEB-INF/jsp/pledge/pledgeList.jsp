@@ -1,24 +1,15 @@
-<%@ include file="/WEB-INF/jsp/include.jsp"%>
-<spring:message code='pledges' var="titleText" />
-<tiles:insertDefinition name="base">
-    <tiles:putAttribute name="customHeaderContent" type="string">
-        <script type="text/javascript" src="js/pledgeList.js"></script>
-    </tiles:putAttribute>
-	<tiles:putAttribute name="browserTitle" value="${titleText}" />
-	<tiles:putAttribute name="primaryNav" value="People" />
-	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="Pledges" />
-	<tiles:putAttribute name="mainContent" type="string">
-		<div class="content760 mainForm">
-		<c:set var="constituent" value="${constituent}" scope="request" />
-		<c:if test="${constituent.id!=null}">
-			<c:set var="viewingConstituent" value="true" scope="request" />
-		</c:if>
-		<jsp:include page="../snippets/constituentHeader.jsp">
-			<jsp:param name="currentFunctionTitleText" value="${titleText}" />
-		</jsp:include>
-        <div id="pledgeListGrid"></div>
-        
-        </div>
-	</tiles:putAttribute>
-</tiles:insertDefinition>
+<%@ include file="/WEB-INF/jsp/include.jsp" %>
+<page:applyDecorator name="form">
+    <spring:message code='pledges' var="titleText" />
+    <html>
+        <head>
+            <title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
+        </head>
+        <body>
+             <div id="pledgeListGrid"></div>
+        </body>
+    </html>
+    <page:param name="scripts">
+        <script type="text/javascript" src="js/lists/pledgeList.js"></script>
+    </page:param>
+</page:applyDecorator>

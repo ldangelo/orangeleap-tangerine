@@ -115,9 +115,13 @@ public class SectionField implements GeneratedId, Serializable {
     }
 
     public FieldType getFieldType() {
-        if (!isCompoundField()) {
+	    if (!isCompoundField()) {
+		    return fieldDefinition.getFieldType();
+	    }
+        if (fieldDefinition.getFieldType() != null) {
             return fieldDefinition.getFieldType();
-        } else {
+        }
+        else {
             return secondaryFieldDefinition.getFieldType();
         }
     }

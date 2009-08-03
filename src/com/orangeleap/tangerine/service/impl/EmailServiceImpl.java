@@ -23,10 +23,15 @@ import com.orangeleap.tangerine.dao.EmailDao;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.EmailValidator;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import javax.annotation.Resource;
 
@@ -42,6 +47,12 @@ public class EmailServiceImpl extends AbstractCommunicationService<Email> implem
     @Resource(name = "emailDAO")
     private EmailDao emailDao;
 
+    @Resource(name = "emailValidator")
+    private EmailValidator emailValidator;
+
+    @Resource(name = "emailManagerEntityValidator")
+    private EntityValidator entityValidator;
+    
     @Override
     protected CommunicationDao<Email> getDao() {
         return emailDao;
@@ -50,5 +61,20 @@ public class EmailServiceImpl extends AbstractCommunicationService<Email> implem
     @Override
     protected Email createEntity(Long constituentId) {
         return new Email(constituentId);
+    }
+
+    @Override
+    protected void validate(Email entity) throws BindException {
+        if (entity.getFieldLabelMap() != null && !entity.isSuppressValidation()) {
+            BindingResult br = new BeanPropertyBindingResult(entity, "email");
+            BindException errors = new BindException(br);
+
+            entityValidator.validate(entity, errors);
+            emailValidator.validate(entity, errors);
+
+            if (errors.hasErrors()) {
+                throw errors;
+            }
+        }
     }
 }

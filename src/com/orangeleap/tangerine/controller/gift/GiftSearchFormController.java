@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapper;
@@ -99,7 +100,7 @@ public class GiftSearchFormController extends SimpleFormController {
 
         // if this is not null, it means they did a general search for Gift from the
         // search box in the navigation bar
-        if (textValue != null) {
+        if (textValue != null && NumberUtils.isNumber(textValue)) {
             // Make sure we have a BigDecimal
             BigDecimal val = null;
             try {

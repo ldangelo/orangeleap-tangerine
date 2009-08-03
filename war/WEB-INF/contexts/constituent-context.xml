@@ -16,12 +16,10 @@
         <property name="successView" value="constituent/constituentSearch"/>
     </bean>
 
-    <bean id="constituent" class="com.orangeleap.tangerine.controller.constituent.ConstituentFormController" parent="tangerineFormController">
-        <property name="commandName" value="constituent"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.Constituent"/>
-        <property name="formView" value="constituent/constituent" />
-        <property name="successView" value="redirect:/constituent.htm" />
-    </bean>
+	<bean id="constituentFormController" class="com.orangeleap.tangerine.controller.constituent.ConstituentFormController" parent="newTangerineFormController">
+	    <property name="formView" value="constituent/constituent" />
+	    <property name="successView" value="redirect:/constituent.htm" />
+	</bean>
 
     <bean id="constituentView" class="com.orangeleap.tangerine.controller.constituent.ConstituentViewController">
         <property name="viewName" value="constituent/constituentView"/>
@@ -30,11 +28,11 @@
     <bean id="constituentList" class="com.orangeleap.tangerine.controller.constituent.ConstituentListController">
         <property name="viewName" value="constituent/constituentList"/>
     </bean>
-    
+
     <bean id="constituentUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-		        <prop key="/constituent.htm">constituent</prop>
+			    <prop key="/constituent.htm">constituentFormController</prop>
 		        <prop key="/constituentSearch.htm">constituentSearch</prop>
 		        <prop key="/constituentView.htm">constituentView</prop>
                 <prop key="/constituentList.htm">constituentList</prop>

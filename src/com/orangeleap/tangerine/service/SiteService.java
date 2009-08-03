@@ -25,7 +25,9 @@ import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.type.EntityType;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.security.GrantedAuthority;
 
@@ -109,5 +111,11 @@ public interface SiteService {
 
 	void readFieldInfo(PageType pageType, List<String> roles, Locale locale, AbstractEntity entity);
 
-//	Object getDefaultValue(EntityDefault entityDefault, BeanWrapper bean, String key);
+	Object getDefaultValue(EntityDefault entityDefault, BeanWrapper bean, String key);
+
+	EntityDefault readEntityDefaultByTypeNameSectionDef(SectionField sectionField);
+
+	EntityDefault readEntityDefaultByTypeNameSectionDef(EntityType entityType, String fieldName, SectionDefinition sectionDef);
+
+	void setEntityDefaults(AbstractEntity entity, EntityType entityType, SectionDefinition sectionDefinition);
 }

@@ -1,17 +1,14 @@
 package com.orangeleap.tangerine.test.controller.validator;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.validation.BindException;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.test.BaseTest;
+import org.springframework.validation.BindException;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.math.BigDecimal;
 
 public class GiftInKindDetailsValidatorTest extends BaseTest {
 
@@ -27,39 +24,33 @@ public class GiftInKindDetailsValidatorTest extends BaseTest {
     public void testValidateGiftInKindDetails() throws Exception {
         GiftInKind gik = new GiftInKind();
         errors = new BindException(gik, "giftInKind");
-        List<GiftInKindDetail> details = new ArrayList<GiftInKindDetail>();
         GiftInKindDetail aDetail = new GiftInKindDetail();
         aDetail.setDetailFairMarketValue(new BigDecimal(13.5));
-        details.add(aDetail);
-        gik.setMutableDetails(details);
+        gik.addDetail(aDetail);
         gik.setFairMarketValue(new BigDecimal(16));
         
         validator.validate(gik, errors);
         assert errors.hasErrors() == true;
         
-        errors = new BindException(gik, "gift");
+        errors = new BindException(gik, "giftInKind");
         aDetail = new GiftInKindDetail();
         aDetail.setDetailFairMarketValue(new BigDecimal(2.5));
-        details.add(aDetail);
         gik = new GiftInKind();
-        gik.setMutableDetails(details);
+        gik.addDetail(aDetail);
         gik.setFairMarketValue(new BigDecimal(16));        
         validator.validate(gik, errors);
         assert errors.hasErrors() == true;
 
-        errors = new BindException(gik, "gift");
-        details = new ArrayList<GiftInKindDetail>();
+        errors = new BindException(gik, "giftInKind");
+	    gik = new GiftInKind();
         aDetail = new GiftInKindDetail();
         aDetail.setDetailFairMarketValue(new BigDecimal(13.5));
         aDetail.setDescription("bark");
-        details.add(aDetail);
-        
+	    gik.addDetail(aDetail);
         aDetail = new GiftInKindDetail();
         aDetail.setDetailFairMarketValue(new BigDecimal(2.5));
         aDetail.setDescription("woof");
-        details.add(aDetail);
-        gik = new GiftInKind();
-        gik.setMutableDetails(details);
+	    gik.addDetail(aDetail);
         gik.setFairMarketValue(new BigDecimal(16));        
         validator.validate(gik, errors);
         assert errors.hasErrors() == false;

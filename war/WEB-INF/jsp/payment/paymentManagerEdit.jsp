@@ -1,47 +1,31 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Payment Manager" />
-	<tiles:putAttribute name="primaryNav" value="People" />
-	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="Payment Methods" />
-	<tiles:putAttribute name="mainContent" type="string">
-		<div class="content760 mainForm">
-			<mp:page pageName='paymentManagerEdit' />
-			<c:set var="constituent" value="${paymentSource.constituent}" scope="request" />
-			
-			<c:if test="${constituent.id!=null}">
-				<c:set var="viewingConstituent" value="true" scope="request" />
-			</c:if>
-	
-			<form:form method="post" commandName="paymentSource">
-				<c:if test="${id != null}">
-					<input type="hidden" name="id" value="<c:out value='${id}'/>" />
-				</c:if>
-		
-				<spring:message code='paymentManager' var="titleText" />
-				<spring:message code='submitPaymentMethod' var="submitText" />
-				<jsp:include page="../snippets/constituentHeader.jsp">
-					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
-					<jsp:param name="submitButtonText" value="${submitText}" />
-				</jsp:include>
-		
-				<jsp:include page="../snippets/standardFormErrors.jsp"/>
-		
-				<div class="columns">
-					<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
-						<c:if test="${sectionDefinition.layoutType ne 'GRID'}">
-							<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp"%>
-						</c:if>
-					</c:forEach>
-					<div class="clearColumns"></div>
-				</div>
+<page:applyDecorator name="form">
+	<spring:message code='paymentMethods' var="titleText" scope="request" />
+	<spring:message code='submit' var="submitText" />
+
+	<c:set var="headerText" value="${titleText}" scope="request"/>
+
+	<html>
+		<head>
+			<title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
+		</head>
+		<body>
+			<form:form method="post" commandName="${requestScope.commandObject}">
+				<c:set var="topButtons" scope="request">
+					<input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/>
+				</c:set>
+				<%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
+				<%@ include file="/WEB-INF/jsp/payment/checkConflictingPaymentSource.jsp"%>
+
+				<tangerine:fields pageName="paymentManagerEdit"/>
+
 				<div class="formButtonFooter constituentFormButtons">
-					<input type="submit" value="<spring:message code='submitPaymentMethod'/>" class="saveButton" />
-					<c:if test="${paymentSource.id != null}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('paymentManager.htm?constituentId=${constituent.id}')"/>
+					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
+					<c:if test="${form.domainObject.id > 0}">
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('paymentSourceList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
 				</div>
 			</form:form>
-		</div>
-	</tiles:putAttribute>
-</tiles:insertDefinition>
+		</body>
+	</html>
+</page:applyDecorator>

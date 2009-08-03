@@ -21,9 +21,14 @@ package com.orangeleap.tangerine.service.impl;
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.*;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -52,7 +57,16 @@ import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service("recurringGiftService")
 public class RecurringGiftServiceImpl extends AbstractCommitmentService<RecurringGift> implements RecurringGiftService, ApplicationContextAware {
@@ -65,6 +79,9 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Resource(name = "recurringGiftDAO")
     private RecurringGiftDao recurringGiftDao;
 
+	@Resource(name="recurringGiftValidator")
+	protected RecurringGiftValidator recurringGiftValidator;
+
     @Resource(name = "recurringGiftEntityValidator")
     protected EntityValidator entityValidator;
 
@@ -73,8 +90,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     @Resource(name = "distributionLinesValidator")
     protected DistributionLinesValidator distributionLinesValidator;
-    private ApplicationContext applicationContext;
 
+    private ApplicationContext applicationContext;
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -126,48 +143,46 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isTraceEnabled()) {
             logger.trace("maintainRecurringGift: recurringGift = " + recurringGift);
         }
-
-        if (recurringGift.getFieldLabelMap() != null && !recurringGift.isSuppressValidation()) {
-
-            BindingResult br = new BeanPropertyBindingResult(recurringGift, "recurringGift");
-            BindException errors = new BindException(br);
-
-            codeValidator.validate(recurringGift, errors);
-            if (errors.getAllErrors().size() > 0) {
-                throw errors;
-            }
-            distributionLinesValidator.validate(recurringGift, errors);
-            if (errors.getAllErrors().size() > 0) {
-                throw errors;
-            }
-
-            entityValidator.validate(recurringGift, errors);
-            if (errors.getAllErrors().size() > 0) {
-                throw errors;
-            }
-        }
-
+	    validateRecurringGift(recurringGift, true);
 
         recurringGift.setAutoPay(true);
         if (recurringGift.getNextRunDate() == null && recurringGift.isActivate()) {
             recurringGift.setNextRunDate(recurringGift.getStartDate());
         }
 
-
-        recurringGift.filterValidDistributionLines();
         return save(recurringGift);
     }
 
+	private void validateRecurringGift(RecurringGift recurringGift, boolean validateDistributionLines) throws BindException {
+		if (recurringGift.getFieldLabelMap() != null && !recurringGift.isSuppressValidation()) {
+
+		    BindingResult br = new BeanPropertyBindingResult(recurringGift, "recurringGift");
+		    BindException errors = new BindException(br);
+
+			entityValidator.validate(recurringGift, errors);
+			recurringGiftValidator.validate(recurringGift, errors);
+		    codeValidator.validate(recurringGift, errors);
+			if (validateDistributionLines) {
+		        distributionLinesValidator.validate(recurringGift, errors);
+			}
+
+		    if (errors.hasErrors()) {
+		        throw errors;
+		    }
+		}
+	}
+
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public RecurringGift editRecurringGift(RecurringGift recurringGift) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public RecurringGift editRecurringGift(RecurringGift recurringGift) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("editRecurringGift: recurringGiftId = " + recurringGift.getId());
         }
+	    validateRecurringGift(recurringGift, false);
         return save(recurringGift);
     }
 
-    private RecurringGift save(RecurringGift recurringGift) {
+    private RecurringGift save(RecurringGift recurringGift) throws BindException {
         maintainEntityChildren(recurringGift, recurringGift.getConstituent());
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
         auditService.auditObject(recurringGift, recurringGift.getConstituent());

@@ -18,25 +18,26 @@
 
 package com.orangeleap.tangerine.controller.gift;
 
-import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Set;
 
-public class GiftPledgeRecurringGiftLinesController extends SimpleFormController {
+public class GiftPledgeRecurringGiftLinesController extends AbstractMutableGridFormController {
 
     /**
      * Logger for this class and subclasses
@@ -52,34 +53,40 @@ public class GiftPledgeRecurringGiftLinesController extends SimpleFormController
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
 
-    @Resource(name = "constituentService")
-    private ConstituentService constituentService;
-
-    private Constituent getConstituent(HttpServletRequest request) {
-        return constituentService.readConstituentById(Long.parseLong(request.getParameter(StringConstants.CONSTITUENT_ID)));
-    }
+	@Override
+	protected AbstractEntity findEntity(HttpServletRequest request) {
+		return giftService.createDefaultGift(getConstituent(request));
+	}
 
     @Override
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        return new GiftPledgeRecurringGiftLinesForm(getConstituent(request));
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        GiftPledgeRecurringGiftLinesForm form = (GiftPledgeRecurringGiftLinesForm) command;
+	    TangerineForm form = (TangerineForm) command;
+	    Gift gift = (Gift) form.getDomainObject();
+
         List<DistributionLine> commitmentLines = null;
         int numCommitments = 0;
         boolean isPledge = false;
-        if (form.getPledgeIds() != null) {
-            commitmentLines = pledgeService.findDistributionLinesForPledges(form.getPledgeIds());
-            numCommitments = form.getPledgeIds().size();
+        if (form.getFieldValue("selectedPledgeIds") != null) {
+	        Set<String> selectedPledgeIds = StringUtils.commaDelimitedListToSet(form.getFieldValue("selectedPledgeIds").toString());
+            commitmentLines = pledgeService.findDistributionLinesForPledges(selectedPledgeIds);
+            numCommitments = selectedPledgeIds.size();
             isPledge = true;
-        } else if (form.getRecurringGiftIds() != null) {
-            commitmentLines = recurringGiftService.findDistributionLinesForRecurringGifts(form.getRecurringGiftIds());
-            numCommitments = form.getRecurringGiftIds().size();
+        }
+        else if (form.getFieldValue("selectedRecurringGiftIds") != null) {
+	        Set<String> selectedRecurringGiftIds = StringUtils.commaDelimitedListToSet(form.getFieldValue("selectedRecurringGiftIds").toString());
+            commitmentLines = recurringGiftService.findDistributionLinesForRecurringGifts(selectedRecurringGiftIds);
+            numCommitments = selectedRecurringGiftIds.size();
             isPledge = false;
         }
-        return new ModelAndView(getSuccessView(), "combinedDistributionLines", giftService.combineGiftCommitmentDistributionLines(form.getMutableDistributionLines(), commitmentLines,
-                form.getEnteredAmount(), numCommitments, getConstituent(request), isPledge));
+
+	    // The Gift object has been changed - make sure the TangerineForm is updated also
+	    List<DistributionLine> combinedLines = giftService.combineGiftCommitmentDistributionLines(gift.getDistributionLines(), commitmentLines,
+                gift.getAmount(), numCommitments, getConstituent(request), isPledge);
+	    gift.setDistributionLines(combinedLines);
+
+	    rebindEntityValuesToForm(request, form, gift);
+	    
+        return new ModelAndView(getSuccessView(), getCommandName(), form);
     }
 }

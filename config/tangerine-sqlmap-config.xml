@@ -4,8 +4,7 @@
 	<sqlMap resource="sqlmap/version.xml"/>
 	<sqlMap resource="sqlmap/site.xml"/>
 	<sqlMap resource="sqlmap/customField.xml"/>
-	<sqlMap resource="sqlmap/entityDefault.xml"/>
-    <sqlMap resource="sqlmap/recentlyViewed.xml"/> 
+    <sqlMap resource="sqlmap/recentlyViewed.xml"/>
 
 	<sqlMap resource="sqlmap/fieldCondition.xml"/>
 	<sqlMap resource="sqlmap/fieldDefinition.xml"/>
@@ -14,6 +13,7 @@
 	<sqlMap resource="sqlmap/fieldValidation.xml"/>
 	<sqlMap resource="sqlmap/sectionDefinition.xml"/>
 	<sqlMap resource="sqlmap/sectionField.xml"/>
+	<sqlMap resource="sqlmap/entityDefault.xml"/>
 
 	<sqlMap resource="sqlmap/queryLookup.xml"/>
 	<sqlMap resource="sqlmap/queryLookupParam.xml"/>

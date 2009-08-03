@@ -56,15 +56,15 @@ public class GridHandler implements ApplicationContextAware {
 		fieldHandlerHelper = (FieldHandlerHelper) appContext.getBean("fieldHandlerHelper");
 	}
 
-	public void writeDistributionLinesGridBegin(String pageName, StringBuilder sb) {
-		sb.append("<div id=\"").append(pageName).append("DistributionLinesDiv\">");
+	public void writeGridBegin(String pageName, String idPrefix, StringBuilder sb) {
+		sb.append("<div id=\"").append(pageName).append(idPrefix).append("Div\">");
 	}
 
 	public void writeGridTableBegin(SectionDefinition sectionDef, String gridTableCssClass, StringBuilder sb) {
 		sb.append("<table class=\"tablesorter ").append(gridTableCssClass).append("\" id=\"").append(sectionDef.getSectionHtmlName()).append("\" cellspacing=\"0\">");
 	}
 
-	public void writeGridCols(List<SectionField> sectionFields, boolean hasHiddenGridRow, StringBuilder sb) {
+	public void writeGridCols(List<SectionField> sectionFields, boolean hasHiddenGridRow, boolean showDeleteButton, StringBuilder sb) {
 		if (hasHiddenGridRow) {
 			sb.append("<col class=\"node\"/>");
 		}
@@ -81,15 +81,21 @@ public class GridHandler implements ApplicationContextAware {
 			else if (FieldType.QUERY_LOOKUP.equals(field.getFieldType()) || FieldType.QUERY_LOOKUP_OTHER.equals(field.getFieldType()) || FieldType.QUERY_LOOKUP_DISPLAY.equals(field.getFieldType())) {
 				sb.append("<col class=\"reference\"/>");
 			}
+			else if (FieldType.CHECKBOX.equals(field.getFieldType())) {
+				sb.append("<col class=\"checkbox\"/>");
+			}
 			else if (!FieldType.HIDDEN.equals(field.getFieldType())) {
 				sb.append("<col class=\"text\"/>");
 			}
 		}
-		sb.append("<col class=\"button\"/>");
+		if (showDeleteButton) {
+			sb.append("<col class=\"button\"/>");
+		}
 	}
 
 	// TODO: grid sorting
-	public void writeGridHeader(PageContext pageContext, List<SectionField> sectionFields, boolean hasHiddenGridRow, StringBuilder sb) {
+	public void writeGridHeader(PageContext pageContext, List<SectionField> sectionFields, boolean hasHiddenGridRow,
+	                            boolean showDeleteButton, StringBuilder sb) {
 		sb.append("<thead><tr>");
 		if (hasHiddenGridRow) {
 			sb.append("<th class=\"actionColumn\">&nbsp;</th>");
@@ -112,13 +118,15 @@ public class GridHandler implements ApplicationContextAware {
 				sb.append("</th>");
 			}
 		}
-		sb.append("<th></th>");
+		if (showDeleteButton) {
+			sb.append("<th></th>");
+		}
 		sb.append("</tr></thead>");
 	}
 
 	public void writeGridTableBody(PageContext pageContext, SectionDefinition gridSectionDef, List<SectionField> gridSectionFields,
 	                               SectionDefinition hiddenSectionDef, List<SectionField> hiddenSectionFields,
-	                               TangerineForm form, boolean hasHiddenGridRow, boolean isDummy, StringBuilder sb) {
+	                               TangerineForm form, boolean hasHiddenGridRow, boolean isDummy, boolean showDeleteButton, StringBuilder sb) {
 		if ( ! gridSectionFields.isEmpty()) {
 			String collectionFieldName = gridSectionFields.get(0).getFieldDefinition().getFieldName();
 	        BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject());
@@ -148,16 +156,29 @@ public class GridHandler implements ApplicationContextAware {
 					sb.append("gridRow").append(rowCounter);
 				}
 				sb.append("\">");
-				writeLineRow(pageContext, gridSectionDef, gridSectionFields, form, hasHiddenGridRow, isDummy, totalRows, rowCounter, sb);
-				writeHiddenRow(pageContext, hiddenSectionDef, hiddenSectionFields, form, isDummy, rowCounter, gridSectionFields.size(), sb);
+				writeLineRow(pageContext, gridSectionDef, gridSectionFields, form, hasHiddenGridRow, isDummy, showDeleteButton, totalRows, rowCounter, sb);
+
+				int colspan = 0;
+				for (SectionField gridSectionField : gridSectionFields) {
+					if (!FieldType.HIDDEN.equals(gridSectionField.getFieldType())) {
+						colspan++;
+					}
+				}
+				if (hasHiddenGridRow) {
+					colspan++;
+				}
+				if (showDeleteButton) {
+					colspan++;
+				}
+				writeHiddenRow(pageContext, hiddenSectionDef, hiddenSectionFields, form, isDummy, rowCounter, colspan, showDeleteButton, sb);
 				sb.append("</tbody>");
 			}
 		}
 	}
 
 	public void writeLineRow(PageContext pageContext, SectionDefinition sectionDef, List<SectionField> sectionFields, TangerineForm form,
-	                            boolean hasHiddenGridRow, boolean isDummy, int totalSize,
-	                            int rowCounter, StringBuilder sb) {
+	                         boolean hasHiddenGridRow, boolean isDummy, boolean showDeleteButton, int totalSize,
+	                         int rowCounter, StringBuilder sb) {
 		sb.append("<tr class=\"lineRow");
 		if (hasHiddenGridRow) {
 			sb.append(" expandableRow collapsed");
@@ -187,17 +208,20 @@ public class GridHandler implements ApplicationContextAware {
 		}
 
 		String removeMsg = TangerineMessageAccessor.getMessage("removeThisOption");
-		sb.append("<td><a href=\"#\" class=\"deleteButton");
-		if (rowCounter == 0 && totalSize == 1) {
-			sb.append(" noDisplay");
+
+		if (showDeleteButton) {
+			sb.append("<td><a href=\"#\" class=\"deleteButton");
+			if (rowCounter == 0 && totalSize == 1) {
+				sb.append(" noDisplay");
+			}
+			sb.append("\"><img src=\"images/icons/deleteRow.png\" alt=\"").append(removeMsg).append("\" title=\"").append(removeMsg).append("\"/></a></td>");
 		}
-		sb.append("\"><img src=\"images/icons/deleteRow.png\" alt=\"").append(removeMsg).append("\" title=\"").append(removeMsg).append("\"/></a></td>");
 		sb.append("</tr>");
 	}
 
 	public void writeHiddenRow(PageContext pageContext, SectionDefinition hiddenSectionDef,
 	                           List<SectionField> hiddenSectionFields, TangerineForm form,
-	                           boolean isDummy, int rowCounter, int colspan, StringBuilder sb) {
+	                           boolean isDummy, int rowCounter, int colspan, boolean showDeleteButton, StringBuilder sb) {
 		sb.append("<tr class=\"hiddenRow noDisplay\">");
 		sb.append("<td colspan=\"").append(colspan).append("\">");
 		sb.append("<table>");
@@ -276,7 +300,7 @@ public class GridHandler implements ApplicationContextAware {
 		sb.append("<span class=\"warningText\" id=\"");
 
 		String msg = StringConstants.EMPTY;
-		if (LayoutType.DISTRIBUTION_LINE_GRID.equals(layoutType)) {
+		if (LayoutType.DISTRIBUTION_LINE_GRID.equals(layoutType) || LayoutType.ADJUSTED_DISTRIBUTION_LINE_GRID.equals(layoutType)) {
 			sb.append("amountsErrorSpan");
 			msg = TangerineMessageAccessor.getMessage("mustMatchGiftValue");
 		}
@@ -298,7 +322,7 @@ public class GridHandler implements ApplicationContextAware {
 		sb.append("</div>");
 	}
 
-	public void writeDistributionLinesGridEnd(StringBuilder sb) {
+	public void writeGridEnd(StringBuilder sb) {
 		sb.append("</div>");
 	}
 

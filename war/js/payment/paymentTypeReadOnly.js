@@ -3,7 +3,7 @@ $(document).ready(function() {
 });
 var PaymentTypeReadOnly = {
 	showHide: function() {
-		var paymentTypeVal = jQuery.trim($("#paymentType").text());
+		var paymentTypeVal = jQuery.trim($("#paymentType div.multiPicklistOption:visible").text());
 		if (paymentTypeVal == "Cash") {
 			$("#" + PaymentTypeCommandObject + "_ach").hide();
 			$("#" + PaymentTypeCommandObject + "_creditCard").hide();

@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.controller.communication.email;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -54,13 +55,24 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
     }
 
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Email email = (Email) command;
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response,
+                                    Object command, BindException formErrors) throws Exception {
+        TangerineForm form = (TangerineForm) command;
+        Email email = (Email) form.getDomainObject();
         if (emailService.alreadyExists(email) != null) {
-            errors.reject("errorEmailExists");
-            return showForm(request, response, errors);
+            formErrors.reject("errorEmailExists");
+            return showForm(request, response, formErrors);
         }
-        emailService.save(email);
-        return super.onSubmit(request, response, command, errors);
+        ModelAndView mav;
+        try {
+            email = emailService.save(email);
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.EMAIL_ID + "=" + email.getId() +
+                    "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+        }
+        catch (BindException domainErrors) {
+            bindDomainErrorsToForm(request, formErrors, domainErrors, form, email);
+            mav = showForm(request, formErrors, getFormView());
+        }
+        return mav;
     }
 }

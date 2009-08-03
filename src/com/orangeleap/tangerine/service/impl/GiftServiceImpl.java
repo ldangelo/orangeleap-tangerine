@@ -21,15 +21,20 @@ package com.orangeleap.tangerine.service.impl;
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentHistory;
-import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.integration.NewGift;
-import com.orangeleap.tangerine.service.*;
+import com.orangeleap.tangerine.service.ErrorLogService;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PaymentHistoryService;
+import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.customization.FieldService;
+import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -39,9 +44,7 @@ import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -53,7 +56,14 @@ import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -73,11 +83,17 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
 
+	@Resource(name = "fieldService")
+	private FieldService fieldService;
+
+	@Resource(name = "pageCustomizationService")
+	private PageCustomizationService pageCustomizationService;
+
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
 
-    @Resource(name = "siteDAO")
-    private SiteDao siteDao;
+    @Resource(name = "fieldDAO")
+    private FieldDao fieldDao;
 
     @Resource(name = "errorLogService")
     private ErrorLogService errorLogService;
@@ -110,9 +126,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                 logger.trace("maintainGift: gift = " + gift);
             }
 
-            if (gift.getFieldLabelMap() != null && !gift.isSuppressValidation()) {
-                validateGift(gift);
-            }
+			validateGift(gift, true);
 
             setDefaultDates(gift);
             gift = saveAuditGift(gift);
@@ -131,27 +145,25 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
     }
 
-    private void validateGift(Gift gift)
+    private void validateGift(Gift gift, boolean doValidateDistributionLines)
             throws BindException {
-        BindingResult br = new BeanPropertyBindingResult(gift, StringConstants.GIFT);
-        BindException errors = new BindException(br);
+	    if (gift.getFieldLabelMap() != null && !gift.isSuppressValidation()) {
+			BindingResult br = new BeanPropertyBindingResult(gift, StringConstants.GIFT);
+			BindException errors = new BindException(br);
 
-        codeValidator.validate(gift, errors);
-        if (errors.getAllErrors().size() > 0) {
-            throw errors;
-        }
-        distributionLinesValidator.validate(gift, errors);
-        if (errors.getAllErrors().size() > 0) {
-            throw errors;
-        }
+			entityValidator.validate(gift, errors);
+			codeValidator.validate(gift, errors);
+			if (doValidateDistributionLines) {
+				distributionLinesValidator.validate(gift, errors);
+			}
 
-        entityValidator.validate(gift, errors);
-        if (errors.getAllErrors().size() > 0) {
-            throw errors;
-        }
+			if (errors.hasErrors()) {
+				throw errors;
+			}
+	    }
     }
 
-    private Gift saveAuditGift(Gift gift) {
+    private Gift saveAuditGift(Gift gift) throws BindException {
         maintainEntityChildren(gift, gift.getConstituent());
         gift = giftDao.maintainGift(gift);
         pledgeService.updatePledgeForGift(gift);
@@ -172,12 +184,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     // Used for update only.
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public Gift editGift(Gift gift) {
+    public Gift editGift(Gift gift) throws BindException {
         boolean reentrant = RulesStack.push(EDIT_METHOD);
         try {
             if (logger.isTraceEnabled()) {
                 logger.trace("editGift: giftId = " + gift.getId());
             }
+
+			validateGift(gift, false);
 
             gift = saveAuditGift(gift);
 
@@ -202,7 +216,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         boolean reentrant = RulesStack.push(REPROCESS_METHOD);
         try {
-            validateGift(gift);
+            validateGift(gift, true);
             gift.clearPaymentStatusInfo();
             gift = saveAuditGift(gift);
 
@@ -330,18 +344,10 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultGift: constituent = " + (constituent == null ? null : constituent.getId()));
         }
-        // get initial gift with built-in defaults
         Gift gift = new Gift();
-        BeanWrapper giftBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(gift);
-
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[]{EntityType.gift}));
-        for (EntityDefault ed : entityDefaults) {
-            giftBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
-        }
         gift.setConstituent(constituent);
         List<DistributionLine> lines = new ArrayList<DistributionLine>(1);
         DistributionLine line = new DistributionLine(constituent);
-        line.setDefaults();
         line.setGiftId(gift.getId());
         lines.add(line);
         gift.setDistributionLines(lines);
@@ -376,8 +382,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         // Need to ensure address and payment source are populated for export.
         for (int i = 0; i < list.size(); i++) {
             Gift g = readGiftById(list.get(i).getId());
-            g.setAddress(g.getSelectedAddress());
-            g.setPaymentSource(g.getSelectedPaymentSource());
+            g.setAddress(g.getAddress());
+            g.setPaymentSource(g.getPaymentSource());
             list.set(i, g);
         }
         return list;
@@ -407,20 +413,23 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             // NO pledge/recurringGift distribution lines associated with this gift; only add gift distribution lines that have no pledge/recurringGift associations
             for (DistributionLine giftLine : giftDistributionLines) {
                 if (giftLine != null && giftLine.isFieldEntered()) {
-                    if (org.springframework.util.StringUtils.hasText(giftLine.getCustomFieldValue(associatedIdName)) == false) {
+                    if (!org.springframework.util.StringUtils.hasText(giftLine.getCustomFieldValue(associatedIdName))) {
                         returnLines.add(giftLine);
                     }
                 }
             }
-        } else if ((giftDistributionLines == null || giftDistributionLines.isEmpty()) && commitmentLines != null) {
+        }
+        else if ((giftDistributionLines == null || giftDistributionLines.isEmpty()) && commitmentLines != null) {
             initCommitmentDistributionLine(commitmentLines, returnLines, numCommitments, amount, isPledge);
-        } else if (commitmentLines != null && giftDistributionLines != null) {
+        }
+        else if (commitmentLines != null && giftDistributionLines != null) {
             for (DistributionLine aLine : giftDistributionLines) {
                 if (aLine != null && aLine.isFieldEntered()) {
                     String associatedCommitmentId = aLine.getCustomFieldValue(associatedIdName);
-                    if (org.springframework.util.StringUtils.hasText(associatedCommitmentId) == false) {
+                    if (!org.springframework.util.StringUtils.hasText(associatedCommitmentId)) {
                         returnLines.add(aLine); // No associated pledge/recurringGiftIds, so just copy the line
-                    } else {
+                    }
+                    else {
                         for (Iterator<DistributionLine> commitmentLineIter = commitmentLines.iterator(); commitmentLineIter.hasNext();) {
                             DistributionLine commitmentLine = commitmentLineIter.next();
                             Long associatedCommitmentIdLong = Long.parseLong(associatedCommitmentId);
@@ -443,10 +452,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     /**
      * Check if a default distribution line was created; remove if necessary
-     *
      * @param giftDistributionLines
      */
-    public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Constituent constituent) {
+    private List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("removeDefaultDistributionLine: amount = " + amount);
         }
@@ -463,13 +471,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         /* If only 1 line is entered, check if it is the default */
         if (count == 1) {
             DistributionLine defaultLine = new DistributionLine(constituent);
-            defaultLine.setDefaults();
+	        siteService.setEntityDefaults(defaultLine, EntityType.distributionLine, null); // TODO: fix for sectionDef
 
             if (amount.equals(enteredLine.getAmount()) && new BigDecimal("100").equals(enteredLine.getPercentage())) {
                 if (org.springframework.util.StringUtils.hasText(enteredLine.getProjectCode()) || org.springframework.util.StringUtils.hasText(enteredLine.getMotivationCode()) ||
                         org.springframework.util.StringUtils.hasText(enteredLine.getOther_motivationCode())) {
                     // do nothing
-                } else {
+                }
+                else {
                     boolean isSame = true;
                     Set<String> keys = enteredLine.getCustomFieldMap().keySet();
                     for (String aKey : keys) {
@@ -477,9 +486,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                         if ((enteredLine.getCustomFieldValue(aKey) == null || StringConstants.EMPTY.equals(enteredLine.getCustomFieldValue(aKey)))
                                 && (defaultLine.getCustomFieldValue(aKey) == null || StringConstants.EMPTY.equals(defaultLine.getCustomFieldValue(aKey)))) {
                             // do nothing
-                        } else if (enteredLine.getCustomFieldValue(aKey) != null && enteredLine.getCustomFieldValue(aKey).equals(defaultLine.getCustomFieldValue(aKey))) {
+                        }
+                        else if (enteredLine.getCustomFieldValue(aKey) != null && enteredLine.getCustomFieldValue(aKey).equals(defaultLine.getCustomFieldValue(aKey))) {
                             // do nothing
-                        } else {
+                        }
+                        else {
                             isSame = false;
                             break;
                         }
@@ -502,7 +513,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             if (isPledge) {
                 cLine.addCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, cLine.getPledgeId().toString());
                 cLine.setPledgeId(null);
-            } else {
+            }
+            else {
                 cLine.addCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID, cLine.getRecurringGiftId().toString());
                 cLine.setRecurringGiftId(null);
             }
@@ -517,13 +529,13 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     public void checkAssociatedPledgeIds(Gift gift) {
         Set<Long> linePledgeIds = new HashSet<Long>();
-        for (DistributionLine line : gift.getMutableDistributionLines()) {
+        for (DistributionLine line : gift.getDistributionLines()) {
             if (line != null) {
                 String associatedPledgeId = line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID);
                 if (NumberUtils.isDigits(associatedPledgeId)) {
                     Long thisPledgeId = Long.parseLong(associatedPledgeId);
                     linePledgeIds.add(thisPledgeId);
-                    if (gift.getAssociatedPledgeIds() == null || gift.getAssociatedPledgeIds().contains(thisPledgeId) == false) {
+                    if (gift.getAssociatedPledgeIds() == null || !gift.getAssociatedPledgeIds().contains(thisPledgeId)) {
                         gift.addAssociatedPledgeId(thisPledgeId);
                     }
                 }
@@ -532,7 +544,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (gift.getAssociatedPledgeIds() != null) {
             for (Iterator<Long> iter = gift.getAssociatedPledgeIds().iterator(); iter.hasNext();) {
                 Long id = iter.next();
-                if (linePledgeIds.contains(id) == false) {
+                if (!linePledgeIds.contains(id)) {
                     iter.remove();
                 }
             }
@@ -542,13 +554,13 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     public void checkAssociatedRecurringGiftIds(Gift gift) {
         Set<Long> lineRecurringGiftIds = new HashSet<Long>();
-        for (DistributionLine line : gift.getMutableDistributionLines()) {
+        for (DistributionLine line : gift.getDistributionLines()) {
             if (line != null) {
                 String associatedRecurringGiftId = line.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID);
                 if (NumberUtils.isDigits(associatedRecurringGiftId)) {
                     Long thisRecurringGiftId = Long.parseLong(associatedRecurringGiftId);
                     lineRecurringGiftIds.add(thisRecurringGiftId);
-                    if (gift.getAssociatedRecurringGiftIds() == null || gift.getAssociatedRecurringGiftIds().contains(thisRecurringGiftId) == false) {
+                    if (gift.getAssociatedRecurringGiftIds() == null || !gift.getAssociatedRecurringGiftIds().contains(thisRecurringGiftId)) {
                         gift.addAssociatedRecurringGiftId(thisRecurringGiftId);
                     }
                 }
@@ -557,7 +569,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (gift.getAssociatedRecurringGiftIds() != null) {
             for (Iterator<Long> iter = gift.getAssociatedRecurringGiftIds().iterator(); iter.hasNext();) {
                 Long id = iter.next();
-                if (lineRecurringGiftIds.contains(id) == false) {
+                if (!lineRecurringGiftIds.contains(id)) {
                     iter.remove();
                 }
             }

@@ -39,14 +39,14 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 		createMultiLookupEnd(sb);
 		createHiddenInput(formFieldName, fieldValue, sb);
 
-		if (!FieldType.QUERY_LOOKUP_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+		if (!FieldType.QUERY_LOOKUP_DISPLAY.equals(currentField.getFieldType())) {
 			createClone(sb);
 		}
 		
 		createContainerEnd(sb);
 		createBottom(request, pageContext, formFieldName, sb);
 
-		if (!FieldType.QUERY_LOOKUP_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+		if (!FieldType.QUERY_LOOKUP_DISPLAY.equals(currentField.getFieldType())) {
 			createLookupLink(currentField, sb);
 		}
 	}
@@ -108,7 +108,7 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 				    sb.append(displayVal);
 				    sb.append("</a>");
 
-				    if (!FieldType.QUERY_LOOKUP_DISPLAY.equals(currentField.getFieldDefinition().getFieldType())) {
+				    if (!FieldType.QUERY_LOOKUP_DISPLAY.equals(currentField.getFieldType())) {
 				        writeDeleteLink(sb, "Lookup.deleteOption(this)");
 				    }
 			    }

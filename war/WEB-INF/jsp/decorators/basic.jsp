@@ -14,6 +14,10 @@ No menus are included.
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><decorator:title default="Welcome"/> - <spring:message code="appName"/></title>
 		<%@ include file="/WEB-INF/jsp/includes/headContent.jsp" %>
+		<script type="text/javascript" src="js/tangerine.js.ycomp.js"></script>
+		<script type="text/javascript" src="js/sidebar.js"></script>
+		<script type="text/javascript" src="js/history.js"></script>
+		<script type="text/javascript" src="js/orangeleap.js"></script>
 		<decorator:head/>
 	</head>
 	<body>
@@ -28,7 +32,12 @@ No menus are included.
 			<decorator:body/>
 			<div class="clearBoth"></div>
 
-			<%@ include file="/WEB-INF/jsp/layouts/footer.jsp" %>
+			<%@ include file="/WEB-INF/jsp/includes/footer.jsp" %>
 		</div>
+		<%@ include file="/WEB-INF/jsp/includes/modal.jsp" %>
+		<decorator:getProperty property="scripts"/>
+		<c:if test="${requestScope.loadGoogle}">
+			<%@ include file="/WEB-INF/jsp/includes/googleScripts.jsp" %>
+		</c:if>
 	</body>
 </html>

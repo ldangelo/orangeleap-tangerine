@@ -18,16 +18,12 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-
-import com.orangeleap.tangerine.domain.NewEmailAware;
+import com.orangeleap.tangerine.domain.EmailAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Email;
-import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.springframework.validation.Errors;
 
 public class EmailValidator extends AbstractCommunicationValidator<Email> {
 
@@ -52,8 +48,8 @@ public class EmailValidator extends AbstractCommunicationValidator<Email> {
     	if (target instanceof Email) {
     		email = (Email) target;
     	} 
-    	else if (target instanceof NewEmailAware) {
-    		email = ((NewEmailAware) target).getEmail();
+    	else if (target instanceof EmailAware) {
+    		email = ((EmailAware) target).getEmail();
     		errors.setNestedPath("email");
     	}
         else if (target instanceof AbstractCommunicatorEntity) {
@@ -61,10 +57,10 @@ public class EmailValidator extends AbstractCommunicationValidator<Email> {
             errors.setNestedPath("primaryEmail");
         }
 
-        if (StringUtils.hasText(email.getCustomFieldValue(StringConstants.EMAIL_TYPE)) == false) {
-            errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + StringConstants.EMAIL_TYPE + StringConstants.CUSTOM_FIELD_MAP_END, "errorEmailTypeRequired");
-        }
-    	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "invalidEmailAddress", "Email Address is required");
+//        if (StringUtils.hasText(email.getCustomFieldValue(StringConstants.EMAIL_TYPE)) == false) {
+//            errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + StringConstants.EMAIL_TYPE + StringConstants.CUSTOM_FIELD_MAP_END, "errorEmailTypeRequired");
+//        }
+//    	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "invalidEmailAddress", "Email Address is required");
     	validateDates(email, errors);
     	errors.setNestedPath(inPath);
     }

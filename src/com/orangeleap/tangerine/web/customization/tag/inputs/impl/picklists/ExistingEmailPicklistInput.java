@@ -18,7 +18,7 @@
 
 package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 
-import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.OldEmailAware;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -55,7 +55,7 @@ public class ExistingEmailPicklistInput extends EmailPicklistInput {
 
     @Override
     protected void checkIfExistingOptionSelected(Object model, Email emailToCheck, StringBuilder sb) {
-        EmailAware aware = (EmailAware) model;
+        OldEmailAware aware = (OldEmailAware) model;
         if (FormBeanType.EXISTING.equals(aware.getEmailType()) && aware.getSelectedEmail() != null &&
                 emailToCheck.getId().equals(aware.getSelectedEmail().getId())) {
             sb.append(" selected=\"selected\"");

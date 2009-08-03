@@ -12,7 +12,7 @@
 				
 				<div class="accountOptions">
 					<div class="navGroup">
-						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="profile"/></a>
+						<a class="groupHeader"><spring:message code="profile"/></a>
 						<span class="secondary ${sidebarNav == 'Profile' ? 'active' : ''}">
 							<a class="${sidebarNav == 'Profile' ? 'active' : ''}" href="constituent.htm?constituentId=${constituent.id}"><spring:message code="summary"/></a>
 							<a class="${sidebarNav == 'Address Manager' ? 'active' : ''}" href="addressManager.htm?constituentId=${constituent.id}"><spring:message code="addresses"/></a>
@@ -22,7 +22,7 @@
 						</span>
 					</div>
 					<div class="navGroup">
-						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="giftManager"/></a>
+						<a class="groupHeader"><spring:message code="giftManager"/></a>
 			            <span class="secondary ${sidebarNav=='Gifts'?'active':''}">
 				            <a class="${sidebarNav=='New Gift'?'active':''}" href="gift.htm?constituentId=${constituent.id}"><spring:message code="newGift"/></a>
 							<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
@@ -49,14 +49,14 @@
 			            </span>
 		            </div>
 					<div class="navGroup">
-						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="paymentManager"/></a>
+						<a class="groupHeader"><spring:message code="paymentManager"/></a>
 						<span class="secondary ${sidebarNav == 'Payment Manager' ? 'active' : ''}">
 							<a class="${sidebarNav == 'Payment Methods' ? 'active' : ''}" href="paymentManager.htm?constituentId=${constituent.id}"><spring:message code="paymentMethods"/></a>
 							<a class="${sidebarNav == 'Payment History' ? 'active' : ''}" href="paymentHistory.htm?constituentId=${constituent.id}"><spring:message code="paymentHistory"/></a>
 						</span>
 					</div>					
 					<div class="navGroup">
-						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="touchPoints"/></a>
+						<a class="groupHeader"><spring:message code="touchPoints"/></a>
 						<span class="secondary ${sidebarNav == 'Journal' ? 'active' : ''}">
 				            <a class="${sidebarNav=='communicationHistory'?'active':''}" href="communicationHistory.htm?constituentId=${constituent.id}"><spring:message code="enterNewCommunicationHistory"/></a>
 			            	<a class="${sidebarNav=='communicationHistoryList'?'active':''}" href="communicationHistoryList.htm?constituentId=${constituent.id}"><spring:message code="communicationHistoryEntries"/></a>
@@ -67,14 +67,6 @@
 				    </c:if>
 				</div>
 			</c:if>
-			<%--
-			<h3><spring:message code="myTasks"/></h3>
-			<div class="myTasks">
-				<a href="#"><spring:message code="dueToday"/><span href="#" class="taskCount">&nbsp;(1)</span></a>
-				<a href="#"><spring:message code="newTasks"/><span href="#" class="taskCount">&nbsp;(3)</span></a>
-				<a href="#"><spring:message code="allTasks"/>&nbsp;(9)</a>
-			</div>
-			--%>
             <h3><spring:message code="myAccounts"/></h3>
             <div class="myTasks">
                 <a href="#" id="sbAllAccountsLink"><spring:message code="allAccounts"/>&nbsp;<span class="taskCount" id="sbAllAccounts"></span></a>

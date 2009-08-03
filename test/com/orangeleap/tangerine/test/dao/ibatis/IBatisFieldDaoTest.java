@@ -1,21 +1,24 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.customization.FieldCondition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.type.RelationshipType;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IBatisFieldDaoTest extends AbstractIBatisTest {
     
@@ -233,4 +236,5 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         relationships = fieldDao.readDetailFieldRelationships("constituent.customFieldMap[individual.siblings]");
         assert relationships != null && relationships.isEmpty() == false && relationships.size() == 2;
     }
+
 }

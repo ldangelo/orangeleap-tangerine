@@ -33,6 +33,7 @@ import com.orangeleap.tangerine.util.OLLogger;
 import org.joda.time.DateMidnight;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.dao.CommunicationDao;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
@@ -68,13 +69,16 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         }
         return returnEntity;
     }
+
+    protected abstract void validate(T entity) throws BindException;
     
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     @Override
-    public T save(T entity) {
+    public T save(T entity) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("save: entity = " + entity);
         }
+        validate(entity);
         List<T> entities = readByConstituentId(entity.getConstituentId());
         if (!entity.isPrimary()) {
         	checkIfOnlyOneActive(entity, entities);
@@ -235,9 +239,9 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         getDao().inactivateEntities();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     @Override
-    public void inactivate(Long id) {
+    public void inactivate(Long id) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("inactivate: id = " + id);
         }
@@ -265,7 +269,34 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         }
         return filteredEntities;
     }
-    
+
+    @Override
+    public boolean isCurrent(final T entity) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("isCurrent: entity = " + entity);
+        }
+        boolean isCurrent = false;
+        DateMidnight nowDate = getNowDateMidnight();
+        if (ActivationType.temporary.equals(entity.getActivationStatus())) {
+            if (entity.getTemporaryStartDate() != null && entity.getTemporaryEndDate() != null &&
+                !nowDate.isBefore(new DateMidnight(entity.getTemporaryStartDate())) && !nowDate.isAfter(new DateMidnight(entity.getTemporaryEndDate()))) {
+                isCurrent = true;
+            }
+        }
+        else if (ActivationType.seasonal.equals(entity.getActivationStatus())) {
+            SeasonalDateSpan dateSpan = new SeasonalDateSpan(entity.getSeasonalStartDate(), entity.getSeasonalEndDate());
+            if (dateSpan.contains(nowDate.toDate())) {
+                isCurrent = true;
+            }
+        }
+        else if (ActivationType.permanent.equals(entity.getActivationStatus())) {
+            if (entity.getEffectiveDate() == null || !new DateMidnight(entity.getEffectiveDate()).isAfter(nowDate)) {
+                isCurrent = true;
+            }
+        }
+        return isCurrent;
+    }
+
     protected List<T> filterByActivationType(final List<T> entities, final boolean mailOnly) {
         if (logger.isTraceEnabled()) {
             logger.trace("filterByActivationType: entities = " + entities + " mailOnly = " + mailOnly);

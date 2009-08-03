@@ -18,22 +18,20 @@
 
 package com.orangeleap.tangerine.controller.communicationHistory;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.validation.BindException;
+import org.springframework.web.servlet.ModelAndView;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
-import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.service.CommunicationHistoryService;
-import com.orangeleap.tangerine.util.StringConstants;
-
-public class CommunicationHistoryViewController extends TangerineConstituentAttributesFormController {
+public class CommunicationHistoryViewController extends CommunicationHistoryFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -42,18 +40,28 @@ public class CommunicationHistoryViewController extends TangerineConstituentAttr
     protected CommunicationHistoryService communicationHistoryService;
 
     @Override
-    protected AbstractEntity findEntity(HttpServletRequest request) {
-        // TODO: if the user navigates directly to CommunicationHistory.htm with no constituentId, we should redirect to CommunicationHistorySearch.htm
-        return communicationHistoryService.readCommunicationHistoryByIdCreateIfNull(request.getParameter(StringConstants.COMMUNICATION_HISTORY_ID), super.getConstituent(request));
-    }
-
-    @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        CommunicationHistory communicationHistory = (CommunicationHistory) command;
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
+	    TangerineForm form = (TangerineForm) command;
+        CommunicationHistory communicationHistory = (CommunicationHistory) form.getDomainObject();
+	    boolean saved = true;
         if (!communicationHistory.isSystemGenerated()) {
-            communicationHistory = communicationHistoryService.maintainCommunicationHistory(communicationHistory);
+	        try {
+	            communicationHistory = communicationHistoryService.maintainCommunicationHistory(communicationHistory);
+	        }
+	        catch (BindException domainErrors) {
+	            saved = false;
+	            bindDomainErrorsToForm(domainErrors, formErrors);
+	        }
         }
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+	    ModelAndView mav;
+	    if (saved) {
+	        mav = new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" +
+			        StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+	    }
+	    else {
+	        mav = super.showForm(request, formErrors, getFormView());
+	    }
+        return mav;
     }
     
 }

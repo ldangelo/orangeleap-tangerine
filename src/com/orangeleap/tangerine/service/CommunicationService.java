@@ -23,11 +23,13 @@ import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.validation.BindException;
+
 public interface CommunicationService<T extends AbstractCommunicationEntity> {
 
     public T alreadyExists(T entity);
 
-    public T save(T entity);
+    public T save(T entity) throws BindException;
 
     public List<T> readByConstituentId(Long constituentId);
 
@@ -50,4 +52,6 @@ public interface CommunicationService<T extends AbstractCommunicationEntity> {
     public void maintainResetReceiveCorrespondence(Long constituentId);
 
     public void resetReceiveCorrespondence(T entity);
+
+    boolean isCurrent(final T entity);
 }

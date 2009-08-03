@@ -37,13 +37,12 @@ import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.domain.NewAddressAware;
-import com.orangeleap.tangerine.domain.NewEmailAware;
-import com.orangeleap.tangerine.domain.NewPhoneAware;
+import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.FieldType;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -143,14 +142,14 @@ public abstract class EntityImporter {
                         throw new RuntimeException("Unable to import field.");
                     } 
 					BeanUtils.setProperty(so, fd.getDependentField(), value);
-					if (o instanceof NewAddressAware) {
-                        ((NewAddressAware)o).setAddressType(FormBeanType.NEW);
+					if (o instanceof AddressAware) {
+                        ((AddressAware)o).getAddress().setId(0L);  // New
                     }
-					if (o instanceof NewPhoneAware) {
-                        ((NewPhoneAware)o).setPhoneType(FormBeanType.NEW);
+					if (o instanceof PhoneAware) {
+                        ((PhoneAware)o).getPhone().setId(0L);  // New
                     }
-					if (o instanceof NewEmailAware) {
-                        ((NewEmailAware)o).setEmailType(FormBeanType.NEW);
+					if (o instanceof EmailAware) {
+                        ((EmailAware)o).getEmail().setId(0L);  // New
                     }
 				} else {
 					BeanUtils.setProperty(o, key, value);

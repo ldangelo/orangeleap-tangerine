@@ -18,24 +18,24 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
-
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.customization.FieldVO;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+import java.util.List;
+import java.util.Map;
 
 public class CodeValidator implements Validator {
 
@@ -58,7 +58,7 @@ public class CodeValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return AbstractEntity.class.isAssignableFrom(clazz);
+        return AbstractEntity.class.isAssignableFrom(clazz) || TangerineForm.class.equals(clazz); // TODO
     }
 
     @SuppressWarnings("unchecked")
@@ -114,7 +114,7 @@ public class CodeValidator implements Validator {
                 }
             }
             if (!isValid) {
-                errors.reject("invalidCode", new String[] { (String)propertyValue, fd.getDefaultLabel() }, "'" + propertyValue + "' is an invalid " + fd.getDefaultLabel());
+                errors.reject("invalidCode", new String[] { (String)propertyValue, fd.getDefaultLabel() }, "\"" + propertyValue + "\" is an invalid " + fd.getDefaultLabel());
             }
         }
     }

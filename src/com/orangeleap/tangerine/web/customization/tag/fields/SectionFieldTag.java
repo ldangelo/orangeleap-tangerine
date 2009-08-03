@@ -145,7 +145,7 @@ public class SectionFieldTag extends AbstractTag {
 					
 				}
 				else if (LayoutType.DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType())) {
-					gridHandler.writeDistributionLinesGridBegin(pageName, sb);
+					gridHandler.writeGridBegin(pageName, "DistributionLines", sb);
 					writeSectionHeader(sectionDef, "gridSectionHeader", sb);
 					gridHandler.writeGridTableBegin(sectionDef, "distributionLines", sb);
 
@@ -163,23 +163,84 @@ public class SectionFieldTag extends AbstractTag {
 							x += 1; // skip the next section (the hidden grid row) because we will handle it now
 						}
 					}
-					gridHandler.writeGridCols(sectionFields, hasHiddenGridRow, sb);
-					gridHandler.writeGridHeader(pageContext, sectionFields, hasHiddenGridRow, sb);
+					gridHandler.writeGridCols(sectionFields, hasHiddenGridRow, true, sb);
+					gridHandler.writeGridHeader(pageContext, sectionFields, hasHiddenGridRow, true, sb);
 
 					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
 							hiddenSectionDef, hiddenSectionFields,
-							getTangerineForm(), hasHiddenGridRow, true, sb); // this is the DUMMY row
+							getTangerineForm(), hasHiddenGridRow, true, true, sb); // this is the DUMMY row
 
 					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
 							hiddenSectionDef, hiddenSectionFields,
-							getTangerineForm(), hasHiddenGridRow, false, sb); // this are the real rows
+							getTangerineForm(), hasHiddenGridRow, false, true, sb); // this are the real rows
 
 					gridHandler.writeGridTableEnd(sb);
 					gridHandler.writeGridActions(sectionDef.getLayoutType(), sb);
-					gridHandler.writeDistributionLinesGridEnd(sb);
+					gridHandler.writeGridEnd(sb);
+				}
+				else if (LayoutType.ADJUSTED_DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType())) {
+					gridHandler.writeGridBegin(pageName, "DistributionLines", sb);
+					writeSectionHeader(sectionDef, "gridSectionHeader", sb);
+					gridHandler.writeGridTableBegin(sectionDef, "distributionLines", sb);
+
+					boolean hasHiddenGridRow = false;
+					SectionDefinition hiddenSectionDef = null;
+					List<SectionField> hiddenSectionFields = null;
+					int nextIndex = x + 1;
+					if (nextIndex < sectionDefinitions.size()) {
+						hasHiddenGridRow = LayoutType.GRID_HIDDEN_ROW.equals(sectionDefinitions.get(nextIndex).getLayoutType());
+
+						if (hasHiddenGridRow) {
+							hiddenSectionDef = sectionDefinitions.get(nextIndex);
+							hiddenSectionFields = pageCustomizationService.readSectionFieldsBySection(hiddenSectionDef);
+
+							x += 1; // skip the next section (the hidden grid row) because we will handle it now
+						}
+					}
+					gridHandler.writeGridCols(sectionFields, hasHiddenGridRow, false, sb);
+					gridHandler.writeGridHeader(pageContext, sectionFields, hasHiddenGridRow, false, sb);
+
+					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
+							hiddenSectionDef, hiddenSectionFields,
+							getTangerineForm(), hasHiddenGridRow, false, false, sb); // this are the real rows
+
+					gridHandler.writeGridTableEnd(sb);
+					gridHandler.writeGridActions(sectionDef.getLayoutType(), sb);
+					gridHandler.writeGridEnd(sb);
 				}
 				else if (LayoutType.GIFT_IN_KIND_GRID.equals(sectionDef.getLayoutType())) {
-					
+					gridHandler.writeGridBegin(pageName, "Details", sb);
+					writeSectionHeader(sectionDef, "gridSectionHeader", sb);
+					gridHandler.writeGridTableBegin(sectionDef, "giftInKindDetails", sb);
+
+					boolean hasHiddenGridRow = false;
+					SectionDefinition hiddenSectionDef = null;
+					List<SectionField> hiddenSectionFields = null;
+					int nextIndex = x + 1;
+					if (nextIndex < sectionDefinitions.size()) {
+						hasHiddenGridRow = LayoutType.GRID_HIDDEN_ROW.equals(sectionDefinitions.get(nextIndex).getLayoutType());
+
+						if (hasHiddenGridRow) {
+							hiddenSectionDef = sectionDefinitions.get(nextIndex);
+							hiddenSectionFields = pageCustomizationService.readSectionFieldsBySection(hiddenSectionDef);
+
+							x += 1; // skip the next section (the hidden grid row) because we will handle it now
+						}
+					}
+					gridHandler.writeGridCols(sectionFields, hasHiddenGridRow, true, sb);
+					gridHandler.writeGridHeader(pageContext, sectionFields, hasHiddenGridRow, true, sb);
+
+					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
+							hiddenSectionDef, hiddenSectionFields,
+							getTangerineForm(), hasHiddenGridRow, true, true, sb); // this is the DUMMY row
+
+					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
+							hiddenSectionDef, hiddenSectionFields,
+							getTangerineForm(), hasHiddenGridRow, false, true, sb); // this are the real rows
+
+					gridHandler.writeGridTableEnd(sb);
+					gridHandler.writeGridActions(sectionDef.getLayoutType(), sb);
+					gridHandler.writeGridEnd(sb);
 				}
 				println(sb);
 			}

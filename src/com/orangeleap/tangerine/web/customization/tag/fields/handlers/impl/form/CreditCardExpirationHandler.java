@@ -52,8 +52,11 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
 		Object domainObject = form.getDomainObject();
 		PaymentSource paymentSource = null;
-		if (domainObject instanceof PaymentSourceAware) {
-			paymentSource = ((PaymentSourceAware) domainObject).getPaymentSource(); // TODO: use the formValue instead?
+		if (domainObject instanceof PaymentSource) {
+			paymentSource = (PaymentSource) domainObject;
+		}
+		else if (domainObject instanceof PaymentSourceAware) {
+			paymentSource = ((PaymentSourceAware) domainObject).getPaymentSource();
 		}
 		createMonthSelect(pageContext, currentField, paymentSource, formFieldName, fieldValue, sb);
 		createYearSelect(pageContext, currentField, paymentSource, formFieldName, fieldValue, sb);
@@ -62,7 +65,7 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
     protected void createMonthSelect(PageContext pageContext, SectionField currentField, PaymentSource paymentSource, String formFieldName, Object fieldValue, StringBuilder sb) {
         sb.append("<select name=\"").append(formFieldName).append("Month\" id=\"").append(formFieldName);
 	    sb.append("Month\" class=\"expMonth ").append(resolveEntityAttributes(currentField));
-	    writeErrorClass(pageContext, formFieldName, sb); // TODO: fix for errors
+	    writeErrorClass(pageContext, formFieldName, sb); 
 	    sb.append("\">");
 
 	    String expirationMonth = null;

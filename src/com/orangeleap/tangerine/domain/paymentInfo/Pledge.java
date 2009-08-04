@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 
 import javax.xml.bind.annotation.XmlType;
@@ -28,7 +29,7 @@ import java.util.Date;
 import java.util.Locale;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
-public class Pledge extends Commitment {
+public class Pledge extends Commitment implements Schedulable {
     private static final long serialVersionUID = 1L;
 
     private Date pledgeDate = Calendar.getInstance().getTime();

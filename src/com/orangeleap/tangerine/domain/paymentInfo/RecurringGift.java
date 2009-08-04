@@ -24,8 +24,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.xml.bind.annotation.XmlType;
+
+import com.orangeleap.tangerine.domain.Schedulable;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class RecurringGift extends Commitment {
+public class RecurringGift extends Commitment implements Schedulable {
 
 	private static final long serialVersionUID = 1L;
 

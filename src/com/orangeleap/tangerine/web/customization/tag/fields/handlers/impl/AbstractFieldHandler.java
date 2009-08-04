@@ -238,6 +238,9 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		RequestContext requestContext = (RequestContext) pageContext.getAttribute(RequestContextAwareTag.REQUEST_CONTEXT_PAGE_ATTRIBUTE);
 		Errors errors = requestContext.getErrors(StringConstants.FORM);
 		if (errors != null && errors.hasErrors()) {
+            if (formFieldName.endsWith(TangerineForm.TANG_DOT_VALUE)) {
+                formFieldName = formFieldName.substring(0, formFieldName.length() - TangerineForm.TANG_DOT_VALUE.length());
+            }
 			if (errors.hasFieldErrors(new StringBuilder(StringConstants.FIELD_MAP_START).append(formFieldName).append(StringConstants.FIELD_MAP_END).toString())) {
 				sb.append(" textError ");
 			}

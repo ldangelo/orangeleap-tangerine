@@ -18,47 +18,8 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
-import com.orangeleap.tangerine.dao.RecurringGiftDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TaskStack;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.joda.time.DateMidnight;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,8 +29,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.joda.time.DateMidnight;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
+import com.orangeleap.tangerine.dao.RecurringGiftDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
+
 @Service("recurringGiftService")
-public class RecurringGiftServiceImpl extends AbstractCommitmentService<RecurringGift> implements RecurringGiftService, ApplicationContextAware {
+@Transactional(propagation = Propagation.REQUIRED)
+public class RecurringGiftServiceImpl extends AbstractCommitmentService<RecurringGift> implements RecurringGiftService {
 
     /**
      * Logger for this class and subclasses
@@ -90,10 +85,12 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     @Resource(name = "distributionLinesValidator")
     protected DistributionLinesValidator distributionLinesValidator;
+    
+    @Resource(name = "scheduledItemService")
+    private ScheduledItemService scheduledItemService;
 
-    private ApplicationContext applicationContext;
 
-    @Transactional(propagation = Propagation.REQUIRED)
+
     @Override
     public List<RecurringGift> readRecurringGiftsByDateStatuses(Date date, List<String> statuses) {
         if (logger.isTraceEnabled()) {
@@ -107,7 +104,10 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isTraceEnabled()) {
             logger.trace("readRecurringGiftById: recurringGiftId = " + recurringGiftId);
         }
-        return recurringGiftDao.readRecurringGiftById(recurringGiftId);
+        RecurringGift rg =  recurringGiftDao.readRecurringGiftById(recurringGiftId);
+        ScheduledItem item = scheduledItemService.getNextItemToRun(rg);
+        rg.setNextRunDate(item==null?null:item.getActualScheduledDate());
+        return rg;
     }
 
     @Override
@@ -290,7 +290,6 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         return recurringGift.getId() != null && recurringGift.getId() > 0 && filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime()).size() == 1;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updateRecurringGiftForGift(Gift gift) {
         if (logger.isTraceEnabled()) {
@@ -299,7 +298,6 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         updateRecurringGiftStatusAmountPaid(gift.getDistributionLines());
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updateRecurringGiftForAdjustedGift(AdjustedGift adjustedGift) {
         if (logger.isTraceEnabled()) {
@@ -308,7 +306,6 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         updateRecurringGiftStatusAmountPaid(adjustedGift.getDistributionLines());
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     private void updateRecurringGiftStatusAmountPaid(List<DistributionLine> lines) {
         Set<Long> recurringGiftIds = new HashSet<Long>();
         if (lines != null) {
@@ -348,75 +345,26 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         setCommitmentStatus(recurringGift, "recurringGiftStatus");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    private void processRecurringGift(RecurringGift recurringGift) {
-        Date nextDate = getNextGiftDate(recurringGift);
+    @Override
+    public void processRecurringGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
+    	
+        Gift gift = createAutoGift(recurringGift);
 
-        if (nextDate != null) {
-            createAutoGift(recurringGift);
+        /* Re-read the Recurring Gift from the DB as fields may have changed */
+        recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
 
-            /* Re-read the Recurring Gift from the DB as fields may have changed */
-            recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
+        scheduledItemService.completeItem(scheduledItem, gift, gift.getPaymentStatus());
 
-            recurringGift.setNextRunDate(nextDate);
-
-            // Update the Next Run Date ONLY
-            recurringGiftDao.maintainRecurringGiftNextRunDate(recurringGift);
-        }
-
-        if (recurringGift.getEndDate() != null && recurringGift.getEndDate().before(nextDate)) {
+    	ScheduledItem nextitem = scheduledItemService.getNextItemToRun(recurringGift);
+        if (nextitem == null) {
             recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_FULFILLED);
-            recurringGift.setNextRunDate(null);
             recurringGiftDao.maintainRecurringGift(recurringGift);
         }
 
     }
 
-    @Override
-    public void processRecurringGifts() {
-        if (logger.isTraceEnabled()) {
-            logger.trace("processRecurringGifts:");
-        }
-
-        Calendar cal = Calendar.getInstance();
-
-        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS /*, Commitment.STATUS_FULFILLED*/}));
-        if (recurringGifts != null) {
-            for (RecurringGift recurringGift : recurringGifts) {
-                logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", nextRun =" + recurringGift.getNextRunDate());
-                Date nextDate = null;
-                if (recurringGift.getEndDate() == null || recurringGift.getEndDate().after(getToday().getTime())) {
-                    PlatformTransactionManager txManager = (PlatformTransactionManager) applicationContext.getBean("transactionManager");
-
-                    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-                    def.setName("TxProcessRecurringGifts");
-                    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-
-                    TransactionStatus status = null;
-                    try {
-                        status = txManager.getTransaction(def);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
-                    }
-
-                    processRecurringGift(recurringGift);
-
-                    try {
-                        txManager.commit(status);
-
-                        TaskStack.execute();
-                    } catch (TransactionException txe) {
-                        txManager.rollback(status);
-                    } catch (Exception e) {
-                        logger.error(e.getMessage());
-                    }
-                }
-            }
-        }
-    }
-
-    protected void createAutoGift(RecurringGift recurringGift) {
+    protected Gift createAutoGift(RecurringGift recurringGift) {
+    	
         Gift gift = new Gift(recurringGift);
         recurringGift.addGift(gift);
 
@@ -428,11 +376,9 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             // Should not happen with suppressValidation = true.
             logger.error(e);
         }
+        
+        return gift;
 
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }

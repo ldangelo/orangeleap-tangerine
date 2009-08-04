@@ -30,7 +30,7 @@
 		        <prop key="job-001">addressService.inactivateEntities</prop>
 		    	<prop key="job-002">phoneService.inactivateEntities</prop>
 		        <prop key="job-003">emailService.inactivateEntities</prop>
-		        <prop key="job-004">recurringGiftService.processRecurringGifts</prop>
+		        <prop key="job-004">nightlyBatchService.processRecurringGifts</prop>
 		        <prop key="job-005">rulesService.executeDailyJobRules</prop>
 			  </props>
     	</property>
@@ -39,9 +39,9 @@
   	<bean id="nightlyBatchJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="nightlyBatchJob" />
   		 <!-- run every morning at 3 AM    -->
-  	     <property name="cronExpression" value="0 0 3 * * ?" />
+  	     <property name="cronExpression" value="0 0 3 * * ?" /> 
          <!-- run every 5 min for testing  -->
-  		<!-- <property name="cronExpression" value="0 0/5 * * * ?" />   -->
+  		<!-- <property name="cronExpression" value="0 0/5 * * * ?" />  -->
   	</bean>
 
   	<bean id="weeklyBatchJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">

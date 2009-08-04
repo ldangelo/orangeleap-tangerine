@@ -18,14 +18,14 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -33,13 +33,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -52,9 +51,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
 
     @Resource(name = "giftService")
     protected GiftService giftService;
-
-    @Resource(name = "fieldDAO")
-    private FieldDao fieldDao;
 
     public void createDefault(Constituent constituent, T commitment, EntityType entityType, String lineIdProperty) {
         if (logger.isTraceEnabled()) {
@@ -69,50 +65,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         commitment.setConstituent(constituent);
     }
 
-    protected Date getNextGiftDate(T commitment) {
-        Date nextGiftDate = new Date();
-        if (commitment.getEndDate() != null && commitment.getEndDate().before(Calendar.getInstance().getTime())) {
-            nextGiftDate = null;
-        } else if (commitment instanceof RecurringGift && ((RecurringGift) commitment).isActivate()) {
-            nextGiftDate = calculateNextRunDate(commitment);
-        } else {
-            nextGiftDate = null;
-        }
-
-        if (nextGiftDate != null && logger.isDebugEnabled()) {
-            logger.debug("it is currently, " + Calendar.getInstance().getTime() + ", running again at " + nextGiftDate);
-        }
-        return nextGiftDate;
-    }
-
-    protected Date calculateNextRunDate(T commitment) {
-        Calendar nextRun = new GregorianCalendar();
-        nextRun.setTimeInMillis(((RecurringGift) commitment).getNextRunDate().getTime());
-        logger.debug("start date = " + nextRun.getTime() + " millis = " + nextRun.getTimeInMillis());
-        Calendar today = getToday();
-
-
-        if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
-            nextRun.add(Calendar.WEEK_OF_MONTH, 1);
-        } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
-            nextRun.add(Calendar.MONTH, 1);
-        } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
-            nextRun.add(Calendar.MONTH, 3);
-        } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
-            nextRun.add(Calendar.MONTH, 6);
-        } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
-            nextRun.add(Calendar.YEAR, 1);
-        } else {
-            nextRun = null;
-        }
-
-//        if (nextRun == null || (commitment.getEndDate() != null && nextRun.getTime().after(commitment.getEndDate()))) {
-//            nextRun = null;
-//            logger.debug("no next run scheduled");
-//            return null;
-//        }
-        return nextRun.getTime();
-    }
 
     protected void setCommitmentStatus(T commitment, String statusPropertyName) {
         if (commitment.getAmountPaid() != null) {

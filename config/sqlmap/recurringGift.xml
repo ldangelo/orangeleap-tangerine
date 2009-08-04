@@ -108,7 +108,7 @@
 	<select id="SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
 		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
 		
-		and rg.NEXT_RUN_DATE &lt;= #date#
+		and (rg.END_DATE &gt;= #date# or rg.END_DATE is null)
 		and rg.RECURRING_GIFT_STATUS in
     	<iterate property="statuses" conjunction="," open="(" close=")">
 			#statuses[]#

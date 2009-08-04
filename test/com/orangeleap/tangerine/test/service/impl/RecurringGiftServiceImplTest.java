@@ -1,14 +1,10 @@
 package com.orangeleap.tangerine.test.service.impl;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Calendar;
-import java.util.Date;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -16,21 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
 import org.testng.annotations.Test;
 
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.service.NightlyBatchService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.service.impl.RecurringGiftServiceImpl;
 import com.orangeleap.tangerine.service.impl.AbstractCommitmentService;
 import com.orangeleap.tangerine.test.BaseTest;
-import com.orangeleap.tangerine.test.dataprovider.GiftDataProvider;
 import com.orangeleap.tangerine.test.dataprovider.PaymentSourceDataProvider;
 
 public class RecurringGiftServiceImplTest extends BaseTest {
     @Autowired
     private RecurringGiftService recurringGiftService;
+ 
+    @Autowired
+    private NightlyBatchService nightlyBatchService;
 
     private List<RecurringGift> setupRecurringGifts() throws Exception {
         final List<RecurringGift> rGifts = new ArrayList<RecurringGift>();
@@ -131,6 +129,6 @@ public class RecurringGiftServiceImplTest extends BaseTest {
 
         recurringGiftService.maintainRecurringGift(recurringGift);
 */
-        recurringGiftService.processRecurringGifts();
+        nightlyBatchService.processRecurringGifts();
     }
 }

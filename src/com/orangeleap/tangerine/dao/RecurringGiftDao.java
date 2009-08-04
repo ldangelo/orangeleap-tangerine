@@ -50,5 +50,4 @@ public interface RecurringGiftDao {
 	
 	public BigDecimal readAmountPaidForRecurringGiftId(Long recurringGiftId);
 
-	void maintainRecurringGiftNextRunDate(RecurringGift recurringGift);
 }

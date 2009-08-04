@@ -26,6 +26,7 @@ import java.util.Set;
 import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -53,7 +54,7 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     
     public List<RecurringGift> readRecurringGiftsByDateStatuses(Date date, List<String> statuses);
 
-    public void processRecurringGifts();
+    public void processRecurringGift(RecurringGift recurringGift, ScheduledItem scheduledItem);
     
     public List<RecurringGift> searchRecurringGifts(Map<String, Object> params);
     

@@ -62,11 +62,12 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
             logger.trace("processRecurringGifts:");
         }
 
-        Date today = getToday().getTime();
-        
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = getToday();
+        Date today = cal.getTime();
 
+        cal.add(Calendar.YEAR, -1); // Process missed payments up to a year after end date.
         List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS /*, Commitment.STATUS_FULFILLED*/}));
+
         if (recurringGifts != null) {
             for (RecurringGift recurringGift : recurringGifts) {
             	

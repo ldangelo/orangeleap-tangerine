@@ -10,7 +10,7 @@
 		
 		<h1>My Dashboard</h1>
 		
-		<div id="dashboard" class="columns" >
+		<div id="dashboard">
 		</div>
 		
 		<!-- 

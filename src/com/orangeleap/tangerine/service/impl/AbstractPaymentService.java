@@ -156,9 +156,10 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
             sb.append(TangerineMessageAccessor.getMessage("achNumberColon"));
             sb.append(" ").append(entity.getPaymentSource().getAchAccountNumberDisplay());
         }
-        if (PaymentSource.CREDIT_CARD.equals(entity.getPaymentType())) {
+        else if (PaymentSource.CREDIT_CARD.equals(entity.getPaymentType())) {
             sb.append(TangerineMessageAccessor.getMessage("creditCardNumberColon"));
-            sb.append(" ").append(entity.getPaymentSource().getCreditCardType()).append(" ").append(entity.getPaymentSource().getCreditCardNumberDisplay());
+            sb.append(" ").append(entity.getPaymentSource().getCreditCardType()).append(" ");
+            sb.append(entity.getPaymentSource().getCreditCardNumberDisplay());
             sb.append(" ");
             sb.append(entity.getPaymentSource().getCreditCardExpirationMonth());
             sb.append(" / ");
@@ -166,13 +167,13 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
             sb.append(" ");
             sb.append(entity.getPaymentSource().getCreditCardHolderName());
         }
-        if (PaymentSource.CHECK.equals(entity.getPaymentType())) {
+        else if (PaymentSource.CHECK.equals(entity.getPaymentType())) {
             sb.append("\n");
             sb.append(TangerineMessageAccessor.getMessage("checkNumberColon"));
             sb.append(" ");
             sb.append(entity.getCheckNumber());
         }
-	    if (entity.getAddress() != null && entity.getAddress().getId() != null && entity.getAddress().getId() > 0) {
+	    if (entity.getAddress() != null && !entity.getAddress().isNew()) {
 		    Address address = entity.getAddress();
             if (address != null) {
                 sb.append("\n");
@@ -188,7 +189,7 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
                 sb.append(" ").append(StringUtils.trimToEmpty(address.getPostalCode()));
             }
         }
-	    if (entity.getPhone() != null && entity.getPhone().getId() != null && entity.getPhone().getId() > 0) {
+	    if (entity.getPhone() != null && !entity.getPhone().isNew()) {
             Phone phone = entity.getPhone();
             if (phone != null) {
                 sb.append("\n");

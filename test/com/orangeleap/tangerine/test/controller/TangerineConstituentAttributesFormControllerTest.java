@@ -65,7 +65,7 @@ public class TangerineConstituentAttributesFormControllerTest extends BaseTest {
 
 		Assert.assertEquals(gift.getPaymentSource().getId(), new Long(1L), "PaymentSource.id = " + gift.getPaymentSource().getId());
 		Assert.assertEquals(gift.getPaymentSource().getPaymentType(), "Credit Card", "PaymentType = " + gift.getPaymentSource().getPaymentType());
-		Assert.assertEquals(gift.getPaymentSource().getCreditCardHolderName(), "Big Brown One", "CreditCardHolderName = " + gift.getPaymentSource().getCreditCardHolderName());
+		Assert.assertEquals(gift.getPaymentSource().getCreditCardHolderName(), "Dude man", "CreditCardHolderName = " + gift.getPaymentSource().getCreditCardHolderName());
 		Assert.assertEquals(gift.getPaymentSource().getCreditCardSecurityCode(), "202", "CreditCardSecurityCode = " + gift.getPaymentSource().getCreditCardSecurityCode());
 	}
 
@@ -147,6 +147,7 @@ public class TangerineConstituentAttributesFormControllerTest extends BaseTest {
 		@Override
 		protected void setExistingPaymentSource(PaymentSourceAware aware, Long id) {
 			PaymentSource source = new PaymentSource();
+            source.setCreditCardHolderName("Dude man");
 			source.setId(id);
 			aware.setPaymentSource(source);
 		}

@@ -100,7 +100,11 @@ public class GiftFormController extends AbstractGiftController {
 		Gift gift = (Gift) form.getDomainObject();
 
         if (showGiftView(gift)) {
-        	mav = new ModelAndView(appendGiftParameters(request, giftViewUrl, gift));
+            String redirectUrl = appendGiftParameters(request, giftViewUrl, gift);
+            if ("true".equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
+                redirectUrl = appendSaved(redirectUrl);
+            }
+        	mav = new ModelAndView(redirectUrl);
         }
 		return mav;
 	}

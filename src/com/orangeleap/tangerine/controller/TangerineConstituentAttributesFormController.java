@@ -140,28 +140,38 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 			}
 
 			if (bindAddress && fieldName.startsWith(StringConstants.ADDRESS)) {
-				if (!"address.id".equals(fieldName) && ((AddressAware) form.getDomainObject()).getAddress() != null) {
+				if (!"address.id".equals(fieldName) &&
+                        ((AddressAware) form.getDomainObject()).getAddress() != null &&
+                        ((AddressAware) form.getDomainObject()).getAddress().isNew()) {
 					form.addField(escapedFormFieldName, paramValue);
 					propertyValues.addPropertyValue(fieldName, paramValue);
 				}
 			}
 			else if (bindPhone && fieldName.startsWith(StringConstants.PHONE)) {
-				if (!"phone.id".equals(fieldName) && ((PhoneAware) form.getDomainObject()).getPhone() != null) {
+				if (!"phone.id".equals(fieldName) &&
+                        ((PhoneAware) form.getDomainObject()).getPhone() != null &&
+                        ((PhoneAware) form.getDomainObject()).getPhone().isNew()) {
 					form.addField(escapedFormFieldName, paramValue);
 					propertyValues.addPropertyValue(fieldName, paramValue);
 				}
 			}
 			else if (bindEmail && fieldName.startsWith(StringConstants.EMAIL)) {
-				if (!"email.id".equals(fieldName) && ((EmailAware) form.getDomainObject()).getEmail() != null) {
+				if (!"email.id".equals(fieldName) &&
+                        ((EmailAware) form.getDomainObject()).getEmail() != null &&
+                        ((EmailAware) form.getDomainObject()).getEmail().isNew()) {
 					form.addField(escapedFormFieldName, paramValue);
 					propertyValues.addPropertyValue(fieldName, paramValue);
 				}
 			}
 			else if (bindPaymentSource && fieldName.startsWith(StringConstants.PAYMENT_SOURCE)) {
-				if (!"paymentSource.id".equals(fieldName) && ((PaymentSourceAware) form.getDomainObject()).getPaymentSource() != null) {
-					form.addField(escapedFormFieldName, paramValue);
-					propertyValues.addPropertyValue(fieldName, paramValue);
-				}
+				if (!"paymentSource.id".equals(fieldName) &&
+                        ((PaymentSourceAware) form.getDomainObject()).getPaymentSource() != null) {
+                    // Bind creditCardSecurityCode back to paymentSource
+                    if (fieldName.endsWith("creditCardSecurityCode") || ((PaymentSourceAware) form.getDomainObject()).getPaymentSource().isNew()) {
+                        form.addField(escapedFormFieldName, paramValue);
+                        propertyValues.addPropertyValue(fieldName, paramValue);
+                    }
+                }
 			}
 			else {
 				form.addField(escapedFormFieldName, paramValue);
@@ -169,8 +179,10 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 			}
 		}
 		// Bind paymentType back to paymentSource
-		if (bindPaymentSource && ((PaymentSourceAware) form.getDomainObject()).getPaymentSource() != null && ((PaymentSourceAware) form.getDomainObject()).getPaymentSource().isNew()) {
-			propertyValues.addPropertyValue(new StringBuilder(StringConstants.PAYMENT_SOURCE).append(".").append(StringConstants.PAYMENT_TYPE).toString(), request.getParameter(StringConstants.PAYMENT_TYPE));
+		if (bindPaymentSource && ((PaymentSourceAware) form.getDomainObject()).getPaymentSource() != null &&
+                ((PaymentSourceAware) form.getDomainObject()).getPaymentSource().isNew()) {
+			propertyValues.addPropertyValue(new StringBuilder(StringConstants.PAYMENT_SOURCE).append(".").
+                    append(StringConstants.PAYMENT_TYPE).toString(), request.getParameter(StringConstants.PAYMENT_TYPE));
 		}
 		binder.bind(propertyValues);
 	}

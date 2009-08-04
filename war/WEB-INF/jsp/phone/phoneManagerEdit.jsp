@@ -23,6 +23,7 @@
 					<c:if test="${pageAccess['/phoneManager.htm']!='DENIED'}"> <%-- TODO: --%>
                         <input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('phoneList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
+                    <a class="newAccountButton" href="phoneManager.htm?constituentId=${constituent.id}"><spring:message code='enterNew'/></a>
 				</div>
 			</form:form>
 		</body>

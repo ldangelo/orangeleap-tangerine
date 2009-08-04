@@ -24,6 +24,7 @@
 					<c:if test="${form.domainObject.id > 0}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('paymentSourceList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
+                    <a class="newAccountButton" href="paymentManager.htm?constituentId=${constituent.id}"><spring:message code='enterNew'/></a>
 				</div>
 			</form:form>
 		</body>

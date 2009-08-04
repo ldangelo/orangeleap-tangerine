@@ -35,7 +35,7 @@ public enum PageType {
     adjustedGiftView("/giftAdjustmentView.htm"),
     paymentManager("/paymentManager.htm"),
     paymentManagerEdit("/paymentManagerEdit.htm"),
-    paymentSource("/paymentSource.htm"),
+    paymentSourceList("/paymentSourceList.htm"),
     addressSource("/addressSource.htm"),
     queryLookup("/queryLookup.htm"),
     addressManager("/addressManager.htm"),
@@ -61,10 +61,10 @@ public enum PageType {
     giftInKindList("/giftInKindList.htm"),
     emailManager("/emailManager.htm"),
     emailManagerEdit("/emailManagerEdit.htm"),
-    email("/email.htm"),
+    emailList("/emailList.htm"),
     phoneManager("/phoneManager.htm"),
     phoneManagerEdit("/phoneManagerEdit.htm"),
-    phone("/phone.htm"),
+    phoneList("/phoneList.htm"),
     importexport("/importexport.htm"),
     paymentHistory("/paymentHistory.htm"),
     communicationHistory("/communicationHistory.htm"),
@@ -79,8 +79,7 @@ public enum PageType {
     customField("/customField.htm"),
     siteSettings("/siteSettings.htm"),
     postbatch("/postbatch.htm"),
-    logView("/logView.htm")
-    ;
+    logView("/logView.htm");
 
     private String pageName;
 

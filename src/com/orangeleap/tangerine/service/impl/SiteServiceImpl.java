@@ -478,8 +478,15 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 
     @Override
     public AbstractEntity populateDefaultEntityEditorMaps(AbstractEntity entity) {
-
-    	PageType pageType = PageType.valueOf(StringUtils.uncapitalize(entity.getClass().getSimpleName()));
+        String entityName = StringUtils.uncapitalize(entity.getClass().getSimpleName());
+        if (StringConstants.ADDRESS.equals(entityName) || StringConstants.PHONE.equals(entityName) ||
+                StringConstants.EMAIL.equals(entityName)) {
+            entityName += "Manager";
+        }
+        else if (StringConstants.PAYMENT_SOURCE.equals(entityName)) {
+            entityName = "paymentManager";
+        }
+    	PageType pageType = PageType.valueOf(entityName);
         List<String> roles = tangerineUserHelper.lookupUserRoles();
 
         Map<String, String> fieldLabelMap = readFieldLabels(pageType, roles, Locale.getDefault());

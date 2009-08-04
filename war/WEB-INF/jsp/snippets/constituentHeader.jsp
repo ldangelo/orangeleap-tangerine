@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<div class="columns iconHeader">
+<div class="iconHeader">
 	<div class="column"><img src="images/dude2.gif" /></div>
 	<div class="column">
 		<c:choose>

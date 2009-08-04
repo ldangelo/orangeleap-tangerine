@@ -51,7 +51,10 @@ public class PaymentManagerFormController extends TangerineConstituentAttributes
 
 	@Override
 	protected AbstractEntity findEntity(HttpServletRequest request) {
-		return paymentSourceService.readPaymentSourceCreateIfNull(request.getParameter("paymentSourceId"), super.getConstituent(request));
+		PaymentSource paymentSource = paymentSourceService.readPaymentSourceCreateIfNull(request.getParameter("paymentSourceId"), super.getConstituent(request));
+        clearAddressFields(paymentSource);
+        clearPhoneFields(paymentSource);
+        return paymentSource;
 	}
 
 	@SuppressWarnings("unchecked")

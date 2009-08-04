@@ -46,7 +46,11 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
 
 	@Override
 	protected RecurringGift readCommitmentCreateIfNull(HttpServletRequest request) {
-		return recurringGiftService.readRecurringGiftByIdCreateIfNull(request.getParameter(StringConstants.RECURRING_GIFT_ID), super.getConstituent(request));
+		RecurringGift recurringGift = recurringGiftService.readRecurringGiftByIdCreateIfNull(request.getParameter(StringConstants.RECURRING_GIFT_ID), super.getConstituent(request));
+        clearPaymentSourceFields(recurringGift);
+        clearAddressFields(recurringGift);
+        clearPhoneFields(recurringGift);
+        return recurringGift;
 	}
 
     @Override

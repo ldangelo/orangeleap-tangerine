@@ -62,6 +62,9 @@ public class GiftFormController extends AbstractGiftController {
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         Gift gift = giftService.readGiftByIdCreateIfNull(getConstituent(request), request.getParameter(StringConstants.GIFT_ID));
+        clearPaymentSourceFields(gift);
+        clearAddressFields(gift);
+        clearPhoneFields(gift);
 
 	    if (!StringUtils.hasText(gift.getCurrencyCode())) {
 		    Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
@@ -69,12 +72,11 @@ public class GiftFormController extends AbstractGiftController {
 			    gift.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
 		    }
 	    }
-
 	    return gift;
     }
 
     private boolean isEnteredGift(Gift gift) {
-    	return gift != null && gift.getId() != null && gift.getId() > 0;
+    	return gift != null && !gift.isNew();
     }
 
     private boolean canReprocessGift(Gift gift) {

@@ -29,6 +29,7 @@ import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.type.EntityType;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.MutablePropertyValues;
@@ -415,5 +416,53 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
             }
         }
         return super.processFormSubmission(request, response, command, errors);
+    }
+
+    protected void clearPaymentSourceFields(AbstractEntity entity) {
+        if (entity instanceof PaymentSourceAware) {
+            PaymentSourceAware aware = (PaymentSourceAware) entity;
+            if (aware.getPaymentSource() != null && !aware.getPaymentSource().isNew()) {
+                PaymentSource clearedPaymentSource = new PaymentSource(aware.getPaymentSource().getConstituent());
+                clearedPaymentSource.setId(aware.getPaymentSource().getId());
+                siteService.setEntityDefaults(clearedPaymentSource, EntityType.paymentSource, null); // TODO: replace null with sectionDef
+                aware.setPaymentSource(clearedPaymentSource);
+            }
+        }
+    }
+
+    protected void clearAddressFields(AbstractEntity entity) {
+        if (entity instanceof AddressAware) {
+            AddressAware aware = (AddressAware) entity;
+            if (aware.getAddress() != null && !aware.getAddress().isNew()) {
+                Address clearedAddress = new Address(aware.getAddress().getConstituentId());
+                clearedAddress.setId(aware.getAddress().getId());
+                siteService.setEntityDefaults(clearedAddress, EntityType.address, null); // TODO: replace null with sectionDef
+                aware.setAddress(clearedAddress);
+            }
+        }
+    }
+
+    protected void clearPhoneFields(AbstractEntity entity) {
+        if (entity instanceof PhoneAware) {
+            PhoneAware aware = (PhoneAware) entity;
+            if (aware.getPhone() != null && !aware.getPhone().isNew()) {
+                Phone clearedPhone = new Phone(aware.getPhone().getConstituentId());
+                clearedPhone.setId(aware.getPhone().getId());
+                siteService.setEntityDefaults(clearedPhone, EntityType.phone, null); // TODO: replace null with sectionDef
+                aware.setPhone(clearedPhone);
+            }
+        }
+    }
+
+    protected void clearEmailFields(AbstractEntity entity) {
+        if (entity instanceof EmailAware) {
+            EmailAware aware = (EmailAware) entity;
+            if (aware.getEmail() != null && !aware.getEmail().isNew()) {
+                Email clearedEmail = new Email(aware.getEmail().getConstituentId());
+                clearedEmail.setId(aware.getEmail().getId());
+                siteService.setEntityDefaults(clearedEmail, EntityType.email, null); // TODO: replace null with sectionDef
+                aware.setEmail(clearedEmail);
+            }
+        }
     }
 }

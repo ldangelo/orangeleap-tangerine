@@ -92,14 +92,6 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
 
     @Override
-    public List<RecurringGift> readRecurringGiftsByDateStatuses(Date date, List<String> statuses) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readRecurringGifts: date = " + date + " statuses = " + statuses);
-        }
-        return recurringGiftDao.readRecurringGifts(date, statuses);
-    }
-
-    @Override
     public RecurringGift readRecurringGiftById(Long recurringGiftId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readRecurringGiftById: recurringGiftId = " + recurringGiftId);

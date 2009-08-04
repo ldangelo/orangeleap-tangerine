@@ -52,8 +52,6 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     
 	public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo);
     
-    public List<RecurringGift> readRecurringGiftsByDateStatuses(Date date, List<String> statuses);
-
     public void processRecurringGift(RecurringGift recurringGift, ScheduledItem scheduledItem);
     
     public List<RecurringGift> searchRecurringGifts(Map<String, Object> params);

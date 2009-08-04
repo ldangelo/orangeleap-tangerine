@@ -120,38 +120,6 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         IBatisConstituentDaoTest.testConstituentId300(constituent);
     } 
     
-    @Test(groups = { "testReadRecurringGifts" })
-    public void testReadRecurringGifts() throws Exception {
-    	List<String> statuses = new ArrayList<String>();
-    	statuses.add(RecurringGift.STATUS_PENDING);
-    	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-    	List<RecurringGift> rgs = recurringGiftDao.readRecurringGifts(sdf.parse("01/01/1980"), statuses);
-    	assert rgs != null && rgs.isEmpty();
-    	
-    	rgs = recurringGiftDao.readRecurringGifts(sdf.parse("01/01/2008"), statuses);
-    	assert rgs.size() == 1;
-    	RecurringGift rGift = rgs.get(0);
-    	
-    	testId100L(rGift);
-
-        rgs = recurringGiftDao.readRecurringGifts(sdf.parse("02/15/2008"), statuses);
-        assert rgs.size() == 2;
-        for (RecurringGift recurringGift : rgs) {
-            assert recurringGift.getId() == 100L || recurringGift.getId() == 300L;
-            switch (recurringGift.getId().intValue()) {
-                case 100:
-                    assert sdf.parse("12/25/2007").equals(recurringGift.getNextRunDate());
-                    assert recurringGift.getId() == 100L;
-                    testId100L(recurringGift);
-                    break;
-                case 300:
-                    testId300L(recurringGift);
-                    break;
-                default:
-                    Assert.assertTrue("Invalid ID = " + recurringGift.getId(), false);
-            }
-        }
-    }
     
     @Test(groups = { "testDeleteRecurringGift" }, dependsOnGroups = { "testMaintainRecurringGift" })
     public void testDeleteRecurringGift() throws Exception {

@@ -2,6 +2,7 @@ $(document).ready(function() {
 	(function() {
 		$("li.side:has(.picklist), li.side:has(.multiPicklist)", "ul").each(Picklist.buildPicklistTree);
 		Picklist.cascadeElementsRoot();
+        Picklist.hideShowSections();
 	})();
 	
 	// Fix IE8 Date Menu being cut off 
@@ -564,7 +565,8 @@ var Picklist = {
 			}
 		}
    		cascaders = Picklist.cascadeElementsChildren($(tree.children), cascaders);
-		Picklist.hideShowCascaders(cascaders);					
+		Picklist.hideShowCascaders(cascaders);
+        Picklist.hideShowSections();
 	},
 	
 	setSelectedAddressPhoneByValue: function($select, value) {
@@ -596,7 +598,41 @@ var Picklist = {
 			}
 		});	
 		return $select;
-	}
+	},
+
+    hideShowSections: function() {
+        $("div.columns").each(function() {
+            var $columnsElem = $(this);
+            var singleColumns = $("div.column", $columnsElem);
+
+            var allHidden = true;
+            for (var x = 0; x < singleColumns.length; x++) {
+                var $singleColElem = $(singleColumns[x]);
+                if ( !$singleColElem.hasClass("noDisplay") && $singleColElem.css("display") != "none") {
+                    var liElems = $("li.side", $singleColElem);
+
+                    if (allHidden && liElems) {
+                        for (var y = 0; y < liElems.length; y++) {
+                            var $thisLiElem = $(liElems[y]);
+                            if ( !$thisLiElem.hasClass("noDisplay") && $thisLiElem.css("display") != "none") {
+                                allHidden = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!allHidden) {
+                    break;
+                }
+            }
+            if (allHidden) {
+                $columnsElem.addClass("noDisplay");
+            }
+            else {
+                $columnsElem.removeClass("noDisplay");
+            }
+        });
+    }
 };
 var OrangeLeap = {
 

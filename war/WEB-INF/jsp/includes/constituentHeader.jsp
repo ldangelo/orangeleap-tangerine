@@ -4,7 +4,7 @@
 
 <input type="hidden" id="thisConstituentId" name="thisConstituentId" value="<c:out value='${requestScope.constituent.id}'/>"/>
 
-<div class="columns iconHeader">
+<div class="iconHeader">
 	<div class="column">
 		<c:choose>
 			<c:when test="${requestScope.constituent.id != null}">

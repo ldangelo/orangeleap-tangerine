@@ -28,6 +28,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
 
@@ -40,10 +42,12 @@ import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.AddressAware;
 import com.orangeleap.tangerine.domain.EmailAware;
 import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public abstract class EntityImporter {
@@ -139,23 +143,31 @@ public abstract class EntityImporter {
 					Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
 					Object so = m.invoke(o);
 					if (so == null) {
-                        throw new RuntimeException("Unable to import field.");
+                        Class returnClass = m.getReturnType();
+                        so = returnClass.newInstance();
+                        if (so instanceof AbstractEntity) {
+                            siteservice.setEntityDefaults((AbstractEntity) so, EntityType.valueOf(depobject), null); // TODO: replace null with sectionDefinition?
+                        }
+                        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(o);
+                        if (bw.isWritableProperty(depobject)) {
+                            bw.setPropertyValue(depobject, so);
+                        }
                     } 
 					BeanUtils.setProperty(so, fd.getDependentField(), value);
-					if (o instanceof AddressAware) {
+					if (o instanceof AddressAware && ((AddressAware)o).getAddress() != null) {
                         ((AddressAware)o).getAddress().setId(0L);  // New
                     }
-					if (o instanceof PhoneAware) {
+					if (o instanceof PhoneAware && ((PhoneAware)o).getPhone() != null) {
                         ((PhoneAware)o).getPhone().setId(0L);  // New
                     }
-					if (o instanceof EmailAware) {
+					if (o instanceof EmailAware && ((EmailAware)o).getEmail() != null) {
                         ((EmailAware)o).getEmail().setId(0L);  // New
                     }
 				} else {
 					BeanUtils.setProperty(o, key, value);
 				}
 			} catch (Exception e) {
-				logger.debug(""+e);
+				logger.debug("Exception occurred", e);
 				throw new RuntimeException("Unable to set field value "+key+" to "+svalue+": "+e.getMessage());
 			}
 		

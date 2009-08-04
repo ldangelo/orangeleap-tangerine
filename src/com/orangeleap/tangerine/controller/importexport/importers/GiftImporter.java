@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
@@ -115,13 +116,14 @@ public class GiftImporter extends EntityImporter {
                         PaymentSource.CHECK.equals(paymentType)
                 ) {
             if (gift.getGiftStatus() == null || gift.getGiftStatus().length() == 0) {
-                gift.setGiftStatus("Paid");
+                gift.setGiftStatus(Gift.STATUS_PAID);
             }
         }
 
         DistributionLine dl = new DistributionLine(0L, constituent);
         dl.setAmount(gift.getAmount());
         dl.setPercentage(new BigDecimal("100.00"));
+        gift.clearDistributionLines();
         gift.addDistributionLine(dl);
 
         giftservice.maintainGift(gift);

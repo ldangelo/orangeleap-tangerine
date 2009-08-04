@@ -56,7 +56,6 @@ public class GiftExporter extends EntityExporter {
     @Override
     protected boolean exclude(String name, FieldDefinition fd) {
         return super.exclude(name, fd)
-                || fd.getId().startsWith("gift.selected")
                 || fd.getId().startsWith("gift.associated")
                 || fd.isCustom()
                 || fd.getId().toLowerCase().contains("creditCardNumber".toLowerCase())

@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.paymentech.orbital.sdk.configurator.Configurator;
 import com.paymentech.orbital.sdk.configurator.ConfiguratorIF;
 import com.paymentech.orbital.sdk.interfaces.RequestIF;
@@ -79,8 +80,8 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
     @Override
     public void AuthorizeAndCapture(Gift gift) {
         RequestIF request = null;
-        String month;
-        String year;
+        String month = null;
+        String year = null;
 
         if (configurator == null) {
             Initialize();
@@ -118,14 +119,17 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 
             request.setFieldValue("Amount", amount);
 
-            month = gift.getPaymentSource().getCreditCardExpirationMonthText();
-            year = gift.getPaymentSource().getCreditCardExpirationYear().toString();
-
-            if (month.length() == 1) {
-                month = "0" + month;
+            if (gift.getPaymentSource() != null) {
+                month = gift.getPaymentSource().getCreditCardExpirationMonthText();
+                year = gift.getPaymentSource().getCreditCardExpirationYear().toString();
             }
 
-            request.setFieldValue("Exp", month + year);
+            if (month != null && month.length() == 1) {
+                month = "0" + month;
+            }
+            if (month != null && year != null) {
+                request.setFieldValue("Exp", month + year);
+            }
 
             // AVS Information
             Address addr = gift.getAddress();
@@ -141,8 +145,8 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 //                request.setFieldValue("AVScountrycode",addr.getCountry());
             }
 
-            if (gift.getPaymentSource().getCreditCardSecurityCode() != null &&
-                    !gift.getPaymentSource().getCreditCardSecurityCode().equals("")) {
+            if (gift.getPaymentSource() != null && gift.getPaymentSource().getCreditCardSecurityCode() != null &&
+                    !gift.getPaymentSource().getCreditCardSecurityCode().equals(StringConstants.EMPTY)) {
                 request.setFieldValue("CardVerifyNumber", gift.getPaymentSource().getCreditCardSecurityCode().toString());
             }
 
@@ -236,8 +240,8 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
     @Override
     public void Authorize(Gift gift) {
         RequestIF request = null;
-        String month;
-        String year;
+        String month = null;
+        String year = null;
 
         if (configurator == null) {
             Initialize();
@@ -276,14 +280,18 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 
             request.setFieldValue("Amount", amount);
 
-            month = gift.getPaymentSource().getCreditCardExpirationMonthText();
-            year = gift.getPaymentSource().getCreditCardExpirationYear().toString();
+            if (gift.getPaymentSource() != null) {
+                month = gift.getPaymentSource().getCreditCardExpirationMonthText();
+                year = gift.getPaymentSource().getCreditCardExpirationYear().toString();
+            }
 
-            if (month.length() == 1) {
+            if (month != null && month.length() == 1) {
                 month = "0" + month;
             }
 
-            request.setFieldValue("Exp", month + year);
+            if (month != null && year != null) {
+                request.setFieldValue("Exp", month + year);
+            }
 
             // AVS Information
             Address addr = gift.getAddress();
@@ -296,7 +304,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
                 request.setFieldValue("AVSzip", addr.getPostalCode());
             }
 
-            if (gift.getPaymentSource().getCreditCardSecurityCode() != null &&
+            if (gift.getPaymentSource() != null && gift.getPaymentSource().getCreditCardSecurityCode() != null &&
                     !gift.getPaymentSource().getCreditCardSecurityCode().equals("")) {
                 request.setFieldValue("CardVerifyNumber", gift.getPaymentSource().getCreditCardSecurityCode().toString());
             }

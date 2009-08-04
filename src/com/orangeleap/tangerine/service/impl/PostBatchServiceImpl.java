@@ -521,7 +521,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         journal.setDonationDate(gift.getDonationDate());
         journal.setPaymentMethod(gift.getPaymentType());
-        journal.setCcType(gift.getPaymentSource().getCreditCardType());
+        if (gift.getPaymentSource() != null) {
+            journal.setCcType(gift.getPaymentSource().getCreditCardType());
+        }
 
         if (isHeader) {
             

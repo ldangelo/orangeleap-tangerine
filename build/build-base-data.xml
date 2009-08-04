@@ -15,7 +15,7 @@
 	     	
 	     	<transaction src="${basedir}/db/prod/clearTable.sql"/>
 
-	     	<transaction src="${basedir}/db/prod/domain/initKeys.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/initKeysDomain.sql"/>
             
 	     	<!-- Field Definitions -->
 	     	<transaction src="${basedir}/db/prod/domain/addressDomain.sql"/>

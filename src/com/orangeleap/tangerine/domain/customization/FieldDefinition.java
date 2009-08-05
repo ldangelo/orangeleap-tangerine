@@ -48,6 +48,13 @@ public class FieldDefinition implements Serializable {
      */
     private String fieldInfo;
 
+    public FieldDefinition() { }
+
+    public FieldDefinition(String fieldName) {
+        this();
+        this.fieldName = fieldName;
+    }
+
     public String getId() {
         return id;
     }

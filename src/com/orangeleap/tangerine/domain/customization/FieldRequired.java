@@ -38,6 +38,18 @@ public class FieldRequired implements GeneratedId, Serializable {
     private boolean required = false;
     private List<FieldCondition> fieldConditions;
 
+    public FieldRequired() { }
+
+    public FieldRequired(boolean required) {
+        this();
+        this.required = required;
+    }
+
+    public FieldRequired(boolean required, List<FieldCondition> fieldConditions) {
+        this(required);
+        this.fieldConditions = fieldConditions;
+    }
+
     @Override
     public Long getId() {
         return id;

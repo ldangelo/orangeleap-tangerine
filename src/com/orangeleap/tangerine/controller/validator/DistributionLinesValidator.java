@@ -51,34 +51,30 @@ public class DistributionLinesValidator implements Validator {
 
         BigDecimal total = null;
         BigDecimal amount = null;
-	    List<DistributionLine> lines = null;
 
         if (target instanceof Gift) {
             Gift gift = (Gift) target;
             total = getTotal(gift.getDistributionLines());
             amount = gift.getAmount();
-	        lines = gift.getDistributionLines();
         }
         else if (target instanceof Pledge) {
             Pledge pledge = (Pledge) target;
             total = getTotal(pledge.getDistributionLines());
             if (pledge.isRecurring()) {
                 amount = pledge.getAmountPerGift();
-            } else {
+            }
+            else {
                 amount = pledge.getAmountTotal();
             }
-	        lines = pledge.getDistributionLines();
         }
         else if (target instanceof RecurringGift) {
             RecurringGift recurringGift = (RecurringGift) target;
             total = getTotal(recurringGift.getDistributionLines());
             amount = recurringGift.getAmountPerGift();
-	        lines = recurringGift.getDistributionLines();
         }
         if (total == null || amount == null || total.compareTo(amount) != 0) {
             errors.reject("errorDistributionLineAmounts");
         }
-	    validateDesignationCode(lines, errors);
     }
 
     protected BigDecimal getTotal(List<DistributionLine> lines) {
@@ -90,17 +86,4 @@ public class DistributionLinesValidator implements Validator {
         }
         return total;
     }
-
-	private void validateDesignationCode(List<DistributionLine> lines, Errors errors) {
-		if (lines != null) {
-		    for (DistributionLine line : lines) {
-		        if (line != null) {
-		            if (line.getAmount() != null && !StringUtils.hasText(line.getProjectCode())) {
-		                errors.reject("distributionLineDesignationCode");
-		                break;
-		            }
-		        }
-		    }
-		}
-	}
 }

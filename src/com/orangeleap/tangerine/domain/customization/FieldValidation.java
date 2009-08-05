@@ -37,6 +37,18 @@ public class FieldValidation implements GeneratedId, Serializable {
     private String regex;
     private List<FieldCondition> fieldConditions;
 
+    public FieldValidation() { }
+
+    public FieldValidation(String regex) {
+        this();
+        this.regex = regex;
+    }
+
+    public FieldValidation(String regex, List<FieldCondition> fieldConditions) {
+        this(regex);
+        this.fieldConditions = fieldConditions;
+    }
+
     @Override
     public Long getId() {
         return id;

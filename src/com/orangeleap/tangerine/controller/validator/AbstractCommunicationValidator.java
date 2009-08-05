@@ -34,13 +34,7 @@ public abstract class AbstractCommunicationValidator<T extends AbstractCommunica
     protected final Log logger = OLLogger.getLog(getClass());
 
     protected void validateDates(T entity, Errors errors) {
-        if (ActivationType.seasonal.equals(entity.getActivationStatus())) {
-            checkNullDate(entity.getSeasonalStartDate(), "seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required", errors);
-            checkNullDate(entity.getSeasonalEndDate(), "seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required", errors);
-        } 
-        else if (ActivationType.temporary.equals(entity.getActivationStatus())) {
-            checkNullDate(entity.getTemporaryStartDate(), "temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required", errors);
-            checkNullDate(entity.getTemporaryEndDate(), "temporaryEndDate", "invalidTemporaryEndDate", "Temporary End Date is required", errors);
+        if (ActivationType.temporary.equals(entity.getActivationStatus())) {
             checkDateRange(entity.getTemporaryStartDate(), entity.getTemporaryEndDate(), "temporaryEndDate", "invalidTemporaryEndDateBeforeStartDate", "The Temporary End Date must be after the Temporary Start Date", errors);
         }
     }

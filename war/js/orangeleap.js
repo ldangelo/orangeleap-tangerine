@@ -34,9 +34,9 @@ $(document).ready(function() {
 			if (errorType == "timeout")	{
 				alert("The server was not available.  Please try again or contact your administrator if this issue continues.");
 			}
-			else if (xhr.status == 508 || errorType == "error") {
-				alert("An unexpected error has occurred and has been logged.  Please try again or contact your administrator if this issue continues.");
-			}
+//			else if (xhr.status == 508 || errorType == "error") {
+//				alert("An unexpected error has occurred and has been logged.  Please try again or contact your administrator if this issue continues.");
+//			}
 		}
 	});
 	

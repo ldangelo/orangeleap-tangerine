@@ -34,6 +34,15 @@ public class FieldCondition implements GeneratedId, Serializable {
     private Long fieldRequiredId;
     private Long validationId;
 
+    public FieldCondition() { }
+
+    public FieldCondition(FieldDefinition dependentFieldDefinition, FieldDefinition dependentSecondaryFieldDefinition, String value) {
+        this();
+        this.dependentFieldDefinition = dependentFieldDefinition;
+        this.dependentSecondaryFieldDefinition = dependentSecondaryFieldDefinition;
+        this.value = value;
+    }
+
     @Override
     public Long getId() {
         return id;

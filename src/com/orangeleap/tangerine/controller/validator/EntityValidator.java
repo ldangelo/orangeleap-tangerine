@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.*;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
@@ -36,6 +35,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.validation.Errors;
@@ -43,12 +43,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EntityValidator implements Validator {
 
@@ -121,10 +118,14 @@ public class EntityValidator implements Validator {
         // used to know that a field already has an error, so don't add another
 
         // first, validate required fields
-        if (!entity.isSuppressValidationForRequired()) validateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
+        if (!entity.isSuppressValidationForRequired()) {
+            Map<String, FieldRequired> unresolvedRequiredFieldMap = siteService.readRequiredFields(pageType, tangerineUserHelper.lookupUserRoles());
+            validateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+        }
 
         // next, validate custom validation (regex)  
-        validateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
+        Map<String, FieldValidation> validationMap = siteService.readFieldValidations(pageType, tangerineUserHelper.lookupUserRoles());
+        validateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet, validationMap);
     }
     
     protected void validateSubEntities(Object target, Errors errors) {
@@ -159,33 +160,80 @@ public class EntityValidator implements Validator {
         }
     }
 
-    protected void validateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
-        Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(pageType, tangerineUserHelper.lookupUserRoles());
-        if (requiredFieldMap != null) {
+    /**
+     * Resolve the field names.  For collection objects, resolve their indexed field name (i.e,
+     * distributionLines[0].amount
+     * @param entity
+     * @param unresolvedFieldMap
+     * @return resolved field names
+     */
+    @SuppressWarnings("unchecked")
+    protected Map resolveFieldNames(AbstractEntity entity, Map unresolvedFieldMap) {
+        Map resolvedFieldMap = new ListOrderedMap();
+        if (unresolvedFieldMap != null) {
             BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
-            for (String key : requiredFieldMap.keySet()) {
-                if (bw.isReadableProperty(key)) {
-                    FieldRequired fr = requiredFieldMap.get(key);
-                    List<FieldCondition> conditions = fr.getFieldConditions();
-                    boolean conditionsMet = this.areFieldConditionsMet(conditions, key, entity, fieldValueMap);
-                    if (!conditionsMet) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(key + " validation doesn't apply:  conditions not met");
+            for (Object keyObj : unresolvedFieldMap.keySet()) {
+                String key = keyObj.toString();
+                if (key.indexOf('.') > 0) {
+                    // see if this is a collection
+                    int dotIndex = key.indexOf('.');
+                    String propertyName = key.substring(0, dotIndex);
+                    if (bw.isReadableProperty(propertyName)) {
+                        if (bw.getPropertyValue(propertyName) instanceof Collection) {
+                            Collection coll = (Collection) bw.getPropertyValue(propertyName);
+
+                            Object mapValue = unresolvedFieldMap.get(key);
+                            for (int x = 0; x < coll.size(); x++) {
+                                StringBuilder newKey = new StringBuilder(propertyName);
+                                newKey.append("[").append(x).append("]");
+                                newKey.append(key.substring(dotIndex));
+                                resolvedFieldMap.put(newKey.toString(), mapValue);
+                            }
                         }
-                        continue;
-                    }
-                    if (errorSet.contains(key)) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(key + " validation:  error already exists so don't add another one");
+                        else {
+                            resolvedFieldMap.put(key, unresolvedFieldMap.get(key));
                         }
-                        continue;
                     }
-                    String propertyString = getPropertyString(key, entity, fieldValueMap);
-                    boolean required = fr.isRequired();
-                    if ((required && StringUtils.isEmpty(propertyString)) && !errorSet.contains(key)) {
-                        errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key) }, "no message provided for the validation error: fieldRequiredFailure");
-                        errorSet.add(key);
+                }
+                else if (bw.isReadableProperty(key)) {
+                    resolvedFieldMap.put(key, unresolvedFieldMap.get(key));
+                }
+            }
+        }
+        return resolvedFieldMap;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void validateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
+                                          Map<String, Object> fieldValueMap, Set<String> errorSet,
+                                          Map<String, FieldRequired> unresolvedRequiredFieldMap) {
+        Map<String, FieldRequired> requiredFieldMap = resolveFieldNames(entity, unresolvedRequiredFieldMap);
+        if (requiredFieldMap != null && !requiredFieldMap.isEmpty()) {
+            for (Map.Entry<String, FieldRequired> fieldRequiredEntry : requiredFieldMap.entrySet()) {
+                String key = fieldRequiredEntry.getKey();
+                FieldRequired fieldRequired = fieldRequiredEntry.getValue();
+                List<FieldCondition> conditions = fieldRequired.getFieldConditions();
+                boolean conditionsMet = this.areFieldConditionsMet(conditions, key, entity, fieldValueMap);
+
+                if (!conditionsMet) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(key + " validation doesn't apply:  conditions not met");
                     }
+                    continue;
+                }
+                if (errorSet.contains(key)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(key + " validation:  error already exists so don't add another one");
+                    }
+                    continue;
+                }
+                String propertyString = getPropertyString(key, entity, fieldValueMap);
+                boolean required = fieldRequired.isRequired();
+
+                if ((required && StringUtils.isEmpty(propertyString)) && !errorSet.contains(key)) {
+                    String errorKey = key.replaceAll("\\[\\d+\\]", StringConstants.EMPTY);
+                    errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(errorKey) }, "no message provided for the validation error: fieldRequiredFailure");
+                    errorSet.add(key);
                 }
             }
         }
@@ -194,21 +242,26 @@ public class EntityValidator implements Validator {
     protected boolean areFieldConditionsMet(List<FieldCondition> conditions, String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
         boolean conditionsMet = true;
         if (conditions != null) {
-            for (FieldCondition fc : conditions) {
-                logger.debug("areFieldConditionsMet: key = " + key + ", condition - dependent = " + fc.getDependentFieldDefinition().getFieldName() + ", dependent secondary = " + (fc.getDependentSecondaryFieldDefinition() == null ? "null" : fc.getDependentSecondaryFieldDefinition().getFieldName())
-                        + ", dependent value = " + fc.getValue());
-                String dependentKey = fc.getDependentFieldDefinition().getFieldName();
-                if (fc.getDependentSecondaryFieldDefinition() != null) {
-                    dependentKey += "." + fc.getDependentSecondaryFieldDefinition().getFieldName();
+            for (FieldCondition fieldCondition : conditions) {
+                logger.trace("areFieldConditionsMet: key = " + key + ", condition - dependent = " + fieldCondition.getDependentFieldDefinition().getFieldName() + ", dependent secondary = " + (fieldCondition.getDependentSecondaryFieldDefinition() == null ? "null" : fieldCondition.getDependentSecondaryFieldDefinition().getFieldName())
+                        + ", dependent value = " + fieldCondition.getValue());
+                String gridIndex = findGridIndex(key);
+                StringBuilder dependentKey = new StringBuilder(fieldCondition.getDependentFieldDefinition().getFieldName());
+                if (gridIndex != null) {
+                    dependentKey.append(gridIndex);
                 }
-                Object dependentProperty = getProperty(dependentKey, entity, fieldValueMap);
-                if (fc.getValue() == null) {
+                if (fieldCondition.getDependentSecondaryFieldDefinition() != null) {
+                    dependentKey.append(".").append(fieldCondition.getDependentSecondaryFieldDefinition().getFieldName());
+                }
+                Object dependentProperty = getProperty(dependentKey.toString(), entity, fieldValueMap);
+                if (fieldCondition.getValue() == null) {
                     if (dependentProperty != null) {
                         conditionsMet = false;
                     }
-                } else {
-                    List fcValues = Arrays.asList(fc.getValue().split("\\|"));
-                    if (dependentProperty == null || (!"!null".equals(fc.getValue()) && !fcValues.contains(dependentProperty.toString()))) {
+                }
+                else {
+                    List fcValues = Arrays.asList(fieldCondition.getValue().split("\\|"));
+                    if (dependentProperty == null || (!"!null".equals(fieldCondition.getValue()) && !fcValues.contains(dependentProperty.toString()))) {
                         conditionsMet = false;
                     }
                 }
@@ -217,12 +270,15 @@ public class EntityValidator implements Validator {
         return conditionsMet;
     }
 
-    protected void validateRegex(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
-        Map<String, FieldValidation> validationMap = siteService.readFieldValidations(pageType, tangerineUserHelper.lookupUserRoles());
-        if (validationMap != null) {
-            for (String key : validationMap.keySet()) {
-                FieldValidation fv = validationMap.get(key);
-                List<FieldCondition> conditions = fv.getFieldConditions();
+    @SuppressWarnings("unchecked")
+    protected void validateRegex(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap,
+                                 Set<String> errorSet, Map<String, FieldValidation> unresolvedValidationMap) {
+        Map<String, FieldValidation> validationMap = resolveFieldNames(entity, unresolvedValidationMap);
+        if (validationMap != null && !validationMap.isEmpty()) {
+            for (Map.Entry<String, FieldValidation> validationEntry : validationMap.entrySet()) {
+                String key = validationEntry.getKey();
+                FieldValidation validation = validationEntry.getValue();
+                List<FieldCondition> conditions = validation.getFieldConditions();
                 boolean conditionsMet = this.areFieldConditionsMet(conditions, key, entity, fieldValueMap);
                 if (!conditionsMet) {
                     if (logger.isDebugEnabled()) {
@@ -237,13 +293,14 @@ public class EntityValidator implements Validator {
                     continue;
                 }
                 String propertyString = getPropertyString(key, entity, fieldValueMap);
-                String regex = validationMap.get(key).getRegex();
+                String regex = validation.getRegex();
                 boolean valid;
 
-                if (propertyString.length() == 0) {
+                if (propertyString.isEmpty()) {
                 	// 'required' is validated in validateRequiredFields()
                 	valid = true;
-                } else {
+                }
+                else {
                 	if (regex.startsWith(EXTENSIONS)) {
                 		valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(EXTENSIONS.length()));
                 	}
@@ -253,7 +310,8 @@ public class EntityValidator implements Validator {
                 }
                 
                 if (!valid && !errorSet.contains(key)) {
-                    errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldValidationFailure");
+                    String errorKey = key.replaceAll("\\[\\d+\\]", StringConstants.EMPTY);
+                    errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(errorKey), propertyString }, "no message provided for the validation error: fieldValidationFailure");
                 }
             }
         }
@@ -281,5 +339,18 @@ public class EntityValidator implements Validator {
 
 	protected boolean isNew(AbstractEntity entity) {
 		return entity != null && entity.isNew(); 
+	}
+
+    protected String findGridIndex(String fieldName) {
+		Matcher matcher = Pattern.compile("^.+(\\[\\d+\\]).+$").matcher(fieldName);
+		int start = 0;
+		String s = null;
+		if (matcher != null) {
+		    while (matcher.find(start)) {
+		        s = matcher.group(1);
+		        start = matcher.end();
+		    }
+		}
+		return s;
 	}
 }

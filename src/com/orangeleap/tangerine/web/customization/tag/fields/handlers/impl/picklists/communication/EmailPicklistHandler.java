@@ -30,7 +30,7 @@ public class EmailPicklistHandler extends AbstractPicklistHandler {
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
 		Picklist picklist = resolvePicklist(currentField, pageContext);
-		createBeginSelect(currentField, formFieldName, picklist, sb);
+		createBeginSelect(pageContext, currentField, formFieldName, picklist, sb);
 		createNoneOption(currentField, fieldValue, sb);
 
 		if (!FieldType.EXISTING_EMAIL_PICKLIST.equals(currentField.getFieldType())) {

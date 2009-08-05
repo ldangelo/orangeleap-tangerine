@@ -261,7 +261,8 @@ table.tablesorter tbody tr.lineRow td a.hideText { top: 0; right: 0; padding: 1p
 	font-weight:bold;
 }
 ul.formFields li input.textError, 
-	ul.formFields li textarea.textError {
+	ul.formFields li textarea.textError,
+    ul.formFields li select.textError {
 	background:#fed;
 	border:1px solid #d00;
 }

@@ -93,7 +93,7 @@ public class FieldServiceImpl implements FieldService {
 		    logger.trace("isFieldRequired: currentField = " + currentField);
 		}
 		FieldRequired fr = lookupFieldRequired(currentField);
-		return (fr != null && fr.isRequired());
+		return (fr != null && fr.isRequired() && !fr.hasConditions());
 	}
 
     @Override

@@ -148,11 +148,12 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
         }
     }
 
-	protected void createBeginSelect(SectionField currentField, String formFieldName, Picklist picklist, StringBuilder sb) {
+	protected void createBeginSelect(PageContext pageContext, SectionField currentField, String formFieldName, Picklist picklist, StringBuilder sb) {
         sb.append("<select name=\"").append(formFieldName).append("\" id=\"");
 	    sb.append(formFieldName).append("\" class=\" ");
 
 		getBeginSelectCssClass(picklist, sb);
+        writeErrorClass(pageContext, formFieldName, sb);
 		
 	    sb.append(resolveEntityAttributes(currentField)).append("\" references=\"");
 		sb.append(resolveReferenceValues(currentField, picklist)).append("\">");

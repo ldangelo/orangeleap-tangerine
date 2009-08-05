@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.test.service.impl;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,12 +181,36 @@ extends BaseTest
     	ScheduledItem nextRun = scheduledItemService.getNextItemToRun(schedulable);
     	assert nextRun.getOriginalScheduledDate().equals(new Date("2009/02/02"));
     	assert nextRun.getActualScheduledDate().equals(new Date("2009/02/03"));
-
+    	
     	printSchedule(items);
+    	
+    	for (ScheduledItem item : items) scheduledItemService.deleteScheduledItem(item);
+    	items = scheduledItemService.readSchedule(schedulable);
+    	assert items.size() == 0;
+
     }
     
     private void printSchedule(List<ScheduledItem> items) {
     	for (ScheduledItem item: items) logger.debug(""+item);
     }
+    
+    
+// Depends on recurring gift test values
+//    @SuppressWarnings("deprecation")
+//	  @Test
+//    public void testProcessList() throws Exception {
+//
+//    	List<ScheduledItem> items;
+//    	
+//    	items = scheduledItemService.getAllItemsReadyToProcess(RECURRING_GIFT_TYPE, new Date("2009/05/02"));
+//    	assert items.size() > 2;
+//
+//    	items = scheduledItemService.getNextItemsReadyToProcess(RECURRING_GIFT_TYPE, new Date("2009/05/02"));
+//
+//    	assert items.size() == 2;
+//    	assert items.get(0).getActualScheduledDate().equals(new Date("2008/01/01"));
+//    	assert items.get(1).getActualScheduledDate().equals(new Date("2008/03/14"));
+//
+//    }
     
 }

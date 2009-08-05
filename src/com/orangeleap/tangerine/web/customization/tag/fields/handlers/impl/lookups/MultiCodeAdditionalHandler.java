@@ -22,6 +22,7 @@ import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,10 +87,8 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	}
 
 	protected void createCodeOptions(SectionField currentField, Object fieldValue, StringBuilder sb) {
-		if (fieldValue != null) {
+		if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
 			Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
-
-//			String fieldPropertyName = resolveFieldPropertyName(currentField);
 
 			for (Object val : fieldVals) {
 				String displayValue = resolveCodeValue(currentField.getFieldPropertyName(), val.toString());
@@ -109,12 +108,12 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 		String additionalFormFieldName = resolveAdditionalFormFieldName(formFieldName);
 		Object additionalFieldValue = form.getFieldValueFromUnescapedFieldName(additionalFormFieldName);
 
-		if (additionalFieldValue != null) {
+		if (additionalFieldValue != null && StringUtils.hasText(additionalFieldValue.toString())) {
 			Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);
 
 			int x = 0;
 			for (Object additionalVal : additionalVals) {
-				sb.append("<div class='multiCodeOption multiOption' id=\"additional-").append(x++).append("\" code=\"").append(additionalVal).append(">");
+				sb.append("<div class='multiCodeOption multiOption' id=\"additional-").append(x++).append("\" code=\"").append(additionalVal).append("\">");
 				sb.append("<span>").append(additionalVal).append("</span>");
 
 				writeDeleteLink(sb, "Lookup.deleteCode(this)");

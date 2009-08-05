@@ -346,11 +346,14 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
 
         scheduledItemService.completeItem(scheduledItem, gift, gift.getPaymentStatus());
-
+        
     	ScheduledItem nextitem = scheduledItemService.getNextItemToRun(recurringGift);
         if (nextitem == null) {
             recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_FULFILLED);
+            recurringGift.setNextRunDate(null);
             recurringGiftDao.maintainRecurringGift(recurringGift);
+        } else {
+            recurringGift.setNextRunDate(nextitem.getActualScheduledDate());
         }
 
     }

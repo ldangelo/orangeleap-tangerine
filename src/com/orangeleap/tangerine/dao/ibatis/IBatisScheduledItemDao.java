@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -94,6 +95,18 @@ public class IBatisScheduledItemDao extends AbstractIBatisDao implements Schedul
 		params.put("sourceEntity", sourceEntity);
 		params.put("sourceEntityId", sourceEntityId);
         return getSqlMapClientTemplate().queryForList("SELECT_SCHEDULED_ITEMS_BY_SOURCE_ENTITY", params);
+    }
+
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<ScheduledItem> getItemsReadyToProcess(String sourceEntity, Date processingDate) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("getItemsReadyToProcess:"+sourceEntity+" "+processingDate);
+        }
+        Map<String, Object> params = setupParams();
+		params.put("sourceEntity", sourceEntity);
+		params.put("processingDate", processingDate);
+        return getSqlMapClientTemplate().queryForList("SELECT_SCHEDULED_ITEMS_BY_TYPE_AND_DATE", params);
     }
 
 	

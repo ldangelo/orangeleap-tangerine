@@ -48,5 +48,9 @@ public interface ScheduledItemService {
     public void extendSchedule(Schedulable schedulable, Date toDate);
     
     public ScheduledItem completeItem(ScheduledItem scheduledItem, AbstractEntity resultEntity, String completionStatus);
+    
+    public List<ScheduledItem> getAllItemsReadyToProcess(String sourceEntity, Date processingDate);
+
+    public List<ScheduledItem> getNextItemsReadyToProcess(String sourceEntity, Date processingDate);
 
 }

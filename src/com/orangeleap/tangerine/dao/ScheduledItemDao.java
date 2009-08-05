@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.orangeleap.tangerine.domain.ScheduledItem;
@@ -33,5 +34,7 @@ public interface ScheduledItemDao {
     public ScheduledItem readScheduledItemById(Long scheduledItemId);
 
     public List<ScheduledItem> readScheduledItemsBySourceEntityId(String sourceEntity, Long sourceEntityId);
+
+    public List<ScheduledItem> getItemsReadyToProcess(String sourceEntity, Date processingDate);
 
 }

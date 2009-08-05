@@ -64,6 +64,15 @@
         order by scheduled_item.ACTUAL_SCHEDULED_DATE
     </select>
 
+    <!-- NOTE: Do not change sort order here or nextrun calcs will be wrong!  -->
+    <select id="SELECT_SCHEDULED_ITEMS_BY_TYPE_AND_DATE" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
+        <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
+         scheduled_item.SOURCE_ENTITY = #sourceEntity#
+        and scheduled_item.COMPLETION_DATE is null
+        and scheduled_item.ACTUAL_SCHEDULED_DATE &lt;= #processingDate#
+        order by scheduled_item.SOURCE_ENTITY_ID, scheduled_item.ACTUAL_SCHEDULED_DATE
+    </select>
+
     <insert id="INSERT_SCHEDULED_ITEM" parameterClass="com.orangeleap.tangerine.domain.ScheduledItem">
         insert into SCHEDULED_ITEM (
         	SCHEDULED_ITEM_ID,

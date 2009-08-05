@@ -89,6 +89,30 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	return null;
     }
     
+    // All items that are in the past or today
+    @Override
+    public List<ScheduledItem> getAllItemsReadyToProcess(String sourceEntity, Date processingDate) {
+    	return scheduledItemDao.getItemsReadyToProcess(sourceEntity, processingDate);
+    }
+    
+    // Returns only the first (oldest) item in the past for each id.
+    @Override
+    public List<ScheduledItem> getNextItemsReadyToProcess(String sourceEntity, Date processingDate) {
+    	List<ScheduledItem> list = scheduledItemDao.getItemsReadyToProcess(sourceEntity, processingDate);
+    	// Remove duplicates for id; save only first one for same id. Items are in date order.
+    	long lastid = -1;
+    	Iterator<ScheduledItem> it = list.iterator();
+    	while (it.hasNext()) {
+    		ScheduledItem item = it.next();
+    		long id = item.getSourceEntityId();
+    		if (id == lastid) {
+    			it.remove();
+    		}
+    		lastid = id;
+    	}
+    	return list;
+    }
+    
     // ResultEntity is a Gift if the schedulable was a RecurringGift, for example.
     // Completion status is for reference only, for example, Gift Payment Status
     @Override

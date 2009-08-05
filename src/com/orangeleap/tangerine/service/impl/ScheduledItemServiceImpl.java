@@ -187,7 +187,9 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	
     	Date afterdate = PAST_DATE;
     	if (existingitems.size() > 0) {
-    		afterdate = existingitems.get(existingitems.size() - 1).getActualScheduledDate();
+    		ScheduledItem lastitem = existingitems.get(existingitems.size() - 1);
+    		if (lastitem.getActualScheduledDate() != null) afterdate = lastitem.getActualScheduledDate();
+    		if (lastitem.getOriginalScheduledDate().after(afterdate)) afterdate = lastitem.getOriginalScheduledDate();
     	}
     	
     	List<Date> newdates = getDateList(schedulable, toDate);

@@ -20,15 +20,14 @@ package com.orangeleap.tangerine.controller.code;
 
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CodeAdditionalFieldsController extends CodeHelperController {
 
@@ -63,12 +62,14 @@ public class CodeAdditionalFieldsController extends CodeHelperController {
         if (allCodes != null) {
             String selectedCodesStr = request.getParameter("selectedCodes");
             if (StringUtils.hasText(selectedCodesStr)) {
-                Set<String> chosenCodesStrings = StringUtils.commaDelimitedListToSet(selectedCodesStr);
+                String[] chosenCodesStringsArray = StringUtils.delimitedListToStringArray(selectedCodesStr, StringConstants.CUSTOM_FIELD_SEPARATOR);
+                Set<String> chosenCodesStrings = new HashSet<String>(Arrays.asList(chosenCodesStringsArray));
                 if (chosenCodesStrings != null) {
                     for (PicklistItem aCode : allCodes) {
-                        if (chosenCodesStrings.contains(aCode.getItemName())) {
+                        if (chosenCodesStrings.contains(aCode.getDefaultDisplayValue())) {
                             selectedCodes.add(aCode);
-                        } else {
+                        }
+                        else {
                             availableCodes.add(aCode);
                         }
                     }
@@ -85,9 +86,8 @@ public class CodeAdditionalFieldsController extends CodeHelperController {
         List<String> additionalCodes = new ArrayList<String>();
         String additionalCodesStr = request.getParameter("additionalCodes");
         if (StringUtils.hasText(additionalCodesStr)) {
-            String[] s = StringUtils.commaDelimitedListToStringArray(additionalCodesStr);
+            String[] s = StringUtils.delimitedListToStringArray(additionalCodesStr, StringConstants.CUSTOM_FIELD_SEPARATOR);
             for (String str : s) {
-                // TODO: unescape commas?
                 additionalCodes.add(str + "\n");
             }
         }

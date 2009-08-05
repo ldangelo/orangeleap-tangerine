@@ -83,15 +83,15 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('constituent.customFieldMap[organization.eligibleFunds]', 'constituent', 'customFieldMap[organization.eligibleFunds]', 'Eligible Funds', 'MULTI_CODE_ADDITIONAL', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('constituent.customFieldMap[organization.additional_eligibleFunds]', 'constituent', 'customFieldMap[organization.additional_eligibleFunds]', ' ', 'HIDDEN', 'organization,matching');
+('constituent.customFieldMap[organization.additional_eligibleFunds]', 'constituent', 'customFieldMap[organization.additional_eligibleFunds]', 'Eligible Funds', 'HIDDEN', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('constituent.customFieldMap[organization.eligibleOrganizations]', 'constituent', 'customFieldMap[organization.eligibleOrganizations]', 'Eligible Orgs', 'MULTI_PICKLIST_ADDITIONAL', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('constituent.customFieldMap[organization.additional_eligibleOrganizations]', 'constituent', 'customFieldMap[organization.additional_eligibleOrganizations]', ' ', 'HIDDEN', 'organization,matching');
+('constituent.customFieldMap[organization.additional_eligibleOrganizations]', 'constituent', 'customFieldMap[organization.additional_eligibleOrganizations]', 'Eligible Orgs', 'HIDDEN', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('constituent.customFieldMap[organization.ineligibleOrganizations]', 'constituent', 'customFieldMap[organization.ineligibleOrganizations]', 'Ineligible Orgs', 'MULTI_PICKLIST_ADDITIONAL', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('constituent.customFieldMap[organization.additional_ineligibleOrganizations]', 'constituent', 'customFieldMap[organization.additional_ineligibleOrganizations]', ' ', 'HIDDEN', 'organization,matching');
+('constituent.customFieldMap[organization.additional_ineligibleOrganizations]', 'constituent', 'customFieldMap[organization.additional_ineligibleOrganizations]', 'Ineligible Orgs', 'HIDDEN', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('constituent.customFieldMap[organization.onlineMatchingGiftForm]', 'constituent', 'customFieldMap[organization.onlineMatchingGiftForm]', 'Matching Gift Form', 'TEXT', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
@@ -99,7 +99,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('constituent.customFieldMap[organization.programContact]', 'constituent', 'constituent', 'customFieldMap[organization.programContact]', 'Program Contact', 'QUERY_LOOKUP_OTHER', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('constituent.customFieldMap[organization.other_programContact]', 'constituent', 'constituent', 'customFieldMap[organization.other_programContact]', ' ', 'HIDDEN', 'organization,matching');
+('constituent.customFieldMap[organization.other_programContact]', 'constituent', 'constituent', 'customFieldMap[organization.other_programContact]', 'Program Contact', 'HIDDEN', 'organization,matching');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('constituent.customFieldMap[organization.procedureForRequestingMatch]', 'constituent', 'customFieldMap[organization.procedureForRequestingMatch]', 'Procedure for Requesting Match', 'LONG_TEXT', 'organization,matching');

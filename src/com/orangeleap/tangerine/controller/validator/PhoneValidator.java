@@ -59,10 +59,6 @@ public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
             errors.setNestedPath("primaryPhone");
         }
 
-//        if (StringUtils.hasText(phone.getCustomFieldValue(StringConstants.PHONE_TYPE)) == false) {
-//            errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + StringConstants.PHONE_TYPE + StringConstants.CUSTOM_FIELD_MAP_END, "errorPhoneTypeRequired");
-//        }
-//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Phone number is required");
         validateDates(phone, errors);
         errors.setNestedPath(inPath);
     }

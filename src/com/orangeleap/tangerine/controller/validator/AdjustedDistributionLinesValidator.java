@@ -59,7 +59,14 @@ public class AdjustedDistributionLinesValidator extends DistributionLinesValidat
         BigDecimal total = getTotal(adjustedGift.getDistributionLines());
         BigDecimal adjustedAmount = adjustedGift.getAdjustedAmount();
         if (total == null || adjustedAmount == null || adjustedAmount.compareTo(total) != 0) {
-            errors.reject("errorDistributionLineAmounts");
+            if (adjustedGift.getDistributionLines() != null) {
+                for (int x = 0; x < adjustedGift.getDistributionLines().size(); x++) {
+                   errors.rejectValue("distributionLines[" + x + "].amount", "errorDistributionLineAmounts");
+                }
+            }
+            else {
+                errors.reject("errorDistributionLineAmounts");
+            }
         }
     }
 
@@ -67,12 +74,13 @@ public class AdjustedDistributionLinesValidator extends DistributionLinesValidat
         if (adjustedGift.getAdjustedAmount() != null && adjustedGift.getAdjustedAmount().compareTo(BigDecimal.ZERO) >= 0) {
             errors.rejectValue("adjustedAmount", "errorAdjustedAmountPositive");
         }
+        int x = 0;
         for (DistributionLine aLine : adjustedGift.getDistributionLines()) {
             if (aLine != null) {
                 if (aLine.getAmount() != null && aLine.getAmount().compareTo(BigDecimal.ZERO) == 1) {
-                    errors.reject("errorIndividualAdjustedDistributionLineAmountPositive");
-                    break;
+                    errors.rejectValue("distributionLines[" + x + "].amount", "errorIndividualAdjustedDistributionLineAmountPositive");
                 }
+                x++;
             }
         }
     }

@@ -39,12 +39,6 @@ public abstract class AbstractCommunicationValidator<T extends AbstractCommunica
         }
     }
     
-    private void checkNullDate(Date date, String field, String msgKey, String msgDefault, Errors errors) {
-        if (date == null) {
-            errors.rejectValue(field, msgKey, msgDefault);
-        }
-    }
-    
     private void checkDateRange(Date startDate, Date endDate, String field, String msgKey, String msgDefault, Errors errors) {
         if (startDate != null && endDate != null) {
             if (!endDate.after(startDate)) {

@@ -49,8 +49,7 @@ public class AdjustedDistributionLinesValidatorTest extends BaseTest {
         validator.checkTotaledDistributionLineAmountMatch(adjustedGift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors();
-        Assert.assertTrue("errorDistributionLineAmounts".equals(errors.getGlobalError().getCode()), "Expected code of 'errorDistributionLineAmounts', not '" + errors.getGlobalError().getCode() + "'");
-        
+
         adjustedGift = new AdjustedGift(new BigDecimal("-18.99"), new BigDecimal("25"), 1L, lines);
         errors = new BindException(adjustedGift, "adjustedGift");       
         validator.checkTotaledDistributionLineAmountMatch(adjustedGift, errors);
@@ -82,7 +81,6 @@ public class AdjustedDistributionLinesValidatorTest extends BaseTest {
         validator.checkAmountsNotPositive(adjustedGift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors();
-        Assert.assertTrue("errorIndividualAdjustedDistributionLineAmountPositive".equals(errors.getGlobalError().getCode()), "Expected code of 'errorIndividualAdjustedDistributionLineAmountPositive', not '" + errors.getGlobalError().getCode() + "'");
 
         adjustedGift = new AdjustedGift(new BigDecimal("1.99"));
         adjustedGift.setDistributionLines(lines);
@@ -90,7 +88,6 @@ public class AdjustedDistributionLinesValidatorTest extends BaseTest {
         validator.checkAmountsNotPositive(adjustedGift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors();
-        Assert.assertTrue("errorAdjustedAmountPositive".equals(errors.getFieldError("adjustedAmount").getCode()), "Expected code of 'errorAdjustedAmountPositive', not '" + errors.getFieldError("adjustedAmount").getCode() + "'");
 
         adjustedGift = new AdjustedGift(new BigDecimal("0"));
         adjustedGift.setDistributionLines(lines);
@@ -98,7 +95,6 @@ public class AdjustedDistributionLinesValidatorTest extends BaseTest {
         validator.checkAmountsNotPositive(adjustedGift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors();
-        Assert.assertTrue("errorAdjustedAmountPositive".equals(errors.getFieldError("adjustedAmount").getCode()), "Expected code of 'errorAdjustedAmountPositive', not '" + errors.getFieldError("adjustedAmount").getCode() + "'");
     }
     
     @Test(groups = { "validateAdjustedDistributionLine" })

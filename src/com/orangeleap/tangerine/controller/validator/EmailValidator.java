@@ -56,11 +56,6 @@ public class EmailValidator extends AbstractCommunicationValidator<Email> {
             email = ((AbstractCommunicatorEntity) target).getPrimaryEmail();
             errors.setNestedPath("primaryEmail");
         }
-
-//        if (StringUtils.hasText(email.getCustomFieldValue(StringConstants.EMAIL_TYPE)) == false) {
-//            errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + StringConstants.EMAIL_TYPE + StringConstants.CUSTOM_FIELD_MAP_END, "errorEmailTypeRequired");
-//        }
-//    	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "invalidEmailAddress", "Email Address is required");
     	validateDates(email, errors);
     	errors.setNestedPath(inPath);
     }

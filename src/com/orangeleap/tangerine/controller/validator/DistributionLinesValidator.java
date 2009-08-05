@@ -31,6 +31,7 @@ import org.springframework.validation.Validator;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 
 public class DistributionLinesValidator implements Validator {
 
@@ -51,11 +52,13 @@ public class DistributionLinesValidator implements Validator {
 
         BigDecimal total = null;
         BigDecimal amount = null;
+        List<DistributionLine> lines = null;
 
         if (target instanceof Gift) {
             Gift gift = (Gift) target;
             total = getTotal(gift.getDistributionLines());
             amount = gift.getAmount();
+            lines = gift.getDistributionLines();
         }
         else if (target instanceof Pledge) {
             Pledge pledge = (Pledge) target;
@@ -66,14 +69,23 @@ public class DistributionLinesValidator implements Validator {
             else {
                 amount = pledge.getAmountTotal();
             }
+            lines = pledge.getDistributionLines();
         }
         else if (target instanceof RecurringGift) {
             RecurringGift recurringGift = (RecurringGift) target;
             total = getTotal(recurringGift.getDistributionLines());
             amount = recurringGift.getAmountPerGift();
+            lines = recurringGift.getDistributionLines();
         }
         if (total == null || amount == null || total.compareTo(amount) != 0) {
-            errors.reject("errorDistributionLineAmounts");
+            if (lines != null) {
+                for (int x = 0; x < lines.size(); x++) {
+                    errors.rejectValue("distributionLines[" + x + "].amount", "errorDistributionLineAmounts");
+                }
+            }
+            else {
+                errors.reject("errorDistributionLineAmounts");                
+            }
         }
     }
 

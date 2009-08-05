@@ -53,6 +53,7 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
 	public void addErrorMessage(String message, String context, Long constituentId) {
 	
 		if (message == null) message = "";
+		if (getSiteName() == null) return; // Do not log to db outside of a site context (uses file log only).
 		
         Map<String, Object> params = setupParams();
 

@@ -147,7 +147,13 @@ public class OLLogger implements Log, java.io.Serializable {
     }
 
     private void logToTable(String loglevel, Object o, Throwable t) {
-        if (tablelogger != null && enableTableLogging) tablelogger.logToTable(loglevel, o, t);
+        if (tablelogger != null && enableTableLogging) {
+        	try {
+        		tablelogger.logToTable(loglevel, o, t);
+        	} catch (Exception e) {
+        		logger.error("Unable to log to table: ", e);
+        	}
+        }
     }
 
 }

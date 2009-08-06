@@ -19,9 +19,10 @@ li.queryLookupLi { padding-bottom: 8px; }
 li.multiOptionLi { margin-bottom: -18px; }
 li.multiOptionLi label { margin-top: 2px; }
 div.singleColumn h4.formSectionHeader { width: 380px; }
-div.lookupScrollTop { top:-15px; left:0;} 
+div.lookupScrollTop { top:-12px; left:0;} 
 div.lookupScrollContainer { top: -16px; }
 div.lookupScrollBottom { top: -17px; }
+a.multiLookupLink { top: 5px; }
 
 tr.hiddenRow, tr.hiddenRow td, tr.hiddenRow table, tr.hiddenRow td table ul.width350, tr.hiddenRow td table ul.width350 li { position: relative; }
 tr.hiddenRow td table div, tr.hiddenRow td table ul.width350, tr.hiddenRow td table ul.width350 div, tr.hiddenRow td table ul.width350 li { zoom: 1; }

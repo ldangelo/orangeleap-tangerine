@@ -24,6 +24,8 @@ div.lookupScrollContainer { top: -16px; }
 div.lookupScrollBottom { top: -17px; }
 a.multiLookupLink { top: 5px; }
 
+tbody.gridRow tr.lineRow td div.lookupScrollContainer.readOnly { top: 0; }
+tbody.gridRow tr.lineRow td div.lookupScrollRight { left: 186px; margin-left: 0; }
 tr.hiddenRow, tr.hiddenRow td, tr.hiddenRow table, tr.hiddenRow td table ul.width350, tr.hiddenRow td table ul.width350 li { position: relative; }
 tr.hiddenRow td table div, tr.hiddenRow td table ul.width350, tr.hiddenRow td table ul.width350 div, tr.hiddenRow td table ul.width350 li { zoom: 1; }
 tr.hiddenRow td table ul.width350 div.multiLookupField { min-height: 18px; } 

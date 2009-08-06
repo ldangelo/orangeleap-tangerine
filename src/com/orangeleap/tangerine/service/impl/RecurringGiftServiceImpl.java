@@ -138,12 +138,15 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 	    validateRecurringGift(recurringGift, true);
 
         recurringGift.setAutoPay(true);
-        if (recurringGift.isActivate()) {
-        	scheduledItemService.extendSchedule(recurringGift);
-        	setNextRun(recurringGift);
+
+        RecurringGift result = save(recurringGift);
+
+        if (result.isActivate()) {
+        	scheduledItemService.extendSchedule(result);
+        	setNextRun(result);
         }
 
-        return save(recurringGift);
+        return result;
     }
     
     private void setNextRun(RecurringGift recurringGift) {
@@ -153,6 +156,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         } else {
         	recurringGift.setNextRunDate(null);
         }
+        recurringGiftDao.maintainRecurringGift(recurringGift);
     }
 
 	private void validateRecurringGift(RecurringGift recurringGift, boolean validateDistributionLines) throws BindException {

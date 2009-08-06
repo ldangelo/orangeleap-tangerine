@@ -36,7 +36,6 @@ var PaymentEditable = {
 			$("#ach-paymentSource-td-id").show();
 		}
 		else {
-			// Other type, hide everything else TODO:
 			$("#" + PaymentEditable.commandObject + "_ach").hide();
 			$("#" + PaymentEditable.commandObject + "_creditCard").hide();
 		}

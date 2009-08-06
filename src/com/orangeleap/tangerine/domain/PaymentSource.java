@@ -40,6 +40,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     public static final String CREDIT_CARD = "Credit Card";
     public static final String CASH = "Cash";
     public static final String CHECK = "Check";
+    public static final String OTHER = "Other";
 
     private String profile;
     private String paymentType = CREDIT_CARD; // TODO: use PaymentType enum

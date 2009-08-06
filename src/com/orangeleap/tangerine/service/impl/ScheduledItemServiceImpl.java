@@ -159,6 +159,11 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	return cal.getTime();
     }
 
+    @Override
+    public void regenerateSchedule(Schedulable schedulable) {
+    	regenerateSchedule(schedulable, getNextYear());
+    }
+
     // Deletes uncompleted items and regenerates schedule after last completed item.
     @Override
     public void regenerateSchedule(Schedulable schedulable, Date toDate) {

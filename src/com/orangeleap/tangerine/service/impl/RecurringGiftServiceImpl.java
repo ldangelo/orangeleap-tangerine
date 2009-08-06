@@ -138,11 +138,21 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 	    validateRecurringGift(recurringGift, true);
 
         recurringGift.setAutoPay(true);
-        if (recurringGift.getNextRunDate() == null && recurringGift.isActivate()) {
-            recurringGift.setNextRunDate(recurringGift.getStartDate());
+        if (recurringGift.isActivate()) {
+        	scheduledItemService.extendSchedule(recurringGift);
+        	setNextRun(recurringGift);
         }
 
         return save(recurringGift);
+    }
+    
+    private void setNextRun(RecurringGift recurringGift) {
+    	ScheduledItem item = scheduledItemService.getNextItemToRun(recurringGift);
+        if (item != null) {
+        	recurringGift.setNextRunDate(item.getActualScheduledDate());
+        } else {
+        	recurringGift.setNextRunDate(null);
+        }
     }
 
 	private void validateRecurringGift(RecurringGift recurringGift, boolean validateDistributionLines) throws BindException {
@@ -171,7 +181,39 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             logger.trace("editRecurringGift: recurringGiftId = " + recurringGift.getId());
         }
 	    validateRecurringGift(recurringGift, false);
+	    
+        if (recurringGift.isActivate()) {
+        	if (needToResetSchedule(recurringGift)) {
+        		scheduledItemService.regenerateSchedule(recurringGift);
+        	} else {
+        		scheduledItemService.extendSchedule(recurringGift);
+        	}
+    		setNextRun(recurringGift);
+        } else {
+        	scheduledItemService.deleteSchedule(recurringGift);
+        }
+
         return save(recurringGift);
+    }
+    
+    private boolean needToResetSchedule(RecurringGift updated) {
+    	
+    	RecurringGift old = recurringGiftDao.readRecurringGiftById(updated.getId());
+    	
+    	if (old == null) return true;
+    	
+		if (!compare(old.getStartDate(), updated.getStartDate())
+				|| !compare(old.getEndDate(), updated.getEndDate())
+				|| !old.getFrequency().equals(updated.getFrequency()))
+			return true;
+    	
+    	return false;
+    }
+    
+    private boolean compare(Date d1, Date d2) {
+    	if (d1 == null && d2 == null) return true;
+    	if (d1 == null || d2 == null) return false;
+    	return d1.equals(d2);
     }
 
     private RecurringGift save(RecurringGift recurringGift) throws BindException {

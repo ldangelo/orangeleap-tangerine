@@ -41,6 +41,8 @@ public interface ScheduledItemService {
     
     public ScheduledItem getNextItemToRun(Schedulable schedulable);
     
+    public void regenerateSchedule(Schedulable schedulable);
+
     public void regenerateSchedule(Schedulable schedulable, Date toDate);
     
     public void extendSchedule(Schedulable schedulable);

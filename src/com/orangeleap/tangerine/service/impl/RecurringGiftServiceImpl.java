@@ -358,7 +358,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     }
 
-    public static String GIFT_AMOUNT_OVERRIDE = "giftAmountOverride";
+    public static final String GIFT_AMOUNT_OVERRIDE = "giftAmountOverride";
     
     protected Gift createAutoGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
     	

@@ -185,11 +185,11 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	
     	List<ScheduledItem> existingitems = readSchedule(schedulable);
     	
+    	// Get last date used
     	Date afterdate = PAST_DATE;
-    	if (existingitems.size() > 0) {
-    		ScheduledItem lastitem = existingitems.get(existingitems.size() - 1);
-    		if (lastitem.getActualScheduledDate() != null) afterdate = lastitem.getActualScheduledDate();
-    		if (lastitem.getOriginalScheduledDate().after(afterdate)) afterdate = lastitem.getOriginalScheduledDate();
+    	for (ScheduledItem item : existingitems) {
+    		if (item.getActualScheduledDate() != null && item.getActualScheduledDate().after(afterdate)) afterdate = item.getActualScheduledDate();
+    		if (item.getOriginalScheduledDate() != null && item.getOriginalScheduledDate().after(afterdate)) afterdate = item.getOriginalScheduledDate();
     	}
     	
     	List<Date> newdates = getDateList(schedulable, toDate);

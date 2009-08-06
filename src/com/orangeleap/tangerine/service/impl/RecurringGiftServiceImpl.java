@@ -340,7 +340,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Override
     public void processRecurringGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
     	
-        Gift gift = createAutoGift(recurringGift);
+        Gift gift = createAutoGift(recurringGift, scheduledItem);
 
         /* Re-read the Recurring Gift from the DB as fields may have changed */
         recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
@@ -358,11 +358,21 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     }
 
-    protected Gift createAutoGift(RecurringGift recurringGift) {
+    public static String GIFT_AMOUNT_OVERRIDE = "giftAmountOverride";
+    
+    protected Gift createAutoGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
     	
         Gift gift = new Gift(recurringGift);
-        recurringGift.addGift(gift);
 
+        // Allow overriding the amount for a specific payment date.
+    	String giftAmountOverride = scheduledItem.getCustomFieldValue(GIFT_AMOUNT_OVERRIDE);
+    	if (giftAmountOverride != null && giftAmountOverride.trim().length() > 0) {
+    		BigDecimal amount = new BigDecimal(giftAmountOverride);
+    		gift.setAmount(amount);
+    	}
+
+        recurringGift.addGift(gift);
+        
         gift.setSuppressValidation(true);
         try {
             gift = giftService.maintainGift(gift);

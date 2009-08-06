@@ -182,23 +182,30 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
 	    validateRecurringGift(recurringGift, false);
 	    
-        if (recurringGift.isActivate()) {
-        	if (needToResetSchedule(recurringGift)) {
-        		scheduledItemService.regenerateSchedule(recurringGift);
+	    RecurringGift old = getExisting(recurringGift);
+
+        RecurringGift result = save(recurringGift);
+
+        if (result.isActivate()) {
+        	if (needToResetSchedule(old, result)) {
+        		scheduledItemService.regenerateSchedule(result);
         	} else {
-        		scheduledItemService.extendSchedule(recurringGift);
+        		scheduledItemService.extendSchedule(result);
         	}
-    		setNextRun(recurringGift);
+    		setNextRun(result);
         } else {
-        	scheduledItemService.deleteSchedule(recurringGift);
+        	scheduledItemService.deleteSchedule(result);
         }
 
-        return save(recurringGift);
+        return result;
     }
     
-    private boolean needToResetSchedule(RecurringGift updated) {
-    	
-    	RecurringGift old = recurringGiftDao.readRecurringGiftById(updated.getId());
+    private RecurringGift getExisting(RecurringGift recurringGift) {
+	    if (recurringGift.getId() == null || recurringGift.getId().equals(0)) return null;
+    	return recurringGiftDao.readRecurringGiftById(recurringGift.getId());
+    }
+    
+    private boolean needToResetSchedule(RecurringGift old, RecurringGift updated) {
     	
     	if (old == null) return true;
     	

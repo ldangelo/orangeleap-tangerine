@@ -11,6 +11,9 @@ RecurringGift.GiftCalculator = function() {
         }
 
         var span = interval[fields.frequency];
+        if (span == 0) {
+            return fields.total;
+        }
         // always assume at least one interval, even if calculated period is zero
         var period = Math.floor(fields.diff/span) + 1;
         return (period * fields.total).toFixed(2);
@@ -46,7 +49,7 @@ RecurringGift.GiftCalculator = function() {
     }
 
     // PRIVATE: map of time span labels to number of days
-    var interval = {'weekly': 7, 'twice monthly': 14, 'monthly': 30, 'quarterly': 90,
+    var interval = {'none': 0, 'weekly': 7, 'twice monthly': 14, 'monthly': 30, 'quarterly': 90,
         'twice annually': 183, 'annually': 365};
 };
 

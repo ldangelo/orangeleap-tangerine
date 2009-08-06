@@ -341,9 +341,10 @@ div.gridActions {
 div.gridActions .value {
 	background-color:#f0f0f0;
 	border:1px solid #444;
-	padding:0px 2px 1px 8px;
+	padding:0 2px 1px 8px;
 	text-align: right;
 	width: 174px;
+    min-height: 18px;
 }
 #totalText { font-weight: normal; }
 

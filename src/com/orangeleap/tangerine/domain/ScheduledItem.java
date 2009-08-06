@@ -197,7 +197,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
         .toString();
     }
 
-    // Schedulable interface (used for reminders, which are based off of scheduled items)
+    // Schedulable interface (can be used to set up child item schedules off of individual parent scheduled items)
     
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";

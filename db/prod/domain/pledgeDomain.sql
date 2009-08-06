@@ -55,8 +55,8 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[message]', 'pledge', 'distributionLines', 'Message', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.customFieldMap[taxDeductible]', 'pledge', 'distributionLines', 'Tax Ded', 'CHECKBOX');
 
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.amountReadOnly', 'pledge', 'distributionLines', 'Amt', 'READ_ONLY_TEXT');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.percentageReadOnly', 'pledge', 'distributionLines', 'Pct', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.amountReadOnly', 'pledge', 'distributionLines', 'Amt', 'NUMBER_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.percentageReadOnly', 'pledge', 'distributionLines', 'Pct', 'PERCENTAGE_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.projectCodeReadOnly', 'pledge', 'distributionLines', 'Designation', 'CODE_OTHER_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.motivationCodeReadOnly', 'pledge', 'distributionLines', 'Motivation', 'CODE_OTHER_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.distributionLines.other_motivationCodeReadOnly', 'pledge', 'distributionLines', 'Motivation', 'HIDDEN');

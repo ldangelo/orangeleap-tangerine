@@ -69,10 +69,10 @@ public class GridHandler implements ApplicationContextAware {
 			sb.append("<col class=\"node\"/>");
 		}
 		for (SectionField field : sectionFields) {
-			if (FieldType.NUMBER.equals(field.getFieldType())) {
+			if (FieldType.NUMBER.equals(field.getFieldType()) || FieldType.NUMBER_DISPLAY.equals(field.getFieldType())) {
 				sb.append("<col class=\"number\"/>");
 			}
-			else if (FieldType.PERCENTAGE.equals(field.getFieldType())) {
+			else if (FieldType.PERCENTAGE.equals(field.getFieldType()) || FieldType.PERCENTAGE_DISPLAY.equals(field.getFieldType())) {
 				sb.append("<col class=\"pct\"/>");
 			}
 			else if (FieldType.CODE.equals(field.getFieldType()) || FieldType.CODE_OTHER.equals(field.getFieldType()) || FieldType.CODE_OTHER_DISPLAY.equals(field.getFieldType())) {

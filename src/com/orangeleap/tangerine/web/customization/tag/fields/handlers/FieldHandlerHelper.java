@@ -225,6 +225,8 @@ public class FieldHandlerHelper implements ApplicationContextAware {
 
 		FieldHandler readOnlyTextHandler = new ReadOnlyTextHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.READ_ONLY_TEXT, readOnlyTextHandler);
+        fieldTypeToHandlerMap.put(FieldType.NUMBER_DISPLAY, readOnlyTextHandler);
+        fieldTypeToHandlerMap.put(FieldType.PERCENTAGE_DISPLAY, readOnlyTextHandler);
 
 		FieldHandler codeOtherDisplayHandler = new CodeOtherDisplayHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.CODE_OTHER_DISPLAY, codeOtherDisplayHandler);

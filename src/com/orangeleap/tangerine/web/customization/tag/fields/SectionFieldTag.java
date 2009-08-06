@@ -144,7 +144,10 @@ public class SectionFieldTag extends AbstractTag {
 				else if (LayoutType.GRID.equals(sectionDef.getLayoutType())) {
 					
 				}
-				else if (LayoutType.DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType())) {
+				else if (LayoutType.DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType()) ||
+                        LayoutType.DISTRIBUTION_LINE_GRID_DISPLAY.equals(sectionDef.getLayoutType())) {
+                    boolean showDeleteButton = LayoutType.DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType()); 
+
 					gridHandler.writeGridBegin(pageName, "DistributionLines", sb);
 					writeSectionHeader(sectionDef, "gridSectionHeader", sb);
 					gridHandler.writeGridTableBegin(sectionDef, "distributionLines", sb);
@@ -163,16 +166,18 @@ public class SectionFieldTag extends AbstractTag {
 							x += 1; // skip the next section (the hidden grid row) because we will handle it now
 						}
 					}
-					gridHandler.writeGridCols(sectionFields, hasHiddenGridRow, true, sb);
-					gridHandler.writeGridHeader(pageContext, sectionFields, hasHiddenGridRow, true, sb);
+					gridHandler.writeGridCols(sectionFields, hasHiddenGridRow, showDeleteButton, sb);
+					gridHandler.writeGridHeader(pageContext, sectionFields, hasHiddenGridRow, showDeleteButton, sb);
+
+                    if (LayoutType.DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType())) {
+                        gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
+                                hiddenSectionDef, hiddenSectionFields,
+                                getTangerineForm(), hasHiddenGridRow, true, showDeleteButton, sb); // this is the DUMMY row
+                    }
 
 					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
 							hiddenSectionDef, hiddenSectionFields,
-							getTangerineForm(), hasHiddenGridRow, true, true, sb); // this is the DUMMY row
-
-					gridHandler.writeGridTableBody(pageContext, sectionDef, sectionFields,
-							hiddenSectionDef, hiddenSectionFields,
-							getTangerineForm(), hasHiddenGridRow, false, true, sb); // this are the real rows
+							getTangerineForm(), hasHiddenGridRow, false, showDeleteButton, sb); // this are the real rows
 
 					gridHandler.writeGridTableEnd(sb);
 					gridHandler.writeGridActions(sectionDef.getLayoutType(), sb);

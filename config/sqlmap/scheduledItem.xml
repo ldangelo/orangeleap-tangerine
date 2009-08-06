@@ -56,7 +56,7 @@
         and SOURCE_ENTITY_ID = #sourceEntityId#
     </delete>
 
-    <!-- NOTE: Do not change sort order here or nextrun calcs will be wrong!  -->
+    <!-- NOTE: Do not change sort order here or nextrun calculations will be wrong!  -->
     <select id="SELECT_SCHEDULED_ITEMS_BY_SOURCE_ENTITY" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
          scheduled_item.SOURCE_ENTITY = #sourceEntity#
@@ -64,7 +64,17 @@
         order by scheduled_item.ACTUAL_SCHEDULED_DATE
     </select>
 
-    <!-- NOTE: Do not change sort order here or nextrun calcs will be wrong!  -->
+    <!-- NOTE: Do not change sort order here or nextrun calculations will be wrong!  -->
+    <select id="SELECT_NON_COMPLETED_SCHEDULED_ITEMS_BY_SOURCE_ENTITY" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
+        <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
+         scheduled_item.SOURCE_ENTITY = #sourceEntity#
+        and scheduled_item.SOURCE_ENTITY_ID = #sourceEntityId#
+        and scheduled_item.COMPLETION_DATE is null
+        and scheduled_item.ACTUAL_SCHEDULED_DATE is not null
+        order by scheduled_item.ACTUAL_SCHEDULED_DATE
+    </select>
+
+    <!-- NOTE: Do not change sort order here or nextrun calculations will be wrong!  -->
     <select id="SELECT_SCHEDULED_ITEMS_BY_TYPE_AND_DATE" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
          scheduled_item.SOURCE_ENTITY = #sourceEntity#

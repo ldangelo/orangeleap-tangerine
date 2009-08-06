@@ -99,6 +99,19 @@ public class IBatisScheduledItemDao extends AbstractIBatisDao implements Schedul
 
     @SuppressWarnings("unchecked")
 	@Override
+    public ScheduledItem getNextItemToRun(String sourceEntity, Long sourceEntityId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("getNextItemReadyToProcess:"+sourceEntity+" "+sourceEntityId);
+        }
+        Map<String, Object> params = setupParams();
+		params.put("sourceEntity", sourceEntity);
+		params.put("sourceEntityId", sourceEntityId);
+        List<ScheduledItem> list = getSqlMapClientTemplate().queryForList("SELECT_NON_COMPLETED_SCHEDULED_ITEMS_BY_SOURCE_ENTITY", params);
+        if (list.size() == 0) return null; else return list.get(0);
+    }
+
+    @SuppressWarnings("unchecked")
+	@Override
     public List<ScheduledItem> getItemsReadyToProcess(String sourceEntity, Date processingDate) {
         if (logger.isTraceEnabled()) {
             logger.trace("getItemsReadyToProcess:"+sourceEntity+" "+processingDate);

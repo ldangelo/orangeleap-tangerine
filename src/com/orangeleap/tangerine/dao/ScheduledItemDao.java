@@ -35,6 +35,8 @@ public interface ScheduledItemDao {
 
     public List<ScheduledItem> readScheduledItemsBySourceEntityId(String sourceEntity, Long sourceEntityId);
 
+    public ScheduledItem getNextItemToRun(String sourceEntity, Long sourceEntityId);
+
     public List<ScheduledItem> getItemsReadyToProcess(String sourceEntity, Date processingDate);
 
 }

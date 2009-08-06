@@ -79,27 +79,28 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	return scheduledItemDao.readScheduledItemsBySourceEntityId(schedulable.getType(), schedulable.getId());
     }
 
+    // Returns null if no items left to run.
     @Override
     public ScheduledItem getNextItemToRun(Schedulable schedulable) {
-    	List<ScheduledItem> items = scheduledItemDao.readScheduledItemsBySourceEntityId(schedulable.getType(), schedulable.getId());
-    	// Items are in order of actual scheduled date
-    	for (ScheduledItem item : items) {
-    		if (item.getCompletionDate() == null && item.getActualScheduledDate() != null) return item;
-    	}
-    	return null;
+    	return scheduledItemDao.getNextItemToRun(schedulable.getType(), schedulable.getId());
     }
     
-    // All items that are in the past or today
+    // Returns all uncompleted items up to and including processingDate for all entities
     @Override
     public List<ScheduledItem> getAllItemsReadyToProcess(String sourceEntity, Date processingDate) {
     	return scheduledItemDao.getItemsReadyToProcess(sourceEntity, processingDate);
     }
     
-    // Returns only the first (oldest) item in the past for each id.
+    // Returns oldest uncompleted item up to and including processingDate for all entities
     @Override
     public List<ScheduledItem> getNextItemsReadyToProcess(String sourceEntity, Date processingDate) {
     	List<ScheduledItem> list = scheduledItemDao.getItemsReadyToProcess(sourceEntity, processingDate);
-    	// Remove duplicates for id; save only first one for same id. Items are in date order.
+    	filterForOldest(list);
+    	return list;
+    }
+    
+	// Remove duplicates for id; save only first one for same id. Items must already be in SourceEntityId, ActualScheduledDate order.
+    private void filterForOldest(List<ScheduledItem> list) {
     	long lastid = -1;
     	Iterator<ScheduledItem> it = list.iterator();
     	while (it.hasNext()) {
@@ -110,7 +111,6 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     		}
     		lastid = id;
     	}
-    	return list;
     }
     
     // ResultEntity is a Gift if the schedulable was a RecurringGift, for example.

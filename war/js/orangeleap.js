@@ -603,33 +603,35 @@ var Picklist = {
     hideShowSections: function() {
         $("div.columns").each(function() {
             var $columnsElem = $(this);
-            var singleColumns = $("div.column", $columnsElem);
+            if ($columnsElem.parents("tbody[id^='grid']").length == 0) { // do not hide columns in a grid
+                var singleColumns = $("div.column", $columnsElem);
 
-            var allHidden = true;
-            for (var x = 0; x < singleColumns.length; x++) {
-                var $singleColElem = $(singleColumns[x]);
-                if ( !$singleColElem.hasClass("noDisplay") && $singleColElem.css("display") != "none") {
-                    var liElems = $("li.side", $singleColElem);
+                var allHidden = true;
+                for (var x = 0; x < singleColumns.length; x++) {
+                    var $singleColElem = $(singleColumns[x]);
+                    if ( !$singleColElem.hasClass("noDisplay") && $singleColElem.css("display") != "none") {
+                        var liElems = $("li.side", $singleColElem);
 
-                    if (allHidden && liElems) {
-                        for (var y = 0; y < liElems.length; y++) {
-                            var $thisLiElem = $(liElems[y]);
-                            if ( !$thisLiElem.hasClass("noDisplay") && $thisLiElem.css("display") != "none") {
-                                allHidden = false;
-                                break;
+                        if (allHidden && liElems) {
+                            for (var y = 0; y < liElems.length; y++) {
+                                var $thisLiElem = $(liElems[y]);
+                                if ( !$thisLiElem.hasClass("noDisplay") && $thisLiElem.css("display") != "none") {
+                                    allHidden = false;
+                                    break;
+                                }
                             }
                         }
                     }
+                    if (!allHidden) {
+                        break;
+                    }
                 }
-                if (!allHidden) {
-                    break;
+                if (allHidden) {
+                    $columnsElem.addClass("noDisplay");
                 }
-            }
-            if (allHidden) {
-                $columnsElem.addClass("noDisplay");
-            }
-            else {
-                $columnsElem.removeClass("noDisplay");
+                else {
+                    $columnsElem.removeClass("noDisplay");
+                }
             }
         });
     }

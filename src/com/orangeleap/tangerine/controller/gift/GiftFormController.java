@@ -86,7 +86,7 @@ public class GiftFormController extends AbstractGiftController {
 
     private boolean showGiftView(Gift gift) {
     	return isEnteredGift(gift) &&
-			    (PaymentType.OTHER.getPaymentName().equals(gift.getPaymentType()) || 
+			    ((PaymentType.OTHER.getPaymentName().equals(gift.getPaymentType()) && Gift.STATUS_PAID.equals(gift.getGiftStatus())) || 
 			    PaymentType.CASH.getPaymentName().equals(gift.getPaymentType()) ||
 			    PaymentType.CHECK.getPaymentName().equals(gift.getPaymentType()) ||
     			((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&

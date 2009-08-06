@@ -1,30 +1,5 @@
 Ext.namespace('RecurringGift');
 
-Ext.onReady(function(){
-
-    RecurringGift.calc = new RecurringGift.GiftCalculator();
-
-    var total = RecurringGift.calc.getTotal();
-
-    if(total > 0) {
-        Ext.fly('totalContribution').update(total);
-        Ext.fly('totalContributionInfo').setVisible(true,false);
-    } else {
-        Ext.fly('totalContributionInfo').setVisible(false,false);
-    }
-
-
-    Ext.fly('amountPerGift').on('change', RecurringGift.calculateTotals );
-    Ext.fly('frequency').on('change', RecurringGift.calculateTotals );
-
-
-    Ext.getCmp('startDate-wrapper').on('change', RecurringGift.calculateTotals );
-    Ext.getCmp('endDate-wrapper').on('change', RecurringGift.calculateTotals );
-
-});
-
-
-
 RecurringGift.GiftCalculator = function() {
 
     //PUBLIC: calcuates the total give amount
@@ -51,7 +26,7 @@ RecurringGift.GiftCalculator = function() {
         } else {
             fields.total = f.toFixed(2);
         }
-                
+
         fields.frequency = Ext.fly('frequency').getValue().toLowerCase();
         var thisStartDate = Date.parseDate( Ext.getCmp('startDate-wrapper').getRawValue(), 'm/d/Y');
         fields.start = thisStartDate ? thisStartDate.clearTime() : "";
@@ -75,11 +50,34 @@ RecurringGift.GiftCalculator = function() {
         'twice annually': 183, 'annually': 365};
 };
 
-
 RecurringGift.calculateTotals = function() {
     var total = RecurringGift.calc.getTotal();
     if(total === 0) {
-        
+
     }
     Ext.fly('totalContribution').update(total);
 };
+
+Ext.onReady(function(){
+
+    RecurringGift.calc = new RecurringGift.GiftCalculator();
+
+    var total = RecurringGift.calc.getTotal();
+
+    if(total > 0) {
+        Ext.fly('totalContribution').update(total);
+        Ext.fly('totalContributionInfo').setVisible(true,false);
+    } else {
+        Ext.fly('totalContributionInfo').setVisible(false,false);
+    }
+
+
+    Ext.fly('amountPerGift').on('change', RecurringGift.calculateTotals );
+    Ext.fly('frequency').on('change', RecurringGift.calculateTotals );
+
+
+    Ext.getCmp('startDate-wrapper').on('change', RecurringGift.calculateTotals );
+    Ext.getCmp('endDate-wrapper').on('change', RecurringGift.calculateTotals );
+
+});
+

@@ -390,7 +390,7 @@ table.tablesorter td input.code { width: 90.2%; }
 
 table.distributionLines { table-layout: fixed; }
 table.distributionLines col.number { width: 12%; }
-table.distributionLines col.pct { width: 6%; }
+table.distributionLines col.pct { width: 7%; }
 table.distributionLines .lineRow .lookupField { min-height: 18px; padding: 0; }
 table.giftInKindDetails col.number { width: 20%; }
 table.giftInKindDetails col.text { width: 55%; }
@@ -544,10 +544,10 @@ tr.hiddenRow td table td { border-bottom: 0; }
 
 table.distributionLines tbody:hover tr td, table.giftInKindDetails tbody:hover tr td { background-color: #FFD; }
 tbody.expandable tr.expanded td { border-bottom: 0; }
-tbody.gridRow tr.lineRow div.readOnlyField { width: 85%; line-height: 16px; min-height: 16px; height: 16px; }
+tbody.gridRow tr.lineRow div.readOnlyField { width: 85%; line-height: 16px; min-height: 16px; }
 tbody.gridRow tr.lineRow div.readOnlyField.code { width: 97%; }
 tbody.gridRow tr.lineRow td div.lookupScrollTop, tbody.gridRow tr.lineRow td div.lookupScrollBottom { left: 0; top: 0; width: 100%; }
-tbody.gridRow tr.lineRow td div.lookupScrollRight { left: auto; margin-left: 99.9%; }
+tbody.gridRow tr.lineRow td div.lookupScrollRight { left: auto; margin-left: 99.7%; }
 tbody.gridRow tr.lineRow td div.lookupScrollContainer, tbody.gridRow tr.lineRow td div.multiLookupField { padding: 0; }
 tbody.gridRow tr.lineRow td div.lookupScrollContainer.readOnly { width: 100%; }
 tbody.gridRow tr.lineRow td div.multiLookupField { min-height: 18px; width: 100%; line-height: normal; }

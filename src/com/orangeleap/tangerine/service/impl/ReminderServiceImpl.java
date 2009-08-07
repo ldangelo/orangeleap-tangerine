@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -34,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -44,9 +45,17 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 	
 
     protected final Log logger = OLLogger.getLog(getClass());
+    
+    public final static String REMINDER = "reminder";
 
     @Resource(name = "scheduledItemService")
     private ScheduledItemService scheduledItemService;
+    
+    @Resource(name = "recurringGiftService")
+    private RecurringGiftService recurringGiftService;
+    
+    @Resource(name = "pledgeService")
+    private PledgeService pledgeService;
     
 	@Override
 	public List<ScheduledItem> listReminders(RecurringGift recurringGift, Date scheduledPaymentDate) {
@@ -57,7 +66,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 	@Override
 	public void addReminder(RecurringGift recurringGift, Date scheduledPaymentDate, Date reminderDate) {
 		ScheduledItem scheduledPayment = locateScheduledItemByDate(recurringGift, scheduledPaymentDate);
-		ScheduledItem reminder = scheduledItemService.getDefaultScheduledItem(scheduledPayment, reminderDate);
+		ScheduledItem reminder = getReminder(scheduledPayment, reminderDate);
 		scheduledItemService.maintainScheduledItem(reminder);
 	}
 
@@ -88,12 +97,19 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 	private void generateDefaultReminders(ScheduledItem scheduledPayment, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
 		List<Date> datelist = getDateList(scheduledPayment, initialReminderDays, maximumReminders, reminderIntervalDays);
 		for (Date reminderDate : datelist) {
-			ScheduledItem reminder = scheduledItemService.getDefaultScheduledItem(scheduledPayment, reminderDate);
+			ScheduledItem reminder = getReminder(scheduledPayment, reminderDate);
 			scheduledItemService.maintainScheduledItem(reminder);
 		}
 	}
 	
+	private ScheduledItem getReminder(ScheduledItem scheduledPayment, Date reminderDate) {
+		ScheduledItem reminder = scheduledItemService.getDefaultScheduledItem(scheduledPayment, reminderDate);
+		reminder.setScheduledItemType(REMINDER);
+		return reminder;
+	}
+	
 	private List<Date> getDateList(ScheduledItem scheduledItem, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
+		
 		List<Date> datelist = new ArrayList<Date>();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(scheduledItem.getActualScheduledDate());
@@ -108,8 +124,21 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 	}
 
 	@Override
-	public Map<Schedulable, Map<ScheduledItem, ScheduledItem>> getRemindersToProcess(Date processingDate) {
-		// TODO
+	public List<ScheduledItem> getRemindersToProcess(Date processingDate) {
+		List<ScheduledItem> list = scheduledItemService.getAllItemsReadyToProcess("scheduledItem", REMINDER, processingDate);
+		
+		// TODO Collapse any missed reminders so duplicates are not sent.  
+		// TODO Also drop them if the payment was already made, or shift them out if the payment was rescheduled.
+		
+		return list;
+	}
+
+	@Override
+	public Schedulable getParent(ScheduledItem item) {
+		String parentType = item.getSourceEntity();
+		if (parentType.equals("scheduleditem")) return scheduledItemService.readScheduledItemById(item.getSourceEntityId());
+		if (parentType.equals("recurringgift")) return recurringGiftService.readRecurringGiftById(item.getSourceEntityId());
+		if (parentType.equals("pledge")) return pledgeService.readPledgeById(item.getSourceEntityId());
 		return null;
 	}
 

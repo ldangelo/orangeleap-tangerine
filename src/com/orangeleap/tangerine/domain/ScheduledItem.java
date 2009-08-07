@@ -17,6 +17,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
     private Long id;
     private String sourceEntity;
     private Long sourceEntityId;
+    private String scheduledItemType;
     private String resultEntity;
     private Long resultEntityId;
     private Date originalScheduledDate;
@@ -55,6 +56,16 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
     public void setSourceEntityId(Long sourceEntityId) {
         this.sourceEntityId = sourceEntityId;
     }
+
+    
+	public void setScheduledItemType(String scheduledItemType) {
+		this.scheduledItemType = scheduledItemType;
+	}
+
+
+	public String getScheduledItemType() {
+		return scheduledItemType;
+	}
 
     
     public String getResultEntity() {
@@ -149,6 +160,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
         .append(id, a.getId())
         .append(sourceEntity, a.getSourceEntity())
         .append(sourceEntityId, a.getSourceEntityId())
+        .append(scheduledItemType, a.getScheduledItemType())
         .append(resultEntity, a.getResultEntity())
         .append(resultEntityId, a.getResultEntityId())
         .append(originalScheduledDate, a.getOriginalScheduledDate())
@@ -167,6 +179,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
         .append(""+id)
         .append(""+sourceEntity)
         .append(""+sourceEntityId)
+        .append(""+scheduledItemType)
         .append(""+resultEntity)
         .append(""+resultEntityId)
         .append(""+originalScheduledDate)
@@ -187,6 +200,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
         .append("id", ""+id)
         .append("sourceEntity", ""+sourceEntity)
         .append("sourceEntityId", ""+sourceEntityId)
+        .append("scheduledItemType", ""+scheduledItemType)
         .append("resultEntity", ""+resultEntity)
         .append("resultEntityId", ""+resultEntityId)
         .append("originalScheduledDate", ""+originalScheduledDate)
@@ -237,5 +251,6 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
 	public void setStartDate(Date startDate) {
 		setCustomFieldAsDate(START_DATE, startDate);
 	}
+
 
 }

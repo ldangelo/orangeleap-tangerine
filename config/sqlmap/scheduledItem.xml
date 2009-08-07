@@ -6,6 +6,7 @@
         <result property="id" column="SCHEDULED_ITEM_SCHEDULED_ITEM_ID" />
         <result property="sourceEntity" column="SCHEDULED_ITEM_SOURCE_ENTITY" />
         <result property="sourceEntityId" column="SCHEDULED_ITEM_SOURCE_ENTITY_ID" />
+        <result property="scheduledItemType" column="SCHEDULED_ITEM_TYPE" />
         <result property="resultEntity" column="SCHEDULED_ITEM_RESULT_ENTITY" />
         <result property="resultEntityId" column="SCHEDULED_ITEM_RESULT_ENTITY_ID" />
         <result property="originalScheduledDate" column="SCHEDULED_ITEM_ORIGINAL_SCHEDULED_DATE" />
@@ -21,6 +22,7 @@
         scheduled_item.SCHEDULED_ITEM_ID as SCHEDULED_ITEM_SCHEDULED_ITEM_ID,
         scheduled_item.SOURCE_ENTITY as SCHEDULED_ITEM_SOURCE_ENTITY,
         scheduled_item.SOURCE_ENTITY_ID as SCHEDULED_ITEM_SOURCE_ENTITY_ID,
+        scheduled_item.SCHEDULED_ITEM_TYPE as SCHEDULED_ITEM_SCHEDULED_ITEM_TYPE,
         scheduled_item.RESULT_ENTITY as SCHEDULED_ITEM_RESULT_ENTITY,
         scheduled_item.RESULT_ENTITY_ID as SCHEDULED_ITEM_RESULT_ENTITY_ID,
         scheduled_item.ORIGINAL_SCHEDULED_DATE as SCHEDULED_ITEM_ORIGINAL_SCHEDULED_DATE,
@@ -78,6 +80,7 @@
     <select id="SELECT_SCHEDULED_ITEMS_BY_TYPE_AND_DATE" resultMap="SCHEDULED_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
          scheduled_item.SOURCE_ENTITY = #sourceEntity#
+        and scheduled_item.SCHEDULED_ITEM_TYPE = #scheduledItemType#
         and scheduled_item.COMPLETION_DATE is null
         and scheduled_item.ACTUAL_SCHEDULED_DATE &lt;= #processingDate#
         order by scheduled_item.SOURCE_ENTITY_ID, scheduled_item.ACTUAL_SCHEDULED_DATE
@@ -88,6 +91,7 @@
         	SCHEDULED_ITEM_ID,
         	SOURCE_ENTITY,
         	SOURCE_ENTITY_ID,
+        	SCHEDULED_ITEM_TYPE,
         	RESULT_ENTITY,
         	RESULT_ENTITY_ID,
         	ORIGINAL_SCHEDULED_DATE,
@@ -101,6 +105,7 @@
         	#id# ,
         	#sourceEntity# ,
         	#sourceEntityId# ,
+        	#scheduledItemType# ,
         	#resultEntity# ,
         	#resultEntityId# ,
         	#originalScheduledDate# ,
@@ -121,6 +126,7 @@
         	SCHEDULED_ITEM_ID = #id# ,
         	SOURCE_ENTITY = #sourceEntity# ,
         	SOURCE_ENTITY_ID = #sourceEntityId# ,
+        	SCHEDULED_ITEM_TYPE = #scheduledItemType# ,
         	RESULT_ENTITY = #resultEntity# ,
         	RESULT_ENTITY_ID = #resultEntityId# ,
         	ORIGINAL_SCHEDULED_DATE = #originalScheduledDate# ,

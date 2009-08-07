@@ -110,14 +110,20 @@ public class IBatisScheduledItemDao extends AbstractIBatisDao implements Schedul
         if (list.size() == 0) return null; else return list.get(0);
     }
 
-    @SuppressWarnings("unchecked")
 	@Override
     public List<ScheduledItem> getItemsReadyToProcess(String sourceEntity, Date processingDate) {
+    	return getItemsReadyToProcess(sourceEntity, null, processingDate);
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<ScheduledItem> getItemsReadyToProcess(String sourceEntity, String scheduledItemType, Date processingDate) {
         if (logger.isTraceEnabled()) {
             logger.trace("getItemsReadyToProcess:"+sourceEntity+" "+processingDate);
         }
         Map<String, Object> params = setupParams();
 		params.put("sourceEntity", sourceEntity);
+		params.put("scheduledItemType", scheduledItemType);
 		params.put("processingDate", processingDate);
         return getSqlMapClientTemplate().queryForList("SELECT_SCHEDULED_ITEMS_BY_TYPE_AND_DATE", params);
     }

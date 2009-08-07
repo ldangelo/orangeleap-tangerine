@@ -39,4 +39,6 @@ public interface ScheduledItemDao {
 
     public List<ScheduledItem> getItemsReadyToProcess(String sourceEntity, Date processingDate);
 
+    public List<ScheduledItem> getItemsReadyToProcess(String sourceEntity, String scheduledItemType, Date processingDate);
+
 }

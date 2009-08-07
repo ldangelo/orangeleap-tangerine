@@ -91,6 +91,12 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	return scheduledItemDao.getItemsReadyToProcess(sourceEntity, processingDate);
     }
     
+    // Returns all uncompleted items up to and including processingDate for all entities
+    @Override
+    public List<ScheduledItem> getAllItemsReadyToProcess(String sourceEntity, String scheduledItemType, Date processingDate) {
+    	return scheduledItemDao.getItemsReadyToProcess(sourceEntity, scheduledItemType, processingDate);
+    }
+
     // Returns oldest uncompleted item up to and including processingDate for all entities
     @Override
     public List<ScheduledItem> getNextItemsReadyToProcess(String sourceEntity, Date processingDate) {

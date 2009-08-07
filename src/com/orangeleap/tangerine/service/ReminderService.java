@@ -20,7 +20,6 @@ package com.orangeleap.tangerine.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
@@ -36,7 +35,8 @@ public interface ReminderService {
 
 	public void deleteReminder(RecurringGift recurringGift, Date scheduledPaymentDate, Date reminderDate);
 
-	// Map of RecurringGift -> [scheduled payment -> reminder to be sent].  Normally map would have only one scheduled payment/reminder pair for each recurring gift.
-	public Map<Schedulable, Map<ScheduledItem, ScheduledItem>> getRemindersToProcess(Date processingDate);  
+	public List<ScheduledItem> getRemindersToProcess(Date processingDate);  
+	
+	public Schedulable getParent(ScheduledItem item);
 	
 }

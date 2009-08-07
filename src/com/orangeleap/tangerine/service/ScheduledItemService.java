@@ -27,9 +27,6 @@ import com.orangeleap.tangerine.domain.ScheduledItem;
 
 public interface ScheduledItemService {
 	
-	// Optional custom field to distinguish scheduled items for a schedulable.
-	public static final String SCHEDULED_ITEM_TYPE = "scheduledItemType";
-
     public ScheduledItem maintainScheduledItem(ScheduledItem scheduledItem);
 
     public void deleteScheduledItem(ScheduledItem scheduledItem);
@@ -55,6 +52,8 @@ public interface ScheduledItemService {
     public ScheduledItem completeItem(ScheduledItem scheduledItem, AbstractEntity resultEntity, String completionStatus);
     
     public List<ScheduledItem> getAllItemsReadyToProcess(String sourceEntity, Date processingDate);
+
+    public List<ScheduledItem> getAllItemsReadyToProcess(String sourceEntity, String scheduledItemType, Date processingDate);
 
     public List<ScheduledItem> getNextItemsReadyToProcess(String sourceEntity, Date processingDate);
 

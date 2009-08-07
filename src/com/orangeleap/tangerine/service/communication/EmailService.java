@@ -127,7 +127,7 @@ public class EmailService implements ApplicationContextAware {
         }
     }
 
-    public void sendMail(String addresses, Constituent p, Gift g, String subject, String templateName) {
+    public void sendMail(String addresses, Constituent p, Gift g, String subject, String templateName, List<Email> selectedEmails) {
         setSubject(subject);
         setTemplateName(templateName);
 
@@ -180,9 +180,52 @@ public class EmailService implements ApplicationContextAware {
                 //
                 // finally we mail the message
                 sender.send(message);
-
-
                 tempFile.delete();
+
+                //
+                // add entry to touchpoints for this e-mail
+                if (selectedEmails != null){
+                	for (Email e : selectedEmails) {
+                        CommunicationHistory ch = new CommunicationHistory();
+                        ch.setConstituent(p);
+                        ch.setGiftId(g.getId());
+                        ch.setSystemGenerated(true);
+                        ch.setComments("Sent e-mail using template named " + getTemplateName());
+                        ch.setEntryType("Email");
+                        ch.setRecordDate(new Date());
+                        ch.setSelectedEmail(e);
+                        ch.setCustomFieldValue("template", getTemplateName());
+
+                        ch.setSuppressValidation(true);
+                        try {
+                            communicationHistoryService.maintainCommunicationHistory(ch);
+                        } catch (BindException e1) {
+                            // Should not happen when setSuppressValidation = true;
+                            logger.error(e1);
+                        }
+                    }
+                }else{
+                	//note touchpoint
+                	CommunicationHistory ch = new CommunicationHistory();
+                    ch.setConstituent(p);
+                    ch.setGiftId(g.getId());
+                    ch.setSystemGenerated(true);
+                    ch.setComments("Sent e-mail to " + addresses + " reason: " + subject);
+                    ch.setEntryType("Note");
+                    ch.setRecordDate(new Date());
+                    //ch.setSelectedEmail(e);
+                    //ch.setCustomFieldValue("template", getTemplateName());
+
+                    ch.setSuppressValidation(true);
+                    try {
+                        communicationHistoryService.maintainCommunicationHistory(ch);
+                    } catch (BindException e1) {
+                        // Should not happen when setSuppressValidation = true;
+                        logger.error(e1);
+                    }
+                }
+
+
             } catch (MessagingException e1) {
                 logger.error(e1.getMessage());
                 return;
@@ -224,8 +267,8 @@ public class EmailService implements ApplicationContextAware {
             return;
         }
 
-        this.sendMail(strEmailAddrs, p, g, subject, templateName);
-
+        this.sendMail(strEmailAddrs, p, g, subject, templateName, selectedEmails);
+/*
         //
         // add entry to touchpoints for this e-mail
         for (Email e : selectedEmails) {
@@ -248,6 +291,7 @@ public class EmailService implements ApplicationContextAware {
             }
 
         }
+*/
     }
 
     private void setTemplateName(String templateName) {

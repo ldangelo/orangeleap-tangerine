@@ -29,6 +29,3 @@
 		</body>
 	</html>
 </page:applyDecorator>
-<%--
-		<jsp:include page="paymentSource.jsp"/>
---%>

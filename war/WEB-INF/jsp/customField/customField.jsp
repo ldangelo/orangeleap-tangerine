@@ -1,27 +1,23 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Custom Field Wizard" />
-	<tiles:putAttribute name="primaryNav" value="People" />
-	<tiles:putAttribute name="secondaryNav" value="" />
-	<tiles:putAttribute name="sidebarNav" value="" />
-	<tiles:putAttribute name="mainContent" type="string">
-		<div class="content760 mainForm">
-	
+<page:applyDecorator name="form">
+    <html>
+        <head><title><spring:message code="customFieldWizard"/></title></head>
+        <body>
 		<div class="simplebox">
-		
+
 		 <form id="form" method="post" action="customField.htm">
-		 
-		   <h4>Custom Field Wizard</h4>
+
+		   <h4><spring:message code="customFieldWizard"/></h4>
 		   <br />
-		 
+
 		   <h4><span style="color: green"><c:out value="${message}" /></span></h4>
 		   <h4><span style="color: red"><c:out value="${errormessage}" /></span></h4>
-		
-			<jsp:include page="../snippets/standardFormErrors.jsp"/>
+
+             <%@ include file="/WEB-INF/jsp/includes/standardFormErrors.jsp"%>
 		 	<form:errors></form:errors>
-		 	
+
 		   <br/>
-		 
+
 
 		   <div id="selectEntityType">
   		      Entity Type
@@ -57,18 +53,18 @@
 
 		   </div>
 
-		   Custom Field Name: <input id="fieldName" name="fieldName" type="text" />		   
+		   Custom Field Name: <input id="fieldName" name="fieldName" type="text" />
   	       <br/>
-		   Display Label: <input id="label" name="label" type="text" />		   
+		   Display Label: <input id="label" name="label" type="text" />
 		   <br/>
-		   
+
 		   <script>
 		   function changeFieldType(selectedValue) {
 			   if (selectedValue == 'TEXT') { $('#selectValidation').show(); } else { $('#selectValidation').hide();  }
 			   if (selectedValue == 'QUERY_LOOKUP' || selectedValue == 'MULTI_QUERY_LOOKUP') { $('#selectReferenceConstituentType').show(); } else { $('#selectReferenceConstituentType').hide();  }
 		   }
 		   </script>
-		    
+
 		   Field Type:
 		   <select id="fieldType" name="fieldType" onchange="changeFieldType(this.value);">
 			    <option value="TEXT" >Text</option>
@@ -81,7 +77,7 @@
 			    <option value="MULTI_QUERY_LOOKUP" >Multiple Selection Constituent Lookup</option>
 		   </select>
 		   <br/>
-		   
+
 		   <div id="selectReferenceConstituentType"  style="display:none">
 			  Reference constituent type:
 		      <select id="referenceConstituentType" name="referenceConstituentType" >
@@ -91,10 +87,10 @@
 		      </select>
   	     	  <br/>
      	    </div>
-		   
+
 
 		   <div id="selectValidation"  >
-			  
+
 			  Validation Type:
 		      <select id="validationType" name="validationType" onchange="if (this.value == 'regex') { $('#selectRegex').show(); } else { $('#selectRegex').hide();  } ">
 			    <option value="" >None</option>
@@ -109,20 +105,18 @@
 		     	  Custom Regular Expression Text:
 			      <input type="text" id="regex" name="regex" value="" />
 		      </div>
-		      
+
 		      <br /><br/>
-		      
+
 		   </div>
 
 		   <input type="submit" value="Create Custom Field" />
 
-			
+
 		 </form>
-    
-    
+
+
     		</div>
-		
-		</div>
-		
-	</tiles:putAttribute>
-</tiles:insertDefinition>
+        </body>
+    </html>
+</page:applyDecorator>

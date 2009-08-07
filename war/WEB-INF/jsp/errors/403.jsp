@@ -1,13 +1,13 @@
-<%@ include file="/WEB-INF/jsp/include.jsp"%>
-<spring:message code="exceptionHeading" var="titleText"/>
-<tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="${titleText}" />
-	<tiles:putAttribute name="primaryNav" value="" />
-	<tiles:putAttribute name="secondaryNav" value="" />
-	<tiles:putAttribute name="mainContent" type="string">
-		<div class="content760 mainForm">
-			<h1><c:out value="${titleText}"/></h1>
-			<div class="errorDiv"><spring:message code="exceptionForbidden"/></div>
-		</div>
-	</tiles:putAttribute>
-</tiles:insertDefinition>
+<%@ include file="/WEB-INF/jsp/include.jsp" %>
+<page:applyDecorator name="form">
+    <spring:message code="exceptionHeading" var="titleText"/>
+    <html>
+        <head>
+            <title><c:out value="${titleText}"/></title>
+        </head>
+        <body>
+            <h1><c:out value="${titleText}"/></h1>
+            <div class="errorDiv"><spring:message code="exceptionForbidden"/></div>
+        </body>
+    </html>
+</page:applyDecorator>

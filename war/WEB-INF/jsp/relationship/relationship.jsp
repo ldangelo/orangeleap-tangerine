@@ -1,32 +1,22 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<spring:message code='manageRelationship' var='titleText'/>
-<tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="${titleText}" />
-    <tiles:putAttribute name="customHeaderContent" type="string">
-		<style type="text/css">
-			.message { color: red; }
-			table.customFields th, table.customFields td { padding: 0 4px; }
-			table.customFields th { white-space: nowrap; }
-			table.customFields { margin-bottom: 15px; }
-			table.customFields div.lookupField { min-height: 18px; padding: 0; }
-			table.customFields a.lookupLink, table.customFields div.lookupField a.hideText { padding: 1px; } 
-			form#form { padding-bottom: 15px; }
-			col.lookup { width: 225px; }		 
-		</style>
-	</tiles:putAttribute>	
-	<tiles:putAttribute name="primaryNav" value="People" />
-	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="Relationships" />
-	<tiles:putAttribute name="mainContent" type="string">
-		<div class="content760 mainForm">
-			<c:set var="constituent" value="${constituent}" scope="request" />
-			<c:if test="${constituent.id!=null}">
-				<c:set var="viewingConstituent" value="true" scope="request" />
-			</c:if>
-			<jsp:include page="../snippets/constituentHeader.jsp">
-				<jsp:param name="currentFunctionTitleText" value="${titleText}" />
-			</jsp:include>
-	
+<page:applyDecorator name="form">
+    <spring:message code='manageRelationship' var='titleText'/>
+    <html>
+        <head>
+            <title><c:out value="${titleText}"/></title>
+            <style type="text/css">
+                .message { color: red; }
+                table.customFields th, table.customFields td { padding: 0 4px; }
+                table.customFields th { white-space: nowrap; }
+                table.customFields { margin-bottom: 15px; }
+                table.customFields div.lookupField { min-height: 18px; padding: 0; }
+                table.customFields a.lookupLink, table.customFields div.lookupField a.hideText { padding: 1px; }
+                form#form { padding-bottom: 15px; }
+                col.lookup { width: 225px; }
+            </style>
+        </head>
+        <body>
+            <%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
 			<div class="simplebox">
 			    <h4><c:out value='${form.fieldLabel}'/></h4>
 
@@ -124,6 +114,6 @@
 					<strong><a class="action" href="relationships.htm?constituentId=${constituent.id}">&laquo;<spring:message code='back'/></a></strong>
 				</div>
 			</div>	
-		</div>
-	</tiles:putAttribute>
-</tiles:insertDefinition>
+        </body>
+    </html>
+</page:applyDecorator>

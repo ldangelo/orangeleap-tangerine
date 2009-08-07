@@ -19,6 +19,10 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.engine.mapping.result.ResultMap;
+import com.ibatis.sqlmap.engine.mapping.result.ResultMapping;
+import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
+import com.ibatis.sqlmap.engine.impl.SqlMapExecutorDelegate;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.GeneratedId;
@@ -31,6 +35,8 @@ import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+import org.springframework.orm.ibatis.SqlMapClientTemplate;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
@@ -160,5 +166,47 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
 
     protected IBatisCustomFieldHelper getCustomFieldHelper() {
         return new IBatisCustomFieldHelper(getSqlMapClientTemplate(), getApplicationContext());
+    }
+
+    public Map<String, String> findBeanPropertyColumnMap(String resultMapName) {
+        Map<String, String> beanPropertyColumnMap = new HashMap<String, String>();
+        addToBeanPropertyColumnMap(resultMapName, beanPropertyColumnMap);
+
+        return beanPropertyColumnMap;
+    }
+
+    protected void addToBeanPropertyColumnMap(String resultMapName, Map<String, String> beanPropertyColumnMap) {
+        addToBeanPropertyColumnMap(null, resultMapName, beanPropertyColumnMap);
+    }
+
+    protected void addToBeanPropertyColumnMap(String parentObject, String resultMapName, Map<String, String> beanPropertyColumnMap) {
+        SqlMapClientTemplate template = getSqlMapClientTemplate();
+        SqlMapClient client = template.getSqlMapClient();
+        if (client instanceof SqlMapClientImpl) {
+            SqlMapExecutorDelegate delegate = ((SqlMapClientImpl) client).getDelegate();
+            ResultMap resultMap = delegate.getResultMap(resultMapName);
+
+            Map<String, String> nestedResultMapNames = new HashMap<String, String>();
+            if (resultMap != null) {
+                ResultMapping[] resultMappings = resultMap.getResultMappings();
+                if (resultMappings != null) {
+                    for (ResultMapping mapping : resultMappings) {
+                        if (StringUtils.hasText(mapping.getNestedResultMapName())) {
+                            nestedResultMapNames.put(mapping.getPropertyName(), mapping.getNestedResultMapName());
+                        }
+                        else {
+                            String propName = parentObject == null ? mapping.getPropertyName() : new StringBuilder(parentObject).append(".").append(mapping.getPropertyName()).toString();
+                            beanPropertyColumnMap.put(propName, mapping.getColumnName());
+                        }
+                    }
+                }
+            }
+            /* Recursively add all nested result maps */
+            if (!nestedResultMapNames.isEmpty()) {
+                for (Map.Entry<String, String> nestedEntry : nestedResultMapNames.entrySet()) {
+                    addToBeanPropertyColumnMap(nestedEntry.getKey(), nestedEntry.getValue(), beanPropertyColumnMap);
+                }
+            }
+        }
     }
 }

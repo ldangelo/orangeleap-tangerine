@@ -6,7 +6,7 @@
         <result property="id" column="SCHEDULED_ITEM_SCHEDULED_ITEM_ID" />
         <result property="sourceEntity" column="SCHEDULED_ITEM_SOURCE_ENTITY" />
         <result property="sourceEntityId" column="SCHEDULED_ITEM_SOURCE_ENTITY_ID" />
-        <result property="scheduledItemType" column="SCHEDULED_ITEM_TYPE" />
+        <result property="scheduledItemType" column="SCHEDULED_ITEM_SCHEDULED_ITEM_TYPE" />
         <result property="resultEntity" column="SCHEDULED_ITEM_RESULT_ENTITY" />
         <result property="resultEntityId" column="SCHEDULED_ITEM_RESULT_ENTITY_ID" />
         <result property="originalScheduledDate" column="SCHEDULED_ITEM_ORIGINAL_SCHEDULED_DATE" />

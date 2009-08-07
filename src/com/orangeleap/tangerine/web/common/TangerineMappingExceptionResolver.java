@@ -34,8 +34,8 @@ public class TangerineMappingExceptionResolver extends SimpleMappingExceptionRes
 
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object command, Exception exception) {
-    	String stackTrace = ExceptionUtils.getStackTrace(exception);
-        logger.error(stackTrace);
+        logger.error("Exception Occurred: ", exception);
+        String stackTrace = ExceptionUtils.getStackTrace(exception);
         request.setAttribute("exceptionStackTrace", stackTrace);
         
         if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {

@@ -26,6 +26,9 @@ import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 
 public interface ScheduledItemService {
+	
+	// Optional custom field to distinguish scheduled items for a schedulable.
+	public static final String SCHEDULED_ITEM_TYPE = "scheduledItemType";
 
     public ScheduledItem maintainScheduledItem(ScheduledItem scheduledItem);
 

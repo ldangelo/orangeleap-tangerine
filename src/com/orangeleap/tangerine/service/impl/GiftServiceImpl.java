@@ -471,7 +471,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         /* If only 1 line is entered, check if it is the default */
         if (count == 1) {
             DistributionLine defaultLine = new DistributionLine(constituent);
-	        siteService.setEntityDefaults(defaultLine, EntityType.distributionLine, null); // TODO: fix for sectionDef
+	        siteService.setEntityDefaults(defaultLine, EntityType.distributionLine);
 
             if (amount.equals(enteredLine.getAmount()) && new BigDecimal("100").equals(enteredLine.getPercentage())) {
                 if (org.springframework.util.StringUtils.hasText(enteredLine.getProjectCode()) || org.springframework.util.StringUtils.hasText(enteredLine.getMotivationCode()) ||

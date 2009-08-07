@@ -34,7 +34,6 @@ public class EntityDefault implements GeneratedId, Serializable {
 	 */
 	private String entityFieldName;
 	private String entityType;
-	private SectionDefinition sectionDefinition;
 	private String conditionExp;
 	private String siteName;
 
@@ -100,14 +99,6 @@ public class EntityDefault implements GeneratedId, Serializable {
     public void setEntityType(String entityType) {
         this.entityType = entityType;
     }
-
-	public SectionDefinition getSectionDefinition() {
-		return sectionDefinition;
-	}
-
-	public void setSectionDefinition(SectionDefinition sectionDefinition) {
-		this.sectionDefinition = sectionDefinition;
-	}
 
 	public String getSiteName() {
         return siteName;

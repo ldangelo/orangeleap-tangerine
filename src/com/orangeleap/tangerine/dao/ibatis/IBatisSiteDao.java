@@ -22,7 +22,6 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
-import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
@@ -98,17 +97,16 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EntityDefault> readEntityDefaults(EntityType entityType, SectionDefinition sectionDefinition) {
+	public List<EntityDefault> readEntityDefaults(EntityType entityType) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("readEntityDefaults: entityTypes = " + entityType + " sectionDefinition = " + sectionDefinition);
+	        logger.trace("readEntityDefaults: entityTypes = " + entityType);
 	    }
 	    Map<String, Object> params = setupParams();
 	    params.put("entityType", entityType);
-		params.put("sectionDefinition", sectionDefinition);
 	    List<EntityDefault> defaults = getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_AND_SITE", params);
 
 		String prevFieldName = null;
-		// Use only the first EntityDefault with the same field name (ordered desc by sectDef and siteName)
+		// Use only the first EntityDefault with the same field name (ordered desc by siteName)
 		List<EntityDefault> filteredDefaults = new ArrayList<EntityDefault>();
 		if (defaults != null) {
 			for (EntityDefault aDefault : defaults) {
@@ -123,16 +121,14 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public EntityDefault readEntityDefaultByTypeNameSectionDef(EntityType entityType, String entityFieldName, SectionDefinition sectionDefinition) {
+	public EntityDefault readEntityDefaultByTypeName(EntityType entityType, String entityFieldName) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("readEntityDefaultByTypeNameSectionDef: entityType = " + entityType + " entityFieldName = " + entityFieldName +
-			        " sectionDefinition.id = " + (sectionDefinition != null ? sectionDefinition.getId() : null));
+	        logger.trace("readEntityDefaultByTypeNameSectionDef: entityType = " + entityType + " entityFieldName = " + entityFieldName);
 	    }
 	    Map<String, Object> params = setupParams();
 	    params.put("entityType", entityType);
 		params.put("entityFieldName", entityFieldName);
-		params.put("sectionDefinition", sectionDefinition);
-	    List<EntityDefault> entityDefaults = getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_NAME_SECT_DEF_SITE", params);
+	    List<EntityDefault> entityDefaults = getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_NAME_SITE", params);
 
 		EntityDefault entityDef = null;
 		if (entityDefaults != null && !entityDefaults.isEmpty()) {

@@ -113,9 +113,9 @@ public interface SiteService {
 
 	Object getDefaultValue(EntityDefault entityDefault, BeanWrapper bean, String key);
 
-	EntityDefault readEntityDefaultByTypeNameSectionDef(SectionField sectionField);
+	EntityDefault readEntityDefaultByTypeName(SectionField sectionField);
 
-	EntityDefault readEntityDefaultByTypeNameSectionDef(EntityType entityType, String fieldName, SectionDefinition sectionDef);
+	EntityDefault readEntityDefaultByTypeName(EntityType entityType, String fieldName);
 
-	void setEntityDefaults(AbstractEntity entity, EntityType entityType, SectionDefinition sectionDefinition);
+	void setEntityDefaults(AbstractEntity entity, EntityType entityType);
 }

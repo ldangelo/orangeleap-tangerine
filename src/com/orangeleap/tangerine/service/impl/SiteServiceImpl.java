@@ -335,7 +335,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 			}
 			// If there is no value, try to find the default value
 			if (value == null) {
-				EntityDefault entityDefault = readEntityDefaultByTypeNameSectionDef(sectionField);
+				EntityDefault entityDefault = readEntityDefaultByTypeName(sectionField);
 				value = getDefaultValue(entityDefault, bean, key);
 			}
 			returnMap.put(key, value);
@@ -418,29 +418,28 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 	}
 
 	@Override
-	public EntityDefault readEntityDefaultByTypeNameSectionDef(SectionField sectionField) {
+	public EntityDefault readEntityDefaultByTypeName(SectionField sectionField) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("readEntityDefaultByTypeNameSectionDef: sectionField = " + sectionField);
+	        logger.trace("readEntityDefaultByTypeName: sectionField = " + sectionField);
 	    }
 		FieldDefinition thisFieldDef = sectionField.getSecondaryFieldDefinition() != null ?
 						sectionField.getSecondaryFieldDefinition() : sectionField.getFieldDefinition();
-		return readEntityDefaultByTypeNameSectionDef(thisFieldDef.getEntityType(), thisFieldDef.getFieldName(),
-				sectionField.getSectionDefinition());
+		return readEntityDefaultByTypeName(thisFieldDef.getEntityType(), thisFieldDef.getFieldName());
 	}
 
 	@Override
-	public EntityDefault readEntityDefaultByTypeNameSectionDef(EntityType entityType, String fieldName, SectionDefinition sectionDef) {
+	public EntityDefault readEntityDefaultByTypeName(EntityType entityType, String fieldName) {
 		if (logger.isTraceEnabled()) {
-		    logger.trace("readEntityDefaultByTypeNameSectionDef: entityType = " + entityType + " fieldName = " + fieldName + " sectionDefinition = " + sectionDef);
+		    logger.trace("readEntityDefaultByTypeName: entityType = " + entityType + " fieldName = " + fieldName);
 		}
-		return siteDao.readEntityDefaultByTypeNameSectionDef(entityType, fieldName, sectionDef);
+		return siteDao.readEntityDefaultByTypeName(entityType, fieldName);
 	}
 
 	@Override
-	public void setEntityDefaults(AbstractEntity entity, EntityType entityType, SectionDefinition sectionDefinition) {
+	public void setEntityDefaults(AbstractEntity entity, EntityType entityType) {
 		BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(entity);
 
-		List<EntityDefault> defaults = siteDao.readEntityDefaults(entityType, sectionDefinition);
+		List<EntityDefault> defaults = siteDao.readEntityDefaults(entityType);
 		if (defaults != null && !defaults.isEmpty()) {
 			for (EntityDefault aDefault : defaults) {
 				getDefaultValue(aDefault, beanWrapper, aDefault.getEntityFieldName());

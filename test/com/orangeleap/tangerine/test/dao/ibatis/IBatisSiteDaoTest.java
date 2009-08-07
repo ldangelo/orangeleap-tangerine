@@ -130,7 +130,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
 
 	@Test(groups = {"testUpdateEntityDefault"}, dependsOnGroups = {"testReadEntityDefaults"})
 	public void testUpdateEntityDefault() throws Exception {
-		List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults(EntityType.constituent, null);
+		List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults(EntityType.constituent);
 
 		assert entityDefaultList != null;
 		assert entityDefaultList.size() == 1;
@@ -139,7 +139,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
 		entityDefault.setDefaultValue("bob!");
 		siteDao.updateEntityDefault(entityDefault);
 
-		entityDefaultList = siteDao.readEntityDefaults(EntityType.constituent, null);
+		entityDefaultList = siteDao.readEntityDefaults(EntityType.constituent);
 		assert entityDefaultList != null;
 		assert entityDefaultList.size() == 1;
 		entityDefault = entityDefaultList.get(0);
@@ -166,7 +166,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
 
 	@Test(groups = {"testReadEntityDefaults"}, dependsOnGroups = {"testCreateEntityDefault"})
 	public void testReadEntityDefaults() throws Exception {
-		List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults(EntityType.constituent, null);
+		List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults(EntityType.constituent);
 
 		assert entityDefaultList != null;
 		assert entityDefaultList.size() == 1;
@@ -182,46 +182,28 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
 
 	@Test(groups = {"testReadEntityDefaults"}, dependsOnGroups = {"testCreateEntityDefault"})
 	public void testReadEntityDefaultByTypeNameSectionDef() throws Exception {
-		SectionDefinition sectDef = new SectionDefinition();
-		sectDef.setId(500L);
-		EntityDefault entityDefault = siteDao.readEntityDefaultByTypeNameSectionDef(EntityType.gift, "paymentType", sectDef);
-		Assert.assertEquals(entityDefault.getDefaultValue(), "Check", "defaultVal = " + entityDefault.getDefaultValue());
-
-		entityDefault = siteDao.readEntityDefaultByTypeNameSectionDef(EntityType.gift, "paymentType", null);
+		EntityDefault entityDefault = siteDao.readEntityDefaultByTypeName(EntityType.gift, "paymentType");
 		Assert.assertEquals(entityDefault.getDefaultValue(), "Credit Card", "defaultVal = " + entityDefault.getDefaultValue());
 
-		entityDefault = siteDao.readEntityDefaultByTypeNameSectionDef(EntityType.distributionLine, "customFieldMap[taxDeductible]", null);
+		entityDefault = siteDao.readEntityDefaultByTypeName(EntityType.distributionLine, "customFieldMap[taxDeductible]");
 		Assert.assertEquals(entityDefault.getDefaultValue(), "true", "defaultVal = " + entityDefault.getDefaultValue());
 
-		entityDefault = siteDao.readEntityDefaultByTypeNameSectionDef(EntityType.distributionLine, "customFieldMap[recognitionName]", null);
+		entityDefault = siteDao.readEntityDefaultByTypeName(EntityType.distributionLine, "customFieldMap[recognitionName]");
 		Assert.assertEquals(entityDefault.getDefaultValue(), "bean:constituent.recognitionName", "defaultVal = " + entityDefault.getDefaultValue());
 
-		entityDefault = siteDao.readEntityDefaultByTypeNameSectionDef(EntityType.distributionLine, "customFieldMap[other_recognition]", null);
+		entityDefault = siteDao.readEntityDefaultByTypeName(EntityType.distributionLine, "customFieldMap[other_recognition]");
 		Assert.assertEquals(entityDefault.getDefaultValue(), "bean:constituent.other_recognitionName", "defaultVal = " + entityDefault.getDefaultValue());
 		Assert.assertEquals(entityDefault.getConditionExp(), "customFieldMap[recognitionName] == 'foo'", "conditionExp = " + entityDefault.getConditionExp());
 	}
 
 	@Test(groups = {"testReadEntityDefaults"}, dependsOnGroups = {"testCreateEntityDefault"})
 	public void testReadEntityDefaultsByEntityName() throws Exception {
-		SectionDefinition sectionDef = new SectionDefinition();
-		sectionDef.setId(500L);
-		List<EntityDefault> defaults = siteDao.readEntityDefaults(EntityType.gift, sectionDef);
+		List<EntityDefault> defaults = siteDao.readEntityDefaults(EntityType.gift);
 		Assert.assertTrue(defaults != null);
 		Assert.assertEquals(defaults.size(), 2);
 
 		Assert.assertEquals(defaults.get(0).getEntityFieldName(), "amount");
 		Assert.assertEquals(defaults.get(0).getDefaultValue(), "25");
-
-		Assert.assertEquals(defaults.get(1).getEntityFieldName(), "paymentType");
-		Assert.assertEquals(defaults.get(1).getDefaultValue(), "Check");
-
-
-		defaults = siteDao.readEntityDefaults(EntityType.gift, null);
-		Assert.assertTrue(defaults != null);
-		Assert.assertEquals(defaults.size(), 2);
-
-		Assert.assertEquals(defaults.get(0).getEntityFieldName(), "amount");
-		Assert.assertEquals(defaults.get(0).getDefaultValue(), "1.50");
 
 		Assert.assertEquals(defaults.get(1).getEntityFieldName(), "paymentType");
 		Assert.assertEquals(defaults.get(1).getDefaultValue(), "Credit Card");

@@ -436,7 +436,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
             if (aware.getPaymentSource() != null && !aware.getPaymentSource().isNew()) {
                 PaymentSource clearedPaymentSource = new PaymentSource(aware.getPaymentSource().getConstituent());
                 clearedPaymentSource.setId(aware.getPaymentSource().getId());
-                siteService.setEntityDefaults(clearedPaymentSource, EntityType.paymentSource, null); // TODO: replace null with sectionDef
+                siteService.setEntityDefaults(clearedPaymentSource, EntityType.paymentSource);
                 aware.setPaymentSource(clearedPaymentSource);
             }
         }
@@ -448,7 +448,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
             if (aware.getAddress() != null && !aware.getAddress().isNew()) {
                 Address clearedAddress = new Address(aware.getAddress().getConstituentId());
                 clearedAddress.setId(aware.getAddress().getId());
-                siteService.setEntityDefaults(clearedAddress, EntityType.address, null); // TODO: replace null with sectionDef
+                siteService.setEntityDefaults(clearedAddress, EntityType.address);
                 aware.setAddress(clearedAddress);
             }
         }
@@ -460,7 +460,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
             if (aware.getPhone() != null && !aware.getPhone().isNew()) {
                 Phone clearedPhone = new Phone(aware.getPhone().getConstituentId());
                 clearedPhone.setId(aware.getPhone().getId());
-                siteService.setEntityDefaults(clearedPhone, EntityType.phone, null); // TODO: replace null with sectionDef
+                siteService.setEntityDefaults(clearedPhone, EntityType.phone);
                 aware.setPhone(clearedPhone);
             }
         }
@@ -472,7 +472,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
             if (aware.getEmail() != null && !aware.getEmail().isNew()) {
                 Email clearedEmail = new Email(aware.getEmail().getConstituentId());
                 clearedEmail.setId(aware.getEmail().getId());
-                siteService.setEntityDefaults(clearedEmail, EntityType.email, null); // TODO: replace null with sectionDef
+                siteService.setEntityDefaults(clearedEmail, EntityType.email);
                 aware.setEmail(clearedEmail);
             }
         }

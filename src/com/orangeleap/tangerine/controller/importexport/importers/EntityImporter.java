@@ -146,7 +146,7 @@ public abstract class EntityImporter {
                         Class returnClass = m.getReturnType();
                         so = returnClass.newInstance();
                         if (so instanceof AbstractEntity) {
-                            siteservice.setEntityDefaults((AbstractEntity) so, EntityType.valueOf(depobject), null); // TODO: replace null with sectionDefinition?
+                            siteservice.setEntityDefaults((AbstractEntity) so, EntityType.valueOf(depobject)); 
                         }
                         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(o);
                         if (bw.isWritableProperty(depobject)) {

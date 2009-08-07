@@ -273,26 +273,23 @@ INSERT INTO DASHBOARD_ITEM_DATASET (DASHBOARD_ITEM_DATASET_ID, DASHBOARD_ITEM_ID
 INSERT INTO DASHBOARD_ITEM_DATASET (DASHBOARD_ITEM_DATASET_ID, DASHBOARD_ITEM_ID, DATASET_NUM, DATASET_LABEL, SQL_TEXT) VALUES (5, 4, 2, 'Pledge Donors', 'select DATE_FORMAT(g.TRANSACTION_DATE, "%b" ) as "LABEL", SUM(g.AMOUNT) as "DATA_VALUE" from GIFT g inner join CONSTITUENT c on c.CONSTITUENT_ID = g.CONSTITUENT_ID  inner join PLEDGE ct on ct.PLEDGE_ID = g.PLEDGE_ID where g.TRANSACTION_DATE between adddate(CURDATE(), -180) and adddate(CURDATE(), 1) and c.SITE_NAME = #siteName# group by LABEL order by g.TRANSACTION_DATE');
 
 -- Entity Defaults
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SECTION_DEFINITION_ID, SITE_NAME)
-values ('Cash', 'paymentType', 'gift', NULL, NULL);
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
+values ('Cash', 'paymentType', 'gift', NULL);
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SECTION_DEFINITION_ID, SITE_NAME)
-values ('Credit Card', 'paymentType', 'gift', NULL, 'company1');
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
+values ('Credit Card', 'paymentType', 'gift', 'company1');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SECTION_DEFINITION_ID, SITE_NAME)
-values ('Check', 'paymentType', 'gift', 500, 'company1');
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
+values ('1.50', 'amount', 'gift', NULL);
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SECTION_DEFINITION_ID, SITE_NAME)
-values ('1.50', 'amount', 'gift', NULL, NULL);
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
+values ('25', 'amount', 'gift', 'company1');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SECTION_DEFINITION_ID, SITE_NAME)
-values ('25', 'amount', 'gift', 500, NULL);
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
+values ('true', 'customFieldMap[taxDeductible]', 'distributionLine', 'company1');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SECTION_DEFINITION_ID, SITE_NAME)
-values ('true', 'customFieldMap[taxDeductible]', 'distributionLine', 500, 'company1');
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
+values ('bean:constituent.recognitionName', 'customFieldMap[recognitionName]', 'distributionLine', 'company1');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SECTION_DEFINITION_ID, SITE_NAME)
-values ('bean:constituent.recognitionName', 'customFieldMap[recognitionName]', 'distributionLine', 500, 'company1');
-
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, CONDITION_EXP, SECTION_DEFINITION_ID, SITE_NAME)
-values ('bean:constituent.other_recognitionName', 'customFieldMap[other_recognition]', 'distributionLine', 'customFieldMap[recognitionName] == ''foo''', NULL, NULL);
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, CONDITION_EXP, SITE_NAME)
+values ('bean:constituent.other_recognitionName', 'customFieldMap[other_recognition]', 'distributionLine', 'customFieldMap[recognitionName] == ''foo''', NULL);

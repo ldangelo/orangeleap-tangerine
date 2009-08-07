@@ -81,7 +81,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 
 		Object fieldValue = null;
 		if (isDummy) {
-			EntityDefault entityDefault = siteService.readEntityDefaultByTypeNameSectionDef(currentField);
+			EntityDefault entityDefault = siteService.readEntityDefaultByTypeName(currentField);
 			if (entityDefault != null) {
 				fieldValue = siteService.getDefaultValue(entityDefault, PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject()), null);
 			}

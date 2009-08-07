@@ -37,9 +37,9 @@ public interface SiteDao {
 
 	EntityDefault createEntityDefault(EntityDefault entityDefault);
 
-	List<EntityDefault> readEntityDefaults(EntityType entityType, SectionDefinition sectionDefinition);
+	List<EntityDefault> readEntityDefaults(EntityType entityType);
 
 	int updateEntityDefault(EntityDefault entityDefault);
 
-	EntityDefault readEntityDefaultByTypeNameSectionDef(EntityType entityType, String entityFieldName, SectionDefinition sectionDefinition);
+	EntityDefault readEntityDefaultByTypeName(EntityType entityType, String entityFieldName);
 }

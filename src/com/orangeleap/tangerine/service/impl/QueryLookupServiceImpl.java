@@ -113,7 +113,6 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
             }
         	List<Constituent> constituents = constituentDao.searchConstituents(filterparms);
         	result.addAll(constituents);
-        	
         }
         
         else if (entityType == EntityType.gift) {

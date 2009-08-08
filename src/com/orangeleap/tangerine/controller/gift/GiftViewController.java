@@ -3,9 +3,11 @@ package com.orangeleap.tangerine.controller.gift;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -16,10 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class GiftViewController extends AbstractGiftController {
+public class GiftViewController extends TangerineConstituentAttributesFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
+
+    @Resource(name="giftService")
+    protected GiftService giftService;
 
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
@@ -48,12 +53,15 @@ public class GiftViewController extends AbstractGiftController {
 	    TangerineForm form = (TangerineForm) command;
 	    Gift gift = (Gift) form.getDomainObject();
 
+        ModelAndView mav;
 	    try {
             gift = giftService.editGift(gift);
+            mav = new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + gift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
 	    }
 	    catch (BindException domainErrors) {
 		    bindDomainErrorsToForm(request, formErrors, domainErrors, form, gift);
+            mav = showForm(request, formErrors, getFormView());
 	    }
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + gift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+        return mav;
     }
 }

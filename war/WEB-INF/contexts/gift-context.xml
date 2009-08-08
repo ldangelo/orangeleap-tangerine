@@ -18,7 +18,7 @@
         <property name="successView" value="redirect:/gift.htm" />
     </bean>
 
-	<bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="abstractGiftController">
+	<bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="tangerineConstituentAttributesFormController">
 	    <property name="formView" value="gift/giftView"/>
 	    <property name="successView" value="redirect:/giftView.htm"/>
 	</bean>

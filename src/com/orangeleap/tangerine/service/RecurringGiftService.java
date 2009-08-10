@@ -69,4 +69,8 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     public void updateRecurringGiftForAdjustedGift(AdjustedGift adjustedGift);
     
     public void setRecurringGiftStatus(RecurringGift recurringGift);
+    
+    public ScheduledItem getNextPaymentToRun(RecurringGift recurringGift);
+    
+    public void extendPaymentSchedule(RecurringGift recurringGift);
 }

@@ -147,6 +147,10 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
+    
+    public boolean isCompleted() {
+    	return completionDate != null;
+    }
 
 	
     @Override

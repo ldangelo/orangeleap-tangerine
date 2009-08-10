@@ -34,7 +34,6 @@ import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.NightlyBatchService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TaskStack;
 
@@ -51,9 +50,6 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
 
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
-
-    @Resource(name = "scheduledItemService")
-    private ScheduledItemService scheduledItemService;
 
     // Non-transactional method
     @Override
@@ -75,9 +71,9 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
             	
             	if (!recurringGift.isActivate()) continue;
 
-            	scheduledItemService.extendSchedule(recurringGift);
+            	recurringGiftService.extendPaymentSchedule(recurringGift);
             	
-            	ScheduledItem item = scheduledItemService.getNextItemToRun(recurringGift);
+            	ScheduledItem item = recurringGiftService.getNextPaymentToRun(recurringGift);
             	if (item == null || item.getActualScheduledDate().after(today)) continue;  
             	
             	logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", actualScheduledDate =" + item.getActualScheduledDate());

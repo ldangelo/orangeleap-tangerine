@@ -27,13 +27,17 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 
 public interface ReminderService {
     
-	public void generateDefaultReminders(RecurringGift recurringGift, int initialReminderDays, int maximumReminders, int reminderIntervalDays);
+	public void generateDefaultReminders(RecurringGift recurringGift);
+
+	public void generateDefaultReminders(RecurringGift recurringGift, Date scheduledPaymentDate);
 
 	public List<ScheduledItem> listReminders(RecurringGift recurringGift, Date scheduledPaymentDate);
 
 	public void addReminder(RecurringGift recurringGift, Date scheduledPaymentDate, Date reminderDate);
 
 	public void deleteReminder(RecurringGift recurringGift, Date scheduledPaymentDate, Date reminderDate);
+	
+	public void deleteReminders(RecurringGift recurringGift);
 
 	public List<ScheduledItem> getRemindersToProcess(Date processingDate);  
 	

@@ -55,6 +55,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -89,6 +90,9 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Resource(name = "scheduledItemService")
     private ScheduledItemService scheduledItemService;
 
+    @Resource(name = "reminderService")
+    private ReminderService reminderService;
+
 
 
     @Override
@@ -98,7 +102,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         RecurringGift rg =  recurringGiftDao.readRecurringGiftById(recurringGiftId);
         ScheduledItem item = scheduledItemService.getNextItemToRun(rg);
-        rg.setNextRunDate(item==null?null:item.getActualScheduledDate());
+        rg.setNextRunDate(item == null ? null : item.getActualScheduledDate());
         return rg;
     }
 
@@ -143,6 +147,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
         if (result.isActivate()) {
         	scheduledItemService.extendSchedule(result);
+    		reminderService.generateDefaultReminders(result);
         	setNextRun(result);
         }
 
@@ -181,6 +186,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public RecurringGift editRecurringGift(RecurringGift recurringGift) throws BindException {
+    	
         if (logger.isTraceEnabled()) {
             logger.trace("editRecurringGift: recurringGiftId = " + recurringGift.getId());
         }
@@ -188,22 +194,27 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 	    
 	    RecurringGift old = getExisting(recurringGift);
 
-        RecurringGift result = save(recurringGift);
+        RecurringGift savedRecurringGift = save(recurringGift);
 
-        if (result.isActivate()) {
-        	if (needToResetSchedule(old, result)) {
-        		scheduledItemService.regenerateSchedule(result);
-        	} else {
-        		scheduledItemService.extendSchedule(result);
+        if (savedRecurringGift.isActivate()) {
+        	if (needToResetSchedule(old, savedRecurringGift)) {
+        		reminderService.deleteReminders(savedRecurringGift);
+        		scheduledItemService.regenerateSchedule(savedRecurringGift);
+        	} else if (needToResetReminders(old, savedRecurringGift)) {
+        		reminderService.deleteReminders(savedRecurringGift);
         	}
-    		setNextRun(result);
+    		scheduledItemService.extendSchedule(savedRecurringGift);
+    		reminderService.generateDefaultReminders(savedRecurringGift);
+    		setNextRun(savedRecurringGift);
         } else {
-        	scheduledItemService.deleteSchedule(result);
+        	reminderService.deleteReminders(savedRecurringGift);
+        	scheduledItemService.deleteSchedule(savedRecurringGift);
         }
 
-        return result;
+        return savedRecurringGift;
     }
     
+
     private RecurringGift getExisting(RecurringGift recurringGift) {
 	    if (recurringGift.getId() == null || recurringGift.getId().equals(0)) return null;
     	return recurringGiftDao.readRecurringGiftById(recurringGift.getId());
@@ -216,6 +227,24 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 		if (!compare(old.getStartDate(), updated.getStartDate())
 				|| !compare(old.getEndDate(), updated.getEndDate())
 				|| !old.getFrequency().equals(updated.getFrequency()))
+			return true;
+    	
+    	return false;
+    }
+    
+    private boolean needToResetReminders(RecurringGift old, RecurringGift updated) {
+    	
+    	if (old == null) return true;
+    	
+    	ReminderServiceImpl.ReminderInfo riold = new ReminderServiceImpl.ReminderInfo(old);
+    	ReminderServiceImpl.ReminderInfo rinew = new ReminderServiceImpl.ReminderInfo(updated);
+    	
+		if (
+				riold.isGenerateReminders() != rinew.isGenerateReminders()
+				|| riold.getInitialReminder() != rinew.getInitialReminder()
+				|| riold.getMaximumReminders() != rinew.getMaximumReminders()
+				|| riold.getReminderIntervalDays() != rinew.getReminderIntervalDays()
+			)
 			return true;
     	
     	return false;
@@ -438,5 +467,16 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         return gift;
 
     }
+
+	@Override
+	public void extendPaymentSchedule(RecurringGift recurringGift) {
+		scheduledItemService.extendSchedule(recurringGift);
+		reminderService.generateDefaultReminders(recurringGift);
+	}
+
+	@Override
+	public ScheduledItem getNextPaymentToRun(RecurringGift recurringGift) {
+		return scheduledItemService.getNextItemToRun(recurringGift);
+	}
 
 }

@@ -180,7 +180,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	Iterator<ScheduledItem> it = existingitems.iterator();
     	while (it.hasNext()) {
     		ScheduledItem item = it.next();
-    		if (item.getCompletionDate() == null) {
+    		if (!item.isCompleted()) {
     			it.remove();
     			scheduledItemDao.deleteScheduledItemById(item.getId());
     		}

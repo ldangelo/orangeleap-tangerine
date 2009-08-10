@@ -25,8 +25,10 @@
 		  	    <option value="" >Select...</option>
 			    <option value="constituent" >Constituent</option>
 			    <option value="gift" >Gift</option>
+			    <%-- <option value="gift.distributionLine" >Gift Distribution Line</option> --%>
 			    <option value="recurringGift" >Recurring Gift</option>
                 <option value="pledge" >Pledge</option>
+			    <%--  <option value="pledge.distributionLine" >Pledge Distribution Line</option>  --%>
                 <option value="giftInKind" >Gift In Kind</option>
 			    <option value="communicationHistory" >Touch Point</option>
 		      </select>

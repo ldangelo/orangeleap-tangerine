@@ -141,17 +141,15 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
 	    validateRecurringGift(recurringGift, true);
 
+	    RecurringGift old = getExisting(recurringGift);
+	    
         recurringGift.setAutoPay(true);
 
-        RecurringGift result = save(recurringGift);
+        RecurringGift savedRecurringGift = save(recurringGift);
 
-        if (result.isActivate()) {
-        	scheduledItemService.extendSchedule(result);
-    		reminderService.generateDefaultReminders(result);
-        	setNextRun(result);
-        }
+        maintainSchedules(old, savedRecurringGift);
 
-        return result;
+        return savedRecurringGift;
     }
     
     private void setNextRun(RecurringGift recurringGift) {
@@ -182,7 +180,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 		    }
 		}
 	}
-
+ 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public RecurringGift editRecurringGift(RecurringGift recurringGift) throws BindException {
@@ -196,6 +194,12 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
         RecurringGift savedRecurringGift = save(recurringGift);
 
+        maintainSchedules(old, savedRecurringGift);
+
+        return savedRecurringGift;
+    }
+    
+    private void maintainSchedules(RecurringGift old, RecurringGift savedRecurringGift) {
         if (savedRecurringGift.isActivate()) {
         	if (needToResetSchedule(old, savedRecurringGift)) {
         		reminderService.deleteReminders(savedRecurringGift);
@@ -205,15 +209,12 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         	}
     		scheduledItemService.extendSchedule(savedRecurringGift);
     		reminderService.generateDefaultReminders(savedRecurringGift);
-    		setNextRun(savedRecurringGift);
         } else {
         	reminderService.deleteReminders(savedRecurringGift);
         	scheduledItemService.deleteSchedule(savedRecurringGift);
         }
-
-        return savedRecurringGift;
+        setNextRun(savedRecurringGift);
     }
-    
 
     private RecurringGift getExisting(RecurringGift recurringGift) {
 	    if (recurringGift.getId() == null || recurringGift.getId().equals(0)) return null;

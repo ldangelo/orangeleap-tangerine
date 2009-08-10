@@ -63,7 +63,7 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
 	    }
 	    ModelAndView mav;
 	    if (saved) {
-	        mav = new ModelAndView(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+	        mav = new ModelAndView(appendSaved(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
 	    }
 	    else {
 			mav = showForm(request, formErrors, getFormView());

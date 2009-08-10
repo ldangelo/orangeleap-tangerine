@@ -56,7 +56,7 @@ public class GiftViewController extends TangerineConstituentAttributesFormContro
         ModelAndView mav;
 	    try {
             gift = giftService.editGift(gift);
-            mav = new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + gift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+            mav = new ModelAndView(appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + gift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
 	    }
 	    catch (BindException domainErrors) {
 		    bindDomainErrorsToForm(request, formErrors, domainErrors, form, gift);

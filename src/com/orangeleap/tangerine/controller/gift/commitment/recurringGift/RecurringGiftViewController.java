@@ -40,12 +40,16 @@ public class RecurringGiftViewController extends RecurringGiftFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 	    TangerineForm form = (TangerineForm) command;
         RecurringGift recurringGift = (RecurringGift) form.getDomainObject();
+
+        ModelAndView mav;
 	    try {
             recurringGift = recurringGiftService.editRecurringGift(recurringGift);
+            mav = new ModelAndView(appendSaved(getSuccessView() + "?" + getParamId() + "=" + recurringGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
 	    }
 	    catch (BindException domainErrors) {
 		    bindDomainErrorsToForm(request, formErrors, domainErrors, form, recurringGift);
+            mav = showForm(request, formErrors, getFormView());
 	    }
-        return new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + recurringGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+        return mav;
     }
 }

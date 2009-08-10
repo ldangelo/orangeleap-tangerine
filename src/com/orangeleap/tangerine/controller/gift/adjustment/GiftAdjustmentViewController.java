@@ -71,12 +71,16 @@ public class GiftAdjustmentViewController extends TangerineConstituentAttributes
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 		TangerineForm form = (TangerineForm) command;
 		AdjustedGift anAdjustedGift = (AdjustedGift) form.getDomainObject();
+
+        ModelAndView mav;
 		try {
 	        anAdjustedGift = adjustedGiftService.editAdjustedGift(anAdjustedGift);
+            mav = new ModelAndView(appendSaved(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
 		}
 		catch (BindException domainErrors) {
 			bindDomainErrorsToForm(request, formErrors, domainErrors, form, anAdjustedGift);
+            mav = showForm(request, formErrors, getFormView());
 		}
-	    return new ModelAndView(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+	    return mav;
 	}
 }

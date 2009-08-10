@@ -55,8 +55,8 @@ public class CommunicationHistoryViewController extends CommunicationHistoryForm
         }
 	    ModelAndView mav;
 	    if (saved) {
-	        mav = new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" +
-			        StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+	        mav = new ModelAndView(appendSaved(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" +
+			        StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
 	    }
 	    else {
 	        mav = super.showForm(request, formErrors, getFormView());

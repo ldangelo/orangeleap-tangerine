@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
@@ -37,6 +38,8 @@ import com.orangeleap.tangerine.type.PageType;
 public class ConstituentImporter extends EntityImporter {
 	
     protected final Log logger = OLLogger.getLog(getClass());
+    
+    private static String ACCOUNT_NUMBER = "accountNumber";
 
     private ConstituentService constituentService;
     private SiteService siteService;
@@ -51,7 +54,7 @@ public class ConstituentImporter extends EntityImporter {
 	
 	@Override
 	public String getIdField() {
-		return "accountNumber";
+		return ACCOUNT_NUMBER;
 	}
 	
 	@Override
@@ -84,10 +87,18 @@ public class ConstituentImporter extends EntityImporter {
 		// We want constituent relationship maintenance, so type maps are required, similar to manual edit screen.
 		siteservice.populateDefaultEntityEditorMaps(constituent);
 
+		// Ignore a blank account number field instead of treating it as 0.
+		if (action.equals(EntityImporter.ACTION_ADD)) {
+			String accountNumber = values.get(ACCOUNT_NUMBER);
+			if (accountNumber != null && accountNumber.length() == 0) values.remove(ACCOUNT_NUMBER);
+		}
+
 		if (action.equals(EntityImporter.ACTION_DELETE)) {
-			// TODO How to delete or set constituent to inactive?
+			// not currently supported
+			throw new RuntimeException("Delete action not supported.");
 		} else {
 			mapValuesToObject(values, constituent);
+			removeBlankFields(constituent);
 		}
 		
 		if (action.equals(EntityImporter.ACTION_ADD)) {
@@ -99,6 +110,17 @@ public class ConstituentImporter extends EntityImporter {
 		
 	}
 	
+	private void removeBlankFields(Constituent constituent) {
+		if (constituent.getPrimaryAddress() != null && !StringUtils.hasText(constituent.getPrimaryAddress().getAddressLine1())) {
+			constituent.setPrimaryAddress(null);
+		}
+		if (constituent.getPrimaryEmail() != null && !StringUtils.hasText(constituent.getPrimaryEmail().getEmailAddress())) {
+			constituent.setPrimaryEmail(null);
+		}
+		if (constituent.getPrimaryPhone() != null && !StringUtils.hasText(constituent.getPrimaryPhone().getNumber())) {
+			constituent.setPrimaryPhone(null);
+		}
+	}
 	
 	
 }

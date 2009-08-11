@@ -18,6 +18,33 @@
 
 package com.orangeleap.tangerine.service.communication;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.validation.BindException;
+
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceProperty;
 import com.jaspersoft.jasperserver.irplugin.JServer;
@@ -28,28 +55,11 @@ import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.validation.BindException;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.util.*;
 
 //@Service("emailSendingService")
 public class EmailService implements ApplicationContextAware {
@@ -61,12 +71,13 @@ public class EmailService implements ApplicationContextAware {
     private String templateName = null;
     private String subject = null;
     private CommunicationHistoryService communicationHistoryService;
-    private java.util.Map map = new HashMap();
+    private java.util.Map<String, String> map = new HashMap<String, String>();
     private Site site;
     private ApplicationContext applicationContext;
     private JasperPrint print;
 
     private File runReport() {
+    	
         File temp = null;
         TangerineUserHelper tuh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
         jserver = new JServer();
@@ -75,10 +86,11 @@ public class EmailService implements ApplicationContextAware {
 //		jserver.setPassword(tuh.lookupUserPassword());
         jserver.setPassword(site.getJasperPassword());
         jserver.setUrl(uri);
+        
         try {
             WSClient client = jserver.getWSClient();
 
-            Map params = getReportParameters();
+            Map<String, String> params = getReportParameters();
 
             print = getServer().getWSClient().runReport(
                     getReportUnit().getDescriptor(), params);
@@ -100,48 +112,34 @@ public class EmailService implements ApplicationContextAware {
         return temp;
     }
 
-    @SuppressWarnings("unchecked")
-    private void setParameters(Constituent p, Gift g) {
-        Class c = p.getClass();
-        Field[] fields = c.getDeclaredFields();
-        for (Field f : fields) {
-            try {
-                map.put(f.getName(), f.get(p).toString());
-            } catch (IllegalArgumentException e) {
-                logger.error(e.getMessage());
-            } catch (IllegalAccessException e) {
-                logger.error(e.getMessage());
-            }
-        }
-
-        c = g.getClass();
-        fields = c.getDeclaredFields();
-        for (Field f : fields) {
-            try {
-                map.put(f.getName(), f.get(p).toString());
-            } catch (IllegalArgumentException e) {
-                logger.error(e.getMessage());
-            } catch (IllegalAccessException e) {
-                logger.error(e.getMessage());
-            }
-        }
-    }
-
     public void sendMail(String addresses, Constituent p, Gift g, String subject, String templateName, List<Email> selectedEmails) {
+    	sendMail(addresses, p, g, null, null, new HashMap<String, String>(), subject, templateName, selectedEmails);
+    }
+    
+    public void sendMail(String addresses, Constituent p, Gift g, RecurringGift recurringGift, Pledge pledge, Map<String, String> reportParams, String subject, String templateName, List<Email> selectedEmails) {
+    	
         setSubject(subject);
         setTemplateName(templateName);
 
-        Site s = g.getSite();
+        Site s = (g == null) ? p.getSite() : g.getSite();
         setSite(s);
 
-        Map params = getReportParameters();
+        Map<String, String> params = getReportParameters();
         params.clear();
 
 
         params.put("Id", p.getId().toString());
-        params.put("GiftId", g.getId().toString());
-        params.put("GiftAmount", g.getAmount().toString());
-
+        if (g != null) {
+        	params.put("GiftId", g.getId().toString());
+            params.put("GiftAmount", g.getAmount().toString());
+        }
+        if (recurringGift != null) {
+        	params.put("RecurringGiftId", recurringGift.getId().toString());
+        }
+        if (pledge != null) {
+        	params.put("PledgeId", pledge.getId().toString());
+        }
+        params.putAll(reportParams);
 
         //
         // next we extract the output of the report and put it into a mime
@@ -169,7 +167,12 @@ public class EmailService implements ApplicationContextAware {
         	FileSystemResource file = new FileSystemResource(tempFile);
             try {
                 helper.addAttachment(getTemplateName() + ".pdf", file);
-                helper.setText("Thank you for your recent donation!");
+                
+                String itemName = "recent donation";
+                if (recurringGift != null) itemName = "commitment";
+                if (pledge != null) itemName = "pledge";
+                
+                helper.setText("Thank you for your "+itemName+"!");
                 helper.setSubject(subject);
                 helper.setFrom(site.getSmtpFromAddress());
 
@@ -188,7 +191,9 @@ public class EmailService implements ApplicationContextAware {
                 	for (Email e : selectedEmails) {
                         CommunicationHistory ch = new CommunicationHistory();
                         ch.setConstituent(p);
-                        ch.setGiftId(g.getId());
+                        if (g != null) ch.setGiftId(g.getId());
+                        if (recurringGift != null) ch.setRecurringGiftId(recurringGift.getId());
+                        if (pledge != null) ch.setPledgeId(pledge.getId());
                         ch.setSystemGenerated(true);
                         ch.setComments("Sent e-mail using template named " + getTemplateName());
                         ch.setEntryType("Email");
@@ -208,7 +213,9 @@ public class EmailService implements ApplicationContextAware {
                 	//note touchpoint
                 	CommunicationHistory ch = new CommunicationHistory();
                     ch.setConstituent(p);
-                    ch.setGiftId(g.getId());
+                    if (g != null) ch.setGiftId(g.getId());
+                    if (recurringGift != null) ch.setRecurringGiftId(recurringGift.getId());
+                    if (pledge != null) ch.setPledgeId(pledge.getId());
                     ch.setSystemGenerated(true);
                     ch.setComments("Sent e-mail to " + addresses + " reason: " + subject);
                     ch.setEntryType("Note");
@@ -238,6 +245,10 @@ public class EmailService implements ApplicationContextAware {
     }
 
     public void sendMail(Constituent p, Gift g, String subject, String templateName) {
+    	sendMail(p,  g,  null, null, new HashMap<String, String>(), subject,  templateName);
+    }
+    
+    public void sendMail(Constituent p, Gift g, RecurringGift recurringGift, Pledge pledge, Map<String, String> reportParams, String subject, String templateName) {
         String strEmailAddrs = "";
         List<Email> selectedEmails = new LinkedList<Email>();
         setSubject(subject);
@@ -267,7 +278,7 @@ public class EmailService implements ApplicationContextAware {
             return;
         }
 
-        this.sendMail(strEmailAddrs, p, g, subject, templateName, selectedEmails);
+        this.sendMail(strEmailAddrs, p, g, recurringGift, pledge, reportParams, subject, templateName, selectedEmails);
 /*
         //
         // add entry to touchpoints for this e-mail
@@ -303,7 +314,7 @@ public class EmailService implements ApplicationContextAware {
         return this.templateName;
     }
 
-    private Map getReportParameters() {
+    private Map<String, String> getReportParameters() {
 
         return map;
     }
@@ -317,9 +328,9 @@ public class EmailService implements ApplicationContextAware {
         rd.setWsType(ResourceDescriptor.TYPE_REPORTUNIT);
         List<ResourceProperty> p = new ArrayList<ResourceProperty>();
 
-        Iterator it = map.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry me = (Map.Entry) it.next();
+            Map.Entry<String, String> me = it.next();
 
             ResourceProperty rp = new ResourceProperty(me.getKey().toString(), me.getValue().toString());
             p.add(rp);

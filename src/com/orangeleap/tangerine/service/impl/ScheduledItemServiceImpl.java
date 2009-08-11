@@ -125,8 +125,10 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     public ScheduledItem completeItem(ScheduledItem scheduledItem, AbstractEntity resultEntity, String completionStatus) {
     	scheduledItem.setCompletionDate(new Date());
     	scheduledItem.setCompletionStatus(completionStatus);
-    	scheduledItem.setResultEntity(resultEntity.getType());
-    	scheduledItem.setResultEntityId(resultEntity.getId());
+    	if (resultEntity != null) {
+    		scheduledItem.setResultEntity(resultEntity.getType());
+        	scheduledItem.setResultEntityId(resultEntity.getId());
+    	}
     	scheduledItemDao.maintainScheduledItem(scheduledItem);
     	return scheduledItem;
     }

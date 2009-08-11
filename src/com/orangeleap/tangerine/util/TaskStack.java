@@ -66,6 +66,10 @@ public class TaskStack {
             RulesInterceptor ri = (RulesInterceptor) task.getContext().getBean("emailInterceptor");
             ri.doApplyRules(task.getGift());
         }
-
     }
+    
+    public static void clear() {
+    	getStack().clear();
+    }
+    
 }

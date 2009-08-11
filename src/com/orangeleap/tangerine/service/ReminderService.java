@@ -43,4 +43,6 @@ public interface ReminderService {
 	
 	public Schedulable getParent(ScheduledItem item);
 	
+	public void processReminder(ScheduledItem reminder);
+	
 }

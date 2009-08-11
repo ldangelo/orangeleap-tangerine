@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
@@ -266,5 +268,30 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		}
 		
 	}
+	
+	@Override
+	public void processReminder(ScheduledItem reminder) {
+		
+		ScheduledItem scheduledPayment = (ScheduledItem)getParent(reminder);
+    	Schedulable schedulable = getParent(scheduledPayment);
+    	
+    	if (schedulable instanceof RecurringGift) {
+    	
+    		// TODO This can go in either reminder service or recurring gift service as there might be different versions for pledge etc.  Touch point generation might also be involved.
+    		RecurringGift recurringGift = (RecurringGift)schedulable;
+        	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(RecurringGiftServiceImpl.GIFT_AMOUNT_OVERRIDE);
+        	BigDecimal amount = giftOverrideAmount == null ? recurringGift.getAmountPerGift() : new BigDecimal(giftOverrideAmount);
+        	
+        	// Only logging a message for now.
+        	logger.debug("Notification for Recurring Gift " + recurringGift.getId() + " in the amount of " + amount + " for date " + scheduledPayment.getActualScheduledDate());
+        	
+        	CommunicationHistory touchpoint = null; // May save the related touchpoint id here.
+        	scheduledItemService.completeItem(reminder, touchpoint, "Reminder processed");
+        	
+    	}
+        	
+	}
+
+	
 
 }

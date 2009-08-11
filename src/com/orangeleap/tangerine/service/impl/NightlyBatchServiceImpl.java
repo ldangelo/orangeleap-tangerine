@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.NightlyBatchService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TaskStack;
 
@@ -51,9 +52,13 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
 
+    @Resource(name = "reminderService")
+    private ReminderService reminderService;
+
     // Non-transactional method
     @Override
     public synchronized void processRecurringGifts() {
+    	
         if (logger.isTraceEnabled()) {
             logger.trace("processRecurringGifts:");
         }
@@ -89,7 +94,44 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
                 
             }
         }
+        
+        processReminders();
+        
     }
+    
+    // Non-transactional method
+    @Override
+    public synchronized void processReminders() {
+    	
+        if (logger.isTraceEnabled()) {
+            logger.trace("processReminders:");
+        }
+
+        Calendar cal = getToday();
+        Date today = cal.getTime();
+
+        List<ScheduledItem> reminders = reminderService.getRemindersToProcess(today);
+
+        for (ScheduledItem reminder : reminders) {
+        	
+        	try {
+	        	
+        		reminderService.processReminder(reminder);
+	        	
+	            try {
+	                TaskStack.execute();
+	            } catch (Exception e) {
+	                logger.error(e.getMessage());
+	            }
+	            
+        	} catch (Exception e) {
+        		logger.error("Error processing reminder "+reminder.getId(), e);
+        		TaskStack.clear();
+        	}
+        	
+        }        
+                
+    }            
     
 
 }

@@ -23,5 +23,6 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 public interface NightlyBatchService extends CommitmentService<RecurringGift> {
     
     public void processRecurringGifts();
+    public void processReminders();
     
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="orangeleap" basedir=".." default="8. Redeploy and Restart Tomcat">
-	
+
 	<import file="tangerine-build.xml"/>
 	<property name="load.base.data.file" value="${basedir}/build/build-base-data.xml" />
-	
+
 	<property file="${basedir}/build/build.properties" />
 	<property file="${commonBuild.dir}/commonBuild.properties"/>
 	<property name="build.env" value="dev"/>
@@ -26,7 +26,7 @@
 			<pathelement location="${antcontrib.jar}" />
 		</classpath>
 	</taskdef>
-	
+
 	<target name="1. Deploy Exploded War" description="Deploys the exploded war.">
 		<antcall target="deploy-exploded-war" />
 	</target>
@@ -99,7 +99,7 @@
 
 	<target name="9. Load Data" depends="resolve">
 		 <ant antfile="${load.base.data.file}" target="load.base.data" />
-		
+
 	     <sql driver="${mysql.db.driver}"
 	          url="${mysql.db.url}"
 	          userid="${mysql.db.user}"
@@ -127,7 +127,7 @@
 			<transaction src="${basedir}/db/dev/devSetup/dashboardGifts.sql"/>
 	     </sql>
 	</target>
-	
+
 	<target name="9.1. Clear Schema" depends="resolve">
 	     <sql driver="${mysql.db.driver}"
 	          url="${mysql.db.url}"
@@ -153,7 +153,7 @@
  	              delimiter=";">
 		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
 	    </sql>
-	
+
 		<sql driver="${mysql.db.driver}"
 		          url="${mysql.db.url}"
 		          userid="${mysql.db.user}"
@@ -162,7 +162,7 @@
 		          classpath="${compile.lib}"
 		     	  delimiter="$$">
 		    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
-		</sql>		
+		</sql>
 	</target>
 
 	<target name="9.4 Load Extra Schema" depends="resolve">
@@ -245,5 +245,40 @@
 		<echo>Use "clean-local" to clean the Local repository for the current module</echo>
 		<echo>Use "uberclean" to delete the ivy local repository, ivy cache, and project build</echo>
 	</target>
+
+	<target name="9.7 Load Schema Base Data and Sample Merchant ID's" depends="resolve">
+		<!-- Load Schema -->
+		<sql driver="${mysql.db.driver}"
+		          url="${mysql.db.url}"
+		          userid="${mysql.db.user}"
+		          password="${mysql.db.pw}"
+		          encoding="UTF-8"
+		          classpath="${compile.lib}"
+ 	              delimiter=";">
+		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
+	    </sql>
+		<sql driver="${mysql.db.driver}"
+		          url="${mysql.db.url}"
+		          userid="${mysql.db.user}"
+		          password="${mysql.db.pw}"
+		          encoding="UTF-8"
+		          classpath="${compile.lib}"
+		     	  delimiter="$$">
+		    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
+		</sql>
+		<!--Load Base Data Only -->
+		 <ant antfile="${load.base.data.file}" target="load.base.data" />
+		<!-- Load Sample Merchant Ids -->
+	     <sql driver="${mysql.db.driver}"
+		          url="${mysql.db.url}"
+		          userid="${mysql.db.user}"
+		          password="${mysql.db.pw}"
+		          encoding="UTF-8"
+		          classpath="${compile.lib}"
+	              delimiter=";">
+	        <transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
+	    </sql>
+	</target>
+
 
 </project>

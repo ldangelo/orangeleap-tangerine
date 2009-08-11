@@ -7,8 +7,8 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.apache.commons.logging.Log;
-import org.springframework.context.ApplicationContext;
 import org.springframework.beans.BeanWrapper;
+import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,9 +55,8 @@ public class DateDisplayHandler extends AbstractFieldHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         SimpleDateFormat sdf = new SimpleDateFormat(getDateFormat());
-        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
         Object displayValue = StringConstants.EMPTY;
 
         if (fieldValue != null && fieldValue instanceof Date) {

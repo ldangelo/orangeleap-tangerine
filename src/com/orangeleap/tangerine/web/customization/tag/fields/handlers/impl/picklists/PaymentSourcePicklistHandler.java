@@ -132,7 +132,7 @@ public class PaymentSourcePicklistHandler extends AbstractPicklistHandler {
     }
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object domainObject = beanWrapper.getWrappedInstance();
         PaymentSource paymentSource = null;
         Object displayValue = StringConstants.EMPTY;

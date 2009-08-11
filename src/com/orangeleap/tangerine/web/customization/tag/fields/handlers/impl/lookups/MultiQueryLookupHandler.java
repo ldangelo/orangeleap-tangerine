@@ -171,8 +171,7 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         List<String> displayValues = new ArrayList<String>();
         if (fieldValue != null) {
             Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);

@@ -83,7 +83,7 @@ public class AddressPicklistHandler extends AbstractPicklistHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Address address = null;
         Object domainObject = beanWrapper.getWrappedInstance();
         if (domainObject instanceof Address) {

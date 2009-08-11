@@ -239,9 +239,8 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
-        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
         Object displayValue = StringConstants.EMPTY;
 
         if (fieldValue != null) {

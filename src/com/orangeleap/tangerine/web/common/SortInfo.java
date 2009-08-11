@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.web.common;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.dao.ibatis.AbstractIBatisDao;
 
 import java.util.Map;
@@ -58,7 +59,7 @@ public class SortInfo {
     }
 
     public void setSort(String sort) {
-        this.sort = sort == null ? null : sort.trim();
+        this.sort = sort == null ? null : TangerineForm.unescapeFieldName(sort.trim());
     }
 
     public int getLimit() {

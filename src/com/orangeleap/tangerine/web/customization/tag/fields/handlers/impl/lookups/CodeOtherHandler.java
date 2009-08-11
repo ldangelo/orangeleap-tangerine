@@ -3,6 +3,7 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.look
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
@@ -47,15 +48,17 @@ public class CodeOtherHandler extends CodeHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object displayValue;
         if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
-            displayValue = super.resolveDisplayValue(request, beanWrapper, currentField);
+            displayValue = super.resolveDisplayValue(request, beanWrapper, currentField, fieldValue);
         }
         else {
             String otherFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, currentField.getFieldPropertyName());
             displayValue = beanWrapper.getPropertyValue(otherFieldName);
+            if (displayValue instanceof CustomField) {
+                displayValue = ((CustomField) displayValue).getValue();
+            }
         }
         return displayValue == null ? StringConstants.EMPTY : displayValue;
     }

@@ -179,14 +179,12 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object displayValue = StringConstants.EMPTY;
         Picklist picklist = resolvePicklist(currentField);
         if (picklist != null && beanWrapper != null) {
-            Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
 	        for (PicklistItem item : picklist.getActivePicklistItems()) {
 		        if (StringUtils.hasText(item.getItemName())) {
-
 					String picklistItemDisplayValue = resolvePicklistItemDisplayValue(item, request);
 
 			        if (StringUtils.hasText(picklistItemDisplayValue) && fieldValue != null && fieldValue.toString().equals(item.getItemName())) {

@@ -338,8 +338,8 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        Object displayValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
+        Object displayValue = fieldValue;
         if (displayValue == null) {
             displayValue = StringConstants.EMPTY;
         }

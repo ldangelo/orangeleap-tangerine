@@ -19,19 +19,20 @@
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.multi;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
-import org.springframework.beans.BeanWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: alexlo
@@ -106,13 +107,16 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        Object displayValue = super.resolveDisplayValue(request, beanWrapper, currentField);
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
+        Object displayValue = super.resolveDisplayValue(request, beanWrapper, currentField, fieldValue);
         String additionalFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, currentField.getFieldPropertyName());
 
         Object additionalFieldValue = null;
         if (beanWrapper.isReadableProperty(additionalFieldName)) {
             additionalFieldValue = beanWrapper.getPropertyValue(additionalFieldName);
+            if (additionalFieldValue instanceof CustomField) {
+                additionalFieldValue = ((CustomField) additionalFieldValue).getValue();
+            }
         }
         List<String> additionalValues = new ArrayList<String>();
         if (additionalFieldValue != null) {

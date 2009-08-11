@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.look
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
@@ -167,8 +168,7 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         List<String> displayValues = new ArrayList<String>();
 
         if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
@@ -181,6 +181,9 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
         }
         String additionalFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, currentField.getFieldPropertyName());
         Object additionalFieldValue = beanWrapper.getPropertyValue(additionalFieldName);
+        if (additionalFieldValue instanceof CustomField) {
+            additionalFieldValue = ((CustomField) additionalFieldValue).getValue();
+        }
 
         if (additionalFieldValue != null && StringUtils.hasText(additionalFieldValue.toString())) {
             Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);

@@ -62,9 +62,7 @@ public class CheckboxHandler extends AbstractFieldHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
-
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         String displayValue = "N";
         if (fieldValue != null &&
                 ((fieldValue instanceof Boolean && Boolean.TRUE.equals(fieldValue)) || "true".equalsIgnoreCase(fieldValue.toString()))) {

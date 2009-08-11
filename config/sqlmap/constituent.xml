@@ -22,8 +22,13 @@
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="accountNumber" column="ACCOUNT_NUMBER" jdbcType="BIGINT" />
         <result property="site" resultMap="SITE.SITE_NAME_RESULT" />
-
 	</resultMap>
+
+    <resultMap id="CONSTITUENT_LIST_RESULT" class="com.orangeleap.tangerine.domain.Constituent" groupBy="id" extends="CONSTITUENT_RESULT">
+        <result property="primaryAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
+        <result property="primaryPhone" resultMap="PHONE.PHONE_RESULT" />
+        <result property="primaryEmail" resultMap="EMAIL.EMAIL_RESULT" />
+    </resultMap>
 
     <sql id="CONSTITUENT_COLS_FRAGMENT">
     	p.CONSTITUENT_ID, 
@@ -58,9 +63,14 @@
 
 	</select>
 
-    <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+    <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_LIST_RESULT" parameterClass="map">
         select
+                
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="EMAIL_COLS_FRAGMENT" />,
+
         ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') as majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') as lapsedDonor
         <dynamic prepend=",">
         	<isNotEqual property="sortColumn" compareValue="majorDonor">
@@ -69,7 +79,22 @@
         		</isNotEqual>
         	</isNotEqual>
         </dynamic>
+
         from CONSTITUENT p
+        left outer join PHONE ph on p.CONSTITUENT_ID = ph.CONSTITUENT_ID and ph.IS_PRIMARY = 1
+        left outer join ADDRESS addr on p.CONSTITUENT_ID = addr.CONSTITUENT_ID and addr.IS_PRIMARY = 1
+        left outer join EMAIL e on p.CONSTITUENT_ID = e.CONSTITUENT_ID and e.IS_PRIMARY = 1
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on p.CONSTITUENT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
         where p.SITE_NAME = #siteName#
         order by 
        	<isNotEqual property="sortColumn" compareValue="majorDonor">

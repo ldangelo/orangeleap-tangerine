@@ -18,8 +18,10 @@
 
 package com.orangeleap.tangerine.json.controller;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -35,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractListController {
+public abstract class TangerineJsonListController {
 
     @Resource(name = "pageCustomizationService")
     protected PageCustomizationService pageCustomizationService;
@@ -58,9 +60,13 @@ public abstract class AbstractListController {
 
                     Object displayValue = StringConstants.EMPTY;
                     if (beanWrapper.isReadableProperty(field.getFieldPropertyName())) {
-                        displayValue = handler.resolveDisplayValue(request, PropertyAccessorFactory.forBeanPropertyAccess(thisEntity), field);
+                        Object fieldValue = beanWrapper.getPropertyValue(field.getFieldPropertyName());
+                        if (fieldValue instanceof CustomField) {
+                            fieldValue = ((CustomField) fieldValue).getValue();
+                        }
+                        displayValue = handler.resolveDisplayValue(request, PropertyAccessorFactory.forBeanPropertyAccess(thisEntity), field, fieldValue);
                     }
-                    paramMap.put(fieldPropertyName, displayValue);
+                    paramMap.put(TangerineForm.escapeFieldName(fieldPropertyName), displayValue);
                 }
             }
             paramMapList.add(paramMap);

@@ -151,7 +151,6 @@ public class SectionFieldTag extends AbstractTag {
                     assert fields != null && !fields.isEmpty();
 
                     removeIdField(fields);
-
                     Object entity = getTangerineForm().getDomainObject();
                     String entityType = StringUtils.uncapitalize(entity.getClass().getSimpleName());
                     sb.append("<script type='text/javascript'>");
@@ -174,8 +173,10 @@ public class SectionFieldTag extends AbstractTag {
 
                     int z = 0;
                     for (SectionField sectionFld : fields) {
-                        sb.append("{name: '").append(sectionFld.getFieldPropertyName()).append("', ");
-                        sb.append("mapping: '").append(sectionFld.getFieldPropertyName()).append("', ");
+                        String escapedFieldName = TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName());
+
+                        sb.append("{name: '").append(escapedFieldName).append("', ");
+                        sb.append("mapping: '").append(escapedFieldName).append("', ");
                         String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
                         sb.append("type: '").append(extType).append("'");
                         if ("date".equals(extType)) {
@@ -190,7 +191,7 @@ public class SectionFieldTag extends AbstractTag {
                         }
                     }
                     sb.append("],\n");
-                    sb.append("sortInfo: { field: '").append(fields.get(0).getFieldPropertyName()).append("', direction: 'ASC' }\n");
+                    sb.append("sortInfo: { field: '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', direction: 'ASC' }\n");
                     sb.append("});\n");
 
                     sb.append("OrangeLeap.").append(entityType).append(".pagingBar = new Ext.PagingToolbar({\n");
@@ -209,7 +210,7 @@ public class SectionFieldTag extends AbstractTag {
                     int y = 0;
                     for (SectionField sectionFld : fields) {
                         sb.append("{header: '").append(sectionFld.getFieldDefinition().getDefaultLabel()).append("', ");
-                        sb.append("dataIndex: '").append(sectionFld.getFieldPropertyName()).append("', sortable: true");
+                        sb.append("dataIndex: '").append(TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName())).append("', sortable: true");
 
                         String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
                         if (ExtTypeHandler.EXT_FLOAT.equals(extType) || ExtTypeHandler.EXT_BOOLEAN.equals(extType) ||
@@ -251,7 +252,8 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("bbar: OrangeLeap.").append(entityType).append(".pagingBar,\n");
                     sb.append("renderTo: '").append(entityType).append("Grid'\n");
                     sb.append("});\n");
-                    sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '").append(fields.get(0).getFieldPropertyName()).append("', dir: 'ASC'}});\n");
+                    sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
+                    sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'ASC'}});\n");
                     sb.append("});\n");
                     sb.append("</script>");
 				}

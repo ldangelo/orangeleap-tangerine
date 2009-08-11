@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.look
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
@@ -51,15 +52,17 @@ public class QueryLookupOtherHandler extends QueryLookupHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object displayValue = StringConstants.EMPTY;
         if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
-            displayValue = super.resolveDisplayValue(request, beanWrapper, currentField);
+            displayValue = super.resolveDisplayValue(request, beanWrapper, currentField, fieldValue);
         }
         else {
             String otherFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, currentField.getFieldPropertyName());
             Object otherFieldValue = beanWrapper.getPropertyValue(otherFieldName);
+            if (otherFieldValue instanceof CustomField) {
+                otherFieldValue = ((CustomField) otherFieldValue).getValue();
+            }
 
             if (otherFieldValue != null && StringUtils.hasText(otherFieldValue.toString())) {
                 displayValue = otherFieldValue;

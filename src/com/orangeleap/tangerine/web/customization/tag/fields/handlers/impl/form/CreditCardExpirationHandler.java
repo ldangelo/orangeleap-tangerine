@@ -116,7 +116,7 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
     }
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object domainObject = beanWrapper.getWrappedInstance();
         PaymentSource paymentSource = null;
         if (domainObject instanceof PaymentSource) {

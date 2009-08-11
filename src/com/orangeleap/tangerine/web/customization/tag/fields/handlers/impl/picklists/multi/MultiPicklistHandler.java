@@ -184,11 +184,11 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 	}
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Picklist picklist = resolvePicklist(currentField);
         List<String> displayValues = new ArrayList<String>();
         if (picklist != null) {
-            Object[] fieldVals = splitValuesByCustomFieldSeparator(beanWrapper.getPropertyValue(currentField.getFieldPropertyName()));
+            Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
 
             for (PicklistItem item : picklist.getActivePicklistItems()) {
                 boolean foundValue = false;

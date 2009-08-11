@@ -136,7 +136,7 @@ public class CodeHandler extends AbstractFieldHandler {
     }
 
     @Override
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        return resolveCodeValue(currentField.getFieldPropertyName(), beanWrapper.getPropertyValue(currentField.getFieldPropertyName()));  
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
+        return resolveCodeValue(currentField.getFieldPropertyName(), fieldValue);  
     }
 }

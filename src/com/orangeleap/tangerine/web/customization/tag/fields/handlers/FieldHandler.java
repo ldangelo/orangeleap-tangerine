@@ -3,12 +3,11 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
-
-import javax.servlet.jsp.PageContext;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-
 import org.springframework.beans.BeanWrapper;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
+import java.util.List;
 
 public interface FieldHandler {
 
@@ -23,5 +22,5 @@ public interface FieldHandler {
 
 	String resolveLabelText(PageContext pageContext, SectionField sectionField);
 
-    Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField);
+    Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue);
 }

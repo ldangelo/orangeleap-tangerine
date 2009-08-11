@@ -235,8 +235,7 @@ public class SelectionHandler extends AbstractFieldHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
-        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         final List<String> displayValues = new ArrayList<String>();
 
         if (fieldValue != null) {

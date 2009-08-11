@@ -59,8 +59,7 @@ public class IBatisCustomFieldHelper {
      * Read the custom fields for the specified entity type and ID. The combination
      * of these two values uniquely identify a custom field.
      *
-     * @param entityId   the ID of the entity the custom field is associated with
-     * @param entityType the type of the entity
+     * @param entity  the entity
      * @return the Map of CustomFields, keyed by name
      */
     @SuppressWarnings("unchecked")

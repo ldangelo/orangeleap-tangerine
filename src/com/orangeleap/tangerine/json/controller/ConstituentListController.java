@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class ConstituentListController extends AbstractListController {
+public class ConstituentListController extends TangerineJsonListController {
 
     @Resource(name = "constituentService")
     private ConstituentService constituentService;

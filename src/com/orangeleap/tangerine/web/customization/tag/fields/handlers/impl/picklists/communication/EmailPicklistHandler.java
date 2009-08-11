@@ -83,7 +83,7 @@ public class EmailPicklistHandler extends AbstractPicklistHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Email email = null;
         Object domainObject = beanWrapper.getWrappedInstance();
         if (domainObject instanceof Email) {

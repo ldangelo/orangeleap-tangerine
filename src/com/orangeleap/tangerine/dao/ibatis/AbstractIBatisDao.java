@@ -80,14 +80,26 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
         return params;
     }
 
-    protected Map<String, Object> setupSortParams(String resultMapName, String sortPropertyName, String dir, int start, int limit) {
+    protected Map<String, Object> setupSortParams(String entityType, String resultMapName, String sortPropertyName, String dir, int start, int limit) {
         Map<String, Object> params = setupParams();
-        if (StringUtils.hasText(resultMapName)) {
+
+        /* Custom fields are treated differently than regular bean properties - they have to be sorted differently */
+        int startIndex = sortPropertyName.indexOf(StringConstants.CUSTOM_FIELD_MAP_START);
+        if (startIndex > -1) {
+            startIndex += StringConstants.CUSTOM_FIELD_MAP_START.length();
+            int endIndex = sortPropertyName.indexOf(']', startIndex);
+            params.put("fieldName", sortPropertyName.substring(startIndex, endIndex));
+            params.put("entityType", entityType);
+            params.put("asOfDate", new java.util.Date());
+            sortPropertyName = "FIELD_VALUE";
+        }
+        else if (StringUtils.hasText(resultMapName)) {
             Map<String, String> beanPropertyColumnMap = findBeanPropertyColumnMap(resultMapName);
             if (beanPropertyColumnMap.get(sortPropertyName) != null) {
                 sortPropertyName = beanPropertyColumnMap.get(sortPropertyName);
             }
         }
+        
         params.put("sortColumn", oneWord(sortPropertyName));
         params.put("sortDir", oneWord(dir));
         params.put("offset", start);

@@ -310,6 +310,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		Map<String, String> map = new HashMap<String, String>();
 
 		Constituent constituent = constituentService.readConstituentById(recurringGift.getConstituentId());
+		constituent.setSite(siteService.readSite(constituent.getSite().getName()));
 		
     	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(RecurringGiftServiceImpl.GIFT_AMOUNT_OVERRIDE);
     	BigDecimal amount = giftOverrideAmount == null ? recurringGift.getAmountPerGift() : new BigDecimal(giftOverrideAmount);

@@ -16,29 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.controller.gift.commitment.pledge;
+package com.orangeleap.tangerine.controller.gift.commitment.recurringGift;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.Log;
+import com.orangeleap.tangerine.controller.TangerineGridController;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
 
-import com.orangeleap.tangerine.controller.TangerineListController;
-import com.orangeleap.tangerine.domain.GeneratedId;
-import com.orangeleap.tangerine.service.PledgeService;
-
-public class PledgeListController extends TangerineListController {
+public class RecurringGiftGridController extends TangerineGridController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name="pledgeService")
-    private PledgeService pledgeService;
-
     @Override
-    protected List<? extends GeneratedId> getList(Long constituentId) {
-        return pledgeService.readPledgesForConstituent(constituentId);
+    protected Object getDummyEntity() {
+        return new RecurringGift();
     }
 }

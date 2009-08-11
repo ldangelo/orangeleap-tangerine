@@ -269,14 +269,15 @@ public class EmailService implements ApplicationContextAware {
             }
         }
 
-        // remove the trailing ,
-        strEmailAddrs = strEmailAddrs.substring(0, strEmailAddrs.lastIndexOf(","));
-
         //
         // no e-mail addresses can receive mail
         if (selectedEmails.size() == 0) {
             return;
         }
+
+        // remove the trailing ,
+        strEmailAddrs = strEmailAddrs.substring(0, strEmailAddrs.lastIndexOf(","));
+
 
         this.sendMail(strEmailAddrs, p, g, recurringGift, pledge, reportParams, subject, templateName, selectedEmails);
 /*

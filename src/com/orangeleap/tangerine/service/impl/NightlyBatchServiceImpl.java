@@ -74,23 +74,29 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
         if (recurringGifts != null) {
             for (RecurringGift recurringGift : recurringGifts) {
             	
-            	if (!recurringGift.isActivate()) continue;
-
-            	recurringGiftService.extendPaymentSchedule(recurringGift);
+            	try {
             	
-            	ScheduledItem item = recurringGiftService.getNextPaymentToRun(recurringGift);
-            	if (item == null || item.getActualScheduledDate().after(today)) continue;  
-            	
-            	logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", actualScheduledDate =" + item.getActualScheduledDate());
-
-            	recurringGiftService.processRecurringGift(recurringGift, item);
-            	
-                try {
-                    TaskStack.execute();
-                } catch (Exception e) {
-                    logger.error(e.getMessage());
-                }
+	            	if (!recurringGift.isActivate()) continue;
+	
+	            	recurringGiftService.extendPaymentSchedule(recurringGift);
+	            	
+	            	ScheduledItem item = recurringGiftService.getNextPaymentToRun(recurringGift);
+	            	if (item == null || item.getActualScheduledDate().after(today)) continue;  
+	            	
+	            	logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", actualScheduledDate =" + item.getActualScheduledDate());
+	
+	            	recurringGiftService.processRecurringGift(recurringGift, item);
+	            	
+	                try {
+	                    TaskStack.execute();
+	                } catch (Exception e) {
+	                    logger.error(e.getMessage());
+	                }
                 
+            	} catch (Exception e) {
+            		logger.error("Error processing recurring gift "+recurringGift.getId(), e);
+            		TaskStack.clear();
+            	}
                 
             }
         }

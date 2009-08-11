@@ -19,11 +19,14 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -33,14 +36,17 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.service.communication.EmailService;
 import com.orangeleap.tangerine.util.OLLogger;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -57,11 +63,17 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
     @Resource(name = "scheduledItemService")
     private ScheduledItemService scheduledItemService;
     
+    @Resource(name = "constituentService")
+    private ConstituentService constituentService;
+    
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
     
     @Resource(name = "pledgeService")
     private PledgeService pledgeService;
+    
+    @Resource(name = "emailSendingService")
+    private EmailService emailService;
     
 	@Override
 	public List<ScheduledItem> listReminders(RecurringGift recurringGift, Date scheduledPaymentDate) {
@@ -277,19 +289,47 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
     	
     	if (schedulable instanceof RecurringGift) {
     	
-    		// TODO This can go in either reminder service or recurring gift service as there might be different versions for pledge etc.  Touch point generation might also be involved.
     		RecurringGift recurringGift = (RecurringGift)schedulable;
-        	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(RecurringGiftServiceImpl.GIFT_AMOUNT_OVERRIDE);
-        	BigDecimal amount = giftOverrideAmount == null ? recurringGift.getAmountPerGift() : new BigDecimal(giftOverrideAmount);
         	
-        	// Only logging a message for now.
-        	logger.debug("Notification for Recurring Gift " + recurringGift.getId() + " in the amount of " + amount + " for date " + scheduledPayment.getActualScheduledDate());
+        	String status;
+        	try {
+        		status = processRecurringGiftReminder(recurringGift, scheduledPayment);
+        	} catch (Exception e) {
+        		logger.error("Error processing reminder " + reminder.getId(), e);
+        		status = "Error";
+        	}
         	
-        	CommunicationHistory touchpoint = null; // May save the related touchpoint id here.
-        	scheduledItemService.completeItem(reminder, touchpoint, "Reminder processed");
+        	scheduledItemService.completeItem(reminder, null, status);
         	
     	}
         	
+	}
+	
+	private String processRecurringGiftReminder(RecurringGift recurringGift, ScheduledItem scheduledPayment) {
+
+		Map<String, String> map = new HashMap<String, String>();
+
+		Constituent constituent = constituentService.readConstituentById(recurringGift.getConstituentId());
+		
+    	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(RecurringGiftServiceImpl.GIFT_AMOUNT_OVERRIDE);
+    	BigDecimal amount = giftOverrideAmount == null ? recurringGift.getAmountPerGift() : new BigDecimal(giftOverrideAmount);
+		map.put("GiftAmount", amount.toString());
+    	
+    	Date scheduledPaymentDate = scheduledPayment.getActualScheduledDate();
+		SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+		map.put("ScheduledPaymentDate", sdf1.format(scheduledPaymentDate));
+		map.put("ScheduledPaymentDateDDMMYYYY", sdf2.format(scheduledPaymentDate));
+
+		String subject = "Thank you for your commitment!";
+		String template = "recurringGiftReminder";
+		
+    	logger.debug("Sending reminder for Recurring Gift " + recurringGift.getId() + " in the amount of " + amount + " for payment date " + scheduledPaymentDate);
+
+		emailService.sendMail(constituent, null, recurringGift, null, map, subject, template);
+		
+		return "Complete";
+		
 	}
 
 	

@@ -95,6 +95,7 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
             }
         }
         
+        recurringGifts = null; // if calling processReminders() from here, dont hold all this data on the stack
         processReminders();
         
     }

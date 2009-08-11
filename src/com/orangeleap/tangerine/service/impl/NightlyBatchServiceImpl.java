@@ -72,6 +72,10 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
         List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS /*, Commitment.STATUS_FULFILLED*/}));
 
         if (recurringGifts != null) {
+        	
+        	logger.info("Processing "+recurringGifts.size()+" recurring gifts.");
+        	long t = System.currentTimeMillis();
+        	
             for (RecurringGift recurringGift : recurringGifts) {
             	
             	try {
@@ -99,6 +103,9 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
             	}
                 
             }
+            
+            logger.info("Recurring gift processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
+            
         }
         
         recurringGifts = null; // if calling processReminders() from here, dont hold all this data on the stack
@@ -119,7 +126,10 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
 
         List<ScheduledItem> reminders = reminderService.getRemindersToProcess(today);
 
-        for (ScheduledItem reminder : reminders) {
+    	logger.info("Processing "+reminders.size()+" reminders.");        	
+    	long t = System.currentTimeMillis();
+
+    	for (ScheduledItem reminder : reminders) {
         	
         	try {
 	        	
@@ -138,6 +148,8 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
         	
         }        
                 
+        logger.info("Reminder processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
+
     }            
     
 

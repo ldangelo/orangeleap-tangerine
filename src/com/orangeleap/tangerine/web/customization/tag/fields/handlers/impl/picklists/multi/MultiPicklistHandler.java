@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.BeanWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +38,7 @@ import javax.servlet.jsp.PageContext;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
 public class MultiPicklistHandler extends AbstractPicklistHandler {
 
@@ -51,7 +53,7 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		Picklist picklist = resolvePicklist(currentField, pageContext);
+		Picklist picklist = resolvePicklist(currentField);
 		createTop(request, pageContext, formFieldName, sb);
 		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiPicklistBegin(currentField, formFieldName, picklist, sb);
@@ -122,7 +124,7 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 			    sb.append("\" id=\"option-").append(escapedItemName);
 			    sb.append("\" selectedId=\"").append(escapedItemName).append("\" reference=\"").append(checkForNull(item.getReferenceValue())).append("\">");
 
-			    String displayValue = resolvePicklistItemDisplayValue(item, pageContext);
+			    String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
 			    if (StringUtils.hasText(displayValue)) {
 					sb.append(displayValue);
 					writeDeleteLink(sb, "Lookup.deleteOption(this)");
@@ -180,4 +182,28 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 	protected String getSideCssClass(Object fieldValue) {
 		return new StringBuilder(super.getSideCssClass(fieldValue)).append(" multiOptionLi").toString();
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Picklist picklist = resolvePicklist(currentField);
+        List<String> displayValues = new ArrayList<String>();
+        if (picklist != null) {
+            Object[] fieldVals = splitValuesByCustomFieldSeparator(beanWrapper.getPropertyValue(currentField.getFieldPropertyName()));
+
+            for (PicklistItem item : picklist.getActivePicklistItems()) {
+                boolean foundValue = false;
+                for (Object val : fieldVals) {
+                    if (item.getItemName().equals(val.toString())) {
+                        foundValue = true;
+                        break;
+                    }
+                }
+
+                if (foundValue) {
+                    displayValues.add(resolvePicklistItemDisplayValue(item, request));
+                }
+            }
+        }
+        return StringUtils.collectionToDelimitedString(displayValues, StringConstants.COMMA_SPACE);
+    }
 }

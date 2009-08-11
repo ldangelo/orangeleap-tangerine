@@ -27,7 +27,7 @@ public class MultiPicklistAdditionalDisplayHandler extends MultiPicklistAddition
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		Picklist picklist = resolvePicklist(currentField, pageContext);
+		Picklist picklist = resolvePicklist(currentField);
 		createTop(request, pageContext, formFieldName, sb);
 		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiPicklistBegin(currentField, formFieldName, picklist, sb);

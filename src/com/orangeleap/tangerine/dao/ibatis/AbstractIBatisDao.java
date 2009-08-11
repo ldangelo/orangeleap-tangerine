@@ -80,9 +80,15 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
         return params;
     }
 
-    protected Map<String, Object> setupSortParams(String sortColumn, String dir, int start, int limit) {
+    protected Map<String, Object> setupSortParams(String resultMapName, String sortPropertyName, String dir, int start, int limit) {
         Map<String, Object> params = setupParams();
-        params.put("sortColumn", oneWord(sortColumn));
+        if (StringUtils.hasText(resultMapName)) {
+            Map<String, String> beanPropertyColumnMap = findBeanPropertyColumnMap(resultMapName);
+            if (beanPropertyColumnMap.get(sortPropertyName) != null) {
+                sortPropertyName = beanPropertyColumnMap.get(sortPropertyName);
+            }
+        }
+        params.put("sortColumn", oneWord(sortPropertyName));
         params.put("sortDir", oneWord(dir));
         params.put("offset", start);
         params.put("limit", limit);

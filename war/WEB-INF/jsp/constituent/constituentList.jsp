@@ -6,11 +6,11 @@
             <title><c:out value="${titleText}"/></title>
         </head>
         <body>
-             <div id="constituentListGrid"></div>
+             <div id="constituentGrid"></div>
         </body>
     </html>
     <page:param name="scripts">
-        <script type="text/javascript" src="js/lists/constituentlist.js"></script>
+        <tangerine:fields pageName="constituentList"/>
     </page:param>
 </page:applyDecorator>
 

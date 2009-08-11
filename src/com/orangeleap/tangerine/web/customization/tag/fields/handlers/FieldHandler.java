@@ -5,7 +5,10 @@ import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 
 import javax.servlet.jsp.PageContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
+import org.springframework.beans.BeanWrapper;
 
 public interface FieldHandler {
 
@@ -19,4 +22,6 @@ public interface FieldHandler {
 	                     boolean isDummy, int rowCounter, StringBuilder sb);
 
 	String resolveLabelText(PageContext pageContext, SectionField sectionField);
+
+    Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField);
 }

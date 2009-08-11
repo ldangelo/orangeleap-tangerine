@@ -61,10 +61,10 @@
     <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
         select
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
-        ISDONORTYPE(p.CONSTITUENT_ID,'majorDonor') as MAJOR_DONOR, ISDONORTYPE(p.CONSTITUENT_ID,'lapsedDonor') as LAPSED_DONOR
+        ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') as majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') as lapsedDonor
         <dynamic prepend=",">
-        	<isNotEqual property="sortColumn" compareValue="major_donor">
-	        	<isNotEqual property="sortColumn" compareValue="lapsed_donor">
+        	<isNotEqual property="sortColumn" compareValue="majorDonor">
+	        	<isNotEqual property="sortColumn" compareValue="lapsedDonor">
         			IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
         		</isNotEqual>
         	</isNotEqual>
@@ -72,8 +72,8 @@
         from CONSTITUENT p
         where p.SITE_NAME = #siteName#
         order by 
-       	<isNotEqual property="sortColumn" compareValue="major_donor">
-        	<isNotEqual property="sortColumn" compareValue="lapsed_donor">
+       	<isNotEqual property="sortColumn" compareValue="majorDonor">
+        	<isNotEqual property="sortColumn" compareValue="lapsedDonor">
 				isnull ASC, 
        		</isNotEqual>
        	</isNotEqual>

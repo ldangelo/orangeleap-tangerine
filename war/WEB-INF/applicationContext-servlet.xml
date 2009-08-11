@@ -47,7 +47,7 @@
 	<bean id="tangerineConstituentAttributesFormController" class="com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController"
 	      abstract="true" parent="tangerineFormController"/>
 
-	<bean id="tangerineListController" class="com.orangeleap.tangerine.controller.TangerineListController" abstract="true"/>
+	<bean id="tangerineGridController" class="com.orangeleap.tangerine.controller.TangerineGridController" abstract="true"/>
 
 	<bean id="abstractDistributionLineFormController" class="com.orangeleap.tangerine.controller.gift.AbstractMutableGridFormController" abstract="true"
 			parent="tangerineConstituentAttributesFormController">

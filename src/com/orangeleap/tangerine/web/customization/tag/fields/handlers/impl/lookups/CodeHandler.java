@@ -29,6 +29,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -132,5 +133,10 @@ public class CodeHandler extends AbstractFieldHandler {
                                         String formFieldName, StringBuilder sb) {
 	    String thisCode = resolveCodeLookupName(sectionDefinition, currentField, form);
         sb.append("lookup=\"").append(thisCode).append("\" codeType=\"").append(thisCode).append("\" ");
+    }
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        return resolveCodeValue(currentField.getFieldPropertyName(), beanWrapper.getPropertyValue(currentField.getFieldPropertyName()));  
     }
 }

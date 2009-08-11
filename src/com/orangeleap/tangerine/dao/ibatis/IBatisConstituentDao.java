@@ -18,21 +18,20 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /** 
  * Corresponds to the CONSTITUENT tables
@@ -102,13 +101,10 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     @SuppressWarnings("unchecked")
     @Override
     public List<Constituent> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit) {
-
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite:");
         }
-
-        Map<String,Object> params = setupSortParams(sortColumn, dir, start, limit);
-
+        Map<String,Object> params = setupSortParams("CONSTITUENT.CONSTITUENT_RESULT", sortColumn, dir, start, limit);
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_SITE", params);
     }
     

@@ -38,7 +38,13 @@ public class TangerineForm {
 	public static final String TANG_END_BRACKET = "-teb-";
 	public static final String TANG_DOT_VALUE = escapeFieldName(StringConstants.DOT_VALUE);
 
-	public Map<String, Object> getFieldMap() {
+    public TangerineForm() { }
+
+    public TangerineForm(Object domainObject) {
+        this.domainObject = domainObject;
+    }
+
+    public Map<String, Object> getFieldMap() {
 		return fieldMap;
 	}
 

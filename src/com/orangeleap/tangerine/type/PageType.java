@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public enum PageType {
     constituent("/constituent.htm"),
+    constituentList("/constituentList.htm"),
     constituentSearch("/constituentSearch.htm"),
     constituentSearchResults("/constituentSearchResults.htm"),
     gift("/gift.htm"),

@@ -18,21 +18,16 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.dao.ErrorLogDao;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.dao.ErrorLogDao;
-import com.orangeleap.tangerine.domain.ErrorLog;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import java.util.List;
+import java.util.Map;
 
 /** 
  * Corresponds to the ERROR_LOG table
@@ -67,7 +62,7 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
 
 	@Override
     public PaginatedResult readErrorMessages(String sortColumn, String dir, int start, int limit) {
-        Map<String, Object> params = setupSortParams(sortColumn, dir, start, limit);
+        Map<String, Object> params = setupSortParams(null, sortColumn, dir, start, limit);
 
         List rows = getSqlMapClientTemplate().queryForList("ERROR_LOG_FOR_SITE_PAGINATED", params);
         Long count = (Long)getSqlMapClientTemplate().queryForObject("ERROR_LOG_FOR_SITE_ROWCOUNT",params);

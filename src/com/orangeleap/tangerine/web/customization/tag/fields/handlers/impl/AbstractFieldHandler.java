@@ -167,7 +167,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	    return StringEscapeUtils.escapeHtml(escVal);
 	}
 	
-	public String resolvedPrefixedFieldName(String prefix, String aFieldName) {
+	public String resolvedEscapedPrefixedFieldName(String prefix, String aFieldName) {
 	    String prefixedFieldName = null;
 
 	    boolean endsInValue = false;
@@ -198,12 +198,42 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	    return prefixedFieldName;
 	}
 
+    public String resolvedUnescapedPrefixedFieldName(String prefix, String aFieldName) {
+        String prefixedFieldName = null;
+
+        boolean endsInValue = false;
+        if (aFieldName.endsWith(StringConstants.DOT_VALUE)) {
+            aFieldName = aFieldName.substring(0, aFieldName.length() - StringConstants.DOT_VALUE.length());
+            endsInValue = true;
+        }
+
+        int startBracketIndex = aFieldName.lastIndexOf(TangerineForm.START_BRACKET);
+        if (startBracketIndex > -1) {
+            int periodIndex = aFieldName.indexOf(TangerineForm.DOT, startBracketIndex);
+            if (periodIndex > -1) {
+                prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + TangerineForm.DOT.length())).
+                        append(prefix).append(aFieldName.substring(periodIndex + TangerineForm.DOT.length(), aFieldName.length())).toString();
+            }
+            else {
+                prefixedFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + TangerineForm.START_BRACKET.length())).
+                        append(prefix).append(aFieldName.substring(startBracketIndex + TangerineForm.START_BRACKET.length(), aFieldName.length())).toString();
+            }
+        }
+        if (prefixedFieldName == null) {
+            prefixedFieldName = new StringBuilder(prefix).append(aFieldName).toString();
+        }
+        if (endsInValue) {
+            prefixedFieldName = prefixedFieldName.concat(StringConstants.DOT_VALUE);
+        }
+        return prefixedFieldName;
+    }
+
 	public String resolveOtherFormFieldName(String formFieldName) {
-		return resolvedPrefixedFieldName(StringConstants.OTHER_PREFIX, formFieldName);
+		return resolvedEscapedPrefixedFieldName(StringConstants.OTHER_PREFIX, formFieldName);
 	}
 
 	public String resolveAdditionalFormFieldName(String formFieldName) {
-		return resolvedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, formFieldName);
+		return resolvedEscapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, formFieldName);
 	}
 
 	public String resolveEntityAttributes(SectionField currentField) {
@@ -306,4 +336,13 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		}
 		return fieldVals;
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object displayValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+        if (displayValue == null) {
+            displayValue = StringConstants.EMPTY;
+        }
+        return displayValue;
+    }
 }

@@ -22,13 +22,16 @@ import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.BeanWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * User: alexlo
@@ -45,7 +48,7 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		Picklist picklist = resolvePicklist(currentField, pageContext);
+		Picklist picklist = resolvePicklist(currentField);
 		createTop(request, pageContext, formFieldName, sb);
 		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiPicklistBegin(currentField, formFieldName, picklist, sb);
@@ -101,4 +104,33 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 	protected String getLookupClickHandler() {
 		return "Lookup.loadMultiPicklist(this, true)";
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object displayValue = super.resolveDisplayValue(request, beanWrapper, currentField);
+        String additionalFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, currentField.getFieldPropertyName());
+
+        Object additionalFieldValue = null;
+        if (beanWrapper.isReadableProperty(additionalFieldName)) {
+            additionalFieldValue = beanWrapper.getPropertyValue(additionalFieldName);
+        }
+        List<String> additionalValues = new ArrayList<String>();
+        if (additionalFieldValue != null) {
+            Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);
+
+            for (Object additionalVal : additionalVals) {
+                if (additionalVal != null && StringUtils.hasText(additionalVal.toString())) {
+                    additionalValues.add(additionalVal.toString());
+                }
+            }
+        }
+        String additionalValuesStr = StringUtils.collectionToDelimitedString(additionalValues, StringConstants.COMMA_SPACE);
+        if (displayValue == null || !StringUtils.hasText(displayValue.toString())) {
+            displayValue =  additionalValuesStr;
+        }
+        else {
+            displayValue = new StringBuilder(displayValue.toString()).append(StringConstants.COMMA_SPACE).append(additionalValuesStr).toString();
+        }
+        return displayValue;
+    }
 }

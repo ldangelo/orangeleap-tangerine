@@ -19,13 +19,15 @@
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.communication;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.AbstractPicklistHandler;
-import com.orangeleap.tangerine.type.FieldType;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
@@ -47,7 +49,7 @@ public class PhonePicklistHandler extends AbstractPicklistHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		Picklist picklist = resolvePicklist(currentField, pageContext);
+		Picklist picklist = resolvePicklist(currentField);
 		createBeginSelect(pageContext, currentField, formFieldName, picklist, sb);
 		createNoneOption(currentField, fieldValue, sb);
 
@@ -95,5 +97,19 @@ public class PhonePicklistHandler extends AbstractPicklistHandler {
                 sb.append("</option>");
             }
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Phone phone = null;
+        Object domainObject = beanWrapper.getWrappedInstance();
+        if (domainObject instanceof Phone) {
+            phone = (Phone) domainObject;
+        }
+        else if (domainObject instanceof PhoneAware) {
+            phone = ((PhoneAware) domainObject).getPhone();
+        }
+        return phone == null ? StringConstants.EMPTY : phone.getNumber();
     }
 }

@@ -646,6 +646,15 @@ var OrangeLeap = {
 		}
 		return '';
 	},
+
+    booleanRenderer: function(val, meta, record) {
+        if (val) {
+            meta.css = 'green-dot';
+        }
+        else {
+            meta.css = 'grey-dot';
+        }
+    },
 	
 	expandCollapse: function(elem) {
 		$elem = $(elem);

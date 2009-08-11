@@ -108,8 +108,5 @@ public abstract class AbstractTangerineService {
                 }
             }
         }
-
     }
-
-
 }

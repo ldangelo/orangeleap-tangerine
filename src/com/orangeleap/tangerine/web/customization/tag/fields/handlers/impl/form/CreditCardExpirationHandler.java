@@ -24,8 +24,10 @@ import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
@@ -91,7 +93,7 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
     protected void createYearSelect(PageContext pageContext, SectionField currentField, PaymentSource paymentSource, String formFieldName, Object fieldValue, StringBuilder sb) {
         sb.append("<select name=\"").append(formFieldName).append("Year\" id=\"").append(formFieldName);
 	    sb.append("Year\" class=\"expYear ").append(resolveEntityAttributes(currentField));
-	    writeErrorClass(pageContext, formFieldName, sb); // TODO: fix for errors
+	    writeErrorClass(pageContext, formFieldName, sb); 
 	    sb.append("\">");
 	    Integer expirationYear = null;
         if (paymentSource != null) {
@@ -111,5 +113,19 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
 			}
 		}
         sb.append("</select>");
+    }
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object domainObject = beanWrapper.getWrappedInstance();
+        PaymentSource paymentSource = null;
+        if (domainObject instanceof PaymentSource) {
+            paymentSource = (PaymentSource) domainObject;
+        }
+        else if (domainObject instanceof PaymentSourceAware) {
+            paymentSource = ((PaymentSourceAware) domainObject).getPaymentSource();
+        }
+        return paymentSource != null ? new SimpleDateFormat(StringConstants.CREDIT_CARD_EXP_DISPLAY_FORMAT).format(paymentSource.getCreditCardExpiration()) :
+                StringConstants.EMPTY;
     }
 }

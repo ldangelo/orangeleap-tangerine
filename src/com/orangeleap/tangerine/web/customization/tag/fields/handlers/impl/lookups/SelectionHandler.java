@@ -37,6 +37,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -230,4 +232,58 @@ public class SelectionHandler extends AbstractFieldHandler {
 		sb.append("\" class=\"multiLookupLink hideText selectorLookup\" ");
 		sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
 	}
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+        final List<String> displayValues = new ArrayList<String>();
+
+        if (fieldValue != null) {
+            ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
+            if (ReferenceType.adjustedGift.equals(referenceType)) {
+                List<AdjustedGift> adjustedGifts = (List<AdjustedGift>) fieldValue;
+                for (AdjustedGift aAdjGift : adjustedGifts) {
+                    displayValues.add(aAdjGift.getShortDescription());
+                }
+            }
+            else {
+                if (fieldValue instanceof List) {
+                    final List fVals = (List) fieldValue;
+                    for (Object thisVal : fVals) {
+                        addDisplayValue(referenceType, thisVal, displayValues);
+                    }
+                }
+                else {
+                    addDisplayValue(referenceType, fieldValue, displayValues);
+                }
+            }
+        }
+        return StringUtils.collectionToDelimitedString(displayValues, StringConstants.COMMA_SPACE);
+    }
+
+    private void addDisplayValue(final ReferenceType referenceType,
+                                 final Object fieldValue, final List<String> displayValues) {
+        Long refId = null;
+        if (fieldValue instanceof String && NumberUtils.isNumber((String) fieldValue)) {
+            refId = new Long((String) fieldValue);
+        }
+        else if (fieldValue instanceof Number) {
+            refId = ((Number) fieldValue).longValue();
+        }
+        if (refId != null) {
+            if (ReferenceType.pledge.equals(referenceType)) {
+                Pledge pledge = pledgeService.readPledgeById(refId);
+                displayValues.add(pledge.getShortDescription());
+            }
+            else if (ReferenceType.recurringGift.equals(referenceType)) {
+                RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(refId);
+                displayValues.add(recurringGift.getShortDescription());
+            }
+            else if (ReferenceType.gift.equals(referenceType)) {
+                Gift gift = giftService.readGiftById(refId);
+                displayValues.add(gift.getShortDescription());
+            }
+        }
+    }
 }

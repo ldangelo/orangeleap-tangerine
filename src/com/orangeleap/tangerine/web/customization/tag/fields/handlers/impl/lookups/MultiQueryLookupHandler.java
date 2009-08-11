@@ -10,11 +10,14 @@ import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MultiQueryLookupHandler extends QueryLookupHandler {
@@ -166,4 +169,25 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 	protected String getSideCssClass(Object fieldValue) {
 		return new StringBuilder(super.getSideCssClass(fieldValue)).append(" multiOptionLi queryLookupLi").toString();
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+        List<String> displayValues = new ArrayList<String>();
+        if (fieldValue != null) {
+            Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
+            for (Object val : fieldVals) {
+                String displayVal;
+                ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
+                if (NumberUtils.isDigits(val.toString()) && Long.valueOf(val.toString()) > 0 && referenceType != null) {
+                    displayVal = resolve(Long.parseLong(val.toString()), referenceType);
+                }
+                else {
+                    displayVal = val.toString();
+                }
+                displayValues.add(displayVal);
+            }
+        }
+        return StringUtils.collectionToDelimitedString(displayValues, StringConstants.COMMA_SPACE);  
+    }
 }

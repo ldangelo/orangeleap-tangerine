@@ -23,6 +23,7 @@ import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeanWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,4 +60,16 @@ public class CheckboxHandler extends AbstractFieldHandler {
 
 		sb.append("/>");
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+
+        String displayValue = "N";
+        if (fieldValue != null &&
+                ((fieldValue instanceof Boolean && Boolean.TRUE.equals(fieldValue)) || "true".equalsIgnoreCase(fieldValue.toString()))) {
+            displayValue = "Y";
+        }
+        return displayValue;
+    }
 }

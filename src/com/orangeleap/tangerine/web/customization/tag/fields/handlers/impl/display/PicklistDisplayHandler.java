@@ -50,7 +50,7 @@ public class PicklistDisplayHandler extends PicklistHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		Picklist picklist = resolvePicklist(currentField, pageContext);
+		Picklist picklist = resolvePicklist(currentField);
 		createPicklistBegin(currentField, picklist, formFieldName, sb);
 		String selectedRef = createPicklistOptions(pageContext, picklist, fieldValue, sb);
 		createPicklistEnd(sb);
@@ -102,7 +102,7 @@ public class PicklistDisplayHandler extends PicklistHandler {
 				String itemName = StringEscapeUtils.escapeHtml(item.getItemName());
 				sb.append("\" id=\"option-").append(itemName).append("\" selectedId=\"").append(itemName).append("\" reference=\"").append(checkForNull(item.getReferenceValue())).append("\">");
 
-				String displayValue = resolvePicklistItemDisplayValue(item, pageContext);
+				String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
 				sb.append(displayValue);
 				sb.append("</div>");
 			}

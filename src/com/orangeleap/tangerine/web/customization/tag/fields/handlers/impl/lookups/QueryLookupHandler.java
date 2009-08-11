@@ -38,6 +38,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.BeanWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -237,4 +238,21 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 	    sb.append("</div>");
 	}
 
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
+        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+        Object displayValue = StringConstants.EMPTY;
+
+        if (fieldValue != null) {
+            if (NumberUtils.isDigits(fieldValue.toString()) && Long.valueOf(fieldValue.toString()) > 0 && referenceType != null) {
+                Long longId = Long.valueOf(fieldValue.toString());
+                displayValue = resolve(longId, referenceType);
+            }
+            else {
+                displayValue = fieldValue;
+            }
+        }
+        return displayValue;
+    }
 }

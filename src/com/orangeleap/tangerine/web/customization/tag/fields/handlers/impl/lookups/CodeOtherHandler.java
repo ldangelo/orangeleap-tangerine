@@ -3,8 +3,12 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.look
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: alexlo
@@ -41,4 +45,18 @@ public class CodeOtherHandler extends CodeHandler {
 		}
 		return displayValue;
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+        Object displayValue;
+        if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
+            displayValue = super.resolveDisplayValue(request, beanWrapper, currentField);
+        }
+        else {
+            String otherFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, currentField.getFieldPropertyName());
+            displayValue = beanWrapper.getPropertyValue(otherFieldName);
+        }
+        return displayValue == null ? StringConstants.EMPTY : displayValue;
+    }
 }

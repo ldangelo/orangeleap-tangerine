@@ -2,9 +2,11 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.pick
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -127,5 +129,22 @@ public class PaymentSourcePicklistHandler extends AbstractPicklistHandler {
 
         createEndOptGroup(ccSources, sb);
         sb.append("</select>");
+    }
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object domainObject = beanWrapper.getWrappedInstance();
+        PaymentSource paymentSource = null;
+        Object displayValue = StringConstants.EMPTY;
+        if (domainObject instanceof PaymentSource) {
+            paymentSource = (PaymentSource) domainObject;
+        }
+        else if (domainObject instanceof PaymentSourceAware) {
+            paymentSource = ((PaymentSourceAware) domainObject).getPaymentSource();
+        }
+        if (paymentSource != null) {
+            displayValue = paymentSource.getProfile();
+        }
+        return displayValue;
     }
 }

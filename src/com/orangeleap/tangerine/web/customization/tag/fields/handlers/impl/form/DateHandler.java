@@ -4,7 +4,9 @@ import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeanWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,4 +76,26 @@ public class DateHandler extends AbstractFieldHandler {
 		sb.append("//]]>\n");
 		sb.append("</script>");
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+        Object displayValue = StringConstants.EMPTY;
+        if (fieldValue != null) {
+            final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            if (fieldValue instanceof Date) {
+                displayValue = sdf.format(fieldValue);
+            }
+            else if (fieldValue instanceof String) {
+                try {
+                    sdf.parse((String) fieldValue);
+                    displayValue = fieldValue;
+                }
+                catch (Exception e) {
+                    // ignore parsing date exception
+                }
+            }
+        }
+        return displayValue; 
+    }
 }

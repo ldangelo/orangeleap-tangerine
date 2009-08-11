@@ -8,9 +8,12 @@ import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +29,7 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 		super(applicationContext);
 	}
 
-	protected Picklist resolvePicklist(SectionField currentField, PageContext pageContext) {
+	protected Picklist resolvePicklist(SectionField currentField) {
 		EntityType entityType = currentField.getSecondaryFieldDefinition() != null ?
 				currentField.getSecondaryFieldDefinition().getEntityType() : currentField.getFieldDefinition().getEntityType();
 		return fieldService.readPicklistByFieldNameEntityType(currentField.getPicklistName(), entityType);
@@ -74,8 +77,8 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 		return itemNames;
 	}
 
-	protected String resolvePicklistItemDisplayValue(PicklistItem item, PageContext pageContext) {
-		String displayValue = messageService.lookupMessage(MessageResourceType.PICKLIST_VALUE, item.getItemName(), pageContext.getRequest().getLocale());
+	protected String resolvePicklistItemDisplayValue(PicklistItem item, ServletRequest request) {
+		String displayValue = messageService.lookupMessage(MessageResourceType.PICKLIST_VALUE, item.getItemName(), request.getLocale());
 		if ( ! StringUtils.hasText(displayValue)) {
 			displayValue = item.getLongDescription();
 			if ( ! StringUtils.hasText(displayValue)) {
@@ -174,4 +177,24 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 	    }
 	    sb.append("<div style=\"display:none\" id=\"selectedRef-").append(formFieldName).append("\">").append(checkForNull(selectedRef)).append("</div>");
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object displayValue = StringConstants.EMPTY;
+        Picklist picklist = resolvePicklist(currentField);
+        if (picklist != null && beanWrapper != null) {
+            Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+	        for (PicklistItem item : picklist.getActivePicklistItems()) {
+		        if (StringUtils.hasText(item.getItemName())) {
+
+					String picklistItemDisplayValue = resolvePicklistItemDisplayValue(item, request);
+
+			        if (StringUtils.hasText(picklistItemDisplayValue) && fieldValue != null && fieldValue.toString().equals(item.getItemName())) {
+				        displayValue = picklistItemDisplayValue;
+			        }
+		        }
+	        }
+        }
+        return displayValue;
+    }
 }

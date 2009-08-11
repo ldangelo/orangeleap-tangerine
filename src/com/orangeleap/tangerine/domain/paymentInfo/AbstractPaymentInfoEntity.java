@@ -84,16 +84,12 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             if (paymentSource != null) {
                 paymentSource.setConstituent(constituent);
             }
-//            if (selectedPaymentSource != null) {
-//                selectedPaymentSource.setConstituent(constituent);
-//            }
             constituentId = constituent.getId();
         }
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         DistributionLine line = new DistributionLine(constituent);
         line.setDefaults();
         lines.add(line);
-//        dummyDistributionLines = UnmodifiableList.decorate(lines);
     }
 
     public String getComments() {

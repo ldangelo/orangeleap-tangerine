@@ -7,6 +7,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.BeanWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,4 +50,21 @@ public class QueryLookupOtherHandler extends QueryLookupHandler {
 		sb.append("/>");
 	}
 
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+        Object displayValue = StringConstants.EMPTY;
+        if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
+            displayValue = super.resolveDisplayValue(request, beanWrapper, currentField);
+        }
+        else {
+            String otherFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, currentField.getFieldPropertyName());
+            Object otherFieldValue = beanWrapper.getPropertyValue(otherFieldName);
+
+            if (otherFieldValue != null && StringUtils.hasText(otherFieldValue.toString())) {
+                displayValue = otherFieldValue;
+            }
+        }
+        return displayValue;
+    }
 }

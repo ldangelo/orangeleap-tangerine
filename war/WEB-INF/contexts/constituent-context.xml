@@ -25,7 +25,7 @@
         <property name="viewName" value="constituent/constituentView"/>
     </bean>
 
-    <bean id="constituentList" class="com.orangeleap.tangerine.controller.constituent.ConstituentListController">
+    <bean id="constituentList" class="com.orangeleap.tangerine.controller.constituent.ConstituentGridController" parent="tangerineGridController">
         <property name="viewName" value="constituent/constituentList"/>
     </bean>
 

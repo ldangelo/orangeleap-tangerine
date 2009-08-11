@@ -1,13 +1,15 @@
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.communication;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.EmailAware;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.AbstractPicklistHandler;
-import com.orangeleap.tangerine.type.FieldType;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
@@ -29,7 +31,7 @@ public class EmailPicklistHandler extends AbstractPicklistHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		Picklist picklist = resolvePicklist(currentField, pageContext);
+		Picklist picklist = resolvePicklist(currentField);
 		createBeginSelect(pageContext, currentField, formFieldName, picklist, sb);
 		createNoneOption(currentField, fieldValue, sb);
 
@@ -77,5 +79,19 @@ public class EmailPicklistHandler extends AbstractPicklistHandler {
                 sb.append("</option>");
             }
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Email email = null;
+        Object domainObject = beanWrapper.getWrappedInstance();
+        if (domainObject instanceof Email) {
+            email = (Email) domainObject;
+        }
+        else if (domainObject instanceof EmailAware) {
+            email = ((EmailAware) domainObject).getEmail();
+        }
+        return email == null ? StringConstants.EMPTY : email.getEmailAddress();
     }
 }

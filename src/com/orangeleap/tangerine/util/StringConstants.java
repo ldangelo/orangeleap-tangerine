@@ -152,4 +152,6 @@ public final class StringConstants {
 	public static final String NOW_COLON = "now:";
 
     public static final String CREDIT_CARD_EXP_DISPLAY_FORMAT = "MM / yyyy";
+    public static final String EXT_SCRIPT = "extScript";
+    public static final String COMMA_SPACE = ", ";
 }

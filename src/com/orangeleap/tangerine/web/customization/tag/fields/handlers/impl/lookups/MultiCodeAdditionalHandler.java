@@ -21,12 +21,15 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.look
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -162,4 +165,30 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 		sb.append("lookup=\"").append(currentField.getFieldPropertyName()).append("\" ");
 		sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
 	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField) {
+        Object fieldValue = beanWrapper.getPropertyValue(currentField.getFieldPropertyName());
+        List<String> displayValues = new ArrayList<String>();
+
+        if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
+            Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
+
+            for (Object val : fieldVals) {
+                String displayValue = resolveCodeValue(currentField.getFieldPropertyName(), val.toString());
+                displayValues.add(displayValue);
+            }
+        }
+        String additionalFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, currentField.getFieldPropertyName());
+        Object additionalFieldValue = beanWrapper.getPropertyValue(additionalFieldName);
+
+        if (additionalFieldValue != null && StringUtils.hasText(additionalFieldValue.toString())) {
+            Object[] additionalVals = splitValuesByCustomFieldSeparator(additionalFieldValue);
+
+            for (Object additionalVal : additionalVals) {
+                displayValues.add(additionalVal.toString());
+            }
+        }
+        return StringUtils.collectionToDelimitedString(displayValues, StringConstants.COMMA_SPACE);
+    }
 }

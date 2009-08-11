@@ -48,7 +48,7 @@ public class AdjustedGiftPaymentTypePicklistHandler extends PicklistHandler {
 		    for (PicklistItem item : picklist.getActivePicklistItems()) {
 			    if (StringUtils.hasText(item.getItemName())) {
 
-					String displayValue = resolvePicklistItemDisplayValue(item, pageContext);
+					String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
 
 				    // Only allow cash, check, or either ACH or Credit Card, depending on which is selected
 				    if (StringUtils.hasText(displayValue) &&

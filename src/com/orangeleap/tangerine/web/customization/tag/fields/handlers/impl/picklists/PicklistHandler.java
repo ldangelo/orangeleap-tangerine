@@ -48,7 +48,7 @@ public class PicklistHandler extends AbstractPicklistHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-		Picklist picklist = resolvePicklist(currentField, pageContext);
+		Picklist picklist = resolvePicklist(currentField);
 		createBeginSelect(pageContext, currentField, formFieldName, picklist, sb);
 		createNoneOption(currentField, fieldValue, sb);
 		String selectedRef = createOptions(pageContext, fieldValue, picklist, sb);
@@ -70,7 +70,7 @@ public class PicklistHandler extends AbstractPicklistHandler {
 	        for (PicklistItem item : picklist.getActivePicklistItems()) {
 		        if (StringUtils.hasText(item.getItemName())) {
 
-					String displayValue = resolvePicklistItemDisplayValue(item, pageContext);
+					String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
 
 			        if (StringUtils.hasText(displayValue)) {
 				        sb.append("<option value=\"").append(StringEscapeUtils.escapeHtml(item.getItemName())).append("\" ");

@@ -104,3 +104,5 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('constituent.customFieldMap[organization.procedureForRequestingMatch]', 'constituent', 'customFieldMap[organization.procedureForRequestingMatch]', 'Procedure for Requesting Match', 'LONG_TEXT', 'organization,matching');
 
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('constituent.majorDonor', 'constituent', 'majorDonor', 'Major Donor', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('constituent.lapsedDonor', 'constituent', 'lapsedDonor', 'Lapsed Donor', 'READ_ONLY_TEXT');

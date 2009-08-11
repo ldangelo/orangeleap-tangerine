@@ -40,6 +40,7 @@
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/constituent.sql"/> 
+            <transaction src="${basedir}/db/prod/pages/constituentList.sql"/> 
 	     	<transaction src="${basedir}/db/prod/pages/constituentSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/constituentSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>

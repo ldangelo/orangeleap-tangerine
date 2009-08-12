@@ -121,3 +121,4 @@ div.errorDiv { font-size: 1.2em; font-family: arial; padding-top: 15px; }
 
 /* Used in ExtJS forms to space out entries */
 div.spaced { padding-bottom: 10px; }
+div.x-grid3-row { cursor: pointer; }

@@ -13,6 +13,14 @@
                         <c:if test="${sourceEntity == 'recurringgift'}">
                         <h4>Edit Recurring Gift Payment Schedule</h4><br/>
                         </c:if>
+                        
+                        <c:if test="${sourceEntity == 'pledge'}">
+                        <h4>Edit Pledge Schedule</h4><br/>
+                        </c:if>
+                        
+                        <c:if test="${sourceEntity == 'scheduleditem'}">
+                        <h4>Edit Reminder Schedule</h4><br/>
+                        </c:if>
 
                         <table class="customFields">
                         
@@ -27,7 +35,7 @@
                         </c:if>
                         
                         <c:if test="${sourceEntity != 'scheduleditem'}">
-                        <th>Notifications</th>
+                        <th>Reminders</th>
                         </c:if>
                         
                         
@@ -68,7 +76,7 @@
     					  </c:choose>
 
                       	      <c:if test="${sourceEntity != 'scheduleditem'}">
-                              <td><a href="scheduleEdit.htm?sourceEntity=scheduleditem&sourceEntityId=${scheduledItem.id}" >Notifications</a></td>
+                              <td><a href="scheduleEdit.htm?sourceEntity=scheduleditem&sourceEntityId=${scheduledItem.id}" >Reminders</a></td>
                        	 	  </c:if>
 
                           </tr>

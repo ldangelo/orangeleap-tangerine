@@ -10,7 +10,10 @@
 
                 <div>
                 
+                        <c:if test="${sourceEntity == 'recurringgift'}">
                         <h4>Edit Recurring Gift Payment Schedule</h4><br/>
+                        </c:if>
+
                         <table class="customFields">
                         
                         <tr>
@@ -50,6 +53,7 @@
                               <td><a href="#" onclick="ScheduleEdit.saveItem(this);">Save</a></td>
                               <td><c:out value='${scheduledItem.originalScheduledDate}'/></td>
                               <td><input name="actualScheduledDate" value="<c:out value='${scheduledItem.actualScheduledDate}'/>"/></td><%-- calendar popup --%>
+                            
                               <c:if test="${sourceEntity == 'recurringgift'}">
                               <td><input name="giftAmountOverride" value="<c:out value='${scheduledItem.customFieldMap["giftAmountOverride"].value}'/>"/></td>
                               </c:if>

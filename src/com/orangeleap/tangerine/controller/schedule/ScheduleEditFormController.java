@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.controller.schedule;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +32,10 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.customization.CustomField;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -52,6 +52,9 @@ public class ScheduleEditFormController extends SimpleFormController {
 
     @Resource(name="recurringGiftService")
     protected RecurringGiftService recurringGiftService;
+
+    @Resource(name="pledgeService")
+    protected PledgeService pledgeService;
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
@@ -74,13 +77,19 @@ public class ScheduleEditFormController extends SimpleFormController {
         String sourceEntity = request.getParameter("sourceEntity");
         String sourceEntityId = request.getParameter("sourceEntityId");
         
-        List<ScheduledItem> scheduledItems = new ArrayList<ScheduledItem>();
+        Schedulable schedulable = null;
 
         if (sourceEntity.equals("recurringgift")) {
-        	RecurringGift rg = recurringGiftService.readRecurringGiftById(new Long(sourceEntityId));
-        	scheduledItems = scheduledItemService.readSchedule(rg);
+        	schedulable = recurringGiftService.readRecurringGiftById(new Long(sourceEntityId));
+        }
+        if (sourceEntity.equals("pledge")) {
+        	schedulable = pledgeService.readPledgeById(new Long(sourceEntityId));
+        }
+        if (sourceEntity.equals("scheduleditem")) {
+        	schedulable = scheduledItemService.readScheduledItemById(new Long(sourceEntityId));
         }
         
+    	List<ScheduledItem> scheduledItems = scheduledItemService.readSchedule(schedulable);
         request.setAttribute("scheduledItems", scheduledItems);
         request.setAttribute("sourceEntity", sourceEntity);
         request.setAttribute("sourceEntityId", sourceEntityId);

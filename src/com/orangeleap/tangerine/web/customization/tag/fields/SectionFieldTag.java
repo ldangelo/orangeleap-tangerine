@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.web.customization.tag.fields;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.FieldService;
@@ -29,23 +30,23 @@ import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.customization.tag.AbstractTag;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.grid.GridHandler;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 
 public class SectionFieldTag extends AbstractTag {
 
@@ -147,10 +148,10 @@ public class SectionFieldTag extends AbstractTag {
 					}
 				}
 				else if (LayoutType.GRID.equals(sectionDef.getLayoutType())) {
-                    List<SectionField> fields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
-                    assert fields != null && !fields.isEmpty();
+                    List<SectionField> allFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
+                    assert allFields != null && !allFields.isEmpty();
 
-                    removeIdField(fields);
+                    List<SectionField> fields = getFieldsExceptId(allFields);
                     Object entity = getTangerineForm().getDomainObject();
                     String entityType = StringUtils.uncapitalize(entity.getClass().getSimpleName());
                     sb.append("<script type='text/javascript'>");
@@ -203,8 +204,8 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("});");
 
                     sb.append("OrangeLeap.").append(entityType).append(".grid = new Ext.grid.GridPanel({\n");
-                    sb.append("rowclick: function(grid, rowIndex, e) { alert(rowIndex); },\n");
                     sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
+                    sb.append("addClass: 'pointer',\n");
                     sb.append("columns: [\n");
 
                     int y = 0;
@@ -243,12 +244,30 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("],\n");
                     sb.append("sm: new Ext.grid.RowSelectionModel({singleSelect: true}),\n");
                     sb.append("viewConfig: { forceFit: true },\n");
-                    sb.append("height: 530,\n");
+                    sb.append("height: 600,\n");
                     sb.append("width: 760,\n");
                     sb.append("frame: true,\n");
                     sb.append("header: true,\n");
-                    sb.append("title: '',\n");
+                    sb.append("title: '").append(TangerineMessageAccessor.getMessage(entityType)).append(" ").append(TangerineMessageAccessor.getMessage("list")).append("',\n");
                     sb.append("loadMask: true,\n");
+                    sb.append("listeners: {\n");
+                    sb.append("rowdblclick: function(grid, row, evt) {\n");
+                    sb.append("var rec = grid.getSelectionModel().getSelected();\n");
+                    sb.append("Ext.get(document.body).mask('").append(TangerineMessageAccessor.getMessage("loadingRecord")).append("');\n");
+                    sb.append("window.location.href = \"").append(entityType).append(".htm?").append(entityType).append("Id=\" + rec.data.id");
+                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                        sb.append(" + \"&constituentId=\"");
+                        if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
+                            sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+                        }
+                        else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                            sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+                        }
+                        sb.append("\"");
+                    }
+                    sb.append(";\n");
+                    sb.append("}\n");
+                    sb.append("},\n");
                     sb.append("bbar: OrangeLeap.").append(entityType).append(".pagingBar,\n");
                     sb.append("renderTo: '").append(entityType).append("Grid'\n");
                     sb.append("});\n");
@@ -465,14 +484,13 @@ public class SectionFieldTag extends AbstractTag {
 		return (TangerineForm) getRequestAttribute(StringConstants.FORM);
 	}
 
-    private void removeIdField(List<SectionField> fields) {
-        Iterator<SectionField> iter = fields.iterator();
-        while (iter.hasNext()) {
-            SectionField sectionField =  iter.next();
-            if (StringConstants.ID.equals(sectionField.getFieldPropertyName())) {
-                iter.remove();
+    private List<SectionField> getFieldsExceptId(List<SectionField> fields) {
+        List<SectionField> filteredFields = new ArrayList<SectionField>();
+        for (SectionField thisField : fields) {
+            if (!StringConstants.ID.equals(thisField.getFieldPropertyName())) {
+                filteredFields.add(thisField);
             }
         }
+        return filteredFields;
     }
-
 }

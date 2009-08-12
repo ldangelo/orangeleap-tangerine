@@ -67,8 +67,8 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
         Date today = cal.getTime();
 
         // Note: This is looping thru Recurring gifts instead of just calling ScheduledItemService.getNextItemsReadyToProcess() due to legacy data not having schedules set up necessarily.
-        cal.add(Calendar.MONTH, 1); // Process missed payments up to a month after end date.
-        cal.add(Calendar.DATE, 1); 
+        cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
+        cal.add(Calendar.DATE, -1); 
         List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS /*, Commitment.STATUS_FULFILLED*/}));
 
         if (recurringGifts != null) {

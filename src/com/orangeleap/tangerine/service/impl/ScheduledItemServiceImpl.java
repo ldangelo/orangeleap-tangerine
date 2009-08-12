@@ -76,7 +76,12 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 
     @Override
     public List<ScheduledItem> readSchedule(Schedulable schedulable) {
-    	return scheduledItemDao.readScheduledItemsBySourceEntityId(schedulable.getType(), schedulable.getId());
+    	List<ScheduledItem> list = scheduledItemDao.readScheduledItemsBySourceEntityId(schedulable.getType(), schedulable.getId());
+    	// Populate custom fields
+    	for (int i = 0; i < list.size(); i++) {
+    		list.set(i, scheduledItemDao.readScheduledItemById(list.get(i).getId()));
+    	}
+    	return list;
     }
 
     // Returns null if no items left to run.

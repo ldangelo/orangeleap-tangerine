@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       
+
+	<bean id="scheduleEdit" class="com.orangeleap.tangerine.controller.schedule.ScheduleEditFormController">
+        <property name="formView" value="schedule/scheduleEdit" />
+        <property name="successView" value="schedule/scheduleEdit" />
+    </bean>
+
+    <bean id="scheduleUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+                <prop key="/scheduleEdit.htm">scheduleEdit</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

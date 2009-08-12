@@ -26,6 +26,11 @@
                         <th>Gift Amount Override</th>
                         </c:if>
                         
+                        <c:if test="${sourceEntity != 'scheduleditem'}">
+                        <th>Notifications</th>
+                        </c:if>
+                        
+                        
                         </tr>
                         
                         <c:forEach var="scheduledItem" varStatus="status" items="${scheduledItems}" >
@@ -36,10 +41,10 @@
                             <%-- Completed items are read-only --%>
       						
       						  <td>Completed <c:out value='${scheduledItem.completionDate}'/> <c:out value='${scheduledItem.completionStatus}'/></td>
-                              <td>
-                              </td>
+                              <td></td>
                               <td><c:out value='${scheduledItem.originalScheduledDate}'/></td>
                               <td><c:out value='${scheduledItem.actualScheduledDate}'/></td>
+                              <td></td>
                               
       						</c:when>
       						<c:otherwise>
@@ -57,10 +62,15 @@
                               <c:if test="${sourceEntity == 'recurringgift'}">
                               <td><input name="giftAmountOverride" value="<c:out value='${scheduledItem.customFieldMap["giftAmountOverride"].value}'/>"/></td>
                               </c:if>
-                              
+
       						</c:otherwise>
-      						
+
     					  </c:choose>
+
+                      	      <c:if test="${sourceEntity != 'scheduleditem'}">
+                              <td><a href="scheduleEdit.htm?sourceEntity=scheduleditem&sourceEntityId=${scheduledItem.id}" >Notifications</a></td>
+                       	 	  </c:if>
+
                           </tr>
                         </c:forEach>
                         </table>

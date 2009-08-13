@@ -55,5 +55,16 @@ public class IBatisSiteOptionDao extends AbstractIBatisDao implements SiteOption
         return getSqlMapClientTemplate().queryForList("SELECT_SITE_OPTIONS", params);
     }
 
+    @Override
+    public void deleteSiteOptionById(Long siteOptionId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteSiteOptionById: scheduledItemId = " + siteOptionId);
+        }
+        Map<String, Object> params = setupParams();
+		params.put("id", siteOptionId);
+		getSqlMapClientTemplate().delete("DELETE_SITE_OPTION_BY_ID", params);
+	}
+	
+
     
 }

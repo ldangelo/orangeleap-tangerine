@@ -36,7 +36,13 @@
 
     <select id="SELECT_SITE_OPTIONS" resultMap="SITE_OPTION_RESULT" parameterClass="map" >
         <include refid="SELECT_SITE_OPTION_FRAGMENT"/>
+        order by site_option.OPTION_NAME;
     </select>
+    
+    <delete id="DELETE_SITE_OPTION_BY_ID" parameterClass="map" >
+        delete from SITE_OPTION
+        where SITE_OPTION_ID = #id#
+    </delete>
 
     <insert id="INSERT_SITE_OPTION" parameterClass="com.orangeleap.tangerine.domain.SiteOption">
         insert into SITE_OPTION (

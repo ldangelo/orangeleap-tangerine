@@ -18,22 +18,23 @@
 
 package com.orangeleap.tangerine.service;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.springframework.beans.BeanWrapper;
+import org.springframework.security.GrantedAuthority;
+
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.SiteOption;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.domain.customization.SectionDefinition;
-import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.EntityType;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.security.GrantedAuthority;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import com.orangeleap.tangerine.type.PageType;
 
 public interface SiteService {
 
@@ -118,4 +119,11 @@ public interface SiteService {
 	EntityDefault readEntityDefaultByTypeName(EntityType entityType, String fieldName);
 
 	void setEntityDefaults(AbstractEntity entity, EntityType entityType);
+	
+    List<SiteOption> getSiteOptions();
+
+    void maintainSiteOption(SiteOption siteOption);
+    
+    void deleteSiteOptionById(Long id);
+
 }

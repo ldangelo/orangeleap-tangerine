@@ -11,5 +11,7 @@ public interface SiteOptionDao {
     public List<SiteOption> readSiteOptions();
 
     public SiteOption maintainSiteOption(SiteOption siteOption);
+    
+    public void deleteSiteOptionById(Long siteOptionId);
 
 }

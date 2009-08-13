@@ -421,6 +421,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void processRecurringGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
     	
         Gift gift = createAutoGift(recurringGift, scheduledItem);

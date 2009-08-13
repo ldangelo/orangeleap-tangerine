@@ -516,11 +516,13 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     }
 
     @Override
+	@Transactional(propagation = Propagation.REQUIRED)
     public void maintainSiteOption(SiteOption siteOption) {
     	siteOptionDao.maintainSiteOption(siteOption);
     }
 
     @Override
+	@Transactional(propagation = Propagation.REQUIRED)
     public void deleteSiteOptionById(Long id) {
     	siteOptionDao.deleteSiteOptionById(id);
     }

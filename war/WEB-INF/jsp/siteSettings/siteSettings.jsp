@@ -61,6 +61,9 @@
 
             </form>
 
+			<br/>
+			<a href="siteOptions.htm">Other Settings</a>
+
             </div>
         </body>
     </html>

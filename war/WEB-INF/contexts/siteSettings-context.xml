@@ -14,10 +14,16 @@
         <property name="successView" value="redirect:/siteSettings.htm" />
     </bean>
 
+    <bean id="siteOptions" class="com.orangeleap.tangerine.controller.siteSettings.SiteOptionsController" >
+        <property name="formView" value="siteSettings/siteOptions" />
+        <property name="successView" value="redirect:/siteOptions.htm" />
+    </bean>
+
     <bean id="siteSettingsUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
 		        <prop key="siteSettings.htm">siteSettings</prop>
+		        <prop key="siteOptions.htm">siteOptions</prop>
 			</props>
 		</property>
 	</bean>

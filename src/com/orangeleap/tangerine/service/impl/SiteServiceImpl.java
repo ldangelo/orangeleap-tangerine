@@ -518,6 +518,8 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     @Override
 	@Transactional(propagation = Propagation.REQUIRED)
     public void maintainSiteOption(SiteOption siteOption) {
+    	siteOption.setSiteName(tangerineUserHelper.lookupUserSiteName());
+    	siteOption.setModifiedBy(tangerineUserHelper.lookupUserId());
     	siteOptionDao.maintainSiteOption(siteOption);
     }
 

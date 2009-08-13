@@ -125,5 +125,8 @@ public interface SiteService {
     void maintainSiteOption(SiteOption siteOption);
     
     void deleteSiteOptionById(Long id);
+    
+    Map<String, String> getSiteOptionsMap();
+
 
 }

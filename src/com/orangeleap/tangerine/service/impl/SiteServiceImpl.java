@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Resource;
 
@@ -501,6 +502,14 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     	return entity;
     }
     
+    @Override
+    public Map<String, String> getSiteOptionsMap() {
+    	List<SiteOption> list = siteOptionDao.readSiteOptions();
+    	Map<String, String> result = new TreeMap<String, String>();
+    	for (SiteOption so : list) result.put(so.getOptionName(), so.getOptionValue());
+    	return result;
+    }
+
     @Override
     public List<SiteOption> getSiteOptions() {
     	return siteOptionDao.readSiteOptions();

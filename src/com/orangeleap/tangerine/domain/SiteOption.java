@@ -1,15 +1,14 @@
 package com.orangeleap.tangerine.domain;
 
+import java.io.Serializable;
 import java.util.Date;
-
-import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class SiteOption  {
+//@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
+public class SiteOption implements GeneratedId, Serializable {
     
     private static final long serialVersionUID = 1L;
 

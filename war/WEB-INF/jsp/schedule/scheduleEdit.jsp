@@ -22,7 +22,7 @@
                         <h4>Edit Reminder Schedule</h4><br/>
                         </c:if>
 
-                        <table class="customFields">
+                        <table class="customFields" cellspacing="5" >
                         
                         <tr>
                         <th></th>
@@ -64,8 +64,8 @@
                               <input type="hidden" name="sourceEntityId" value="${scheduledItem.sourceEntityId}"/>
                               </td>
                               <td><a href="#" onclick="ScheduleEdit.saveItem(this);">Save</a></td>
-                              <td><c:out value='${scheduledItem.originalScheduledDate}'/></td>
-                              <td><input name="actualScheduledDate" value="<c:out value='${scheduledItem.actualScheduledDate}'/>"/></td><%-- calendar popup --%>
+                              <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.originalScheduledDate}'/></td>
+                              <td><input name="actualScheduledDate" value="<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}' />"/></td><%-- calendar popup --%>
                             
                               <c:if test="${sourceEntity == 'recurringgift'}">
                               <td><input name="giftAmountOverride" value="<c:out value='${scheduledItem.customFieldMap["giftAmountOverride"].value}'/>"/></td>

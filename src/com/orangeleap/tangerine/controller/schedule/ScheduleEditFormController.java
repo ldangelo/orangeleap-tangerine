@@ -18,6 +18,8 @@
 
 package com.orangeleap.tangerine.controller.schedule;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -39,6 +42,7 @@ import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
 
 public class ScheduleEditFormController extends SimpleFormController {
 
@@ -69,6 +73,13 @@ public class ScheduleEditFormController extends SimpleFormController {
     	return item;
     	
     }
+    
+	@Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        super.initBinder(request, binder);
+        binder.registerCustomEditor(Date.class, new TangerineCustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); 
+    }
+
 	
     @SuppressWarnings("unchecked")
     @Override

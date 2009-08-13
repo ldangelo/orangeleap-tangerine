@@ -1068,7 +1068,7 @@ KEY `FK_ACTUAL_SCHEDULED_DATE` (`ACTUAL_SCHEDULED_DATE`)
 # Dump of table SITE_OPTIONS
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `SITE_OPTIONS`;
+DROP TABLE IF EXISTS `SITE_OPTION`;
 
 CREATE TABLE `SITE_OPTION` (
 `SITE_OPTION_ID` bigint(20) NOT NULL auto_increment,

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SITE_OPTION">
+
+    <resultMap id="SITE_OPTION_RESULT" class="com.orangeleap.tangerine.domain.SiteOption">
+        <result property="id" column="SITE_OPTION_SITE_OPTION_ID" />
+        <result property="siteName" column="SITE_OPTION_SITE_NAME" />
+        <result property="optionName" column="SITE_OPTION_OPTION_NAME" />
+        <result property="optionValue" column="SITE_OPTION_OPTION_VALUE" />
+        <result property="modifiedBy" column="SITE_OPTION_MODIFIED_BY" />
+        <result property="createDate" column="SITE_OPTION_CREATE_DATE" />
+        <result property="updateDate" column="SITE_OPTION_UPDATE_DATE" />
+    </resultMap>
+
+    <sql id="SITE_OPTION_COLS_FRAGMENT">
+        site_option.SITE_OPTION_ID as SITE_OPTION_SITE_OPTION_ID,
+        site_option.SITE_NAME as SITE_OPTION_SITE_NAME,
+        site_option.OPTION_NAME as SITE_OPTION_OPTION_NAME,
+        site_option.OPTION_VALUE as SITE_OPTION_OPTION_VALUE,
+        site_option.MODIFIED_BY as SITE_OPTION_MODIFIED_BY,
+        site_option.CREATE_DATE as SITE_OPTION_CREATE_DATE,
+        site_option.UPDATE_DATE as SITE_OPTION_UPDATE_DATE    
+    </sql>
+
+    <sql id="SELECT_SITE_OPTION_FRAGMENT">
+        select 
+        <include refid="SITE_OPTION_COLS_FRAGMENT"/>
+        from SITE_OPTION site_option 
+        where site_option.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_SITE_OPTION_BY_ID" resultMap="SITE_OPTION_RESULT" parameterClass="map" >
+        <include refid="SELECT_SITE_OPTION_FRAGMENT"/>
+        and site_option.SITE_OPTION_ID = #id#
+    </select>
+
+    <select id="SELECT_SITE_OPTIONS" resultMap="SITE_OPTION_RESULT" parameterClass="map" >
+        <include refid="SELECT_SITE_OPTION_FRAGMENT"/>
+    </select>
+
+    <insert id="INSERT_SITE_OPTION" parameterClass="com.orangeleap.tangerine.domain.SiteOption">
+        insert into SITE_OPTION (
+        	SITE_OPTION_ID,
+        	SITE_NAME,
+        	OPTION_NAME,
+        	OPTION_VALUE,
+        	MODIFIED_BY,
+        	CREATE_DATE,
+        	UPDATE_DATE        )
+        values (
+        	#id# ,
+        	#siteName# ,
+        	#optionName# ,
+        	#optionValue# ,
+        	#modifiedBy# ,
+        	now(),
+        	now()        )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_SITE_OPTION" parameterClass="com.orangeleap.tangerine.domain.SiteOption">
+        update SITE_OPTION
+        SET 
+        	SITE_OPTION_ID = #id# ,
+        	SITE_NAME = #siteName# ,
+        	OPTION_NAME = #optionName# ,
+        	OPTION_VALUE = #optionValue# ,
+        	MODIFIED_BY = #modifiedBy# ,
+        	UPDATE_DATE = now()        
+        where SITE_OPTION_ID = #id#
+    </update>
+
+</sqlMap>
+

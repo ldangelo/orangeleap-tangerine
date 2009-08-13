@@ -20,7 +20,7 @@ insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('bean:constituent.firstLast', 'adjustedPaymentTo', 'adjustedGift');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('5', 'customFieldMap[initialReminder]', 'recurringGift');
+values ('0', 'customFieldMap[initialReminder]', 'recurringGift');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('1', 'customFieldMap[maximumReminders]', 'recurringGift');
@@ -29,7 +29,7 @@ insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('0', 'customFieldMap[reminderInterval]', 'recurringGift');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('5', 'customFieldMap[initialReminder]', 'pledge');
+values ('0', 'customFieldMap[initialReminder]', 'pledge');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('1', 'customFieldMap[maximumReminders]', 'pledge');

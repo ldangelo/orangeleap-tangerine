@@ -420,28 +420,6 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         setCommitmentStatus(recurringGift, "recurringGiftStatus");
     }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processRecurringGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
-    	
-        Gift gift = createAutoGift(recurringGift, scheduledItem);
-
-        /* Re-read the Recurring Gift from the DB as fields may have changed */
-        recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
-
-        scheduledItemService.completeItem(scheduledItem, gift, gift.getPaymentStatus());
-        
-    	ScheduledItem nextitem = scheduledItemService.getNextItemToRun(recurringGift);
-        if (nextitem == null) {
-            recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_FULFILLED);
-            recurringGift.setNextRunDate(null);
-            recurringGiftDao.maintainRecurringGift(recurringGift);
-        } else {
-            recurringGift.setNextRunDate(nextitem.getActualScheduledDate());
-        }
-
-    }
-
     public static final String GIFT_AMOUNT_OVERRIDE = "giftAmountOverride";
     
     protected Gift createAutoGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
@@ -470,13 +448,40 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     }
 
+    // Used by nightly batch
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void processRecurringGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
+    	
+        Gift gift = createAutoGift(recurringGift, scheduledItem);
+
+        /* Re-read the Recurring Gift from the DB as fields may have changed */
+        recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
+
+        scheduledItemService.completeItem(scheduledItem, gift, gift.getPaymentStatus());
+        
+    	ScheduledItem nextitem = scheduledItemService.getNextItemToRun(recurringGift);
+        if (nextitem == null) {
+            recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_FULFILLED);
+            recurringGift.setNextRunDate(null);
+            recurringGiftDao.maintainRecurringGift(recurringGift);
+        } else {
+            recurringGift.setNextRunDate(nextitem.getActualScheduledDate());
+        }
+
+    }
+
+    // Used by nightly batch
 	@Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void extendPaymentSchedule(RecurringGift recurringGift) {
 		scheduledItemService.extendSchedule(recurringGift);
 		reminderService.generateDefaultReminders(recurringGift);
 	}
 
+    // Used by nightly batch
 	@Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
 	public ScheduledItem getNextPaymentToRun(RecurringGift recurringGift) {
 		return scheduledItemService.getNextItemToRun(recurringGift);
 	}

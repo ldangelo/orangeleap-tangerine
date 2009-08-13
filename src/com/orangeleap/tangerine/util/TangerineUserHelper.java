@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.util;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.providers.cas.CasAuthenticationToken;
 
@@ -40,7 +41,8 @@ public interface TangerineUserHelper {
 
     public Long lookupUserId();
 
-    public void setSystemUserAndSiteName(String siteName);
+    public Map<String, String> getSiteOptionsMap();
 
+    public void setSystemUserAndSiteName(String siteName);
 
 }

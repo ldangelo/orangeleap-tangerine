@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.jasig.cas.client.validation.Assertion;
@@ -46,7 +47,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     protected final Log logger = OLLogger.getLog(getClass());
 
     private ApplicationContext applicationContext;
-
+    
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext)
@@ -76,7 +77,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     */
     @Override
     public String lookupUserSiteName() {
-    	TangerineAuthenticationDetails details = getDetails();
+        TangerineAuthenticationDetails details = getDetails();
         return details == null ? null : details.getSite();
     }
 
@@ -131,6 +132,12 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
         }
         return roles;
     }
+    
+    @Override
+    public Map<String, String> getSiteOptionsMap() {
+    	return ((SiteService)applicationContext.getBean("siteService")).getSiteOptionsMap();
+    }
+
 
     // Used by nightly scheduled job functions
     @Override

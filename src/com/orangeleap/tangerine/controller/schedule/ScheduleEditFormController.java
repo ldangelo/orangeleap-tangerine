@@ -72,23 +72,27 @@ public class ScheduleEditFormController extends SimpleFormController {
 
         String sourceEntity = request.getParameter("sourceEntity");
         String sourceEntityId = request.getParameter("sourceEntityId");
+    	if (sourceEntityId != null) { 
         
-        Schedulable schedulable = null;
-
-        if (sourceEntity.equals("recurringgift")) {
-        	schedulable = recurringGiftService.readRecurringGiftById(new Long(sourceEntityId));
-        }
-        if (sourceEntity.equals("pledge")) {
-        	schedulable = pledgeService.readPledgeById(new Long(sourceEntityId));
-        }
-        if (sourceEntity.equals("scheduleditem")) {
-        	schedulable = scheduledItemService.readScheduledItemById(new Long(sourceEntityId));
-        }
+	        Schedulable schedulable = null;
+	
+	        if (sourceEntity.equals("recurringgift")) {
+	        	schedulable = recurringGiftService.readRecurringGiftById(new Long(sourceEntityId));
+	        }
+	        if (sourceEntity.equals("pledge")) {
+	        	schedulable = pledgeService.readPledgeById(new Long(sourceEntityId));
+	        }
+	        if (sourceEntity.equals("scheduleditem")) {
+	        	schedulable = scheduledItemService.readScheduledItemById(new Long(sourceEntityId));
+	        }
+	        
+	    	List<ScheduledItem> scheduledItems = scheduledItemService.readSchedule(schedulable);
+	        request.setAttribute("scheduledItems", scheduledItems);
+	        request.setAttribute("sourceEntity", sourceEntity);
+	        request.setAttribute("sourceEntityId", sourceEntityId);
         
-    	List<ScheduledItem> scheduledItems = scheduledItemService.readSchedule(schedulable);
-        request.setAttribute("scheduledItems", scheduledItems);
-        request.setAttribute("sourceEntity", sourceEntity);
-        request.setAttribute("sourceEntityId", sourceEntityId);
+    	}
+    	
         return super.showForm(request, response, errors, controlModel);
     }
     

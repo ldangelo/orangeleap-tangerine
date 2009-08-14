@@ -106,14 +106,16 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
 	    List<EntityDefault> defaults = getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_AND_SITE", params);
 
 		String prevFieldName = null;
-		// Use only the first EntityDefault with the same field name (ordered desc by siteName)
+		String prevEntityType = null;
+		// Use only the first EntityDefault with the same field name and entity type (ordered desc by siteName)
 		List<EntityDefault> filteredDefaults = new ArrayList<EntityDefault>();
 		if (defaults != null) {
 			for (EntityDefault aDefault : defaults) {
-				if (prevFieldName == null || !prevFieldName.equals(aDefault.getEntityFieldName())) {
-					prevFieldName = aDefault.getEntityFieldName();
+				if (!aDefault.getEntityFieldName().equals(prevFieldName) || !aDefault.getEntityType().equals(prevEntityType) ) {
 					filteredDefaults.add(aDefault);
 				}
+				prevFieldName = aDefault.getEntityFieldName();
+				prevEntityType = aDefault.getEntityType();
 			}
 		}
 		return filteredDefaults;

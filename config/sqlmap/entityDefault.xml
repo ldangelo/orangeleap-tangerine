@@ -29,7 +29,7 @@
 
 		AND ed.ENTITY_FIELD_NAME = #entityFieldName#
 
-		order by ENTITY_FIELD_NAME, ENTITY_TYPE, ed.SITE_NAME desc
+		order by ed.ENTITY_FIELD_NAME, ed.ENTITY_TYPE, ed.SITE_NAME desc
 	</select>
 
 	<select id="SELECT_BY_ENTITY_TYPE_AND_SITE" resultMap="ENTITY_DEFAULT" parameterClass="map">
@@ -40,7 +40,7 @@
 			ENTITY_TYPE = #entityType#
 		</isNotNull>
 
-		order by ENTITY_FIELD_NAME, ENTITY_TYPE, ed.SITE_NAME desc
+		order by ed.ENTITY_FIELD_NAME, ed.ENTITY_TYPE, ed.SITE_NAME desc
 	</select>
 
 	<!-- Inserts -->

@@ -296,6 +296,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         if (type.equals("url")) regex = "extensions:isUrl";
         if (type.equals("numeric")) regex = "^[0-9]*$";
         if (type.equals("alphanumeric")) regex = "^[a-zA-Z0-9]*$";
+        if (type.equals("money")) regex = "^[0-9]*(\\.[0-9][0-9])?$";
         if (type.equals("regex")) regex = customFieldRequest.getRegex().trim();
         fieldValidation.setRegex(regex);
         return fieldValidation;

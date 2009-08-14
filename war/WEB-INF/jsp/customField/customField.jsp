@@ -100,6 +100,7 @@
 			    <option value="url" >Web address (URL)</option>
 			    <option value="numeric" >Numbers Only</option>
 			    <option value="alphanumeric" >Letters or Numbers Only</option>
+			    <option value="money" >Money</option>
 			    <option value="regex" >Custom Regular Expression</option>
 		      </select>
 

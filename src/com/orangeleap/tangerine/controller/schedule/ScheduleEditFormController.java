@@ -136,43 +136,52 @@ public class ScheduleEditFormController extends SimpleFormController {
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
     	
         String action = request.getParameter("action");
+        boolean save = "save".equals(action);
+        boolean add = "add".equals(action);
+        boolean delete = "delete".equals(action);
 
     	ScheduledItem newScheduledItem = getScheduledItem(request);
     	ScheduledItem originalScheduledItem = scheduledItemService.readScheduledItemById(newScheduledItem.getId());
     	
-        if (originalScheduledItem == null) {
-        
-        	originalScheduledItem = newScheduledItem;
-        	originalScheduledItem.setOriginalScheduledDate(originalScheduledItem.getActualScheduledDate());
-
-        } else if ("save".equals(action) || "add".equals(action)) {
-        
-	        // Copy over updated scheduled date.
-	        if (newScheduledItem.getActualScheduledDate() != null) originalScheduledItem.setActualScheduledDate(newScheduledItem.getActualScheduledDate());
+    	if (delete) {
+    		
+	        if (originalScheduledItem != null) scheduledItemService.deleteScheduledItem(originalScheduledItem);
 	        
-	        // Copy over custom fields (e.g. giftOverrideAmount)
-	        Iterator<Map.Entry<String, CustomField>> it = newScheduledItem.getCustomFieldMap().entrySet().iterator();
-	        while (it.hasNext()) {
-	        	Map.Entry<String, CustomField> me = it.next();
-	            originalScheduledItem.setCustomFieldValue(me.getKey(), me.getValue().getValue());
+    	} else {
+    	
+	        if (originalScheduledItem == null) {
+	        	originalScheduledItem = newScheduledItem;
+	        } else {  		
+	        	copyUpdatableFields(newScheduledItem, originalScheduledItem);
 	        }
 	        
-	        if ("add".equals(action)) originalScheduledItem.setId(null);
+	        if (add) {
+	        	originalScheduledItem.setId(null);
+	        	originalScheduledItem.setOriginalScheduledDate(null);
+	        } else {
+	        	if (originalScheduledItem.getOriginalScheduledDate() == null) originalScheduledItem.setOriginalScheduledDate(originalScheduledItem.getActualScheduledDate());
+	        }
+	        
+	        scheduledItemService.maintainScheduledItem(originalScheduledItem);
         
-        }
-        
-        if ("delete".equals(action) || originalScheduledItem.getActualScheduledDate() == null) {
-        	scheduledItemService.deleteScheduledItem(originalScheduledItem);
-        } else {
-        	// TODO do we need validate there are no duplicate dates in edited schedule or is this allowed?
-        	scheduledItemService.maintainScheduledItem(originalScheduledItem);
-        }
+    	}
 
         ModelAndView mav = new ModelAndView("redirect:/scheduleEdit.htm?sourceEntity="+originalScheduledItem.getSourceEntity()+"&sourceEntityId"+originalScheduledItem.getSourceEntityId());
         return mav;
 
     }
-
-
+    
+    private void copyUpdatableFields(ScheduledItem newScheduledItem, ScheduledItem originalScheduledItem) {
+        // Copy over updated scheduled date.
+        originalScheduledItem.setActualScheduledDate(newScheduledItem.getActualScheduledDate());
+        
+        // Copy over custom fields (e.g. giftOverrideAmount)
+        Iterator<Map.Entry<String, CustomField>> it = newScheduledItem.getCustomFieldMap().entrySet().iterator();
+        while (it.hasNext()) {
+        	Map.Entry<String, CustomField> me = it.next();
+            originalScheduledItem.setCustomFieldValue(me.getKey(), me.getValue().getValue());
+        }
+    }
+    
 	
 }

@@ -56,14 +56,14 @@
                               
       						</c:when>
       						<c:otherwise>
-                            <%-- Uncompleted items can be deleted, or can edit only the actualScheduledDate and custom fields (e.g. giftAmountOverride). --%>
-
-                              <td><a href="#" onclick="ScheduleEdit.deleteItem(this);">Delete</a>/<a href="#" onclick="ScheduleEdit.addItem(this);">Add</a>
-                              <input type="hidden" name="scheduledItemId" value="${scheduledItem.id}"/>
+                            <%-- Uncompleted items can be deleted, added, or can edit (only) the actualScheduledDate and custom fields (e.g. giftAmountOverride). --%>
+                              <td>
+<a href="#" onclick="update(this,'save');">Save</a>/<a href="#" onclick="update(this,'add');">Add</a>/<a href="#" onclick="update(this,'delete');">Delete</a>
+                              <input type="hidden" name="id" value="${scheduledItem.id}"/>
                               <input type="hidden" name="sourceEntity" value="${scheduledItem.sourceEntity}"/>
                               <input type="hidden" name="sourceEntityId" value="${scheduledItem.sourceEntityId}"/>
                               </td>
-                              <td><a href="#" onclick="ScheduleEdit.saveItem(this);">Save</a></td>
+                              <td></td>
                               <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.originalScheduledDate}'/></td>
                               <td><input name="actualScheduledDate" value="<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}' />"/></td><%-- calendar popup --%>
                             
@@ -84,6 +84,25 @@
                         </table>
                         
                 </div>
+                
+                <script>
+                
+                function update(a, action) {
+                   var data = $(a).closest("tr").find("input").serialize() + "&action=" + action;
+                   $.ajax({
+                	   type: "POST",
+                	   url: "scheduleEdit.htm",
+                	   data: data,
+                	   success: function(msg){
+                	     window.location = "scheduleEdit.htm?sourceEntity=${sourceEntity}&sourceEntityId=${sourceEntityId}";
+                	   },
+            	   	   error: function(){
+                  	     alert("Invalid input.");
+                  	   }
+                	 });
+                }
+                
+                </script>
                 
                 
             </div>

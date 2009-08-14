@@ -29,6 +29,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -62,25 +63,9 @@ public class ScheduleEditFormController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-       
-    	String sourceEntity = request.getParameter("sourceEntity");
-        String sourceEntityId = request.getParameter("sourceEntityId");
-
-    	ScheduledItem item =  new ScheduledItem();
-    	item.setSourceEntity(sourceEntity);
-    	item.setSourceEntityId(new Long(sourceEntityId));
-    	
-    	return item;
-    	
+       return "";
     }
     
-	@Override
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-        super.initBinder(request, binder);
-        binder.registerCustomEditor(Date.class, new TangerineCustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); 
-    }
-
-	
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
@@ -107,12 +92,35 @@ public class ScheduleEditFormController extends SimpleFormController {
         return super.showForm(request, response, errors, controlModel);
     }
     
+    private ScheduledItem getScheduledItem(HttpServletRequest request) {
+    	
+    	ScheduledItem item =  new ScheduledItem();
+    	
+    	item.setSourceEntity(request.getParameter("sourceEntity"));
+    	item.setSourceEntityId(new Long(request.getParameter("sourceEntityId")));
+    	item.setId(new Long(request.getParameter("id")));
+    	item.setActualScheduledDate(getDate(request.getParameter("actualScheduledDate")));
+    	item.setCustomFieldValue("giftAmountOverride", StringUtils.trimToEmpty((request.getParameter("giftAmountOverride"))));
+    	
+    	return item;
+
+    }
+    
+    private Date getDate(String s) {
+    	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    	try {
+    		return sdf.parse(s);
+    	} catch (Exception e) {
+    		return null;
+    	}
+    }
+    
     @Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
     	
         String action = request.getParameter("action");
 
-    	ScheduledItem newScheduledItem = (ScheduledItem)command;
+    	ScheduledItem newScheduledItem = getScheduledItem(request);
     	ScheduledItem originalScheduledItem = scheduledItemService.readScheduledItemById(newScheduledItem.getId());
     	
         if (originalScheduledItem == null) {
@@ -120,10 +128,10 @@ public class ScheduleEditFormController extends SimpleFormController {
         	originalScheduledItem = newScheduledItem;
         	originalScheduledItem.setOriginalScheduledDate(originalScheduledItem.getActualScheduledDate());
 
-        } else {
+        } else if ("save".equals(action) || "add".equals(action)) {
         
 	        // Copy over updated scheduled date.
-	        originalScheduledItem.setActualScheduledDate(newScheduledItem.getActualScheduledDate());
+	        if (newScheduledItem.getActualScheduledDate() != null) originalScheduledItem.setActualScheduledDate(newScheduledItem.getActualScheduledDate());
 	        
 	        // Copy over custom fields (e.g. giftOverrideAmount)
 	        Iterator<Map.Entry<String, CustomField>> it = newScheduledItem.getCustomFieldMap().entrySet().iterator();
@@ -131,13 +139,15 @@ public class ScheduleEditFormController extends SimpleFormController {
 	        	Map.Entry<String, CustomField> me = it.next();
 	            originalScheduledItem.setCustomFieldValue(me.getKey(), me.getValue().getValue());
 	        }
+	        
+	        if ("add".equals(action)) originalScheduledItem.setId(null);
         
         }
         
         if ("delete".equals(action)) {
         	scheduledItemService.deleteScheduledItem(originalScheduledItem);
         } else {
-        	// TODO need to validate there are no duplicate dates in edited schedule.
+        	// TODO do we need validate there are no duplicate dates in edited schedule or is this allowed?
         	scheduledItemService.maintainScheduledItem(originalScheduledItem);
         }
 

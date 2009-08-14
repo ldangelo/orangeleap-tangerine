@@ -86,8 +86,7 @@ public class ScheduleEditFormController extends SimpleFormController {
 	        	schedulable = scheduledItemService.readScheduledItemById(new Long(sourceEntityId));
 	        }
 	        
-	    	List<ScheduledItem> scheduledItems = scheduledItemService.readSchedule(schedulable);
-	        request.setAttribute("scheduledItems", scheduledItems);
+	        request.setAttribute("scheduledItems", getScheduledItems(schedulable, request));
 	        request.setAttribute("sourceEntity", sourceEntity);
 	        request.setAttribute("sourceEntityId", sourceEntityId);
         
@@ -96,18 +95,32 @@ public class ScheduleEditFormController extends SimpleFormController {
         return super.showForm(request, response, errors, controlModel);
     }
     
+    private List<ScheduledItem> getScheduledItems(Schedulable schedulable, HttpServletRequest request) {
+    	List<ScheduledItem> scheduledItems = scheduledItemService.readSchedule(schedulable);
+    	if (scheduledItems.size() == 0) scheduledItems.add(getScheduledItem(request));
+    	return scheduledItems;
+    }
+    
     private ScheduledItem getScheduledItem(HttpServletRequest request) {
     	
     	ScheduledItem item =  new ScheduledItem();
     	
     	item.setSourceEntity(request.getParameter("sourceEntity"));
     	item.setSourceEntityId(new Long(request.getParameter("sourceEntityId")));
-    	item.setId(new Long(request.getParameter("id")));
+    	item.setId(getLong(request.getParameter("id")));
     	item.setActualScheduledDate(getDate(request.getParameter("actualScheduledDate")));
     	item.setCustomFieldValue("giftAmountOverride", StringUtils.trimToEmpty((request.getParameter("giftAmountOverride"))));
     	
     	return item;
 
+    }
+    
+    private Long getLong(String s) {
+    	try {
+    		return new Long(s);
+    	} catch (Exception e) {
+    		return null;
+    	}
     }
     
     private Date getDate(String s) {
@@ -148,7 +161,7 @@ public class ScheduleEditFormController extends SimpleFormController {
         
         }
         
-        if ("delete".equals(action)) {
+        if ("delete".equals(action) || originalScheduledItem.getActualScheduledDate() == null) {
         	scheduledItemService.deleteScheduledItem(originalScheduledItem);
         } else {
         	// TODO do we need validate there are no duplicate dates in edited schedule or is this allowed?

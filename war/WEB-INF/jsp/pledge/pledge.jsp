@@ -25,6 +25,10 @@
 				<%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
 
 				<tangerine:fields pageName="pledge"/>
+				
+				<c:if test="${form.domainObject.id > 0}">
+						<strong><a class="action" href="scheduleEdit.htm?sourceEntity=pledge&sourceEntityId=${form.domainObject.id}">Payment Schedule&raquo;</a></strong>
+				</c:if>
 
 				<div class="formButtonFooter constituentFormButtons">
 					<c:if test="${not empty clickText}">

@@ -19,6 +19,10 @@
 				<h3 class="info"><spring:message code='thisPledgeEntered'/> <fmt:formatDate value="${form.domainObject.createDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${form.domainObject.createDate}" type="time" />.</h3>
 
 				<tangerine:fields pageName="pledgeView"/>
+				
+				<c:if test="${form.domainObject.id > 0}">
+						<strong><a class="action" href="scheduleEdit.htm?sourceEntity=pledge&sourceEntityId=${form.domainObject.id}">Payment Schedule&raquo;</a></strong>
+				</c:if>
 
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />

@@ -161,10 +161,11 @@ public class Pledge extends Commitment implements Schedulable {
                 setAmountTotal(null);
             }
         } else {
-            setStartDate(null);
-            setEndDate(null);
+        	// Non-recurring pledges have freq = ONE_TIME with start date = projected date.
+            //setStartDate(null);
+            //setEndDate(null);
+            //setFrequency(null);
             setAmountPerGift(null);
-            setFrequency(null);
             if (getAmountTotal() != null && getAmountPaid() != null) {
                 setAmountRemaining(getAmountTotal().subtract(getAmountPaid()));
             } else {

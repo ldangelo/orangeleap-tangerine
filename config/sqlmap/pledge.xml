@@ -118,12 +118,9 @@
 		$sql$
 	</statement>
 	
-	<select id="SELECT_PLEDGES_ON_OR_AFTER_DATE" resultMap="MIN_PLEDGE_RESULT" parameterClass="map">
-		select
-		<include refid="PLEDGE_COLS_FRAGMENT" />
-		from PLEDGE c
-		where
-		 (c.END_DATE &gt;= #date# or c.END_DATE is null)
+	<select id="SELECT_PLEDGES_ON_OR_AFTER_DATE" resultMap="PLEDGE_RESULT" parameterClass="map">
+		<include refid="SELECT_PLEDGE_FRAGMENT" />
+		and (c.END_DATE &gt;= #date# or c.END_DATE is null)
 		and c.PLEDGE_STATUS in
     	<iterate property="statuses" conjunction="," open="(" close=")">
 			#statuses[]#

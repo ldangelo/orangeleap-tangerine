@@ -340,7 +340,10 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		addScheduledPaymentDates(scheduledPayment, map);
 
     	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(PledgeServiceImpl.GIFT_AMOUNT_OVERRIDE);
-    	BigDecimal amount = giftOverrideAmount == null ? pledge.getAmountPerGift() : new BigDecimal(giftOverrideAmount);
+    	
+    	BigDecimal amount = 
+    		giftOverrideAmount == null ? ( pledge.isRecurring() ? pledge.getAmountPerGift() : pledge.getAmountTotal() ) : new BigDecimal(giftOverrideAmount);
+    		
 		map.put("GiftAmount", amount.toString());
     	
 		String subject = "Thank you for your pledge!";

@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -62,4 +63,8 @@ public interface PledgeService extends CommitmentService<Pledge> {
     public void updatePledgeForGift(Gift gift);
 
     public void updatePledgeForAdjustedGift(AdjustedGift adjustedGift);
+
+    public void extendPaymentSchedule(Pledge pledge);
+
+    public ScheduledItem getNextPaymentToRun(Pledge pledge);
 }

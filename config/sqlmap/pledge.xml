@@ -117,6 +117,18 @@
 	<statement id="SELECT_PLEDGE_BY_SQL" resultMap="PLEDGE_RESULT">
 		$sql$
 	</statement>
+	
+	<select id="SELECT_PLEDGES_ON_OR_AFTER_DATE" resultMap="MIN_PLEDGE_RESULT" parameterClass="map">
+		select
+		<include refid="PLEDGE_COLS_FRAGMENT" />
+		from PLEDGE c
+		where
+		 (c.END_DATE &gt;= #date# or c.END_DATE is null)
+		and c.PLEDGE_STATUS in
+    	<iterate property="statuses" conjunction="," open="(" close=")">
+			#statuses[]#
+		</iterate>
+	</select>
 
 	<insert id="INSERT_PLEDGE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
 		insert into PLEDGE (AMOUNT_PER_GIFT, AMOUNT_TOTAL, AMOUNT_PAID, AMOUNT_REMAINING, CURRENCY_CODE, 

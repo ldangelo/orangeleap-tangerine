@@ -228,6 +228,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     
     	String frequency = schedulable.getFrequency();
     	if (Commitment.FREQUENCY_UNSPECIFIED.equals(frequency)) return result;
+    	if (schedulable.getStartDate() == null) return result;
     	
     	Calendar cal = Calendar.getInstance();
     	cal.setTime(schedulable.getStartDate());

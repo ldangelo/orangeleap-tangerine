@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.dao;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,8 @@ public interface PledgeDao {
     public Pledge readPledgeById(Long pledgeId);
 
     public List<Pledge> readPledgesByConstituentId(Long constituentId);
+    
+    public List<Pledge> readPledges(Date date, List<String> statuses);
 
     public List<Pledge> findNotCancelledPledges(Long constituentId);
 

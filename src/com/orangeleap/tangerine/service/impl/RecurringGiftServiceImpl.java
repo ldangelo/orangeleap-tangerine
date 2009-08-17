@@ -142,14 +142,12 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             logger.trace("maintainRecurringGift: recurringGift = " + recurringGift);
         }
 	    validateRecurringGift(recurringGift, true);
-
-	    RecurringGift old = getExisting(recurringGift);
-	    
         recurringGift.setAutoPay(true);
 
-        RecurringGift savedRecurringGift = save(recurringGift);
 
-        maintainSchedules(old, savedRecurringGift);
+	    RecurringGift oldRecurringGift = getExisting(recurringGift);
+        RecurringGift savedRecurringGift = save(recurringGift);
+        maintainSchedules(oldRecurringGift, savedRecurringGift);
 
         return savedRecurringGift;
     }
@@ -192,73 +190,13 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
 	    validateRecurringGift(recurringGift, false);
 	    
-	    RecurringGift old = getExisting(recurringGift);
-
+	    RecurringGift oldRecurringGift = getExisting(recurringGift);
         RecurringGift savedRecurringGift = save(recurringGift);
-
-        maintainSchedules(old, savedRecurringGift);
+        maintainSchedules(oldRecurringGift, savedRecurringGift);
 
         return savedRecurringGift;
     }
     
-    private void maintainSchedules(RecurringGift old, RecurringGift savedRecurringGift) {
-        if (savedRecurringGift.isActivate()) {
-        	if (needToResetSchedule(old, savedRecurringGift)) {
-        		reminderService.deleteReminders(savedRecurringGift);
-        		scheduledItemService.regenerateSchedule(savedRecurringGift);
-        	} else if (needToResetReminders(old, savedRecurringGift)) {
-        		reminderService.deleteReminders(savedRecurringGift);
-        	}
-    		scheduledItemService.extendSchedule(savedRecurringGift);
-    		reminderService.generateDefaultReminders(savedRecurringGift);
-        } else {
-        	reminderService.deleteReminders(savedRecurringGift);
-        	scheduledItemService.deleteSchedule(savedRecurringGift);
-        }
-        setNextRun(savedRecurringGift);
-    }
-
-    private RecurringGift getExisting(RecurringGift recurringGift) {
-	    if (recurringGift.getId() == null || recurringGift.getId().equals(0)) return null;
-    	return recurringGiftDao.readRecurringGiftById(recurringGift.getId());
-    }
-    
-    private boolean needToResetSchedule(RecurringGift old, RecurringGift updated) {
-    	
-    	if (old == null) return true;
-    	
-		if (!compare(old.getStartDate(), updated.getStartDate())
-				|| !compare(old.getEndDate(), updated.getEndDate())
-				|| !old.getFrequency().equals(updated.getFrequency()))
-			return true;
-    	
-    	return false;
-    }
-    
-    private boolean needToResetReminders(RecurringGift old, RecurringGift updated) {
-    	
-    	if (old == null) return true;
-    	
-    	ReminderServiceImpl.ReminderInfo riold = new ReminderServiceImpl.ReminderInfo(old);
-    	ReminderServiceImpl.ReminderInfo rinew = new ReminderServiceImpl.ReminderInfo(updated);
-    	
-		if (
-				riold.isGenerateReminders() != rinew.isGenerateReminders()
-				|| riold.getInitialReminder() != rinew.getInitialReminder()
-				|| riold.getMaximumReminders() != rinew.getMaximumReminders()
-				|| riold.getReminderIntervalDays() != rinew.getReminderIntervalDays()
-			)
-			return true;
-    	
-    	return false;
-    }
-    
-    private boolean compare(Date d1, Date d2) {
-    	if (d1 == null && d2 == null) return true;
-    	if (d1 == null || d2 == null) return false;
-    	return d1.equals(d2);
-    }
-
     private RecurringGift save(RecurringGift recurringGift) throws BindException {
         maintainEntityChildren(recurringGift, recurringGift.getConstituent());
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
@@ -447,6 +385,68 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         return gift;
 
     }
+    
+    // Schedule methods
+    
+    private void maintainSchedules(RecurringGift oldRecurringGift, RecurringGift savedRecurringGift) {
+        if (savedRecurringGift.isActivate() && !savedRecurringGift.getRecurringGiftStatus().equals(Commitment.STATUS_CANCELLED)) {
+        	if (needToResetSchedule(oldRecurringGift, savedRecurringGift)) {
+        		reminderService.deleteReminders(savedRecurringGift);
+        		scheduledItemService.regenerateSchedule(savedRecurringGift);
+        	} else if (needToResetReminders(oldRecurringGift, savedRecurringGift)) {
+        		reminderService.deleteReminders(savedRecurringGift);
+        	}
+    		scheduledItemService.extendSchedule(savedRecurringGift);
+    		reminderService.generateDefaultReminders(savedRecurringGift);
+        } else {
+        	reminderService.deleteReminders(savedRecurringGift);
+        	scheduledItemService.deleteSchedule(savedRecurringGift);
+        }
+        setNextRun(savedRecurringGift);
+    }
+
+    private RecurringGift getExisting(RecurringGift recurringGift) {
+	    if (recurringGift.getId() == null || recurringGift.getId().equals(0)) return null;
+    	return recurringGiftDao.readRecurringGiftById(recurringGift.getId());
+    }
+    
+    private boolean needToResetSchedule(RecurringGift old, RecurringGift updated) {
+    	
+    	if (old == null) return true;
+    	
+		if (!compare(old.getStartDate(), updated.getStartDate())
+				|| !compare(old.getEndDate(), updated.getEndDate())
+				|| !old.getFrequency().equals(updated.getFrequency()))
+			return true;
+    	
+    	return false;
+    }
+    
+    private boolean needToResetReminders(RecurringGift old, RecurringGift updated) {
+    	
+    	if (old == null) return true;
+    	
+    	ReminderServiceImpl.ReminderInfo riold = new ReminderServiceImpl.ReminderInfo(old);
+    	ReminderServiceImpl.ReminderInfo rinew = new ReminderServiceImpl.ReminderInfo(updated);
+    	
+		if (
+				riold.isGenerateReminders() != rinew.isGenerateReminders()
+				|| riold.getInitialReminder() != rinew.getInitialReminder()
+				|| riold.getMaximumReminders() != rinew.getMaximumReminders()
+				|| riold.getReminderIntervalDays() != rinew.getReminderIntervalDays()
+			)
+			return true;
+    	
+    	return false;
+    }
+    
+    private boolean compare(Date d1, Date d2) {
+    	if (d1 == null && d2 == null) return true;
+    	if (d1 == null || d2 == null) return false;
+    	return d1.equals(d2);
+    }
+
+
 
     // Used by nightly batch
     @Override

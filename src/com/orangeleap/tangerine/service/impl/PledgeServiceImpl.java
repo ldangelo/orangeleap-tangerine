@@ -18,23 +18,18 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.PledgeValidator;
-import com.orangeleap.tangerine.dao.PledgeDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.service.PledgeService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
@@ -45,15 +40,26 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.PledgeValidator;
+import com.orangeleap.tangerine.dao.PledgeDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.ReminderService;
+import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @SuppressWarnings("unchecked")
 @Service("pledgeService")
@@ -79,6 +85,14 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     
     @Resource(name="distributionLinesValidator")
     protected DistributionLinesValidator distributionLinesValidator;
+    
+    @Resource(name = "scheduledItemService")
+    private ScheduledItemService scheduledItemService;
+
+    @Resource(name = "reminderService")
+    private ReminderService reminderService;
+
+
 
 
     // Used for create new only
@@ -90,8 +104,17 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         }
         
 		validatePledge(pledge, true);
+		setStartDateForReminders(pledge);
 
-        return save(pledge);
+		Pledge oldPledge = getExisting(pledge);
+		Pledge savedPledge = save(pledge);
+		maintainSchedules(oldPledge, savedPledge);
+
+		return savedPledge;
+    }
+    
+    private void setStartDateForReminders(Pledge pledge) {
+		if (!pledge.isRecurring()) pledge.setStartDate(pledge.getProjectedDate());
     }
 
 	private void validatePledge(Pledge pledge, boolean validateDistributionLines) throws BindException {
@@ -121,7 +144,13 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
             logger.trace("editPledge: pledgeId = " + pledge.getId());
         }
 	    validatePledge(pledge, false);
-        return save(pledge);
+		setStartDateForReminders(pledge);
+	    
+		Pledge oldPledge = getExisting(pledge);
+		Pledge savedPledge = save(pledge);
+		maintainSchedules(oldPledge, savedPledge);
+
+		return savedPledge;
     }
     
     private Pledge save(Pledge pledge) throws BindException {
@@ -311,4 +340,83 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
             }
         }
     }
+    
+    // Schedule methods
+
+    private void maintainSchedules(Pledge oldPledge, Pledge savedPledge) {
+        if (!savedPledge.getPledgeStatus().equals(Commitment.STATUS_CANCELLED)) {
+        	if (needToResetSchedule(oldPledge, savedPledge)) {
+        		reminderService.deleteReminders(savedPledge);
+        		scheduledItemService.regenerateSchedule(savedPledge);
+        	} else if (needToResetReminders(oldPledge, savedPledge)) {
+        		reminderService.deleteReminders(savedPledge);
+        	}
+    		scheduledItemService.extendSchedule(savedPledge);
+    		reminderService.generateDefaultReminders(savedPledge);
+        } else {
+        	reminderService.deleteReminders(savedPledge);
+        	scheduledItemService.deleteSchedule(savedPledge);
+        }
+    }
+    
+    private Pledge getExisting(Pledge pledge) {
+	    if (pledge.getId() == null || pledge.getId().equals(0)) return null;
+    	return pledgeDao.readPledgeById(pledge.getId());
+    }
+    
+    private boolean needToResetSchedule(Pledge old, Pledge updated) {
+    	
+    	if (old == null) return true;
+    	
+		if (!compare(old.getStartDate(), updated.getStartDate())
+				|| !compare(old.getEndDate(), updated.getEndDate())
+				|| !old.getFrequency().equals(updated.getFrequency()))
+			return true;
+    	
+    	return false;
+    }
+    
+    private boolean needToResetReminders(Pledge old, Pledge updated) {
+    	
+    	if (old == null) return true;
+    	
+    	ReminderServiceImpl.ReminderInfo riold = new ReminderServiceImpl.ReminderInfo(old);
+    	ReminderServiceImpl.ReminderInfo rinew = new ReminderServiceImpl.ReminderInfo(updated);
+    	
+		if (
+				riold.isGenerateReminders() != rinew.isGenerateReminders()
+				|| riold.getInitialReminder() != rinew.getInitialReminder()
+				|| riold.getMaximumReminders() != rinew.getMaximumReminders()
+				|| riold.getReminderIntervalDays() != rinew.getReminderIntervalDays()
+			)
+			return true;
+    	
+    	return false;
+    }
+    
+    private boolean compare(Date d1, Date d2) {
+    	if (d1 == null && d2 == null) return true;
+    	if (d1 == null || d2 == null) return false;
+    	return d1.equals(d2);
+    }
+    
+  
+    // Used by nightly batch
+	@Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void extendPaymentSchedule(Pledge pledge) {
+		scheduledItemService.extendSchedule(pledge);
+		reminderService.generateDefaultReminders(pledge);
+	}
+
+    // Used by nightly batch
+	@Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+	public ScheduledItem getNextPaymentToRun(Pledge pledge) {
+		return scheduledItemService.getNextItemToRun(pledge);
+	}
+
+
+
+    
 }

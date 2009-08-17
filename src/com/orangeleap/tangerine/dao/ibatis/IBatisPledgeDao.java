@@ -18,6 +18,15 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
@@ -28,13 +37,6 @@ import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 
 @Repository("pledgeDAO")
 public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implements PledgeDao {
@@ -190,4 +192,20 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
         paramMap.put("pledgeId", pledgeId);
         return (Long) getSqlMapClientTemplate().queryForObject("SELECT_PAYMENTS_APPLIED_TO_PLEDGE_ID", paramMap);
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Pledge> readPledges(Date date, List<String> statuses) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPledges: date = " + date + " statuses = " + statuses);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("date", date);
+        params.put("statuses", statuses);
+
+        List<Pledge> pledges = getSqlMapClientTemplate().queryForList("SELECT_PLEDGES_ON_OR_AFTER_DATE", params);
+
+        return pledges;
+    }
+
 }

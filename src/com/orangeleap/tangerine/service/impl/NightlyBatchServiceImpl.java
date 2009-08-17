@@ -28,11 +28,14 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 
+import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.NightlyBatchService;
+import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -52,9 +55,16 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
 
+    @Resource(name = "pledgeDAO")
+    private PledgeDao pledgeDao;
+
+    @Resource(name = "pledgeService")
+    private PledgeService pledgeService;
+
     @Resource(name = "reminderService")
     private ReminderService reminderService;
 
+    
     // Non-transactional method
     @Override
     public synchronized void processRecurringGifts() {
@@ -69,7 +79,7 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
         // Note: This is looping thru Recurring gifts instead of just calling ScheduledItemService.getNextItemsReadyToProcess() due to legacy data not having schedules set up necessarily.
         cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
         cal.add(Calendar.DATE, -1); 
-        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS /*, Commitment.STATUS_FULFILLED*/}));
+        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS }));
 
         if (recurringGifts != null) {
         	
@@ -108,8 +118,50 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
             
         }
         
+        // These calls could be moved to quartz to allow scheduling independently.
         recurringGifts = null; // if calling processReminders() from here, dont hold all this data on the stack
+        processPledges();
         processReminders();
+        
+    }
+    
+    // Non-transactional method
+    // Currently all this does is extend the implied payment schedules (which pledge reminders are based on)
+    @Override
+    public synchronized void processPledges() {
+    	
+        if (logger.isTraceEnabled()) {
+            logger.trace("processPledges:");
+        }
+
+        Calendar cal = getToday();
+
+        // Note: This is looping thru pledges instead of just calling ScheduledItemService.getNextItemsReadyToProcess() due to legacy data not having schedules set up necessarily.
+        cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
+        cal.add(Calendar.DATE, -1); 
+        List<Pledge> pledges = pledgeDao.readPledges(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS }));
+
+        if (pledges != null) {
+        	
+        	logger.info("Processing "+pledges.size()+" pledges.");
+        	long t = System.currentTimeMillis();
+        	
+            for (Pledge pledge : pledges) {
+            	
+            	try {
+            	
+	            	pledgeService.extendPaymentSchedule(pledge);
+                
+            	} catch (Exception e) {
+            		logger.error("Error processing pledge "+pledge.getId(), e);
+            		TaskStack.clear();
+            	}
+                
+            }
+            
+            logger.info("Pledge processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
+            
+        }
         
     }
     

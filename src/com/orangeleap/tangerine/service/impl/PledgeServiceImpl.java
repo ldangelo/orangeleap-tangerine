@@ -107,6 +107,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 		setStartDateForReminders(pledge);
 
 		Pledge oldPledge = getExisting(pledge);
+		setStartDateForReminders(oldPledge);
 		Pledge savedPledge = save(pledge);
 		maintainSchedules(oldPledge, savedPledge);
 
@@ -114,7 +115,10 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     }
     
     private void setStartDateForReminders(Pledge pledge) {
-		if (!pledge.isRecurring()) pledge.setStartDate(pledge.getProjectedDate());
+		if (!pledge.isRecurring()) {
+			pledge.setStartDate(pledge.getProjectedDate());
+			pledge.setEndDate(pledge.getProjectedDate());
+		}
     }
 
 	private void validatePledge(Pledge pledge, boolean validateDistributionLines) throws BindException {
@@ -147,6 +151,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 		setStartDateForReminders(pledge);
 	    
 		Pledge oldPledge = getExisting(pledge);
+		setStartDateForReminders(oldPledge);
 		Pledge savedPledge = save(pledge);
 		maintainSchedules(oldPledge, savedPledge);
 

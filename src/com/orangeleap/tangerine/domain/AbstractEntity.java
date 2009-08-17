@@ -18,13 +18,14 @@
 
 package com.orangeleap.tangerine.domain;
 
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import org.springframework.core.style.ToStringCreator;
-
-import javax.xml.bind.annotation.XmlType;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlType;
+
+import org.springframework.core.style.ToStringCreator;
+
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 
 /**
  * Base class for all Entities. It provides base functionality
@@ -34,7 +35,7 @@ import java.util.Map;
  */
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
-public abstract class AbstractEntity implements GeneratedId, Serializable {
+public abstract class AbstractEntity implements Entity {
 
     protected Long id = null;
     protected Map<String, String> fieldLabelMap = null;

@@ -1,8 +1,9 @@
 package com.orangeleap.tangerine.test.service.impl;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -10,6 +11,7 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.test.BaseTest;
@@ -65,6 +67,20 @@ extends BaseTest
 		}
 		public Date getEndDate() {
 			return endDate;
+		}
+		@Override
+		public Map<String, CustomField> getCustomFieldMap() {
+			return new TreeMap<String, CustomField>();
+		}
+		@Override
+		public String getCustomFieldValue(String fieldName) {
+			return null;
+		}
+		@Override
+		public void removeCustomField(String fieldName) {
+		}
+		@Override
+		public void setCustomFieldValue(String fieldName, String value) {
 		}
     	
 	}

@@ -71,6 +71,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
      * Logger for this class and subclasses
      */
     protected final Log logger = OLLogger.getLog(getClass());
+    
+    public static final String GIFT_AMOUNT_OVERRIDE = "giftAmountOverride";
 
     @Resource(name = "recurringGiftDAO")
     private RecurringGiftDao recurringGiftDao;
@@ -420,8 +422,6 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         setCommitmentStatus(recurringGift, "recurringGiftStatus");
     }
 
-    public static final String GIFT_AMOUNT_OVERRIDE = "giftAmountOverride";
-    
     protected Gift createAutoGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
     	
         Gift gift = new Gift(recurringGift);

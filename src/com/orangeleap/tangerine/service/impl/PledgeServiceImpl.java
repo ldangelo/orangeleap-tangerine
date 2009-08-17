@@ -62,6 +62,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 
     /** Logger for this class and subclasses */
     protected final static Log logger = OLLogger.getLog(PledgeServiceImpl.class);
+    
+    public static final String GIFT_AMOUNT_OVERRIDE = "giftAmountOverride";
 
     @Resource(name = "pledgeDAO")
     private PledgeDao pledgeDao;

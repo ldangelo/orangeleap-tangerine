@@ -18,16 +18,17 @@
 
 package com.orangeleap.tangerine.domain;
 
-import com.orangeleap.tangerine.domain.customization.CustomField;
-import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.beanutils.BeanUtils;
-
-import javax.xml.bind.annotation.XmlType;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javax.xml.bind.annotation.XmlType;
+
+import org.apache.commons.beanutils.BeanUtils;
+
+import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.util.StringConstants;
 
 /**
  * Extends AbstractEntity to include methods needed on Entities which
@@ -37,7 +38,7 @@ import java.util.TreeMap;
  */
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
-public abstract class AbstractCustomizableEntity extends AbstractEntity {
+public abstract class AbstractCustomizableEntity extends AbstractEntity implements Customizable {
 
     protected Map<String, CustomField> customFieldMap = null;
 

@@ -35,11 +35,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.Customizable;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
-import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PledgeService;
@@ -76,28 +76,28 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
     private EmailService emailService;
     
 	@Override
-	public List<ScheduledItem> listReminders(RecurringGift recurringGift, Date scheduledPaymentDate) {
-		ScheduledItem scheduledPayment = locateScheduledItemByDate(recurringGift, scheduledPaymentDate);
+	public List<ScheduledItem> listReminders(Schedulable schedulable, Date scheduledPaymentDate) {
+		ScheduledItem scheduledPayment = locateScheduledItemByDate(schedulable, scheduledPaymentDate);
 		return scheduledItemService.readSchedule(scheduledPayment);
 	}
 	
 	@Override
-	public void addReminder(RecurringGift recurringGift, Date scheduledPaymentDate, Date reminderDate) {
-		ScheduledItem scheduledPayment = locateScheduledItemByDate(recurringGift, scheduledPaymentDate);
+	public void addReminder(Schedulable schedulable, Date scheduledPaymentDate, Date reminderDate) {
+		ScheduledItem scheduledPayment = locateScheduledItemByDate(schedulable, scheduledPaymentDate);
 		ScheduledItem reminder = getReminder(scheduledPayment, reminderDate);
 		scheduledItemService.maintainScheduledItem(reminder);
 	}
 
 	@Override
-	public void deleteReminder(RecurringGift recurringGift, Date scheduledPaymentDate, Date reminderDate) {
-		ScheduledItem scheduledPayment = locateScheduledItemByDate(recurringGift, scheduledPaymentDate);
+	public void deleteReminder(Schedulable schedulable, Date scheduledPaymentDate, Date reminderDate) {
+		ScheduledItem scheduledPayment = locateScheduledItemByDate(schedulable, scheduledPaymentDate);
 		ScheduledItem reminder = locateScheduledItemByDate(scheduledPayment, reminderDate);
 		scheduledItemService.deleteScheduledItem(reminder);
 	}
 	
 	@Override
-	public void deleteReminders(RecurringGift recurringGift) {
-		List<ScheduledItem> scheduledPayments = scheduledItemService.readSchedule(recurringGift);
+	public void deleteReminders(Schedulable schedulable) {
+		List<ScheduledItem> scheduledPayments = scheduledItemService.readSchedule(schedulable);
 		for (ScheduledItem scheduledPayment: scheduledPayments) {
 			scheduledItemService.deleteSchedule(scheduledPayment);
 		}
@@ -113,26 +113,26 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 	}
 
 	@Override
-	public void generateDefaultReminders(RecurringGift recurringGift) {
-		ReminderInfo ri = new ReminderInfo(recurringGift);
-	    if (ri.isGenerateReminders()) generateDefaultReminders(recurringGift, ri.getInitialReminder(), ri.getMaximumReminders(), ri.getReminderIntervalDays());
+	public void generateDefaultReminders(Schedulable schedulable) {
+		ReminderInfo ri = new ReminderInfo(schedulable);
+	    if (ri.isGenerateReminders()) generateDefaultReminders(schedulable, ri.getInitialReminder(), ri.getMaximumReminders(), ri.getReminderIntervalDays());
 	}
 
 	@Override
-	public void generateDefaultReminders(RecurringGift recurringGift, Date scheduledPaymentDate) {
-		ReminderInfo ri = new ReminderInfo(recurringGift);
-	    if (ri.isGenerateReminders()) generateDefaultReminders(recurringGift, scheduledPaymentDate, ri.getInitialReminder(), ri.getMaximumReminders(), ri.getReminderIntervalDays());
+	public void generateDefaultReminders(Schedulable schedulable, Date scheduledPaymentDate) {
+		ReminderInfo ri = new ReminderInfo(schedulable);
+	    if (ri.isGenerateReminders()) generateDefaultReminders(schedulable, scheduledPaymentDate, ri.getInitialReminder(), ri.getMaximumReminders(), ri.getReminderIntervalDays());
 	}
 
-	private void generateDefaultReminders(RecurringGift recurringGift, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
-		List<ScheduledItem> scheduledPayments = scheduledItemService.readSchedule(recurringGift);
+	private void generateDefaultReminders(Schedulable schedulable, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
+		List<ScheduledItem> scheduledPayments = scheduledItemService.readSchedule(schedulable);
 		for (ScheduledItem scheduledPayment : scheduledPayments) {
 			generateDefaultReminders(scheduledPayment, initialReminderDays, maximumReminders, reminderIntervalDays);
 		}
 	}
 	
-	private void generateDefaultReminders(RecurringGift recurringGift, Date scheduledPaymentDate, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
-		ScheduledItem scheduledPayment = locateScheduledItemByDate(recurringGift, scheduledPaymentDate);
+	private void generateDefaultReminders(Schedulable schedulable, Date scheduledPaymentDate, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
+		ScheduledItem scheduledPayment = locateScheduledItemByDate(schedulable, scheduledPaymentDate);
 		generateDefaultReminders(scheduledPayment, initialReminderDays, maximumReminders, reminderIntervalDays);
 	}
 	
@@ -227,7 +227,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
     	private int reminderIntervalDays = 0;
     	private boolean valid = true;
 
-    	public ReminderInfo(AbstractCustomizableEntity entity) {
+    	public ReminderInfo(Customizable entity) {
 			try {
 	    		String sinitialReminder = entity.getCustomFieldValue("initialReminder");
 	    		if (sinitialReminder != null) {
@@ -287,52 +287,71 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		ScheduledItem scheduledPayment = (ScheduledItem)getParent(reminder);
     	Schedulable schedulable = getParent(scheduledPayment);
     	
-    	if (schedulable instanceof RecurringGift) {
-    	
-    		RecurringGift recurringGift = (RecurringGift)schedulable;
-        	
-        	String status;
-        	try {
-        		status = processRecurringGiftReminder(recurringGift, scheduledPayment);
-        	} catch (Exception e) {
-        		logger.error("Error processing reminder " + reminder.getId(), e);
-        		status = "Error";
+    	String status = "";
+    	try {
+        	if (schedulable instanceof RecurringGift) {
+        		status = processRecurringGiftReminder((RecurringGift)schedulable, scheduledPayment);
+        	} else if (schedulable instanceof Pledge) {
+        		status = processPledgeReminder((Pledge)schedulable, scheduledPayment);
+        	} else {
+        		throw new RuntimeException("Unknown schedulable type.");
         	}
-        	
         	scheduledItemService.completeItem(reminder, null, status);
-        	
+    	} catch (Exception e) {
+    		logger.error("Error processing reminder " + reminder.getId(), e);
+    		status = "Error";
     	}
-        	
+    	
+	}
+	
+	private void addScheduledPaymentDates(ScheduledItem scheduledPayment, Map<String, String> map) {
+    	Date scheduledPaymentDate = scheduledPayment.getActualScheduledDate();
+		SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+		map.put("ScheduledPaymentDate", sdf1.format(scheduledPaymentDate));
+		SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+		map.put("ScheduledPaymentDateDDMMYYYY", sdf2.format(scheduledPaymentDate));
 	}
 	
 	private String processRecurringGiftReminder(RecurringGift recurringGift, ScheduledItem scheduledPayment) {
 
 		Map<String, String> map = new HashMap<String, String>();
 
-		Constituent constituent = constituentService.readConstituentById(recurringGift.getConstituentId());
-		constituent.setSite(siteService.readSite(constituent.getSite().getName()));
-		
+		addScheduledPaymentDates(scheduledPayment, map);
+
     	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(RecurringGiftServiceImpl.GIFT_AMOUNT_OVERRIDE);
     	BigDecimal amount = giftOverrideAmount == null ? recurringGift.getAmountPerGift() : new BigDecimal(giftOverrideAmount);
 		map.put("GiftAmount", amount.toString());
     	
-    	Date scheduledPaymentDate = scheduledPayment.getActualScheduledDate();
-		SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
-		SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-		map.put("ScheduledPaymentDate", sdf1.format(scheduledPaymentDate));
-		map.put("ScheduledPaymentDateDDMMYYYY", sdf2.format(scheduledPaymentDate));
-
 		String subject = "Thank you for your commitment!";
 		String template = "recurringGiftReminder";
 		
-    	logger.debug("Sending reminder for Recurring Gift " + recurringGift.getId() + " in the amount of " + amount + " for payment date " + scheduledPaymentDate);
-
+		Constituent constituent = constituentService.readConstituentById(recurringGift.getConstituentId());
+		constituent.setSite(siteService.readSite(constituent.getSite().getName()));
 		emailService.sendMail(constituent, null, recurringGift, null, map, subject, template);
 		
 		return "Complete";
 		
 	}
 
-	
+	private String processPledgeReminder(Pledge pledge, ScheduledItem scheduledPayment) {
+
+		Map<String, String> map = new HashMap<String, String>();
+
+		addScheduledPaymentDates(scheduledPayment, map);
+
+    	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(PledgeServiceImpl.GIFT_AMOUNT_OVERRIDE);
+    	BigDecimal amount = giftOverrideAmount == null ? pledge.getAmountPerGift() : new BigDecimal(giftOverrideAmount);
+		map.put("GiftAmount", amount.toString());
+    	
+		String subject = "Thank you for your pledge!";
+		String template = "pledgeReminder";
+		
+		Constituent constituent = constituentService.readConstituentById(pledge.getConstituentId());
+		constituent.setSite(siteService.readSite(constituent.getSite().getName()));
+		emailService.sendMail(constituent, null, null, pledge, map, subject, template);
+		
+		return "Complete";
+		
+	}
 
 }

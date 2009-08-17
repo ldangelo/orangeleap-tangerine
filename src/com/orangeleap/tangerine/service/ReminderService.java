@@ -23,21 +23,20 @@ import java.util.List;
 
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 
 public interface ReminderService {
     
-	public void generateDefaultReminders(RecurringGift recurringGift);
+	public void generateDefaultReminders(Schedulable schedulable);
 
-	public void generateDefaultReminders(RecurringGift recurringGift, Date scheduledPaymentDate);
+	public void generateDefaultReminders(Schedulable schedulable, Date scheduledPaymentDate);
 
-	public List<ScheduledItem> listReminders(RecurringGift recurringGift, Date scheduledPaymentDate);
+	public List<ScheduledItem> listReminders(Schedulable schedulable, Date scheduledPaymentDate);
 
-	public void addReminder(RecurringGift recurringGift, Date scheduledPaymentDate, Date reminderDate);
+	public void addReminder(Schedulable schedulable, Date scheduledPaymentDate, Date reminderDate);
 
-	public void deleteReminder(RecurringGift recurringGift, Date scheduledPaymentDate, Date reminderDate);
+	public void deleteReminder(Schedulable schedulable, Date scheduledPaymentDate, Date reminderDate);
 	
-	public void deleteReminders(RecurringGift recurringGift);
+	public void deleteReminders(Schedulable schedulable);
 
 	public List<ScheduledItem> getRemindersToProcess(Date processingDate);  
 	

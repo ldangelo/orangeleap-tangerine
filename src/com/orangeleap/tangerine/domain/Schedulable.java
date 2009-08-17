@@ -2,11 +2,8 @@ package com.orangeleap.tangerine.domain;
 
 import java.util.Date;
 
-public interface Schedulable extends GeneratedId {
+public interface Schedulable extends Customizable {
 	
-	// Same type as AbstractEntity
-	public String getType(); 
-
 	public Date getStartDate();
 
 	public void setStartDate(Date startDate);

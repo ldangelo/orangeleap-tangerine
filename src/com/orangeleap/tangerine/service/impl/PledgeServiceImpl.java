@@ -115,7 +115,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     }
     
     private void setStartDateForReminders(Pledge pledge) {
-		if (!pledge.isRecurring()) {
+		if (pledge != null && !pledge.isRecurring()) {
 			pledge.setStartDate(pledge.getProjectedDate());
 			pledge.setEndDate(pledge.getProjectedDate());
 		}

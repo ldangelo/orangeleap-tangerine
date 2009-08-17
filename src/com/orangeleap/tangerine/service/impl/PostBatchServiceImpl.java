@@ -115,7 +115,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public Map<String, String> readAllowedGiftSelectFields() {
     	
     	Map<String, String> map = new TreeMap<String, String>();
-        map.put(IDS, "IDs");
+        map.put(IDS, "Gift Ref Numbers");
         map.put("amountLessThan", "Amount Less Than");
         map.put("amountGreaterThan", "Amount Greater Than");
         map.put("currencyCode", "Currency Code");

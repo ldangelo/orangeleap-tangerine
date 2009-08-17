@@ -20,6 +20,10 @@
 
 				<tangerine:fields pageName="recurringGiftView"/>
 
+				<c:if test="${form.domainObject.id > 0}">
+						<strong><a class="action" href="scheduleEdit.htm?sourceEntity=recurringgift&sourceEntityId=${form.domainObject.id}">Payment Schedule&raquo;</a></strong>
+				</c:if>
+
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
@@ -32,6 +36,7 @@
 				<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
 				<script type="text/javascript">var PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
 			</page:param>
+			
 		</body>
 	</html>
 </page:applyDecorator>

@@ -28,6 +28,10 @@
 
 				<tangerine:fields pageName="recurringGift"/>
 
+				<c:if test="${form.domainObject.id > 0}">
+						<strong><a class="action" href="scheduleEdit.htm?sourceEntity=recurringgift&sourceEntityId=${form.domainObject.id}">Payment Schedule&raquo;</a></strong>
+				</c:if>
+
 				<div class="formButtonFooter constituentFormButtons">
 					<c:if test="${not empty clickText}">
 						<input type="button" value="<c:out value='${clickText}'/>" class="saveButton" id="clickButtonTop"
@@ -48,6 +52,9 @@
 				<script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
 				<script type="text/javascript" src="js/gift/distribution.js"></script>
 			</page:param>
+			
+			
+			
 		</body>
 	</html>
 </page:applyDecorator>

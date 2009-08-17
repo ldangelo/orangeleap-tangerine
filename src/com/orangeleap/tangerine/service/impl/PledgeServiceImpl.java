@@ -118,6 +118,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 		if (pledge != null && !pledge.isRecurring()) {
 			pledge.setStartDate(pledge.getProjectedDate());
 			pledge.setEndDate(pledge.getProjectedDate());
+			pledge.setFrequency(Commitment.FREQUENCY_ONE_TIME);
 		}
     }
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       
+    <bean id="pageTypes" class="com.orangeleap.tangerine.controller.screenDefinition.PageTypeManageController">
+        <property name="viewName" value="screenDefinition/pageTypes"/>
+    </bean>
+
+	<bean id="sectionDefinitions" class="com.orangeleap.tangerine.controller.screenDefinition.SectionDefinitionsManageController">
+        <property name="formView" value="screenDefinition/sectionDefinitions" />
+        <property name="successView" value="screenDefinition/sectionDefinitions" />
+    </bean>
+
+	<bean id="sectionDefinition" class="com.orangeleap.tangerine.controller.screenDefinition.SectionDefinitionFormController">
+        <property name="formView" value="screenDefinition/sectionDefinition" />
+        <property name="successView" value="screenDefinition/sectionDefinition" />
+    </bean>
+
+    <bean id="screenDefinitionUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+                <prop key="/sectionDefinition.htm">sectionDefinition</prop>
+                <prop key="/pageTypes.htm">pageTypes</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

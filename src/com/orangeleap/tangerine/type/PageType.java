@@ -80,7 +80,9 @@ public enum PageType {
     customField("/customField.htm"),
     siteSettings("/siteSettings.htm"),
     postbatch("/postbatch.htm"),
-    logView("/logView.htm");
+    logView("/logView.htm"),
+    screenDefinition("/screenDefinition.htm")
+    ;
 
     private String pageName;
 

@@ -318,7 +318,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 
 		addScheduledPaymentDates(scheduledPayment, map);
 
-		map.put("GiftAmount", scheduledPayment.getSchedulingAmount().toString());
+		map.put("GiftAmount", scheduledPayment.getScheduledItemAmount().toString());
     	
 		String subject = "Thank you for your commitment!";
 		String template = "recurringGiftReminder";

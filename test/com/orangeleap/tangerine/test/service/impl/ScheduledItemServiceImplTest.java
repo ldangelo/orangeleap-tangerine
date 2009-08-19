@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.test.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +33,14 @@ extends BaseTest
     
     public final static class TestSchedulableImpl implements Schedulable {
 
-    	private Long id;
+		private static final long serialVersionUID = 1L;
+		
+		private Long id;
     	private String type;
     	private String frequency;
     	private Date startDate;
     	private Date endDate;
+    	private BigDecimal schedulingAmount;
     	
 		public void setId(Long id) {
 			this.id = id;
@@ -81,6 +85,14 @@ extends BaseTest
 		}
 		@Override
 		public void setCustomFieldValue(String fieldName, String value) {
+		}
+		@Override
+		public BigDecimal getSchedulingAmount() {
+			return schedulingAmount;
+		}
+		@Override
+		public void setSchedulingAmount(BigDecimal schedulingAmount) {
+			this.schedulingAmount = schedulingAmount;
 		}
     	
 	}

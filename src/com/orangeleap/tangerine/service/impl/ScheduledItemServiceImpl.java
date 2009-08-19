@@ -145,6 +145,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	item.setSourceEntityId(schedulable.getId());
     	item.setOriginalScheduledDate(d);
     	item.setActualScheduledDate(d);
+    	item.setScheduledItemAmount(schedulable.getSchedulingAmount());
     	return item;
     }
     

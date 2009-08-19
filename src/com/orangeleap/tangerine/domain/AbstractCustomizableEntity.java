@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.domain;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -159,6 +160,20 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity implemen
     public void setCustomFieldAsDate(String field, Date d) {
 		SimpleDateFormat sdf = new SimpleDateFormat(FMT);
 		String value = (d == null)?null:sdf.format(d);
+    	setCustomFieldValue(field, value);
+    }
+    
+    public BigDecimal getCustomFieldAsBigDecimal(String field) {
+		String value = getCustomFieldValue(field);
+		try {
+			return value == null?null:new BigDecimal(value);
+		} catch (Exception e) {
+			return null;
+		}
+    }
+    
+    public void setCustomFieldAsBigDecimal(String field, BigDecimal bd) {
+		String value = (bd == null)?null:bd.toString();
     	setCustomFieldValue(field, value);
     }
     

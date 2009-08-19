@@ -7,6 +7,7 @@
         <result property="sourceEntity" column="SCHEDULED_ITEM_SOURCE_ENTITY" />
         <result property="sourceEntityId" column="SCHEDULED_ITEM_SOURCE_ENTITY_ID" />
         <result property="scheduledItemType" column="SCHEDULED_ITEM_SCHEDULED_ITEM_TYPE" />
+        <result property="scheduledItemAmount" column="SCHEDULED_ITEM_SCHEDULED_ITEM_AMOUNT" />
         <result property="resultEntity" column="SCHEDULED_ITEM_RESULT_ENTITY" />
         <result property="resultEntityId" column="SCHEDULED_ITEM_RESULT_ENTITY_ID" />
         <result property="originalScheduledDate" column="SCHEDULED_ITEM_ORIGINAL_SCHEDULED_DATE" />
@@ -23,6 +24,7 @@
         scheduled_item.SOURCE_ENTITY as SCHEDULED_ITEM_SOURCE_ENTITY,
         scheduled_item.SOURCE_ENTITY_ID as SCHEDULED_ITEM_SOURCE_ENTITY_ID,
         scheduled_item.SCHEDULED_ITEM_TYPE as SCHEDULED_ITEM_SCHEDULED_ITEM_TYPE,
+        scheduled_item.SCHEDULED_ITEM_AMOUNT as SCHEDULED_ITEM_SCHEDULED_ITEM_AMOUNT,
         scheduled_item.RESULT_ENTITY as SCHEDULED_ITEM_RESULT_ENTITY,
         scheduled_item.RESULT_ENTITY_ID as SCHEDULED_ITEM_RESULT_ENTITY_ID,
         scheduled_item.ORIGINAL_SCHEDULED_DATE as SCHEDULED_ITEM_ORIGINAL_SCHEDULED_DATE,
@@ -91,6 +93,7 @@
         	SOURCE_ENTITY,
         	SOURCE_ENTITY_ID,
         	SCHEDULED_ITEM_TYPE,
+        	SCHEDULED_ITEM_AMOUNT,
         	RESULT_ENTITY,
         	RESULT_ENTITY_ID,
         	ORIGINAL_SCHEDULED_DATE,
@@ -105,6 +108,7 @@
         	#sourceEntity# ,
         	#sourceEntityId# ,
         	#scheduledItemType# ,
+        	#scheduledItemAmount# ,
         	#resultEntity# ,
         	#resultEntityId# ,
         	#originalScheduledDate# ,
@@ -126,6 +130,7 @@
         	SOURCE_ENTITY = #sourceEntity# ,
         	SOURCE_ENTITY_ID = #sourceEntityId# ,
         	SCHEDULED_ITEM_TYPE = #scheduledItemType# ,
+        	SCHEDULED_ITEM_AMOUNT = #scheduledItemAmount# ,
         	RESULT_ENTITY = #resultEntity# ,
         	RESULT_ENTITY_ID = #resultEntityId# ,
         	ORIGINAL_SCHEDULED_DATE = #originalScheduledDate# ,

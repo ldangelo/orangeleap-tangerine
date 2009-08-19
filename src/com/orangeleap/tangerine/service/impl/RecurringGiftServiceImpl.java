@@ -72,8 +72,6 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
      */
     protected final Log logger = OLLogger.getLog(getClass());
     
-    public static final String GIFT_AMOUNT_OVERRIDE = "giftAmountOverride";
-
     @Resource(name = "recurringGiftDAO")
     private RecurringGiftDao recurringGiftDao;
 
@@ -364,12 +362,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     	
         Gift gift = new Gift(recurringGift);
 
-        // Allow overriding the amount for a specific payment date.
-    	String giftAmountOverride = scheduledItem.getCustomFieldValue(GIFT_AMOUNT_OVERRIDE);
-    	if (giftAmountOverride != null && giftAmountOverride.trim().length() > 0) {
-    		BigDecimal amount = new BigDecimal(giftAmountOverride);
-    		gift.setAmount(amount);
-    	}
+    	gift.setAmount(scheduledItem.getScheduledItemAmount()); // Use the amount on the scheduled item, which may have been manually changed
 
         recurringGift.addGift(gift);
         

@@ -30,8 +30,8 @@
                         <th>Original Scheduled Date</th>
                         <th>Actual Scheduled Date</th>
                         
-                        <c:if test="${sourceEntity == 'recurringgift'}">
-                        <th>Gift Amount Override</th>
+                        <c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
+                        <th>Gift Amount</th>
                         </c:if>
                         
                         <c:if test="${sourceEntity != 'scheduleditem'}">
@@ -68,7 +68,7 @@
                               <td><input name="actualScheduledDate" value="<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}' />"/></td><%-- calendar popup --%>
                             
                               <c:if test="${sourceEntity == 'recurringgift'}">
-                              <td><input name="giftAmountOverride" value="<c:out value='${scheduledItem.customFieldMap["giftAmountOverride"].value}'/>"/></td>
+                              <td><input name="scheduledItemAmount" value="<fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${scheduledItem.scheduledItemAmount}" /" /></td>
                               </c:if>
 
       						</c:otherwise>

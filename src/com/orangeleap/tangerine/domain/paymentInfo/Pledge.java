@@ -124,6 +124,16 @@ public class Pledge extends Commitment implements Schedulable {
         }
         this.amountRemaining = amountRemaining;
     }
+    
+    @Override
+    public BigDecimal getSchedulingAmount() {
+    	return isRecurring()? this.amountPerGift: this.amountTotal;
+    }
+    
+    @Override
+    public void setSchedulingAmount(BigDecimal schedulingAmount) {
+    	throw new RuntimeException("Value not settable.");
+    }
 
     public String getShortDescription() {
         StringBuilder sb = new StringBuilder();

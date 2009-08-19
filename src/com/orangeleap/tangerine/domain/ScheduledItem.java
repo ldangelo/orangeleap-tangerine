@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.domain;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,6 +19,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
     private String sourceEntity;
     private Long sourceEntityId;
     private String scheduledItemType;
+    private BigDecimal scheduledItemAmount;
     private String resultEntity;
     private Long resultEntityId;
     private Date originalScheduledDate;
@@ -65,6 +67,15 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
 
 	public String getScheduledItemType() {
 		return scheduledItemType;
+	}
+
+	
+	public void setScheduledItemAmount(BigDecimal scheduledItemAmount) {
+		this.scheduledItemAmount = scheduledItemAmount;
+	}
+
+	public BigDecimal getScheduledItemAmount() {
+		return scheduledItemAmount;
 	}
 
     
@@ -165,6 +176,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
         .append(sourceEntity, a.getSourceEntity())
         .append(sourceEntityId, a.getSourceEntityId())
         .append(scheduledItemType, a.getScheduledItemType())
+        .append(scheduledItemAmount, a.getScheduledItemAmount())
         .append(resultEntity, a.getResultEntity())
         .append(resultEntityId, a.getResultEntityId())
         .append(originalScheduledDate, a.getOriginalScheduledDate())
@@ -184,6 +196,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
         .append(""+sourceEntity)
         .append(""+sourceEntityId)
         .append(""+scheduledItemType)
+        .append(""+scheduledItemAmount)
         .append(""+resultEntity)
         .append(""+resultEntityId)
         .append(""+originalScheduledDate)
@@ -205,6 +218,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
         .append("sourceEntity", ""+sourceEntity)
         .append("sourceEntityId", ""+sourceEntityId)
         .append("scheduledItemType", ""+scheduledItemType)
+        .append("scheduledItemAmount", ""+scheduledItemAmount)
         .append("resultEntity", ""+resultEntity)
         .append("resultEntityId", ""+resultEntityId)
         .append("originalScheduledDate", ""+originalScheduledDate)
@@ -220,6 +234,7 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
     private static final String FREQUENCY = "frequency";
+    private static final String SCHEDULING_AMOUNT = "schedulingAmount";
     
 	@Override
 	public Date getEndDate() {
@@ -238,6 +253,12 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
 		return getCustomFieldAsDate(START_DATE);
 	}
 
+	@Override
+	public BigDecimal getSchedulingAmount() {
+		return getCustomFieldAsBigDecimal(SCHEDULING_AMOUNT);
+	}
+
+
 
 	@Override
 	public void setEndDate(Date endDate) {
@@ -255,6 +276,12 @@ public class ScheduledItem extends AbstractCustomizableEntity implements Schedul
 	public void setStartDate(Date startDate) {
 		setCustomFieldAsDate(START_DATE, startDate);
 	}
+
+	@Override
+	public void setSchedulingAmount(BigDecimal schedulingAmount) {
+		setCustomFieldAsBigDecimal(SCHEDULING_AMOUNT, schedulingAmount);
+	}
+
 
 
 }

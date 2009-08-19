@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public interface Schedulable extends Customizable {
@@ -15,5 +16,9 @@ public interface Schedulable extends Customizable {
 	public String getFrequency();
 
 	public void setFrequency(String frequency);
+	
+	public BigDecimal getSchedulingAmount();
 
+	public void setSchedulingAmount(BigDecimal schedulingAmount);
+	
 }

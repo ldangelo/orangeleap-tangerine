@@ -1051,6 +1051,7 @@ CREATE TABLE `SCHEDULED_ITEM` (
 `SOURCE_ENTITY` varchar(255) default NULL,
 `SOURCE_ENTITY_ID` bigint(20) default NULL,
 `SCHEDULED_ITEM_TYPE` varchar(255) default NULL,
+`SCHEDULED_ITEM_AMOUNT` decimal(19,2) default 0,
 `RESULT_ENTITY` varchar(255) default NULL,
 `RESULT_ENTITY_ID` bigint(20) default NULL,
 `ORIGINAL_SCHEDULED_DATE` datetime default NULL,

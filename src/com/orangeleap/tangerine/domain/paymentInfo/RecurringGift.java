@@ -96,6 +96,16 @@ public class RecurringGift extends Commitment implements Schedulable {
 		}
 		return sb.toString();
 	}
+	
+    @Override
+    public BigDecimal getSchedulingAmount() {
+    	return this.amountPerGift;
+    }
+    
+    @Override
+    public void setSchedulingAmount(BigDecimal schedulingAmount) {
+    	throw new RuntimeException("Value not settable.");
+    }
 
 	@Override
 	public void prePersist() {

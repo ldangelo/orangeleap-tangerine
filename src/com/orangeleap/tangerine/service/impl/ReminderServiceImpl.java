@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,6 +47,7 @@ import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.service.communication.EmailService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -224,20 +224,20 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
     	
 		private int initialReminder = 0;
     	private int maximumReminders = 0;
-    	private int reminderIntervalDays = 0;
+    	private int reminderInterval = 0;
     	private boolean valid = true;
 
     	public ReminderInfo(Customizable entity) {
 			try {
-	    		String sinitialReminder = entity.getCustomFieldValue("initialReminder");
+	    		String sinitialReminder = entity.getCustomFieldValue(StringConstants.INITIAL_REMINDER);
 	    		if (sinitialReminder != null) {
 	    			setInitialReminder(Integer.valueOf(sinitialReminder));
 	    		}
-	    		String smaximumReminders = entity.getCustomFieldValue("maximumReminders");
+	    		String smaximumReminders = entity.getCustomFieldValue(StringConstants.MAXIMUM_REMINDERS);
 	    		if (smaximumReminders != null) {
 	    			setMaximumReminders(Integer.valueOf(smaximumReminders));
 	    		}
-	    		String sreminderIntervalDays = entity.getCustomFieldValue("reminderIntervalDays");
+	    		String sreminderIntervalDays = entity.getCustomFieldValue(StringConstants.REMINDER_INTERVAL);
 	    		if (sreminderIntervalDays != null) {
 	    			setReminderIntervalDays(Integer.valueOf(sreminderIntervalDays));
 	    		}
@@ -252,7 +252,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
     		valid 
     		&& initialReminder != 0 
     		&& maximumReminders > 0 
-    		&& ( reminderIntervalDays > 0 || (reminderIntervalDays == 0 && maximumReminders == 1));
+    		&& ( reminderInterval > 0 || (reminderInterval == 0 && maximumReminders == 1));
     	}
 
 		public void setInitialReminder(int initialReminder) {
@@ -272,11 +272,11 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		}
 
 		public void setReminderIntervalDays(int reminderIntervalDays) {
-			this.reminderIntervalDays = reminderIntervalDays;
+			this.reminderInterval = reminderIntervalDays;
 		}
 
 		public int getReminderIntervalDays() {
-			return reminderIntervalDays;
+			return reminderInterval;
 		}
 		
 	}
@@ -318,9 +318,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 
 		addScheduledPaymentDates(scheduledPayment, map);
 
-    	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(RecurringGiftServiceImpl.GIFT_AMOUNT_OVERRIDE);
-    	BigDecimal amount = giftOverrideAmount == null ? recurringGift.getAmountPerGift() : new BigDecimal(giftOverrideAmount);
-		map.put("GiftAmount", amount.toString());
+		map.put("GiftAmount", scheduledPayment.getSchedulingAmount().toString());
     	
 		String subject = "Thank you for your commitment!";
 		String template = "recurringGiftReminder";
@@ -339,12 +337,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 
 		addScheduledPaymentDates(scheduledPayment, map);
 
-    	String giftOverrideAmount = scheduledPayment.getCustomFieldValue(PledgeServiceImpl.GIFT_AMOUNT_OVERRIDE);
-    	
-    	BigDecimal amount = 
-    		giftOverrideAmount == null ? ( pledge.isRecurring() ? pledge.getAmountPerGift() : pledge.getAmountTotal() ) : new BigDecimal(giftOverrideAmount);
-    		
-		map.put("GiftAmount", amount.toString());
+		map.put("GiftAmount", scheduledPayment.getScheduledItemAmount().toString());
     	
 		String subject = "Thank you for your pledge!";
 		String template = "pledgeReminder";

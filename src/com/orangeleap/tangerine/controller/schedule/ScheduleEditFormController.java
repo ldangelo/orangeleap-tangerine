@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.controller.schedule;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -32,7 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -43,7 +43,6 @@ import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
 
 public class ScheduleEditFormController extends SimpleFormController {
 
@@ -109,7 +108,7 @@ public class ScheduleEditFormController extends SimpleFormController {
     	item.setSourceEntityId(new Long(request.getParameter("sourceEntityId")));
     	item.setId(getLong(request.getParameter("id")));
     	item.setActualScheduledDate(getDate(request.getParameter("actualScheduledDate")));
-    	item.setCustomFieldValue("giftAmountOverride", StringUtils.trimToEmpty((request.getParameter("giftAmountOverride"))));
+    	item.setScheduledItemAmount(getBigDecimal(request.getParameter("scheduledItemAmount")));
     	
     	return item;
 
@@ -129,6 +128,14 @@ public class ScheduleEditFormController extends SimpleFormController {
     		return sdf.parse(s);
     	} catch (Exception e) {
     		return null;
+    	}
+    }
+    
+    private BigDecimal getBigDecimal(String s) {
+    	try {
+    		return new BigDecimal(s);
+    	} catch (Exception e) {
+    		return new BigDecimal("0.00");
     	}
     }
     

@@ -64,6 +64,8 @@ public interface PageCustomizationService {
      * @return
      */
     public List<String> readDistintSectionDefinitionsRoles();
+    
+    public List<String> readDistintSectionDefinitionsPageTypes();
 
     public void maintainFieldDefinition(FieldDefinition fieldDefinition);
 

@@ -24,19 +24,21 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
+import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
+import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 
-public class SectionDefinitionsManageController extends ParameterizableViewController {
+public class SectionDefinitionsManageController extends SimpleFormController {
 
     /**
      * Logger for this class and subclasses
@@ -47,15 +49,27 @@ public class SectionDefinitionsManageController extends ParameterizableViewContr
     private PageCustomizationService pageCustomizationService;
 
 
-    @Override
-    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @SuppressWarnings("unchecked")
+	@Override
+	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
         if (!PageTypeManageController.accessAllowed(request)) return null;
         
-        ModelAndView mav = new ModelAndView(super.getViewName());
-        mav.addObject("sectionDefinitions", getSelectionList(request));
+        String pageType = request.getParameter("pageType"); 
+        String role = request.getParameter("role"); 
+        
+
+        ModelAndView mav = new ModelAndView(getSuccessView());
+        mav.addObject("pageType", pageType);
+        mav.addObject("role", role);
+        mav.addObject("sectionNames", getSelectionList(request));
         return mav;
 
+    }
+    
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+    	return "";
     }
     
     private Map<String, String> getSelectionList(HttpServletRequest request) {

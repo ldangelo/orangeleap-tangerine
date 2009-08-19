@@ -30,6 +30,13 @@
 		from SECTION_DEFINITION sd
 	</select>
 	
+	<select id="SELECT_DISTINCT_PAGE_TYPES" resultClass="java.lang.String"  >
+		select 
+		distinct PAGE_TYPE 
+		from SECTION_DEFINITION where (DEFAULT_LABEL is not null and DEFAULT_LABEL &lt;&gt; '')
+		order by PAGE_TYPE
+	</select>
+	
 	<select id="SELECT_BY_PAGE_TYPE_SITE_ROLES" resultMap="SECTION_DEFINITION_RESULT" parameterClass="map" >
 		select 
 		<include refid="SECTION_DEF_COLS_FRAGMENT"/>

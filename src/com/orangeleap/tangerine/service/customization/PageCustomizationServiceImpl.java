@@ -71,8 +71,14 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Autowired
     private TangerineUserHelper tangerineUserHelper;
 
+    @Override
     public List<String> readDistintSectionDefinitionsRoles() {
         return sectionDao.readDistintSectionDefinitionsRoles();
+    }
+
+    @Override
+    public List<String> readDistintSectionDefinitionsPageTypes() {
+        return sectionDao.readDistintSectionDefinitionsPageTypes();
     }
 
     /*

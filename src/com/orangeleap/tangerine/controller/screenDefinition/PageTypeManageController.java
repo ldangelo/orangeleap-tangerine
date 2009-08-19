@@ -18,10 +18,12 @@
 
 package com.orangeleap.tangerine.controller.screenDefinition;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
+import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -46,6 +49,10 @@ public class PageTypeManageController extends SimpleFormController {
     @Resource(name = "tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
 
+    @Resource(name = "pageCustomizationService")
+    private PageCustomizationService pageCustomizationService;
+  
+
     
 	@SuppressWarnings("unchecked")
 	public static boolean accessAllowed(HttpServletRequest request) {
@@ -54,6 +61,10 @@ public class PageTypeManageController extends SimpleFormController {
 	}
 
 
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+    	return "";
+    }
     
     @SuppressWarnings("unchecked")
     @Override
@@ -78,14 +89,14 @@ public class PageTypeManageController extends SimpleFormController {
     
     private Map<String, String> getSelectionList() {
         Map<String, String> map = new TreeMap<String, String>();
-        for (PageType pt : PageType.values()) {
-        	map.put(getDescription(pt), pt.name());
+    	List<String> list = pageCustomizationService.readDistintSectionDefinitionsPageTypes();
+        for (String s : list) {
+        	map.put(getDescription(s), s);
         }
         return map;
     }
     
-    private String getDescription(PageType pt) {
-    	String s = pt.getName();
+    private String getDescription(String s) {
     	StringBuilder sb = new StringBuilder();
     	for (int i = 0; i < s.length() ;i++) {
     		char c = s.charAt(i);

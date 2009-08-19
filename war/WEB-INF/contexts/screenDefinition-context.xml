@@ -6,7 +6,8 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
     <bean id="pageTypes" class="com.orangeleap.tangerine.controller.screenDefinition.PageTypeManageController">
-        <property name="viewName" value="screenDefinition/pageTypes"/>
+        <property name="formView" value="screenDefinition/pageTypes" />
+        <property name="successView" value="screenDefinition/pageTypes" />
     </bean>
 
 	<bean id="sectionDefinitions" class="com.orangeleap.tangerine.controller.screenDefinition.SectionDefinitionsManageController">
@@ -23,7 +24,9 @@
 		<property name="mappings">
 		    <props>
                 <prop key="/sectionDefinition.htm">sectionDefinition</prop>
+                <prop key="/sectionDefinitions.htm">sectionDefinitions</prop>
                 <prop key="/pageTypes.htm">pageTypes</prop>
+                <prop key="/screenDefinitions.htm">pageTypes</prop>
 			</props>
 		</property>
 	</bean>

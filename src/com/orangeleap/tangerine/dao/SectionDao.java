@@ -34,6 +34,8 @@ public interface SectionDao {
 
     public List<String> readDistintSectionDefinitionsRoles();
 
+    public List<String> readDistintSectionDefinitionsPageTypes();
+
     public SectionField maintainSectionField(SectionField sectionField);
 
     public SectionDefinition maintainSectionDefinition(SectionDefinition sectionDefinition);

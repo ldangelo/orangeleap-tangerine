@@ -12,6 +12,14 @@
            
            	<input type="hidden" id="pageType" name="pageType" value="${pageType}" />
            	<input type="hidden" id="role" name="role" value="${role}" />
+           	
+            <c:if test="${fn:length(sectionNames) == 0}" >
+            
+            There are no editable sections for this specific role and page type.<br/>
+            
+            </c:if>
+            
+            <c:if test="${fn:length(sectionNames) > 0}" >
            
                 <h4>Section Definition to Manage</h4>
                 <select  id="sectionName" name="sectionName">
@@ -20,9 +28,14 @@
                    </c:forEach>
                 </select>
                 
-                <input type="button" onclick="window.location = 'sectionDefinition.htm?pageType=' + $('#pageType').val() + '&role='+$('#role').val() + '&sectionName='+$('#sectionName') ;  " />
+                <input type="button" value="Go" onclick="window.location = 'sectionDefinition.htm?pageType=' + $('#pageType').val() + '&role='+$('#role').val() + '&sectionName='+$('#sectionName').val() ;  " />
+
+            </c:if>
                 
              </form>
+
+            <br/>
+			<a href="pageTypes.htm">&laquo;Back</a>
             
             </div>
            

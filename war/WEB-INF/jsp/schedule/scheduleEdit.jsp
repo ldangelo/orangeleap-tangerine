@@ -48,10 +48,10 @@
       						<c:when test="${scheduledItem.completed}">
                             <%-- Completed items are read-only --%>
       						
-      						  <td>Completed <c:out value='<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.completionDate}' />'/> <c:out value='${scheduledItem.completionStatus}'/></td>
+      						  <td>Completed <fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.completionDate}' /> <c:out value='${scheduledItem.completionStatus}'/></td>
                               <td></td>
-                              <td><c:out value='<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.originalScheduledDate}' />'/></td>
-                              <td><c:out value='<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}' />'/></td>
+                              <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.originalScheduledDate}' /></td>
+                              <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}' /></td>
                               <td></td>
                               
       						</c:when>

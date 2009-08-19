@@ -30,8 +30,6 @@
                     </form:form>
                 </div>
 
-                <br/>
-                <strong><a class="action" href="siteSettings.htm">&laquo;Back</a></strong>
 
                <br/>
 

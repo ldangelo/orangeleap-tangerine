@@ -62,8 +62,6 @@
             </form>
 
 			<br/>
-			<a href="siteDefaults.htm">Defaults</a>
-			<br/>
 			<a href="siteOptions.htm">Other Settings</a>
 
             </div>

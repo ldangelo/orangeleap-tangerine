@@ -93,21 +93,6 @@
 			<li>
 				<a href="#"><spring:message code="menuGoTo"/></a>
 				<ul>
-			  		<li>
-			            <c:if test="${pageAccess['/picklistItems.htm']=='ALLOWED'}">
-   						   <a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
-						</c:if>
-					</li> 
-			 		<li>
-			            <c:if test="${pageAccess['/fieldRelationshipCustomize.htm']=='ALLOWED'}">
-   						   <a href="relationshipList.htm"><spring:message code="manageRelationshipFields"/></a>
-						</c:if>
-					</li>
-			  		<li>
-			            <c:if test="${pageAccess['/customField.htm']=='ALLOWED'}">
-   						   <a href="customField.htm"><spring:message code="customFieldWizard"/></a>
-						</c:if>
-					</li> 
 					<li>
 					<%
 					String contextPrefix = System.getProperty("contextPrefix");
@@ -115,16 +100,6 @@
 					pageContext.setAttribute("contextPrefix",contextPrefix);
 					%>
 						<a href="../${contextPrefix}jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
-					</li>
-					<li>
-			            <c:if test="${pageAccess['/siteAudit.htm']=='ALLOWED'}">
-							<a href="siteAudit.htm"><spring:message code="siteAudit"/></a>
-						</c:if>
-					</li>
-					<li>
-			            <c:if test="${pageAccess['/siteSettings.htm']=='ALLOWED'}">
-							<a href="siteSettings.htm"><spring:message code="siteSettings"/></a>
-						</c:if>
 					</li>
 					<li>
 			            <c:if test="${pageAccess['/importexport.htm']=='ALLOWED'}">
@@ -144,6 +119,43 @@
 
 				</ul>
 			</li>
+		    <li>
+			            <c:if test="${pageAccess['/picklistItems.htm']=='ALLOWED'}">
+				<a href="#"><spring:message code="menuAdministration"/></a>
+				<ul>
+			  		<li>
+			            <c:if test="${pageAccess['/picklistItems.htm']=='ALLOWED'}">
+   						   <a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
+						</c:if>
+					</li> 
+			 		<li>
+			            <c:if test="${pageAccess['/fieldRelationshipCustomize.htm']=='ALLOWED'}">
+   						   <a href="relationshipList.htm"><spring:message code="manageRelationshipFields"/></a>
+						</c:if>
+					</li>
+			  		<li>
+			            <c:if test="${pageAccess['/customField.htm']=='ALLOWED'}">
+   						   <a href="customField.htm"><spring:message code="customFieldWizard"/></a>
+						</c:if>
+					</li> 
+			  		<li>
+			            <c:if test="${pageAccess['/siteSettings.htm']=='ALLOWED'}">
+   						   <a href="siteDefaults.htm"><spring:message code="siteDefaults"/></a>
+						</c:if>
+					</li> 
+					<li>
+			            <c:if test="${pageAccess['/siteSettings.htm']=='ALLOWED'}">
+							<a href="siteSettings.htm"><spring:message code="siteSettings"/></a>
+						</c:if>
+					</li>
+					<li>
+			            <c:if test="${pageAccess['/siteAudit.htm']=='ALLOWED'}">
+							<a href="siteAudit.htm"><spring:message code="siteAudit"/></a>
+						</c:if>
+					</li>
+				</ul>
+						</c:if>
+            </li>
 		</ul>
 		<div class="clearBoth"></div>
 	</div>

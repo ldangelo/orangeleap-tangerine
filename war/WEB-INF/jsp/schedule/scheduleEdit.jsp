@@ -67,8 +67,10 @@
                               <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.originalScheduledDate}'/></td>
                               <td><input name="actualScheduledDate" value="<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}' />"/></td><%-- calendar popup --%>
                             
-                              <c:if test="${sourceEntity == 'recurringgift'}">
-                              <td><input name="scheduledItemAmount" value="<fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${scheduledItem.scheduledItemAmount}" /" /></td>
+                        	  <c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
+                              <td>
+                              <input name="scheduledItemAmount" value="<fmt:formatNumber type='number' maxFractionDigits='2' minFractionDigits='2' value='${scheduledItem.scheduledItemAmount}' />" />
+                              </td>
                               </c:if>
 
       						</c:otherwise>

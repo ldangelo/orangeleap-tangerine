@@ -179,10 +179,11 @@ public class ScheduleEditFormController extends SimpleFormController {
     }
     
     private void copyUpdatableFields(ScheduledItem newScheduledItem, ScheduledItem originalScheduledItem) {
-        // Copy over updated scheduled date.
+        // Copy over updated fields.
         originalScheduledItem.setActualScheduledDate(newScheduledItem.getActualScheduledDate());
+        originalScheduledItem.setScheduledItemAmount(newScheduledItem.getScheduledItemAmount());
         
-        // Copy over custom fields (e.g. giftOverrideAmount)
+        // Copy over any custom fields 
         Iterator<Map.Entry<String, CustomField>> it = newScheduledItem.getCustomFieldMap().entrySet().iterator();
         while (it.hasNext()) {
         	Map.Entry<String, CustomField> me = it.next();

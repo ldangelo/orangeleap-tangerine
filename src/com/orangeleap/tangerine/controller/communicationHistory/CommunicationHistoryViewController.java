@@ -50,7 +50,7 @@ public class CommunicationHistoryViewController extends CommunicationHistoryForm
 	        }
 	        catch (BindException domainErrors) {
 	            saved = false;
-	            bindDomainErrorsToForm(domainErrors, formErrors);
+	            bindDomainErrorsToForm(formErrors, domainErrors);
 	        }
         }
 	    ModelAndView mav;

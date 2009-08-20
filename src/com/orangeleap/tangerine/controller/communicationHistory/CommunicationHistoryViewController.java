@@ -19,8 +19,11 @@
 package com.orangeleap.tangerine.controller.communicationHistory;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.service.SessionService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
@@ -31,13 +34,22 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class CommunicationHistoryViewController extends CommunicationHistoryFormController {
+public class CommunicationHistoryViewController extends TangerineConstituentAttributesFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name="communicationHistoryService")
     protected CommunicationHistoryService communicationHistoryService;
+
+    @Resource(name = "sessionService")
+    private SessionService sessionService;
+
+    @Override
+    protected AbstractEntity findEntity(HttpServletRequest request) {
+        sessionService.lookupSite(); // call lookupSite to make sure TangerineAuthenticationToken has the constituentId set
+        return communicationHistoryService.readCommunicationHistoryById(super.getIdAsLong(request, StringConstants.COMMUNICATION_HISTORY_ID));
+    }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
@@ -50,7 +62,7 @@ public class CommunicationHistoryViewController extends CommunicationHistoryForm
 	        }
 	        catch (BindException domainErrors) {
 	            saved = false;
-	            bindDomainErrorsToForm(formErrors, domainErrors);
+                bindDomainErrorsToForm(request, formErrors, domainErrors, form, communicationHistory);
 	        }
         }
 	    ModelAndView mav;

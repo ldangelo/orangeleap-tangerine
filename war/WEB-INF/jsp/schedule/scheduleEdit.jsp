@@ -67,7 +67,20 @@
                               </td>
                               <td></td>
                               <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.originalScheduledDate}'/></td>
-                              <td><input name="actualScheduledDate" value="<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}' />"/></td><%-- calendar popup --%>
+                              <td>
+                              
+                              <input id="actualScheduledDate-${status.count}" name="actualScheduledDate" value="<fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}'  />"  class="text date" type="text" />
+                              
+			                     <script type="text/javascript">
+			                        new Ext.form.DateField({
+			                            applyTo: 'actualScheduledDate-${status.count}',
+			                            id: "actualScheduledDate-${status.count}-wrapper",
+			                            format: 'm/d/Y',
+			                            width: 250
+			                        });
+			                     </script>
+                              
+                              </td>
                             
                         	  <c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
                               <td>

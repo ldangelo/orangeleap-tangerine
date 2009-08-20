@@ -24,7 +24,7 @@
                     <c:forEach var="field" items="${fieldList}">
 		                <tr>
 		                <td>
-		                    <c:out value='${field.name}'/>
+		                    <c:out value='${field.description}'/>
 		                </td>
 		                <td>
 		                	<input type="checkbox" <c:if test="${field.visible}">checked</c:if> onchange="update('${field.name}','togglevisible');" />

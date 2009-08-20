@@ -109,13 +109,19 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         return returnSections;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SectionField> readSectionFieldsBySection(SectionDefinition sectionDefinition) {
+    	return readSectionFieldsBySection(sectionDefinition, false);
+    }
+
     /*
      * (non-Javadoc)
      * @see com.orangeleap.tangerine.service.customization.PageCustomizationService#readSectionFieldsBySection(com.orangeleap.tangerine.domain.model.customization.SectionDefinition)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<SectionField> readSectionFieldsBySection(SectionDefinition sectionDefinition) {
+    public List<SectionField> readSectionFieldsBySection(SectionDefinition sectionDefinition, boolean readAll) {
         if (logger.isTraceEnabled()) {
             logger.trace("readSectionFieldsBySection: sectionDefinition = " + sectionDefinition);
         }
@@ -151,7 +157,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
             returnFields = new ArrayList<SectionField>(outOfBoxSectionFields);
             for (SectionField customizedField : customSectionFields) {
                 removeMatchingOutOfBoxField(returnFields, customizedField);
-                if (!ZERO.equals(customizedField.getFieldOrder())) {
+                if (readAll || !ZERO.equals(customizedField.getFieldOrder())) {
                     returnFields.add(customizedField);
                 }
             }

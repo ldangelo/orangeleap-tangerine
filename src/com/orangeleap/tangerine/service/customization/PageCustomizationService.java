@@ -49,6 +49,9 @@ public interface PageCustomizationService {
      * @return
      */
     public List<SectionField> readSectionFieldsBySection(SectionDefinition sectionDefinition);
+    
+    public List<SectionField> readSectionFieldsBySection(SectionDefinition sectionDefinition, boolean readAll);
+
 
     /**
      * Return a <code>Map</code> indicating the access the current user has to pages

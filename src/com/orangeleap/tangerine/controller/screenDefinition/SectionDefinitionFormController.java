@@ -90,16 +90,27 @@ public class SectionDefinitionFormController extends SimpleFormController {
         return mav;
     }
     
+    private static String getKey(SectionField sf) {
+    	return sf.getFieldDefinition().getId() + ":" + ( sf.getSecondaryFieldDefinition() == null ? "" : sf.getSecondaryFieldDefinition().getId() ) ;
+    }
+    
+    private static String getSectionFieldDescription(SectionField sf) {
+    	return sf.getFieldDefinition().getDefaultLabel() + ( sf.getSecondaryFieldDefinition() == null ? "" : (" " + sf.getSecondaryFieldDefinition().getDefaultLabel()) );
+    }
+    
+ 
     public static final class SectionFieldView {
     	
 		private SectionField sectionField;
     	private boolean visible;
     	private String name;
+    	private String description;
 
     	public SectionFieldView(SectionField sf) {
     		setSectionField(sf);
     		setVisible(sf.getFieldOrder() != 0);
-    		setName(sf.getFieldDefinition().getDefaultLabel());
+    		setName(getKey(sf));
+    		setDescription(getSectionFieldDescription(sf));
     	}
     	
     	public void setSectionField(SectionField sectionField) {
@@ -120,6 +131,14 @@ public class SectionDefinitionFormController extends SimpleFormController {
 		public String getName() {
 			return name;
 		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}
+
+		public String getDescription() {
+			return description;
+		}
     }
     
     private List<SectionField> getSectionFields(String sectionName, String pageType, String role) {
@@ -131,7 +150,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
         List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(pageType), roles);
         for (SectionDefinition sectionDef : sectionDefinitions) {
         	if (sectionDef.getSectionName().equals(sectionName)) {
-                sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
+                sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef, true);
                 break;
         	}
         }
@@ -176,7 +195,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
         int maxvalue = -1;
         for (int i = 0; i < sectionFields.size(); i++) {
         	SectionField sf = sectionFields.get(i);
-        	if (sf.getFieldDefinition().getDefaultLabel().equals(fieldName)) {
+        	if (getKey(sf).equals(fieldName)) {
 	        	targetSectionField = sf;
 	        	index = i;
             }

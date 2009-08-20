@@ -16,10 +16,7 @@
     </bean>
 
     <bean id="communicationHistoryViewController" class="com.orangeleap.tangerine.controller.communicationHistory.CommunicationHistoryViewController"
-          parent="communicationHistoryFormController">
-	    <property name="bindAddress" value="true"/>
-	    <property name="bindPhone" value="true"/>
-	    <property name="bindEmail" value="true"/>
+          parent="tangerineConstituentAttributesFormController">
         <property name="formView" value="communicationHistory/communicationHistoryView"/>
         <property name="successView" value="redirect:/communicationHistoryView.htm"/>
     </bean>

@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.service.customization;
 
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
+import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.PageAccessDao;
 import com.orangeleap.tangerine.dao.QueryLookupDao;
@@ -27,6 +28,7 @@ import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.customization.*;
 import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.RoleType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -67,6 +69,10 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     @Resource(name = "pageCustomizationCache")
     private Cache pageCustomizationCache;
+
+    @Resource(name = "cacheGroupDAO")
+    private CacheGroupDao cacheGroupDao;
+
 
     @Autowired
     private TangerineUserHelper tangerineUserHelper;
@@ -232,6 +238,15 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         sectionDao.maintainSectionField(sectionField);
     }
 
+    @Override
+    @Transactional
+    public void maintainSectionFields(List<SectionField> sectionFields) {
+        for (SectionField sf : sectionFields) {
+            sectionDao.maintainSectionField(sf);
+        }
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
+    }
+    
     @Override
     @Transactional
     public QueryLookup maintainQueryLookup(QueryLookup queryLookup) {

@@ -27,10 +27,10 @@
 		                    <c:out value='${field.name}'/>
 		                </td>
 		                <td>
-		                	<input type="checkbox" <c:if test="${field.visible}">checked</c:if> onchange="update(${field.name},'togglevisible');" />
+		                	<input type="checkbox" <c:if test="${field.visible}">checked</c:if> onchange="update('${field.name}','togglevisible');" />
 		                </td>
 		                <td>
-		                	<a href="#" onclick="update(${field.name},'moveup');" >^</a>
+		                	<a href="#" onclick="update('${field.name}','moveup');" >^</a>
 		                </td>
 		                </tr>
                     </c:forEach>

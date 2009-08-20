@@ -73,6 +73,8 @@ public interface PageCustomizationService {
 
     public void maintainSectionField(SectionField sectionField);
 
+    public void maintainSectionFields(List<SectionField> sectionFields);
+
     public void maintainFieldValidation(FieldValidation fieldValidation);
 
     public void maintainCustomFieldGuruData(CustomFieldRequest customFieldRequest);

@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.controller.screenDefinition;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,8 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SectionDefinitionFormController extends SimpleFormController {
 
@@ -117,6 +120,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
         List<SectionField> sectionFields = new ArrayList<SectionField>();
         List<String> roles = new ArrayList<String>();
         roles.add(role);
+        
         List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(pageType), roles);
         for (SectionDefinition sectionDef : sectionDefinitions) {
         	if (sectionDef.getSectionName().equals(sectionName)) {
@@ -125,17 +129,78 @@ public class SectionDefinitionFormController extends SimpleFormController {
         	}
         }
         
+        Collections.sort(sectionFields, new Comparator<SectionField>() {
+
+			@Override
+			public int compare(SectionField o1, SectionField o2) {
+				int i = o1.getFieldOrder().compareTo(o2.getFieldOrder());
+				if (i == 0) i = o1.getFieldDefinition().getDefaultLabel().compareTo(o2.getFieldDefinition().getDefaultLabel());
+				return i;
+			}
+        	
+        });
+        
         return sectionFields;
 
     }
+    
+    private static final String MOVE_UP = "moveup";
+    private static final String TOGGLE_VISIBLE = "togglevisible";
+    
     
     @Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
     	
         if (!PageTypeManageController.accessAllowed(request)) return null;
+        
+        String sectionName = request.getParameter("sectionName"); 
+        String pageType = request.getParameter("pageType"); 
+        String role = request.getParameter("role"); 
+        String fieldName = request.getParameter("fieldName"); 
+        String action = request.getParameter("action"); 
+        boolean toggleVisible = TOGGLE_VISIBLE.equals(action);
+        boolean moveUp = MOVE_UP.equals(action);
+        
+        List<SectionField> sectionFields = getSectionFields(sectionName, pageType, role);
 
-    	// TODO need to create to site-specific rows for any changed rows
-    	// TODO need to clear cache
+        // Locate target field
+        SectionField targetSectionField = null;
+        int index = -1;
+        int maxvalue = -1;
+        for (int i = 0; i < sectionFields.size(); i++) {
+        	SectionField sf = sectionFields.get(i);
+        	if (sf.getFieldDefinition().getDefaultLabel().equals(fieldName)) {
+	        	targetSectionField = sf;
+	        	index = i;
+            }
+        	if (maxvalue < sf.getFieldOrder()) maxvalue = sf.getFieldOrder();
+        }
+        
+        if (toggleVisible) {
+        	
+        	boolean isVisible = targetSectionField.getFieldOrder().intValue() != 0;
+        	
+        	if (isVisible) {
+        		targetSectionField.setFieldOrder(0);
+        	} else {
+        		targetSectionField.setFieldOrder(maxvalue + 100);
+        	}
+            pageCustomizationService.maintainSectionField(targetSectionField);
+        	
+        } else if (moveUp && index > 0) {
+        	
+        	SectionField higherSectionField = sectionFields.get(index - 1);
+        	int hv = higherSectionField.getFieldOrder().intValue();
+        	if (hv != 0) {
+        		higherSectionField.setFieldOrder(targetSectionField.getFieldOrder());
+        		targetSectionField.setFieldOrder(hv);
+        	}
+        	List<SectionField> fieldsToUpdate = new ArrayList<SectionField>();
+        	fieldsToUpdate.add(higherSectionField);
+        	fieldsToUpdate.add(targetSectionField);
+            pageCustomizationService.maintainSectionFields(fieldsToUpdate);
+        	
+        }
 
         return new ModelAndView(getSuccessView());
 

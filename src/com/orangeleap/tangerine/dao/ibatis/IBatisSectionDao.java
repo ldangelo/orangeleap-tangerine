@@ -18,19 +18,21 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.dao.SectionDao;
-import com.orangeleap.tangerine.domain.customization.SectionDefinition;
-import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.util.OLLogger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.dao.SectionDao;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 /**
  * Corresponds to the SECTION tables
@@ -99,6 +101,11 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
     public SectionField maintainSectionField(SectionField sectionField) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainSectionField: sectionField = " + sectionField.getId());
+        }
+        // Always create a site-specific version instead of updating the generic record.
+        if (sectionField.getSite() == null) {
+        	sectionField.setId(new Long(0));
+        	sectionField.setSite(new Site(getSiteName()));
         }
         return (SectionField) insertOrUpdate(sectionField, "SECTION_FIELD");
     }

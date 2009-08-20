@@ -18,31 +18,40 @@
 
 package com.orangeleap.tangerine.service.customization;
 
-import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
-import com.orangeleap.tangerine.dao.CacheGroupDao;
-import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.dao.PageAccessDao;
-import com.orangeleap.tangerine.dao.QueryLookupDao;
-import com.orangeleap.tangerine.dao.SectionDao;
-import com.orangeleap.tangerine.domain.QueryLookup;
-import com.orangeleap.tangerine.domain.QueryLookupParam;
-import com.orangeleap.tangerine.domain.customization.*;
-import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.type.CacheGroupType;
-import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.type.RoleType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.*;
+import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
+import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.dao.PageAccessDao;
+import com.orangeleap.tangerine.dao.QueryLookupDao;
+import com.orangeleap.tangerine.dao.SectionDao;
+import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.QueryLookupParam;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldValidation;
+import com.orangeleap.tangerine.domain.customization.PageAccess;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.type.RoleType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 @Transactional
 @Service("pageCustomizationService")
@@ -69,9 +78,6 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     @Resource(name = "pageCustomizationCache")
     private Cache pageCustomizationCache;
-
-    @Resource(name = "cacheGroupDAO")
-    private CacheGroupDao cacheGroupDao;
 
 
     @Autowired
@@ -244,7 +250,6 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         for (SectionField sf : sectionFields) {
             sectionDao.maintainSectionField(sf);
         }
-        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
     }
     
     @Override

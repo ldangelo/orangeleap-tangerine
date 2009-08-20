@@ -33,9 +33,11 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 
@@ -50,6 +52,11 @@ public class SectionDefinitionFormController extends SimpleFormController {
 
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
+    
+    @Resource(name = "cacheGroupDAO")
+    private CacheGroupDao cacheGroupDao;
+
+
   
     
     @SuppressWarnings("unchecked")
@@ -201,6 +208,8 @@ public class SectionDefinitionFormController extends SimpleFormController {
             pageCustomizationService.maintainSectionFields(fieldsToUpdate);
         	
         }
+        
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
 
         return new ModelAndView(getSuccessView());
 

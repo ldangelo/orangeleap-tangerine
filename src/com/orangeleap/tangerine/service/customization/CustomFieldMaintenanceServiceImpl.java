@@ -250,6 +250,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         picklist.setPicklistDesc(fieldDefinition.getDefaultLabel());
         picklist.setPicklistName(fieldDefinition.getFieldName());
         picklist.setPicklistNameId(fieldDefinition.getFieldName());
+        if (null != picklistItemService.getPicklist(picklist.getPicklistNameId())) throw new RuntimeException("A picklist with this name already exists.");
         picklistItemService.maintainPicklist(picklist);
     }
 

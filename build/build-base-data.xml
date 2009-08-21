@@ -58,13 +58,9 @@
 	     	<transaction src="${basedir}/db/prod/pages/recurringGift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/recurringGiftView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/recurringGiftList.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/recurringGiftSearch.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/recurringGiftSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/pledge.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/pledgeView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/pledgeList.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/pledgeSearch.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/pledgeSearchResults.sql"/>
 <!--	     	<transaction src="${basedir}/db/prod/pages/membership.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/membershipView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/membershipList.sql"/>
@@ -82,8 +78,6 @@
 	     	<transaction src="${basedir}/db/prod/pages/paymentHistory.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/communicationHistory.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/communicationHistoryList.sql"/>
-		    <transaction src="${basedir}/db/prod/pages/communicationHistorySearch.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/communicationHistorySearchResults.sql"/>
 		    <transaction src="${basedir}/db/prod/pages/communicationHistoryView.sql"/>
 		    <transaction src="${basedir}/db/prod/pages/giftCombinedDistributionLines.sql"/>
 

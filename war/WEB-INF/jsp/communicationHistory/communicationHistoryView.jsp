@@ -14,7 +14,6 @@
 					<input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/>
 				</c:set>
 				<%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
-				<h3 class="info"><spring:message code='thisCommunicationHistoryEntered'/> <fmt:formatDate value="${form.domainObject.updateDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${form.domainObject.updateDate}" type="time" />.</h3>
 
 				<tangerine:fields pageName="communicationHistoryView"/>
 

@@ -166,13 +166,15 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     
     private FieldDefinition getFieldDefinition(boolean readOnly, boolean distributionLine, CustomFieldRequest customFieldRequest, Site site) {
     	
-        FieldDefinition newFieldDefinition = new FieldDefinition();
         String id = getFieldDefinitionId(readOnly, distributionLine, customFieldRequest, site);
-        if (fieldDao.readFieldDefinition(id) != null) {
+        FieldDefinition existing = fieldDao.readFieldDefinition(id);
+        if (existing != null) {
+        	if (distributionLine) return existing; // these are shared
         	logger.debug("Field ["+id+"] already exists.");
         	throw new RuntimeException("Field already exists.");
         }
         
+        FieldDefinition newFieldDefinition = new FieldDefinition();
         newFieldDefinition.setId(id);
         newFieldDefinition.setSite(site);
         newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());

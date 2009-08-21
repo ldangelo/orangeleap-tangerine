@@ -18,29 +18,43 @@
 
 package com.orangeleap.tangerine.service.customization;
 
-import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
-import com.orangeleap.tangerine.dao.CacheGroupDao;
-import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.domain.QueryLookup;
-import com.orangeleap.tangerine.domain.QueryLookupParam;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.customization.*;
-import com.orangeleap.tangerine.service.PicklistItemService;
-import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
-import com.orangeleap.tangerine.type.*;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import net.sf.ehcache.Cache;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
+import com.orangeleap.tangerine.dao.CacheGroupDao;
+import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.QueryLookupParam;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.domain.customization.FieldValidation;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
+import com.orangeleap.tangerine.type.CacheGroupType;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.type.LayoutType;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.type.ReferenceType;
+import com.orangeleap.tangerine.type.RelationshipType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 @Service("customFieldMaintenanceService")
 @Transactional
@@ -84,30 +98,54 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
         Site site = new Site(tangerineUserHelper.lookupUserSiteName());
 
-        FieldDefinition fieldDefinition = getFieldDefinition(customFieldRequest, site);
+        // Field definitions
+        
+        FieldDefinition fieldDefinition = getFieldDefinition(false, false, customFieldRequest, site);
         pageCustomizationService.maintainFieldDefinition(fieldDefinition);
+
+        FieldDefinition readOnlyFieldDefinition = getFieldDefinition(true, false, customFieldRequest, site);
+        pageCustomizationService.maintainFieldDefinition(readOnlyFieldDefinition);
+
+        if (isDistributionLines(customFieldRequest.getEntityType())) {
+            FieldDefinition adjustmentFieldDefinition = getFieldDefinition(false, true, customFieldRequest, site);
+            pageCustomizationService.maintainFieldDefinition(adjustmentFieldDefinition);
+            FieldDefinition readOnlyAdjustmentFieldDefinition = getFieldDefinition(true, true, customFieldRequest, site);
+            pageCustomizationService.maintainFieldDefinition(readOnlyAdjustmentFieldDefinition);
+        }
 
         if (isPicklist(customFieldRequest)) {
             createPicklist(fieldDefinition);
         }
 
-        PageType editPage = PageType.valueOf(customFieldRequest.getEntityType());
-        SectionDefinition sectionDefinition = addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
-        SectionDefinition sectionDefinitionView = null;
-
-        if (hasViewPage(customFieldRequest.getEntityType())) {
-            PageType viewPage = PageType.valueOf(customFieldRequest.getEntityType() + "View");
-            sectionDefinitionView = addSectionDefinitionsAndValidations(viewPage, customFieldRequest, fieldDefinition, site);
-        }
-
-        if (isReferenceType(customFieldRequest)) {
-            createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinition);
-            if (sectionDefinitionView != null)
-                createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinitionView);
-        }
-
         if (isRelationship(customFieldRequest)) {
             createRelationship(customFieldRequest, fieldDefinition);
+        }
+        
+        // Section Fields
+        
+        String sPageType = getPageType(customFieldRequest.getEntityType());
+        
+        // Main page
+        PageType editPage = PageType.valueOf(sPageType);
+        SectionDefinition sectionDefinition = addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
+        if (isReferenceType(customFieldRequest)) createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinition);
+
+        if (hasViewPage(customFieldRequest.getEntityType())) {
+        	
+            PageType viewPage = PageType.valueOf(sPageType + "View");
+            SectionDefinition sectionDefinitionView = addSectionDefinitionsAndValidations(viewPage, customFieldRequest, readOnlyFieldDefinition, site);  // make readonly on view screen
+            //if (isReferenceType(customFieldRequest)) createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinitionView);
+            
+        }
+        
+        if (hasAdjustmentPage(customFieldRequest.getEntityType())) {
+
+            PageType adjustedPage = PageType.valueOf("adjusted" + StringUtils.capitalize(sPageType));
+            SectionDefinition sectionDefinitionAdjusted = addSectionDefinitionsAndValidations(adjustedPage, customFieldRequest, readOnlyFieldDefinition, site);
+            
+            PageType adjustedViewPage = PageType.valueOf("adjusted" + StringUtils.capitalize(sPageType) + "View");
+            SectionDefinition sectionDefinitionAdjustedView = addSectionDefinitionsAndValidations(adjustedViewPage, customFieldRequest, readOnlyFieldDefinition, site);
+            
         }
 
         updateTheGuru(customFieldRequest);
@@ -118,8 +156,99 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
     }
 
+    private boolean hasAdjustmentPage(String entityType) {
+        return "gift".equals(entityType) || "gift.distributionLine".equals(entityType);
+    }
+
     private boolean hasViewPage(String entityType) {
         return !("constituent".equals(entityType) || "giftInKind".equals(entityType));
+    }
+    
+    private FieldDefinition getFieldDefinition(boolean readOnly, boolean distributionLine, CustomFieldRequest customFieldRequest, Site site) {
+    	
+        FieldDefinition newFieldDefinition = new FieldDefinition();
+        String id = getFieldDefinitionId(readOnly, distributionLine, customFieldRequest, site);
+        if (fieldDao.readFieldDefinition(id) != null) {
+        	logger.debug("Field ["+id+"] already exists.");
+        	throw new RuntimeException("Field already exists.");
+        }
+        
+        newFieldDefinition.setId(id);
+        newFieldDefinition.setSite(site);
+        newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());
+        
+        if (customFieldRequest.getEntityType().equals("constituent")) {
+            String constituentType = customFieldRequest.getConstituentType();
+            if (constituentType.equals("both")) constituentType = "individual,organization";
+            newFieldDefinition.setEntityAttributes(constituentType);
+        }
+        
+        if (isReferenceType(customFieldRequest)) {
+            newFieldDefinition.setReferenceType(ReferenceType.constituent);
+        }
+
+        newFieldDefinition.setFieldType(getFieldType(readOnly, customFieldRequest.getFieldType()));
+        
+        newFieldDefinition.setEntityType(getEntityType(distributionLine, customFieldRequest.getEntityType()));
+
+        if (!distributionLine && isDistributionLines(customFieldRequest.getEntityType())) {
+        	newFieldDefinition.setFieldName(DISTRIBUTION_LINES);
+        } else {
+        	newFieldDefinition.setFieldName(getFieldName(readOnly, customFieldRequest));
+        }
+        
+        return newFieldDefinition;
+    }
+    
+    private static String READ_ONLY = "ReadOnly";
+    
+    private String getFieldName(boolean readOnly, CustomFieldRequest customFieldRequest) {
+        return "customFieldMap[" + customFieldRequest.getFieldName() + (readOnly?READ_ONLY:"") + "]";
+    }
+    
+    private String getFieldDefinitionId(boolean readOnly, boolean distributionLine, CustomFieldRequest customFieldRequest, Site site) {
+        String result =  site.getName() + "-";
+        String entityType = customFieldRequest.getEntityType();
+        if (distributionLine) {
+            result += DISTRIBUTION_LINES;
+        } else if (isDistributionLines(entityType)) {
+            result += entityType.substring(0, entityType.indexOf('.')) + "." + DISTRIBUTION_LINES;
+        } else {
+        	result = result + entityType;
+        } 
+        result = result + "." + getFieldName(readOnly, customFieldRequest);
+        return result;
+    }
+    
+    private FieldType getFieldType(boolean readOnly, FieldType fieldType) {
+    	if (readOnly) {
+    		if (fieldType.equals(FieldType.TEXT)) return FieldType.READ_ONLY_TEXT;
+    	}
+    	return fieldType;
+    }
+    
+    private static String DISTRIBUTION_LINE = "distributionLine";
+    private static String DISTRIBUTION_LINES = "distributionLines";
+    
+    private static boolean isDistributionLines(String entityType) {
+    	return entityType.contains(DISTRIBUTION_LINE);
+
+    }
+    
+    private EntityType getEntityType(boolean distributionLine, String entityType) {
+    	if (distributionLine) {
+    		entityType = DISTRIBUTION_LINE;
+    	} else if (isDistributionLines(entityType)) {
+    		entityType = entityType.substring(0, entityType.indexOf('.'));
+    	}
+    	return EntityType.valueOf(entityType);
+    }
+    
+    private String getPageType(String entityType) {
+    	if (isDistributionLines(entityType)) {
+    		entityType = entityType.substring(0, entityType.indexOf('.'));
+    	}
+    	return entityType;
     }
 
     private void createRelationship(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition) {
@@ -218,11 +347,11 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         lookupSectionDefinition = pageCustomizationService.maintainSectionDefinition(lookupSectionDefinition);
 
         if (isOrganization || isBoth) {
-            addSectionField(lookupSectionDefinition, "constituent.organizationName", 1000);
+            addQuerySectionField(customFieldRequest, lookupSectionDefinition, "constituent.organizationName", 1000);
         }
         if (isIndividual || isBoth) {
-            addSectionField(lookupSectionDefinition, "constituent.lastName", 1000);
-            addSectionField(lookupSectionDefinition, "constituent.firstName", 2000);
+            addQuerySectionField(customFieldRequest, lookupSectionDefinition, "constituent.lastName", 1000);
+            addQuerySectionField(customFieldRequest, lookupSectionDefinition, "constituent.firstName", 2000);
         }
 
     }
@@ -234,7 +363,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         pageCustomizationService.maintainQueryLookupParam(queryLookupParam);
     }
 
-    private void addSectionField(SectionDefinition lookupSectionDefinition, String fieldDefintionId, int fieldOrder) {
+    private void addQuerySectionField(CustomFieldRequest customFieldRequest,SectionDefinition lookupSectionDefinition, String fieldDefintionId, int fieldOrder) {
         SectionField sectionField = new SectionField();
         sectionField.setSectionDefinition(lookupSectionDefinition);
         sectionField.setFieldOrder(fieldOrder);
@@ -261,11 +390,23 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
     private SectionDefinition addSectionDefinitionsAndValidations(PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {
 
-        // Default to add to first section after last field.
-        SectionDefinition sectionDefinition = getDefaultSection(pageType);
+    	SectionDefinition sectionDefinition;
+    	if (isDistributionLines(customFieldRequest.getEntityType())) {
+    		sectionDefinition = getDistroLineSection(pageType);
+    	} else {
+    		// Default to add to first section.
+    		sectionDefinition = getDefaultSection(pageType);
+    	}
+    	
+    	// Default placement after last field.
         int fieldOrder = getNextFieldOrder(sectionDefinition);
 
         SectionField sectionField = getSectionField(fieldOrder, sectionDefinition, fieldDefinition, site);
+        if (isDistributionLines(customFieldRequest.getEntityType())) {
+            FieldDefinition secondaryFieldDefinition = new FieldDefinition();
+            secondaryFieldDefinition.setId(site.getName() + "-" + fieldDefinition.getId().substring(fieldDefinition.getId().indexOf('.')+1));
+        	sectionField.setSecondaryFieldDefinition(secondaryFieldDefinition);
+        }
         pageCustomizationService.maintainSectionField(sectionField);
 
         FieldValidation fieldValidation = getFieldValidation(customFieldRequest, fieldDefinition, sectionDefinition);
@@ -302,35 +443,6 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         fieldValidation.setRegex(regex);
         return fieldValidation;
     }
-
-    private FieldDefinition getFieldDefinition(CustomFieldRequest customFieldRequest, Site site) {
-        FieldDefinition newFieldDefinition = new FieldDefinition();
-        String id = getFieldDefinitionId(customFieldRequest, site);
-        if (fieldDao.readFieldDefinition(id) != null) throw new RuntimeException("Field already exists.");
-        newFieldDefinition.setId(id);
-        newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());
-        newFieldDefinition.setEntityType(EntityType.valueOf(customFieldRequest.getEntityType()));
-        if (customFieldRequest.getEntityType().equals("constituent")) {
-            String constituentType = customFieldRequest.getConstituentType();
-            if (constituentType.equals("both")) constituentType = "individual,organization";
-            newFieldDefinition.setEntityAttributes(constituentType);
-        }
-        newFieldDefinition.setFieldType(customFieldRequest.getFieldType());
-        newFieldDefinition.setSite(site);
-        newFieldDefinition.setFieldName(getFieldName(customFieldRequest));
-        if (isReferenceType(customFieldRequest)) {
-            newFieldDefinition.setReferenceType(ReferenceType.constituent);
-        }
-        return newFieldDefinition;
-    }
-    
-    private String getFieldName(CustomFieldRequest customFieldRequest) {
-        return "customFieldMap[" + customFieldRequest.getFieldName() + "]";
-    }
-
-    private String getFieldDefinitionId(CustomFieldRequest customFieldRequest, Site site) {
-        return site.getName() + "-" + customFieldRequest.getEntityType() + "." + getFieldName(customFieldRequest);
-    }
     
     private SectionDefinition getDefaultSection(PageType pageType) {
         List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(pageType, tangerineUserHelper.lookupUserRoles());
@@ -343,6 +455,15 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         if (definitions.size() == 0)
             throw new RuntimeException("Default page for " + pageType.getName() + " has no sections");
         return definitions.get(0);
+    }
+
+    private SectionDefinition getDistroLineSection(PageType pageType) {
+        List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(pageType, tangerineUserHelper.lookupUserRoles());
+		for (SectionDefinition sd  : definitions) {
+			if (LayoutType.GRID_HIDDEN_ROW.equals(sd.getLayoutType()) 
+					) return sd;
+		}
+	    throw new RuntimeException("Default page for " + pageType.getName() + " has no distibution line sections");
     }
 
     // Get next field on page from end

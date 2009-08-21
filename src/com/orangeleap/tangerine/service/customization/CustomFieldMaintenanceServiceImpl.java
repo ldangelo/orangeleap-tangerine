@@ -203,6 +203,10 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     private static String READ_ONLY = "ReadOnly";
     
     private String getFieldName(boolean readOnly, CustomFieldRequest customFieldRequest) {
+        return "customFieldMap[" + customFieldRequest.getFieldName() + "]";
+    }
+    
+    private String getROFieldName(boolean readOnly, CustomFieldRequest customFieldRequest) {
         return "customFieldMap[" + customFieldRequest.getFieldName() + (readOnly?READ_ONLY:"") + "]";
     }
     
@@ -216,7 +220,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         } else {
         	result = result + entityType;
         } 
-        result = result + "." + getFieldName(readOnly, customFieldRequest);
+        result = result + "." + getROFieldName(readOnly, customFieldRequest);
         return result;
     }
     

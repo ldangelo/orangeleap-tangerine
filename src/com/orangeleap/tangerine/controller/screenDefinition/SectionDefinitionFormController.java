@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.CacheGroupDao;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
@@ -95,9 +96,16 @@ public class SectionDefinitionFormController extends SimpleFormController {
     }
     
     private static String getSectionFieldDescription(SectionField sf) {
-    	return sf.getFieldDefinition().getDefaultLabel() + ( sf.getSecondaryFieldDefinition() == null ? "" : (" " + sf.getSecondaryFieldDefinition().getDefaultLabel()) );
+    	
+    	FieldDefinition fd = sf.getFieldDefinition();
+    	String defaultLabel = fd.getDefaultLabel();
+    	
+    	// Disambiguate some duplicate labels...
+    	if (fd.getId().contains("constituentIndividualRoles")) defaultLabel += " (Individual)";
+    	if (fd.getId().contains("constituentOrganizationRoles")) defaultLabel += " (Organization)";
+    	
+    	return defaultLabel + ( sf.getSecondaryFieldDefinition() == null ? "" : (" " + sf.getSecondaryFieldDefinition().getDefaultLabel()) );
     }
-    
  
     public static final class SectionFieldView {
     	

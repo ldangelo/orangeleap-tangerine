@@ -304,6 +304,9 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
     private FieldDefinition getFieldDefinition(CustomFieldRequest customFieldRequest, Site site) {
         FieldDefinition newFieldDefinition = new FieldDefinition();
+        String id = getFieldDefinitionId(customFieldRequest, site);
+        if (fieldDao.readFieldDefinition(id) != null) throw new RuntimeException("Field already exists.");
+        newFieldDefinition.setId(id);
         newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());
         newFieldDefinition.setEntityType(EntityType.valueOf(customFieldRequest.getEntityType()));
         if (customFieldRequest.getEntityType().equals("constituent")) {
@@ -314,7 +317,6 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         newFieldDefinition.setFieldType(customFieldRequest.getFieldType());
         newFieldDefinition.setSite(site);
         newFieldDefinition.setFieldName(getFieldName(customFieldRequest));
-        newFieldDefinition.setId(getFieldDefinitionId(customFieldRequest, site));
         if (isReferenceType(customFieldRequest)) {
             newFieldDefinition.setReferenceType(ReferenceType.constituent);
         }

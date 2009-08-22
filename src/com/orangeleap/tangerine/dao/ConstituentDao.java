@@ -18,10 +18,11 @@
 
 package com.orangeleap.tangerine.dao;
 
-import java.util.List;
-import java.util.Map;
-
 import com.orangeleap.tangerine.domain.Constituent;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public interface ConstituentDao {
 
@@ -31,7 +32,7 @@ public interface ConstituentDao {
 
     public List<Constituent> readAllConstituentsBySite();
 
-    public List<Constituent> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit);
+    public List<Constituent> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit, Locale locale);
 
     public int getConstituentCountBySite();
 

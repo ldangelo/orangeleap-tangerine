@@ -27,6 +27,7 @@ import org.springframework.validation.BindException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 public interface ConstituentService {
 
@@ -52,7 +53,7 @@ public interface ConstituentService {
 
     public List<Constituent> readAllConstituentsBySite();
 
-    public List<Constituent> readAllConstituentsBySite(SortInfo sort);
+    public List<Constituent> readAllConstituentsBySite(SortInfo sort, Locale locale);
 
     public int getConstituentCountBySite();
 

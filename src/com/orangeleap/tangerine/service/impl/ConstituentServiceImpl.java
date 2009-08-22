@@ -61,10 +61,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service("constituentService")
@@ -406,11 +403,11 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<Constituent> readAllConstituentsBySite(SortInfo sort) {
+    public List<Constituent> readAllConstituentsBySite(SortInfo sort, Locale locale) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite:" + sort);
         }
-        return constituentDao.readAllConstituentsBySite(sort.getSort(), sort.getDir(), sort.getStart(), sort.getLimit());
+        return constituentDao.readAllConstituentsBySite(sort.getSort(), sort.getDir(), sort.getStart(), sort.getLimit(), locale);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class ConstituentListController extends TangerineJsonListController {
     public ModelMap listConstituents(HttpServletRequest request, SortInfo sort) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        List<Constituent> constituents = constituentService.readAllConstituentsBySite(sort);
+        List<Constituent> constituents = constituentService.readAllConstituentsBySite(sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("constituentList");
         addListFieldsToMap(request, sectionFields, constituents, list);
 

@@ -9,9 +9,6 @@
     <bean id="constituentSearch" class="com.orangeleap.tangerine.controller.constituent.ConstituentSearchFormController">
         <property name="commandName" value="constituent"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.Constituent"/>
-<!--        <property name="validator">-->
-<!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
-<!--        </property>-->
         <property name="formView" value="constituent/constituentSearch"/>
         <property name="successView" value="constituent/constituentSearch"/>
     </bean>

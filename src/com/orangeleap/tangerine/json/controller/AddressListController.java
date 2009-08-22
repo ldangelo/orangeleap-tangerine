@@ -18,18 +18,14 @@
 
 package com.orangeleap.tangerine.json.controller;
 
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.AddressService;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.util.CollectionUtils;
-import org.springframework.beans.support.MutableSortDefinition;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -39,45 +35,38 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class AddressListController {
+public class AddressListController extends TangerineJsonListController {
 
     @Resource(name = "addressService")
     private AddressService addressService;
 
-    @Resource(name = "pageCustomizationService")
-    private PageCustomizationService pageCustomizationService;
-
-    @Resource(name = "tangerineUserHelper")
-    private TangerineUserHelper tangerineUserHelper;
-
     @SuppressWarnings("unchecked")
     @RequestMapping("/addressList.json")
-    public ModelMap listAddresses(HttpServletRequest request) {
+    public ModelMap listAddresses(HttpServletRequest request, SortInfo sort) {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-//        List<SectionDefinition> sectionDefs = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.addressList, tangerineUserHelper.lookupUserRoles());
-//        if (sectionDefs != null) {
-//            SectionDefinition sectionDef = sectionDefs.get(0); // Should only be 1
-//            List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
-//            for (SectionField thisField : sectionFields) {
+        Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
+        List<Address> addresses = addressService.readAllAddressesByConstituentId(constituentId, sort, request.getLocale());
+        List<SectionField> sectionFields = findSectionFields("addressList");
+        addListFieldsToMap(request, sectionFields, addresses, list);
+
+        int count = addressService.readCountByConstituentId(constituentId);
+
+//        List<Map> list = new ArrayList<Map>();
+//        String constituentId = request.getParameter("constituentId");
+//        String sortField = request.getParameter("sort");
+//        boolean isAsc = "ASC".equals(request.getParameter("dir"));
 //
-//            }
+//        List<Address> addresses = addressService.readByConstituentId(Long.parseLong(constituentId));
+//
+//        for (Address address : addresses) {
+//            list.add(addressToMap(address, constituentId));
 //        }
-
-        List<Map> list = new ArrayList<Map>();
-        String constituentId = request.getParameter("constituentId");
-        String sortField = request.getParameter("sort");
-        boolean isAsc = "ASC".equals(request.getParameter("dir"));
-
-        List<Address> addresses = addressService.readByConstituentId(Long.parseLong(constituentId));
-
-        for (Address address : addresses) {
-            list.add(addressToMap(address, constituentId));
-        }
-        int count = addresses.size();
-
-        MutableSortDefinition sortDef = new MutableSortDefinition(sortField, true, isAsc);
-        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(list, sortDef);
-        pagedListHolder.resort();
+//        int count = addresses.size();
+//
+//        MutableSortDefinition sortDef = new MutableSortDefinition(sortField, true, isAsc);
+//        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(list, sortDef);
+//        pagedListHolder.resort();
 
         ModelMap map = new ModelMap("rows", list);
         map.put("totalRows", count);

@@ -19,6 +19,10 @@
 package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.web.common.SortInfo;
+
+import java.util.List;
+import java.util.Locale;
 
 public interface PhoneService extends CommunicationService<Phone> {
 
@@ -26,4 +30,5 @@ public interface PhoneService extends CommunicationService<Phone> {
 
 	void resetReceiveCorrespondenceText(Phone entity);
 
+    List<Phone> readAllPhonesByConstituentId(Long constituentId, SortInfo sort, Locale locale);
 }

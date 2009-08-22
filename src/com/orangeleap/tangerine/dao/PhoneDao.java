@@ -20,5 +20,10 @@ package com.orangeleap.tangerine.dao;
 
 import com.orangeleap.tangerine.domain.communication.Phone;
 
+import java.util.List;
+import java.util.Locale;
+
 public interface PhoneDao extends CommunicationDao<Phone> {
+
+    List<Phone> readAllPhonesByConstituentId(Long constituentId, String sortPropertyName, String direction, int start, int limit, Locale locale);
 }

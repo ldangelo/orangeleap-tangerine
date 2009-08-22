@@ -18,23 +18,25 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.BeanPropertyBindingResult;
-
+import com.orangeleap.tangerine.controller.validator.AddressValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.AddressDao;
 import com.orangeleap.tangerine.dao.CommunicationDao;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.service.AddressService;
-import com.orangeleap.tangerine.controller.validator.AddressValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Locale;
 
 @Service("addressService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -75,5 +77,22 @@ public class AddressServiceImpl extends AbstractCommunicationService<Address> im
                 throw errors;
             }
         }
+    }
+
+    @Override
+    public List<Address> readAllAddressesByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllAddressesByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return addressDao.readAllAddressesByConstituentId(constituentId, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        return addressDao.readCountByConstituentId(constituentId);
     }
 }

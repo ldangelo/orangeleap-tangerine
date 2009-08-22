@@ -64,7 +64,12 @@ public abstract class TangerineJsonListController {
                         if (fieldValue instanceof CustomField) {
                             fieldValue = ((CustomField) fieldValue).getValue();
                         }
-                        displayValue = handler.resolveDisplayValue(request, PropertyAccessorFactory.forBeanPropertyAccess(thisEntity), field, fieldValue);
+                        if (field.getFieldPropertyName().equals(StringConstants.ID)) {
+                            displayValue = fieldValue;
+                        }
+                        else {
+                            displayValue = handler.resolveDisplayValue(request, PropertyAccessorFactory.forBeanPropertyAccess(thisEntity), field, fieldValue);
+                        }
                     }
                     paramMap.put(TangerineForm.escapeFieldName(fieldPropertyName), displayValue);
                 }

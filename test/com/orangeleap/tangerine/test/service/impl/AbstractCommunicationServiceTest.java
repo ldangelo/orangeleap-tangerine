@@ -1,22 +1,21 @@
 package com.orangeleap.tangerine.test.service.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.joda.time.DateMidnight;
-import org.testng.annotations.Test;
-import org.springframework.validation.BindException;
-
 import com.orangeleap.tangerine.dao.CommunicationDao;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.service.impl.AbstractCommunicationService;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.type.ActivationType;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.joda.time.DateMidnight;
+import org.springframework.validation.BindException;
+import org.testng.annotations.Test;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class AbstractCommunicationServiceTest extends BaseTest {
 
@@ -122,6 +121,11 @@ public class AbstractCommunicationServiceTest extends BaseTest {
     class MockCommunicationServiceImpl extends AbstractCommunicationService<Address> {
         public List<Address> filter(List<Address> entities, boolean mailOnly) {
             return filterByActivationType(entities, mailOnly);
+        }
+
+        @Override
+        public int readCountByConstituentId(Long constituentId) {
+            return 0;  
         }
 
         @Override

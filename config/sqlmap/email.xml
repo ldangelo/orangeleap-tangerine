@@ -22,13 +22,17 @@
 		<result property="updateDate" column="EMAIL_UPDATE_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
 
+    <resultMap id="EMAIL_LIST_RESULT" class="com.orangeleap.tangerine.domain.communication.Email" groupBy="id" extends="EMAIL_RESULT">
+        <result property="current" column="EMAIL_CURRENT" jdbcType="CHAR" />
+    </resultMap>
+
     <sql id="EMAIL_COLS_FRAGMENT">
     	e.EMAIL_ID, e.ACTIVATION_STATUS as EMAIL_ACTIVATION_STATUS, e.COMMENT as EMAIL_COMMENT, e.CREATE_DATE as EMAIL_CREATE_DATE, e.EFFECTIVE_DATE as EMAIL_EFFECTIVE_DATE,
 		e.EMAIL_ADDRESS, e.EMAIL_DISPLAY, e.INACTIVE as EMAIL_INACTIVE, e.RECEIVE_CORRESPONDENCE as EMAIL_RECEIVE_CORRESPONDENCE, e.SEASONAL_END_DATE as EMAIL_SEASONAL_END_DATE,
 		e.SEASONAL_START_DATE as EMAIL_SEASONAL_START_DATE, e.TEMPORARY_END_DATE as EMAIL_TEMPORARY_END_DATE, e.TEMPORARY_START_DATE as EMAIL_TEMPORARY_START_DATE,
 		e.UPDATE_DATE as EMAIL_UPDATE_DATE, e.CONSTITUENT_ID as EMAIL_CONSTITUENT_ID, e.IS_PRIMARY as EMAIL_IS_PRIMARY, e.UNDELIVERABLE as EMAIL_UNDELIVERABLE
 	</sql>
-	
+
 	<sql id="SELECT_EMAIL_FRAGMENT">
 		select 
         <include refid="EMAIL_COLS_FRAGMENT"/>
@@ -54,6 +58,77 @@
 		and e.INACTIVE = false
 		order by EMAIL_ACTIVATION_STATUS, e.CREATE_DATE
 	</select>
+    
+    <select id="SELECT_LIMITED_EMAILS_BY_CONSITUENT_ID" resultMap="EMAIL_LIST_RESULT" parameterClass="map">
+        select innerQuery.*
+        <dynamic prepend=",">
+        	<isNotEqual property="sortColumn" compareValue="EMAIL_CURRENT">
+                <isNotEqual property="sortColumn" compareValue="EMAIL_INACTIVE">
+                    <isNotEqual property="sortColumn" compareValue="EMAIL_RECEIVE_CORRESPONDENCE">
+                        <isNotEqual property="sortColumn" compareValue="EMAIL_IS_PRIMARY">
+                            <isNotEqual property="sortColumn" compareValue="EMAIL_UNDELIVERABLE">
+                                IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+                            </isNotEqual>
+                        </isNotEqual>
+                    </isNotEqual>
+                </isNotEqual>
+            </isNotEqual>
+        </dynamic>
+
+        from
+        (select
+        <include refid="EMAIL_COLS_FRAGMENT" />,
+        CASE
+          WHEN e.ACTIVATION_STATUS = 'temporary' AND #asOfDate# BETWEEN e.TEMPORARY_START_DATE AND e.TEMPORARY_END_DATE THEN '1'
+          WHEN e.ACTIVATION_STATUS = 'seasonal' AND IS_IN_SEASON(#asOfDate#, e.SEASONAL_START_DATE, e.SEASONAL_END_DATE) = 1 THEN '1'
+          WHEN e.ACTIVATION_STATUS = 'permanent' AND e.EFFECTIVE_DATE IS NOT NULL AND #asOfDate# &gt;= e.EFFECTIVE_DATE THEN '1'
+          ELSE '0'
+        END
+        as EMAIL_CURRENT
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+        
+        from EMAIL e
+        inner join CONSTITUENT p ON e.CONSTITUENT_ID = p.CONSTITUENT_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on e.EMAIL_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and e.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        <isNotEqual property="sortColumn" compareValue="EMAIL_CURRENT">
+            <isNotEqual property="sortColumn" compareValue="EMAIL_INACTIVE">
+                <isNotEqual property="sortColumn" compareValue="EMAIL_RECEIVE_CORRESPONDENCE">
+                    <isNotEqual property="sortColumn" compareValue="EMAIL_IS_PRIMARY">
+                        <isNotEqual property="sortColumn" compareValue="EMAIL_UNDELIVERABLE">
+                            isnull ASC,
+                        </isNotEqual>
+                    </isNotEqual>
+                </isNotEqual>
+            </isNotEqual>
+        </isNotEqual>
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_EMAIL_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(e.EMAIL_ID)
+        from EMAIL e
+        inner join CONSTITUENT p on e.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and e.CONSTITUENT_ID = #constituentId#
+    </select>
 
 	<insert id="INSERT_EMAIL" parameterClass="com.orangeleap.tangerine.domain.communication.Email">
 		insert into EMAIL (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE,

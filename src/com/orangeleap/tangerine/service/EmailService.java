@@ -19,6 +19,12 @@
 package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.web.common.SortInfo;
+
+import java.util.List;
+import java.util.Locale;
 
 public interface EmailService extends CommunicationService<Email> {
+
+    List<Email> readAllEmailsByConstituentId(Long constituentId, SortInfo sort, Locale locale);
 }

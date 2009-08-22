@@ -23,7 +23,11 @@
 		<result property="createDate" column="PHONE_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="PHONE_UPDATE_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
-	
+
+    <resultMap id="PHONE_LIST_RESULT" class="com.orangeleap.tangerine.domain.communication.Phone" groupBy="id" extends="PHONE_RESULT">
+        <result property="current" column="PHONE_CURRENT" jdbcType="CHAR" />
+    </resultMap>
+
 	<sql id="PHONE_COLS_FRAGMENT">
 		ph.PHONE_ID, ph.ACTIVATION_STATUS as PHONE_ACTIVATION_STATUS, ph.COMMENT as PHONE_COMMENT, 
 		ph.CREATE_DATE as PHONE_CREATE_DATE, ph.EFFECTIVE_DATE as PHONE_EFFECTIVE_DATE,
@@ -60,6 +64,81 @@
 		and ph.INACTIVE = false
 		order by PHONE_ACTIVATION_STATUS, ph.CREATE_DATE
 	</select>
+    
+    <select id="SELECT_LIMITED_PHONES_BY_CONSITUENT_ID" resultMap="PHONE_LIST_RESULT" parameterClass="map">
+        select innerQuery.*
+        <dynamic prepend=",">
+        	<isNotEqual property="sortColumn" compareValue="PHONE_CURRENT">
+                <isNotEqual property="sortColumn" compareValue="PHONE_INACTIVE">
+                    <isNotEqual property="sortColumn" compareValue="PHONE_RECEIVE_CORRESPONDENCE_TEXT">
+                        <isNotEqual property="sortColumn" compareValue="PHONE_RECEIVE_CORRESPONDENCE_CALL">
+                            <isNotEqual property="sortColumn" compareValue="PHONE_IS_PRIMARY">
+                                <isNotEqual property="sortColumn" compareValue="PHONE_UNDELIVERABLE">
+                                    IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+                                </isNotEqual>
+                            </isNotEqual>
+                        </isNotEqual>
+                    </isNotEqual>
+                </isNotEqual>
+            </isNotEqual>
+        </dynamic>
+
+        from
+        (select
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        CASE
+          WHEN ph.ACTIVATION_STATUS = 'temporary' AND #asOfDate# BETWEEN ph.TEMPORARY_START_DATE AND ph.TEMPORARY_END_DATE THEN '1'
+          WHEN ph.ACTIVATION_STATUS = 'seasonal' AND IS_IN_SEASON(#asOfDate#, ph.SEASONAL_START_DATE, ph.SEASONAL_END_DATE) = 1 THEN '1'
+          WHEN ph.ACTIVATION_STATUS = 'permanent' AND ph.EFFECTIVE_DATE IS NOT NULL AND #asOfDate# &gt;= ph.EFFECTIVE_DATE THEN '1'
+          ELSE '0'
+        END
+        as PHONE_CURRENT
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from PHONE ph
+        inner join CONSTITUENT p ON ph.CONSTITUENT_ID = p.CONSTITUENT_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on ph.PHONE_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and ph.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        <isNotEqual property="sortColumn" compareValue="PHONE_CURRENT">
+            <isNotEqual property="sortColumn" compareValue="PHONE_INACTIVE">
+                <isNotEqual property="sortColumn" compareValue="PHONE_RECEIVE_CORRESPONDENCE_TEXT">
+                    <isNotEqual property="sortColumn" compareValue="PHONE_RECEIVE_CORRESPONDENCE_CALL">
+                        <isNotEqual property="sortColumn" compareValue="PHONE_IS_PRIMARY">
+                            <isNotEqual property="sortColumn" compareValue="PHONE_UNDELIVERABLE">
+                                isnull ASC,
+                            </isNotEqual>
+                        </isNotEqual>
+                    </isNotEqual>
+                </isNotEqual>
+            </isNotEqual>
+        </isNotEqual>
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_PHONE_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(ph.PHONE_ID)
+        from PHONE ph
+        inner join CONSTITUENT p on ph.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and ph.CONSTITUENT_ID = #constituentId#
+    </select>
 
 	<insert id="INSERT_PHONE" parameterClass="com.orangeleap.tangerine.domain.communication.Phone">
 		insert into PHONE (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,

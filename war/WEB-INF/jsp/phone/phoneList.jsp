@@ -6,10 +6,10 @@
             <title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
         </head>
         <body>
-             <div id="phoneListGrid"></div>
+             <div id="phoneGrid"></div>
         </body>
     </html>
     <page:param name="scripts">
-        <script type="text/javascript" src="js/lists/phoneList.js"></script>
+        <tangerine:fields pageName="phoneList"/>
     </page:param>
 </page:applyDecorator>

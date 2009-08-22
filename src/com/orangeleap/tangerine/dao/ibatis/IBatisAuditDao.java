@@ -63,7 +63,7 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
             logger.trace("readAuditHistoryForSite:");
         }
 
-        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit);
+        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit, null);
 
         List rows = getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_SITE_PAGINATED", params);
         Long count = (Long) getSqlMapClientTemplate().queryForObject("AUDIT_HISTORY_FOR_SITE_ROWCOUNT", params);
@@ -95,7 +95,7 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
             logger.trace("readAuditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
         }
 
-        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit);
+        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit, null);
         params.put("entityType", oneWord(entityTypeDisplay));
         params.put("objectId", objectId);
 
@@ -127,7 +127,7 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
         if (logger.isDebugEnabled()) {
             logger.debug("auditHistoryForConstituent: constituentId = " + constituentId);
         }
-        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit);
+        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit, null);
         params.put("constituentId", constituentId);
 
         List rows = getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_CONSTITUENT_PAGINATED", params);

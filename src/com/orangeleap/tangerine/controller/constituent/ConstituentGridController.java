@@ -21,10 +21,12 @@ package com.orangeleap.tangerine.controller.constituent;
 import com.orangeleap.tangerine.controller.TangerineGridController;
 import com.orangeleap.tangerine.domain.Constituent;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class ConstituentGridController extends TangerineGridController {
 
     @Override
-    protected Object getDummyEntity() {
+    protected Object getDummyEntity(HttpServletRequest request) {
         return new Constituent();
     }
 }

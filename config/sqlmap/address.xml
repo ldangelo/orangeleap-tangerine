@@ -29,6 +29,10 @@
         <result property="updateDate" column="ADDRESS_UPDATE_DATE" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <resultMap id="ADDRESS_LIST_RESULT" class="com.orangeleap.tangerine.domain.communication.Address" groupBy="id" extends="ADDRESS_RESULT">
+        <result property="current" column="ADDRESS_CURRENT" jdbcType="CHAR" />
+    </resultMap>
+
     <sql id="ADDRESS_COLS_FRAGMENT">
         addr.ADDRESS_ID, addr.ACTIVATION_STATUS as ADDRESS_ACTIVATION_STATUS, addr.ADDRESS_LINE_1, addr.ADDRESS_LINE_2, addr.ADDRESS_LINE_3,
         addr.CITY as ADDRESS_CITY, addr.COMMENT as ADDRESS_COMMENT, addr.COUNTRY as ADDRESS_COUNTRY, 
@@ -37,7 +41,8 @@
         addr.SEASONAL_START_DATE as ADDRESS_SEASONAL_START_DATE, addr.STATE_PROVINCE as ADDRESS_STATE_PROVINCE,
         addr.TEMPORARY_END_DATE as ADDRESS_TEMPORARY_END_DATE, addr.TEMPORARY_START_DATE as ADDRESS_TEMPORARY_START_DATE, 
         addr.NCOA_DATE as ADDRESS_NCOA_DATE, addr.CASS_DATE as ADDRESS_CASS_DATE,
-        addr.UPDATE_DATE as ADDRESS_UPDATE_DATE, addr.CONSTITUENT_ID as ADDRESS_CONSTITUENT_ID, addr.IS_PRIMARY as ADDRESS_IS_PRIMARY, addr.UNDELIVERABLE as ADDRESS_UNDELIVERABLE
+        addr.UPDATE_DATE as ADDRESS_UPDATE_DATE, addr.CONSTITUENT_ID as ADDRESS_CONSTITUENT_ID, addr.IS_PRIMARY as ADDRESS_IS_PRIMARY,
+        addr.UNDELIVERABLE as ADDRESS_UNDELIVERABLE
     </sql>
 
     <sql id="SELECT_ADDRESS_FRAGMENT">
@@ -65,7 +70,80 @@
 		and addr.INACTIVE = false
 		order by ADDRESS_ACTIVATION_STATUS, addr.CREATE_DATE
 	</select>
- 
+
+    <select id="SELECT_LIMITED_ADDRESSES_BY_CONSITUENT_ID" resultMap="ADDRESS_LIST_RESULT" parameterClass="map">
+        select innerQuery.*
+
+        <dynamic prepend=",">
+        	<isNotEqual property="sortColumn" compareValue="ADDRESS_CURRENT">
+                <isNotEqual property="sortColumn" compareValue="ADDRESS_INACTIVE">
+                    <isNotEqual property="sortColumn" compareValue="ADDRESS_RECEIVE_CORRESPONDENCE">
+                        <isNotEqual property="sortColumn" compareValue="ADDRESS_IS_PRIMARY">
+                            <isNotEqual property="sortColumn" compareValue="ADDRESS_UNDELIVERABLE">
+                                IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+                            </isNotEqual>
+                        </isNotEqual>
+                    </isNotEqual>
+                </isNotEqual>
+            </isNotEqual>
+        </dynamic>
+        from
+
+        (select
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+
+        CASE
+          WHEN addr.ACTIVATION_STATUS = 'temporary' AND #asOfDate# BETWEEN addr.TEMPORARY_START_DATE AND addr.TEMPORARY_END_DATE THEN '1'
+          WHEN addr.ACTIVATION_STATUS = 'seasonal' AND IS_IN_SEASON(#asOfDate#, addr.SEASONAL_START_DATE, addr.SEASONAL_END_DATE) = 1 THEN '1'
+          WHEN addr.ACTIVATION_STATUS = 'permanent' AND addr.EFFECTIVE_DATE IS NOT NULL AND #asOfDate# &gt;= addr.EFFECTIVE_DATE THEN '1'
+          ELSE '0'
+        END
+        as ADDRESS_CURRENT
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from ADDRESS addr
+        inner join CONSTITUENT p ON addr.CONSTITUENT_ID = p.CONSTITUENT_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on addr.ADDRESS_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and addr.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        <isNotEqual property="sortColumn" compareValue="ADDRESS_CURRENT">
+            <isNotEqual property="sortColumn" compareValue="ADDRESS_INACTIVE">
+                <isNotEqual property="sortColumn" compareValue="ADDRESS_RECEIVE_CORRESPONDENCE">
+                    <isNotEqual property="sortColumn" compareValue="ADDRESS_IS_PRIMARY">
+                        <isNotEqual property="sortColumn" compareValue="ADDRESS_UNDELIVERABLE">
+                            isnull ASC,
+                        </isNotEqual>
+                    </isNotEqual>
+                </isNotEqual>
+            </isNotEqual>
+        </isNotEqual>
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_ADDRESS_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(addr.ADDRESS_ID)
+        from ADDRESS addr
+        inner join CONSTITUENT p on addr.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and addr.CONSTITUENT_ID = #constituentId#
+    </select>
+
     <insert id="INSERT_ADDRESS" parameterClass="com.orangeleap.tangerine.domain.communication.Address">
         insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
         ADDRESS_LINE_3, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,

@@ -18,18 +18,18 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.AddressDao;
 import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * iBatis version of the AddressDao
@@ -92,5 +92,30 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
         if (logger.isInfoEnabled()) {
             logger.info("inactivateEntities: number of addresses marked inactive = " + rows);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Address> readAllAddressesByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllAddressesByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.ADDRESS, "ADDRESS.ADDRESS_LIST_RESULT", sortPropertyName, direction, start, limit, locale);
+        params.put("asOfDate", getNowDate(locale));
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_ADDRESSES_BY_CONSITUENT_ID", params);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_ADDRESS_COUNT_BY_CONSTITUENT_ID", params);
     }
 }

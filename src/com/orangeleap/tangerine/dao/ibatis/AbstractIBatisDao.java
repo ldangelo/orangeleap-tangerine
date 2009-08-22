@@ -19,10 +19,10 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.engine.mapping.result.ResultMap;
-import com.ibatis.sqlmap.engine.mapping.result.ResultMapping;
 import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
 import com.ibatis.sqlmap.engine.impl.SqlMapExecutorDelegate;
+import com.ibatis.sqlmap.engine.mapping.result.ResultMap;
+import com.ibatis.sqlmap.engine.mapping.result.ResultMapping;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.GeneratedId;
@@ -34,14 +34,13 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implements ApplicationContextAware {
 
@@ -80,7 +79,8 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
         return params;
     }
 
-    protected Map<String, Object> setupSortParams(String entityType, String resultMapName, String sortPropertyName, String dir, int start, int limit) {
+    protected Map<String, Object> setupSortParams(String entityType, String resultMapName, String sortPropertyName,
+                                                  String dir, int start, int limit, Locale locale) {
         Map<String, Object> params = setupParams();
 
         /* Custom fields are treated differently than regular bean properties - they have to be sorted differently */
@@ -90,7 +90,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
             int endIndex = sortPropertyName.indexOf(']', startIndex);
             params.put("fieldName", sortPropertyName.substring(startIndex, endIndex));
             params.put("entityType", entityType);
-            params.put("asOfDate", new java.util.Date());
+            params.put("asOfDate", getNowDate(locale));
             sortPropertyName = "FIELD_VALUE";
         }
         else if (StringUtils.hasText(resultMapName)) {
@@ -226,5 +226,9 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
                 }
             }
         }
+    }
+
+    public Date getNowDate(Locale locale) {
+        return locale != null ? Calendar.getInstance(locale).getTime() : new java.util.Date();
     }
 }

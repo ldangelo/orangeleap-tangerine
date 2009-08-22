@@ -18,9 +18,9 @@
 
 package com.orangeleap.tangerine.dao;
 
-import java.util.List;
-
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
+
+import java.util.List;
 
 public interface CommunicationDao<T extends AbstractCommunicationEntity> {
 
@@ -34,4 +34,5 @@ public interface CommunicationDao<T extends AbstractCommunicationEntity> {
 
     public void inactivateEntities();
 
+    int readCountByConstituentId(Long constituentId);
 }

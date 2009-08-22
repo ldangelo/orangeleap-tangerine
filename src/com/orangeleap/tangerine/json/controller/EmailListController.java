@@ -18,83 +18,41 @@
 
 package com.orangeleap.tangerine.json.controller;
 
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.EmailService;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.util.CollectionUtils;
-import org.springframework.beans.support.MutableSortDefinition;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-public class EmailListController {
+public class EmailListController extends TangerineJsonListController {
 
     @Resource(name = "emailService")
     private EmailService emailService;
 
-    @Resource(name = "pageCustomizationService")
-    private PageCustomizationService pageCustomizationService;
-
-    @Resource(name = "tangerineUserHelper")
-    private TangerineUserHelper tangerineUserHelper;
-
     @SuppressWarnings("unchecked")
     @RequestMapping("/emailList.json")
-    public ModelMap listEmails(HttpServletRequest request) {
+    public ModelMap listEmails(HttpServletRequest request, SortInfo sort) {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-//        List<SectionDefinition> sectionDefs = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.emailList, tangerineUserHelper.lookupUserRoles());
-//        if (sectionDefs != null) {
-//            SectionDefinition sectionDef = sectionDefs.get(0); // Should only be 1
-//            List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
-//            for (SectionField thisField : sectionFields) {
-//
-//            }
-//        }
+        Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
+        List<Email> emails = emailService.readAllEmailsByConstituentId(constituentId, sort, request.getLocale());
+        List<SectionField> sectionFields = findSectionFields("emailList");
+        addListFieldsToMap(request, sectionFields, emails, list);
 
-        List<Map> list = new ArrayList<Map>();
-        String constituentId = request.getParameter("constituentId");
-        String sortField = request.getParameter("sort");
-        boolean isAsc = "ASC".equals(request.getParameter("dir"));
-
-        List<Email> emails = emailService.readByConstituentId(Long.parseLong(constituentId));
-
-        for (Email email : emails) {
-            list.add(emailToMap(email, constituentId));
-        }
-        int count = emails.size();
-
-        MutableSortDefinition sortDef = new MutableSortDefinition(sortField, true, isAsc);
-        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(list, sortDef);
-        pagedListHolder.resort();
+        int count = emailService.readCountByConstituentId(constituentId);
 
         ModelMap map = new ModelMap("rows", list);
         map.put("totalRows", count);
-
-        return map;
-    }
-
-    private Map<String, Object> emailToMap(Email email, String constituentId) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", email.getId());
-        map.put("constituentId", constituentId);
-        map.put("emailAddress", email.getEmailAddress());
-        map.put("emailDisplay", email.getEmailDisplay());
-        map.put("receiveCorrespondence", email.isReceiveCorrespondence());
-        map.put("current", emailService.isCurrent(email));
-        map.put("primary", email.isPrimary());
-        map.put("active", !email.isInactive());
 
         return map;
     }

@@ -153,19 +153,29 @@ public class SectionFieldTag extends AbstractTag {
 
                     List<SectionField> fields = getFieldsExceptId(allFields);
                     Object entity = getTangerineForm().getDomainObject();
+                    BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
                     String entityType = StringUtils.uncapitalize(entity.getClass().getSimpleName());
+
                     sb.append("<script type='text/javascript'>");
                     sb.append("Ext.namespace('OrangeLeap.").append(entityType).append("');\n");
                     sb.append("Ext.onReady(function() {\n");
                     sb.append("Ext.QuickTips.init();\n");
                     sb.append("OrangeLeap.").append(entityType).append(".store = new Ext.data.JsonStore({\n");
-                    sb.append("url: '").append(entityType).append("List.json',\n");
+                    sb.append("url: '").append(entityType).append("List.json");
+                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                        sb.append("?constituentId=");
+                        if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
+                            sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+                        }
+                        else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                            sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+                        }
+                    }
+                    sb.append("',\n");
                     sb.append("totalProperty: 'totalRows',\n");
                     sb.append("root: 'rows',\n");
                     sb.append("remoteSort: true,\n");
                     sb.append("fields: [\n");
-
-                    BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
 
                     sb.append("{name: 'id', mapping: 'id', type: 'int'},\n");
                     if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
@@ -254,9 +264,20 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("rowdblclick: function(grid, row, evt) {\n");
                     sb.append("var rec = grid.getSelectionModel().getSelected();\n");
                     sb.append("Ext.get(document.body).mask('").append(TangerineMessageAccessor.getMessage("loadingRecord")).append("');\n");
-                    sb.append("window.location.href = \"").append(entityType).append(".htm?").append(entityType).append("Id=\" + rec.data.id");
+                    sb.append("window.location.href = \"");
+                    if (StringConstants.PAYMENT_SOURCE.equals(entityType)) {
+                        sb.append("paymentManagerEdit");
+                    }
+                    else if (StringConstants.ADDRESS.equals(entityType) || StringConstants.PHONE.equals(entityType) || StringConstants.EMAIL.equals(entityType)) {
+                        sb.append(entityType).append("ManagerEdit");
+                    }
+                    else {
+                        sb.append(entityType);
+                    }
+                    sb.append(".htm?");
+                    sb.append(entityType).append("Id=\" + rec.data.id");
                     if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
-                        sb.append(" + \"&constituentId=\"");
+                        sb.append(" + \"&constituentId=");
                         if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
                             sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
                         }
@@ -487,7 +508,7 @@ public class SectionFieldTag extends AbstractTag {
     private List<SectionField> getFieldsExceptId(List<SectionField> fields) {
         List<SectionField> filteredFields = new ArrayList<SectionField>();
         for (SectionField thisField : fields) {
-            if (!StringConstants.ID.equals(thisField.getFieldPropertyName())) {
+            if (!StringConstants.ID.equals(thisField.getFieldPropertyName()) && !StringConstants.CONSTITUENT_ID.equals(thisField.getFieldPropertyName())) {
                 filteredFields.add(thisField);
             }
         }

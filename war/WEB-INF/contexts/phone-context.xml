@@ -15,7 +15,7 @@
     	<property name="formView" value="phone/phoneManagerEdit" />
     </bean>
 
-    <bean id="phoneListController" class="com.orangeleap.tangerine.controller.DummyController">
+    <bean id="phoneListController" class="com.orangeleap.tangerine.controller.communication.phone.PhoneGridController" parent="tangerineGridController">
         <property name="viewName" value="phone/phoneList"/>
     </bean>
 

@@ -62,7 +62,7 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
 
 	@Override
     public PaginatedResult readErrorMessages(String sortColumn, String dir, int start, int limit) {
-        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit);
+        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit, null);
 
         List rows = getSqlMapClientTemplate().queryForList("ERROR_LOG_FOR_SITE_PAGINATED", params);
         Long count = (Long)getSqlMapClientTemplate().queryForObject("ERROR_LOG_FOR_SITE_ROWCOUNT",params);

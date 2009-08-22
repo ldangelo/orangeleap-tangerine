@@ -19,11 +19,10 @@
 package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
+import org.springframework.validation.BindException;
 
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.validation.BindException;
 
 public interface CommunicationService<T extends AbstractCommunicationEntity> {
 
@@ -54,4 +53,6 @@ public interface CommunicationService<T extends AbstractCommunicationEntity> {
     public void resetReceiveCorrespondence(T entity);
 
     boolean isCurrent(final T entity);
+
+    int readCountByConstituentId(Long constituentId);
 }

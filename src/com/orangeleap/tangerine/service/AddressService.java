@@ -19,6 +19,12 @@
 package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.web.common.SortInfo;
+
+import java.util.List;
+import java.util.Locale;
 
 public interface AddressService extends CommunicationService<Address> {
+    
+    List<Address> readAllAddressesByConstituentId(Long constituentId, SortInfo sort, Locale locale);
 }

@@ -20,22 +20,63 @@ package com.orangeleap.tangerine.controller;
 
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.domain.Constituent;
 import org.apache.commons.logging.Log;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.annotation.Resource;
 
 public abstract class TangerineGridController extends ParameterizableViewController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-        return new ModelAndView(getViewName(), StringConstants.FORM, new TangerineForm(getDummyEntity()));
+    @Resource(name="constituentService")
+    protected ConstituentService constituentService;
+    
+    public Long getIdAsLong(HttpServletRequest request, String id) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("getIdAsLong: id = " + id);
+        }
+        String paramId = request.getParameter(id);
+        if (StringUtils.hasText(paramId)) {
+            return Long.valueOf(request.getParameter(id));
+        }
+        return null;
     }
 
-    protected abstract Object getDummyEntity();
+    protected Long getConstituentId(HttpServletRequest request) {
+        return this.getIdAsLong(request, StringConstants.CONSTITUENT_ID);
+    }
+
+    protected String getConstituentIdString(HttpServletRequest request) {
+        return request.getParameter(StringConstants.CONSTITUENT_ID);
+    }
+
+	protected Constituent getConstituent(HttpServletRequest request) {
+	    Long constituentId = getConstituentId(request);
+	    Constituent constituent = null;
+	    if (constituentId != null) {
+	        constituent = constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this constituent (authorization)?
+	    }
+	    if (constituent == null) {
+	        throw new IllegalArgumentException("The constituent ID was not found");
+	    }
+	    return constituent;
+	}
+
+    @Override
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getParameter(StringConstants.CONSTITUENT_ID) != null) {
+            request.setAttribute(StringConstants.CONSTITUENT, getConstituent(request));
+        }
+        return new ModelAndView(getViewName(), StringConstants.FORM, new TangerineForm(getDummyEntity(request)));
+    }
+
+    protected abstract Object getDummyEntity(HttpServletRequest request);
 }

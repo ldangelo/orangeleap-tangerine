@@ -18,23 +18,25 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.PhoneValidator;
 import com.orangeleap.tangerine.dao.CommunicationDao;
 import com.orangeleap.tangerine.dao.PhoneDao;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.PhoneValidator;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.BeanPropertyBindingResult;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Locale;
 
 @Service("phoneService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -102,5 +104,21 @@ public class PhoneServiceImpl extends AbstractCommunicationService<Phone> implem
                 throw errors;
             }
         }
+    }
+
+    @Override
+    public List<Phone> readAllPhonesByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllPhonesByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return phoneDao.readAllPhonesByConstituentId(constituentId, sort.getSort(), sort.getDir(), sort.getStart(), sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        return phoneDao.readCountByConstituentId(constituentId);
     }
 }

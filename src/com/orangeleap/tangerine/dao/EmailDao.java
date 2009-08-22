@@ -20,5 +20,10 @@ package com.orangeleap.tangerine.dao;
 
 import com.orangeleap.tangerine.domain.communication.Email;
 
+import java.util.List;
+import java.util.Locale;
+
 public interface EmailDao extends CommunicationDao<Email> {
+
+    List<Email> readAllEmailsByConstituentId(Long constituentId, String sortPropertyName, String direction, int start, int limit, Locale locale);
 }

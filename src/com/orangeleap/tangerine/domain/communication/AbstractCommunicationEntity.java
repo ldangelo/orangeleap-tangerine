@@ -48,7 +48,9 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     protected String comments;
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
     protected Date effectiveDate;
-    protected boolean userCreated = false;
+    protected boolean current = false; 
+
+    protected boolean userCreated = false; // TODO: remove
 
     public Long getConstituentId() {
         return constituentId;
@@ -144,6 +146,14 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
 
     public boolean isPrimary() {
         return isPrimary;
+    }
+
+    public boolean isCurrent() {
+        return current;
+    }
+
+    public void setCurrent(boolean current) {
+        this.current = current;
     }
 
     public void setPrimary(boolean isPrimary) {

@@ -23,13 +23,15 @@ import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class PledgeGridController extends TangerineGridController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Override
-    protected Object getDummyEntity() {
+    protected Object getDummyEntity(HttpServletRequest request) {
         return new Pledge();
     }
 }

@@ -418,16 +418,17 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         int fieldOrder = getNextFieldOrder(sectionDefinition);
 
         SectionField sectionField = getSectionField(fieldOrder, sectionDefinition, fieldDefinition, site);
+        FieldDefinition secondaryFieldDefinition = null;
         if (isDistributionLines(customFieldRequest.getEntityType())) {
-            FieldDefinition secondaryFieldDefinition = new FieldDefinition();
+            secondaryFieldDefinition = new FieldDefinition();
             secondaryFieldDefinition.setId(site.getName() + "-" + fieldDefinition.getId().substring(fieldDefinition.getId().indexOf('.')+1));
         	sectionField.setSecondaryFieldDefinition(secondaryFieldDefinition);
         }
         pageCustomizationService.maintainSectionField(sectionField);
 
-        FieldValidation fieldValidation = getFieldValidation(customFieldRequest, fieldDefinition, sectionDefinition);
+        FieldValidation fieldValidation = getFieldValidation(customFieldRequest, fieldDefinition, secondaryFieldDefinition, sectionDefinition);
 
-        if (StringUtils.trimToNull(fieldValidation.getRegex()) != null) {
+        if (StringUtils.trimToNull(fieldValidation.getRegex()) != null && !fieldDefinition.getId().endsWith(READ_ONLY+"]")) {
             pageCustomizationService.maintainFieldValidation(fieldValidation);
         }
 
@@ -444,9 +445,12 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         return sectionField;
     }
 
-    private FieldValidation getFieldValidation(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, SectionDefinition sectionDefinition) {
+    private FieldValidation getFieldValidation(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, FieldDefinition secondaryFieldDefinition, SectionDefinition sectionDefinition) {
         FieldValidation fieldValidation = new FieldValidation();
         fieldValidation.setFieldDefinition(fieldDefinition);
+        if (secondaryFieldDefinition != null) {
+        	fieldValidation.setSecondaryFieldDefinition(secondaryFieldDefinition);
+        }
         fieldValidation.setSectionName(sectionDefinition.getSectionName());
         String regex = null;
         String type = customFieldRequest.getValidationType();

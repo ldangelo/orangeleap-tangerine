@@ -19,6 +19,7 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -46,7 +47,7 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 		PicklistItemService plis = (PicklistItemService)applicationContext.getBean("picklistItemService");
 		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
-
+		SiteService ss = (SiteService) applicationContext.getBean("siteService");
 
 		workingMemory.setFocus(site+"constituent");
 		workingMemory.setGlobal("applicationContext", applicationContext);
@@ -57,6 +58,7 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 
 
 		constituent.setGifts(gs.readMonetaryGifts(constituent));
+		constituent.setSite(ss.readSite(constituent.getSite().getName()));
 		workingMemory.insert(constituent);
 
 		try {

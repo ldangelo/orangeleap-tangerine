@@ -100,7 +100,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     private RelationshipService relationshipService;
 
     @Resource(name = "constituentDAO")
-    private ConstituentDao constituentDao;                                                                                                    
+    private ConstituentDao constituentDao;
 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
@@ -430,7 +430,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
         return false;
     }*/
-    @SuppressWarnings("unchecked")
+    // @SuppressWarnings("unchecked")
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public boolean hasReceivedCommunication(Constituent c, Gift g, String commType) {
@@ -440,19 +440,16 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(c.getId(), sortInfo);
         List<CommunicationHistory> list = results.getRows();
 
-
         while (list != null && list.size() > 0) {
             for (CommunicationHistory ch : list) {
-                if (ch.getCustomFieldValue("template").compareTo(commType) == 0 &&
-                        ch.getGiftId() == g.getId()) {
-                    return true;
-                }
+                if ((ch.getCustomFieldValue("template").compareTo(commType) == 0) && (ch.getGiftId().equals(g.getId()))) {
+                		return true;
+                	}
             }
             sortInfo.setStart(sortInfo.getStart() + sortInfo.getLimit());
             results = communicationHistoryService.readCommunicationHistoryByConstituent(c.getId(), sortInfo);
             list = results.getRows();
         }
-
         return false;
     }
 

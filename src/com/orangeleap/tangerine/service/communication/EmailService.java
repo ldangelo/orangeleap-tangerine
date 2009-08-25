@@ -77,7 +77,7 @@ public class EmailService implements ApplicationContextAware {
     private JasperPrint print;
 
     private File runReport() {
-    	
+
         File temp = null;
         TangerineUserHelper tuh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
         jserver = new JServer();
@@ -86,7 +86,7 @@ public class EmailService implements ApplicationContextAware {
 //		jserver.setPassword(tuh.lookupUserPassword());
         jserver.setPassword(site.getJasperPassword());
         jserver.setUrl(uri);
-        
+
         try {
             WSClient client = jserver.getWSClient();
 
@@ -115,9 +115,9 @@ public class EmailService implements ApplicationContextAware {
     public void sendMail(String addresses, Constituent p, Gift g, String subject, String templateName, List<Email> selectedEmails) {
     	sendMail(addresses, p, g, null, null, new HashMap<String, String>(), subject, templateName, selectedEmails);
     }
-    
+
     public void sendMail(String addresses, Constituent p, Gift g, RecurringGift recurringGift, Pledge pledge, Map<String, String> reportParams, String subject, String templateName, List<Email> selectedEmails) {
-    	
+
         setSubject(subject);
         setTemplateName(templateName);
 
@@ -167,11 +167,11 @@ public class EmailService implements ApplicationContextAware {
         	FileSystemResource file = new FileSystemResource(tempFile);
             try {
                 helper.addAttachment(getTemplateName() + ".pdf", file);
-                
+
                 String itemName = "recent donation";
                 if (recurringGift != null) itemName = "commitment";
                 if (pledge != null) itemName = "pledge";
-                
+
                 helper.setText("Thank you for your "+itemName+"!");
                 helper.setSubject(subject);
                 helper.setFrom(site.getSmtpFromAddress());
@@ -221,7 +221,7 @@ public class EmailService implements ApplicationContextAware {
                     ch.setEntryType("Note");
                     ch.setRecordDate(new Date());
                     //ch.setSelectedEmail(e);
-                    //ch.setCustomFieldValue("template", getTemplateName());
+                    ch.setCustomFieldValue("template", getTemplateName());
 
                     ch.setSuppressValidation(true);
                     try {
@@ -247,7 +247,7 @@ public class EmailService implements ApplicationContextAware {
     public void sendMail(Constituent p, Gift g, String subject, String templateName) {
     	sendMail(p,  g,  null, null, new HashMap<String, String>(), subject,  templateName);
     }
-    
+
     public void sendMail(Constituent p, Gift g, RecurringGift recurringGift, Pledge pledge, Map<String, String> reportParams, String subject, String templateName) {
         String strEmailAddrs = "";
         List<Email> selectedEmails = new LinkedList<Email>();

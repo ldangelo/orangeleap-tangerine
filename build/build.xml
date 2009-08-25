@@ -97,6 +97,7 @@
 		<antcall target="4. Start Tomcat - Debug Mode"/>
 	</target>
 
+	<!--
 	<target name="9. Load Data" depends="resolve">
 		 <ant antfile="${load.base.data.file}" target="load.base.data" />
 
@@ -106,8 +107,6 @@
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
 	          classpath="${compile.lib}">
-	     	<!-- Add development data -->
-	     	<!-- TODO add sample project codes -->
 	     	<transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/constituentSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/addressSetup.sql"/>
@@ -127,6 +126,7 @@
 			<transaction src="${basedir}/db/dev/devSetup/dashboardGifts.sql"/>
 	     </sql>
 	</target>
+	-->
 
 	<target name="9.1. Clear Schema" depends="resolve">
 	     <sql driver="${mysql.db.driver}"
@@ -194,7 +194,7 @@
 		          encoding="UTF-8"
 		          classpath="${compile.lib}"
  	              delimiter=";">
-	        <transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
+	        <transaction src="${basedir}/db/prod/orangeleap-site/siteSetup.sql"/>
 	    </sql>
 	</target>
 
@@ -276,7 +276,7 @@
 		          encoding="UTF-8"
 		          classpath="${compile.lib}"
 	              delimiter=";">
-	        <transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
+	        <transaction src="${basedir}/db/prod/orangeleap-site/siteSetup.sql"/>
 	    </sql>
 	</target>
 

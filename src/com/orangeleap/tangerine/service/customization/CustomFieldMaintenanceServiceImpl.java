@@ -380,13 +380,23 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     }
 
     private void createPicklist(FieldDefinition fieldDefinition) {
+    	String name = fieldDefinition.getFieldName();
+    	if (name.equals(DISTRIBUTION_LINES)) {
+    		name = getCustomFieldName(fieldDefinition.getId());
+    	}
         Picklist picklist = new Picklist();
         picklist.setSite(fieldDefinition.getSite());
         picklist.setPicklistDesc(fieldDefinition.getDefaultLabel());
-        picklist.setPicklistName(fieldDefinition.getFieldName());
-        picklist.setPicklistNameId(fieldDefinition.getFieldName());
+        picklist.setPicklistName(name);
+        picklist.setPicklistNameId(name);
         if (null != picklistItemService.getPicklist(picklist.getPicklistNameId())) throw new RuntimeException("A picklist with this name already exists.");
         picklistItemService.maintainPicklist(picklist);
+    }
+    
+    private String getCustomFieldName(String s) {
+    	int i = s.indexOf(".customFieldMap[");
+    	if (i > -1) s = s.substring(i+1);
+    	return s;
     }
 
     // Modify the guru elements to support new custom field

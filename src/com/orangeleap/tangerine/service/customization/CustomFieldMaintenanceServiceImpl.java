@@ -134,7 +134,6 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         	
             PageType viewPage = PageType.valueOf(sPageType + "View");
             SectionDefinition sectionDefinitionView = addSectionDefinitionsAndValidations(viewPage, customFieldRequest, readOnlyFieldDefinition, site);  // make readonly on view screen
-            //if (isReferenceType(customFieldRequest)) createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinitionView);
             
         }
         
@@ -315,7 +314,12 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         boolean isBoth = customFieldRequest.getReferenceConstituentType().equals("both");
 
         // Create queries
-        String lookupSectionName = sectionDefinition.getPageType() + ".constituent." + fieldDefinition.getCustomFieldName();
+        String lookupSectionName = sectionDefinition.getPageType() + ".constituent.";
+        if (isDistributionLines(customFieldRequest.getEntityType())) {
+        	lookupSectionName += this.getCustomFieldName(fieldDefinition.getId());
+        } else {
+        	lookupSectionName += fieldDefinition.getCustomFieldName();
+        }
 
         QueryLookup queryLookup = new QueryLookup();
         queryLookup.setFieldDefinition(fieldDefinition);

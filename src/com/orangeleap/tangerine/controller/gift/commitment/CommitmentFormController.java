@@ -22,13 +22,11 @@ import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.controller.gift.AbstractMutableGridFormController;
 import com.orangeleap.tangerine.controller.gift.AssociationEditor;
 import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,15 +52,7 @@ public abstract class CommitmentFormController<T extends Commitment> extends Abs
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-	    T commitment = readCommitmentCreateIfNull(request);
-
-        if (!StringUtils.hasText(commitment.getCurrencyCode())) {
-        	Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
-        	if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
-        		commitment.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
-        	}
-        }
-        return commitment;
+	    return readCommitmentCreateIfNull(request);
     }
 
     @Override

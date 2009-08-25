@@ -148,8 +148,9 @@ public final class StringConstants {
 
 	public static final String HIDDEN = "hidden";
 	public static final String DISPLAYED = "displayed";
-	public static final String BEAN_PREFIX = "bean:";
+	public static final String BEAN_COLON = "bean:";
 	public static final String NOW_COLON = "now:";
+    public static final String PICKLIST_COLON = "picklist:";
 
     public static final String CREDIT_CARD_EXP_DISPLAY_FORMAT = "MM / yyyy";
     public static final String EXT_SCRIPT = "extScript";

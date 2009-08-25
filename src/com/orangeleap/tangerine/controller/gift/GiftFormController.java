@@ -20,7 +20,6 @@ package com.orangeleap.tangerine.controller.gift;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
@@ -33,7 +32,6 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -65,13 +63,6 @@ public class GiftFormController extends AbstractGiftController {
         clearPaymentSourceFields(gift);
         clearAddressFields(gift);
         clearPhoneFields(gift);
-
-	    if (!StringUtils.hasText(gift.getCurrencyCode())) {
-		    Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
-		    if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
-			    gift.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
-		    }
-	    }
 	    return gift;
     }
 

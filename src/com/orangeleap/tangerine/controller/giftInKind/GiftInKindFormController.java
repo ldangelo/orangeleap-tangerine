@@ -3,14 +3,12 @@ package com.orangeleap.tangerine.controller.giftInKind;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.controller.gift.AbstractMutableGridFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.service.GiftInKindService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,14 +31,7 @@ public class GiftInKindFormController extends AbstractMutableGridFormController 
 
 	@Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        GiftInKind giftInKind = giftInKindService.readGiftInKindByIdCreateIfNull(request.getParameter(StringConstants.GIFT_IN_KIND_ID), super.getConstituent(request));
-        if (!StringUtils.hasText(giftInKind.getCurrencyCode())) {
-        	Picklist ccPicklist = picklistItemService.getPicklist("currencyCode");
-        	if (ccPicklist != null && !ccPicklist.getActivePicklistItems().isEmpty()) {
-        		giftInKind.setCurrencyCode(ccPicklist.getActivePicklistItems().get(0).getItemName());
-        	}
-        }
-        return giftInKind;
+        return giftInKindService.readGiftInKindByIdCreateIfNull(request.getParameter(StringConstants.GIFT_IN_KIND_ID), super.getConstituent(request));
     }
 
     @Override

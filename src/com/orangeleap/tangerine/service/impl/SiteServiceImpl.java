@@ -18,19 +18,26 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.annotation.Resource;
-
+import com.orangeleap.tangerine.dao.SiteDao;
+import com.orangeleap.tangerine.dao.SiteOptionDao;
+import com.orangeleap.tangerine.domain.*;
+import com.orangeleap.tangerine.domain.customization.*;
+import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.service.VersionService;
+import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.service.customization.FieldService;
+import com.orangeleap.tangerine.service.customization.MessageService;
+import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.LayoutType;
+import com.orangeleap.tangerine.type.MessageResourceType;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -46,35 +53,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
 
-import com.orangeleap.tangerine.dao.SiteDao;
-import com.orangeleap.tangerine.dao.SiteOptionDao;
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.SiteOption;
-import com.orangeleap.tangerine.domain.customization.CustomField;
-import com.orangeleap.tangerine.domain.customization.EntityDefault;
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.domain.customization.FieldRequired;
-import com.orangeleap.tangerine.domain.customization.FieldValidation;
-import com.orangeleap.tangerine.domain.customization.SectionDefinition;
-import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.service.VersionService;
-import com.orangeleap.tangerine.service.customization.FieldService;
-import com.orangeleap.tangerine.service.customization.MessageService;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.type.LayoutType;
-import com.orangeleap.tangerine.type.MessageResourceType;
-import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service("siteService")
 public class SiteServiceImpl extends AbstractTangerineService implements SiteService {
@@ -93,6 +74,9 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
+
+    @Resource(name = "picklistItemService")
+    protected PicklistItemService picklistItemService;
 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
@@ -377,8 +361,8 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 				defaultValue = entityDefault.getDefaultValue();
 			}
 			if (defaultValue != null && org.springframework.util.StringUtils.hasText(defaultValue)) {
-				if (defaultValue.startsWith(StringConstants.BEAN_PREFIX)) {
-					String propertyName = defaultValue.replaceFirst(StringConstants.BEAN_PREFIX, StringConstants.EMPTY);
+				if (defaultValue.startsWith(StringConstants.BEAN_COLON)) {
+					String propertyName = defaultValue.replaceFirst(StringConstants.BEAN_COLON, StringConstants.EMPTY);
 					if (bean.isReadableProperty(propertyName)) {
 						value = bean.getPropertyValue(propertyName);
 					}
@@ -386,6 +370,13 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 						value = bean.getPropertyValue(propertyName + StringConstants.DOT_VALUE);
 					}
 				}
+                else if (defaultValue.startsWith(StringConstants.PICKLIST_COLON)) {
+                    String picklistName = defaultValue.replaceFirst(StringConstants.PICKLIST_COLON, StringConstants.EMPTY);
+                    Picklist thisPicklist = picklistItemService.getPicklist(picklistName);
+                    if (thisPicklist != null && !thisPicklist.getActivePicklistItems().isEmpty()) {
+                        value = thisPicklist.getActivePicklistItems().get(0).getDefaultDisplayValue();
+                    }
+                }
 				else if (StringConstants.NOW_COLON.equals(defaultValue)) {
 					value = Calendar.getInstance(Locale.getDefault()).getTime();
 				}

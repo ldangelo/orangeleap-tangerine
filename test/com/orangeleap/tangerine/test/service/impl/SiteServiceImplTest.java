@@ -144,12 +144,12 @@ public class SiteServiceImplTest extends BaseTest {
 		Assert.assertTrue(Date.class.equals(val.getClass()), "val class = " + val.getClass());
 		Assert.assertTrue(String.class.equals(gift.getCustomFieldValue("giftTime").getClass()), "giftTime class = " + gift.getCustomFieldValue("giftTime").getClass());
 
-		def = new EntityDefault(StringConstants.BEAN_PREFIX + "customFieldMap[momma]");
+		def = new EntityDefault(StringConstants.BEAN_COLON + "customFieldMap[momma]");
 		val = invokeGetDefaultValue(def, gift, "customFieldMap[papa]");
 		Assert.assertEquals(val.toString(), "Yo Mama", "val = " + val);
 		Assert.assertEquals(gift.getCustomFieldValue("papa"), "Yo Mama", "customFieldMap[papa] = " + gift.getCustomFieldValue("papa"));
 
-		def = new EntityDefault(StringConstants.BEAN_PREFIX + "constituent.firstLast");
+		def = new EntityDefault(StringConstants.BEAN_COLON + "constituent.firstLast");
 		val = invokeGetDefaultValue(def, gift, "customFieldMap[personResponsible]");
 		Assert.assertEquals(val.toString(), "Joe Blow", "val = " + val);
 		Assert.assertEquals(gift.getCustomFieldValue("personResponsible"), "Joe Blow", "customFieldMap[personResponsible] = " + gift.getCustomFieldValue("personResponsible"));
@@ -175,7 +175,7 @@ public class SiteServiceImplTest extends BaseTest {
 		Assert.assertNull(val, "val != null");
 		Assert.assertNull(gift.getPostmarkDate(), "postmarkDate != null");
 
-		def = new EntityDefault(StringConstants.BEAN_PREFIX + "customFieldMap[momma]", "posted == 'true'"); // set customField[blarg] to value of customFieldMap[momma] if posted = true
+		def = new EntityDefault(StringConstants.BEAN_COLON + "customFieldMap[momma]", "posted == 'true'"); // set customField[blarg] to value of customFieldMap[momma] if posted = true
 		val = invokeGetDefaultValue(def, gift, "customFieldMap[blarg]");
 		Assert.assertNull(val, "val != null");
 		Assert.assertFalse(StringUtils.hasText(gift.getCustomFieldValue("blarg")), "customFieldMap[blarg] = " + gift.getCustomFieldValue("blarg"));
@@ -187,7 +187,7 @@ public class SiteServiceImplTest extends BaseTest {
 		Assert.assertTrue(Date.class.equals(val.getClass()), "val.class = " + val.getClass());
 		Assert.assertTrue(Date.class.equals(gift.getPostmarkDate().getClass()), "postmarkDate.class = " + gift.getPostmarkDate().getClass());
 		
-		def = new EntityDefault(StringConstants.BEAN_PREFIX + "customFieldMap[momma]", "posted == 'true'"); // set customField[blarg] to value of customFieldMap[momma] if posted = true
+		def = new EntityDefault(StringConstants.BEAN_COLON + "customFieldMap[momma]", "posted == 'true'"); // set customField[blarg] to value of customFieldMap[momma] if posted = true
 		val = invokeGetDefaultValue(def, gift, "customFieldMap[blarg]");
 		Assert.assertEquals(val.toString(), "Yo Mama", "val = " + val);
 		Assert.assertEquals(gift.getCustomFieldValue("blarg"), "Yo Mama", "customFieldMap[blarg] = " + gift.getCustomFieldValue("blarg"));

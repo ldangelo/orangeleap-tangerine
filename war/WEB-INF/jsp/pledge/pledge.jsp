@@ -32,8 +32,8 @@
 
 				<div class="formButtonFooter constituentFormButtons">
 					<c:if test="${not empty clickText}">
-						<input type="button" value="<c:out value='${clickText}'/>" class="saveButton" id="clickButtonTop"
-						       onclick="OrangeLeap.gotoUrl('gift.htm?constituentId=${constituent.id}&selectedPledgeId=${form.domainObject.id}" />
+						<input type="button" value="<c:out value='${clickText}'/>" class="saveButton" id="clickButtonBottom"
+						       onclick="OrangeLeap.gotoUrl('gift.htm?constituentId=${constituent.id}&selectedPledgeId=${form.domainObject.id}')" />
 					</c:if>
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 					<c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">

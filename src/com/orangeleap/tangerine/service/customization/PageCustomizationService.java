@@ -76,6 +76,8 @@ public interface PageCustomizationService {
 
     public SectionDefinition maintainSectionDefinition(SectionDefinition sectionDefinition);
 
+    public SectionDefinition copySectionDefinition(Long id);
+
     public void maintainSectionField(SectionField sectionField);
 
     public void maintainSectionFields(List<SectionField> sectionFields);

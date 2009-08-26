@@ -42,6 +42,7 @@ import com.orangeleap.tangerine.dao.QueryLookupDao;
 import com.orangeleap.tangerine.dao.SectionDao;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.PageAccess;
@@ -297,7 +298,38 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Override
     public SectionDefinition maintainSectionDefinition(
             SectionDefinition sectionDefinition) {
-        return sectionDao.maintainSectionDefinition(sectionDefinition);
+    	SectionDefinition newsectionDefinition = sectionDao.maintainSectionDefinition(sectionDefinition);
+    	// Was copied from default section to site-specific one, so copy over fields as well.
+    	if (!newsectionDefinition.getId().equals(sectionDefinition.getId())) {
+            copyFields(sectionDefinition, newsectionDefinition);
+    	}
+    	return newsectionDefinition;
+    }
+
+    @Override
+    public SectionDefinition copySectionDefinition(Long id) {
+    	
+        SectionDefinition sectionDefinition = sectionDao.readSectionDefinition(new Long(id));
+
+        sectionDefinition.setId(null);
+        sectionDefinition.setSite(new Site(tangerineUserHelper.lookupUserSiteName()));
+        sectionDefinition.setRole("");
+        SectionDefinition newsectionDefinition = sectionDao.maintainSectionDefinition(sectionDefinition);
+
+        copyFields(sectionDefinition, newsectionDefinition);
+
+        return newsectionDefinition;
+        
+    }
+    
+    // Copy fields from a to b.
+    private void copyFields(SectionDefinition a, SectionDefinition b) {
+        List<SectionField> sectionFields = readSectionFieldsBySection(a, true);
+        for (SectionField sectionField : sectionFields) {
+        	sectionField.setId(null);
+        	sectionField.setSectionDefinition(b);
+        	sectionDao.maintainSectionField(sectionField);
+        }
     }
 
 

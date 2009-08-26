@@ -77,17 +77,15 @@ public class SectionDefinitionFormController extends SimpleFormController {
     private ModelAndView getModelAndView(HttpServletRequest request) {
     	
         String id = request.getParameter("id"); 
-        String pageType = request.getParameter("pageType"); 
         
         ModelAndView mav = new ModelAndView(getSuccessView());
         
-        List<SectionField> sectionFields = getSectionFields(id, pageType);
+        List<SectionField> sectionFields = getSectionFields(id);
         List<SectionFieldView> fieldList = new ArrayList<SectionFieldView>();
         for (SectionField sf: sectionFields) fieldList.add(new SectionFieldView(sf));
         
         mav.addObject("fieldList", fieldList);
         mav.addObject("id", id);
-        mav.addObject("pageType", pageType);
         
         return mav;
     }
@@ -150,7 +148,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
 		}
     }
     
-    private List<SectionField> getSectionFields(String id, String pageType) {
+    private List<SectionField> getSectionFields(String id) {
     	
         SectionDefinition sectionDef = sectionDao.readSectionDefinition(new Long(id));
         List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef, true);
@@ -180,13 +178,12 @@ public class SectionDefinitionFormController extends SimpleFormController {
         if (!PageTypeManageController.accessAllowed(request)) return null;
         
         String id = request.getParameter("id"); 
-        String pageType = request.getParameter("pageType"); 
         String fieldName = request.getParameter("fieldName"); 
         String action = request.getParameter("action"); 
         boolean toggleVisible = TOGGLE_VISIBLE.equals(action);
         boolean moveUp = MOVE_UP.equals(action);
         
-        List<SectionField> sectionFields = getSectionFields(id, pageType);
+        List<SectionField> sectionFields = getSectionFields(id);
 
         // Locate target field
         SectionField targetSectionField = null;

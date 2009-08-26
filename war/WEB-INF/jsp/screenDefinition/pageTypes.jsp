@@ -10,7 +10,7 @@
            
            <form>
            
-                <h4>Page Definition to Manage</h4>
+                <h4>Page Definition to Manage</h4><br/>
                 <select  id="pageType" name="pageType">
                    <c:forEach var="pageType" items="${pageTypes}">
                      <option value="<c:out value='${pageType.value}'/>" > <c:out value='${pageType.key}'/></option>

@@ -18,9 +18,7 @@
 
 package com.orangeleap.tangerine.controller.screenDefinition;
 
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -32,12 +30,14 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.dao.CacheGroupDao;
+import com.orangeleap.tangerine.dao.SectionDao;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
-public class SectionDefinitionsManageController extends SimpleFormController {
+public class SectionDefinitionCopyController extends SimpleFormController {
 
     /**
      * Logger for this class and subclasses
@@ -46,38 +46,35 @@ public class SectionDefinitionsManageController extends SimpleFormController {
 
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
-
-
-    @SuppressWarnings("unchecked")
-	@Override
-	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
-
-        if (!PageTypeManageController.accessAllowed(request)) return null;
-        
-        String pageType = request.getParameter("pageType"); 
-        
-
-        ModelAndView mav = new ModelAndView(getSuccessView());
-        mav.addObject("pageType", pageType);
-        mav.addObject("sectionNames", getSelectionList(request));
-        return mav;
-
-    }
     
+    @Resource(name = "sectionDAO")
+    private SectionDao sectionDao;
+    
+    @Resource(name = "cacheGroupDAO")
+    private CacheGroupDao cacheGroupDao;
+
+
+    @Resource(name = "tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
+
+  
+    
+    @SuppressWarnings("unchecked")
+	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
+    	if (!PageTypeManageController.accessAllowed(request)) return null;
+
+        String id = request.getParameter("id"); 
+        
+        pageCustomizationService.copySectionDefinition(new Long(id));
+
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
+    	
+    	return super.showForm(request, errors, getSuccessView());
+    }
+
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
     	return "";
-    }
-    
-    private Map<String, String> getSelectionList(HttpServletRequest request) {
-    	String pageType = request.getParameter("pageType");
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageType(PageType.valueOf(pageType));
-
-        Map<String, String> map = new TreeMap<String, String>();
-        for (SectionDefinition sectionDefinition : sectionDefinitions) {
-        	map.put(sectionDefinition.getDefaultLabel() + " - " + sectionDefinition.getRole(), ""+sectionDefinition.getId());
-        }
-        return map;
     }
     
 }

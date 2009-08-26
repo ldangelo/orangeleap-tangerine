@@ -20,10 +20,22 @@
         <property name="successView" value="screenDefinition/sectionDefinition" />
     </bean>
 
+	<bean id="sectionDefinitionCopy" class="com.orangeleap.tangerine.controller.screenDefinition.SectionDefinitionCopyController">
+        <property name="formView" value="screenDefinition/sectionDefinitionCopy" />
+        <property name="successView" value="screenDefinition/sectionDefinitionCopy" />
+    </bean>
+
+	<bean id="sectionDefinitionRoles" class="com.orangeleap.tangerine.controller.screenDefinition.SectionDefinitionRolesController">
+        <property name="formView" value="screenDefinition/sectionDefinitionRoles" />
+        <property name="successView" value="screenDefinition/sectionDefinitionRoles" />
+    </bean>
+
     <bean id="screenDefinitionUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/sectionDefinition.htm">sectionDefinition</prop>
+                <prop key="/sectionDefinitionCopy.htm">sectionDefinitionCopy</prop>
+                <prop key="/sectionDefinitionRoles.htm">sectionDefinitionRoles</prop>
                 <prop key="/sectionDefinitions.htm">sectionDefinitions</prop>
                 <prop key="/pageTypes.htm">pageTypes</prop>
                 <prop key="/screenDefinitions.htm">pageTypes</prop>

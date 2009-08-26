@@ -159,6 +159,11 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
     @Override
     public SectionDefinition maintainSectionDefinition(
             SectionDefinition sectionDefinition) {
+        // Always create a site-specific version instead of updating the generic record.
+        if (sectionDefinition.getSite() == null) {
+        	sectionDefinition.setId(new Long(0));
+        	sectionDefinition.setSite(new Site(getSiteName()));
+        }
         return (SectionDefinition) insertOrUpdate(sectionDefinition, "SECTION_DEFINITION");
     }
 

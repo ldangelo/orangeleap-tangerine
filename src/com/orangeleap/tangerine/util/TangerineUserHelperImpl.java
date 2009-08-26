@@ -29,6 +29,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.AbstractAuthenticationToken;
 import org.springframework.security.providers.cas.CasAuthenticationToken;
@@ -131,9 +132,8 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     @Override
     @Transactional
     public void setSystemUserAndSiteName(String siteName) {
-        // Give system user all roles used by screen definitions
-        SiteService siteservice = (SiteService) applicationContext.getBean("siteService");
-        GrantedAuthority[] ga = siteservice.readDistinctRoles();
+        // Give system user super admin role
+        GrantedAuthority[] ga = new GrantedAuthority[] {new GrantedAuthorityImpl("ROLE_SUPER_ADMIN"), new GrantedAuthorityImpl("ROLE_USER")};
         User user = new User("system","",true,true,true,true,ga);
         Assertion assertion = new AssertionImpl("system");
 

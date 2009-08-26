@@ -18,17 +18,19 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.dao.PageAccessDao;
-import com.orangeleap.tangerine.domain.customization.PageAccess;
-import com.orangeleap.tangerine.util.OLLogger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.dao.PageAccessDao;
+import com.orangeleap.tangerine.domain.customization.PageAccess;
+import com.orangeleap.tangerine.util.OLLogger;
 
 /**
  * Corresponds to the PAGE_ACCESS table
@@ -59,7 +61,23 @@ public class IBatisPageAccessDao extends AbstractIBatisDao implements PageAccess
         }
 
         Map<String, Object> params = setupParams();
-        params.put("roleNames", roles);
-        return getSqlMapClientTemplate().queryForList("SELECT_PAGE_ACCESS_BY_SITE_ROLES", params);
+
+        // Get page access's defined in PAGE_ACCESS table for user's roles.
+        List<String> aroles = new ArrayList<String>();
+        for (String role : roles) aroles.add(","+role+",");
+        params.put("roleNames", aroles);
+        List<PageAccess> list = getSqlMapClientTemplate().queryForList("SELECT_PAGE_ACCESS_BY_SITE_ROLES", params);
+        Iterator<PageAccess> it = list.iterator();
+        String last = "";
+        while (it.hasNext()) {
+           PageAccess pa = it.next();
+           String key = pa.getPageType().getName()+pa.getAccessType()+pa.getRole();
+           if (key.equals(last) && pa.getSite() == null) it.remove(); // sorted by SITE_NAME desc so this removes overridden generic values
+           last = key;
+        }
+        
+        return list;
+        
     }
+    
 }

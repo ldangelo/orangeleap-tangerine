@@ -62,5 +62,7 @@ public class TangerineAffirmativeBased extends AffirmativeBased {
         }
 
         super.decide(authentication, object, config);
+        
     }
+    
 }

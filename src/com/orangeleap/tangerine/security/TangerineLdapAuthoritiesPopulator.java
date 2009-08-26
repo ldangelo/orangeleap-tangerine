@@ -28,7 +28,6 @@ import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.GrantedAuthority;
@@ -38,7 +37,7 @@ import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.ldap.populator.DefaultLdapAuthoritiesPopulator;
 import org.springframework.util.Assert;
 
-import com.orangeleap.tangerine.type.RoleType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class TangerineLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator {
     private static final Log logger = OLLogger.getLog(DefaultLdapAuthoritiesPopulator.class);
@@ -236,18 +235,19 @@ public class TangerineLdapAuthoritiesPopulator implements LdapAuthoritiesPopulat
             roles.addAll(extraRoles);
         }
 
-        Set allRoles = new HashSet();
-        Iterator iter = roles.iterator();
-        while (iter.hasNext()){
-            GrantedAuthority ga = (GrantedAuthority) iter.next();
-            RoleType[] roleTypes = RoleType.values();
-            for (int i = 0; i < roleTypes.length; i++) {
-                if (roleTypes[i].getRoleRank() <= (RoleType.valueOf(ga.getAuthority())).getRoleRank()) {
-                    allRoles.add(new GrantedAuthorityImpl(roleTypes[i].getName()));
-                }
-            }
-        }
-        roles = allRoles;
+// Roles are no longer inherited but each must be granted explicitly        
+//        Set allRoles = new HashSet();
+//        Iterator iter = roles.iterator();
+//        while (iter.hasNext()){
+//            GrantedAuthority ga = (GrantedAuthority) iter.next();
+//            RoleType[] roleTypes = RoleType.values();
+//            for (int i = 0; i < roleTypes.length; i++) {
+//                if (roleTypes[i].getRoleRank() <= (RoleType.valueOf(ga.getAuthority())).getRoleRank()) {
+//                    allRoles.add(new GrantedAuthorityImpl(roleTypes[i].getName()));
+//                }
+//            }
+//        }
+//        roles = allRoles;
 
         if (defaultRole != null) {
             roles.add(defaultRole);

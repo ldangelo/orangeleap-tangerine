@@ -37,7 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.type.RoleType;
 
 public class TangerineUserHelperImpl implements TangerineUserHelper, ApplicationContextAware {
 
@@ -115,20 +114,9 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     @Transactional
     public List<String> lookupUserRoles() {
         GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        RoleType greatestRoleType = null;
-        for (int i = 0; i < authorities.length; i++) {
-            RoleType tempRoleType = RoleType.valueOf(authorities[i].getAuthority());
-            if (greatestRoleType == null || greatestRoleType.getRoleRank() < tempRoleType.getRoleRank()) {
-                greatestRoleType = tempRoleType;
-            }
-        }
-
         List<String> roles = new ArrayList<String>();
-        RoleType[] roleTypes = RoleType.values();
-        for (int i = 0; i < roleTypes.length; i++) {
-            if (roleTypes[i].getRoleRank() <= greatestRoleType.getRoleRank()) {
-                roles.add(roleTypes[i].getName());
-            }
+        for (int i = 0; i < authorities.length; i++) {
+        	roles.add(authorities[i].getAuthority());
         }
         return roles;
     }

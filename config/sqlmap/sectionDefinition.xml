@@ -44,11 +44,12 @@
 		
 		where sd.PAGE_TYPE = #pageType#
 	    and (sd.SITE_NAME is NULL or sd.SITE_NAME = #siteName#)
-		and (sd.ROLE is NULL or sd.ROLE in 
-		<iterate property="roles" conjunction="," open="(" close=")">
-			#roles[]#
+		and (sd.ROLE is NULL  
+		<iterate property="roles" conjunction="" open="" close="">
+			or locate( #roles[]# , concat(',' , sd.ROLE , ',' ) ) > 0
 		</iterate>
 		)
+		order by sd.ROLE, sd.SITE_NAME desc
 	</select>
 
 	<insert id="INSERT_SECTION_DEFINITION" parameterClass="com.orangeleap.tangerine.domain.customization.SectionDefinition">

@@ -76,4 +76,8 @@ public class PageAccess implements GeneratedId, Serializable {
     public void setAccessType(AccessType accessType) {
         this.accessType = accessType;
     }
+    public String toString() {
+    	return pageType.getName() + ":" + accessType;
+    }
+    
 }

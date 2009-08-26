@@ -18,7 +18,9 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +61,13 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<String> readDistintSectionDefinitionsRoles() {
-        return getSqlMapClientTemplate().queryForList("SELECT_DISTINCT_ROLES");
+    	List result = new ArrayList();
+    	List<String> list = getSqlMapClientTemplate().queryForList("SELECT_DISTINCT_ROLES");
+    	for (String s : list) {
+    		String [] sa = s.split(",");
+    		for (String role : sa) if (!result.contains(role)) result.add(role);
+    	}
+    	return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -70,8 +78,20 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
         }
         Map<String, Object> params = setupParams();
         params.put("pageType", pageType);
-        params.put("roles", roles);
-        return getSqlMapClientTemplate().queryForList("SELECT_BY_PAGE_TYPE_SITE_ROLES", params);
+        List<String> aroles = new ArrayList<String>();
+        for (String role : roles) aroles.add(","+role+",");
+        params.put("roles", aroles);
+        List<SectionDefinition> list = getSqlMapClientTemplate().queryForList("SELECT_BY_PAGE_TYPE_SITE_ROLES", params);
+        Iterator<SectionDefinition> it = list.iterator();
+        String last = "";
+        while (it.hasNext()) {
+           SectionDefinition sd = it.next();
+           String key = sd.getPageType().getName()+sd.getSectionName()+sd.getRole();
+           if (key.equals(last) && sd.getSite() == null) it.remove(); // sorted by SITE_NAME desc so this removes overridden generic values
+           last = key;
+        }
+        return list;
+
     }
 
     @SuppressWarnings("unchecked")

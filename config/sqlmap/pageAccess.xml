@@ -13,11 +13,19 @@
 	<select id="SELECT_PAGE_ACCESS_BY_SITE_ROLES" resultMap="PAGE_ACCESS_RESULT" parameterClass="map">
 		select PAGE_ACCESS_ID, ACCESS_TYPE, PAGE_TYPE, ROLE, SITE_NAME
 		from PAGE_ACCESS 
-		where ((SITE_NAME is NULL or SITE_NAME = #siteName#) 
-		and (ROLE in 
-		<iterate property="roleNames" conjunction="," open="(" close=")">
-			#roleNames[]#
+		where (SITE_NAME is NULL or SITE_NAME = #siteName#) 
+		and (ROLE is NULL  
+		<iterate property="roleNames" conjunction="" open="" close="">
+			or locate( #roleNames[]# , concat(',' , ROLE , ',' ) ) > 0
 		</iterate>
-		))
+		)
+		order by ROLE, SITE_NAME desc
 	</select>
+
+	<select id="SELECT_UNIQUE_PAGE_TYPE" resultClass="java.lang.String" parameterClass="map">
+		select distinct PAGE_TYPE
+		from PAGE_ACCESS 
+		where (SITE_NAME is NULL or SITE_NAME = #siteName#) 
+	</select>
+
 </sqlMap>

@@ -49,7 +49,6 @@ import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.type.RoleType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -179,7 +178,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     }
 
     /**
-     * Takes a <code>List</code> of <code>SectionDefinition</code> objects and keeps the section name with the highest role
+     * Takes a <code>List</code> of <code>SectionDefinition</code> objects and keeps the first alphabetical section name only to be consistent - should not happen if roles set up consistently
      *
      * @param sectionDefinitions the original <code>List</code> to filter
      * @return
@@ -192,9 +191,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
                 if (sd == null) {
                     nameDefinitionMap.put(sectionDefinition.getSectionName(), sectionDefinition);
                 } else {
-                    Integer sectionDefinitionRoleRank = sectionDefinition.getRole() == null ? -1 : RoleType.valueOf(sectionDefinition.getRole()).getRoleRank();
-                    Integer sdRoleRank = sd.getRole() == null ? -1 : RoleType.valueOf(sd.getRole()).getRoleRank();
-                    if ((sd.getSite() == null && sectionDefinition.getSite() != null) || sdRoleRank < sectionDefinitionRoleRank) {
+                    if (sd.getRole().compareTo(sectionDefinition.getRole()) > 0) {
                         nameDefinitionMap.put(sectionDefinition.getSectionName(), sectionDefinition);
                     }
                 }
@@ -218,8 +215,8 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         List<PageAccess> pages = pageAccessDao.readPageAccess(roles);
         if (pages != null) {
             for (PageAccess pageAccess : pages) {
-                PageAccess pd = pageAccessMap.get(pageAccess.getPageType().name());
-                if (pd == null || pd.getSite() == null || (RoleType.valueOf(pd.getRole()).getRoleRank() < RoleType.valueOf(pageAccess.getRole()).getRoleRank())) {
+                PageAccess pa = pageAccessMap.get(pageAccess.getPageType().name());
+                if (pa == null || compare(pageAccess, pa) > 0) {
                     pageAccessMap.put(pageAccess.getPageType().getPageName(), pageAccess);
                 }
             }
@@ -230,6 +227,18 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
             accessMap.put(key, pageAccessMap.get(key).getAccessType());
         }
         return accessMap;
+    }
+    
+    private int compare(PageAccess p1, PageAccess p2) {
+    	return val(p1.getAccessType()) - val(p2.getAccessType());
+    }
+    
+    private int val(AccessType at) {
+    	if (at == AccessType.ALLOWED) return 0;
+    	if (at == AccessType.READ_WRITE) return 1;
+    	if (at == AccessType.READ_ONLY) return 2;
+    	if (at == AccessType.DENIED) return 3;
+    	return -1;
     }
 
     @Override

@@ -69,3 +69,13 @@ values ('picklist:currencyCode', 'currencyCode', 'giftInKind');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('picklist:projectCode', 'projectCode', 'distributionLine');
+
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+values ('unknown', 'customFieldMap[addressType]', 'address');
+
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+values ('unknown', 'customFieldMap[phoneType]', 'phone');
+
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+values ('unknown', 'customFieldMap[emailType]', 'email');
+

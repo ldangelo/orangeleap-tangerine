@@ -43,10 +43,9 @@
 		          encoding="UTF-8"
 		          classpath="${compile.lib}"
 		     	  delimiter=";">
-		    <transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
+		    <transaction src="${basedir}/db/prod/orangeleap-site/siteSetup.sql"/>
 		</sql>		
 
-		
-    </target> 
+    </target>
 	
 </project>

@@ -11,8 +11,7 @@
 	           <form method="post" action="sectionDefinition.htm">
 	           
 	           	<input type="hidden" id="pageType" name="pageType" value="${pageType}" />
-	           	<input type="hidden" id="role" name="role" value="${role}" />
-	           	<input type="hidden" id="sectionName" name="sectionName" value="${sectionName}" />
+	           	<input type="hidden" id="id" name="id" value="${id}" />
            
                 <h4>Fields</h4>
                 <table>
@@ -40,7 +39,7 @@
              
              <script>
              	function update(field, action) {
-                 	var parms = 'pageType=' + $('#pageType').val() + '&role='+$('#role').val() + '&sectionName='+$('#sectionName').val();
+                 	var parms = 'pageType=' + $('#pageType').val() + '&id='+$('#id').val();
              		var data = parms + '&fieldName=' + field + '&action=' + action;
                     $.ajax({
                  	   type: "POST",

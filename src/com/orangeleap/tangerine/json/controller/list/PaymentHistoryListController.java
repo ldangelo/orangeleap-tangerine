@@ -16,20 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.json.controller;
+package com.orangeleap.tangerine.json.controller.list;
 
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.domain.PaymentHistory;
+import com.orangeleap.tangerine.service.PaymentHistoryService;
+import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
+import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,12 +41,12 @@ import java.util.Map;
 
 /**
  * This controller handles JSON requests for populating
- * the grid of pledges.
+ * the grid of payment history.
  *
  * @version 1.0
  */
 @Controller
-public class PledgeListController {
+public class PaymentHistoryListController {
 
     /**
      * Logger for this class and subclasses
@@ -52,43 +56,49 @@ public class PledgeListController {
     private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
 
     static {
-        NAME_MAP.put("id", "c.GIFT_ID");
-        NAME_MAP.put("constituentId", "c.CONSTITUENT_ID");
-        NAME_MAP.put("status", "c.PLEDGE_STATUS");
-        NAME_MAP.put("amountpergift", "c.AMOUNT_PER_GIFT");
-        NAME_MAP.put("amounttotal", "c.AMOUNT_TOTAL");
-        NAME_MAP.put("amountpaid", "c.AMOUNT_PAID");
-        NAME_MAP.put("amountremaining", "c.AMOUNT_REMAINING");
+        NAME_MAP.put("id", "phis.PAYMENT_HISTORY_ID");
+        NAME_MAP.put("date", "phis.TRANSACTION_DATE");
+        NAME_MAP.put("constituentid", "phis.CONSTITUENT_ID");
+        NAME_MAP.put("type", "phis.PAYMENT_HISTORY_TYPE");
+        NAME_MAP.put("paymenttype", "phis.PAYMENT_TYPE");
+        NAME_MAP.put("paymentstatus", "phis.PAYMENT_STATUS");
+        NAME_MAP.put("description", "phis.PAYMENT_DESC");
+        NAME_MAP.put("amount", "phis.AMOUNT");
+        NAME_MAP.put("currencycode", "phis.CURRENCY_CODE");
     }
 
-    private Map<String, Object> pledgeToMap(Pledge c) {
+    private Map<String, Object> paymentHistoryToMap(PaymentHistory ph) {
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", c.getId());
-        map.put("constituentId", c.getConstituent().getId());
-        map.put("status", c.getPledgeStatus());
-        map.put("amountpergift", c.getAmountPerGift());
-        map.put("amounttotal", c.getAmountTotal());
-        map.put("amountpaid", c.getAmountPaid());
-        map.put("amountremaining", c.getAmountRemaining());
+        map.put("id", ph.getId());
+        map.put("date", formatter.format(ph.getTransactionDate()));
+        map.put("constituentid", ph.getConstituent().getId());
+        map.put("type", ph.getPaymentHistoryType().name());
+        map.put("paymenttype", ph.getPaymentType());
+        map.put("paymentstatus", ph.getPaymentStatus());
+        map.put("description", HttpUtil.jsEscape(ph.getDescription()));
+        map.put("amount", ph.getAmount());
+        map.put("currencycode", ph.getCurrencyCode());
 
         return map;
 
     }
 
-    @Resource(name = "pledgeService")
-    private PledgeService pledgeService;
+    @Resource(name = "paymentHistoryService")
+    private PaymentHistoryService paymentHistoryService;
 
     @SuppressWarnings("unchecked")
-    @RequestMapping("/pledgeList.json")
-    public ModelMap getPledgeList(HttpServletRequest request, SortInfo sortInfo) {
+    @RequestMapping("/paymentHistoryList.json")
+    public ModelMap getPaymentHistory(HttpServletRequest request, SortInfo sortInfo) {
 
         List<Map> rows = new ArrayList<Map>();
 
         // if we're not getting back a valid column name, possible SQL injection,
         // so send back an empty list.
         if (!sortInfo.validateSortField(NAME_MAP.keySet())) {
-            logger.warn("getPledgeList called with invalid sort column: [" + sortInfo.getSort() + "]");
+            logger.warn("getgetPaymentHistory called with invalid sort column: [" + sortInfo.getSort() + "]");
             return new ModelMap("rows", rows);
         }
 
@@ -96,12 +106,17 @@ public class PledgeListController {
         sortInfo.setSort((String) NAME_MAP.get(sortInfo.getSort()));
 
         String constituentId = request.getParameter("constituentId");
-        PaginatedResult result = pledgeService.readPaginatedPledgesByConstituentId(Long.valueOf(constituentId), sortInfo);
+        PaginatedResult result = null;
+        if (GenericValidator.isBlankOrNull(constituentId)) {
+            result = paymentHistoryService.readPaymentHistoryBySite(sortInfo);
+        } else {
+            result = paymentHistoryService.readPaymentHistory(Long.valueOf(constituentId), sortInfo);
+        }
 
-        List<Pledge> list = result.getRows();
+        List<PaymentHistory> list = result.getRows();
 
-        for (Pledge g : list) {
-            rows.add(pledgeToMap(g));
+        for (PaymentHistory ph : list) {
+            rows.add(paymentHistoryToMap(ph));
         }
 
         ModelMap map = new ModelMap("rows", rows);

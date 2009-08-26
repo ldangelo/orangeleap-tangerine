@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.json.controller;
+package com.orangeleap.tangerine.json.controller.list;
 
-import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.service.PhoneService;
+import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.stereotype.Controller;
@@ -34,22 +34,22 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class PhoneListController extends TangerineJsonListController {
+public class AddressListController extends TangerineJsonListController {
 
-    @Resource(name = "phoneService")
-    private PhoneService phoneService;
-    
+    @Resource(name = "addressService")
+    private AddressService addressService;
+
     @SuppressWarnings("unchecked")
-    @RequestMapping("/phoneList.json")
-    public ModelMap listPhones(HttpServletRequest request, SortInfo sort) {
+    @RequestMapping("/addressList.json")
+    public ModelMap listAddresses(HttpServletRequest request, SortInfo sort) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
-        List<Phone> phones = phoneService.readAllPhonesByConstituentId(constituentId, sort, request.getLocale());
-        List<SectionField> sectionFields = findSectionFields("phoneList");
-        addListFieldsToMap(request, sectionFields, phones, list);
+        List<Address> addresses = addressService.readAllAddressesByConstituentId(constituentId, sort, request.getLocale());
+        List<SectionField> sectionFields = findSectionFields("addressList");
+        addListFieldsToMap(request, sectionFields, addresses, list);
 
-        int count = phoneService.readCountByConstituentId(constituentId);
+        int count = addressService.readCountByConstituentId(constituentId);
 
         ModelMap map = new ModelMap("rows", list);
         map.put("totalRows", count);

@@ -178,7 +178,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     }
 
     /**
-     * Takes a <code>List</code> of <code>SectionDefinition</code> objects and keeps the first alphabetical section name only to be consistent - should not happen if roles set up consistently
+     * Takes a <code>List</code> of <code>SectionDefinition</code> objects and keeps the first alphabetical role name only to be consistent - should not happen if roles set up consistently
      *
      * @param sectionDefinitions the original <code>List</code> to filter
      * @return

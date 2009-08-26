@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.controller.screenDefinition;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -56,12 +55,10 @@ public class SectionDefinitionsManageController extends SimpleFormController {
         if (!PageTypeManageController.accessAllowed(request)) return null;
         
         String pageType = request.getParameter("pageType"); 
-        String role = request.getParameter("role"); 
         
 
         ModelAndView mav = new ModelAndView(getSuccessView());
         mav.addObject("pageType", pageType);
-        mav.addObject("role", role);
         mav.addObject("sectionNames", getSelectionList(request));
         return mav;
 
@@ -74,14 +71,11 @@ public class SectionDefinitionsManageController extends SimpleFormController {
     
     private Map<String, String> getSelectionList(HttpServletRequest request) {
     	String pageType = request.getParameter("pageType");
-    	String role = request.getParameter("role");
-        List<String> roles = new ArrayList<String>();
-        roles.add(role);
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(pageType), roles);
+        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageType(PageType.valueOf(pageType));
 
         Map<String, String> map = new TreeMap<String, String>();
         for (SectionDefinition sectionDefinition : sectionDefinitions) {
-        	map.put(sectionDefinition.getDefaultLabel(), sectionDefinition.getSectionName());
+        	map.put(sectionDefinition.getDefaultLabel() + " " + sectionDefinition.getRole(), ""+sectionDefinition.getId());
         }
         return map;
     }

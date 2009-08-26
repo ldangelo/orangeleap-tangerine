@@ -37,6 +37,15 @@
 		order by PAGE_TYPE
 	</select>
 	
+	<select id="SELECT_SECTION_DEFINITION_BY_ID" resultMap="SECTION_DEFINITION_RESULT" parameterClass="map" >
+		select 
+		<include refid="SECTION_DEF_COLS_FRAGMENT"/>
+		from SECTION_DEFINITION sd
+		where sd.SECTION_DEFINITION_ID = #id#
+	    and (sd.SITE_NAME is NULL or sd.SITE_NAME = #siteName#)
+	</select>
+	
+	
 	<select id="SELECT_BY_PAGE_TYPE_SITE_ROLES" resultMap="SECTION_DEFINITION_RESULT" parameterClass="map" >
 		select 
 		<include refid="SECTION_DEF_COLS_FRAGMENT"/>
@@ -51,6 +60,16 @@
 		)
 		order by sd.ROLE, sd.SITE_NAME desc
 	</select>
+	
+	<select id="SELECT_BY_PAGE_TYPE_SITE" resultMap="SECTION_DEFINITION_RESULT" parameterClass="map" >
+		select 
+		<include refid="SECTION_DEF_COLS_FRAGMENT"/>
+		from SECTION_DEFINITION sd
+		where sd.PAGE_TYPE = #pageType#
+	    and (sd.SITE_NAME is NULL or sd.SITE_NAME = #siteName#)
+		order by sd.ROLE, sd.SITE_NAME desc
+	</select>
+	
 
 	<insert id="INSERT_SECTION_DEFINITION" parameterClass="com.orangeleap.tangerine.domain.customization.SectionDefinition">
 		insert into SECTION_DEFINITION (DEFAULT_LABEL, LAYOUT_TYPE, PAGE_TYPE,

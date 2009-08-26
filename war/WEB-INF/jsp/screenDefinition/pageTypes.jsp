@@ -20,14 +20,8 @@
                 <br/>
                 <br/>
                 
-                <h4>For Role</h4>
-                <select  id="role" name="role">
-                   <c:forEach var="role" items="${roles}">
-                     <option  <c:if test="${role.value == 'ROLE_USER'}">selected="selected"</c:if> value="<c:out value='${role.value}'/>" > <c:out value='${role.key}'/></option>
-                   </c:forEach>
-                </select>
                 
-                <input type="button" value="Go" onclick="window.location = 'sectionDefinitions.htm?pageType=' + $('#pageType').val() + '&role='+$('#role').val();  " />
+                <input type="button" value="Go" onclick="window.location = 'sectionDefinitions.htm?pageType=' + $('#pageType').val();  " />
                 
              </form>
             

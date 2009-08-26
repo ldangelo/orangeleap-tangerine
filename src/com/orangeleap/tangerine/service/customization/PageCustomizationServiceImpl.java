@@ -108,7 +108,15 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         return returnSections;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public List<SectionDefinition> readSectionDefinitionsByPageType(PageType pageType) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSectionDefinitionsByPageType: pageType = " + pageType );
+        }
+        List<SectionDefinition> sectionDefinitions = sectionDao.readSectionDefinitions(pageType);
+        return sectionDefinitions;
+    }
+
     @Override
     public List<SectionField> readSectionFieldsBySection(SectionDefinition sectionDefinition) {
     	return readSectionFieldsBySection(sectionDefinition, false);
@@ -215,7 +223,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         List<PageAccess> pages = pageAccessDao.readPageAccess(roles);
         if (pages != null) {
             for (PageAccess pageAccess : pages) {
-                PageAccess pa = pageAccessMap.get(pageAccess.getPageType().name());
+                PageAccess pa = pageAccessMap.get(pageAccess.getPageType().getPageName());
                 if (pa == null || compare(pageAccess, pa) > 0) {
                     pageAccessMap.put(pageAccess.getPageType().getPageName(), pageAccess);
                 }

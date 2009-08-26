@@ -41,6 +41,8 @@ public interface PageCustomizationService {
      * @return
      */
     public List<SectionDefinition> readSectionDefinitionsByPageTypeRoles(PageType pageType, List<String> roles);
+    
+    public List<SectionDefinition> readSectionDefinitionsByPageType(PageType pageType);
 
     /**
      * Return a <code>List</code> of <code>SectionField</code> objects given a <code>SectionDefinition</code>

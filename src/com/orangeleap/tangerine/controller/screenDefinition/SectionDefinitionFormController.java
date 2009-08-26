@@ -34,12 +34,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.CacheGroupDao;
+import com.orangeleap.tangerine.dao.SectionDao;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.CacheGroupType;
-import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -53,6 +53,9 @@ public class SectionDefinitionFormController extends SimpleFormController {
 
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
+    
+    @Resource(name = "sectionDAO")
+    private SectionDao sectionDao;
     
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
@@ -73,20 +76,18 @@ public class SectionDefinitionFormController extends SimpleFormController {
     
     private ModelAndView getModelAndView(HttpServletRequest request) {
     	
-        String sectionName = request.getParameter("sectionName"); 
+        String id = request.getParameter("id"); 
         String pageType = request.getParameter("pageType"); 
-        String role = request.getParameter("role"); 
         
         ModelAndView mav = new ModelAndView(getSuccessView());
         
-        List<SectionField> sectionFields = getSectionFields(sectionName, pageType, role);
+        List<SectionField> sectionFields = getSectionFields(id, pageType);
         List<SectionFieldView> fieldList = new ArrayList<SectionFieldView>();
         for (SectionField sf: sectionFields) fieldList.add(new SectionFieldView(sf));
         
         mav.addObject("fieldList", fieldList);
-        mav.addObject("sectionName", sectionName);
+        mav.addObject("id", id);
         mav.addObject("pageType", pageType);
-        mav.addObject("role", role);
         
         return mav;
     }
@@ -149,19 +150,10 @@ public class SectionDefinitionFormController extends SimpleFormController {
 		}
     }
     
-    private List<SectionField> getSectionFields(String sectionName, String pageType, String role) {
+    private List<SectionField> getSectionFields(String id, String pageType) {
     	
-        List<SectionField> sectionFields = new ArrayList<SectionField>();
-        List<String> roles = new ArrayList<String>();
-        roles.add(role);
-        
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(pageType), roles);
-        for (SectionDefinition sectionDef : sectionDefinitions) {
-        	if (sectionDef.getSectionName().equals(sectionName)) {
-                sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef, true);
-                break;
-        	}
-        }
+        SectionDefinition sectionDef = sectionDao.readSectionDefinition(new Long(id));
+        List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef, true);
         
         Collections.sort(sectionFields, new Comparator<SectionField>() {
 
@@ -187,15 +179,14 @@ public class SectionDefinitionFormController extends SimpleFormController {
     	
         if (!PageTypeManageController.accessAllowed(request)) return null;
         
-        String sectionName = request.getParameter("sectionName"); 
+        String id = request.getParameter("id"); 
         String pageType = request.getParameter("pageType"); 
-        String role = request.getParameter("role"); 
         String fieldName = request.getParameter("fieldName"); 
         String action = request.getParameter("action"); 
         boolean toggleVisible = TOGGLE_VISIBLE.equals(action);
         boolean moveUp = MOVE_UP.equals(action);
         
-        List<SectionField> sectionFields = getSectionFields(sectionName, pageType, role);
+        List<SectionField> sectionFields = getSectionFields(id, pageType);
 
         // Locate target field
         SectionField targetSectionField = null;

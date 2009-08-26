@@ -26,7 +26,11 @@ import java.util.List;
 
 public interface SectionDao {
 
+    public SectionDefinition readSectionDefinition(Long id);
+
     public List<SectionDefinition> readSectionDefinitions(PageType pageType, List<String> roles);
+
+    public List<SectionDefinition> readSectionDefinitions(PageType pageType);
 
     public List<SectionField> readOutOfBoxSectionFields(PageType pageType, String sectionName);
 

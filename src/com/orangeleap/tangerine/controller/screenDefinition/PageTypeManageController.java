@@ -35,9 +35,7 @@ import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public class PageTypeManageController extends SimpleFormController {
 
@@ -45,9 +43,6 @@ public class PageTypeManageController extends SimpleFormController {
      * Logger for this class and subclasses
      */
     protected final Log logger = OLLogger.getLog(getClass());
-
-    @Resource(name = "tangerineUserHelper")
-    private TangerineUserHelper tangerineUserHelper;
 
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
@@ -74,19 +69,10 @@ public class PageTypeManageController extends SimpleFormController {
 
         ModelAndView mav = super.showForm(request, response, errors, controlModel);
         mav.addObject("pageTypes", getSelectionList());
-        mav.addObject("roles", getRoles());
         return mav;
     }
 
 
-    private Map<String,String> getRoles() {
-        Map<String, String> map = new TreeMap<String, String>();
-        for (String role : tangerineUserHelper.lookupUserRoles()) {
-        	map.put(role, role);
-        }
-        return map;
-    }
-    
     private Map<String, String> getSelectionList() {
         Map<String, String> map = new TreeMap<String, String>();
     	List<String> list = pageCustomizationService.readDistintSectionDefinitionsPageTypes();

@@ -22,13 +22,13 @@
             <c:if test="${fn:length(sectionNames) > 0}" >
            
                 <h4>Section Definition to Manage</h4>
-                <select  id="sectionName" name="sectionName">
+                <select  id="id" name="id">
                    <c:forEach var="sectionName" items="${sectionNames}">
                      <option value="<c:out value='${sectionName.value}'/>" > <c:out value='${sectionName.key}'/></option>
                    </c:forEach>
                 </select>
                 
-                <input type="button" value="Go" onclick="window.location = 'sectionDefinition.htm?pageType=' + $('#pageType').val() + '&role='+$('#role').val() + '&sectionName='+$('#sectionName').val() ;  " />
+                <input type="button" value="Go" onclick="window.location = 'sectionDefinition.htm?pageType=' + $('#pageType').val() + '&id='+$('#id').val() ;  " />
 
             </c:if>
                 

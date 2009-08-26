@@ -51,6 +51,13 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
     public IBatisSectionDao(SqlMapClient sqlMapClient) {
         super(sqlMapClient);
     }
+    
+    @Override
+    public SectionDefinition readSectionDefinition(Long id) {
+        Map<String, Object> params = setupParams();
+        params.put("id", id);
+        return (SectionDefinition)getSqlMapClientTemplate().queryForObject("SELECT_SECTION_DEFINITION_BY_ID", params);
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -82,6 +89,27 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
         for (String role : roles) aroles.add(","+role+",");
         params.put("roles", aroles);
         List<SectionDefinition> list = getSqlMapClientTemplate().queryForList("SELECT_BY_PAGE_TYPE_SITE_ROLES", params);
+        removeGenericOverriddenRows(list);
+        return list;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SectionDefinition> readSectionDefinitions(PageType pageType) {
+    	
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSectionDefinitions: pageType = " + pageType );
+        }
+        Map<String, Object> params = setupParams();
+        params.put("pageType", pageType);
+        List<SectionDefinition> list = getSqlMapClientTemplate().queryForList("SELECT_BY_PAGE_TYPE_SITE", params);
+        removeGenericOverriddenRows(list);
+        return list;
+
+    }
+    
+    private void removeGenericOverriddenRows(List<SectionDefinition> list) {
         Iterator<SectionDefinition> it = list.iterator();
         String last = "";
         while (it.hasNext()) {
@@ -90,8 +118,6 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
            if (key.equals(last) && sd.getSite() == null) it.remove(); // sorted by SITE_NAME desc so this removes overridden generic values
            last = key;
         }
-        return list;
-
     }
 
     @SuppressWarnings("unchecked")

@@ -1,6 +1,10 @@
-<%@ include file="/WEB-INF/jsp/include.jsp"%>
+<%@ include file="/WEB-INF/jsp/include.jsp" %>
 <page:applyDecorator name="form">
-    <spring:message code='editSchedule' var="titleText" />
+    <spring:message code='editSchedule' var="titleText" scope="request" />
+	<spring:message code='submit' var="submitText" />
+
+	<c:set var="headerText" value="${titleText}" scope="request"/>
+
     <html>
         <head>
             <title><c:out value="${titleText}"/></title>

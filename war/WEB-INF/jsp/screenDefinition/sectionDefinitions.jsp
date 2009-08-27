@@ -31,8 +31,8 @@
                 <br/>
                 
                 <input type="button" value="Edit Fields" onclick="window.location = 'sectionDefinition.htm?id='+$('#id').val() ;  " />
-                <input type="button" value="Edit Roles"  onclick="window.location = 'sectionDefinitionRoles.htm?id='+$('#id').val() ;  " />
-                <%-- <input type="button" value="Create Copy" onclick="copySection();  " />  --%>
+                <input type="button" value="Edit Role"  onclick="window.location = 'sectionDefinitionRoles.htm?id='+$('#id').val() ;  " />
+                <input type="button" value="Create Copy" onclick="copySection();  " />  
 
             </c:if>
                 
@@ -46,16 +46,16 @@
              <script>
              	function copySection() {
                  	var pageType = '${pageType}';
-                 	var data = 'id='+$('#id').val();
+                 	var params = 'id='+$('#id').val();
                     $.ajax({
                  	   type: "POST",
                  	   url: "sectionDefinitionCopy.htm",
-                 	   data: data,
+                 	   data: params,
                  	   success: function(msg){
                  	     window.location = "sectionDefinitions.htm?pageType="+pageType;
                  	   },
              	   	   error: function(){
-                   	     alert("Invalid input.");
+                   	     window.location = "sectionDefinitions.htm?pageType="+pageType;
                    	   }
                  	 });
              	}

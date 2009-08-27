@@ -63,18 +63,27 @@ public class SectionDefinitionCopyController extends SimpleFormController {
 	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
     	if (!PageTypeManageController.accessAllowed(request)) return null;
 
-        String id = request.getParameter("id"); 
-        
-        pageCustomizationService.copySectionDefinition(new Long(id));
-
-        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
-    	
     	return super.showForm(request, errors, getSuccessView());
     }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
     	return "";
+    }
+    
+    @Override
+    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
+    	
+        if (!PageTypeManageController.accessAllowed(request)) return null;
+        
+        String id = request.getParameter("id"); 
+        
+        pageCustomizationService.copySectionDefinition(new Long(id));
+
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
+        
+        return new ModelAndView(getSuccessView());
+    	
     }
     
 }

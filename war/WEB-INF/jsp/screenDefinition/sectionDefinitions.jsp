@@ -30,9 +30,9 @@
                 <br/>
                 <br/>
                 
-                <input type="button" value="Edit Fields" onclick="window.location = 'sectionDefinition.htm?id='+$('#id').val() ;  " />
-                <input type="button" value="Edit Role"  onclick="window.location = 'sectionDefinitionRoles.htm?id='+$('#id').val() ;  " />
                 <input type="button" value="Create Copy" onclick="copySection();  " />  
+                <input type="button" value="Edit Role"  onclick="window.location = 'sectionDefinitionRoles.htm?pageType=${pageType}&id='+$('#id').val() ;  " />
+                <input type="button" value="Edit Fields" onclick="window.location = 'sectionDefinition.htm?pageType=${pageType}&id='+$('#id').val() ;  " />
 
             </c:if>
                 

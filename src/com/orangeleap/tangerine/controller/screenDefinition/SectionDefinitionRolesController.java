@@ -65,7 +65,8 @@ public class SectionDefinitionRolesController extends SimpleFormController {
 	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
     	if (!PageTypeManageController.accessAllowed(request)) return null;
         String id = request.getParameter("id"); 
-        return getModelAndView(new Long(id));
+        String pageType = request.getParameter("pageType"); 
+        return getModelAndView(new Long(id), pageType);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class SectionDefinitionRolesController extends SimpleFormController {
     	return "";
     }
     
-	private ModelAndView getModelAndView(Long id) {
+	private ModelAndView getModelAndView(Long id, String pageType) {
     	
         SectionDefinition sectionDefinition = sectionDao.readSectionDefinition(id);
         
@@ -81,6 +82,7 @@ public class SectionDefinitionRolesController extends SimpleFormController {
         mav.addObject("availableRoleList", getAvailableRoleList());
         mav.addObject("roles", getRoleList(sectionDefinition));
         mav.addObject("id", id);
+        mav.addObject("pageType", pageType);
         
         return mav;
     }
@@ -107,6 +109,7 @@ public class SectionDefinitionRolesController extends SimpleFormController {
         if (!PageTypeManageController.accessAllowed(request)) return null;
         
         String id = request.getParameter("id"); 
+        String pageType = request.getParameter("pageType"); 
         String roles = request.getParameter("roles"); 
         
         SectionDefinition sectionDefinition = sectionDao.readSectionDefinition(new Long(id));
@@ -116,7 +119,7 @@ public class SectionDefinitionRolesController extends SimpleFormController {
 
         cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
 
-        return getModelAndView(sectionDefinition.getId());
+        return getModelAndView(sectionDefinition.getId(), pageType);
 
     }
     

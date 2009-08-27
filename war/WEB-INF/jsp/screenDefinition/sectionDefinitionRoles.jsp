@@ -11,6 +11,7 @@
 	           <form method="post" action="sectionDefinitionRoles.htm">
 	           
 	           	<input type="hidden" id="id" name="id" value="${id}" />
+	           	<input type="hidden" id="pageType" name="pageType" value="${pageType}" />
            
                 <h4>Role</h4><br/>
                 
@@ -22,6 +23,9 @@
 
                </form>
             
+               <br/>
+		       <a href="sectionDefinitions.htm?pageType=${pageType}">&laquo;Back</a>
+			
             </div>
            
         </body>

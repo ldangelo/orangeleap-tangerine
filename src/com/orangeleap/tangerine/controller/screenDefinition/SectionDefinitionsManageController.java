@@ -71,6 +71,7 @@ public class SectionDefinitionsManageController extends SimpleFormController {
     
     private Map<String, String> getSelectionList(HttpServletRequest request) {
     	String pageType = request.getParameter("pageType");
+    	if (pageType == null || pageType.length() == 0) pageType = "constituent";
         List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageType(PageType.valueOf(pageType));
 
         Map<String, String> map = new TreeMap<String, String>();

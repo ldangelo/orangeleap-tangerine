@@ -77,6 +77,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
     private ModelAndView getModelAndView(HttpServletRequest request) {
     	
         String id = request.getParameter("id"); 
+        String pageType = request.getParameter("pageType"); 
         
         ModelAndView mav = new ModelAndView(getSuccessView());
         
@@ -86,6 +87,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
         
         mav.addObject("fieldList", fieldList);
         mav.addObject("id", id);
+        mav.addObject("pageType", pageType);
         
         return mav;
     }

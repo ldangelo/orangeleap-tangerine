@@ -36,9 +36,12 @@
 
              </form>
              
+             <br/>
+		     <a href="sectionDefinitions.htm?pageType=${pageType}">&laquo;Back</a>
+             
              <script>
              	function update(field, action) {
-                 	var parms = 'id='+$('#id').val();
+                 	var parms = 'pageType=${pageType}&id='+$('#id').val();
              		var data = parms + '&fieldName=' + field + '&action=' + action;
                     $.ajax({
                  	   type: "POST",

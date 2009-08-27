@@ -24,24 +24,24 @@ INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORD
 INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000081, 'pledge.comments', 12000);
 
 -- Distribution
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.amountReadOnly', 1000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.percentageReadOnly', 2000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.projectCodeReadOnly', 3000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.motivationCodeReadOnly', 4000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.other_motivationCodeReadOnly', 5000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.customFieldMap[referenceReadOnly]', 6000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.customFieldMap[other_referenceReadOnly]', 7000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.amountReadOnly', 'distributionLines.amountReadOnly', 1000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.percentageReadOnly', 'distributionLines.percentageReadOnly', 2000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.projectCodeReadOnly', 'distributionLines.projectCodeReadOnly', 3000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.motivationCodeReadOnly', 'distributionLines.motivationCodeReadOnly', 4000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.other_motivationCodeReadOnly', 'distributionLines.other_motivationCodeReadOnly', 5000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.customFieldMap[referenceReadOnly]', 'distributionLines.customFieldMap[referenceReadOnly]', 6000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000082, 'pledge.distributionLines.customFieldMap[other_referenceReadOnly]', 'distributionLines.customFieldMap[other_referenceReadOnly]', 7000);
 
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[tributeReadOnly]', 1000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[tributeReferenceReadOnly]', 2000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', 3000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[tributeOccasionReadOnly]', 4000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', 5000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[onBehalfOfReadOnly]', 6000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', 7000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[anonymousReadOnly]', 8000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[recognitionNameReadOnly]', 9000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[notifiedReadOnly]', 10000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[other_notifiedReadOnly]', 11000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[messageReadOnly]', 12000);
-INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[taxDeductibleReadOnly]', 13000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[tributeReadOnly]', 'distributionLines.customFieldMap[tributeReadOnly]', 1000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[tributeReferenceReadOnly]', 'distributionLines.customFieldMap[tributeReferenceReadOnly]', 2000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', 'distributionLines.customFieldMap[other_tributeReferenceReadOnly]', 3000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[tributeOccasionReadOnly]', 'distributionLines.customFieldMap[tributeOccasionReadOnly]', 4000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', 'distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', 5000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[onBehalfOfReadOnly]', 'distributionLines.customFieldMap[onBehalfOfReadOnly]', 6000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', 'distributionLines.customFieldMap[other_onBehalfOfReadOnly]', 7000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[anonymousReadOnly]', 'distributionLines.customFieldMap[anonymousReadOnly]', 8000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[recognitionNameReadOnly]', 'distributionLines.customFieldMap[recognitionNameReadOnly]', 9000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[notifiedReadOnly]', 'distributionLines.customFieldMap[notifiedReadOnly]', 10000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[other_notifiedReadOnly]', 'distributionLines.customFieldMap[other_notifiedReadOnly]', 11000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[messageReadOnly]', 'distributionLines.customFieldMap[messageReadOnly]', 12000);
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000144, 'pledge.distributionLines.customFieldMap[taxDeductibleReadOnly]', 'distributionLines.customFieldMap[taxDeductibleReadOnly]', 13000);

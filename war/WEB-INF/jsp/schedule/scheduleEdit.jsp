@@ -96,7 +96,7 @@
                               </c:if></td>
 
                       	      <td><c:if test="${sourceEntity != 'scheduleditem' && scheduledItem.id != null }">
-                              <a href="scheduleEdit.htm?sourceEntity=scheduleditem&sourceEntityId=${scheduledItem.id}" >Reminders</a>
+                              <a href="scheduleEdit.htm?sourceEntity=scheduleditem&constituentId=${param.constituentId}&sourceEntityId=${scheduledItem.id}&originalSourceEntity=${sourceEntity}">Reminders</a>
                        	 	  </c:if></td>
 
 
@@ -119,7 +119,7 @@
                 	   url: "scheduleEdit.htm",
                 	   data: data,
                 	   success: function(msg){
-                	     window.location = "scheduleEdit.htm?sourceEntity=${sourceEntity}&sourceEntityId=${sourceEntityId}";
+                	     window.location = "scheduleEdit.htm?sourceEntity=${sourceEntity}&constituentId=${param.constituentId}&sourceEntityId=${sourceEntityId}&originalSourceEntity=${param.originalSourceEntity}";
                 	   },
             	   	   error: function(){
                   	     alert("Invalid input.");

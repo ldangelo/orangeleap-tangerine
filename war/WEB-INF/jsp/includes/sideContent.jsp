@@ -33,11 +33,11 @@
 							</c:if>
 							<a class="${(requestScope.thisUrl eq '/recurringGift.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="recurringGift.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newRecurringGift"/></a>
 				            <c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-								<a class="${((requestScope.thisUrl eq '/recurringGift.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/recurringGiftList.htm' || requestScope.thisUrl eq '/recurringGiftView.htm' || (requestScope.thisUrl eq '/scheduleEdit.htm' && param.sourceEntity eq 'recurringgift') ) ? 'active' : ''}" href="recurringGiftList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="recurringGifts"/></a>
+								<a class="${((requestScope.thisUrl eq '/recurringGift.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/recurringGiftList.htm' || requestScope.thisUrl eq '/recurringGiftView.htm' || (requestScope.thisUrl eq '/scheduleEdit.htm' && (param.sourceEntity eq 'recurringgift' || param.originalSourceEntity eq 'recurringgift')) ) ? 'active' : ''}" href="recurringGiftList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="recurringGifts"/></a>
 				            </c:if>
 							<a class="${(requestScope.thisUrl eq '/pledge.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="pledge.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newPledge"/></a>
 				            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
-								<a class="${((requestScope.thisUrl eq '/pledge.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/pledgeList.htm' || requestScope.thisUrl eq '/pledgeView.htm' || (requestScope.thisUrl eq '/scheduleEdit.htm' && (param.sourceEntity eq 'pledge' || param.sourceEntity eq 'scheduledItem') ) ) ? 'active' : ''}" href="pledgeList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="pledges"/></a>
+								<a class="${((requestScope.thisUrl eq '/pledge.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/pledgeList.htm' || requestScope.thisUrl eq '/pledgeView.htm' || (requestScope.thisUrl eq '/scheduleEdit.htm' && (param.sourceEntity eq 'pledge' || param.originalSourceEntity eq 'pledge') ) ) ? 'active' : ''}" href="pledgeList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="pledges"/></a>
 				            </c:if>
 				            <%--
 							<a class="${requestScope.thisUrl eq '/membership.htm' ? 'active' : ''}" href="membership.htm?constituentId=${requestScope.constituent.id}&type=membership"><spring:message code="newMembership"/></a>

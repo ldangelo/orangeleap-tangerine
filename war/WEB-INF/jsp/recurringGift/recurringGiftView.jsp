@@ -45,7 +45,7 @@
                             menu : {
                                 items: [
                                     { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("recurringGift.htm?constituentId=${requestScope.constituent.id}"); } },
-                                    { text: '<spring:message code="paymentSchedule"/>', handler: function() { OrangeLeap.gotoUrl("scheduleEdit.htm?sourceEntity=recurringgift&sourceEntityId=${requestScope.form.domainObject.id}"); } }
+                                    { text: '<spring:message code="paymentSchedule"/>', handler: function() { OrangeLeap.gotoUrl("scheduleEdit.htm?sourceEntity=recurringgift&constituentId=${param.constituentId}&sourceEntityId=${requestScope.form.domainObject.id}"); } }
                                 ]
                             },
                             split: false,

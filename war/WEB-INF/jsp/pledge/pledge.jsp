@@ -50,7 +50,7 @@
                                     <c:if test="${not empty clickText}">
                                         { text: '<c:out value="${clickText}"/>', handler: function() { OrangeLeap.gotoUrl("gift.htm?constituentId=${requestScope.constituent.id}&selectedPledgeId=${requestScope.form.domainObject.id}"); } },
                                     </c:if>
-                                    { text: '<spring:message code="paymentSchedule"/>', handler: function() { OrangeLeap.gotoUrl("scheduleEdit.htm?sourceEntity=pledge&sourceEntityId=${requestScope.form.domainObject.id}"); } }
+                                    { text: '<spring:message code="paymentSchedule"/>', handler: function() { OrangeLeap.gotoUrl("scheduleEdit.htm?sourceEntity=pledge&constituentId=${param.constituentId}&sourceEntityId=${requestScope.form.domainObject.id}"); } }
                                 ]
                             },
                             split: false,

@@ -54,7 +54,7 @@
                                     <c:if test="${not empty clickText}">
                                         { text: '<c:out value="${clickText}"/>', handler: function() { OrangeLeap.gotoUrl("gift.htm?constituentId=${requestScope.constituent.id}&selectedRecurringGiftId=${requestScope.form.domainObject.id}"); } },
                                     </c:if>
-                                    { text: '<spring:message code="paymentSchedule"/>', handler: function() { OrangeLeap.gotoUrl("scheduleEdit.htm?sourceEntity=recurringgift&sourceEntityId=${requestScope.form.domainObject.id}"); } }
+                                    { text: '<spring:message code="paymentSchedule"/>', handler: function() { OrangeLeap.gotoUrl("scheduleEdit.htm?sourceEntity=recurringgift&constituentId=${param.constituentId}&sourceEntityId=${requestScope.form.domainObject.id}"); } }
                                 ]
                             },
                             split: false,

@@ -26,19 +26,21 @@
                         
                         <tr>
                         <th></th>
-                        <th></th>
                         <th>Original Scheduled Date</th>
                         <th>Actual Scheduled Date</th>
                         
-                        <c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
-                        <th>Gift Amount</th>
-                        </c:if>
+                        <th><c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
+                        Gift Amount
+                        </c:if></th>
                         
-                        <c:if test="${sourceEntity != 'scheduleditem'}">
-                        <th>Reminders</th>
-                        </c:if>
+                        <th></th>
                         
+                        <th>Completion Date</th>
                         
+                        </tr>
+                        
+                        <tr>
+                        <td></td>
                         </tr>
                         
                         <c:forEach var="scheduledItem" varStatus="status" items="${scheduledItems}" >
@@ -48,24 +50,27 @@
       						<c:when test="${scheduledItem.completed}">
                             <%-- Completed items are read-only --%>
       						
-      						  <td>Completed <fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.completionDate}' /> </td>
-                              <td></td>
+      						  <td></td>
                               <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.originalScheduledDate}' /></td>
                               <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.actualScheduledDate}' /></td>
                               <td>
                               <fmt:formatNumber type='number' maxFractionDigits='2' minFractionDigits='2' value='${scheduledItem.scheduledItemAmount}' />
                               </td>
+                        	  <td><c:if test="${sourceEntity == 'recurringgift' }">
+                              <a href="giftView.htm?giftId=${scheduledItem.resultEntityId}" >Gift</a>
+                       	 	  </c:if></td>
+      						  <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.completionDate}' /> </td>
+
                               
       						</c:when>
       						<c:otherwise>
                             <%-- Uncompleted items can be deleted, added, or can edit (only) the actualScheduledDate and custom fields (e.g. giftAmountOverride). --%>
                               <td>
-<a href="#" onclick="update(this,'save');">Save</a>/<a href="#" onclick="update(this,'add');">Add</a>/<a href="#" onclick="update(this,'delete');">Delete</a>
+<a href="#" onclick="update(this,'save');">Save</a> <a href="#" onclick="update(this,'add');">Add</a> <a href="#" onclick="update(this,'delete');">Delete</a>
                               <input type="hidden" name="id" value="${scheduledItem.id}"/>
                               <input type="hidden" name="sourceEntity" value="${scheduledItem.sourceEntity}"/>
                               <input type="hidden" name="sourceEntityId" value="${scheduledItem.sourceEntityId}"/>
                               </td>
-                              <td></td>
                               <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.originalScheduledDate}'/></td>
                               <td>
                               
@@ -76,25 +81,24 @@
 			                            applyTo: 'actualScheduledDate-${status.count}',
 			                            id: "actualScheduledDate-${status.count}-wrapper",
 			                            format: 'm/d/Y',
-			                            width: 250
+			                            width: 150
 			                        });
 			                     </script>
                               
                               </td>
                             
-                        	  <c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
-                              <td>
+                        	  <td><c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
                               <input name="scheduledItemAmount" value="<fmt:formatNumber type='number' maxFractionDigits='2' minFractionDigits='2' value='${scheduledItem.scheduledItemAmount}' />" />
-                              </td>
-                              </c:if>
+                              </c:if></td>
+
+                      	      <td><c:if test="${sourceEntity != 'scheduleditem'}">
+                              <a href="scheduleEdit.htm?sourceEntity=scheduleditem&sourceEntityId=${scheduledItem.id}" >Reminders</a>
+                       	 	  </c:if></td>
+
 
       						</c:otherwise>
 
     					  </c:choose>
-
-                      	      <c:if test="${sourceEntity != 'scheduleditem'}">
-                              <td><a href="scheduleEdit.htm?sourceEntity=scheduleditem&sourceEntityId=${scheduledItem.id}" >Reminders</a></td>
-                       	 	  </c:if>
 
                           </tr>
                         </c:forEach>

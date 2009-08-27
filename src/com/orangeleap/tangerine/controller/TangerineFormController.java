@@ -18,18 +18,17 @@
 
 package com.orangeleap.tangerine.controller;
 
-import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.service.AddressService;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.EmailService;
-import com.orangeleap.tangerine.service.PhoneService;
-import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.MutablePropertyValues;
@@ -42,15 +41,20 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.AddressService;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.EmailService;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PhoneService;
+import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
 
 public abstract class TangerineFormController extends SimpleFormController {
 
@@ -59,6 +63,9 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     @Resource(name="constituentService")
     protected ConstituentService constituentService;
+
+    @Resource(name="giftService")
+    protected GiftService giftService;
 
     @Resource(name="addressService")
     protected AddressService addressService;
@@ -90,6 +97,10 @@ public abstract class TangerineFormController extends SimpleFormController {
         return this.getIdAsLong(request, StringConstants.CONSTITUENT_ID);
     }
 
+    protected Long getGiftId(HttpServletRequest request) {
+        return this.getIdAsLong(request, StringConstants.GIFT_ID);
+    }
+
     protected String getConstituentIdString(HttpServletRequest request) {
         return request.getParameter(StringConstants.CONSTITUENT_ID);
     }
@@ -98,10 +109,18 @@ public abstract class TangerineFormController extends SimpleFormController {
 	    Long constituentId = getConstituentId(request);
 	    Constituent constituent = null;
 	    if (constituentId != null) {
-	        constituent = constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this constituent (authorization)?
+	        constituent = constituentService.readConstituentById(constituentId); 
 	    }
 	    if (constituent == null) {
-	        throw new IllegalArgumentException("The constituent ID was not found");
+	    	// Read constituent from gift if no constituent.
+		    Long giftId = getGiftId(request);
+		    if (giftId != null) {
+		        Gift gift = giftService.readGiftById(giftId); 
+		        constituent = constituentService.readConstituentById(gift.getConstituentId()); 
+		    }
+		    if (constituent == null) {
+		    	throw new IllegalArgumentException("The constituent ID was not found");
+		    }
 	    }
 	    return constituent;
 	}

@@ -32,6 +32,10 @@
 					<a class="newAccountButton" href="pledge.htm?constituentId=${constituent.id}"><spring:message code='enterNew'/></a>
 				</div>
 			</form:form>
+            <page:param name="scripts">
+                <script type="text/javascript">PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
+                <script type="text/javascript" src="js/gift/distributionReadOnly.js"></script>
+            </page:param>
 		</body>
 	</html>
 </page:applyDecorator>

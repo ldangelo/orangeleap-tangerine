@@ -24,10 +24,17 @@
 
 			<form:form method="post" commandName="${requestScope.commandObject}">
 				<c:set var="topButtons" scope="request">
-					<c:if test="${not empty clickText}">
-						<input type="button" value="<c:out value='${clickText}'/>" class="saveButton" id="clickButtonTop"/>
-					</c:if>
-					<input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/>
+                    <table cellspacing="2">
+                        <tr>
+                            <td><div id="actions"></div></td>
+                            <td>
+                                <c:if test="${not empty clickText}">
+                                    <input type="button" value="<c:out value='${clickText}'/>" class="saveButton" id="clickButtonTop"/>
+                                </c:if>
+                            </td>
+                            <td><input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/></td>
+                        </tr>
+                    </table>
 				</c:set>
 
 				<%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
@@ -43,9 +50,6 @@
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
-					<c:if test="${form.domainObject.id > 0}">
-						<a class="newAccountButton" href="gift.htm?constituentId=${constituent.id}"><spring:message code='enterNew'/></a>
-					</c:if>
 				</div>
 			</form:form>
 
@@ -60,7 +64,41 @@
 							$("div.mainForm form").eq(0).append("<input type='hidden' name='doReprocess' id='doReprocess' value='true'/>").submit();
 						});
 					});
-				</script>
+                    <c:if test="${requestScope.form.domainObject.id > 0}">
+                        var ButtonPanel = Ext.extend(Ext.Panel, {
+                            defaultType: 'button',
+                            baseCls: 'x-plain',
+                            cls: 'btn-panel',
+                            renderTo: 'actions',
+                            menu : {
+                                items: [
+                                    { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("gift.htm?constituentId=${requestScope.constituent.id}"); } }
+                                ]
+                            },
+                            split: false,
+
+                            constructor: function(buttons){
+                                // apply test configs
+                                for(var i = 0, b; b = buttons[i]; i++){
+                                    b.menu = this.menu;
+                                    b.enableToggle = this.enableToggle;
+                                    b.split = this.split;
+                                    b.arrowAlign = this.arrowAlign;
+                                }
+                                var items = [{
+                                    xtype: 'box'
+                                }].concat(buttons);
+
+                                ButtonPanel.superclass.constructor.call(this, {
+                                    items: buttons
+                                });
+                            }
+                        });
+                        new ButtonPanel([
+                                { text: 'Actions' }
+                        ]);
+                    </c:if>
+                </script>
 			</page:param>
 		</body>
 	</html>

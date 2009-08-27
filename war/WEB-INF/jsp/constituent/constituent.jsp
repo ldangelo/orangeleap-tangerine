@@ -12,7 +12,12 @@
         <body>
 	        <form:form method="post" commandName="${requestScope.commandObject}">
 		        <c:set var="topButtons" scope="request">
-			        <input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/>
+                    <table cellspacing="2">
+                        <tr>
+                            <td><div id="actions"></div></td>
+                            <td><input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/></td>
+                        </tr>
+                    </table>
 		        </c:set>
 
 		        <%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
@@ -21,9 +26,6 @@
 
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
-					<c:if test="${form.domainObject.id > 0}">
-						<a class="newAccountButton" href="constituent.htm"><spring:message code='enterNew'/></a>
-					</c:if>
 				</div>
 			</form:form>
 	        <page:param name="scripts">
@@ -45,6 +47,40 @@
 							});
 						});
 					</c:if>
+                    <c:if test="${requestScope.form.domainObject.id > 0}">
+                        var ButtonPanel = Ext.extend(Ext.Panel, {
+                            defaultType: 'button',
+                            baseCls: 'x-plain',
+                            cls: 'btn-panel',
+                            renderTo: 'actions',
+                            menu : {
+                                items: [
+                                    { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("constituent.htm"); } }
+                                ]
+                            },
+                            split: false,
+
+                            constructor: function(buttons){
+                                // apply test configs
+                                for(var i = 0, b; b = buttons[i]; i++){
+                                    b.menu = this.menu;
+                                    b.enableToggle = this.enableToggle;
+                                    b.split = this.split;
+                                    b.arrowAlign = this.arrowAlign;
+                                }
+                                var items = [{
+                                    xtype: 'box'
+                                }].concat(buttons);
+
+                                ButtonPanel.superclass.constructor.call(this, {
+                                    items: buttons
+                                });
+                            }
+                        });
+                        new ButtonPanel([
+                                { text: 'Actions' }
+                        ]);
+                    </c:if>
 				</script>
 	        </page:param>
 		</body>

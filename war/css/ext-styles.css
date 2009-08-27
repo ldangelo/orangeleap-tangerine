@@ -83,3 +83,6 @@ div.ext-widget span.x-panel-header-text {
 div.ext-widget div.x-grid3-cell-inner {
     text-align: left;
 }
+div#actions .x-btn-noicon .x-btn-small .x-btn-text {
+    height: 20px;
+}

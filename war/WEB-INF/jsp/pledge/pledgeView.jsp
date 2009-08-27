@@ -16,7 +16,6 @@
 				</c:set>
 
 				<%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
-				<h3 class="info"><spring:message code='thisPledgeEntered'/> <fmt:formatDate value="${form.domainObject.createDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${form.domainObject.createDate}" type="time" />.</h3>
 
 				<tangerine:fields pageName="pledgeView"/>
 				

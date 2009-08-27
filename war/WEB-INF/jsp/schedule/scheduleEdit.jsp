@@ -6,7 +6,7 @@
             <title><c:out value="${titleText}"/></title>
         </head>
         <body>
-            <div class="simplebox">
+            <div >
 
                 <div>
                 

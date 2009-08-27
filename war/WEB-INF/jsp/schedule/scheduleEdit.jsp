@@ -95,7 +95,7 @@
                               <input name="scheduledItemAmount" value="<fmt:formatNumber type='number' maxFractionDigits='2' minFractionDigits='2' value='${scheduledItem.scheduledItemAmount}' />" />
                               </c:if></td>
 
-                      	      <td><c:if test="${sourceEntity != 'scheduleditem'}">
+                      	      <td><c:if test="${sourceEntity != 'scheduleditem' && scheduledItem.id != null }">
                               <a href="scheduleEdit.htm?sourceEntity=scheduleditem&sourceEntityId=${scheduledItem.id}" >Reminders</a>
                        	 	  </c:if></td>
 

@@ -16,7 +16,6 @@
 				</c:set>
 
 				<%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
-				<h3 class="info"><spring:message code='thisRecurringGiftEntered'/> <fmt:formatDate value="${form.domainObject.createDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${form.domainObject.createDate}" type="time" />.</h3>
 
 				<tangerine:fields pageName="recurringGiftView"/>
 
@@ -34,7 +33,8 @@
 			</form:form>
 			<page:param name="scripts">
 				<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
-				<script type="text/javascript">var PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
+				<script type="text/javascript">PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
+                <script type="text/javascript" src="js/gift/distributionReadOnly.js"></script>
 			</page:param>
 			
 		</body>

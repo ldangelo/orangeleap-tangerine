@@ -180,15 +180,21 @@ public class SelectionHandler extends AbstractFieldHandler {
 		if (refId != null) {
 			if (ReferenceType.pledge.equals(referenceType)) {
 				Pledge pledge = pledgeService.readPledgeById(refId);
-				displayValues.add(pledge.getShortDescription());
+                if (pledge != null) {
+				    displayValues.add(pledge.getShortDescription());
+                }
 			}
 			else if (ReferenceType.recurringGift.equals(referenceType)) {
 				RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(refId);
-				displayValues.add(recurringGift.getShortDescription());
+                if (recurringGift != null) {
+				    displayValues.add(recurringGift.getShortDescription());
+                }
 			}
 			else if (ReferenceType.gift.equals(referenceType)) {
 				Gift gift = giftService.readGiftById(refId);
-				displayValues.add(gift.getShortDescription());
+                if (gift != null) {
+				    displayValues.add(gift.getShortDescription());
+                }
 			}
 			ids.add(refId);
 

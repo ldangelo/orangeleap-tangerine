@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -127,23 +128,22 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         
         // Main page
         PageType editPage = PageType.valueOf(sPageType);
-        SectionDefinition sectionDefinition = addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
-        if (isReferenceType(customFieldRequest)) createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinition);
+        addSectionFieldsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
 
         if (hasViewPage(customFieldRequest.getEntityType())) {
         	
             PageType viewPage = PageType.valueOf(sPageType + "View");
-            SectionDefinition sectionDefinitionView = addSectionDefinitionsAndValidations(viewPage, customFieldRequest, readOnlyFieldDefinition, site);  // make readonly on view screen
+            addSectionFieldsAndValidations(viewPage, customFieldRequest, readOnlyFieldDefinition, site);  // make readonly on view screen
             
         }
         
         if (hasAdjustmentPage(customFieldRequest.getEntityType())) {
 
             PageType adjustedPage = PageType.valueOf("adjusted" + StringUtils.capitalize(sPageType));
-            SectionDefinition sectionDefinitionAdjusted = addSectionDefinitionsAndValidations(adjustedPage, customFieldRequest, readOnlyFieldDefinition, site);
+            addSectionFieldsAndValidations(adjustedPage, customFieldRequest, readOnlyFieldDefinition, site);
             
             PageType adjustedViewPage = PageType.valueOf("adjusted" + StringUtils.capitalize(sPageType) + "View");
-            SectionDefinition sectionDefinitionAdjustedView = addSectionDefinitionsAndValidations(adjustedViewPage, customFieldRequest, readOnlyFieldDefinition, site);
+            addSectionFieldsAndValidations(adjustedViewPage, customFieldRequest, readOnlyFieldDefinition, site);
             
         }
 
@@ -408,15 +408,20 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         pageCustomizationService.maintainCustomFieldGuruData(customFieldRequest);
     }
 
-    private SectionDefinition addSectionDefinitionsAndValidations(PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {
-
-    	SectionDefinition sectionDefinition;
+    private void addSectionFieldsAndValidations(PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {
+    	List<SectionDefinition> sectionDefinitions = new ArrayList<SectionDefinition>();
     	if (isDistributionLines(customFieldRequest.getEntityType())) {
-    		sectionDefinition = getDistroLineSection(pageType);
+    		sectionDefinitions = getDistroLineSections(pageType);
     	} else {
     		// Default to add to first section.
-    		sectionDefinition = getDefaultSection(pageType);
+    		sectionDefinitions = getDefaultSections(pageType);
     	}
+    	for (SectionDefinition sectionDefinition : sectionDefinitions) {
+    		addSectionFieldAndValidation(sectionDefinition, pageType, customFieldRequest, fieldDefinition, site);
+    	}
+    }
+    
+    private void addSectionFieldAndValidation(SectionDefinition sectionDefinition, PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {
     	
     	// Default placement after last field.
         int fieldOrder = getNextFieldOrder(sectionDefinition);
@@ -432,12 +437,18 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
         FieldValidation fieldValidation = getFieldValidation(customFieldRequest, fieldDefinition, secondaryFieldDefinition, sectionDefinition);
 
-        if (StringUtils.trimToNull(fieldValidation.getRegex()) != null && !fieldDefinition.getId().endsWith(READ_ONLY+"]")) {
+        if ( StringUtils.trimToNull(fieldValidation.getRegex()) != null && !isReadOnly(fieldDefinition.getId()) ) {
             pageCustomizationService.maintainFieldValidation(fieldValidation);
         }
 
-        return sectionDefinition;
+        if (isReferenceType(customFieldRequest) && !isReadOnly(fieldDefinition.getId())) {
+        	createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinition);
+        }
 
+    }
+    
+    private boolean isReadOnly(String fieldDefinitionId) {
+    	return fieldDefinitionId.endsWith(READ_ONLY+"]");
     }
 
     private SectionField getSectionField(int fieldOrder, SectionDefinition sectionDefinition, FieldDefinition fieldDefinition, Site site) {
@@ -468,8 +479,10 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         return fieldValidation;
     }
     
-    private SectionDefinition getDefaultSection(PageType pageType) {
-        List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(pageType, tangerineUserHelper.lookupUserRoles());
+    // Get first section (for all roles).
+    private List<SectionDefinition> getDefaultSections(PageType pageType) {
+        List<SectionDefinition> result = new ArrayList<SectionDefinition>();
+        List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageType(pageType);
         Collections.sort(definitions, new Comparator<SectionDefinition>() {
             @Override
             public int compare(SectionDefinition o1, SectionDefinition o2) {
@@ -478,14 +491,20 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         });
         if (definitions.size() == 0)
             throw new RuntimeException("Default page for " + pageType.getName() + " has no sections");
-        return definitions.get(0);
+        // Get all sections with a section order that match the lowest section order
+        for (SectionDefinition sectionDefinition : definitions) {
+        	if (sectionDefinition.getSectionOrder().equals(definitions.get(0).getSectionOrder())) result.add(sectionDefinition);
+        }
+        return result;
     }
 
-    private SectionDefinition getDistroLineSection(PageType pageType) {
-        List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(pageType, tangerineUserHelper.lookupUserRoles());
+    private List<SectionDefinition> getDistroLineSections(PageType pageType) {
+        List<SectionDefinition> result = new ArrayList<SectionDefinition>();
+        List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageType(pageType);
 		for (SectionDefinition sd  : definitions) {
-			if (LayoutType.GRID_HIDDEN_ROW.equals(sd.getLayoutType()) 
-					) return sd;
+			if (LayoutType.GRID_HIDDEN_ROW.equals(sd.getLayoutType())) {
+				result.add(sd);
+			}
 		}
 	    throw new RuntimeException("Default page for " + pageType.getName() + " has no distibution line sections");
     }

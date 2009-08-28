@@ -108,6 +108,18 @@
                         </c:forEach>
                         </table>
                         
+                        
+                        <br />
+                        <br />
+                        <c:if test="${sourceEntity == 'recurringgift'}">
+		       			<a href="recurringGift.htm?recurringGiftId=${sourceEntityId}&constituentId=${param.constituentId}">&laquo;Back</a>
+		       			</c:if>
+                        <c:if test="${sourceEntity == 'pledge'}">
+		       			<a href="pledge.htm?pledgeId=${sourceEntityId}&constituentId=${param.constituentId}">&laquo;Back</a>
+		       			</c:if>
+                        
+                        
+                        
                 </div>
                 
                 <script>

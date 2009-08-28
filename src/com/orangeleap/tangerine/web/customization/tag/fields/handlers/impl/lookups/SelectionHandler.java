@@ -153,17 +153,19 @@ public class SelectionHandler extends AbstractFieldHandler {
 
 			for (int i = 0; i < ids.size(); i++) {
 				Long thisId = ids.get(i);
-				String displayVal = displayValues.get(i);
-				String link = links.get(i);
+                if (i < displayValues.size() && i < links.size()) {
+                    String displayVal = displayValues.get(i);
+                    String link = links.get(i);
 
-				sb.append("<div class='multiQueryLookupOption multiOption' id=\"lookup-").append(thisId).append("\" selectedId=\"").append(thisId).append("\">");
-				sb.append("<a href=\"").append(link).append("\" target=\"_blank\" alt=\"").append(gotoMsg).append("\" title=\"").append(gotoMsg).append("\">").append(displayVal).append("</a>");
+                    sb.append("<div class='multiQueryLookupOption multiOption' id=\"lookup-").append(thisId).append("\" selectedId=\"").append(thisId).append("\">");
+                    sb.append("<a href=\"").append(link).append("\" target=\"_blank\" alt=\"").append(gotoMsg).append("\" title=\"").append(gotoMsg).append("\">").append(displayVal).append("</a>");
 
-				if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldType())) {
-					writeDeleteLink(sb, "PledgeRecurringGiftSelector.deleteThis(this)");
-				}
+                    if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldType())) {
+                        writeDeleteLink(sb, "PledgeRecurringGiftSelector.deleteThis(this)");
+                    }
 
-				sb.append("</div>");
+                    sb.append("</div>");
+                }
 			}
 		}
 	}

@@ -282,15 +282,20 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 			Date now = new java.util.Date();
 		
 			// Always create a completed payment entry for this payment for today.
-			recordPayment(schedulable, amount, resultEntity, now);
+			ScheduledItem thisPayment = recordPayment(schedulable, amount, resultEntity, now);
+			
+			ScheduledItem lastModifiedPayment = null;
 		
 			// Decrement amounts and/or complete remaining scheduled payments.
+			
 			List<ScheduledItem> schedule = readSchedule(schedulable);
 			for (ScheduledItem scheduledPayment : schedule) {
 				
 				if (amount.compareTo(ZERO) <= 0) break;
 	
 				if (canApplyPayment(scheduledPayment)) {
+					
+					lastModifiedPayment = scheduledPayment;
 					
 					BigDecimal scheduledAmount = scheduledPayment.getScheduledItemAmount();
 					
@@ -315,6 +320,15 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 				
 			}
 			
+			
+			// Set OriginalScheduledDate for today's payment to the last modified or deleted scheduledPayment 
+			// so that schedule extensions for schedulables with indefinite end dates will start then, not tomorrow.
+			if (lastModifiedPayment != null) {
+				thisPayment.setOriginalScheduledDate(lastModifiedPayment.getOriginalScheduledDate());
+				maintainScheduledItem(thisPayment);
+			}
+			
+			
 			logger.debug("Excess amount unapplied to pre-existing scheduled payments: " + amount);
 
 		} catch (Exception e) {
@@ -334,13 +348,14 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 		;
 	}
 	
-	private void recordPayment(Schedulable schedulable, BigDecimal amount, AbstractEntity resultEntity, Date now) {
+	private ScheduledItem recordPayment(Schedulable schedulable, BigDecimal amount, AbstractEntity resultEntity, Date now) {
 		ScheduledItem thisPayment = getDefaultScheduledItem(schedulable, now);
 		thisPayment.setScheduledItemAmount(amount);
 		if (resultEntity == null) {
 			logger.debug("Gift or resultEntity == null for "+schedulable.getType() + " " + schedulable.getId() + ", amount " + amount);
 		}
 		completeItem(thisPayment, resultEntity, "Applied Payment " + formatDate(now));
+		return thisPayment;
 	}
 
 	

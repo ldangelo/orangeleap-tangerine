@@ -18,18 +18,25 @@
 
 package com.orangeleap.tangerine.controller.gift.commitment.pledge;
 
-import com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController;
+import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
+import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.gift.AssociationEditor;
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-public class PledgeViewController extends CommitmentFormController<Pledge> {
+public class PledgeViewController extends TangerineConstituentAttributesFormController {
 
     /**
      * Logger for this class and subclasses
@@ -39,24 +46,41 @@ public class PledgeViewController extends CommitmentFormController<Pledge> {
     @Resource(name = "pledgeService")
     protected PledgeService pledgeService;
 
-	@Override
-	protected Pledge readCommitmentCreateIfNull(HttpServletRequest request) {
-		return pledgeService.readPledgeById(getIdAsLong(request, StringConstants.PLEDGE_ID));
-	}
-
     @Override
-    protected String getParamId() {
-        return StringConstants.PLEDGE_ID;
+    protected AbstractEntity findEntity(HttpServletRequest request) {
+	    return pledgeService.readPledgeById(getIdAsLong(request, StringConstants.PLEDGE_ID));
     }
 
     @Override
-    protected Pledge maintainCommitment(Pledge entity) throws BindException {
-		entity = pledgeService.editPledge(entity);
-	    return entity;
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        super.initBinder(request, binder);
+        binder.registerCustomEditor(List.class, "associatedGiftIds", new AssociationEditor());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected String getReturnView(Pledge entity) {
-        return getSuccessView();
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command,
+                                    BindException formErrors) throws Exception {
+	    TangerineForm form = (TangerineForm) command;
+	    Pledge pledge = (Pledge) form.getDomainObject();
+
+        boolean saved = true;
+        try {
+            pledge = pledgeService.editPledge(pledge);
+        }
+        catch (BindException domainErrors) {
+            saved = false;
+	        bindDomainErrorsToForm(request, formErrors, domainErrors, form, pledge);
+        }
+
+        ModelAndView mav;
+        if (saved) {
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.PLEDGE_ID + "=" + pledge.getId() + "&" +
+		            StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+        }
+        else {
+			mav = showForm(request, formErrors, getFormView());
+        }
+        return mav;
     }
 }

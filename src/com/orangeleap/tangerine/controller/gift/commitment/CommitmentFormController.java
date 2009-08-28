@@ -23,7 +23,6 @@ import com.orangeleap.tangerine.controller.gift.AbstractMutableGridFormControlle
 import com.orangeleap.tangerine.controller.gift.AssociationEditor;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
@@ -31,7 +30,6 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -46,9 +44,6 @@ public abstract class CommitmentFormController<T extends Commitment> extends Abs
     public void setFormUrl(String formUrl) {
         this.formUrl = formUrl;
     }
-
-	@Resource(name = "picklistItemService")
-	protected PicklistItemService picklistItemService;
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {

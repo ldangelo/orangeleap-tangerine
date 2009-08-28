@@ -44,6 +44,7 @@ import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.controller.validator.PledgeValidator;
+import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.ScheduledItem;
@@ -89,7 +90,9 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 
     @Resource(name = "reminderService")
     private ReminderService reminderService;
-
+    
+    @Resource(name = "giftDAO")
+    private GiftDao giftDao;
 
 
 
@@ -310,11 +313,13 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     @Transactional(propagation = Propagation.REQUIRED)
     private void updatePledgeStatusAmountPaid(List<DistributionLine> lines) {
         Set<Long> pledgeIds = new HashSet<Long>();
+        Map<Long, DistributionLine> matchingLines = new HashMap<Long, DistributionLine>();
         if (lines != null) {
             for (DistributionLine thisLine : lines) {
                 if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID))) {
                     Long pledgeId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID));
                     pledgeIds.add(pledgeId);
+                    matchingLines.put(pledgeId, thisLine);
                 }
             }
     
@@ -326,6 +331,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
                         setPledgeAmounts(pledge, amountPaid);
                         setCommitmentStatus(pledge, "pledgeStatus");
                         pledgeDao.maintainPledgeAmountPaidRemainingStatus(pledge);
+                        DistributionLine thisLine = matchingLines.get(pledgeId);
+                        scheduledItemService.applyPaymentToSchedule(pledge, thisLine.getAmount(), giftDao.readGiftById(thisLine.getGiftId()));
                     }
                 }
             }

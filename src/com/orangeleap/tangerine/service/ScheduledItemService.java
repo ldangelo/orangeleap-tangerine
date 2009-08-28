@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -56,5 +57,7 @@ public interface ScheduledItemService {
     public List<ScheduledItem> getAllItemsReadyToProcess(String sourceEntity, String scheduledItemType, Date processingDate);
 
     public List<ScheduledItem> getNextItemsReadyToProcess(String sourceEntity, Date processingDate);
+    
+	void applyPaymentToSchedule(Schedulable schedulable, BigDecimal amount, AbstractEntity resultEntity);
 
 }

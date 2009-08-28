@@ -18,6 +18,8 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -134,7 +136,7 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     		scheduledItem.setResultEntity(resultEntity.getType());
         	scheduledItem.setResultEntityId(resultEntity.getId());
     	}
-    	scheduledItemDao.maintainScheduledItem(scheduledItem);
+    	scheduledItemDao.maintainScheduledItem(scheduledItem); // note: this may be the first time this item has been saved
     	return scheduledItem;
     }
     
@@ -263,5 +265,83 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
     	return result;
         
     }
+    
+	private String formatDate(Date d) {
+		return new SimpleDateFormat("MM/dd/yyyy").format(d);
+	}
+	
+    private BigDecimal ZERO = BigDecimal.ZERO;
+    
+	@Override
+	public void applyPaymentToSchedule(Schedulable schedulable, BigDecimal amount, AbstractEntity resultEntity) {
+		
+		try {
+		
+			if (schedulable == null || amount == null) return;
+			
+			Date now = new java.util.Date();
+		
+			// Always create a completed payment entry for this payment for today.
+			recordPayment(schedulable, amount, resultEntity, now);
+		
+			// Decrement amounts and/or complete remaining scheduled payments.
+			List<ScheduledItem> schedule = readSchedule(schedulable);
+			for (ScheduledItem scheduledPayment : schedule) {
+				
+				if (amount.compareTo(ZERO) <= 0) break;
+	
+				if (canApplyPayment(scheduledPayment)) {
+					
+					BigDecimal scheduledAmount = scheduledPayment.getScheduledItemAmount();
+					
+					BigDecimal newScheduledAmount = scheduledAmount.subtract(amount);
+					amount = amount.subtract(scheduledAmount);
+					
+					if (newScheduledAmount.compareTo(ZERO) > 0) {
+						
+						// Remaining amount to be applied is insufficient to cover the next scheduled payment.  Decrement scheduled amount and stop.
+						scheduledPayment.setScheduledItemAmount(newScheduledAmount);
+						maintainScheduledItem(scheduledPayment);
+						break;
+				
+					} else {
+						
+						// Remaining amount to be applied is greater than or matches this scheduled amount.  Remove the scheduled payment.
+						deleteScheduledItem(scheduledPayment);
+						
+					}
+					
+				}
+				
+			}
+			
+			logger.debug("Excess amount unapplied to pre-existing scheduled payments: " + amount);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Unable to apply payment for " + amount + " to " + schedulable, e);
+		}
+ 		
+		
+	}
+	
+	private boolean canApplyPayment(ScheduledItem scheduledPayment){
+		return 
+		!scheduledPayment.isCompleted() 
+		&& scheduledPayment.getActualScheduledDate() != null 
+		&& scheduledPayment.getScheduledItemAmount() != null
+		&& scheduledPayment.getScheduledItemAmount().compareTo(ZERO) > 0
+		;
+	}
+	
+	private void recordPayment(Schedulable schedulable, BigDecimal amount, AbstractEntity resultEntity, Date now) {
+		ScheduledItem thisPayment = getDefaultScheduledItem(schedulable, now);
+		thisPayment.setScheduledItemAmount(amount);
+		if (resultEntity == null) {
+			logger.debug("Gift or resultEntity == null for "+schedulable.getType() + " " + schedulable.getId() + ", amount " + amount);
+		}
+		completeItem(thisPayment, resultEntity, "Applied Payment " + formatDate(now));
+	}
+
+	
 }

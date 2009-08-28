@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -281,10 +282,19 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		
 	}
 	
+	private static final BigDecimal DEFAULT_MIN_REMINDER_AMOUNT = new BigDecimal(1);
+	
 	@Override
 	public void processReminder(ScheduledItem reminder) {
 		
 		ScheduledItem scheduledPayment = (ScheduledItem)getParent(reminder);
+		
+		BigDecimal minAmount = DEFAULT_MIN_REMINDER_AMOUNT; // TODO add site or default option
+		if (scheduledPayment == null || scheduledPayment.isCompleted() || scheduledPayment.getScheduledItemAmount().compareTo(minAmount) < 0) {
+			scheduledItemService.completeItem(reminder, null, "Skipped");
+			return;
+		}
+			
     	Schedulable schedulable = getParent(scheduledPayment);
     	
     	String status = "";

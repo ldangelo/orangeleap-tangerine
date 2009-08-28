@@ -34,7 +34,7 @@
                         <th>Actual Scheduled Date</th>
                         
                         <th><c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
-                        Gift Amount
+                        Amount
                         </c:if></th>
                         
                         <th></th>

@@ -46,6 +46,7 @@ import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
+import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.ScheduledItem;
@@ -74,6 +75,9 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     
     @Resource(name = "recurringGiftDAO")
     private RecurringGiftDao recurringGiftDao;
+
+    @Resource(name = "giftDAO")
+    private GiftDao giftDao;
 
 	@Resource(name="recurringGiftValidator")
 	protected RecurringGiftValidator recurringGiftValidator;
@@ -321,11 +325,13 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     private void updateRecurringGiftStatusAmountPaid(List<DistributionLine> lines) {
         Set<Long> recurringGiftIds = new HashSet<Long>();
+        Map<Long, DistributionLine> matchingLines = new HashMap<Long, DistributionLine>();
         if (lines != null) {
             for (DistributionLine thisLine : lines) {
                 if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID))) {
                     Long recurringGiftId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID));
                     recurringGiftIds.add(recurringGiftId);
+                    matchingLines.put(recurringGiftId, thisLine);
                 }
             }
 
@@ -337,6 +343,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
                         setRecurringGiftAmounts(recurringGift, amountPaid);
                         setRecurringGiftStatus(recurringGift);
                         recurringGiftDao.maintainRecurringGiftAmountPaidRemainingStatus(recurringGift);
+                        DistributionLine thisLine = matchingLines.get(recurringGiftId);
+                        scheduledItemService.applyPaymentToSchedule(recurringGift, thisLine.getAmount(), giftDao.readGiftById(thisLine.getGiftId()));
                     }
                 }
             }

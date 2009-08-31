@@ -506,7 +506,8 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 				result.add(sd);
 			}
 		}
-	    throw new RuntimeException("Default page for " + pageType.getName() + " has no distibution line sections");
+	    if (result.size() == 0) throw new RuntimeException("Default page for " + pageType.getName() + " has no distibution line sections");
+	    return result;
     }
 
     // Get next field on page from end

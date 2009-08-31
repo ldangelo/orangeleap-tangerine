@@ -78,6 +78,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
     public void executeRules(String schedule, Date compareDate) {
 
         try {
+        	
+        	logger.info("Executing rules for "+schedule + ", compare date = " + compareDate);
+        	
             ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
             GiftService gs = (GiftService) applicationContext.getBean("giftService");
             MailService ms = (MailService) applicationContext.getBean("mailService");

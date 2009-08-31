@@ -56,28 +56,33 @@ public class TangerineMessageSource extends AbstractMessageSource implements Res
 
     @Override
     protected MessageFormat resolveCode(String code, Locale locale) {
-        String message = null;
+
+    	String message = null;
         
         locale = checkLocale(locale);
-        try {
-            message = bundleMessageSource.getMessage(code, null, locale); // check the message bundle first for the key
-        }
-        catch (NoSuchMessageException ne) { }
 
-        if (!StringUtils.hasText(message)) {
-            message = messageService.lookupMessage(MessageResourceType.FIELD_VALIDATION, code, locale);
-            if (message == null && (code.startsWith("fieldRequiredFailure.") || code.startsWith("fieldValidationFailure."))) {
-                logger.info("message code, " + code + ", not found - use out-of-the-box error message");
-                message = messageService.lookupMessage(MessageResourceType.FIELD_VALIDATION, code.substring(0, code.indexOf('.')), locale);
-            }
+        message = messageService.lookupMessage(MessageResourceType.FIELD_VALIDATION, code, locale);
+        if (message == null && (code.startsWith("fieldRequiredFailure.") || code.startsWith("fieldValidationFailure."))) {
+            logger.debug("message code, " + code + ", not found - use out-of-the-box error message");
+            message = messageService.lookupMessage(MessageResourceType.FIELD_VALIDATION, code.substring(0, code.indexOf('.')), locale);
         }
+    
+	    if (!StringUtils.hasText(message)) {
+	        try {
+	            message = bundleMessageSource.getMessage(code, null, locale); // check the default message bundle for the key
+	        }
+	        catch (NoSuchMessageException ne) { }
+	    }
+        
         if (message != null) {
             return createMessageFormat(message, locale);
         }
+        
         return null;
     }
 
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
     }
+    
 }

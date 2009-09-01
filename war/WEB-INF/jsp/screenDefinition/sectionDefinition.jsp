@@ -22,7 +22,7 @@
                     <c:forEach var="field" items="${fieldList}">
 		                <tr>
 		                <td>
-		                    <c:out value='${field.description}'/>
+		                    <input id="description" name="description" value="<c:out value='${field.description}'/>"  onchange="update('${field.name}','changedescription', this);" />
 		                </td>
 		                <td>
 		                	<input type="checkbox" <c:if test="${field.visible}">checked</c:if> onchange="update('${field.name}','togglevisible');" />
@@ -40,20 +40,24 @@
 		     <a href="sectionDefinitions.htm?pageType=${pageType}">&laquo;Back</a>
              
              <script>
-             	function update(field, action) {
+             	function update(field, action, input) {
+                 	
                  	var parms = 'pageType=${pageType}&id='+$('#id').val();
              		var data = parms + '&fieldName=' + field + '&action=' + action;
+             		if (action === 'changedescription') data = data + '&' + $(input).serialize();
                     $.ajax({
                  	   type: "POST",
                  	   url: "sectionDefinition.htm",
                  	   data: data,
                  	   success: function(msg){
-                 	     window.location = "sectionDefinition.htm?"+parms;
+                 	     if (action != 'changedescription') {
+                     	     window.location = "sectionDefinition.htm?"+parms;
+                 	     }
                  	   },
              	   	   error: function(){
-                   	     alert("Invalid input.");
                    	   }
                  	 });
+                	 
              	}
              </script>
              

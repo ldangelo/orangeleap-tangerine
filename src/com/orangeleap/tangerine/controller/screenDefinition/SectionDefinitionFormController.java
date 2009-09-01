@@ -172,6 +172,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
     
     private static final String MOVE_UP = "moveup";
     private static final String TOGGLE_VISIBLE = "togglevisible";
+    private static final String CHANGE_DESC = "changedescription";
     
     
     @Override
@@ -182,8 +183,10 @@ public class SectionDefinitionFormController extends SimpleFormController {
         String id = request.getParameter("id"); 
         String fieldName = request.getParameter("fieldName"); 
         String action = request.getParameter("action"); 
+        String description = request.getParameter("description"); 
         boolean toggleVisible = TOGGLE_VISIBLE.equals(action);
         boolean moveUp = MOVE_UP.equals(action);
+        boolean changeDescription = CHANGE_DESC.equals(action);
         
         List<SectionField> sectionFields = getSectionFields(id);
 
@@ -210,6 +213,13 @@ public class SectionDefinitionFormController extends SimpleFormController {
         		targetSectionField.setFieldOrder(maxvalue + 100);
         	}
             pageCustomizationService.maintainSectionField(targetSectionField);
+        	
+        } else if (changeDescription) {
+            	
+        	if (!targetSectionField.getFieldDefinition().getDefaultLabel().equals(description)) {
+	            targetSectionField.getFieldDefinition().setDefaultLabel(description);
+	            pageCustomizationService.maintainFieldDefinition(targetSectionField.getFieldDefinition());
+        	}
         	
         } else if (moveUp && index > 0) {
         	

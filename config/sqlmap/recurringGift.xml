@@ -110,7 +110,20 @@
 
 	<select id="SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
 		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
-		
+		and (rg.END_DATE &gt;= #date# or rg.END_DATE is null)
+		and rg.RECURRING_GIFT_STATUS in
+    	<iterate property="statuses" conjunction="," open="(" close=")">
+			#statuses[]#
+		</iterate>
+		order by rg.RECURRING_GIFT_ID
+        limit $offset$,$limit$
+	</select>
+
+	<select id="SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE_COUNT" resultClass="long" parameterClass="map">
+		select count(*)
+		from RECURRING_GIFT rg
+		inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
 		and (rg.END_DATE &gt;= #date# or rg.END_DATE is null)
 		and rg.RECURRING_GIFT_STATUS in
     	<iterate property="statuses" conjunction="," open="(" close=")">

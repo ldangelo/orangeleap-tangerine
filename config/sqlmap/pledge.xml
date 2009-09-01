@@ -122,7 +122,21 @@
 	</statement>
 	
 	<select id="SELECT_PLEDGES_ON_OR_AFTER_DATE" resultMap="PLEDGE_RESULT" parameterClass="map">
-		<include refid="SELECT_PLEDGE_FRAGMENT" />
+		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE" />
+		and (c.END_DATE &gt;= #date# or c.END_DATE is null)
+		and c.PLEDGE_STATUS in
+    	<iterate property="statuses" conjunction="," open="(" close=")">
+			#statuses[]#
+		</iterate>
+		order by c.PLEDGE_ID
+        limit $offset$,$limit$
+	</select>
+
+	<select id="SELECT_PLEDGES_ON_OR_AFTER_DATE_COUNT" resultClass="long" parameterClass="map">
+		select count(*)
+		from PLEDGE c
+		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#		
 		and (c.END_DATE &gt;= #date# or c.END_DATE is null)
 		and c.PLEDGE_STATUS in
     	<iterate property="statuses" conjunction="," open="(" close=")">

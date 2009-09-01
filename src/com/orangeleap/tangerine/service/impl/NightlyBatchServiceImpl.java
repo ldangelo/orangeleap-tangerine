@@ -69,6 +69,19 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
     @Override
     public synchronized void processRecurringGifts() {
     	
+    	((OLLogger)logger).logFreeMemory();
+    	
+    	internalProcessRecurringGifts();
+        processPledges();
+        processReminders();
+        
+    }
+    
+
+    	
+    // Non-transactional method
+    private void internalProcessRecurringGifts() {
+    	
         if (logger.isTraceEnabled()) {
             logger.trace("processRecurringGifts:");
         }
@@ -76,52 +89,56 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
         Calendar cal = getToday();
         Date today = cal.getTime();
 
-        // Note: This is looping thru Recurring gifts instead of just calling ScheduledItemService.getNextItemsReadyToProcess() due to legacy data not having schedules set up necessarily.
+        // Note: This loops thru Recurring gifts since previous data may not have schedules set up.
         cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
         cal.add(Calendar.DATE, -1); 
-        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS }));
+        List<String> statusList = Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS });
+        
+        long count = recurringGiftDao.readRecurringGiftsCount(cal.getTime(), statusList);
+        int limit = 100;
 
-        if (recurringGifts != null) {
-        	
-        	logger.info("Processing "+recurringGifts.size()+" recurring gifts.");
-        	long t = System.currentTimeMillis();
-        	
-            for (RecurringGift recurringGift : recurringGifts) {
-            	
-            	try {
-            	
-	            	if (!recurringGift.isActivate()) continue;
-	
-	            	recurringGiftService.extendPaymentSchedule(recurringGift);
+        logger.info("Processing "+count+" recurring gifts.");
+    	long t = System.currentTimeMillis();
+    	
+        for (long start = 0; start < count; start += limit) {
+        
+        	List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), statusList, start, limit);
+
+	        if (recurringGifts != null) {
+	        	
+	            for (RecurringGift recurringGift : recurringGifts) {
 	            	
-	            	ScheduledItem item = recurringGiftService.getNextPaymentToRun(recurringGift);
-	            	if (item == null || item.getActualScheduledDate().after(today)) continue;  
+	            	try {
 	            	
-	            	logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", actualScheduledDate =" + item.getActualScheduledDate());
-	
-	            	recurringGiftService.processRecurringGift(recurringGift, item);
-	            	
-	                try {
-	                    TaskStack.execute();
-	                } catch (Exception e) {
-	                    logger.error(e.getMessage());
-	                }
-                
-            	} catch (Exception e) {
-            		logger.error("Error processing recurring gift "+recurringGift.getId(), e);
-            		TaskStack.clear();
-            	}
-                
-            }
-            
-            logger.info("Recurring gift processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
-            
+		            	if (!recurringGift.isActivate()) continue;
+		
+		            	recurringGiftService.extendPaymentSchedule(recurringGift);
+		            	
+		            	ScheduledItem item = recurringGiftService.getNextPaymentToRun(recurringGift);
+		            	if (item == null || item.getActualScheduledDate().after(today)) continue;  
+		            	
+		            	logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", actualScheduledDate =" + item.getActualScheduledDate());
+		
+		            	recurringGiftService.processRecurringGift(recurringGift, item);
+		            	
+		                try {
+		                    TaskStack.execute();
+		                } catch (Exception e) {
+		                    logger.error(e.getMessage());
+		                }
+	                
+	            	} catch (Exception e) {
+	            		logger.error("Error processing recurring gift "+recurringGift.getId(), e);
+	            		TaskStack.clear();
+	            	}
+	                
+	            }
+	            
+	        }
+        
         }
         
-        // These calls could be moved to quartz to allow scheduling independently.
-        recurringGifts = null; // if calling processReminders() from here, dont hold all this data on the stack
-        processPledges();
-        processReminders();
+        logger.info("Recurring gift processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
         
     }
     
@@ -139,29 +156,41 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
         // Note: This is looping thru pledges instead of just calling ScheduledItemService.getNextItemsReadyToProcess() due to legacy data not having schedules set up necessarily.
         cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
         cal.add(Calendar.DATE, -1); 
-        List<Pledge> pledges = pledgeDao.readPledges(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS }));
+        
+        List<String> statusList = Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS });
+        
+        long count = pledgeDao.readPledgesCount(cal.getTime(), statusList);
+        int limit = 100;
 
-        if (pledges != null) {
+    	logger.info("Processing "+count+" pledges.");
+    	long t = System.currentTimeMillis();
+    	
+        for (long start = 0; start < count; start += limit) {
         	
-        	logger.info("Processing "+pledges.size()+" pledges.");
-        	long t = System.currentTimeMillis();
-        	
-            for (Pledge pledge : pledges) {
-            	
-            	try {
-            	
-	            	pledgeService.extendPaymentSchedule(pledge);
-                
-            	} catch (Exception e) {
-            		logger.error("Error processing pledge "+pledge.getId(), e);
-            		TaskStack.clear();
-            	}
-                
-            }
-            
-            logger.info("Pledge processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
-            
+	        List<Pledge> pledges = pledgeDao.readPledges(cal.getTime(), statusList, start, limit);
+	
+	        if (pledges != null) {
+	        	
+	        	
+	            for (Pledge pledge : pledges) {
+	            	
+	            	try {
+	            	
+		            	pledgeService.extendPaymentSchedule(pledge);
+	                
+	            	} catch (Exception e) {
+	            		logger.error("Error processing pledge "+pledge.getId(), e);
+	            		TaskStack.clear();
+	            	}
+	                
+	            }
+	            
+	            
+	        }
+        
         }
+        
+        logger.info("Pledge processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
         
     }
     

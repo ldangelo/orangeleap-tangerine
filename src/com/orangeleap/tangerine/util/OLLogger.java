@@ -155,5 +155,18 @@ public class OLLogger implements Log, java.io.Serializable {
         	}
         }
     }
+    
+    public void logFreeMemory() {
+    	long freeMemory = getFreeMemory();
+    	if (freeMemory < 6400000) {
+    		error("Low memory: "+freeMemory);
+    	} else {
+        	info("Free memory = " + freeMemory);
+    	}
+    }
+    
+    public static long getFreeMemory() {
+    	return Runtime.getRuntime().maxMemory() - ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() );
+    }
 
 }

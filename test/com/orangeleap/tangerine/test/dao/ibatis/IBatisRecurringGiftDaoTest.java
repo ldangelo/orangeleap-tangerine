@@ -92,7 +92,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert recurringGift.getId() > 0;
         List<String> statuses = new ArrayList<String>(1);
         statuses.add(RecurringGift.STATUS_EXPIRED);
-        List<RecurringGift> readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("01/02/2009 00:00"), statuses);
+        List<RecurringGift> readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("01/02/2009 00:00"), statuses,0,100);
         assert readRecurringGifts.size() == 1;
         RecurringGift readRecurringGift = readRecurringGifts.get(0);
         
@@ -108,7 +108,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         recurringGift.setNextRunDate(sdf.parse("10/01/1970 08:00"));
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
 
-        readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("10/02/1970 00:00"), statuses);
+        readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("10/02/1970 00:00"), statuses,0,100);
         assert readRecurringGifts.size() == 1;
         readRecurringGift = readRecurringGifts.get(0);
         assert recurringGift.getId().equals(readRecurringGift.getId());
@@ -126,12 +126,12 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy kk:mm");
         List<String> statuses = new ArrayList<String>(1);
         statuses.add(RecurringGift.STATUS_EXPIRED);
-        List<RecurringGift> readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("10/02/1970 00:00"), statuses);
+        List<RecurringGift> readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("10/02/1970 00:00"), statuses,0,100);
         assert readRecurringGifts.size() == 1;
         
         recurringGiftDao.removeRecurringGift(readRecurringGifts.get(0));
 
-        readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("10/02/1970 00:00"), statuses);
+        readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("10/02/1970 00:00"), statuses,0,100);
         assert readRecurringGifts.isEmpty();
     }
     

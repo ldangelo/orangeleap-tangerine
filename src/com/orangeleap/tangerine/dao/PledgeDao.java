@@ -37,7 +37,9 @@ public interface PledgeDao {
 
     public List<Pledge> readPledgesByConstituentId(Long constituentId);
     
-    public List<Pledge> readPledges(Date date, List<String> statuses);
+    public List<Pledge> readPledges(Date date, List<String> statuses, long offset, int limit);
+
+    public long readPledgesCount(Date date, List<String> statuses);
 
     public List<Pledge> findNotCancelledPledges(Long constituentId);
 

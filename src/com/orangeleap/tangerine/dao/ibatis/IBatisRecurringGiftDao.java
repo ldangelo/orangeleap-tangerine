@@ -64,13 +64,15 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses) {
+    public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses, long offset, int limit) {
         if (logger.isTraceEnabled()) {
             logger.trace("readRecurringGifts: date = " + date + " statuses = " + statuses);
         }
         Map<String, Object> params = setupParams();
         params.put("date", date);
         params.put("statuses", statuses);
+        params.put("offset", offset);
+        params.put("limit", limit);
 
         List<RecurringGift> recurringGifts = getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE", params);
         if (recurringGifts != null) {
@@ -79,6 +81,18 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
             }
         }
         return recurringGifts;
+    }
+
+    @Override
+    public long readRecurringGiftsCount(Date date, List<String> statuses) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGiftsCount: date = " + date + " statuses = " + statuses);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("date", date);
+        params.put("statuses", statuses);
+
+        return (Long)getSqlMapClientTemplate().queryForObject("SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE_COUNT", params);
     }
 
     @Override

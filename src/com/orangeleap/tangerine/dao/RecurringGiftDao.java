@@ -35,7 +35,9 @@ public interface RecurringGiftDao {
     
     public List<RecurringGift> readRecurringGiftsByConstituentId(Long constituentId);
     
-    public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses);
+    public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses, long offset, int limit);
+
+    public long readRecurringGiftsCount(Date date, List<String> statuses);
 
     public RecurringGift maintainRecurringGift(RecurringGift rg);
     

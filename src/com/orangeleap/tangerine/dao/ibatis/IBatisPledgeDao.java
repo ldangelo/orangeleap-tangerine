@@ -196,17 +196,32 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Pledge> readPledges(Date date, List<String> statuses) {
+    public List<Pledge> readPledges(Date date, List<String> statuses, long offset, int limit) {
         if (logger.isTraceEnabled()) {
             logger.trace("readPledges: date = " + date + " statuses = " + statuses);
         }
         Map<String, Object> params = setupParams();
         params.put("date", date);
         params.put("statuses", statuses);
+        params.put("offset", offset);
+        params.put("limit", limit);
 
         List<Pledge> pledges = getSqlMapClientTemplate().queryForList("SELECT_PLEDGES_ON_OR_AFTER_DATE", params);
 
         return pledges;
+    }
+
+    @Override
+    public long readPledgesCount(Date date, List<String> statuses) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPledgesCount: date = " + date + " statuses = " + statuses);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("date", date);
+        params.put("statuses", statuses);
+
+        return (Long)getSqlMapClientTemplate().queryForObject("SELECT_PLEDGES_ON_OR_AFTER_DATE_COUNT", params);
+
     }
 
     @SuppressWarnings("unchecked")

@@ -108,6 +108,8 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
 	        	
 	            for (RecurringGift recurringGift : recurringGifts) {
 	            	
+            		TaskStack.clear();
+            		
 	            	try {
 	            	
 		            	if (!recurringGift.isActivate()) continue;
@@ -174,10 +176,18 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
 	        	
 	            for (Pledge pledge : pledges) {
 	            	
+            		TaskStack.clear();
+            		
 	            	try {
 	            	
 		            	pledgeService.extendPaymentSchedule(pledge);
 	                
+			            try {
+			                TaskStack.execute();
+			            } catch (Exception e) {
+			                logger.error(e.getMessage());
+			            }
+			            
 	            	} catch (Exception e) {
 	            		logger.error("Error processing pledge "+pledge.getId(), e);
 	            		TaskStack.clear();
@@ -212,6 +222,8 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
 
     	for (ScheduledItem reminder : reminders) {
         	
+    		TaskStack.clear();
+    		
         	try {
 	        	
         		reminderService.processReminder(reminder);

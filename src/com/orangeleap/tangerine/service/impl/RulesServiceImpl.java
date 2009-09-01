@@ -142,6 +142,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			ConstituentService ps, GiftService gs, MailService ms,
 			SiteService ss, TangerineUserHelper tuh, RuleBase ruleBase,
 			Constituent p) {
+
+		TaskStack.clear();
+
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
 		if (logger.isInfoEnabled()) {
 			workingMemory.addEventListener(new DebugAgendaEventListener());

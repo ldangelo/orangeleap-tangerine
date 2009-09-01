@@ -26,6 +26,7 @@ import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
 import org.springframework.beans.BeanWrapper;
@@ -70,6 +71,9 @@ public abstract class TangerineJsonListController {
                         else {
                             displayValue = handler.resolveDisplayValue(request, PropertyAccessorFactory.forBeanPropertyAccess(thisEntity), field, fieldValue);
                         }
+                    }
+                    if (displayValue instanceof String) {
+                        displayValue = HttpUtil.jsEscape((String) displayValue);
                     }
                     paramMap.put(TangerineForm.escapeFieldName(fieldPropertyName), displayValue);
                 }

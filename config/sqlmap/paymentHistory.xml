@@ -17,12 +17,16 @@
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
+    <sql id="PAYMENT_HISTORY_COLS_FRAGMENT">
+        phis.PAYMENT_HISTORY_ID, phis.AMOUNT, phis.CURRENCY_CODE, phis.PAYMENT_DESC,
+        phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.PAYMENT_STATUS,
+        phis.TRANSACTION_DATE, phis.TRANSACTION_ID,
+        phis.GIFT_ID, phis.ADJUSTED_GIFT_ID 
+    </sql>
+
 	<sql id="SELECT_PAYMENT_HISTORY_FRAGMENT">
 		select
-		phis.PAYMENT_HISTORY_ID, phis.AMOUNT, phis.CURRENCY_CODE, phis.PAYMENT_DESC,
-		phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.PAYMENT_STATUS,  
-		phis.TRANSACTION_DATE, phis.TRANSACTION_ID, 
-		phis.GIFT_ID, phis.ADJUSTED_GIFT_ID, 
+        <include refid="PAYMENT_HISTORY_COLS_FRAGMENT" />,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
 		from PAYMENT_HISTORY phis
@@ -40,10 +44,7 @@
 
 	<sql id="SELECT_SORT_NULL_LAST_PAYMENT_HISTORY_FRAGMENT">
 		select
-		phis.PAYMENT_HISTORY_ID, phis.AMOUNT, phis.CURRENCY_CODE, phis.PAYMENT_DESC,
-		phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.PAYMENT_STATUS, 
-		phis.TRANSACTION_DATE, phis.TRANSACTION_ID, 
-		phis.GIFT_ID, phis.ADJUSTED_GIFT_ID, 
+        <include refid="PAYMENT_HISTORY_COLS_FRAGMENT" />,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
 		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
 
@@ -91,7 +92,49 @@
         <include refid="PAYMENT_HISTORY_ROWCOUNT_FRAGMENT"/>
 		and p.CONSTITUENT_ID = #constituentId#
     </select>
-	
+
+    <select id="SELECT_LIMITED_PAYMENT_HISTORY_BY_CONSITUENT_ID" resultMap="PAYMENT_HISTORY_RESULT" parameterClass="map">
+        select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+        from
+
+        (select
+        <include refid="PAYMENT_HISTORY_COLS_FRAGMENT" />,
+      	<include refid="CONSTITUENT_COLS_FRAGMENT"/>
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from PAYMENT_HISTORY phis
+        inner join CONSTITUENT p on phis.CONSTITUENT_ID = p.CONSTITUENT_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on phis.PAYMENT_HISTORY_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and phis.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        isnull ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_PAYMENT_HISTORY_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(phis.PAYMENT_HISTORY_ID)
+        from PAYMENT_HISTORY phis
+        inner join CONSTITUENT p on phis.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and phis.CONSTITUENT_ID = #constituentId#
+    </select>
 
 	<insert id="INSERT_PAYMENT_HISTORY" parameterClass="com.orangeleap.tangerine.domain.PaymentHistory">
 		insert into PAYMENT_HISTORY (AMOUNT, CURRENCY_CODE, PAYMENT_DESC,

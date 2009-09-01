@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Locale;
 
 @Service("paymentHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -49,4 +51,20 @@ public class PaymentHistoryServiceImpl extends AbstractTangerineService implemen
         }
 		return paymentHistoryDao.readPaymentHistoryBySite(sortinfo);
 	}
+    @Override
+    public List<PaymentHistory> readAllPaymentHistoryByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllPaymentHistoryByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return paymentHistoryDao.readAllPaymentHistoryByConstituentId(constituentId, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        return paymentHistoryDao.readCountByConstituentId(constituentId);
+    }
 }

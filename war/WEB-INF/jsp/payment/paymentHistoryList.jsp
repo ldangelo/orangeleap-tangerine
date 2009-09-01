@@ -10,6 +10,6 @@
         </body>
     </html>
     <page:param name="scripts">
-        <script type="text/javascript" src="js/lists/paymentHistoryList.js"></script>
+        <tangerine:fields pageName="paymentHistoryList"/>
     </page:param>
 </page:applyDecorator>

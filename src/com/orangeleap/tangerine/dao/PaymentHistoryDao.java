@@ -22,6 +22,9 @@ import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
+import java.util.List;
+import java.util.Locale;
+
 public interface PaymentHistoryDao {
 
     public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory);
@@ -30,4 +33,8 @@ public interface PaymentHistoryDao {
 
     public PaginatedResult readPaymentHistoryBySite(SortInfo sortinfo);
 
+    List<PaymentHistory> readAllPaymentHistoryByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

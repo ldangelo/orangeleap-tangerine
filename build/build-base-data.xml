@@ -75,7 +75,7 @@
             <transaction src="${basedir}/db/prod/pages/phoneList.sql"/>
             <transaction src="${basedir}/db/prod/pages/phoneManager.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/phoneManagerEdit.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/paymentHistory.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/paymentHistoryList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/communicationHistory.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/communicationHistoryList.sql"/>
 		    <transaction src="${basedir}/db/prod/pages/communicationHistoryView.sql"/>

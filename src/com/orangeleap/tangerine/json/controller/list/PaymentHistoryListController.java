@@ -19,108 +19,38 @@
 package com.orangeleap.tangerine.json.controller.list;
 
 import com.orangeleap.tangerine.domain.PaymentHistory;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
-import com.orangeleap.tangerine.util.HttpUtil;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
-import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * This controller handles JSON requests for populating
- * the grid of payment history.
- *
- * @version 1.0
- */
 @Controller
-public class PaymentHistoryListController {
-
-    /**
-     * Logger for this class and subclasses
-     */
-    protected final Log logger = OLLogger.getLog(getClass());
-
-    private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
-
-    static {
-        NAME_MAP.put("id", "phis.PAYMENT_HISTORY_ID");
-        NAME_MAP.put("date", "phis.TRANSACTION_DATE");
-        NAME_MAP.put("constituentid", "phis.CONSTITUENT_ID");
-        NAME_MAP.put("type", "phis.PAYMENT_HISTORY_TYPE");
-        NAME_MAP.put("paymenttype", "phis.PAYMENT_TYPE");
-        NAME_MAP.put("paymentstatus", "phis.PAYMENT_STATUS");
-        NAME_MAP.put("description", "phis.PAYMENT_DESC");
-        NAME_MAP.put("amount", "phis.AMOUNT");
-        NAME_MAP.put("currencycode", "phis.CURRENCY_CODE");
-    }
-
-    private Map<String, Object> paymentHistoryToMap(PaymentHistory ph) {
-
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", ph.getId());
-        map.put("date", formatter.format(ph.getTransactionDate()));
-        map.put("constituentid", ph.getConstituent().getId());
-        map.put("type", ph.getPaymentHistoryType().name());
-        map.put("paymenttype", ph.getPaymentType());
-        map.put("paymentstatus", ph.getPaymentStatus());
-        map.put("description", HttpUtil.jsEscape(ph.getDescription()));
-        map.put("amount", ph.getAmount());
-        map.put("currencycode", ph.getCurrencyCode());
-
-        return map;
-
-    }
+public class PaymentHistoryListController extends TangerineJsonListController {
 
     @Resource(name = "paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/paymentHistoryList.json")
-    public ModelMap getPaymentHistory(HttpServletRequest request, SortInfo sortInfo) {
+    public ModelMap getPaymentHistory(HttpServletRequest request, SortInfo sort) {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
+        List<PaymentHistory> histories = paymentHistoryService.readAllPaymentHistoryByConstituentId(constituentId, sort, request.getLocale());
+        List<SectionField> sectionFields = findSectionFields("paymentHistoryList");
+        addListFieldsToMap(request, sectionFields, histories, list);
 
-        List<Map> rows = new ArrayList<Map>();
-
-        // if we're not getting back a valid column name, possible SQL injection,
-        // so send back an empty list.
-        if (!sortInfo.validateSortField(NAME_MAP.keySet())) {
-            logger.warn("getgetPaymentHistory called with invalid sort column: [" + sortInfo.getSort() + "]");
-            return new ModelMap("rows", rows);
-        }
-
-        // set the sort to the valid column name, based on the map
-        sortInfo.setSort((String) NAME_MAP.get(sortInfo.getSort()));
-
-        String constituentId = request.getParameter("constituentId");
-        PaginatedResult result = null;
-        if (GenericValidator.isBlankOrNull(constituentId)) {
-            result = paymentHistoryService.readPaymentHistoryBySite(sortInfo);
-        } else {
-            result = paymentHistoryService.readPaymentHistory(Long.valueOf(constituentId), sortInfo);
-        }
-
-        List<PaymentHistory> list = result.getRows();
-
-        for (PaymentHistory ph : list) {
-            rows.add(paymentHistoryToMap(ph));
-        }
-
-        ModelMap map = new ModelMap("rows", rows);
-        map.put("totalRows", result.getRowCount());
+        int count = paymentHistoryService.readCountByConstituentId(constituentId);
+        ModelMap map = new ModelMap("rows", list);
+        map.put("totalRows", count);
         return map;
     }
 

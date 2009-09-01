@@ -64,20 +64,29 @@
 	</select>
 
     <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_LIST_RESULT" parameterClass="map">
-        select
-                
-        <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
-        <include refid="ADDRESS_COLS_FRAGMENT" />,
-        <include refid="PHONE_COLS_FRAGMENT" />,
-        <include refid="EMAIL_COLS_FRAGMENT" />,
-
-        ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') as majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') as lapsedDonor
+        select innerQuery.*
+        
         <dynamic prepend=",">
         	<isNotEqual property="sortColumn" compareValue="majorDonor">
 	        	<isNotEqual property="sortColumn" compareValue="lapsedDonor">
         			IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
         		</isNotEqual>
         	</isNotEqual>
+        </dynamic>
+
+        from
+
+        (select
+                
+        <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="EMAIL_COLS_FRAGMENT" />,
+        ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') as majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') as lapsedDonor
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
         </dynamic>
 
         from CONSTITUENT p
@@ -95,13 +104,13 @@
             </isNotNull>
         </isNotNull>
 
-        where p.SITE_NAME = #siteName#
+        where p.SITE_NAME = #siteName#) as innerQuery
         order by 
-       	<isNotEqual property="sortColumn" compareValue="majorDonor">
-        	<isNotEqual property="sortColumn" compareValue="lapsedDonor">
-				isnull ASC, 
-       		</isNotEqual>
-       	</isNotEqual>
+        <isNotEqual property="sortColumn" compareValue="majorDonor">
+            <isNotEqual property="sortColumn" compareValue="lapsedDonor">
+                isnull ASC,
+            </isNotEqual>
+        </isNotEqual>
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$ 
         limit $offset$,$limit$
     </select>

@@ -5,14 +5,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">       
 
-    <bean id="paymentHistory" class="com.orangeleap.tangerine.controller.DummyController">
-		<property name="viewName" value="payment/paymentHistory"/>
+    <bean id="paymentHistoryGridController" class="com.orangeleap.tangerine.controller.payment.PaymentHistoryGridController" parent="tangerineGridController">
+        <property name="viewName" value="payment/paymentHistoryList"/>
     </bean>
-    
+
     <bean id="paymentHistoryUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-                <prop key="/paymentHistory.htm">paymentHistory</prop>
+                <prop key="/paymentHistory.htm">paymentHistoryGridController</prop>
 			</props>
 		</property>
 	</bean>

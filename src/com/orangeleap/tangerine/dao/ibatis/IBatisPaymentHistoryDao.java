@@ -20,9 +20,11 @@ package com.orangeleap.tangerine.dao.ibatis;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -86,4 +88,28 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
         resp.setRowCount(count);
         return resp;
 	}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<PaymentHistory> readAllPaymentHistoryByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllPaymentHistoryByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.PAYMENT_HISTORY, "PAYMENT_HISTORY.PAYMENT_HISTORY_RESULT", sortPropertyName, direction, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_PAYMENT_HISTORY_BY_CONSITUENT_ID", params);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_PAYMENT_HISTORY_COUNT_BY_CONSTITUENT_ID", params);
+    }
 }

@@ -67,7 +67,7 @@ public enum PageType {
     phoneManagerEdit("/phoneManagerEdit.htm"),
     phoneList("/phoneList.htm"),
     importexport("/importexport.htm"),
-    paymentHistory("/paymentHistory.htm"),
+    paymentHistoryList("/paymentHistory.htm"),
     communicationHistory("/communicationHistory.htm"),
     communicationHistoryList("/communicationHistoryList.htm"),
     communicationHistorySearch("/communicationHistorySearch.htm"),

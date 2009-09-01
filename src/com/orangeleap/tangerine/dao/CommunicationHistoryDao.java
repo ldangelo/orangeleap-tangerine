@@ -22,6 +22,9 @@ import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
+import java.util.List;
+import java.util.Locale;
+
 public interface CommunicationHistoryDao {
 
     public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory);
@@ -30,4 +33,8 @@ public interface CommunicationHistoryDao {
 
     public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId);
 
+    List<CommunicationHistory> readAllCommunicationHistoryByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

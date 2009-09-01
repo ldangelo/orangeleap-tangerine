@@ -37,6 +37,8 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Locale;
 
 @Service("communicationHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -126,5 +128,22 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
         CommunicationHistory communicationHistory = new CommunicationHistory();
         communicationHistory.setConstituent(constituent);
         return communicationHistory;
+    }
+
+    @Override
+    public List<CommunicationHistory> readAllCommunicationHistoryByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllCommunicationHistoryByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return communicationHistoryDao.readAllCommunicationHistoryByConstituentId(constituentId, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        return communicationHistoryDao.readCountByConstituentId(constituentId);
     }
 }

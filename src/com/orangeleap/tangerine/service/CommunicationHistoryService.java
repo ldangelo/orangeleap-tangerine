@@ -24,6 +24,9 @@ import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.validation.BindException;
 
+import java.util.List;
+import java.util.Locale;
+
 public interface CommunicationHistoryService {
 
     public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) throws BindException;
@@ -34,4 +37,7 @@ public interface CommunicationHistoryService {
 
     public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId);
 
+    List<CommunicationHistory> readAllCommunicationHistoryByConstituentId(Long constituentId, SortInfo sort, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

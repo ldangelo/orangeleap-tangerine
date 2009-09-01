@@ -28,7 +28,7 @@
         <property name="successView" value="communicationHistory/communicationHistorySearch"/>
     </bean>
 
-    <bean id="communicationHistoryListController" class="com.orangeleap.tangerine.controller.DummyController">
+    <bean id="communicationHistoryGridController" class="com.orangeleap.tangerine.controller.communicationHistory.CommunicationHistoryGridController">
         <property name="viewName" value="communicationHistory/communicationHistoryList"/>
     </bean>
     
@@ -38,7 +38,7 @@
 		        <prop key="/communicationHistory.htm">communicationHistoryFormController</prop>
 		    	<prop key="/communicationHistoryView.htm">communicationHistoryViewController</prop>
 		        <prop key="/communicationHistorySearch.htm">communicationHistorySearchController</prop>
-		        <prop key="/communicationHistoryList.htm">communicationHistoryListController</prop>
+		        <prop key="/communicationHistoryList.htm">communicationHistoryGridController</prop>
 			</props>
 		</property>
 	</bean>

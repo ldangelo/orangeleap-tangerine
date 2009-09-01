@@ -18,19 +18,20 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Repository("communicationHistoryDAO")
 public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements CommunicationHistoryDao {
@@ -83,4 +84,29 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
 		params.put("id", communicationHistoryId);
 		return (CommunicationHistory) getSqlMapClientTemplate().queryForObject("SELECT_COMMUNICATION_HISTORY_BY_ID", params);
 	}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<CommunicationHistory> readAllCommunicationHistoryByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllCommunicationHistoryByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.COMMUNICATION_HISTORY, "COMMUNICATION_HISTORY.COMMUNICATION_HISTORY_RESULT",
+                sortPropertyName, direction, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_COMMUNICATION_HISTORY_BY_CONSITUENT_ID", params);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_COMMUNICATION_HISTORY_COUNT_BY_CONSTITUENT_ID", params);
+    }
 }

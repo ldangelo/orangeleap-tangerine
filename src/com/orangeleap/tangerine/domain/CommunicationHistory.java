@@ -54,6 +54,16 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     private Phone phone;
     private Email email;
 
+    public CommunicationHistory() { }
+
+    public CommunicationHistory(Long constituentId) {
+        this.constituentId = constituentId;
+    }
+
+    public CommunicationHistory(Constituent constituent) {
+        this.constituent = constituent;
+    }
+
     public Site getSite() {
         return getConstituent().getSite();
     }

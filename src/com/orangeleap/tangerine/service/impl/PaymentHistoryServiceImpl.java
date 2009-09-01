@@ -51,6 +51,7 @@ public class PaymentHistoryServiceImpl extends AbstractTangerineService implemen
         }
 		return paymentHistoryDao.readPaymentHistoryBySite(sortinfo);
 	}
+
     @Override
     public List<PaymentHistory> readAllPaymentHistoryByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
         if (logger.isTraceEnabled()) {

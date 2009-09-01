@@ -11,24 +11,28 @@
 		<result property="giftId" column="GIFT_ID" jdbcType="BIGINT" />
 		<result property="pledgeId" column="PLEDGE_ID" jdbcType="BIGINT" />
 		<result property="recurringGiftId" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
-		<result property="comments" column="COMMENTS" jdbcType="LONGVARCHAR" />
+		<result property="comments" column="COMM_HIST_COMMENTS" jdbcType="LONGVARCHAR" />
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
 		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
 		<result property="email" resultMap="EMAIL.EMAIL_RESULT" />
-		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="createDate" column="COMM_HIST_CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="updateDate" column="COMM_HIST_UPDATE_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
+
+    <sql id="COMMUNICATION_HISTORY_COLS_FRAGMENT">
+        ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.ENTRY_TYPE, ch.CREATE_DATE as COMM_HIST_CREATE_DATE, ch.RECORD_DATE,
+        ch.SYSTEM_GENERATED, ch.UPDATE_DATE as COMM_HIST_UPDATE_DATE, ch.COMMENTS as COMM_HIST_COMMENTS, ch.GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID,
+
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="EMAIL_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />
+    </sql>
 
 	<sql id="SELECT_COMMUNICATION_HISTORY_FRAGMENT">
 		select
-		ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.ENTRY_TYPE, ch.CREATE_DATE, ch.RECORD_DATE,
-		ch.SYSTEM_GENERATED, ch.UPDATE_DATE, ch.COMMENTS, ch.GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID,
-
-		<include refid="ADDRESS_COLS_FRAGMENT" />,
-		<include refid="PHONE_COLS_FRAGMENT" />,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
-		<include refid="CONSTITUENT_COLS_FRAGMENT" />
+		<include refid="COMMUNICATION_HISTORY_COLS_FRAGMENT" />
 
 		from COMMUNICATION_HISTORY ch
 		inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
@@ -58,13 +62,7 @@
 	
 	<select id="SELECT_COMMUNICATION_HISTORY_FOR_CONSTITUENT_ID_PAGINATED" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
 		select
-		ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.ENTRY_TYPE, ch.CREATE_DATE, ch.RECORD_DATE,
-		ch.SYSTEM_GENERATED, ch.UPDATE_DATE, ch.COMMENTS, ch.GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID,
-
-		<include refid="ADDRESS_COLS_FRAGMENT" />,
-		<include refid="PHONE_COLS_FRAGMENT" />,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
-		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+        <include refid="COMMUNICATION_HISTORY_COLS_FRAGMENT" />,
 		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
 
 		from COMMUNICATION_HISTORY ch
@@ -86,6 +84,51 @@
     <select id="COMMUNICATION_HISTORY_FOR_CONSTITUENT_ID_ROWCOUNT" resultClass="long" parameterClass="map" >
         <include refid="COMMUNICATION_HISTORY_ROWCOUNT_FRAGMENT"/>
 		and ch.CONSTITUENT_ID = #constituentId#
+    </select>
+
+    <select id="SELECT_LIMITED_COMMUNICATION_HISTORY_BY_CONSITUENT_ID" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
+        select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+        from
+
+        (select
+        <include refid="COMMUNICATION_HISTORY_COLS_FRAGMENT" />
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from COMMUNICATION_HISTORY ch
+        inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join EMAIL e on ch.EMAIL_ID = e.EMAIL_ID
+        left outer join PHONE ph on ch.PHONE_ID = ph.PHONE_ID
+        left outer join ADDRESS addr on ch.ADDRESS_ID = addr.ADDRESS_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on ch.COMMUNICATION_HISTORY_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and ch.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        isnull ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_COMMUNICATION_HISTORY_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(ch.COMMUNICATION_HISTORY_ID)
+        from COMMUNICATION_HISTORY ch
+        inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and ch.CONSTITUENT_ID = #constituentId#
     </select>
 
 	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">

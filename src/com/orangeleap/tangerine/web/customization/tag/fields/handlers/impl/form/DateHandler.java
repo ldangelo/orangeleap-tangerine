@@ -81,7 +81,7 @@ public class DateHandler extends AbstractFieldHandler {
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object displayValue = StringConstants.EMPTY;
         if (fieldValue != null) {
-            final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
             if (fieldValue instanceof Date) {
                 displayValue = sdf.format(fieldValue);
             }

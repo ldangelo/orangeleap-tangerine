@@ -10,6 +10,6 @@
         </body>
     </html>
     <page:param name="scripts">
-        <script type="text/javascript" src="js/lists/communicationHistoryList.js"></script>
+        <tangerine:fields pageName="communicationHistoryList"/>
     </page:param>
 </page:applyDecorator>

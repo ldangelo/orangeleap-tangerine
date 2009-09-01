@@ -18,11 +18,11 @@
 	    <property name="successView" value="redirect:/constituent.htm" />
 	</bean>
 
-    <bean id="constituentView" class="com.orangeleap.tangerine.controller.constituent.ConstituentViewController">
+    <bean id="constituentViewController" class="com.orangeleap.tangerine.controller.constituent.ConstituentViewController">
         <property name="viewName" value="constituent/constituentView"/>
     </bean>
 
-    <bean id="constituentList" class="com.orangeleap.tangerine.controller.constituent.ConstituentGridController" parent="tangerineGridController">
+    <bean id="constituentGridController" class="com.orangeleap.tangerine.controller.constituent.ConstituentGridController" parent="tangerineGridController">
         <property name="viewName" value="constituent/constituentList"/>
     </bean>
 
@@ -31,8 +31,8 @@
 		    <props>
 			    <prop key="/constituent.htm">constituentFormController</prop>
 		        <prop key="/constituentSearch.htm">constituentSearch</prop>
-		        <prop key="/constituentView.htm">constituentView</prop>
-                <prop key="/constituentList.htm">constituentList</prop>
+		        <prop key="/constituentView.htm">constituentViewController</prop>
+                <prop key="/constituentList.htm">constituentGridController</prop>
 			</props>
 		</property>
 	</bean>

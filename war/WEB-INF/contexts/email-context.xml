@@ -15,7 +15,7 @@
     	<property name="formView" value="email/emailManagerEdit"/>
     </bean>
     
-    <bean id="emailListController" class="com.orangeleap.tangerine.controller.communication.email.EmailGridController" parent="tangerineGridController">
+    <bean id="emailGridController" class="com.orangeleap.tangerine.controller.communication.email.EmailGridController" parent="tangerineGridController">
         <property name="viewName" value="email/emailList"/>
     </bean>
 
@@ -24,7 +24,7 @@
 		    <props>
                 <prop key="/emailManager.htm">emailManager</prop>
                 <prop key="/emailManagerEdit.htm">emailManagerEdit</prop>
-                <prop key="/emailList.htm">emailListController</prop>
+                <prop key="/emailList.htm">emailGridController</prop>
 			</props>
 		</property>
 	</bean>

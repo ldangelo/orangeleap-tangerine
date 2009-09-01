@@ -195,6 +195,14 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         // no-op
     }
 
+    public String getCreditCardNumberReadOnly() {
+        return getCreditCardNumberDisplay();
+    }
+
+    public void setCreditCardNumberReadOnly(String str) {
+        // no-op
+    }
+
     public Date getCreditCardExpiration() {
         return creditCardExpiration;
     }
@@ -216,6 +224,14 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     }
 
     public void setAchRoutingNumberDisplay(String str) {
+        // no-op
+    }
+
+    public String getAchRoutingNumberReadOnly() {
+        return getAchRoutingNumberDisplay();
+    }
+
+    public void setAchRoutingNumberReadOnly(String str) {
         // no-op
     }
 
@@ -248,6 +264,14 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     }
 
     public void setAchAccountNumberDisplay(String str) {
+        // no-op
+    }
+
+    public String getAchAccountNumberReadOnly() {
+        return getAchAccountNumberDisplay();
+    }
+
+    public void setAchAccountNumberReadOnly(String str) {
         // no-op
     }
 

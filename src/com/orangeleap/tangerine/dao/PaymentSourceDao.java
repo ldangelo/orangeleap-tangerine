@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.dao;
 import com.orangeleap.tangerine.domain.PaymentSource;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface PaymentSourceDao {
 
@@ -39,4 +40,9 @@ public interface PaymentSourceDao {
     public List<PaymentSource> readExistingCreditCards(String creditCardNumber);
 
     public List<PaymentSource> readExistingAchAccounts(String achAccountNum, String achRoutingNum);
+
+    List<PaymentSource> readAllPaymentSourcesByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

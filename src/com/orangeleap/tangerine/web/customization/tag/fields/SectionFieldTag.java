@@ -28,6 +28,7 @@ import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -191,7 +192,14 @@ public class SectionFieldTag extends AbstractTag {
                         String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
                         sb.append("type: '").append(extType).append("'");
                         if ("date".equals(extType)) {
-                            sb.append(", dateFormat: 'Y-m-d H:i:s'");
+                            sb.append(", dateFormat: '");
+                            if (FieldType.CC_EXPIRATION.equals(sectionFld.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(sectionFld.getFieldType())) {
+                                sb.append("m-d-Y");
+                            }
+                            else {
+                                sb.append("Y-m-d H:i:s");
+                            }
+                            sb.append("'");
                         }
                         sb.append("}");
                         if (++z < fields.size()) {
@@ -228,7 +236,14 @@ public class SectionFieldTag extends AbstractTag {
                                 ExtTypeHandler.EXT_DATE.equals(extType) || ExtTypeHandler.EXT_STRING.equals(extType)) {
                             sb.append(", renderer: ");
                             if (ExtTypeHandler.EXT_DATE.equals(extType)) {
-                                sb.append("Ext.util.Format.dateRenderer('m-d-y g:ia')\n");
+                                sb.append("Ext.util.Format.dateRenderer('");
+                                if (FieldType.CC_EXPIRATION.equals(sectionFld.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(sectionFld.getFieldType())) {
+                                    sb.append("m / Y");
+                                }
+                                else {
+                                    sb.append("m-d-y g:ia");
+                                }
+                                sb.append("')\n");
                             }
                             else if (ExtTypeHandler.EXT_FLOAT.equals(extType)) {
                                 sb.append("OrangeLeap.amountRenderer\n");

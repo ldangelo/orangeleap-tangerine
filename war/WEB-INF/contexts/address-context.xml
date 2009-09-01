@@ -16,7 +16,7 @@
     	<property name="formView" value="address/addressManagerEdit"/>
     </bean>
 
-    <bean id="addressListController" class="com.orangeleap.tangerine.controller.communication.address.AddressGridController" parent="tangerineGridController">
+    <bean id="addressGridController" class="com.orangeleap.tangerine.controller.communication.address.AddressGridController" parent="tangerineGridController">
         <property name="viewName" value="address/addressList"/>
     </bean>
 
@@ -25,7 +25,7 @@
 		    <props>
 				<prop key="/addressManager.htm">addressManager</prop>
 				<prop key="/addressManagerEdit.htm">addressManagerEdit</prop>
-                <prop key="/addressList.htm">addressListController</prop>
+                <prop key="/addressList.htm">addressGridController</prop>
 			</props>
 		</property>
 	</bean>

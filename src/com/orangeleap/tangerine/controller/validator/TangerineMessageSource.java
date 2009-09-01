@@ -32,7 +32,7 @@ import com.orangeleap.tangerine.type.MessageResourceType;
 
 /**
  * Messages can be obtained either from the database or from a message resource bundle.
- * Checks the message bundle first before looking at the DB for messages.
+ * Checks the database first first before looking at the message bundle for messages.
  */
 public class TangerineMessageSource extends AbstractMessageSource implements ResourceLoaderAware {
 

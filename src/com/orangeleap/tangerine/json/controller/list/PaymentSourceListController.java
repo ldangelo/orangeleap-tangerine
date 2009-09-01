@@ -19,11 +19,13 @@
 package com.orangeleap.tangerine.json.controller.list;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,70 +40,24 @@ import java.util.Map;
 import java.text.SimpleDateFormat;
 
 @Controller
-public class PaymentSourceListController {
+public class PaymentSourceListController extends TangerineJsonListController {
 
     @Resource(name = "paymentSourceService")
     private PaymentSourceService paymentSourceService;
 
-    @Resource(name = "pageCustomizationService")
-    private PageCustomizationService pageCustomizationService;
-
-    @Resource(name = "tangerineUserHelper")
-    private TangerineUserHelper tangerineUserHelper;
-
     @SuppressWarnings("unchecked")
     @RequestMapping("/paymentSourceList.json")
-    public ModelMap listPaymentSources(HttpServletRequest request) {
+    public ModelMap listPaymentSources(HttpServletRequest request, SortInfo sort) {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
+        List<PaymentSource> sources = paymentSourceService.readAllPaymentSourcesByConstituentId(constituentId, sort, request.getLocale());
+        List<SectionField> sectionFields = findSectionFields("paymentSourceList");
+        addListFieldsToMap(request, sectionFields, sources, list);
 
-//        List<SectionDefinition> sectionDefs = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.PaymentSourceList, tangerineUserHelper.lookupUserRoles());
-//        if (sectionDefs != null) {
-//            SectionDefinition sectionDef = sectionDefs.get(0); // Should only be 1
-//            List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
-//            for (SectionField thisField : sectionFields) {
-//
-//            }
-//        }
-
-        List<Map> list = new ArrayList<Map>();
-        String constituentId = request.getParameter("constituentId");
-        String sortField = request.getParameter("sort");
-        boolean isAsc = "ASC".equals(request.getParameter("dir"));
-
-        List<PaymentSource> sources = paymentSourceService.readAllPaymentSourcesACHCreditCard(Long.parseLong(constituentId));
-
-        for (PaymentSource paymentSource : sources) {
-            list.add(paymentSourceToMap(paymentSource, constituentId));
-        }
-        int count = sources.size();
-
-        MutableSortDefinition sortDef = new MutableSortDefinition(sortField, true, isAsc);
-        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(list, sortDef);
-        pagedListHolder.resort();
+        int count = paymentSourceService.readCountByConstituentId(constituentId);
 
         ModelMap map = new ModelMap("rows", list);
         map.put("totalRows", count);
-
-        return map;
-    }
-
-    private Map<String, Object> paymentSourceToMap(PaymentSource paymentSource, String constituentId) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", paymentSource.getId());
-        map.put("constituentId", constituentId);
-        map.put("paymentProfile", paymentSource.getProfile());
-        map.put("paymentType", paymentSource.getPaymentType());
-        if (PaymentSource.ACH.equals(paymentSource.getPaymentType())) {
-            map.put("holderName", paymentSource.getAchHolderName());
-            map.put("routingNumber", paymentSource.getAchRoutingNumberDisplay());
-        }
-        else if (PaymentSource.CREDIT_CARD.equals(paymentSource.getPaymentType())) {
-            map.put("holderName", paymentSource.getCreditCardHolderName());
-            map.put("creditCardType", paymentSource.getCreditCardType());
-            SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.CREDIT_CARD_EXP_DISPLAY_FORMAT);
-            map.put("creditCardExpiration", sdf.format(paymentSource.getCreditCardExpiration()));
-        }
-        map.put("lastFourDigits", paymentSource.getLastFourDigits());
-        map.put("active", !paymentSource.isInactive());
 
         return map;
     }

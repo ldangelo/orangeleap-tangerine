@@ -22,6 +22,12 @@
         <result property="updateDate" column="PAYMENT_SRC_UPDATE_DATE" jdbcType="TIMESTAMP"/>
 	</resultMap>
 
+    <resultMap id="PAYMENT_SOURCE_LIST_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id" extends="PAYMENT_SOURCE_RESULT">
+        <result property="achRoutingNumberDisplay" column="PAYMENT_SRC_ACH_ROUTING_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
+        <result property="achAccountNumberDisplay" column="PAYMENT_SRC_ACH_ACCOUNT_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
+        <result property="creditCardNumberDisplay" column="PAYMENT_SRC_CREDIT_CARD_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
+    </resultMap>
+
     <sql id="PAYMENT_SRC_COLS_FRAGMENT">
 		ps.PAYMENT_SOURCE_ID, ps.ACH_ACCOUNT_NUMBER as PAYMENT_SRC_ACH_ACCOUNT_NUMBER, 
 		ps.ACH_HOLDER_NAME as PAYMENT_SRC_ACH_HOLDER_NAME, ps.ACH_ROUTING_NUMBER as PAYMENT_SRC_ACH_ROUTING_NUMBER,
@@ -91,6 +97,56 @@
 		</iterate>
 		order by PAYMENT_SRC_TYPE
 	</select>
+
+    <select id="SELECT_LIMITED_PAYMENT_SOURCES_BY_CONSITUENT_ID" resultMap="PAYMENT_SOURCE_LIST_RESULT" parameterClass="map">
+        select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+        from
+
+        (select
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+        ps.CREDIT_CARD_NUMBER as PAYMENT_SRC_CREDIT_CARD_NUMBER_READ_ONLY,
+        ps.ACH_ACCOUNT_NUMBER as PAYMENT_SRC_ACH_ACCOUNT_NUMBER_READ_ONLY,
+        ps.ACH_ROUTING_NUMBER as PAYMENT_SRC_ACH_ROUTING_NUMBER_READ_ONLY,
+        <include refid="ADDRESS_COLS_FRAGMENT"/>,
+	    <include refid="PHONE_COLS_FRAGMENT"/>,
+      	<include refid="CONSTITUENT_COLS_FRAGMENT"/>
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from PAYMENT_SOURCE ps
+        inner join CONSTITUENT p ON ps.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join PHONE ph on ps.PHONE_ID = ph.PHONE_ID
+        left outer join ADDRESS addr on ps.ADDRESS_ID = addr.ADDRESS_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on ps.PAYMENT_SOURCE_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and ps.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        isnull ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_PAYMENT_SOURCE_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(ps.PAYMENT_SOURCE_ID)
+        from PAYMENT_SOURCE ps
+        inner join CONSTITUENT p on ps.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and ps.CONSTITUENT_ID = #constituentId#
+    </select>
 
 	<insert id="INSERT_PAYMENT_SOURCE" parameterClass="com.orangeleap.tangerine.domain.PaymentSource">
 		insert into PAYMENT_SOURCE (ACH_ACCOUNT_NUMBER,

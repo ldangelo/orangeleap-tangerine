@@ -20,10 +20,12 @@ package com.orangeleap.tangerine.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.validation.BindException;
 
 public interface PaymentSourceService {
@@ -49,4 +51,8 @@ public interface PaymentSourceService {
     public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSourceAware paymentSourceAware);
     
     public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSource paymentSource);
+
+    List<PaymentSource> readAllPaymentSourcesByConstituentId(Long constituentId, SortInfo sort, Locale locale);
+    
+    int readCountByConstituentId(Long constituentId);
 }

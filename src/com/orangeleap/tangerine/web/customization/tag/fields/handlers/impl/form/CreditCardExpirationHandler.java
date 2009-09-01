@@ -125,7 +125,8 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
         else if (domainObject instanceof PaymentSourceAware) {
             paymentSource = ((PaymentSourceAware) domainObject).getPaymentSource();
         }
-        return paymentSource != null ? new SimpleDateFormat(StringConstants.CREDIT_CARD_EXP_DISPLAY_FORMAT).format(paymentSource.getCreditCardExpiration()) :
+        return paymentSource != null && paymentSource.getCreditCardExpiration() != null ?
+                new SimpleDateFormat("MM-dd-yyyy").format(paymentSource.getCreditCardExpiration()) :
                 StringConstants.EMPTY;
     }
 }

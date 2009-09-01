@@ -45,7 +45,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/constituentSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentManager.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/paymentSource.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/paymentSourceList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentManagerEdit.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>

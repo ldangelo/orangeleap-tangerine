@@ -22,11 +22,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Date;
-import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -36,6 +34,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.service.SchemaService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineDataSource;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -48,15 +47,8 @@ public class JobSchemaIterator extends QuartzJobBean {
 
 	// Allows one instance on the cluster to run jobs and not the others.
 	private static final String JOBS_ENABLED = "tangerine.jobs.enabled";
+	private static final String JOBS_FILTER = "tangerine.jobs.filter";
 
-
-    private static long minimumTime = 1000 * 60 * 60 * 22; // 1 day - 2 hrs for time changes and delays
-    
-    private static Date lastRun = new Date(0);
-
-    private static boolean isTooFrequent(Date d1, Date d2) {
-        return d1.getTime() - d2.getTime() < minimumTime;
-    }
 
 
 	@Override
@@ -65,16 +57,15 @@ public class JobSchemaIterator extends QuartzJobBean {
         synchronized(JobSchemaIterator.class) {
 
             
-//            Date now = new Date();
-//            if (isTooFrequent(now, lastRun)) {
-//                logger.error("Skipping multiple quartz run.");
-//                return;
-//            }
-//            lastRun = now;
-
-
-
             String jobsEnabledValue = System.getProperty(JOBS_ENABLED);
+            String jobsFilterValue = System.getProperty(JOBS_FILTER);
+            
+            Pattern pattern = null;
+            if (jobsFilterValue != null) {
+            	logger.info("tangerine.jobs.filter="+jobsFilterValue);
+            	pattern = Pattern.compile(jobsFilterValue);
+            }
+            
             boolean enabled = !"false".equalsIgnoreCase(jobsEnabledValue);
             if (!enabled) {
                 logger.info("Skipping jobs: tangerine.jobs.enabled="+jobsEnabledValue);
@@ -110,6 +101,11 @@ public class JobSchemaIterator extends QuartzJobBean {
             List<String> schemas = schemaService.readSchemas();
             for (String schema : schemas) {
             	try {
+            		
+            		if (pattern != null && !pattern.matcher(schema).matches()) {
+            			continue;
+            		}
+            		
 	                schemaService.setSchema(schema);  //  sets tangerine user helper with site name for TangerineDatasource to read.
 	                logger.info("Processing jobs for "+schema); // Must log after changing schema context
 	                long t = System.currentTimeMillis();

@@ -97,7 +97,7 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
                 sortPropertyName, direction, start, limit, locale);
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
 
-        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_COMMUNICATION_HISTORY_BY_CONSITUENT_ID", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_COMMUNICATION_HISTORY_BY_CONSTITUENT_ID", params);
     }
 
     @Override

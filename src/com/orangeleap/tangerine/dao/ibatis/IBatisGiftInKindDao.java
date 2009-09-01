@@ -23,6 +23,7 @@ import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 @Repository("giftInKindDAO")
 public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKindDao {
@@ -106,4 +108,28 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
         return resp;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<GiftInKind> readAllGiftsInKindByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsInKindByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.GIFT_IN_KIND, "GIFT_IN_KIND.GIFT_IN_KIND_RESULT_NO_DETAILS",
+                sortPropertyName, direction, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_GIFTS_IN_KIND_BY_CONSTITUENT_ID", params);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_GIFTS_IN_KIND_COUNT_BY_CONSTITUENT_ID", params);
+    }
 }

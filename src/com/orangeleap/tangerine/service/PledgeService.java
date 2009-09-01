@@ -31,6 +31,7 @@ import org.springframework.validation.BindException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Locale;
 
 public interface PledgeService extends CommitmentService<Pledge> {
 
@@ -67,4 +68,8 @@ public interface PledgeService extends CommitmentService<Pledge> {
     public void extendPaymentSchedule(Pledge pledge);
 
     public ScheduledItem getNextPaymentToRun(Pledge pledge);
+
+    List<Pledge> readAllPledgesByConstituentId(Long constituentId, SortInfo sort, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

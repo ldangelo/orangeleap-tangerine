@@ -71,7 +71,7 @@
 		order by ADDRESS_ACTIVATION_STATUS, addr.CREATE_DATE
 	</select>
 
-    <select id="SELECT_LIMITED_ADDRESSES_BY_CONSITUENT_ID" resultMap="ADDRESS_LIST_RESULT" parameterClass="map">
+    <select id="SELECT_LIMITED_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_LIST_RESULT" parameterClass="map">
         select innerQuery.*
 
         <dynamic prepend=",">

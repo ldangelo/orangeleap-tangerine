@@ -18,18 +18,23 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.PledgeValidator;
+import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.dao.PledgeDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.paymentInfo.*;
+import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.ReminderService;
+import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
@@ -40,27 +45,9 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.PledgeValidator;
-import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.dao.PledgeDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.ScheduledItem;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.service.PledgeService;
-import com.orangeleap.tangerine.service.ReminderService;
-import com.orangeleap.tangerine.service.ScheduledItemService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 @Service("pledgeService")
@@ -93,8 +80,6 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
-
-
 
     // Used for create new only
     @Override
@@ -427,7 +412,20 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 		return scheduledItemService.getNextItemToRun(pledge);
 	}
 
+    @Override
+    public List<Pledge> readAllPledgesByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllPledgesByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return pledgeDao.readAllPledgesByConstituentId(constituentId, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
 
-
-    
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        return pledgeDao.readCountByConstituentId(constituentId);
+    }
 }

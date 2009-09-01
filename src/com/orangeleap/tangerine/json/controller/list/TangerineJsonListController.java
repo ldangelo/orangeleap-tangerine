@@ -19,16 +19,17 @@
 package com.orangeleap.tangerine.json.controller.list;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 
@@ -74,7 +75,16 @@ public abstract class TangerineJsonListController {
                     }
                     if (displayValue instanceof String) {
                         displayValue = HttpUtil.jsEscape((String) displayValue);
+
+                        String extType = ExtTypeHandler.findExtType(beanWrapper.getPropertyType(field.getFieldPropertyName()));
+                        if (ExtTypeHandler.EXT_BOOLEAN.equals(extType) && ("Y".equalsIgnoreCase((String) displayValue) ||
+                                "yes".equalsIgnoreCase((String) displayValue) ||
+                                "T".equalsIgnoreCase((String) displayValue) ||
+                                "true".equalsIgnoreCase((String) displayValue))) {
+                            displayValue = "true";
+                        }
                     }
+
                     paramMap.put(TangerineForm.escapeFieldName(fieldPropertyName), displayValue);
                 }
             }

@@ -18,12 +18,11 @@
 
 package com.orangeleap.tangerine.json.controller.list;
 
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,83 +30,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * This controller handles JSON requests for populating
- * the grid of pledges.
- *
- * @version 1.0
- */
 @Controller
-public class PledgeListController {
-
-    /**
-     * Logger for this class and subclasses
-     */
-    protected final Log logger = OLLogger.getLog(getClass());
-
-    private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
-
-    static {
-        NAME_MAP.put("id", "c.GIFT_ID");
-        NAME_MAP.put("constituentId", "c.CONSTITUENT_ID");
-        NAME_MAP.put("status", "c.PLEDGE_STATUS");
-        NAME_MAP.put("amountpergift", "c.AMOUNT_PER_GIFT");
-        NAME_MAP.put("amounttotal", "c.AMOUNT_TOTAL");
-        NAME_MAP.put("amountpaid", "c.AMOUNT_PAID");
-        NAME_MAP.put("amountremaining", "c.AMOUNT_REMAINING");
-    }
-
-    private Map<String, Object> pledgeToMap(Pledge c) {
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", c.getId());
-        map.put("constituentId", c.getConstituent().getId());
-        map.put("status", c.getPledgeStatus());
-        map.put("amountpergift", c.getAmountPerGift());
-        map.put("amounttotal", c.getAmountTotal());
-        map.put("amountpaid", c.getAmountPaid());
-        map.put("amountremaining", c.getAmountRemaining());
-
-        return map;
-
-    }
+public class PledgeListController extends TangerineJsonListController {
 
     @Resource(name = "pledgeService")
     private PledgeService pledgeService;
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/pledgeList.json")
-    public ModelMap getPledgeList(HttpServletRequest request, SortInfo sortInfo) {
+    public ModelMap getPledgeList(HttpServletRequest request, SortInfo sort) {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
+        List<Pledge> pledges = pledgeService.readAllPledgesByConstituentId(constituentId, sort, request.getLocale());
+        List<SectionField> sectionFields = findSectionFields("pledgeList");
+        addListFieldsToMap(request, sectionFields, pledges, list);
 
-        List<Map> rows = new ArrayList<Map>();
+        int count = pledgeService.readCountByConstituentId(constituentId);
 
-        // if we're not getting back a valid column name, possible SQL injection,
-        // so send back an empty list.
-        if (!sortInfo.validateSortField(NAME_MAP.keySet())) {
-            logger.warn("getPledgeList called with invalid sort column: [" + sortInfo.getSort() + "]");
-            return new ModelMap("rows", rows);
-        }
-
-        // set the sort to the valid column name, based on the map
-        sortInfo.setSort((String) NAME_MAP.get(sortInfo.getSort()));
-
-        String constituentId = request.getParameter("constituentId");
-        PaginatedResult result = pledgeService.readPaginatedPledgesByConstituentId(Long.valueOf(constituentId), sortInfo);
-
-        List<Pledge> list = result.getRows();
-
-        for (Pledge g : list) {
-            rows.add(pledgeToMap(g));
-        }
-
-        ModelMap map = new ModelMap("rows", rows);
-        map.put("totalRows", result.getRowCount());
+        ModelMap map = new ModelMap("rows", list);
+        map.put("totalRows", count);
         return map;
     }
-
-
 }

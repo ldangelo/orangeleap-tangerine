@@ -12,7 +12,7 @@
 		<property name="amountKey" value="detailFairMarketValue"/>
     </bean>
 
-    <bean id="giftInKindListController" class="com.orangeleap.tangerine.controller.DummyController">
+    <bean id="giftInKindGridController" class="com.orangeleap.tangerine.controller.giftInKind.GiftInKindGridController">
         <property name="viewName" value="giftInKind/giftInKindList"/>
     </bean>
     
@@ -20,7 +20,7 @@
 		<property name="mappings">
 		    <props>
 		        <prop key="/giftInKind.htm">giftInKindFormController</prop>
-		        <prop key="/giftInKindList.htm">giftInKindListController</prop>
+		        <prop key="/giftInKindList.htm">giftInKindGridController</prop>
 			</props>
 		</property>
 	</bean>

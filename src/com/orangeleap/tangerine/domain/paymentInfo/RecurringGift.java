@@ -18,14 +18,13 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import com.orangeleap.tangerine.domain.Schedulable;
+
+import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import javax.xml.bind.annotation.XmlType;
-
-import com.orangeleap.tangerine.domain.Schedulable;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class RecurringGift extends Commitment implements Schedulable {
 
@@ -36,8 +35,7 @@ public class RecurringGift extends Commitment implements Schedulable {
 	private boolean autoPay = false;
 	private boolean activate = false;
 
-	public RecurringGift() {
-	}
+	public RecurringGift() { }
 
 	public RecurringGift(Date nextRunDate) {
 		this.nextRunDate = nextRunDate;

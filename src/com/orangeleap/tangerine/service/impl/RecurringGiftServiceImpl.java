@@ -18,19 +18,23 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
+import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.dao.RecurringGiftDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.paymentInfo.*;
+import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.ReminderService;
+import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.joda.time.DateMidnight;
@@ -42,27 +46,9 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
-import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.dao.RecurringGiftDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.ScheduledItem;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.service.ReminderService;
-import com.orangeleap.tangerine.service.ScheduledItemService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service("recurringGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -487,4 +473,20 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 		return scheduledItemService.getNextItemToRun(recurringGift);
 	}
 
+    @Override
+    public List<RecurringGift> readAllRecurringGiftsByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllRecurringGiftsByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return recurringGiftDao.readAllRecurringGiftsByConstituentId(constituentId, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        return recurringGiftDao.readCountByConstituentId(constituentId);
+    }
 }

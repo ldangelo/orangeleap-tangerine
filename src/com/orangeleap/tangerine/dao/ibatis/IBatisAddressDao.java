@@ -106,7 +106,7 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
         params.put("asOfDate", getNowDate(locale));
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
 
-        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_ADDRESSES_BY_CONSITUENT_ID", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_ADDRESSES_BY_CONSTITUENT_ID", params);
     }
 
     @Override

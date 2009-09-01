@@ -59,7 +59,7 @@
 		order by EMAIL_ACTIVATION_STATUS, e.CREATE_DATE
 	</select>
     
-    <select id="SELECT_LIMITED_EMAILS_BY_CONSITUENT_ID" resultMap="EMAIL_LIST_RESULT" parameterClass="map">
+    <select id="SELECT_LIMITED_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_LIST_RESULT" parameterClass="map">
         select innerQuery.*
         <dynamic prepend=",">
         	<isNotEqual property="sortColumn" compareValue="EMAIL_CURRENT">

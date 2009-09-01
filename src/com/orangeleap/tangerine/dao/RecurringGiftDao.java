@@ -18,15 +18,16 @@
 
 package com.orangeleap.tangerine.dao;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Locale;
 
 public interface RecurringGiftDao {
 
@@ -50,4 +51,8 @@ public interface RecurringGiftDao {
 	
 	public BigDecimal readAmountPaidForRecurringGiftId(Long recurringGiftId);
 
+    List<RecurringGift> readAllRecurringGiftsByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

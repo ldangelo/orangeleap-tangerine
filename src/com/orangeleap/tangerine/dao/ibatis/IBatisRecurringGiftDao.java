@@ -26,6 +26,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
@@ -36,6 +37,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 @Repository("recurringGiftDAO")
 public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<RecurringGift> implements RecurringGiftDao {
@@ -204,5 +206,30 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         Map<String, Object> paramMap = setupParams();
         paramMap.put("recurringGiftId", recurringGiftId);
         return (BigDecimal) getSqlMapClientTemplate().queryForObject("SELECT_AMOUNT_PAID_BY_RECURRING_GIFT_ID", paramMap);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<RecurringGift> readAllRecurringGiftsByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllRecurringGiftsByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.RECURRING_GIFT, "RECURRING_GIFT.RECURRING_GIFT_RESULT_NO_DISTRO_LINES",
+                sortPropertyName, direction, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_RECURRING_GIFTS_BY_CONSTITUENT_ID", params);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_RECURRING_GIFTS_COUNT_BY_CONSTITUENT_ID", params);
     }
 }

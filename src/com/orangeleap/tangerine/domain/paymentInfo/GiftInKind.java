@@ -57,6 +57,11 @@ public class GiftInKind extends AbstractCustomizableEntity implements MutableGri
         super();
     }
 
+    public GiftInKind(Constituent constituent) {
+        this();
+        this.constituent = constituent;
+    }
+
     public GiftInKind(BigDecimal fairMarketValue, String currencyCode, Date donationDate, String motivationCode, String other_motivationCode,
                       boolean anonymous, String recognitionName) {
         this();

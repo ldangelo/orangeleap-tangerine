@@ -28,7 +28,6 @@
 		gik.OTHER_MOTIVATION as GIFT_IN_KIND_OTHER_MOTIVATION_CODE, gik.ANONYMOUS as GIFT_IN_KIND_ANONYMOUS,
 		gik.RECOGNITION_NAME as GIFT_IN_KIND_RECOGNITION_NAME, gik.TRANSACTION_DATE as GIFT_IN_KIND_TRANSACTION_DATE, gik.GIFT_ID as GIFT_IN_KIND_GIFT_ID,
 		gik.UPDATE_DATE as GIFT_IN_KIND_UPDATE_DATE, gik.CREATE_DATE as GIFT_IN_KIND_CREATE_DATE
-		
 	</sql>
 	
 	<sql id="GIFT_IN_KIND_QUERY_FRAGMENT">
@@ -48,7 +47,6 @@
 		inner join CONSTITUENT p on gik.CONSTITUENT_ID = p.CONSTITUENT_ID
         where p.SITE_NAME = #siteName#
     </sql>
-	
 
 	<select id="SELECT_GIFT_IN_KIND_BY_ID" resultMap="GIFT_IN_KIND_RESULT" parameterClass="map">
 		<include refid="GIFT_IN_KIND_QUERY_FRAGMENT" />
@@ -84,6 +82,49 @@
 	<select id="GIFTS_IN_KIND_BY_CONSTITUENT_ID_ROWCOUNT" resultClass="long" parameterClass="map" >
         <include refid="GIFTS_IN_KIND_ROWCOUNT_FRAGMENT"/>
 		and gik.CONSTITUENT_ID = #constituentId#
+    </select>
+
+    <select id="SELECT_LIMITED_GIFTS_IN_KIND_BY_CONSTITUENT_ID" resultMap="GIFT_IN_KIND_RESULT_NO_DETAILS" parameterClass="map">
+        select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+        from
+
+        (select
+        <include refid="GIFT_IN_KIND_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from GIFT_IN_KIND gik
+        inner join CONSTITUENT p on gik.CONSTITUENT_ID = p.CONSTITUENT_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on gik.GIFT_IN_KIND_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and gik.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        isnull ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_GIFTS_IN_KIND_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(gik.GIFT_IN_KIND_ID)
+        from GIFT_IN_KIND gik
+        inner join CONSTITUENT p on gik.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and gik.CONSTITUENT_ID = #constituentId#
     </select>
 
 	<insert id="INSERT_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">

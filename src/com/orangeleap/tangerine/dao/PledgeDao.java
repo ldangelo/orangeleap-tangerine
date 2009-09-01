@@ -18,15 +18,16 @@
 
 package com.orangeleap.tangerine.dao;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public interface PledgeDao {
 
@@ -51,4 +52,9 @@ public interface PledgeDao {
 	public Long readPaymentsAppliedToPledgeId(Long pledgeId);
 	
 	public void maintainPledgeAmountPaidRemainingStatus(Pledge pledge);
+
+    List<Pledge> readAllPledgesByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

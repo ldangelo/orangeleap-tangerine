@@ -14,26 +14,29 @@
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
-	<resultMap id="PLEDGE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Pledge" groupBy="id" extends="MIN_PLEDGE_RESULT">
-		<result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
+	<resultMap id="PLEDGE_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Pledge" groupBy="id" extends="MIN_PLEDGE_RESULT">
+		<result property="comments" column="PLEDGE_COMMENTS" jdbcType="VARCHAR" />
 		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
-		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="createDate" column="PLEDGE_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
 		<result property="frequency" column="FREQUENCY" jdbcType="VARCHAR" />
 		<result property="pledgeCancelDate" column="PLEDGE_CANCEL_DATE"	jdbcType="TIMESTAMP" />
 		<result property="pledgeCancelReason" column="PLEDGE_CANCEL_REASON"	jdbcType="VARCHAR" />
 		<result property="projectedDate" column="PROJECTED_DATE" jdbcType="TIMESTAMP" />
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
-		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
+		<result property="updateDate" column="PLEDGE_UPDATE_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
-	
+
+    <resultMap id="PLEDGE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Pledge" groupBy="id" extends="PLEDGE_RESULT_NO_DISTRO_LINES">
+        <result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
+    </resultMap>
+
 	<sql id="PLEDGE_COLS_FRAGMENT">
 		c.PLEDGE_ID, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.AMOUNT_PAID, c.AMOUNT_REMAINING, 
-		c.COMMENTS, c.CREATE_DATE, c.END_DATE, c.FREQUENCY,
-		 c.PLEDGE_CANCEL_DATE, c.PLEDGE_CANCEL_REASON, c.PLEDGE_DATE,
+		c.COMMENTS as PLEDGE_COMMENTS, c.CREATE_DATE as PLEDGE_CREATE_DATE, c.END_DATE, c.FREQUENCY,
+		c.PLEDGE_CANCEL_DATE, c.PLEDGE_CANCEL_REASON, c.PLEDGE_DATE,
 		c.PROJECTED_DATE, c.RECURRING,  
-		c.START_DATE, c.PLEDGE_STATUS, c.UPDATE_DATE, c.CURRENCY_CODE
+		c.START_DATE, c.PLEDGE_STATUS, c.UPDATE_DATE as PLEDGE_UPDATE_DATE, c.CURRENCY_CODE
 	</sql>
 
 	<sql id="SELECT_PLEDGE_FRAGMENT">
@@ -126,6 +129,49 @@
 			#statuses[]#
 		</iterate>
 	</select>
+
+    <select id="SELECT_LIMITED_PLEDGES_BY_CONSTITUENT_ID" resultMap="PLEDGE_RESULT_NO_DISTRO_LINES" parameterClass="map">
+        select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+        from
+
+        (select
+        <include refid="PLEDGE_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from PLEDGE c
+        inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on c.PLEDGE_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and c.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        isnull ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_PLEDGES_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(c.PLEDGE_ID)
+        from PLEDGE c
+        inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and c.CONSTITUENT_ID = #constituentId#
+    </select>
 
 	<insert id="INSERT_PLEDGE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
 		insert into PLEDGE (AMOUNT_PER_GIFT, AMOUNT_TOTAL, AMOUNT_PAID, AMOUNT_REMAINING, CURRENCY_CODE, 

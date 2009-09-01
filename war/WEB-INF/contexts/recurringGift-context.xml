@@ -30,7 +30,7 @@
         <property name="successView" value="recurringGift/recurringGiftSearch"/>
     </bean>
 
-    <bean id="recurringGiftListController" class="com.orangeleap.tangerine.controller.DummyController">
+    <bean id="recurringGiftGridController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftGridController">
         <property name="viewName" value="recurringGift/recurringGiftList"/>
     </bean>
     
@@ -43,9 +43,9 @@
 		    <props>
 			    <prop key="/recurringGift.htm">recurringGiftFormController</prop>
 				<prop key="/recurringGiftView.htm">recurringGiftViewController</prop>
+                <prop key="/recurringGiftList.htm">recurringGiftGridController</prop>
 
 		        <prop key="/recurringGiftSearch.htm">recurringGiftSearchController</prop>
-		        <prop key="/recurringGiftList.htm">recurringGiftListController</prop>
 		        <prop key="/recurringGiftSelector.htm">recurringGiftSelectorController</prop>
 			</props>
 		</property>

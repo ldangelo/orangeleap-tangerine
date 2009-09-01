@@ -10,6 +10,6 @@
         </body>
     </html>
     <page:param name="scripts">
-        <script type="text/javascript" src="js/lists/giftInKindList.js"></script>
+        <tangerine:fields pageName="giftInKindList"/>
     </page:param>
 </page:applyDecorator>

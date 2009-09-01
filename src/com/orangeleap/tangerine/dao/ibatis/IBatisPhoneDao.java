@@ -104,7 +104,7 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
         params.put("asOfDate", getNowDate(locale));
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
 
-        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_PHONES_BY_CONSITUENT_ID", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_PHONES_BY_CONSTITUENT_ID", params);
     }
 
     @Override

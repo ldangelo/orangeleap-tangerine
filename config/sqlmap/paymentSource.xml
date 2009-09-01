@@ -98,7 +98,7 @@
 		order by PAYMENT_SRC_TYPE
 	</select>
 
-    <select id="SELECT_LIMITED_PAYMENT_SOURCES_BY_CONSITUENT_ID" resultMap="PAYMENT_SOURCE_LIST_RESULT" parameterClass="map">
+    <select id="SELECT_LIMITED_PAYMENT_SOURCES_BY_CONSTITUENT_ID" resultMap="PAYMENT_SOURCE_LIST_RESULT" parameterClass="map">
         select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
         from
 

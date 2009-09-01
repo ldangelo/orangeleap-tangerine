@@ -32,6 +32,8 @@ public class PledgeGridController extends TangerineGridController {
 
     @Override
     protected Object getDummyEntity(HttpServletRequest request) {
-        return new Pledge();
+        Pledge pledge = new Pledge();
+        pledge.setConstituent(getConstituent(request));
+        return pledge;
     }
 }

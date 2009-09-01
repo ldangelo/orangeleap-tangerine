@@ -18,15 +18,6 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
@@ -35,8 +26,18 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Repository("pledgeDAO")
 public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implements PledgeDao {
@@ -208,4 +209,28 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
         return pledges;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Pledge> readAllPledgesByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllPledgesByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.PLEDGE, "PLEDGE.PLEDGE_RESULT_NO_DISTRO_LINES",
+                sortPropertyName, direction, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_PLEDGES_BY_CONSTITUENT_ID", params);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_PLEDGES_COUNT_BY_CONSTITUENT_ID", params);
+    }
 }

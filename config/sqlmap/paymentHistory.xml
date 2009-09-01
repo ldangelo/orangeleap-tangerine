@@ -93,7 +93,7 @@
 		and p.CONSTITUENT_ID = #constituentId#
     </select>
 
-    <select id="SELECT_LIMITED_PAYMENT_HISTORY_BY_CONSITUENT_ID" resultMap="PAYMENT_HISTORY_RESULT" parameterClass="map">
+    <select id="SELECT_LIMITED_PAYMENT_HISTORY_BY_CONSTITUENT_ID" resultMap="PAYMENT_HISTORY_RESULT" parameterClass="map">
         select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
         from
 

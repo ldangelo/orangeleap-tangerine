@@ -32,6 +32,8 @@ public class RecurringGiftGridController extends TangerineGridController {
 
     @Override
     protected Object getDummyEntity(HttpServletRequest request) {
-        return new RecurringGift();
+        RecurringGift recurringGift = new RecurringGift();
+        recurringGift.setConstituent(getConstituent(request));
+        return recurringGift;
     }
 }

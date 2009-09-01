@@ -42,6 +42,7 @@ import org.springframework.validation.BindingResult;
 import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 @Service("giftInKindService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -158,5 +159,22 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
             gift.setGiftForGiftInKind(giftInKind);
         }
         return gift;
+    }
+
+    @Override
+    public List<GiftInKind> readAllGiftsInKindByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsInKindByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return giftInKindDao.readAllGiftsInKindByConstituentId(constituentId, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        return giftInKindDao.readCountByConstituentId(constituentId);
     }
 }

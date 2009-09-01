@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RECURRING_GIFT">
 
-	<resultMap id="RECURRING_GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id">
+	<resultMap id="RECURRING_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id">
 		<result property="id" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
 		<result property="nextRunDate" column="NEXT_RUN_DATE" jdbcType="TIMESTAMP" />
 		<result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
@@ -11,8 +11,8 @@
 		<result property="amountRemaining" column="AMOUNT_REMAINING" jdbcType="DECIMAL" />
 		<result property="autoPay" column="AUTO_PAY" jdbcType="CHAR" />
 		<result property="checkNumber" column="CHECK_NUMBER" jdbcType="VARCHAR" />
-		<result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
-		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="comments" column="RECURR_GIFT_COMMENTS" jdbcType="VARCHAR" />
+		<result property="createDate" column="RECURR_GIFT_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
 		<result property="frequency" column="FREQUENCY" jdbcType="VARCHAR" />
@@ -20,19 +20,22 @@
 		<result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
 		<result property="recurringGiftStatus" column="RECURRING_GIFT_STATUS" jdbcType="VARCHAR" />
-		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="updateDate" column="RECURR_GIFT_UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
 		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
 		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
-		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 	
+    <resultMap id="RECURRING_GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id" extends="RECURRING_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
+    </resultMap>
+
 	<sql id="RECURRING_GIFT_COLS_FRAGMENT">
 		rg.RECURRING_GIFT_ID, rg.NEXT_RUN_DATE, rg.AMOUNT_PER_GIFT, rg.AMOUNT_TOTAL, rg.AMOUNT_PAID, rg.AMOUNT_REMAINING, rg.AUTO_PAY,
-		rg.CHECK_NUMBER, rg.COMMENTS, rg.CREATE_DATE, rg.CURRENCY_CODE, rg.END_DATE, rg.FREQUENCY, rg.ACTIVATE, 
+		rg.CHECK_NUMBER, rg.COMMENTS as RECURR_GIFT_COMMENTS, rg.CREATE_DATE as RECURR_GIFT_CREATE_DATE, rg.CURRENCY_CODE, rg.END_DATE, rg.FREQUENCY, rg.ACTIVATE, 
 	    rg.PAYMENT_TYPE, rg.START_DATE,
-		rg.RECURRING_GIFT_STATUS, rg.UPDATE_DATE
+		rg.RECURRING_GIFT_STATUS, rg.UPDATE_DATE as RECURR_GIFT_UPDATE_DATE
 	</sql>
 	
 	<sql id="SELECT_RECURRING_GIFT_FRAGMENT">
@@ -115,6 +118,55 @@
 		</iterate>
 	</select>
   
+    <select id="SELECT_LIMITED_RECURRING_GIFTS_BY_CONSTITUENT_ID" resultMap="RECURRING_GIFT_RESULT_NO_DISTRO_LINES" parameterClass="map">
+        select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+        from
+
+        (select
+        <include refid="RECURRING_GIFT_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />,
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />	,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from RECURRING_GIFT rg
+        inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join PHONE ph on rg.PHONE_ID = ph.PHONE_ID
+        left outer join ADDRESS addr on rg.ADDRESS_ID = addr.ADDRESS_ID
+        left outer join PAYMENT_SOURCE ps on rg.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on rg.RECURRING_GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and rg.CONSTITUENT_ID = #constituentId#) as innerQuery
+        order by
+        isnull ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_RECURRING_GIFTS_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(rg.RECURRING_GIFT_ID)
+        from RECURRING_GIFT rg
+        inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and rg.CONSTITUENT_ID = #constituentId#
+    </select>
+
 	<insert id="INSERT_RECURRING_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift">
 		insert into RECURRING_GIFT (NEXT_RUN_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AMOUNT_PAID, AMOUNT_REMAINING, 
 		AUTO_PAY, CHECK_NUMBER, COMMENTS, CREATE_DATE, CURRENCY_CODE,

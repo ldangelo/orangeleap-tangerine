@@ -18,13 +18,6 @@
 
 package com.orangeleap.tangerine.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.validation.BindException;
-
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
@@ -33,6 +26,9 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.springframework.validation.BindException;
+
+import java.util.*;
 
 public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     
@@ -73,4 +69,8 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     public ScheduledItem getNextPaymentToRun(RecurringGift recurringGift);
     
     public void extendPaymentSchedule(RecurringGift recurringGift);
+
+    List<RecurringGift> readAllRecurringGiftsByConstituentId(Long constituentId, SortInfo sort, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

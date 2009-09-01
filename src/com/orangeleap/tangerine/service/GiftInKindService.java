@@ -18,14 +18,14 @@
 
 package com.orangeleap.tangerine.service;
 
-import java.util.List;
-
-import org.springframework.validation.BindException;
-
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.springframework.validation.BindException;
+
+import java.util.List;
+import java.util.Locale;
 
 public interface GiftInKindService {
 
@@ -39,5 +39,7 @@ public interface GiftInKindService {
 
 	public PaginatedResult readPaginatedGiftsInKindByConstituentId(Long constituentId, SortInfo sortinfo);
 
+    List<GiftInKind> readAllGiftsInKindByConstituentId(Long constituentId, SortInfo sort, Locale locale);
 
+    int readCountByConstituentId(Long constituentId);
 }

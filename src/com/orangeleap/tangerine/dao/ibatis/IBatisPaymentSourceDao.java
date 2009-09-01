@@ -18,19 +18,18 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Locale;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PaymentSourceDao;
 import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /** 
  * Corresponds to the PAYMENT_SOURCE table
@@ -143,7 +142,7 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
         Map<String, Object> params = setupSortParams(StringConstants.PAYMENT_SOURCE, "PAYMENT_SOURCE.PAYMENT_SOURCE_LIST_RESULT", sortPropertyName, direction, start, limit, locale);
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
 
-        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_PAYMENT_SOURCES_BY_CONSITUENT_ID", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_PAYMENT_SOURCES_BY_CONSTITUENT_ID", params);
     }
 
     @Override

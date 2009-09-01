@@ -53,6 +53,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 @Service("rulesService")
 public class RulesServiceImpl extends AbstractTangerineService implements RulesService, ApplicationContextAware {
@@ -210,10 +211,26 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 		}
 	}
-
+	
+	private boolean taskValidForSite(String filter) {
+        String filtervalue = System.getProperty(filter);
+        if (filtervalue == null) return true;
+        Pattern pattern = Pattern.compile(filtervalue);
+        return pattern.matcher(getSiteName()).matches();
+	}
+	
+	// If set, only process rules for sites that match these regexes.
+	// For example, to only execute monthly rules for schema1, schema2, and schema3:   tangerine.rules.monthly.filter=^(schema1|schema2|schema3)$
+	private static final String DAILY_RULES_FILTER_PROPERTY = "tangerine.rules.daily.filter";
+	private static final String WEEKLY_RULES_FILTER_PROPERTY = "tangerine.rules.weekly.filter";
+	private static final String MONTHLY_RULES_FILTER_PROPERTY = "tangerine.rules.monthly.filter";
+	
 
 	@Override
 	public void executeDailyJobRules() {
+		
+		if (!taskValidForSite(DAILY_RULES_FILTER_PROPERTY)) return;
+		
 		Calendar today = Calendar.getInstance();
 		today.add(Calendar.DATE, -1);
 		Date yesterday = new java.sql.Date(today.getTimeInMillis());
@@ -223,6 +240,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 	@Override
 	public void executeWeeklyJobRules() {
+		
+		if (!taskValidForSite(WEEKLY_RULES_FILTER_PROPERTY)) return;
+		
 		Calendar today = Calendar.getInstance();
 		today.add(Calendar.WEEK_OF_YEAR, -1);
 		Date lastweek = new java.sql.Date(today.getTimeInMillis());
@@ -232,10 +252,14 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 	@Override
 	public void executeMonthlyJobRules() {
+		
+		if (!taskValidForSite(MONTHLY_RULES_FILTER_PROPERTY)) return;
+		
 		Calendar today = Calendar.getInstance();
 		today.add(Calendar.MONTH, -1);
 		Date lastmonth = new java.sql.Date(today.getTimeInMillis());
 
 		executeRules("schedulemonthly", lastmonth);
 	}
+	
 }

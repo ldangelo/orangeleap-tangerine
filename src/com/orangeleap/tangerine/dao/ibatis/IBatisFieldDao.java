@@ -18,19 +18,6 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
-import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.domain.customization.FieldRelationship;
-import com.orangeleap.tangerine.domain.customization.FieldRequired;
-import com.orangeleap.tangerine.domain.customization.FieldValidation;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,6 +27,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
+import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
+import com.orangeleap.tangerine.domain.customization.FieldValidation;
+import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 /**
  * Corresponds to the FIELD tables
@@ -249,6 +251,8 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
             int guruReportFieldType = 1;
             if (customFieldRequest.getFieldType().equals("DATE")) guruReportFieldType = 4;
             String reportfieldName = customFieldRequest.getLabel().toUpperCase().replace(" ", "").replace("\'", "");
+            
+            String functionText = getFunctionText(reportFieldAlias, entityType, fieldname, customFieldRequest.getFieldType());
 
 
             Connection connection = getDataSource().getConnection();
@@ -269,7 +273,7 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
                 ps.close();
 
                 for (Long id : ids) {
-                    String sql = "CALL INSERTREPORTFIELDWITHALIAS('" + reportFieldAlias + "', '" + reportfieldName + "', 'GETCUSTOMFIELD(" + reportFieldAlias + ", ''" + entityType + "'', ''" + fieldname + "'')', '" + fieldlabel + "', b'0', " + guruReportFieldType + ", " + id + ")";
+                    String sql = "CALL INSERTREPORTFIELDWITHALIAS('" + reportFieldAlias + "', '" + reportfieldName + "', '"+functionText+"', '" + fieldlabel + "', b'0', " + guruReportFieldType + ", " + id + ")";
                     logger.debug("Executing: " + sql);
                     stat = connection.createStatement();
                     stat.execute(sql);
@@ -295,6 +299,23 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         }
 
     }
+    
+    // Get the functions the GURU uses to display certain types of fields.
+    private String getFunctionText(String reportFieldAlias, String entityType, String fieldname, FieldType fieldType) {
+    	
+    	String result = null;
+    	
+    	if (fieldType.equals(FieldType.PICKLIST)) {
+    		result =  "GETPICKLISTDISPLAYVALUE(''customFieldMap[" + fieldname + "]'',GETCUSTOMFIELD(" + reportFieldAlias + ", ''" + entityType + "'', ''" + fieldname + "''))";
+    	} else if (fieldType.equals(FieldType.MULTI_PICKLIST)) {
+        	result =  "GETCUSTOMFIELDDISPLAYVALUECONCATENATED("+reportFieldAlias+",''" + entityType + "'', ''" + fieldname + "'',''customFieldMap[" + fieldname + "]'')";
+    	} else {
+    		result =  "GETCUSTOMFIELD(" + reportFieldAlias + ", ''" + entityType + "'', ''" + fieldname + "'')";
+    	}
+    	
+    	logger.debug("GURU function text = " + result);
+    	return result;
+    }
 
-
+    
 }

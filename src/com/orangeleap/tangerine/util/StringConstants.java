@@ -147,6 +147,7 @@ public final class StringConstants {
     public static final String FIELD_MAP_END = "]";
     
     public static final String CUSTOM_FIELD_SEPARATOR = "\u00A7"; //"¤" symbol
+    public static final String CUSTOM_FIELD_SECONDARY_SEPARATOR = "\u00B6"; //"¦" symbol
 	public static final String SECTION_DEFINITIONS = "sectionDefinitions";
 	public static final String FORM = "form";
 	public static final String DISTRIBUTION_LINES = "distributionLines";

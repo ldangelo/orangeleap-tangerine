@@ -305,37 +305,29 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 			
 			Date now = new java.util.Date();
 		
-			// Always create a completed payment entry for this payment for today.
-			ScheduledItem thisPayment = recordPayment(schedulable, amount, resultEntity, now);
 			
-			ScheduledItem lastModifiedPayment = null;
-		
 			// Decrement amounts and/or complete remaining scheduled payments.
 			
 			for (ScheduledItem scheduledPayment : schedule) {
 				
-				if (amount.compareTo(ZERO) <= 0) break;
+				if (amount.compareTo(ZERO) <= 0) break; 
 	
 				if (canApplyPayment(scheduledPayment)) {
 					
-					lastModifiedPayment = scheduledPayment;
-					
 					BigDecimal scheduledAmount = scheduledPayment.getScheduledItemAmount();
 					
-					BigDecimal newScheduledAmount = scheduledAmount.subtract(amount);
-					amount = amount.subtract(scheduledAmount);
-					
-					if (newScheduledAmount.compareTo(ZERO) > 0) {
+					if (scheduledAmount.compareTo(amount) > 0) {
 						
 						// Remaining amount to be applied is insufficient to cover the next scheduled payment.  Decrement scheduled amount and stop.
-						scheduledPayment.setScheduledItemAmount(newScheduledAmount);
+						scheduledPayment.setScheduledItemAmount(scheduledAmount.subtract(amount));
+						amount = ZERO;
 						maintainScheduledItem(scheduledPayment);
-						break;
 				
 					} else {
 						
-						// Remaining amount to be applied is greater than or matches this scheduled amount.  Remove the scheduled payment.
-						deleteScheduledItem(scheduledPayment);
+						// Remaining amount to be applied is greater than or matches this scheduled amount.  Complete the scheduled payment.
+						completeItem(scheduledPayment, resultEntity, "Applied Payment " + formatDate(now));
+						amount = amount.subtract(scheduledAmount);
 						
 					}
 					
@@ -343,13 +335,19 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 				
 			}
 			
-			
-			// Set OriginalScheduledDate for today's payment to the last modified or deleted scheduledPayment 
-			// so that schedule extensions for schedulables with indefinite end dates will start then, not tomorrow.
-			if (lastModifiedPayment != null) {
-				thisPayment.setOriginalScheduledDate(lastModifiedPayment.getOriginalScheduledDate());
-				maintainScheduledItem(thisPayment);
+			if (amount.compareTo(ZERO) > 0) {
+				// Create a completed payment entry for this payment for today for any unapplied amount remaining.
+				// This puts them over the total amount of the commitment, but still allow it.
+				createScheduledPayment(schedulable, amount, resultEntity, now, true);
+			} else if (amount.compareTo(ZERO) < 0) {
+				// An Adjusted Gift has a negative amount.
+				// Create a completed payment entry for this negative payment.
+				createScheduledPayment(schedulable, amount, resultEntity, now, true);
+				// Create a new scheduled payment entry for the reverse of this negative payment.
+				// This assumes the adjusted gift amount still needs to be repaid in order to fulfill original commitment amount.
+				createScheduledPayment(schedulable, amount.negate(), resultEntity, now, false);
 			}
+			
 			
 			
 			logger.debug("Excess amount unapplied to pre-existing scheduled payments: " + amount);
@@ -371,13 +369,17 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 		;
 	}
 	
-	private ScheduledItem recordPayment(Schedulable schedulable, BigDecimal amount, AbstractEntity resultEntity, Date now) {
+	private ScheduledItem createScheduledPayment(Schedulable schedulable, BigDecimal amount, AbstractEntity resultEntity, Date now, boolean complete) {
 		ScheduledItem thisPayment = getDefaultScheduledItem(schedulable, now);
 		thisPayment.setScheduledItemAmount(amount);
 		if (resultEntity == null) {
 			logger.debug("Gift or resultEntity == null for "+schedulable.getType() + " " + schedulable.getId() + ", amount " + amount);
 		}
-		completeItem(thisPayment, resultEntity, "Applied Payment " + formatDate(now));
+		if (complete) {
+			completeItem(thisPayment, resultEntity, "Applied Payment " + formatDate(now));
+		} else {
+			maintainScheduledItem(thisPayment);
+		}
 		return thisPayment;
 	}
 

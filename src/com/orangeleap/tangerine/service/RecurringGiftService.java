@@ -60,7 +60,7 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
 
     public boolean canApplyPayment(RecurringGift recurringGift); 
     
-    public void updateRecurringGiftForGift(Gift gift);
+    public void updateRecurringGiftForGift(Gift originalGift, Gift currentGift);
     
     public void updateRecurringGiftForAdjustedGift(AdjustedGift adjustedGift);
     

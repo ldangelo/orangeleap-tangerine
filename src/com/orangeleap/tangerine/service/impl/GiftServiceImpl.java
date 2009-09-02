@@ -165,9 +165,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     private Gift saveAuditGift(Gift gift) throws BindException {
         maintainEntityChildren(gift, gift.getConstituent());
+        Gift originalGift = null;
+        if (!gift.isNew()) {
+            originalGift = giftDao.readGiftById(gift.getId());
+        }
+
         gift = giftDao.maintainGift(gift);
-        pledgeService.updatePledgeForGift(gift);
-        recurringGiftService.updateRecurringGiftForGift(gift);
+        pledgeService.updatePledgeForGift(originalGift, gift);
+        recurringGiftService.updateRecurringGiftForGift(originalGift, gift);
         auditService.auditObject(gift, gift.getConstituent());
         return gift;
     }

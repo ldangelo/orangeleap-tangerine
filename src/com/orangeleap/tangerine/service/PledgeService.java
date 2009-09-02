@@ -61,7 +61,7 @@ public interface PledgeService extends CommitmentService<Pledge> {
 
     public boolean canApplyPayment(Pledge pledge);
 
-    public void updatePledgeForGift(Gift gift);
+    public void updatePledgeForGift(Gift originalGift, Gift currentGift);
 
     public void updatePledgeForAdjustedGift(AdjustedGift adjustedGift);
 

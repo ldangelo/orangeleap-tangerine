@@ -61,7 +61,7 @@
                               </td>
       						</c:when>
       						<c:otherwise>
-                            <%-- Uncompleted items can be deleted, added, or can edit (only) the actualScheduledDate and custom fields (e.g. giftAmountOverride). --%>
+                            <%-- Uncompleted items can be deleted, added, or can edit (only) the actualScheduledDate and scheduledItemAmount. --%>
                               <td>
                                 <a href="#" onclick="update(this,'save');">Save</a> | <a href="#" onclick="update(this,'add');">Add</a> | <a href="#" onclick="update(this,'delete');">Delete</a>
                                   <input type="hidden" name="id" value="${scheduledItem.id}"/>

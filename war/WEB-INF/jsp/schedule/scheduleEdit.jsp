@@ -12,6 +12,7 @@
             <title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
             <style type="text/css">
                 table.tablesorter tbody tr td a { font-size: .75em; }
+                #backLink { margin-top: 7px; margin-right: 33px; font-size: 1.1em; text-align: right; }
             </style>
         </head>
         <body>
@@ -101,18 +102,17 @@
                         </table>
                         
                         
-                        <br />
-                        <br />
-                        <c:if test="${sourceEntity == 'recurringgift'}">
-		       			<a href="recurringGift.htm?recurringGiftId=${sourceEntityId}&constituentId=${param.constituentId}">&laquo;Back</a>
-		       			</c:if>
-                        <c:if test="${sourceEntity == 'pledge'}">
-		       			<a href="pledge.htm?pledgeId=${sourceEntityId}&constituentId=${param.constituentId}">&laquo;Back</a>
-		       			</c:if>
-                        <c:if test="${sourceEntity == 'scheduleditem'}">
-                       <a href="scheduleEdit.htm?sourceEntity=${param.originalSourceEntity}&constituentId=${param.constituentId}&sourceEntityId=${param.originalSourceEntityId}&originalSourceEntity=${param.originalSourceEntity}&originalSourceEntityId=${param.originalSourceEntityId}">&laquo;Back</a>
-                       </c:if>
-
+                        <div id="backLink">
+                            <c:if test="${sourceEntity == 'recurringgift'}">
+                            <a href="recurringGift.htm?recurringGiftId=${sourceEntityId}&constituentId=${param.constituentId}">&laquo;Back</a>
+                            </c:if>
+                            <c:if test="${sourceEntity == 'pledge'}">
+                            <a href="pledge.htm?pledgeId=${sourceEntityId}&constituentId=${param.constituentId}">&laquo;Back</a>
+                            </c:if>
+                            <c:if test="${sourceEntity == 'scheduleditem'}">
+                           <a href="scheduleEdit.htm?sourceEntity=${param.originalSourceEntity}&constituentId=${param.constituentId}&sourceEntityId=${param.originalSourceEntityId}&originalSourceEntity=${param.originalSourceEntity}&originalSourceEntityId=${param.originalSourceEntityId}">&laquo;Back</a>
+                           </c:if>
+                        </div>
                         
                         
                 </div>

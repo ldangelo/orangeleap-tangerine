@@ -59,8 +59,7 @@ Ext.onReady(function() {
             {header: 'Type', width: 65, dataIndex: 'type', sortable: true},
             {header: 'Description', width: 200,  dataIndex: 'description', sortable: true, renderer: Audit.descriptionRenderer},
             {header: 'Entity Type', width: 70,  dataIndex: 'objectType', sortable: true},
-            {header: 'Entity ID', width: 50, align: 'right', dataIndex: 'objectId', sortable: true},
-            {header: 'Current', width: 55, sortable: false, menuDisabled: true, fixed: true, renderer: Audit.entityViewRenderer}
+            {header: 'Entity ID', width: 50, align: 'right', dataIndex: 'objectId', sortable: true}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {
@@ -84,15 +83,10 @@ Ext.onReady(function() {
     });
 
     Audit.store.load({params: {start: 0, limit: 100, sort: 'date', dir: 'DESC'}});
-
 });
 
 Audit.descriptionRenderer = function(v, meta, record) {
-       return '<span ext:qtitle="Event Description" ext:qwidth="250" ext:qtip="' + v + '">' + v + '</span>';
-   };
-
-Audit.entityViewRenderer = function(val, meta, record) {
-   return '<a href="javascript:Audit.navigate(' + record.data.objectId + ')" title="View">View</a>';
+    return '<span ext:qtitle="Event Description" ext:qwidth="250" ext:qtip="' + v + '">' + v + '</span>';
 };
 
 Audit.navigate = function(id) {

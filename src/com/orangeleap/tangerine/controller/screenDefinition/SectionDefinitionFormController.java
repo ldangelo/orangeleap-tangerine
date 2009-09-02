@@ -96,17 +96,33 @@ public class SectionDefinitionFormController extends SimpleFormController {
     	return sf.getFieldDefinition().getId() + ":" + ( sf.getSecondaryFieldDefinition() == null ? "" : sf.getSecondaryFieldDefinition().getId() ) ;
     }
     
-    private static String getSectionFieldDescription(SectionField sf) {
+    private static String getSectionFieldLongDescription(SectionField sf) {
     	
-    	FieldDefinition fd = sf.getFieldDefinition();
-    	String defaultLabel = fd.getDefaultLabel();
+    	FieldDefinition fd = sf.getSecondaryFieldDefinition() == null ? sf.getFieldDefinition() : sf.getSecondaryFieldDefinition();
+    	String result = fd.getId();
     	
-    	// Disambiguate some duplicate labels...
-    	if (fd.getId().contains("constituentIndividualRoles")) defaultLabel += " (Individual)";
-    	if (fd.getId().contains("constituentOrganizationRoles")) defaultLabel += " (Organization)";
+    	int i = result.indexOf("[");
+    	if (i > -1) result = result.substring(i);
+    	result = result.replace("[", "").replace("]", "").trim();
+    	i = result.lastIndexOf(".");
+    	if (i > -1) result = result.substring(i+1);
     	
-    	return defaultLabel + ( sf.getSecondaryFieldDefinition() == null ? "" : (" " + sf.getSecondaryFieldDefinition().getDefaultLabel()) );
+    	return getFriendlyName(result);
     }
+    
+    private static String getFriendlyName(String s) {
+    	StringBuilder sb = new StringBuilder();
+    	for (int i = 0; i < s.length();i++) {
+    		char c = s.charAt(i);
+    		if (Character.isUpperCase(c)) {
+    			sb.append(" ");
+    		}
+    		if (i == 0) c = Character.toUpperCase(c);
+			sb.append(c);
+    	}
+    	return sb.toString();
+    }
+
  
     public static final class SectionFieldView {
     	
@@ -114,12 +130,14 @@ public class SectionDefinitionFormController extends SimpleFormController {
     	private boolean visible;
     	private String name;
     	private String description;
+    	private String longDescription;
 
     	public SectionFieldView(SectionField sf) {
     		setSectionField(sf);
     		setVisible(sf.getFieldOrder() != 0);
     		setName(getKey(sf));
-    		setDescription(getSectionFieldDescription(sf));
+    		setDescription(sf.getFieldDefinition().getDefaultLabel());
+    		setLongDescription(getSectionFieldLongDescription(sf));
     	}
     	
     	public void setSectionField(SectionField sectionField) {
@@ -147,6 +165,14 @@ public class SectionDefinitionFormController extends SimpleFormController {
 
 		public String getDescription() {
 			return description;
+		}
+
+		public void setLongDescription(String longDescription) {
+			this.longDescription = longDescription;
+		}
+
+		public String getLongDescription() {
+			return longDescription;
 		}
     }
     

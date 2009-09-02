@@ -15,6 +15,7 @@
                 <h4>Fields</h4><br/>
                 <table>
                 	<tr>
+                	<th>Field Label</th>
                 	<th>Field Name</th>
                 	<th>Visible?</th>
                 	<th>Move</th>
@@ -23,6 +24,9 @@
 		                <tr>
 		                <td>
 		                    <input id="description" name="description" value="<c:out value='${field.description}'/>"  onchange="update('${field.name}','changedescription', this);" />
+		                </td>
+		                <td>
+		                    <c:out value='${field.longDescription}'/>
 		                </td>
 		                <td>
 		                	<input type="checkbox" <c:if test="${field.visible}">checked</c:if> onchange="update('${field.name}','togglevisible');" />

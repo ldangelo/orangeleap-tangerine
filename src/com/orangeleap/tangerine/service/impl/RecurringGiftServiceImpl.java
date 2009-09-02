@@ -332,7 +332,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
                 if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID))) {
                     Long recurringGiftId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID));
                     recurringGiftIds.add(recurringGiftId);
-                    scheduledItemService.applyPaymentToSchedule(recurringGiftDao.readRecurringGiftById(recurringGiftId), thisLine.getAmount(), entity);
+                    //scheduledItemService.applyPaymentToSchedule(recurringGiftDao.readRecurringGiftById(recurringGiftId), thisLine.getAmount(), entity);
                 }
             }
 

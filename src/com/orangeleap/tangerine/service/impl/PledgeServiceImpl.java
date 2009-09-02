@@ -324,7 +324,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
                 if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID))) {
                     Long pledgeId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID));
                     pledgeIds.add(pledgeId);
-                    scheduledItemService.applyPaymentToSchedule(pledgeDao.readPledgeById(pledgeId), thisLine.getAmount(), entity);
+                    //scheduledItemService.applyPaymentToSchedule(pledgeDao.readPledgeById(pledgeId), thisLine.getAmount(), entity);
                 }
             }
     

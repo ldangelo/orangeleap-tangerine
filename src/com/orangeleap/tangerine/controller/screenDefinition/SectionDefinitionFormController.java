@@ -107,7 +107,10 @@ public class SectionDefinitionFormController extends SimpleFormController {
     	i = result.lastIndexOf(".");
     	if (i > -1) result = result.substring(i+1);
     	
-    	return getFriendlyName(result);
+    	result = getFriendlyName(result);
+    	result = result.replace("_", " ");
+    	
+    	return result;
     }
     
     private static String getFriendlyName(String s) {

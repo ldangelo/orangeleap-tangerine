@@ -196,7 +196,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 	private void removeDuplicatesAndCompletedPayments(List<ScheduledItem> list) {
 		
 		Collections.reverse(list); // Save only the last dated reminder instead of the first one in the case of duplicates.
-		Long lastid = new Long(-1);
+		Long lastid = null;
 		Iterator<ScheduledItem> it = list.iterator(); 
 		while (it.hasNext()) {
 			ScheduledItem item = it.next();
@@ -205,7 +205,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 				scheduledItemService.deleteScheduledItem(item);
 				it.remove();
 			}
-			lastid = scheduledPayment.getId();
+			lastid = scheduledPayment == null ? null : scheduledPayment.getId();
 		}
 		Collections.reverse(list);
 		

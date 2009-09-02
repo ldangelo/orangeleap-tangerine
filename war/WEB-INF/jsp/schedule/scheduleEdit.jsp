@@ -37,9 +37,9 @@
                         Amount
                         </c:if></th>
                         
-                        <th></th>
-                        
                         <th>Completion Date</th>
+                        
+                        <th></th>
                         
                         </tr>
                         
@@ -60,10 +60,15 @@
                               <td>
                               <fmt:formatNumber type='number' maxFractionDigits='2' minFractionDigits='2' value='${scheduledItem.scheduledItemAmount}' />
                               </td>
-                        	  <td><c:if test="${sourceEntity == 'recurringgift' }">
-                              <a href="giftView.htm?giftId=${scheduledItem.resultEntityId}" >Gift</a>
-                       	 	  </c:if></td>
       						  <td><fmt:formatDate pattern='MM/dd/yyyy' value='${scheduledItem.completionDate}' /> </td>
+                        	  <td><c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
+                        	  <c:if test="${scheduledItem.resultEntity == 'gift' }">
+                              <a href="giftView.htm?giftId=${scheduledItem.resultEntityId}&constituentId=${param.constituentId}" >Gift</a>
+                              </c:if>
+                        	  <c:if test="${scheduledItem.resultEntity == 'adjustedgift' }">
+                              <a href="giftAdjustmentView.htm?adjustedGiftId=${scheduledItem.resultEntityId}&constituentId=${param.constituentId}" >Adjusted Gift</a>
+                              </c:if>
+                       	 	  </c:if></td>
 
                               
       						</c:when>

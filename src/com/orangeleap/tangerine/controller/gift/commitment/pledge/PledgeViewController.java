@@ -22,12 +22,14 @@ import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormCon
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.controller.gift.AssociationEditor;
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,6 +37,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 public class PledgeViewController extends TangerineConstituentAttributesFormController {
 
@@ -49,6 +52,17 @@ public class PledgeViewController extends TangerineConstituentAttributesFormCont
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
 	    return pledgeService.readPledgeById(getIdAsLong(request, StringConstants.PLEDGE_ID));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+        Map refData = super.referenceData(request, command, errors);
+        TangerineForm form = (TangerineForm) command;
+        Pledge pledge = (Pledge) form.getDomainObject();
+        refData.put(StringConstants.CAN_APPLY_PAYMENT, ! Commitment.STATUS_FULFILLED.equals(pledge.getPledgeStatus()) &&
+                ! Commitment.STATUS_CANCELLED.equals(pledge.getPledgeStatus()));
+        return refData;        
     }
 
     @Override

@@ -2,6 +2,9 @@
 <page:applyDecorator name="form">
 	<spring:message code='viewPledge' var="titleText" scope="request" />
 	<spring:message code='submit' var="submitText" />
+    <c:if test="${requestScope.canApplyPayment}">
+        <spring:message code='applyPayment' var="clickText" />
+    </c:if>
 
 	<c:set var="headerText" value="${titleText}" scope="request"/>
 
@@ -44,6 +47,9 @@
                             menu : {
                                 items: [
                                     { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("pledge.htm?constituentId=${requestScope.constituent.id}"); } },
+                                    <c:if test="${not empty clickText}">
+                                        { text: '<c:out value="${clickText}"/>', handler: function() { OrangeLeap.gotoUrl("gift.htm?constituentId=${requestScope.constituent.id}&selectedPledgeId=${requestScope.form.domainObject.id}"); } },
+                                    </c:if>
                                     { text: '<spring:message code="paymentSchedule"/>', handler: function() { OrangeLeap.gotoUrl("scheduleEdit.htm?sourceEntity=pledge&constituentId=${param.constituentId}&sourceEntityId=${requestScope.form.domainObject.id}"); } }
                                 ]
                             },

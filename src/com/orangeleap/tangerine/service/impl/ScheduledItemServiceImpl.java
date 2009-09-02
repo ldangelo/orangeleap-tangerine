@@ -271,6 +271,23 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 	}
 	
     private BigDecimal ZERO = BigDecimal.ZERO;
+
+    
+    // Prevent double posting a gift.  Checks if gift is already referenced in payment schedule's completed items.
+    private boolean wasEntityAlreadyApplied(List<ScheduledItem> schedule, AbstractEntity resultEntity) {
+    	
+    	if (resultEntity == null || resultEntity.getId() == null) return false;
+    	
+		for (ScheduledItem scheduledPayment : schedule) {
+			if (
+					resultEntity.getType().equals(scheduledPayment.getResultEntity())
+					&& resultEntity.getId().equals(scheduledPayment.getResultEntityId()) 
+				) return true;
+		}
+		
+		return false;
+		
+    }
     
 	@Override
 	public void applyPaymentToSchedule(Schedulable schedulable, BigDecimal amount, AbstractEntity resultEntity) {
@@ -278,6 +295,13 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 		try {
 		
 			if (schedulable == null || amount == null) return;
+
+			List<ScheduledItem> schedule = readSchedule(schedulable);
+
+			if (wasEntityAlreadyApplied(schedule, resultEntity)) {
+				logger.info("Entity" + resultEntity.getType()+" "+resultEntity.getId()+" was already applied to payment schedule for "+schedulable.getType()+" "+schedulable.getId()+", skipping reapplication.");
+				return; 
+			}
 			
 			Date now = new java.util.Date();
 		
@@ -288,7 +312,6 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 		
 			// Decrement amounts and/or complete remaining scheduled payments.
 			
-			List<ScheduledItem> schedule = readSchedule(schedulable);
 			for (ScheduledItem scheduledPayment : schedule) {
 				
 				if (amount.compareTo(ZERO) <= 0) break;

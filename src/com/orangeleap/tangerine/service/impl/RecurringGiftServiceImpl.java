@@ -314,7 +314,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isTraceEnabled()) {
             logger.trace("updateRecurringGiftForGift: gift.id = " + gift.getId());
         }
-        updateRecurringGiftStatusAmountPaid(gift.getDistributionLines(), gift);
+        updateRecurringGiftStatusAmountPaid(gift.getDistributionLines(), gift, gift.getGiftStatus());
     }
 
     @Override
@@ -322,17 +322,19 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isTraceEnabled()) {
             logger.trace("updateRecurringGiftForAdjustedGift: adjustedGift.id = " + adjustedGift.getId());
         }
-        updateRecurringGiftStatusAmountPaid(adjustedGift.getDistributionLines(), adjustedGift);
+        updateRecurringGiftStatusAmountPaid(adjustedGift.getDistributionLines(), adjustedGift, adjustedGift.getAdjustedStatus());
     }
 
-    private void updateRecurringGiftStatusAmountPaid(List<DistributionLine> lines, AbstractPaymentInfoEntity entity) {
+    private void updateRecurringGiftStatusAmountPaid(List<DistributionLine> lines, AbstractPaymentInfoEntity entity, String status) {
         Set<Long> recurringGiftIds = new HashSet<Long>();
         if (lines != null) {
             for (DistributionLine thisLine : lines) {
                 if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID))) {
                     Long recurringGiftId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID));
                     recurringGiftIds.add(recurringGiftId);
-                    scheduledItemService.applyPaymentToSchedule(recurringGiftDao.readRecurringGiftById(recurringGiftId), thisLine.getAmount(), entity);
+                    if (StringConstants.GIFT_PAID_STATUS.equals(status)) {
+                    	scheduledItemService.applyPaymentToSchedule(recurringGiftDao.readRecurringGiftById(recurringGiftId), thisLine.getAmount(), entity);
+                    }
                 }
             }
 

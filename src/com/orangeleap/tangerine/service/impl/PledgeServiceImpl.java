@@ -304,7 +304,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         if (logger.isTraceEnabled()) {
             logger.trace("updatePledgeForGift: gift.id = " + gift.getId());
         }
-        updatePledgeStatusAmountPaid(gift.getDistributionLines(), gift);
+        updatePledgeStatusAmountPaid(gift.getDistributionLines(), gift, gift.getGiftStatus());
     }
     
     @Transactional(propagation = Propagation.REQUIRED)
@@ -313,18 +313,20 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         if (logger.isTraceEnabled()) {
             logger.trace("updatePledgeForAdjustedGift: adjustedGift.id = " + adjustedGift.getId());
         }
-        updatePledgeStatusAmountPaid(adjustedGift.getDistributionLines(), adjustedGift);
+        updatePledgeStatusAmountPaid(adjustedGift.getDistributionLines(), adjustedGift, adjustedGift.getAdjustedStatus());
     }
     
     @Transactional(propagation = Propagation.REQUIRED)
-    private void updatePledgeStatusAmountPaid(List<DistributionLine> lines, AbstractPaymentInfoEntity entity) {
+    private void updatePledgeStatusAmountPaid(List<DistributionLine> lines, AbstractPaymentInfoEntity entity, String status) {
         Set<Long> pledgeIds = new HashSet<Long>();
         if (lines != null) {
             for (DistributionLine thisLine : lines) {
                 if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID))) {
                     Long pledgeId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID));
                     pledgeIds.add(pledgeId);
-                    scheduledItemService.applyPaymentToSchedule(pledgeDao.readPledgeById(pledgeId), thisLine.getAmount(), entity);
+                    if (StringConstants.GIFT_PAID_STATUS.equals(status)) {
+                    	scheduledItemService.applyPaymentToSchedule(pledgeDao.readPledgeById(pledgeId), thisLine.getAmount(), entity);
+                    }
                 }
             }
     

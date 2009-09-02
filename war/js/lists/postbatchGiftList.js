@@ -41,7 +41,6 @@ Ext.onReady(function() {
 
         store: PostbatchGiftList.store,
         columns: [
-            {header: '', width: 65, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: PostbatchGiftList.entityViewRenderer},
             {header: 'Create Date', width: 100, dataIndex: 'createdate', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Donation Date', width: 100, dataIndex: 'donationdate', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Amount', width: 65, dataIndex: 'amount', sortable: true, renderer: OrangeLeap.amountRenderer },
@@ -59,6 +58,12 @@ Ext.onReady(function() {
         header: true,
         title: header,
         loadMask: true,
+        listeners: {
+            rowdblclick: function(grid, row, evt) {
+                var rec = grid.getSelectionModel().getSelected();
+                PostbatchGiftList.navigate(rec.data.id);
+            }
+        },
         bbar: PostbatchGiftList.pagingBar,
         renderTo: 'postbatchGiftsGrid'
     });
@@ -67,11 +72,6 @@ Ext.onReady(function() {
 
 });
 
-PostbatchGiftList.entityViewRenderer = function(val, meta, record) {
-	return '<a href="javascript:PostbatchGiftList.navigate(' + record.data.id + ')" title="View">View</a>';
-};
-
- 
 // TODO - make work for adjusted gifts also..
 PostbatchGiftList.navigate = function(id) {
 	var rec = PostbatchGiftList.grid.getSelectionModel().getSelected();

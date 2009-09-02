@@ -10,8 +10,8 @@
             <title><c:out value="${titleText}"/></title>
         </head>
         <body>
-            <div >
-
+            <%@ include file="/WEB-INF/jsp/includes/constituentHeader.jsp"%>
+            <div>
                 <div>
                 
                         <c:if test="${sourceEntity == 'recurringgift'}">

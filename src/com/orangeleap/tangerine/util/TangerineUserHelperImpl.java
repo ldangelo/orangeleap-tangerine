@@ -36,6 +36,7 @@ import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.orangeleap.tangerine.domain.SiteOption;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 import com.orangeleap.tangerine.service.SiteService;
 
@@ -47,7 +48,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     protected final Log logger = OLLogger.getLog(getClass());
 
     private ApplicationContext applicationContext;
-    
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext)
@@ -121,12 +122,19 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
         }
         return roles;
     }
-    
+
     @Override
     public Map<String, String> getSiteOptionsMap() {
     	return ((SiteService)applicationContext.getBean("siteService")).getSiteOptionsMap();
     }
 
+    @Override
+    public String getSiteOptionByName(String name) {
+    	Map<String, String> soMap = this.getSiteOptionsMap();
+    	return soMap.get(name).toString();
+
+    	//return ((SiteService)applicationContext.getBean("siteService")).getSiteOptionById(id).getOptionValue().toString();
+    }
 
     // Used by nightly scheduled job functions
     @Override
@@ -147,7 +155,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
         details.setSite(siteName);
         details.setConstituentId(0L);
         token.setDetails(details);
-        
+
         SecurityContextHolder.getContext().setAuthentication(token);
     }
 

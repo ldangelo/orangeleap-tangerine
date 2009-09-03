@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.RuleTask;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
 
 
@@ -75,6 +76,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 		PicklistItemService plis = (PicklistItemService) applicationContext.getBean("picklistItemService");
+		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 		SiteService ss = (SiteService) applicationContext.getBean("siteService");
 
 		String site = null;
@@ -83,6 +85,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 		workingMemory.setGlobal("constituentService", ps);
 		workingMemory.setGlobal("giftService",gs);
 		workingMemory.setGlobal("picklistItemService",plis);
+		workingMemory.setGlobal("userHelper",uh);
 
 			try {
 				if (site == null) {

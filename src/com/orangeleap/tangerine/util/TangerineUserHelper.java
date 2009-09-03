@@ -23,12 +23,13 @@ import java.util.Map;
 
 import org.springframework.security.providers.cas.CasAuthenticationToken;
 
+import com.orangeleap.tangerine.domain.SiteOption;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 
 public interface TangerineUserHelper {
 
     public CasAuthenticationToken getToken();
-    
+
     public TangerineAuthenticationDetails getDetails();
 
     public String lookupUserSiteName();
@@ -43,6 +44,9 @@ public interface TangerineUserHelper {
 
     public Map<String, String> getSiteOptionsMap();
 
+    public String getSiteOptionByName(String name);
+
     public void setSystemUserAndSiteName(String siteName);
+
 
 }

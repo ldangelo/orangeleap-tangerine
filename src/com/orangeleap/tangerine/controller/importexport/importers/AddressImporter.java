@@ -84,7 +84,15 @@ public class AddressImporter extends EntityImporter {
 
         List<FieldDescriptor> list = FieldDefUtil.getFieldDescriptors(exclusion, getPageType(), siteservice, tangerineUserHelper);
 
+        // Import and export for address cleansing only use different field lists
         list.add(AddressExporter.getFieldDescriptor("id"));
+        list.add(AddressExporter.getFieldDescriptor("inactive"));
+        list.add(AddressExporter.getFieldDescriptor("undeliverable"));
+        list.add(AddressExporter.getFieldDescriptor("receiveCorrespondence"));
+        FieldDescriptor fd = AddressExporter.getFieldDescriptor("customFieldMap[addressType]");
+        fd.setName("customField[addressType]");
+        list.add(fd);
+        
 
         return list;
     }

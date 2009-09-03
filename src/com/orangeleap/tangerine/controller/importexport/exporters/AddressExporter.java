@@ -114,15 +114,12 @@ public class AddressExporter extends EntityExporter {
         // Add a column for address id
         list.add(0, getFieldDescriptor("primaryAddress.id"));
 
-        // Add a column for address line 3 after address line 2
-        int addr2 = 0;
-        for (int i = 0; i < list.size(); i++) {
-            FieldDescriptor afieldDescriptor = list.get(i);
-            if (afieldDescriptor.getName().equals("primaryAddress.addressLine2")) {
-                addr2 = i;
-            }
-        }
-        list.add(addr2 + 1, getFieldDescriptor("primaryAddress.addressLine3"));
+        // Add columns for flags
+        list.add(getFieldDescriptor("primaryAddress.inactive"));
+        list.add(getFieldDescriptor("primaryAddress.undeliverable"));
+        list.add(getFieldDescriptor("primaryAddress.receiveCorrespondence"));
+
+        list.add(getFieldDescriptor("primaryAddress.customFieldMap[addressType]"));
 
 
         return list;
@@ -135,7 +132,7 @@ public class AddressExporter extends EntityExporter {
         fd.setEntityType(EntityType.address);
         fd.setFieldName(name);
         fd.setFieldType(FieldType.TEXT);
-        FieldDescriptor fieldDescriptor = new FieldDescriptor(name, FieldDescriptor.NATIVE, fd);
+        FieldDescriptor fieldDescriptor = new FieldDescriptor(name, name.contains("customFieldMap[")?FieldDescriptor.CUSTOM:FieldDescriptor.NATIVE, fd);
         return fieldDescriptor;
     }
 

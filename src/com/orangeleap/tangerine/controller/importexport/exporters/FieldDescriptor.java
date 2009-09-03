@@ -177,7 +177,8 @@ public class FieldDescriptor {
 		if (!isMap(name)) {
             return name;
         }
-		return toInitialLowerCase(getMapType(name)) + "[" + getKey(name) + "]" + getSubField(name);
+		String result = toInitialLowerCase(getMapType(name)) + "[" + getKey(name) + "]" + getSubField(name);
+		return result;
 	}
 
 	public void setDisabled(boolean disabled) {

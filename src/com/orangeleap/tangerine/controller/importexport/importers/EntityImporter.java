@@ -129,19 +129,7 @@ public abstract class EntityImporter {
 				
 				Object value = convertToObject(svalue, fd);
 				
-				if (fd.getType() == FieldDescriptor.CUSTOM) {
-					Method m = o.getClass().getMethod("setCustomFieldValue", new Class[]{String.class, String.class});
-					value = value.toString().replace(",", StringConstants.CUSTOM_FIELD_SEPARATOR);
-					m.invoke(o, new Object[]{key, value});
-				} else if (fd.isMap()) {
-					Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");
-					Map map = (Map)m.invoke(o);
-					Object so = map.get(fd.getKey()); 
-					if (so == null) {
-                        throw new RuntimeException("Unable to import field.");
-                    }
-					BeanUtils.setProperty(so, fd.getSubField(), value);
-				} else if (fd.isDependentField()) {
+				if (fd.isDependentField()) {
 					String depobject = fd.getDependentObject();
 					Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
 					Object so = m.invoke(o);
@@ -156,6 +144,11 @@ public abstract class EntityImporter {
                             bw.setPropertyValue(depobject, so);
                         }
                     } 
+			        if (fd.getType() == FieldDescriptor.CUSTOM) {
+						m = so.getClass().getMethod("setCustomFieldValue", new Class[]{String.class, String.class});
+						value = value.toString().replace(",", StringConstants.CUSTOM_FIELD_SEPARATOR);
+						m.invoke(so, new Object[]{EntityExporter.getCustomFieldName(key), value});
+			        }
 					BeanUtils.setProperty(so, fd.getDependentField(), value);
 					if (o instanceof AddressAware && ((AddressAware)o).getAddress() != null) {
                         ((AddressAware)o).getAddress().setId(0L);  // New
@@ -166,6 +159,18 @@ public abstract class EntityImporter {
 					if (o instanceof EmailAware && ((EmailAware)o).getEmail() != null) {
                         ((EmailAware)o).getEmail().setId(0L);  // New
                     }
+			    } else if (fd.getType() == FieldDescriptor.CUSTOM) {
+					Method m = o.getClass().getMethod("setCustomFieldValue", new Class[]{String.class, String.class});
+					value = value.toString().replace(",", StringConstants.CUSTOM_FIELD_SEPARATOR);
+					m.invoke(o, new Object[]{EntityExporter.getCustomFieldName(key), value});
+				} else if (fd.isMap()) {
+					Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");
+					Map map = (Map)m.invoke(o);
+					Object so = map.get(fd.getKey()); 
+					if (so == null) {
+                        throw new RuntimeException("Unable to import field.");
+                    }
+					BeanUtils.setProperty(so, fd.getSubField(), value);
 				} else {
 					BeanUtils.setProperty(o, key, value);
 				}

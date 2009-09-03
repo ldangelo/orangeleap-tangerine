@@ -135,7 +135,20 @@ public abstract class EntityExporter {
         String result = "";
         try {
             String name = fd.getName();
-            if (fd.getType() == FieldDescriptor.CUSTOM) {
+            if (fd.isDependentField()) {
+	            String depobject = fd.getDependentObject();
+	            Method m = o.getClass().getMethod("get" + FieldDescriptor.toInitialUpperCase(depobject));
+	            Object so = m.invoke(o);
+	            if (so == null) {
+	                return "";
+	            }
+	            if (fd.getType() == FieldDescriptor.CUSTOM) {
+	                m = so.getClass().getMethod("getCustomFieldValue", new Class[]{String.class});
+	                result = (String) m.invoke(so, getCustomFieldName(name));
+	            } else {
+	            	result = getProperty(so, fd.getDependentField(), fieldType);
+	            }
+            } else if (fd.getType() == FieldDescriptor.CUSTOM) {
                 Method m = o.getClass().getMethod("getCustomFieldValue", new Class[]{String.class});
                 result = (String) m.invoke(o, name);
             } else if (fd.isMap()) {
@@ -143,14 +156,6 @@ public abstract class EntityExporter {
                 Map map = (Map) m.invoke(o);
                 Object so = map.get(fd.getKey());
                 result = getProperty(so, fd.getSubField(), fieldType);
-            } else if (fd.isDependentField()) {
-                String depobject = fd.getDependentObject();
-                Method m = o.getClass().getMethod("get" + FieldDescriptor.toInitialUpperCase(depobject));
-                Object so = m.invoke(o);
-                if (so == null) {
-                    return "";
-                }
-                result = getProperty(so, fd.getDependentField(), fieldType);
             } else {
                 result = getProperty(o, name, fieldType);
             }
@@ -163,6 +168,11 @@ public abstract class EntityExporter {
         }
 
         return result;
+    }
+    
+    public static String getCustomFieldName(String name) {
+    	name = name.substring(name.indexOf("[")+1);
+    	return name.replace("]","");
     }
 
     private String getProperty(Object o, String field, FieldType fieldType) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {

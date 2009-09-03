@@ -318,11 +318,12 @@ public class ScheduledItemServiceImpl extends AbstractTangerineService implement
 					
 					if (scheduledAmount.compareTo(amount) > 0) {
 						
-						// Remaining amount to be applied is insufficient to cover the next scheduled payment.  Decrement scheduled amount and stop.
+						// Remaining amount to be applied is insufficient to cover the next scheduled payment.  Decrement scheduled amount and creete payment entry.
+						createScheduledPayment(schedulable, amount, resultEntity, now, true);
 						scheduledPayment.setScheduledItemAmount(scheduledAmount.subtract(amount));
 						amount = ZERO;
 						maintainScheduledItem(scheduledPayment);
-				
+						
 					} else {
 						
 						// Remaining amount to be applied is greater than or matches this scheduled amount.  Complete the scheduled payment.

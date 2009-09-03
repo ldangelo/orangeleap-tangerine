@@ -1080,6 +1080,8 @@ CREATE TABLE `SITE_OPTION` (
 `SITE_NAME` varchar(255) NOT NULL,
 `OPTION_NAME` varchar(255) NOT NULL,
 `OPTION_VALUE` varchar(255) NOT NULL,
+`OPTION_DEFAULT` varchar(255) NOT NULL default '',
+`OPTION_READ_ONLY` char(1) NOT NULL default '0',
 `MODIFIED_BY` bigint(20) default NULL,
 `CREATE_DATE` datetime default NULL,
 `UPDATE_DATE` datetime default NULL,

@@ -1078,6 +1078,7 @@ CREATE TABLE `SITE_OPTION` (
 `SITE_NAME` varchar(255) NOT NULL,
 `OPTION_NAME` varchar(255) NOT NULL,
 `OPTION_NAME_READ_ONLY` char(1) NOT NULL default '0',
+`OPTION_DESC` varchar(255) NOT NULL default '',
 `OPTION_VALUE` varchar(255) NOT NULL,
 `OPTION_VALUE_READ_ONLY` char(1) NOT NULL default '0',
 `MODIFIED_BY` bigint(20) default NULL,
@@ -1103,4 +1104,5 @@ INDEX `THEGURU_SEGMENTATION_RESULT_REPORT_ID_IDX` (`REPORT_ID`)
 
 SET foreign_key_checks = 1;
 
+// Increment this value and OrangeLeapSchemaVersion.java when the tangerine.ddl has an incompatible change for a release.
 INSERT INTO VERSION (COMPONENT_ID, COMPONENT_DESC, SCHEMA_MAJOR_VERSION, SCHEMA_MINOR_VERSION) VALUES ('ORANGE', 'Orange Leap', 2, 0);

@@ -18,23 +18,20 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
-import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.dao.RecurringGiftDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.ScheduledItem;
-import com.orangeleap.tangerine.domain.paymentInfo.*;
-import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.service.ReminderService;
-import com.orangeleap.tangerine.service.ScheduledItemService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.joda.time.DateMidnight;
@@ -46,9 +43,28 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.*;
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
+import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.dao.RecurringGiftDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.ReminderService;
+import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("recurringGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -324,17 +340,28 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     private void updateRecurringGiftStatusAmountPaid(List<DistributionLine> lines, AbstractPaymentInfoEntity entity,
                                                      String status, Set<Long> removedRecurringGiftAssociations) {
         Set<Long> recurringGiftIds = new HashSet<Long>();
+        Map<Long, BigDecimal> amountTotals = new HashMap<Long, BigDecimal>();
         if (lines != null) {
             for (DistributionLine thisLine : lines) {
                 if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID))) {
                     Long recurringGiftId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID));
                     recurringGiftIds.add(recurringGiftId);
-                    if (StringConstants.GIFT_PAID_STATUS.equals(status)) {
-                    	scheduledItemService.applyPaymentToSchedule(recurringGiftDao.readRecurringGiftById(recurringGiftId), thisLine.getAmount(), entity);
-                    }
+                	BigDecimal amt = amountTotals.get(recurringGiftId);
+                	if (amt == null) {
+                		amountTotals.put(recurringGiftId, thisLine.getAmount());
+                	} else {
+                		amountTotals.put(recurringGiftId, amt.add(thisLine.getAmount()));
+                	}
                 }
             }
         }
+        
+        if (StringConstants.GIFT_PAID_STATUS.equals(status)) {
+	        for (Map.Entry<Long, BigDecimal> me : amountTotals.entrySet()) {
+	        	scheduledItemService.applyPaymentToSchedule(recurringGiftDao.readRecurringGiftById(me.getKey()), me.getValue(), entity);
+	        }
+        }
+        
         if (removedRecurringGiftAssociations != null) {
             recurringGiftIds.addAll(removedRecurringGiftAssociations);
         }

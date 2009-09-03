@@ -18,23 +18,19 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.PledgeValidator;
-import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.dao.PledgeDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.ScheduledItem;
-import com.orangeleap.tangerine.domain.paymentInfo.*;
-import com.orangeleap.tangerine.service.PledgeService;
-import com.orangeleap.tangerine.service.ReminderService;
-import com.orangeleap.tangerine.service.ScheduledItemService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
@@ -45,9 +41,28 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.*;
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.PledgeValidator;
+import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.dao.PledgeDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.ReminderService;
+import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @SuppressWarnings("unchecked")
 @Service("pledgeService")
@@ -317,17 +332,28 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     private void updatePledgeStatusAmountPaid(List<DistributionLine> lines, AbstractPaymentInfoEntity entity,
                 String status, Set<Long> removedPledgeAssociations) {
         Set<Long> pledgeIds = new HashSet<Long>();
+        Map<Long, BigDecimal> amountTotals = new HashMap<Long, BigDecimal>();
         if (lines != null) {
             for (DistributionLine thisLine : lines) {
                 if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID))) {
                     Long pledgeId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID));
                     pledgeIds.add(pledgeId);
-                    if (StringConstants.GIFT_PAID_STATUS.equals(status)) {
-                    	scheduledItemService.applyPaymentToSchedule(pledgeDao.readPledgeById(pledgeId), thisLine.getAmount(), entity);
-                    }
+                	BigDecimal amt = amountTotals.get(pledgeId);
+                	if (amt == null) {
+                		amountTotals.put(pledgeId, thisLine.getAmount());
+                	} else {
+                		amountTotals.put(pledgeId, amt.add(thisLine.getAmount()));
+                	}
                 }
             }
         }
+        
+        if (StringConstants.GIFT_PAID_STATUS.equals(status)) {
+	        for (Map.Entry<Long, BigDecimal> me : amountTotals.entrySet()) {
+	        	scheduledItemService.applyPaymentToSchedule(pledgeDao.readPledgeById(me.getKey()), me.getValue(), entity);
+	        }
+        }
+        
         if (removedPledgeAssociations != null) {
             pledgeIds.addAll(removedPledgeAssociations);
         }

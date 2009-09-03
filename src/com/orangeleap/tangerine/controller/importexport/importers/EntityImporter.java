@@ -27,6 +27,8 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.BeanWrapper;
@@ -129,6 +131,7 @@ public abstract class EntityImporter {
 				
 				if (fd.getType() == FieldDescriptor.CUSTOM) {
 					Method m = o.getClass().getMethod("setCustomFieldValue", new Class[]{String.class, String.class});
+					value = value.toString().replace(",", StringConstants.CUSTOM_FIELD_SEPARATOR);
 					m.invoke(o, new Object[]{key, value});
 				} else if (fd.isMap()) {
 					Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");

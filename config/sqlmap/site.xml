@@ -44,10 +44,8 @@
         <result property="smtpAccountName" column="SITE.SMTP_USER_NAME"/>
         <result property="smtpPassword" column="SITE.SMTP_PASSWORD"/>
         <result property="smtpFromAddress" column="SITE.SMTP_FROM_ADDRESS"/>
-        <result property="majorDonorAccountManagerId" column="SITE.MAJOR_DONOR_ACCOUNT_MANAGER_ID"/>
         <result property="jasperUserId" column="SITE.JASPER_USER_ID"/>
         <result property="jasperPassword" column="SITE.JASPER_PASSWORD"/>
-        <result property="fiscalYearStartingMonth" column="SITE.FISCAL_YEAR_STARTING_MONTH"/>
     </resultMap>
 
     <resultMap id="PARENT_SITE_RESULT" class="com.orangeleap.tangerine.domain.Site">
@@ -74,10 +72,8 @@
         SMTP_USER_NAME,
         SMTP_PASSWORD,
         SMTP_FROM_ADDRESS,
-        MAJOR_DONOR_ACCOUNT_MANAGER_ID,
         JASPER_USER_ID,
-        JASPER_PASSWORD,
-        FISCAL_YEAR_STARTING_MONTH
+        JASPER_PASSWORD
     </sql>
 
     <sql id="SELECT_SITE_FRAGMENT">
@@ -123,10 +119,8 @@
         #smtpAccountName#,
         #smtpPassword#,
         #smtpFromAddress#,
-        #majorDonorAccountManagerId#,
         #jasperUserId#,
-        #jasperPassword#,
-        #fiscalYearStartingMonth#
+        #jasperPassword#
         )
     </insert>
 
@@ -149,10 +143,8 @@
         SMTP_USER_NAME = #smtpAccountName#,
         SMTP_PASSWORD = #smtpPassword#,
         SMTP_FROM_ADDRESS = #smtpFromAddress#,
-        MAJOR_DONOR_ACCOUNT_MANAGER_ID = #majorDonorAccountManagerId#,
         JASPER_USER_ID = #jasperUserId#,
-        JASPER_PASSWORD = #jasperPassword#,
-        FISCAL_YEAR_STARTING_MONTH = #fiscalYearStartingMonth#
+        JASPER_PASSWORD = #jasperPassword#
         where SITE_NAME = #name:VARCHAR#
     </update>
 

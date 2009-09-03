@@ -70,12 +70,9 @@ public class Site implements Serializable {
     private String smtpAccountName;
     private String smtpPassword;
     private String smtpFromAddress;
-    private Integer majorDonorAccountManagerId;
     private String jasperUserId;
     private String jasperPassword;
 
-
-    private Integer fiscalYearStartingMonth;
 
     public Locale getLocale() {
         return localeString == null ? Locale.getDefault() : new Locale(localeString);
@@ -249,14 +246,6 @@ public class Site implements Serializable {
         return achTestMode;
     }
 
-    public Integer getMajorDonorAccountManagerId() {
-        return majorDonorAccountManagerId;
-    }
-
-    public void setMajorDonorAccountManagerId(Integer majorDonorAccountManagerId) {
-        this.majorDonorAccountManagerId = majorDonorAccountManagerId;
-    }
-
     public String getMerchantTerminalId() {
         return merchantTerminalId;
     }
@@ -279,14 +268,6 @@ public class Site implements Serializable {
 
     public void setJasperPassword(String jasperPassword) {
         this.jasperPassword = jasperPassword;
-    }
-
-    public Integer getFiscalYearStartingMonth() {
-        return fiscalYearStartingMonth;
-    }
-
-    public void setFiscalYearStartingMonth(Integer fiscalYearStartingMonth) {
-        this.fiscalYearStartingMonth = fiscalYearStartingMonth;
     }
 
 }

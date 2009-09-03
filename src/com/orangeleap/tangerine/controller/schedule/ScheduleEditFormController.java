@@ -18,6 +18,23 @@
 
 package com.orangeleap.tangerine.controller.schedule;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.springframework.validation.BindException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.SimpleFormController;
+
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.customization.CustomField;
@@ -25,23 +42,9 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.service.impl.ReminderServiceImpl;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.logging.Log;
-import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class ScheduleEditFormController extends SimpleFormController {
 
@@ -111,6 +114,10 @@ public class ScheduleEditFormController extends SimpleFormController {
     	item.setId(getLong(request.getParameter("id")));
     	item.setActualScheduledDate(getDate(request.getParameter("actualScheduledDate")));
     	item.setScheduledItemAmount(getBigDecimal(request.getParameter("scheduledItemAmount")));
+    	
+    	if ( "scheduleditem".equals(request.getParameter("sourceEntity")) ) {
+    		item.setScheduledItemType(ReminderServiceImpl.REMINDER); // these are manually created reminders.  if adding a new ScheduledItemType need to add type parameter to page. 
+    	}
     	
     	return item;
 

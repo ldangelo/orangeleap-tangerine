@@ -18,19 +18,21 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import com.orangeleap.tangerine.type.GiftEntryType;
-import com.orangeleap.tangerine.type.GiftType;
-import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.core.style.ToStringCreator;
-
-import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import javax.xml.bind.annotation.XmlType;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.core.style.ToStringCreator;
+
+import com.orangeleap.tangerine.type.GiftEntryType;
+import com.orangeleap.tangerine.type.GiftType;
+import com.orangeleap.tangerine.util.StringConstants;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class Gift extends AbstractPaymentInfoEntity {
 
@@ -292,7 +294,11 @@ public class Gift extends AbstractPaymentInfoEntity {
 		this.addAssociatedRecurringGiftId(recurringGift.getId());
 
 		this.setComments(recurringGift.getComments());
-		this.setAmount(recurringGift.getAmountPerGift());
+		
+		// The amounts may be changed in the recurring gift's payment schedule, so don't set using the default amount of the recurring gift.
+		// Nightly recurring gifts processing looks up the next scheduled payment and uses that amount.
+		//this.setAmount(recurringGift.getAmountPerGift());
+		
 		this.setPaymentType(recurringGift.getPaymentType());
 		this.setGiftType(GiftType.MONETARY_GIFT);
 		this.setEntryType(GiftEntryType.AUTO);

@@ -169,12 +169,22 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (!gift.isNew()) {
             originalGift = giftDao.readGiftById(gift.getId());
         }
+        
+        validateStatusTransition(originalGift, gift);
 
         gift = giftDao.maintainGift(gift);
         pledgeService.updatePledgeForGift(originalGift, gift);
         recurringGiftService.updateRecurringGiftForGift(originalGift, gift);
         auditService.auditObject(gift, gift.getConstituent());
         return gift;
+    }
+    
+    // Need to prevent Paid status changes.
+    private void validateStatusTransition(Gift originalGift, Gift gift) {
+    	if (originalGift == null) return;
+    	if (originalGift.getGiftStatus().equals(Gift.STATUS_PAID)) {
+    		gift.setGiftStatus(Gift.STATUS_PAID);
+    	}
     }
 
     private void setDefaultDates(Gift gift) {

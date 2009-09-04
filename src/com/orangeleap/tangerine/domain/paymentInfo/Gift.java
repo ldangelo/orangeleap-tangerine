@@ -328,7 +328,7 @@ public class Gift extends AbstractPaymentInfoEntity {
 		for (DistributionLine line : this.getDistributionLines()) {
 			if (remaining.compareTo(BigDecimal.ZERO) <= 0) break;
 			if (line.getPercentage() == null) line.setPercentage(BigDecimal.ZERO);
-			BigDecimal lineAmt = line.getPercentage().divide(new BigDecimal("100")).multiply(this.getAmount()).setScale(0, BigDecimal.ROUND_HALF_EVEN).setScale(2);
+			BigDecimal lineAmt = line.getPercentage().divide(new BigDecimal("100")).multiply(this.getAmount()).setScale(2, BigDecimal.ROUND_HALF_EVEN);
 			if (remaining.subtract(lineAmt).compareTo(BigDecimal.ZERO) < 0) {
 				line.setAmount(remaining);
 				remaining = BigDecimal.ZERO;

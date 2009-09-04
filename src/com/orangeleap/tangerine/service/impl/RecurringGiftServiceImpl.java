@@ -396,9 +396,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     protected Gift createAutoGift(RecurringGift recurringGift, ScheduledItem scheduledItem) {
     	
-        Gift gift = new Gift(recurringGift);
-
-    	gift.setAmount(scheduledItem.getScheduledItemAmount()); // Use the amount on the scheduled item, which may have been manually changed
+    	// Use the amount on the scheduled item, which may have been manually changed
+        Gift gift = new Gift(recurringGift, scheduledItem.getScheduledItemAmount());
 
         recurringGift.addGift(gift);
         

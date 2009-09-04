@@ -74,9 +74,9 @@ public class Gift extends AbstractPaymentInfoEntity {
 		setGiftForGiftInKind(giftInKind);
 	}
 
-	public Gift(RecurringGift recurringGift) {
+	public Gift(RecurringGift recurringGift, BigDecimal giftAmount) {
 		this();
-		setGiftForRecurringGift(recurringGift);
+		setGiftForRecurringGift(recurringGift, giftAmount);
 	}
 
 	public String getGiftStatus() {
@@ -289,7 +289,7 @@ public class Gift extends AbstractPaymentInfoEntity {
 		this.constituent = giftInKind.getConstituent();
 	}
 
-	public void setGiftForRecurringGift(RecurringGift recurringGift) {
+	public void setGiftForRecurringGift(RecurringGift recurringGift, BigDecimal giftAmount) {
 		this.setConstituent(recurringGift.getConstituent());
 		this.addAssociatedRecurringGiftId(recurringGift.getId());
 
@@ -297,26 +297,50 @@ public class Gift extends AbstractPaymentInfoEntity {
 		
 		// The amounts may be changed in the recurring gift's payment schedule, so don't set using the default amount of the recurring gift.
 		// Nightly recurring gifts processing looks up the next scheduled payment and uses that amount.
-		//this.setAmount(recurringGift.getAmountPerGift());
+		this.setAmount(giftAmount);
 		
 		this.setPaymentType(recurringGift.getPaymentType());
 		this.setGiftType(GiftType.MONETARY_GIFT);
 		this.setEntryType(GiftEntryType.AUTO);
 		this.setGiftStatus(Commitment.STATUS_PENDING);
 
-		if (recurringGift.getDistributionLines() != null) {
+		if (recurringGift.getDistributionLines() != null && this.getAmount() != null) {
 			List<DistributionLine> list = new ArrayList<DistributionLine>();
 			for (DistributionLine oldLine : recurringGift.getDistributionLines()) {
 				DistributionLine newLine = new DistributionLine(oldLine, recurringGift);
 				list.add(newLine);
 			}
 			this.setDistributionLines(list);
+			normalizeAmounts();
 		}
+		
 		this.setCurrencyCode(recurringGift.getCurrencyCode());
 
 		this.setPaymentSource(recurringGift.getPaymentSource());
 		this.setAddress(recurringGift.getAddress());
 		this.setPhone(recurringGift.getPhone());
+	}
+	
+	// Set amounts on distributions lines to total amount
+	private void normalizeAmounts() {
+		if (getDistributionLines() == null || getDistributionLines().size() == 0) return;
+		BigDecimal remaining = this.getAmount();
+		for (DistributionLine line : this.getDistributionLines()) {
+			if (remaining.compareTo(BigDecimal.ZERO) <= 0) break;
+			if (line.getPercentage() == null) line.setPercentage(BigDecimal.ZERO);
+			BigDecimal lineAmt = line.getPercentage().divide(new BigDecimal("100")).multiply(this.getAmount()).setScale(0, BigDecimal.ROUND_HALF_EVEN).setScale(2);
+			if (remaining.subtract(lineAmt).compareTo(BigDecimal.ZERO) < 0) {
+				line.setAmount(remaining);
+				remaining = BigDecimal.ZERO;
+			} else {
+				remaining = remaining.subtract(lineAmt);
+				line.setAmount(lineAmt);
+			}
+		}
+		if (remaining.compareTo(BigDecimal.ZERO) > 0) {
+			DistributionLine lineone = getDistributionLines().get(0);
+			lineone.setAmount(lineone.getAmount().add(remaining));
+		}
 	}
 
 	public String getShortDescription() {

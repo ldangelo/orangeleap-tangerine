@@ -64,7 +64,7 @@
         <include refid="SELECT_SCHEDULED_ITEM_FRAGMENT"/>
          scheduled_item.SOURCE_ENTITY = #sourceEntity#
         and scheduled_item.SOURCE_ENTITY_ID = #sourceEntityId#
-        order by scheduled_item.ACTUAL_SCHEDULED_DATE
+        order by scheduled_item.ACTUAL_SCHEDULED_DATE, scheduled_item.SCHEDULED_ITEM_ID
     </select>
 
     <!-- NOTE: Do not change sort order here or nextrun calculations will be wrong!  -->
@@ -74,7 +74,7 @@
         and scheduled_item.SOURCE_ENTITY_ID = #sourceEntityId#
         and scheduled_item.COMPLETION_DATE is null
         and scheduled_item.ACTUAL_SCHEDULED_DATE is not null
-        order by scheduled_item.ACTUAL_SCHEDULED_DATE
+        order by scheduled_item.ACTUAL_SCHEDULED_DATE, scheduled_item.SCHEDULED_ITEM_ID
     </select>
 
     <!-- NOTE: Do not change sort order here or nextrun calculations will be wrong!  -->
@@ -84,7 +84,7 @@
         and scheduled_item.SCHEDULED_ITEM_TYPE = #scheduledItemType#
         and scheduled_item.COMPLETION_DATE is null
         and scheduled_item.ACTUAL_SCHEDULED_DATE &lt;= #processingDate#
-        order by scheduled_item.SOURCE_ENTITY_ID, scheduled_item.ACTUAL_SCHEDULED_DATE
+        order by scheduled_item.SOURCE_ENTITY_ID, scheduled_item.ACTUAL_SCHEDULED_DATE, scheduled_item.SCHEDULED_ITEM_ID
     </select>
 
     <insert id="INSERT_SCHEDULED_ITEM" parameterClass="com.orangeleap.tangerine.domain.ScheduledItem">

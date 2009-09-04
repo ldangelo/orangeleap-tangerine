@@ -753,17 +753,17 @@ DELETE FROM `FIELD_DEFINITION`  WHERE (`FIELD_DEFINITION_ID` = 'pledge.constitue
 DELETE FROM `FIELD_DEFINITION`  WHERE (`FIELD_DEFINITION_ID` = 'pledge.constituent.primaryAddress') ;
 DELETE FROM `FIELD_DEFINITION`  WHERE (`FIELD_DEFINITION_ID` = 'pledge.constituent.accountNumber') ;
 
-INSERT INTO `FIELD_DEFINITION` VALUES ('recurringGift.id', 'Reference Number', NULL, 'recurringGift', NULL, 'id', 'READ_ONLY_TEXT', NULL, NULL);
-INSERT INTO `FIELD_DEFINITION` VALUES ('paymentHistory.paymentStatus', 'Payment Status', NULL, 'paymentHistory', NULL, 'paymentStatus', 'READ_ONLY_TEXT', NULL, NULL);
-INSERT INTO `FIELD_DEFINITION` VALUES ('pledge.id', 'Reference Number', NULL, 'pledge', NULL, 'id', 'READ_ONLY_TEXT', NULL, NULL);
-INSERT INTO `FIELD_DEFINITION` VALUES ('constituent.primaryAddress.addressLine3', 'Address', NULL, 'constituent', NULL, 'primaryAddress', 'TEXT', NULL, NULL);
+INSERT INTO `FIELD_DEFINITION` (FIELD_DEFINITION_ID, DEFAULT_LABEL, ENTITY_TYPE, FIELD_NAME, FIELD_TYPE) VALUES ('recurringGift.id', 'Reference Number', 'recurringGift', 'id', 'READ_ONLY_TEXT');
+INSERT INTO `FIELD_DEFINITION` (FIELD_DEFINITION_ID, DEFAULT_LABEL, ENTITY_TYPE, FIELD_NAME, FIELD_TYPE) VALUES ('paymentHistory.paymentStatus', 'Payment Status', 'paymentHistory', 'paymentStatus', 'READ_ONLY_TEXT');
+INSERT INTO `FIELD_DEFINITION` (FIELD_DEFINITION_ID, DEFAULT_LABEL, ENTITY_TYPE, FIELD_NAME, FIELD_TYPE) VALUES ('pledge.id', 'Reference Number', 'pledge', 'id', 'READ_ONLY_TEXT');
+INSERT INTO `FIELD_DEFINITION` (FIELD_DEFINITION_ID, DEFAULT_LABEL, ENTITY_TYPE, FIELD_NAME, FIELD_TYPE) VALUES ('constituent.primaryAddress.addressLine3', 'Address', 'constituent', 'primaryAddress', 'TEXT');
 
 UPDATE `FIELD_DEFINITION` SET `ENTITY_TYPE`='phone', `FIELD_NAME`='customFieldMap[phoneType]'  WHERE (`FIELD_DEFINITION_ID` = 'phone.customFieldMap[phoneTypeReadOnly]') ;
 UPDATE `FIELD_DEFINITION` SET `FIELD_TYPE`='CODE_OTHER_DISPLAY'  WHERE (`FIELD_DEFINITION_ID` = 'pledge.distributionLines.projectCodeReadOnly') ;
 UPDATE `FIELD_DEFINITION` SET `FIELD_TYPE`='CODE_OTHER_DISPLAY'  WHERE (`FIELD_DEFINITION_ID` = 'recurringGift.distributionLines.motivationCodeReadOnly') ;
 UPDATE `FIELD_DEFINITION` SET `FIELD_TYPE`='CODE_OTHER_DISPLAY'  WHERE (`FIELD_DEFINITION_ID` = 'recurringGift.distributionLines.projectCodeReadOnly') ;
 UPDATE `FIELD_DEFINITION` SET `FIELD_TYPE`='CODE_OTHER_DISPLAY'  WHERE (`FIELD_DEFINITION_ID` = 'pledge.distributionLines.motivationCodeReadOnly') ;
-UPDATE `FIELD_DEFINITION` SET `FIELD_DEFINITION`='paymentSource.phone.numberReadOnly',`ENTITY_ATTRIBUTES`='existingPhone', `FIELD_NAME`='phone'  WHERE (`FIELD_DEFINITION_ID` = 'paymentSource.selectedPhone.numberReadOnly') ;
+UPDATE `FIELD_DEFINITION` SET `FIELD_DEFINITION_ID`='paymentSource.phone.numberReadOnly',`ENTITY_ATTRIBUTES`='existingPhone', `FIELD_NAME`='phone'  WHERE (`FIELD_DEFINITION_ID` = 'paymentSource.selectedPhone.numberReadOnly') ;
 
 update FIELD_DEFINITION set FIELD_TYPE ='PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'gift.posted';
 

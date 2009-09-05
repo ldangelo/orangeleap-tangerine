@@ -63,7 +63,7 @@ $(document).ready(function() {
 		ldaFunct(elem);
 	};
 	
-	$("#amount").one("blur", function(event) {
+	$("#amount").bind("blur", function(event) {
 		var value = $(this).val(); 
 		if (value && value != "" && $("#associatedPledgeIds").val() == '' && $("#associatedRecurringGiftIds").val() == '') {
 			// should be either an associated pledge OR associated recurringGift, not both
@@ -98,28 +98,33 @@ $(document).ready(function() {
 
 var PledgeRecurringGiftSelector = {
 	loadSelector: function(elem) {
-		this.lookupCaller = $(elem).siblings(".lookupScrollContainer").children(".multiLookupField");
-		var queryString = "constituentId=" + $("#thisConstituentId").val();
-		if (this.lookupCaller.hasClass("ea-pledge")) {
-			queryString += "&selectedPledgeIds=" + $("#associatedPledgeIds").val();
-			var baseUrl = "pledgeSelector.htm";
-		}
-		else {
-			queryString += "&selectedRecurringGiftIds=" + $("#associatedRecurringGiftIds").val();
-			var baseUrl = "recurringGiftSelector.htm";
-		}
+        if (OrangeLeap.isNum($("#amount").val())) {
+            this.lookupCaller = $(elem).siblings(".lookupScrollContainer").children(".multiLookupField");
+            var queryString = "constituentId=" + $("#thisConstituentId").val();
+            if (this.lookupCaller.hasClass("ea-pledge")) {
+                queryString += "&selectedPledgeIds=" + $("#associatedPledgeIds").val();
+                var baseUrl = "pledgeSelector.htm";
+            }
+            else {
+                queryString += "&selectedRecurringGiftIds=" + $("#associatedRecurringGiftIds").val();
+                var baseUrl = "recurringGiftSelector.htm";
+            }
 
-		$.ajax({
-			type: "POST",
-			url: baseUrl + "?constituentId=" + $("#thisConstituentId").val(),
-			data: queryString,
-			success: function(html) {
-				$("#dialog").html(html);
-				PledgeRecurringGiftSelector.selectorBindings();
-				Lookup.multiCommonBindings();
-				$("#dialog").jqmShow();
-			}
-		});
+            $.ajax({
+                type: "POST",
+                url: baseUrl + "?constituentId=" + $("#thisConstituentId").val(),
+                data: queryString,
+                success: function(html) {
+                    $("#dialog").html(html);
+                    PledgeRecurringGiftSelector.selectorBindings();
+                    Lookup.multiCommonBindings();
+                    $("#dialog").jqmShow();
+                }
+            });
+        }
+        else {
+            alert("Please enter a gift amount first");
+        }
 	},
 	
 	disable: function($elem) {

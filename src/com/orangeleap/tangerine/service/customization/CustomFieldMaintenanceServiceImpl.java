@@ -146,6 +146,13 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             addSectionFieldsAndValidations(adjustedViewPage, customFieldRequest, readOnlyFieldDefinition, site);
             
         }
+        
+        if (hasCombinedDistroLinesPage(customFieldRequest.getEntityType())) {
+
+            PageType combinedDistroLinesPage = PageType.giftCombinedDistributionLines;
+            addSectionFieldsAndValidations(combinedDistroLinesPage, customFieldRequest, fieldDefinition, site);
+            
+        }        
 
         updateTheGuru(customFieldRequest);
 
@@ -157,6 +164,10 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
     private boolean hasAdjustmentPage(String entityType) {
         return "gift".equals(entityType) || "gift.distributionLine".equals(entityType);
+    }
+
+    private boolean hasCombinedDistroLinesPage(String entityType) {
+        return "gift.distributionLine".equals(entityType);
     }
 
     private boolean hasViewPage(String entityType) {
@@ -410,7 +421,9 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
     private void addSectionFieldsAndValidations(PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {
     	List<SectionDefinition> sectionDefinitions = new ArrayList<SectionDefinition>();
-    	if (isDistributionLines(customFieldRequest.getEntityType())) {
+    	if (pageType == PageType.giftCombinedDistributionLines) {
+    		sectionDefinitions = getCombinedDistroLineSections();
+    	} else if (isDistributionLines(customFieldRequest.getEntityType())) {
     		sectionDefinitions = getDistroLineSections(pageType);
     	} else {
     		// Default to add to first section.
@@ -496,6 +509,18 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         	if (sectionDefinition.getSectionOrder().equals(definitions.get(0).getSectionOrder())) result.add(sectionDefinition);
         }
         return result;
+    }
+
+    private List<SectionDefinition> getCombinedDistroLineSections() {
+        List<SectionDefinition> result = new ArrayList<SectionDefinition>();
+        List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageType(PageType.giftCombinedDistributionLines);
+		for (SectionDefinition sd  : definitions) {
+			if (LayoutType.GRID_HIDDEN_ROW.equals(sd.getLayoutType())) {
+				result.add(sd);
+			}
+		}
+	    if (result.size() == 0) throw new RuntimeException("Default page for " + PageType.giftCombinedDistributionLines.getName() + " has no distibution line sections");
+	    return result;
     }
 
     private List<SectionDefinition> getDistroLineSections(PageType pageType) {

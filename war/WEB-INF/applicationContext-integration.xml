@@ -87,8 +87,8 @@
 
 
     <recipient-list-router id="giftRouter" input-channel="newGiftChannel">
-        <recipient channel="gift_drools_channel"/>
         <recipient channel="payment_drools_channel"/>
+        <recipient channel="gift_drools_channel"/>
         <recipient channel="gift_transformer"/>
     </recipient-list-router>
 

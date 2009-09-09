@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -113,11 +114,17 @@ public class SectionDefinitionRolesController extends SimpleFormController {
         String roles = request.getParameter("roles"); 
         
         SectionDefinition sectionDefinition = sectionDao.readSectionDefinition(new Long(id));
-        sectionDefinition.setRole(formatRoles(roles));
         
-        sectionDefinition = pageCustomizationService.maintainSectionDefinition(sectionDefinition);
+        // Can only change role if blank - create a copy first.
+        if (StringUtils.trimToNull(sectionDefinition.getRole()) == null) {
 
-        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
+        	sectionDefinition.setRole(formatRoles(roles));
+	        
+	        sectionDefinition = pageCustomizationService.maintainSectionDefinition(sectionDefinition);
+	
+	        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
+        
+        }
 
         return getModelAndView(sectionDefinition.getId(), pageType);
 

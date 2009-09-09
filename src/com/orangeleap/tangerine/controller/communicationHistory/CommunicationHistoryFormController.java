@@ -54,6 +54,17 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
     }
 
     @Override
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+        ModelAndView mav = super.showForm(request, response, errors);
+        TangerineForm form = (TangerineForm) formBackingObject(request);
+        CommunicationHistory communicationHistory = (CommunicationHistory) form.getDomainObject();
+        if ( ! communicationHistory.isNew()) {
+            mav = new ModelAndView(getRedirectUrl(request, communicationHistory));
+        }
+        return mav;
+    }
+
+    @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 	    TangerineForm form = (TangerineForm) command;
         CommunicationHistory communicationHistory = (CommunicationHistory) form.getDomainObject();
@@ -69,8 +80,7 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
 
         ModelAndView mav;
         if (saved) {
-            mav = new ModelAndView(appendSaved(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" +
-		            StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+            mav = new ModelAndView(appendSaved(getRedirectUrl(request, communicationHistory)));
         }
         else {
             mav = super.showForm(request, formErrors, getFormView());
@@ -78,4 +88,8 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
         return mav;
     }
 
+    private String getRedirectUrl(HttpServletRequest request, CommunicationHistory communicationHistory) {
+        return getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" +
+		            StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request);        
+    }
 }

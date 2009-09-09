@@ -458,7 +458,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
         while (list != null && list.size() > 0) {
             for (CommunicationHistory ch : list) {
-                if ((ch.getCustomFieldValue("template").compareTo(commType) == 0) && (ch.getGiftId().equals(g.getId()))) {
+            	if ((ch.getCustomFieldValue("template") != null) && (ch.getGiftId() != null) && (ch.getCustomFieldValue("template").compareTo(commType) == 0) && (ch.getGiftId().equals(g.getId()))) {
                 		return true;
                 	}
             }

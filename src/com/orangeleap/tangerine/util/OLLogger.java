@@ -20,6 +20,9 @@ package com.orangeleap.tangerine.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 
 public class OLLogger implements Log, java.io.Serializable {
 
@@ -167,6 +170,15 @@ public class OLLogger implements Log, java.io.Serializable {
     
     public static long getFreeMemory() {
     	return Runtime.getRuntime().maxMemory() - ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() );
+    }
+
+    // Should only call this in an existing transaction context.
+    public static boolean isCurrentTransactionMarkedRollbackOnly(ApplicationContext applicationContext) {
+    	Object obj = applicationContext.getBean("transactionManager");
+    	if (obj == null || !(obj instanceof PlatformTransactionManager)) return false;
+    	TransactionStatus ts = ((PlatformTransactionManager)obj).getTransaction(null);
+    	if (ts == null) return false;
+    	return ts.isRollbackOnly();
     }
 
 }

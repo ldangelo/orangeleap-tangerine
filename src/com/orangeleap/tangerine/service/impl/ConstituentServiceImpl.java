@@ -18,6 +18,26 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
 import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
@@ -48,20 +68,6 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 
 @Service("constituentService")
@@ -184,10 +190,13 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     void routeConstituent(Constituent constituent) throws ConstituentValidationException {
 
-        RulesStack.push(ROUTE_METHOD);
+    	boolean wasRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
+
+    	RulesStack.push(ROUTE_METHOD);
         try {
 
             try {
+            	
                 NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
                 newConstituent.routeConstituent(constituent);
             }
@@ -208,6 +217,13 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         } finally {
             RulesStack.pop(ROUTE_METHOD);
         }
+
+    	boolean isRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
+    	
+    	if (!wasRollbackOnly && isRollbackOnly) {
+    		logger.error("Rules processing caused transaction rollback for constituent "+constituent.getId());
+    	}
+
     }
 
     private synchronized void writeRulesFailureLog(String message) {

@@ -249,6 +249,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     private final static String ROUTE_METHOD = "GiftServiceImpl.routeGift";
 
     private void routeGift(Gift gift) {
+
+    	boolean wasRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
+    	
         RulesStack.push(ROUTE_METHOD);
         try {
 
@@ -265,6 +268,13 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         finally {
             RulesStack.pop(ROUTE_METHOD);
         }
+        
+    	boolean isRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
+    	
+    	if (!wasRollbackOnly && isRollbackOnly) {
+    		logger.error("Rules processing caused transaction rollback for gift "+gift.getId());
+    	}
+
     }
 
     private synchronized void writeRulesFailureLog(String message) {

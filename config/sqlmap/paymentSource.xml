@@ -102,10 +102,7 @@
 	</select>
 
     <select id="SELECT_LIMITED_PAYMENT_SOURCES_BY_CONSTITUENT_ID" resultMap="PAYMENT_SOURCE_LIST_RESULT" parameterClass="map">
-        select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
-        from
-
-        (select
+        select
         <include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
         ps.CREDIT_CARD_NUMBER as PAYMENT_SRC_CREDIT_CARD_NUMBER_READ_ONLY,
         ps.ACH_ACCOUNT_NUMBER as PAYMENT_SRC_ACH_ACCOUNT_NUMBER_READ_ONLY,
@@ -132,9 +129,9 @@
         </isNotNull>
 
         where p.SITE_NAME = #siteName#
-        and ps.CONSTITUENT_ID = #constituentId#) as innerQuery
+        and ps.CONSTITUENT_ID = #constituentId#
         order by
-        isnull ASC,
+        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
         limit $offset$,$limit$
     </select>

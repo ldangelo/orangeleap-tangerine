@@ -62,14 +62,6 @@
 
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
         ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') AS majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') AS lapsedDonor
-
-        <dynamic prepend=",">
-        	<isNotEqual property="sortColumn" compareValue="majorDonor">
-	        	<isNotEqual property="sortColumn" compareValue="lapsedDonor">
-                    CASE WHEN IFNULL($sortColumn$, '') = '' THEN 1 ELSE 0 END AS 'isnull'
-        		</isNotEqual>
-        	</isNotEqual>
-        </dynamic>
         
         <dynamic prepend=",">
             <isEqual property="sortColumn" compareValue="FIELD_VALUE">

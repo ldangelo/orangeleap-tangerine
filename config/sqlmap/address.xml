@@ -72,24 +72,7 @@
 	</select>
 
     <select id="SELECT_LIMITED_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_LIST_RESULT" parameterClass="map">
-        select innerQuery.*
-
-        <dynamic prepend=",">
-        	<isNotEqual property="sortColumn" compareValue="ADDRESS_CURRENT">
-                <isNotEqual property="sortColumn" compareValue="ADDRESS_INACTIVE">
-                    <isNotEqual property="sortColumn" compareValue="ADDRESS_RECEIVE_CORRESPONDENCE">
-                        <isNotEqual property="sortColumn" compareValue="ADDRESS_IS_PRIMARY">
-                            <isNotEqual property="sortColumn" compareValue="ADDRESS_UNDELIVERABLE">
-                                IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
-                            </isNotEqual>
-                        </isNotEqual>
-                    </isNotEqual>
-                </isNotEqual>
-            </isNotEqual>
-        </dynamic>
-        from
-
-        (select
+        select
         <include refid="ADDRESS_COLS_FRAGMENT" />,
 
         CASE
@@ -119,14 +102,14 @@
         </isNotNull>
 
         where p.SITE_NAME = #siteName#
-        and addr.CONSTITUENT_ID = #constituentId#) as innerQuery
+        and addr.CONSTITUENT_ID = #constituentId#
         order by
         <isNotEqual property="sortColumn" compareValue="ADDRESS_CURRENT">
             <isNotEqual property="sortColumn" compareValue="ADDRESS_INACTIVE">
                 <isNotEqual property="sortColumn" compareValue="ADDRESS_RECEIVE_CORRESPONDENCE">
                     <isNotEqual property="sortColumn" compareValue="ADDRESS_IS_PRIMARY">
                         <isNotEqual property="sortColumn" compareValue="ADDRESS_UNDELIVERABLE">
-                            isnull ASC,
+                            CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
                         </isNotEqual>
                     </isNotEqual>
                 </isNotEqual>

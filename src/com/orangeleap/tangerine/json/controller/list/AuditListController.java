@@ -18,23 +18,6 @@
 
 package com.orangeleap.tangerine.json.controller.list;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.validator.GenericValidator;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.util.WebUtils;
-
 import com.orangeleap.tangerine.domain.Audit;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.type.AccessType;
@@ -43,6 +26,21 @@ import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.util.WebUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This controller handles JSON requests for populating
@@ -63,8 +61,8 @@ public class AuditListController {
         NAME_MAP.put("user", "USER");
         NAME_MAP.put("type", "AUDIT_TYPE");
         NAME_MAP.put("description", "DESCRIPTION");
-        NAME_MAP.put("objecttype", "ENTITY_TYPE");
-        NAME_MAP.put("objectid","OBJECT_ID");
+        NAME_MAP.put("objectType", "ENTITY_TYPE");
+        NAME_MAP.put("objectId","OBJECT_ID");
     }
 
     @Resource(name="auditService")

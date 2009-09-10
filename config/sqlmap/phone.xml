@@ -66,25 +66,7 @@
 	</select>
     
     <select id="SELECT_LIMITED_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_LIST_RESULT" parameterClass="map">
-        select innerQuery.*
-        <dynamic prepend=",">
-        	<isNotEqual property="sortColumn" compareValue="PHONE_CURRENT">
-                <isNotEqual property="sortColumn" compareValue="PHONE_INACTIVE">
-                    <isNotEqual property="sortColumn" compareValue="PHONE_RECEIVE_CORRESPONDENCE_TEXT">
-                        <isNotEqual property="sortColumn" compareValue="PHONE_RECEIVE_CORRESPONDENCE_CALL">
-                            <isNotEqual property="sortColumn" compareValue="PHONE_IS_PRIMARY">
-                                <isNotEqual property="sortColumn" compareValue="PHONE_UNDELIVERABLE">
-                                    IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
-                                </isNotEqual>
-                            </isNotEqual>
-                        </isNotEqual>
-                    </isNotEqual>
-                </isNotEqual>
-            </isNotEqual>
-        </dynamic>
-
-        from
-        (select
+        select
         <include refid="PHONE_COLS_FRAGMENT" />,
         CASE
           WHEN ph.ACTIVATION_STATUS = 'temporary' AND #asOfDate# BETWEEN ph.TEMPORARY_START_DATE AND ph.TEMPORARY_END_DATE THEN '1'
@@ -113,7 +95,7 @@
         </isNotNull>
 
         where p.SITE_NAME = #siteName#
-        and ph.CONSTITUENT_ID = #constituentId#) as innerQuery
+        and ph.CONSTITUENT_ID = #constituentId#
         order by
         <isNotEqual property="sortColumn" compareValue="PHONE_CURRENT">
             <isNotEqual property="sortColumn" compareValue="PHONE_INACTIVE">
@@ -121,7 +103,7 @@
                     <isNotEqual property="sortColumn" compareValue="PHONE_RECEIVE_CORRESPONDENCE_CALL">
                         <isNotEqual property="sortColumn" compareValue="PHONE_IS_PRIMARY">
                             <isNotEqual property="sortColumn" compareValue="PHONE_UNDELIVERABLE">
-                                isnull ASC,
+                                CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
                             </isNotEqual>
                         </isNotEqual>
                     </isNotEqual>

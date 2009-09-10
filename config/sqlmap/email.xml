@@ -60,23 +60,7 @@
 	</select>
     
     <select id="SELECT_LIMITED_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_LIST_RESULT" parameterClass="map">
-        select innerQuery.*
-        <dynamic prepend=",">
-        	<isNotEqual property="sortColumn" compareValue="EMAIL_CURRENT">
-                <isNotEqual property="sortColumn" compareValue="EMAIL_INACTIVE">
-                    <isNotEqual property="sortColumn" compareValue="EMAIL_RECEIVE_CORRESPONDENCE">
-                        <isNotEqual property="sortColumn" compareValue="EMAIL_IS_PRIMARY">
-                            <isNotEqual property="sortColumn" compareValue="EMAIL_UNDELIVERABLE">
-                                IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
-                            </isNotEqual>
-                        </isNotEqual>
-                    </isNotEqual>
-                </isNotEqual>
-            </isNotEqual>
-        </dynamic>
-
-        from
-        (select
+        select
         <include refid="EMAIL_COLS_FRAGMENT" />,
         CASE
           WHEN e.ACTIVATION_STATUS = 'temporary' AND #asOfDate# BETWEEN e.TEMPORARY_START_DATE AND e.TEMPORARY_END_DATE THEN '1'
@@ -105,14 +89,14 @@
         </isNotNull>
 
         where p.SITE_NAME = #siteName#
-        and e.CONSTITUENT_ID = #constituentId#) as innerQuery
+        and e.CONSTITUENT_ID = #constituentId#
         order by
         <isNotEqual property="sortColumn" compareValue="EMAIL_CURRENT">
             <isNotEqual property="sortColumn" compareValue="EMAIL_INACTIVE">
                 <isNotEqual property="sortColumn" compareValue="EMAIL_RECEIVE_CORRESPONDENCE">
                     <isNotEqual property="sortColumn" compareValue="EMAIL_IS_PRIMARY">
                         <isNotEqual property="sortColumn" compareValue="EMAIL_UNDELIVERABLE">
-                            isnull ASC,
+                            CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
                         </isNotEqual>
                     </isNotEqual>
                 </isNotEqual>

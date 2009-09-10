@@ -442,9 +442,12 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     	
     	if (old == null) return true;
     	
-		if (!compare(old.getStartDate(), updated.getStartDate())
+		if (
+				!compare(old.getStartDate(), updated.getStartDate())
 				|| !compare(old.getEndDate(), updated.getEndDate())
-				|| !old.getFrequency().equals(updated.getFrequency()))
+				|| !old.getFrequency().equals(updated.getFrequency())
+				|| !old.getSchedulingAmount().equals(updated.getSchedulingAmount())
+				)
 			return true;
     	
     	return false;

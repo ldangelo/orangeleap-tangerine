@@ -58,31 +58,27 @@
 	</select>
 
     <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
-        select innerQuery.*
-        
+        SELECT
+
+        <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
+        ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') AS majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') AS lapsedDonor
+
         <dynamic prepend=",">
         	<isNotEqual property="sortColumn" compareValue="majorDonor">
 	        	<isNotEqual property="sortColumn" compareValue="lapsedDonor">
-        			IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+                    CASE WHEN IFNULL($sortColumn$, '') = '' THEN 1 ELSE 0 END AS 'isnull'
         		</isNotEqual>
         	</isNotEqual>
         </dynamic>
-
-        from
-
-        (select
-                
-        <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
-                
-        ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') as majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') as lapsedDonor
+        
         <dynamic prepend=",">
             <isEqual property="sortColumn" compareValue="FIELD_VALUE">
                 custFld.FIELD_VALUE
             </isEqual>
         </dynamic>
-
-        from CONSTITUENT p
-
+                
+        FROM CONSTITUENT p
+        
         <isNotNull property="entityType">
             <isNotNull property="fieldName">
                 <isNotNull property="asOfDate">
@@ -93,14 +89,16 @@
             </isNotNull>
         </isNotNull>
 
-        where p.SITE_NAME = #siteName#) as innerQuery
-        order by 
+        WHERE p.SITE_NAME = #siteName#
+        ORDER BY
+
         <isNotEqual property="sortColumn" compareValue="majorDonor">
             <isNotEqual property="sortColumn" compareValue="lapsedDonor">
-                isnull ASC,
+                CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
             </isNotEqual>
         </isNotEqual>
-		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$ 
+
+        $sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
         limit $offset$,$limit$
     </select>
     

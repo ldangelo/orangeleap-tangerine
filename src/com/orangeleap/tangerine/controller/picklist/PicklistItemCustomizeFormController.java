@@ -48,9 +48,7 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
         PicklistItem item = getPicklistItem(picklist, new Long(picklistItemId));
 
         Map<String, String> stringmap = getMap(item.getCustomFieldMap());
-        if (stringmap.size() < 1 || isGLCoded(picklist)) {
-            addDefaultFields(picklist, stringmap);
-        }
+        addDefaultFields(picklist, stringmap);
 
         if (stringmap.size() == 0) stringmap.put("", "");
         request.setAttribute("map", stringmap);

@@ -67,34 +67,6 @@ public class FieldDescriptor {
 		return fieldDefinition;
 	}
 	
-	public boolean isMap() {
-		return isMap(name);
-	}
-
-	public boolean isDependentField() {
-		return isDependentField(name);
-	}
-
-	public String getMapType() {
-		return getMapType(name);
-	}
-	
-	public String getKey() {
-		return getKey(name);
-	}
-	
-	public String getSubField() {
-		return getSubField(name);
-	}
-	
-	public String getDependentObject() {
-		return getDependentObject(name);
-	}
-	
-	public String getDependentField() {
-		return getDependentField(name);
-	}
-	
 	// Create an export field name for internal name.
 	public String getExportFieldNameForInternalName() {
 		if (name.startsWith("constituent.")) return name.substring(name.indexOf('.')+1);
@@ -103,82 +75,12 @@ public class FieldDescriptor {
 	
 	// Create internal name for import field name.
 	public static String getInternalNameForImportFieldName(String importFieldName) {
-		if (
-				importFieldName.startsWith("address[")
-				|| importFieldName.startsWith("phone[")
-				|| importFieldName.startsWith("email[")
-				) {
-			int i = importFieldName.indexOf("[");
-			int j = importFieldName.indexOf("]");
-			if (i < 0 || j < 0 || i > j) {
-                return "";
-            }
-		    return importFieldName.substring(0, i) + "Map[" + getKey(importFieldName) + "]." + importFieldName.substring(j + 1);
-		} else {
-			return importFieldName;
-		}
-	}
-
-		
-	
-	
-	private boolean isMap(String name) {
-		return name.contains("Map[");
-	}
-
-	private boolean isDependentField(String name) {
-		return name.contains(".");
-	}
-
-	private String getMapType(String name) {
-		int i = name.indexOf("Map[");
-		if (i < 0 ) {
-            return "";
-        }
-		String type = name.substring(0,i);
-		return toInitialUpperCase(type);
-	}
-	
-	private static String getKey(String name) {
-		int i = name.indexOf("[");
-		int j = name.indexOf("]");
-		if (i < 0 || j < 0 || i > j) {
-            return "";
-        }
-		return name.substring(i + 1, j);
-	}
-	
-	private String getSubField(String name) {
-		int j = name.indexOf("]");
-		if (j < 0 || j == name.length()-1) {
-            return "";
-        }
-		return name.substring(j+2);
-	}
-	
-	private String getDependentObject(String name) {
-		int j = name.indexOf(".");
-		if (j < 0) {
-            return "";
-        }
-		return name.substring(0,j);
-	}
-	
-	private String getDependentField(String name) {
-		int j = name.indexOf(".");
-		if (j < 0) {
-            return "";
-        }
-		return name.substring(j+1);
+		return importFieldName.replace("customField[", "customFieldMap[");
 	}
 	
 	// Create an export field name for a mapped field.
 	private String getExportFieldNameForMap(String name) {
-		if (!isMap(name)) {
-            return name;
-        }
-		String result = toInitialLowerCase(getMapType(name)) + "[" + getKey(name) + "]" + getSubField(name);
-		return result;
+		return name.replace("customFieldMap[", "customField[");
 	}
 
 	public void setDisabled(boolean disabled) {

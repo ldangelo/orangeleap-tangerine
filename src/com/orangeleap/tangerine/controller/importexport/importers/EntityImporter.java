@@ -18,20 +18,16 @@
 
 package com.orangeleap.tangerine.controller.importexport.importers;
 
-import java.lang.reflect.Method;
+import java.beans.PropertyDescriptor;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
 
@@ -41,15 +37,14 @@ import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.domain.AddressAware;
-import com.orangeleap.tangerine.domain.EmailAware;
-import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public abstract class EntityImporter {
@@ -105,15 +100,16 @@ public abstract class EntityImporter {
 	}
 	
 	protected FieldDescriptor getFieldDescriptor(String name) {
-		name = FieldDescriptor.getInternalNameForImportFieldName(name);
-		return fieldDescriptorMap.get(name);
+		String internalname = FieldDescriptor.getInternalNameForImportFieldName(name);
+		FieldDescriptor result = fieldDescriptorMap.get(internalname);
+		if (result == null) result = fieldDescriptorMap.get(name);
+		return result;
 	}
 
 	protected boolean ignore(String key) {
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected void setFieldValue(Object o, String key, String svalue) {
 		
 			try {
@@ -129,56 +125,55 @@ public abstract class EntityImporter {
 				
 				Object value = convertToObject(svalue, fd);
 				
-				if (fd.isDependentField()) {
-					String depobject = fd.getDependentObject();
-					Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
-					Object so = m.invoke(o);
-					if (so == null) {
-                        Class returnClass = m.getReturnType();
-                        so = returnClass.newInstance();
-                        if (so instanceof AbstractEntity) {
-                            siteservice.setEntityDefaults((AbstractEntity) so, EntityType.valueOf(depobject)); 
-                        }
-                        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(o);
-                        if (bw.isWritableProperty(depobject)) {
-                            bw.setPropertyValue(depobject, so);
-                        }
-                    } 
-			        if (fd.getType() == FieldDescriptor.CUSTOM) {
-						m = so.getClass().getMethod("setCustomFieldValue", new Class[]{String.class, String.class});
-						value = value.toString().replace(",", StringConstants.CUSTOM_FIELD_SEPARATOR);
-						m.invoke(so, new Object[]{EntityExporter.getCustomFieldName(key), value});
-			        }
-					BeanUtils.setProperty(so, fd.getDependentField(), value);
-					if (o instanceof AddressAware && ((AddressAware)o).getAddress() != null) {
-                        ((AddressAware)o).getAddress().setId(0L);  // New
-                    }
-					if (o instanceof PhoneAware && ((PhoneAware)o).getPhone() != null) {
-                        ((PhoneAware)o).getPhone().setId(0L);  // New
-                    }
-					if (o instanceof EmailAware && ((EmailAware)o).getEmail() != null) {
-                        ((EmailAware)o).getEmail().setId(0L);  // New
-                    }
-			    } else if (fd.getType() == FieldDescriptor.CUSTOM) {
-					Method m = o.getClass().getMethod("setCustomFieldValue", new Class[]{String.class, String.class});
-					value = value.toString().replace(",", StringConstants.CUSTOM_FIELD_SEPARATOR);
-					m.invoke(o, new Object[]{EntityExporter.getCustomFieldName(key), value});
-				} else if (fd.isMap()) {
-					Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");
-					Map map = (Map)m.invoke(o);
-					Object so = map.get(fd.getKey()); 
-					if (so == null) {
-                        throw new RuntimeException("Unable to import field.");
-                    }
-					BeanUtils.setProperty(so, fd.getSubField(), value);
-				} else {
-					BeanUtils.setProperty(o, key, value);
-				}
+				FieldDefinition fieldDefinition = fd.getFieldDefinition();
+				
+				setProperty(o, fieldDefinition,  value);
+				
 			} catch (Exception e) {
 				logger.debug("Exception occurred", e);
 				throw new RuntimeException("Unable to set field value "+key+" to "+svalue+": "+e.getMessage());
 			}
 		
+	}
+	
+	private void setProperty(Object o, FieldDefinition fd, Object value) throws IllegalAccessException, InstantiationException {
+       
+		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(o);
+
+        String property = fd.getFieldName();
+
+		if (!fd.getId().endsWith(property)) {
+			
+			String additional = EntityExporter.getSubfield(property, fd.getId());
+
+			// Check if need to create dependent object
+			if (bw.getPropertyValue(property) == null) {
+				PropertyDescriptor pd = bw.getPropertyDescriptor(property);
+				Object newObj = pd.getPropertyType().newInstance();
+                if (newObj instanceof AbstractEntity) {
+                	AbstractEntity ae = (AbstractEntity) newObj;
+                    siteservice.setEntityDefaults( ae, fd.getEntityType() ); 
+                }
+                bw.setPropertyValue(property, newObj);
+            } 
+			
+            property = property + "." + additional;
+
+		}
+		
+        if (property.contains("customFieldMap[")) {
+        	property += ".value";
+        	if (fd.getFieldType().toString().startsWith("MULTI_")) {
+    			value = value.toString().replace(",", StringConstants.CUSTOM_FIELD_SEPARATOR);
+        	}
+        }
+        
+        if (bw.isWritableProperty(property)) {
+            bw.setPropertyValue(property, value);
+        } else {
+        	logger.debug("Unwriteable property " + property);
+        }
+
 	}
 	
 	// Convert types for native fields on entity or subentity.  Not needed for custom fields since they are all strings.

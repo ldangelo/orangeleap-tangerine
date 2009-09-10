@@ -57,12 +57,6 @@ public class FieldDefUtil {
 			logger.debug("HEADER_FIELD : "+ name);
 			if (fd.isCustom()) {
 				list.add(new FieldDescriptor(fd.getCustomFieldName(), FieldDescriptor.CUSTOM, fd));
-			} else if (name.contains("addressMap[")) {
-				list.add(new FieldDescriptor(name, FieldDescriptor.ADDRESS, fd));
-			} else if (name.contains("phoneMap[")) {
-				list.add(new FieldDescriptor(name, FieldDescriptor.PHONE, fd));
-			} else if (name.contains("emailMap[")) {
-				list.add(new FieldDescriptor(name, FieldDescriptor.EMAIL, fd));
 			} else {
 				list.add(new FieldDescriptor(name, FieldDescriptor.NATIVE, fd));
 			}

@@ -18,8 +18,20 @@
 
 package com.orangeleap.tangerine.controller.importexport.exporters;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.context.ApplicationContext;
+
 import com.orangeleap.tangerine.controller.importexport.ExportRequest;
 import com.orangeleap.tangerine.controller.importexport.fielddefs.FieldDefUtil;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.FieldType;
@@ -27,17 +39,6 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.context.ApplicationContext;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public abstract class EntityExporter {
 
@@ -127,38 +128,22 @@ public abstract class EntityExporter {
         return defaultExclusion.excludeField(name, fd);
     }
 
-    @SuppressWarnings("unchecked")
     private String getFieldValue(Object o, FieldDescriptor fd) {
 
         FieldType fieldType = fd.getFieldDefinition().getFieldType();
+        String id = fd.getFieldDefinition().getId();
+
+        String fieldName = fd.getFieldDefinition().getFieldName();
+    	
+        if (fieldName.contains("customFieldMap[")) {
+    		fieldName += ".value";
+    	}
 
         String result = "";
         try {
-            String name = fd.getName();
-            if (fd.isDependentField()) {
-	            String depobject = fd.getDependentObject();
-	            Method m = o.getClass().getMethod("get" + FieldDescriptor.toInitialUpperCase(depobject));
-	            Object so = m.invoke(o);
-	            if (so == null) {
-	                return "";
-	            }
-	            if (fd.getType() == FieldDescriptor.CUSTOM) {
-	                m = so.getClass().getMethod("getCustomFieldValue", new Class[]{String.class});
-	                result = (String) m.invoke(so, getCustomFieldName(name));
-	            } else {
-	            	result = getProperty(so, fd.getDependentField(), fieldType);
-	            }
-            } else if (fd.getType() == FieldDescriptor.CUSTOM) {
-                Method m = o.getClass().getMethod("getCustomFieldValue", new Class[]{String.class});
-                result = (String) m.invoke(o, name);
-            } else if (fd.isMap()) {
-                Method m = o.getClass().getMethod("get" + fd.getMapType() + "Map");
-                Map map = (Map) m.invoke(o);
-                Object so = map.get(fd.getKey());
-                result = getProperty(so, fd.getSubField(), fieldType);
-            } else {
-                result = getProperty(o, name, fieldType);
-            }
+        	
+            result = getProperty(o, fieldName, id, fieldType);
+            
         } catch (Exception e) {
             // Some screen fields are not entity properties
             fd.setDisabled(true);
@@ -170,26 +155,31 @@ public abstract class EntityExporter {
         return result;
     }
     
-    public static String getCustomFieldName(String name) {
-    	name = name.substring(name.indexOf("[")+1);
-    	return name.replace("]","");
-    }
+    private String getProperty(Object o, String fieldName, String id, FieldType fieldType) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    	
+    	BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(o);
+    	Object result = wrapper.getPropertyValue(fieldName);
 
-    private String getProperty(Object o, String field, FieldType fieldType) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    	if (result instanceof AbstractEntity) {
+    		String additional = getSubfield(fieldName, id);
+    		result = PropertyAccessorFactory.forBeanPropertyAccess(result).getPropertyValue(additional);
+    		result = result == null ? "" : result;
+    	}
+    	if (result instanceof CustomField) {
+    		result = ((CustomField)result).getValue();
+    		result = result == null ? "" : result;
+    	}
+
+    	if (result == null) return "";
+    	
         if (fieldType == FieldType.DATE || fieldType == FieldType.DATE_DISPLAY) {
-            Object result = getObject(o, field);
             return formatDate(result, "MM/dd/yyyy");
         } else if (fieldType == FieldType.CC_EXPIRATION || fieldType == FieldType.CC_EXPIRATION_DISPLAY) {
-            Object result = getObject(o, field);
             return formatDate(result, "MM/yyyy");
         } else {
-            return BeanUtils.getProperty(o, field);
+            return result.toString();
         }
-    }
-
-    private Object getObject(Object o, String field) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        Method m = o.getClass().getMethod("get" + StringUtils.capitalize(field), new Class[0]);
-        return m.invoke(o, new Object[0]);
+        
     }
 
     private String formatDate(Object o, String format) {
@@ -200,6 +190,10 @@ public abstract class EntityExporter {
             if (o == null) return "";
             else return o.toString();
         }
+    }
+    
+    public static String getSubfield(String fieldName, String id) {
+    	return id.substring(id.indexOf(fieldName) + fieldName.length() + 1);
     }
 
 

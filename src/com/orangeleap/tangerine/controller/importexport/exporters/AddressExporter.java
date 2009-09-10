@@ -119,7 +119,6 @@ public class AddressExporter extends EntityExporter {
         list.add(getFieldDescriptor("primaryAddress.undeliverable"));
         list.add(getFieldDescriptor("primaryAddress.receiveCorrespondence"));
 
-        list.add(getFieldDescriptor("primaryAddress.customFieldMap[addressType]"));
 
 
         return list;

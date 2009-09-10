@@ -52,7 +52,7 @@ public class GiftExporter extends EntityExporter {
     protected PageType getPageType() {
         return PageType.gift;
     }
-
+    
     @Override
     protected boolean exclude(String name, FieldDefinition fd) {
         return super.exclude(name, fd)
@@ -62,6 +62,7 @@ public class GiftExporter extends EntityExporter {
                 || fd.getId().toLowerCase().contains("creditCardSecurityCode".toLowerCase())
                 || fd.getId().toLowerCase().contains("achRoutingNumber".toLowerCase())
                 || fd.getId().toLowerCase().contains("achAccountNumber".toLowerCase())
+                || fd.getId().toLowerCase().contains("distributionLines".toLowerCase())
                 ;
     }
 

@@ -106,7 +106,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite: sortPropertyName = " + sortPropertyName + " direction = " + direction + " start = " + start + " limit = " + limit);
         }
-        Map<String,Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_LIST_RESULT", sortPropertyName, direction, start, limit, locale);
+        Map<String,Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_RESULT", sortPropertyName, direction, start, limit, locale);
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_SITE", params);
     }
     

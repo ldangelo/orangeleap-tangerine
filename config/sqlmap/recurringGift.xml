@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RECURRING_GIFT">
 
-	<resultMap id="RECURRING_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id">
+	<resultMap id="MIN_RECURRING_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id">
 		<result property="id" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
 		<result property="nextRunDate" column="NEXT_RUN_DATE" jdbcType="TIMESTAMP" />
 		<result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
@@ -21,12 +21,19 @@
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
 		<result property="recurringGiftStatus" column="RECURRING_GIFT_STATUS" jdbcType="VARCHAR" />
 		<result property="updateDate" column="RECURR_GIFT_UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
-		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
-		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
-	
+
+    <resultMap id="RECURRING_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id" extends="MIN_RECURRING_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+        <result property="phone" resultMap="PHONE.PHONE_RESULT" />
+        <result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+    </resultMap>
+
+    <resultMap id="RECURRING_GIFT_LIST_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id" extends="MIN_RECURRING_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="paymentSource" resultMap="PAYMENT_SOURCE.MIN_PAYMENT_SOURCE_RESULT" />
+    </resultMap>
+
     <resultMap id="RECURRING_GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id" extends="RECURRING_GIFT_RESULT_NO_DISTRO_LINES">
         <result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
     </resultMap>
@@ -131,15 +138,13 @@
 		</iterate>
 	</select>
   
-    <select id="SELECT_LIMITED_RECURRING_GIFTS_BY_CONSTITUENT_ID" resultMap="RECURRING_GIFT_RESULT_NO_DISTRO_LINES" parameterClass="map">
+    <select id="SELECT_LIMITED_RECURRING_GIFTS_BY_CONSTITUENT_ID" resultMap="RECURRING_GIFT_LIST_RESULT" parameterClass="map">
         select innerQuery.*, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
         from
 
         (select
         <include refid="RECURRING_GIFT_COLS_FRAGMENT" />,
         <include refid="CONSTITUENT_COLS_FRAGMENT" />,
-        <include refid="ADDRESS_COLS_FRAGMENT" />,
-        <include refid="PHONE_COLS_FRAGMENT" />	,
         <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
 
         <dynamic prepend=",">
@@ -150,8 +155,6 @@
 
         from RECURRING_GIFT rg
         inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
-        left outer join PHONE ph on rg.PHONE_ID = ph.PHONE_ID
-        left outer join ADDRESS addr on rg.ADDRESS_ID = addr.ADDRESS_ID
         left outer join PAYMENT_SOURCE ps on rg.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
 
         <isNotNull property="entityType">

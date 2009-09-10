@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="PAYMENT_SOURCE">
 
-	<resultMap id="PAYMENT_SOURCE_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id">
+	<resultMap id="MIN_PAYMENT_SOURCE_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id">
 		<result property="id" column="PAYMENT_SOURCE_ID" jdbcType="BIGINT" />
 		<result property="achAccountNumberEncrypted" column="PAYMENT_SRC_ACH_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
 		<result property="achHolderName" column="PAYMENT_SRC_ACH_HOLDER_NAME" jdbcType="VARCHAR" />
@@ -15,14 +15,17 @@
 		<result property="lastFourDigits" column="PAYMENT_SRC_LAST_FOUR_DIGITS" jdbcType="VARCHAR" />
 		<result property="profile" column="PAYMENT_SRC_PROFILE" jdbcType="VARCHAR" />
 		<result property="paymentType" column="PAYMENT_SRC_TYPE" jdbcType="VARCHAR" />
-		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
-		<result property="phone" resultMap="PHONE.PHONE_RESULT" /> 
-		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 		
         <result property="createDate" column="PAYMENT_SRC_CREATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="updateDate" column="PAYMENT_SRC_UPDATE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
-    <resultMap id="PAYMENT_SOURCE_LIST_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id" extends="PAYMENT_SOURCE_RESULT">
+    <resultMap id="PAYMENT_SOURCE_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id" extends="MIN_PAYMENT_SOURCE_RESULT">
+        <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+        <result property="phone" resultMap="PHONE.PHONE_RESULT" />
+    </resultMap>
+
+    <resultMap id="PAYMENT_SOURCE_LIST_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id" extends="MIN_PAYMENT_SOURCE_RESULT">
         <result property="achRoutingNumberDisplay" column="PAYMENT_SRC_ACH_ROUTING_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
         <result property="achAccountNumberDisplay" column="PAYMENT_SRC_ACH_ACCOUNT_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
         <result property="creditCardNumberDisplay" column="PAYMENT_SRC_CREDIT_CARD_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
@@ -107,8 +110,6 @@
         ps.CREDIT_CARD_NUMBER as PAYMENT_SRC_CREDIT_CARD_NUMBER_READ_ONLY,
         ps.ACH_ACCOUNT_NUMBER as PAYMENT_SRC_ACH_ACCOUNT_NUMBER_READ_ONLY,
         ps.ACH_ROUTING_NUMBER as PAYMENT_SRC_ACH_ROUTING_NUMBER_READ_ONLY,
-        <include refid="ADDRESS_COLS_FRAGMENT"/>,
-	    <include refid="PHONE_COLS_FRAGMENT"/>,
       	<include refid="CONSTITUENT_COLS_FRAGMENT"/>
 
         <dynamic prepend=",">
@@ -119,8 +120,6 @@
 
         from PAYMENT_SOURCE ps
         inner join CONSTITUENT p ON ps.CONSTITUENT_ID = p.CONSTITUENT_ID
-        left outer join PHONE ph on ps.PHONE_ID = ph.PHONE_ID
-        left outer join ADDRESS addr on ps.ADDRESS_ID = addr.ADDRESS_ID
 
         <isNotNull property="entityType">
             <isNotNull property="fieldName">

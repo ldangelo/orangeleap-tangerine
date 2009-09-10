@@ -230,7 +230,7 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
             logger.trace("readAllRecurringGiftsByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sortPropertyName +
                     " direction = " + direction + " start = " + start + " limit = " + limit);
         }
-        Map<String, Object> params = setupSortParams(StringConstants.RECURRING_GIFT, "RECURRING_GIFT.RECURRING_GIFT_RESULT_NO_DISTRO_LINES",
+        Map<String, Object> params = setupSortParams(StringConstants.RECURRING_GIFT, "RECURRING_GIFT.RECURRING_GIFT_LIST_RESULT",
                 sortPropertyName, direction, start, limit, locale);
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
 

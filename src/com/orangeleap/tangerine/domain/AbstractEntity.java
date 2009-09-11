@@ -196,6 +196,13 @@ public abstract class AbstractEntity implements Entity {
         return "";
     }
 
+    /**
+     * Full-text searchable words
+     */
+    public String getFullTextSearchString() {
+        return "";
+    }
+    
     @Override
     public String toString() {
         return new ToStringCreator(this).append("id", id).toString();

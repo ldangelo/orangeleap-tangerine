@@ -1102,6 +1102,27 @@ PRIMARY KEY  (`THEGURU_SEGMENTATION_RESULT_ID`),
 INDEX `THEGURU_SEGMENTATION_RESULT_REPORT_ID_IDX` (`REPORT_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+# Dump of table ENTITY_SEARCH
+# The FULLTEXT index requires MyISAM type, which means this table should be updated last in the transaction if possible.
+#
+# Example searching for records containing 'joe' or 'fred' (case insensitive):
+#
+# SELECT *, MATCH( SEARCH_TEXT ) AGAINST ('joe fred') as relevance FROM `ENTITY_SEARCH` WHERE MATCH( SEARCH_TEXT ) AGAINST ('joe fred' IN BOOLEAN MODE ) HAVING relevance > 0.2;
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `ENTITY_SEARCH`;
+
+CREATE TABLE `ENTITY_SEARCH` (
+`ENTITY_TYPE` varchar(255) NOT NULL,
+`ENTITY_ID` bigint(20) NOT NULL,
+`SEARCH_TEXT` TEXT NOT NULL,
+INDEX `ENTITY_SEARCH` (`ENTITY_ID`,`ENTITY_TYPE`),
+FULLTEXT INDEX (`SEARCH_TEXT`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
 SET foreign_key_checks = 1;
 
 // Increment this value and OrangeLeapSchemaVersion.java when the tangerine.ddl has an incompatible change for a release.

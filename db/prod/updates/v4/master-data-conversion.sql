@@ -76,156 +76,156 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('address.id', 'address', 'id', 'Address', 'ADDRESS_PICKLIST');
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'address.userCreated';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'address.userCreated';
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('address.current', 'address', 'current', 'Current', 'READ_ONLY_TEXT');
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'address.customFieldMap[addressTypeReadOnly]', ENTITY_TYPE = 'address' where FIELD_DEFINITION_ID = 'selectedAddress.customFieldMap[addressTypeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'address.customFieldMap[addressTypeReadOnly]', ENTITY_TYPE = 'address' WHERE FIELD_DEFINITION_ID = 'selectedAddress.customFieldMap[addressTypeReadOnly]';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedAddress.addressLine1ReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedAddress.addressLine1ReadOnly';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedAddress.addressLine2ReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedAddress.addressLine2ReadOnly';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedAddress.addressLine3ReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedAddress.addressLine3ReadOnly';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedAddress.cityReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedAddress.cityReadOnly';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedAddress.stateProvinceReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedAddress.stateProvinceReadOnly';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedAddress.postalCodeReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedAddress.postalCodeReadOnly';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedAddress.countryReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedAddress.countryReadOnly';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedAddress.shortDisplay';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedAddress.shortDisplay';
 
-UPDATE FIELD_DEFINITION set FIELD_TYPE = 'PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'address.countryReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'address.countryReadOnly';
 
 
 
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.id', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.id', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardSecurityCode', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardSecurityCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardSecurityCode', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardSecurityCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.address.id', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.id', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.phone.id', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPhone';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.phone.id', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPhone';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.amount', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.lineAmount';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.amount', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.lineAmount';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.percentage', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.percentage';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.percentage', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.percentage';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.projectCodeReadOnly', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.projectCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.projectCodeReadOnly', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.projectCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.motivationCodeReadOnly', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.motivationCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.motivationCodeReadOnly', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.motivationCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.other_motivationCodeReadOnly', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' where FIELD_DEFINITION_ID = 'adjustedGift.other_motivationCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.other_motivationCodeReadOnly', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' WHERE FIELD_DEFINITION_ID = 'adjustedGift.other_motivationCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[referenceReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[referenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[referenceReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[referenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[other_referenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[other_referenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[other_referenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[other_referenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[tributeReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[tributeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[tributeReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[tributeReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[tributeReferenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[tributeReferenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[other_tributeReferenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[other_tributeReferenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[tributeOccasionReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[tributeOccasionReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[additional_tributeOccasionReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[additional_tributeOccasionReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[onBehalfOfReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[onBehalfOfReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[other_onBehalfOfReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[other_onBehalfOfReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[anonymousReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[anonymousReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[anonymousReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[anonymousReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[recognitionNameReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[recognitionNameReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[recognitionNameReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[recognitionNameReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[notifiedReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[notifiedReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[notifiedReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[notifiedReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[other_notifiedReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[other_notifiedReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[other_notifiedReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[other_notifiedReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[messageReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[messageReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[messageReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[messageReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[taxDeductibleReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[taxDeductibleReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[taxDeductibleReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[taxDeductibleReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[associatedPledgeIdReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[associatedPledgeIdReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[associatedRecurringGiftIdReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[associatedRecurringGiftIdReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.customFieldMap[associatedRecurringGiftIdReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'adjustedGift.customFieldMap[associatedRecurringGiftIdReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_TYPE = 'PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'adjustedGift.paymentTypeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'adjustedGift.paymentTypeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardHolderNameReadOnly', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardHolderNameReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardHolderNameReadOnly', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardHolderNameReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardTypeReadOnly', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardTypeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardTypeReadOnly', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardTypeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardNumberReadOnly', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardNumberReadOnly', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardExpirationDisplay', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardExpirationDisplay';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.creditCardExpirationDisplay', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.creditCardExpirationDisplay';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.achHolderNameReadOnly', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.achHolderNameReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.achHolderNameReadOnly', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.achHolderNameReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.achRoutingNumberReadOnly', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.achRoutingNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.achRoutingNumberReadOnly', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.achRoutingNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.achAccountNumberReadOnly', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.achAccountNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.paymentSource.achAccountNumberReadOnly', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPaymentSource.achAccountNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.address.addressLine1ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.addressLine1ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.addressLine1ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.addressLine1ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.address.addressLine2ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.addressLine2ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.addressLine2ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.addressLine2ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.address.addressLine3ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.addressLine3ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.addressLine3ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.addressLine3ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.address.cityReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.cityReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.cityReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.cityReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.address.stateProvinceReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.stateProvinceReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.stateProvinceReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.stateProvinceReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.address.postalCodeReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.postalCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.postalCodeReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.postalCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.address.countryReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.countryReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.countryReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedAddress.countryReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.phone.numberReadOnly', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'adjustedGift.selectedPhone.numberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.phone.numberReadOnly', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPhone.numberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', 
-DEFAULT_LABEL = 'Amt', FIELD_TYPE = 'NUMBER_DISPLAY' where FIELD_DEFINITION_ID = 'adjustedGift.lineAmountReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', 
+DEFAULT_LABEL = 'Amt', FIELD_TYPE = 'NUMBER_DISPLAY' WHERE FIELD_DEFINITION_ID = 'adjustedGift.lineAmountReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', 
-FIELD_TYPE = 'PERCENTAGE_DISPLAY' where FIELD_DEFINITION_ID = 'adjustedGift.percentageReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', 
+FIELD_TYPE = 'PERCENTAGE_DISPLAY' WHERE FIELD_DEFINITION_ID = 'adjustedGift.percentageReadOnly';
 
 
 
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.address.id', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.address.id', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.phone.id', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'communicationHistory.selectedPhone';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.phone.id', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedPhone';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.email.id', FIELD_NAME = 'email' where FIELD_DEFINITION_ID = 'communicationHistory.selectedEmail';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.email.id', FIELD_NAME = 'email' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedEmail';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.address.addressLine1ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.addressLine1ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.address.addressLine1ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.addressLine1ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.address.addressLine2ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.addressLine2ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.address.addressLine2ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.addressLine2ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.address.addressLine3ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.addressLine3ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.address.addressLine3ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.addressLine3ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.address.cityReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.cityReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.address.cityReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.cityReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.address.stateProvinceReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.stateProvinceReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.address.stateProvinceReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.stateProvinceReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.address.postalCodeReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.postalCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.address.postalCodeReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.postalCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.address.countryReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.countryReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.address.countryReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedAddress.countryReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.phone.numberReadOnly', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'communicationHistory.selectedPhone.numberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.phone.numberReadOnly', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedPhone.numberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'communicationHistory.email.emailAddressReadOnly', FIELD_NAME = 'email' where FIELD_DEFINITION_ID = 'communicationHistory.selectedEmail.emailAddressReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'communicationHistory.email.emailAddressReadOnly', FIELD_NAME = 'email' WHERE FIELD_DEFINITION_ID = 'communicationHistory.selectedEmail.emailAddressReadOnly';
 
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'constituent.primaryEmail';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'constituent.primaryEmail';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'constituent.primaryAddress';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'constituent.primaryAddress';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'constituent.primaryPhone';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'constituent.primaryPhone';
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('constituent.primaryEmail.customFieldMap[emailType]', 'constituent', 'primaryEmail', 'Email', 'MULTI_PICKLIST');
 
@@ -249,15 +249,15 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('constituent.primaryPhone.number', 'constituent', 'primaryPhone', 'Phone', 'TEXT');
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'individual,spouse' where FIELD_DEFINITION_ID = 'constituent.customFieldMap[individual.spouse]';
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'individual,spouse' WHERE FIELD_DEFINITION_ID = 'constituent.customFieldMap[individual.spouse]';
 
-UPDATE FIELD_DEFINITION set DEFAULT_LABEL = 'Eligible Funds' where FIELD_DEFINITION_ID = 'constituent.customFieldMap[organization.additional_eligibleFunds]';
+UPDATE FIELD_DEFINITION SET DEFAULT_LABEL = 'Eligible Funds' WHERE FIELD_DEFINITION_ID = 'constituent.customFieldMap[organization.additional_eligibleFunds]';
 
-UPDATE FIELD_DEFINITION set DEFAULT_LABEL = 'Eligible Orgs' where FIELD_DEFINITION_ID = 'constituent.customFieldMap[organization.additional_eligibleOrganizations]';
+UPDATE FIELD_DEFINITION SET DEFAULT_LABEL = 'Eligible Orgs' WHERE FIELD_DEFINITION_ID = 'constituent.customFieldMap[organization.additional_eligibleOrganizations]';
 
-UPDATE FIELD_DEFINITION set DEFAULT_LABEL = 'Ineligible Orgs' where FIELD_DEFINITION_ID = 'constituent.customFieldMap[organization.additional_ineligibleOrganizations]';
+UPDATE FIELD_DEFINITION SET DEFAULT_LABEL = 'Ineligible Orgs' WHERE FIELD_DEFINITION_ID = 'constituent.customFieldMap[organization.additional_ineligibleOrganizations]';
 
-UPDATE FIELD_DEFINITION set DEFAULT_LABEL = 'Program Contact' where FIELD_DEFINITION_ID = 'constituent.customFieldMap[organization.other_programContact]';
+UPDATE FIELD_DEFINITION SET DEFAULT_LABEL = 'Program Contact' WHERE FIELD_DEFINITION_ID = 'constituent.customFieldMap[organization.other_programContact]';
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('constituent.majorDonor', 'constituent', 'majorDonor', 'Major Donor', 'READ_ONLY_TEXT');
 
@@ -272,470 +272,470 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('email.current', 'email', 'current', 'Current', 'READ_ONLY_TEXT');
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'email.userCreated';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'email.userCreated';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedEmail.customFieldMap[emailTypeReadOnly]';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedEmail.customFieldMap[emailTypeReadOnly]';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedEmail.emailAddressReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedEmail.emailAddressReadOnly';
 
 
 
 
 
-UPDATE FIELD_DEFINITION set FIELD_TYPE = 'PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'gift.paymentTypeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'gift.paymentTypeReadOnly';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'newCredit' where FIELD_DEFINITION_ID IN ( 'gift.paymentSource.creditCardType', 'gift.paymentSource.creditCardHolderName', 'gift.paymentSource.creditCardNumber', 'gift.paymentSource.creditCardExpiration');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newCredit' WHERE FIELD_DEFINITION_ID IN ( 'gift.paymentSource.creditCardType', 'gift.paymentSource.creditCardHolderName', 'gift.paymentSource.creditCardNumber', 'gift.paymentSource.creditCardExpiration');
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'newAch' where FIELD_DEFINITION_ID IN ( 'gift.paymentSource.achHolderName', 'gift.paymentSource.achRoutingNumber', 'gift.paymentSource.achAccountNumber');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newAch' WHERE FIELD_DEFINITION_ID IN ( 'gift.paymentSource.achHolderName', 'gift.paymentSource.achRoutingNumber', 'gift.paymentSource.achAccountNumber');
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.paymentSource.creditCardHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardHolderNameReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.paymentSource.creditCardHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardHolderNameReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.paymentSource.creditCardTypeReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardTypeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.paymentSource.creditCardTypeReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardTypeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.paymentSource.creditCardNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.paymentSource.creditCardNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.paymentSource.creditCardExpirationDisplay', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardExpirationDisplay';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.paymentSource.creditCardExpirationDisplay', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardExpirationDisplay';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.paymentSource.achHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.achHolderNameReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.paymentSource.achHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.achHolderNameReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.paymentSource.achRoutingNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.achRoutingNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.paymentSource.achRoutingNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.achRoutingNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.paymentSource.achAccountNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.achAccountNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.paymentSource.achAccountNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.achAccountNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.paymentSource.id', FIELD_NAME = 'paymentSource' where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.paymentSource.id', FIELD_NAME = 'paymentSource' WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardSecurityCode';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSource.creditCardSecurityCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.id', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'gift.selectedAddress';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.id', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'address,newAddress' 
-where FIELD_DEFINITION_ID IN ( 'gift.address.customFieldMap[addressType]', 'gift.address.addressLine1', 'gift.address.addressLine2', 'gift.address.addressLine3', 'gift.address.city', 'gift.address.stateProvince', 'gift.address.postalCode', 'gift.address.country');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'address,newAddress' 
+WHERE FIELD_DEFINITION_ID IN ( 'gift.address.customFieldMap[addressType]', 'gift.address.addressLine1', 'gift.address.addressLine2', 'gift.address.addressLine3', 'gift.address.city', 'gift.address.stateProvince', 'gift.address.postalCode', 'gift.address.country');
 
-UPDATE FIELD_DEFINITION set FIELD_TYPE = 'PICKLIST' where FIELD_DEFINITION_ID = 'gift.address.stateProvince';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST' WHERE FIELD_DEFINITION_ID = 'gift.address.stateProvince';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.customFieldMap[addressTypeReadOnly]', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'gift.selectedAddress.customFieldMap[addressTypeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.customFieldMap[addressTypeReadOnly]', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress.customFieldMap[addressTypeReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.addressLine1ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'gift.selectedAddress.addressLine1ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.addressLine1ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress.addressLine1ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.addressLine2ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'gift.selectedAddress.addressLine2ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.addressLine2ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress.addressLine2ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.addressLine3ReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'gift.selectedAddress.addressLine3ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.addressLine3ReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress.addressLine3ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.cityReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'gift.selectedAddress.cityReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.cityReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress.cityReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.stateProvinceReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'gift.selectedAddress.stateProvinceReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.stateProvinceReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress.stateProvinceReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.postalCodeReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'gift.selectedAddress.postalCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.postalCodeReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress.postalCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.address.countryReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'gift.selectedAddress.countryReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.countryReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress.countryReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.phone.id', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'gift.selectedPhone';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.phone.id', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'gift.selectedPhone';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'phone,newPhone' where FIELD_DEFINITION_ID IN ( 'gift.phone.customFieldMap[phoneType]', 'gift.phone.number');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'phone,newPhone' WHERE FIELD_DEFINITION_ID IN ( 'gift.phone.customFieldMap[phoneType]', 'gift.phone.number');
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.phone.customFieldMap[phoneTypeReadOnly]', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'gift.selectedPhone.customFieldMap[phoneTypeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.phone.customFieldMap[phoneTypeReadOnly]', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'gift.selectedPhone.customFieldMap[phoneTypeReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.phone.numberReadOnly', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'gift.selectedPhone.numberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.phone.numberReadOnly', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'gift.selectedPhone.numberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.amount', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.lineAmount';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.amount', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.lineAmount';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.percentage', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.percentage';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.percentage', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.percentage';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.projectCode', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.projectCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.projectCode', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.projectCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.motivationCode', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.motivationCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.motivationCode', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.motivationCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.other_motivationCode', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' where FIELD_DEFINITION_ID = 'gift.other_motivationCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.other_motivationCode', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' WHERE FIELD_DEFINITION_ID = 'gift.other_motivationCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[reference]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[reference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[reference]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[reference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_reference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' where FIELD_DEFINITION_ID = 'gift.customFieldMap[other_reference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_reference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[other_reference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tribute]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[tribute]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tribute]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[tribute]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeReference]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeReference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeReference]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeReference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_tributeReference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' where FIELD_DEFINITION_ID = 'gift.customFieldMap[other_tributeReference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_tributeReference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[other_tributeReference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeOccasion]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeOccasion]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeOccasion]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeOccasion]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[additional_tributeOccasion]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' where FIELD_DEFINITION_ID = 'gift.customFieldMap[additional_tributeOccasion]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[additional_tributeOccasion]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[additional_tributeOccasion]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[onBehalfOf]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[onBehalfOf]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[onBehalfOf]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[onBehalfOf]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_onBehalfOf]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' where FIELD_DEFINITION_ID = 'gift.customFieldMap[other_onBehalfOf]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_onBehalfOf]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[other_onBehalfOf]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[anonymous]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[anonymous]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[anonymous]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[anonymous]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[recognitionName]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[recognitionName]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[recognitionName]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[recognitionName]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[notified]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[notified]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[notified]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[notified]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_notified]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' where FIELD_DEFINITION_ID = 'gift.customFieldMap[other_notified]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_notified]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[other_notified]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[message]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[message]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[message]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[message]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[taxDeductible]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[taxDeductible]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[taxDeductible]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[taxDeductible]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedPledgeId]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[associatedPledgeId]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedPledgeId]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[associatedPledgeId]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedRecurringGiftId]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[associatedRecurringGiftId]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedRecurringGiftId]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[associatedRecurringGiftId]';
 
 
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'NUMBER_DISPLAY' where FIELD_DEFINITION_ID = 'gift.lineAmountReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'NUMBER_DISPLAY' WHERE FIELD_DEFINITION_ID = 'gift.lineAmountReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'PERCENTAGE_DISPLAY' where FIELD_DEFINITION_ID = 'gift.percentageReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'PERCENTAGE_DISPLAY' WHERE FIELD_DEFINITION_ID = 'gift.percentageReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.projectCodeReadOnly', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.projectCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.projectCodeReadOnly', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.projectCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.motivationCodeReadOnly', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.motivationCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.motivationCodeReadOnly', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.motivationCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.other_motivationCodeReadOnly', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' where FIELD_DEFINITION_ID = 'gift.other_motivationCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.other_motivationCodeReadOnly', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' WHERE FIELD_DEFINITION_ID = 'gift.other_motivationCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[referenceReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[referenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[referenceReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[referenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_referenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' where FIELD_DEFINITION_ID = 'gift.customFieldMap[other_referenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_referenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[other_referenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeReferenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeReferenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' where FIELD_DEFINITION_ID = 'gift.customFieldMap[other_tributeReferenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[other_tributeReferenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeOccasionReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[tributeOccasionReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' where FIELD_DEFINITION_ID = 'gift.customFieldMap[additional_tributeOccasionReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[additional_tributeOccasionReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[onBehalfOfReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[onBehalfOfReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' where FIELD_DEFINITION_ID = 'gift.customFieldMap[other_onBehalfOfReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[other_onBehalfOfReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[anonymousReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[anonymousReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[anonymousReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[anonymousReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[recognitionNameReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[recognitionNameReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[recognitionNameReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[recognitionNameReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[notifiedReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[notifiedReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[notifiedReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[notifiedReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_notifiedReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' where FIELD_DEFINITION_ID = 'gift.customFieldMap[other_notifiedReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[other_notifiedReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[other_notifiedReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[messageReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[messageReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[messageReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[messageReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[taxDeductibleReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[taxDeductibleReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[taxDeductibleReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[taxDeductibleReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[associatedPledgeIdReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[associatedPledgeIdReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedRecurringGiftIdReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'gift.customFieldMap[associatedRecurringGiftIdReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedRecurringGiftIdReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'gift.customFieldMap[associatedRecurringGiftIdReadOnly]';
 
 
 
 
 
-UPDATE FIELD_DEFINITION set DEFAULT_LABEL = 'Motivation' where FIELD_DEFINITION_ID = 'giftInKind.other_motivationCode';
+UPDATE FIELD_DEFINITION SET DEFAULT_LABEL = 'Motivation' WHERE FIELD_DEFINITION_ID = 'giftInKind.other_motivationCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'giftInKind.details.description', FIELD_NAME = 'details' where FIELD_DEFINITION_ID = 'giftInKind.description';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'giftInKind.details.description', FIELD_NAME = 'details' WHERE FIELD_DEFINITION_ID = 'giftInKind.description';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'giftInKind.details.detailFairMarketValue', FIELD_NAME = 'details' where FIELD_DEFINITION_ID = 'giftInKind.detailFairMarketValue';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'giftInKind.details.detailFairMarketValue', FIELD_NAME = 'details' WHERE FIELD_DEFINITION_ID = 'giftInKind.detailFairMarketValue';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'giftInKind.details.projectCode', FIELD_NAME = 'details' where FIELD_DEFINITION_ID = 'giftInKind.projectCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'giftInKind.details.projectCode', FIELD_NAME = 'details' WHERE FIELD_DEFINITION_ID = 'giftInKind.projectCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'giftInKind.details.taxDeductible', FIELD_NAME = 'details' where FIELD_DEFINITION_ID = 'giftInKind.taxDeductible';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'giftInKind.details.taxDeductible', FIELD_NAME = 'details' WHERE FIELD_DEFINITION_ID = 'giftInKind.taxDeductible';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'giftInKind.details.fmvMethod', FIELD_NAME = 'details' where FIELD_DEFINITION_ID = 'giftInKind.fmvMethod';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'giftInKind.details.fmvMethod', FIELD_NAME = 'details' WHERE FIELD_DEFINITION_ID = 'giftInKind.fmvMethod';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'giftInKind.details.gikCategory', FIELD_NAME = 'details' where FIELD_DEFINITION_ID = 'giftInKind.gikCategory';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'giftInKind.details.gikCategory', FIELD_NAME = 'details' WHERE FIELD_DEFINITION_ID = 'giftInKind.gikCategory';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'giftInKind.details.quantity', FIELD_NAME = 'details' where FIELD_DEFINITION_ID = 'giftInKind.quantity';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'giftInKind.details.quantity', FIELD_NAME = 'details' WHERE FIELD_DEFINITION_ID = 'giftInKind.quantity';
 
 
 
 
 
-UPDATE FIELD_DEFINITION set DEFAULT_LABEL = 'Payment Profile', FIELD_TYPE = 'PAYMENT_SOURCE_PICKLIST' where FIELD_DEFINITION_ID = 'paymentSource.id';
+UPDATE FIELD_DEFINITION SET DEFAULT_LABEL = 'Payment Profile', FIELD_TYPE = 'PAYMENT_SOURCE_PICKLIST' WHERE FIELD_DEFINITION_ID = 'paymentSource.id';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.id', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.id', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'newAddress' 
-where FIELD_DEFINITION_ID IN ( 'paymentSource.address.customFieldMap[addressType]', 'paymentSource.address.addressLine1', 'paymentSource.address.addressLine2', 'paymentSource.address.addressLine3', 'paymentSource.address.city', 'paymentSource.address.stateProvince', 'paymentSource.address.postalCode', 'paymentSource.address.country');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newAddress' 
+WHERE FIELD_DEFINITION_ID IN ( 'paymentSource.address.customFieldMap[addressType]', 'paymentSource.address.addressLine1', 'paymentSource.address.addressLine2', 'paymentSource.address.addressLine3', 'paymentSource.address.city', 'paymentSource.address.stateProvince', 'paymentSource.address.postalCode', 'paymentSource.address.country');
 
-UPDATE FIELD_DEFINITION set FIELD_TYPE = 'PICKLIST' where FIELD_DEFINITION_ID = 'paymentSource.address.stateProvince';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST' WHERE FIELD_DEFINITION_ID = 'paymentSource.address.stateProvince';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.phone.id', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'paymentSource.selectedPhone';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.phone.id', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedPhone';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'newPhone' where FIELD_DEFINITION_ID IN ( 'paymentSource.phone.customFieldMap[phoneType]', 'paymentSource.phone.number');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newPhone' WHERE FIELD_DEFINITION_ID IN ( 'paymentSource.phone.customFieldMap[phoneType]', 'paymentSource.phone.number');
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'paymentSource.userCreated';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'paymentSource.userCreated';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.customFieldMap[addressTypeReadOnly]', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.customFieldMap[addressType]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.customFieldMap[addressTypeReadOnly]', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.customFieldMap[addressType]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.addressLine1ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.addressLine1ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.addressLine1ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.addressLine1ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.addressLine2ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.addressLine2ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.addressLine2ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.addressLine2ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.addressLine3ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.addressLine3ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.addressLine3ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.addressLine3ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.cityReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.cityReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.cityReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.cityReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.stateProvinceReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY', ENTITY_ATTRIBUTES = 'existingAddress' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.stateProvinceReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.stateProvinceReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY', ENTITY_ATTRIBUTES = 'existingAddress' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.stateProvinceReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.postalCodeReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.postalCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.postalCodeReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'existingAddress' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.postalCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.countryReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY', ENTITY_ATTRIBUTES = 'existingAddress' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.countryReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.countryReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY', ENTITY_ATTRIBUTES = 'existingAddress' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.countryReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.phone.customFieldMap[phoneTypeReadOnly]', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'existingPhone' where FIELD_DEFINITION_ID = 'paymentSource.selectedPhone.customFieldMap[phoneType]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.phone.customFieldMap[phoneTypeReadOnly]', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'existingPhone' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedPhone.customFieldMap[phoneType]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.phone.customFieldMap[numberReadOnly]', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'existingPhone' where FIELD_DEFINITION_ID = 'paymentSource.selectedPhone.customFieldMap[numberReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.phone.customFieldMap[numberReadOnly]', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'existingPhone' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedPhone.customFieldMap[numberReadOnly]';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID IN ( 'paymentSource.creditCardHolderNameReadOnly', 'paymentSource.creditCardTypeReadOnly', 'paymentSource.creditCardNumberReadOnly', 'paymentSource.creditCardExpirationDisplay');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID IN ( 'paymentSource.creditCardHolderNameReadOnly', 'paymentSource.creditCardTypeReadOnly', 'paymentSource.creditCardNumberReadOnly', 'paymentSource.creditCardExpirationDisplay');
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'existingAch' where FIELD_DEFINITION_ID IN ( 'paymentSource.achHolderNameReadOnly', 'paymentSource.achRoutingNumberReadOnly', 'paymentSource.achAccountNumberReadOnly');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'existingAch' WHERE FIELD_DEFINITION_ID IN ( 'paymentSource.achHolderNameReadOnly', 'paymentSource.achRoutingNumberReadOnly', 'paymentSource.achAccountNumberReadOnly');
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID in ('paymentSource.creditCardNumberDisplay', 'paymentSource.achAccountNumberDisplay', 'selectedPaymentSource.creditCardHolderNameReadOnly', 'selectedPaymentSource.creditCardTypeReadOnly', 'selectedPaymentSource.creditCardNumberReadOnly', 'selectedPaymentSource.creditCardExpirationDisplay', 'selectedPaymentSource.achHolderNameReadOnly', 'selectedPaymentSource.achRoutingNumberReadOnly', 'selectedPaymentSource.achAccountNumberReadOnly', 'selectedPaymentSource.creditCardSecurityCode');
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID IN ('paymentSource.creditCardNumberDisplay', 'paymentSource.achAccountNumberDisplay', 'selectedPaymentSource.creditCardHolderNameReadOnly', 'selectedPaymentSource.creditCardTypeReadOnly', 'selectedPaymentSource.creditCardNumberReadOnly', 'selectedPaymentSource.creditCardExpirationDisplay', 'selectedPaymentSource.achHolderNameReadOnly', 'selectedPaymentSource.achRoutingNumberReadOnly', 'selectedPaymentSource.achAccountNumberReadOnly', 'selectedPaymentSource.creditCardSecurityCode');
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'paymentSource.address.shortAddressReadOnly', FIELD_NAME = 'address' where FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.shortAddressReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.shortAddressReadOnly', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress.shortAddressReadOnly';
 
 
 
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('phone.id', 'phone', 'id', 'Phone', 'PHONE_PICKLIST');
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'phone.userCreated';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'phone.userCreated';
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('phone.current', 'phone', 'current', 'Current', 'READ_ONLY_TEXT');
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'phone.customFieldMap[phoneTypeReadOnly]', FIELD_NAME = 'phone' where FIELD_DEFINITION_ID = 'selectedPhone.customFieldMap[phoneTypeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'phone.customFieldMap[phoneTypeReadOnly]', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'selectedPhone.customFieldMap[phoneTypeReadOnly]';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID = 'selectedPhone.numberReadOnly';
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'selectedPhone.numberReadOnly';
 
 
 
 
 
-UPDATE FIELD_DEFINITION set FIELD_TYPE = 'PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'pledge.frequencyReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'pledge.frequencyReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.amount', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.lineAmount';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.amount', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.lineAmount';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.percentage', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.percentage';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.percentage', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.percentage';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.projectCode', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.projectCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.projectCode', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.projectCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.motivationCode', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.motivationCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.motivationCode', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.motivationCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.other_motivationCode', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' where FIELD_DEFINITION_ID = 'pledge.other_motivationCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.other_motivationCode', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' WHERE FIELD_DEFINITION_ID = 'pledge.other_motivationCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[reference]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[reference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[reference]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[reference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_reference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_reference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_reference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_reference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tribute]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[tribute]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tribute]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[tribute]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeReference]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeReference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeReference]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeReference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_tributeReference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_tributeReference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_tributeReference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_tributeReference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeOccasion]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeOccasion]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeOccasion]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeOccasion]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[additional_tributeOccasion]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[additional_tributeOccasion]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[additional_tributeOccasion]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[additional_tributeOccasion]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[onBehalfOf]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[onBehalfOf]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[onBehalfOf]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[onBehalfOf]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_onBehalfOf]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_onBehalfOf]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_onBehalfOf]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_onBehalfOf]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[anonymous]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[anonymous]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[anonymous]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[anonymous]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[recognitionName]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[recognitionName]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[recognitionName]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[recognitionName]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[notified]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[notified]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[notified]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[notified]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_notified]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_notified]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_notified]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_notified]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[message]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[message]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[message]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[message]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[taxDeductible]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[taxDeductible]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[taxDeductible]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[taxDeductible]';
 
 
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'NUMBER_DISPLAY' where FIELD_DEFINITION_ID = 'pledge.lineAmountReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'NUMBER_DISPLAY' WHERE FIELD_DEFINITION_ID = 'pledge.lineAmountReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'PERCENTAGE_DISPLAY' where FIELD_DEFINITION_ID = 'pledge.percentageReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'PERCENTAGE_DISPLAY' WHERE FIELD_DEFINITION_ID = 'pledge.percentageReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.projectCodeReadOnly', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.projectCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.projectCodeReadOnly', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.projectCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.motivationCodeReadOnly', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.motivationCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.motivationCodeReadOnly', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.motivationCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.other_motivationCodeReadOnly', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' where FIELD_DEFINITION_ID = 'pledge.other_motivationCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.other_motivationCodeReadOnly', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' WHERE FIELD_DEFINITION_ID = 'pledge.other_motivationCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[referenceReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[referenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[referenceReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[referenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_referenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_referenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_referenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_referenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeReferenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeReferenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_tributeReferenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_tributeReferenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeOccasionReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[tributeOccasionReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[additional_tributeOccasionReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[additional_tributeOccasionReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[onBehalfOfReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[onBehalfOfReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_onBehalfOfReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_onBehalfOfReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[anonymousReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[anonymousReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[anonymousReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[anonymousReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[recognitionNameReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[recognitionNameReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[recognitionNameReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[recognitionNameReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[notifiedReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[notifiedReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[notifiedReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[notifiedReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_notifiedReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_notifiedReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[other_notifiedReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[other_notifiedReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[messageReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[messageReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[messageReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[messageReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[taxDeductibleReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'pledge.customFieldMap[taxDeductibleReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.customFieldMap[taxDeductibleReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'pledge.customFieldMap[taxDeductibleReadOnly]';
 
 
 
 
-UPDATE FIELD_DEFINITION set FIELD_TYPE = 'PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'recurringGift.paymentTypeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'recurringGift.paymentTypeReadOnly';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'newCredit' 
-where FIELD_DEFINITION_ID IN ( 'recurringGift.paymentSource.creditCardType', 'recurringGift.paymentSource.creditCardHolderName', 'recurringGift.paymentSource.creditCardNumber', 'recurringGift.paymentSource.creditCardExpiration');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newCredit' 
+WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.paymentSource.creditCardType', 'recurringGift.paymentSource.creditCardHolderName', 'recurringGift.paymentSource.creditCardNumber', 'recurringGift.paymentSource.creditCardExpiration');
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'newAch' 
-where FIELD_DEFINITION_ID IN ( 'recurringGift.paymentSource.achHolderName', 'recurringGift.paymentSource.achRoutingNumber', 'recurringGift.paymentSource.achAccountNumber');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newAch' 
+WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.paymentSource.achHolderName', 'recurringGift.paymentSource.achRoutingNumber', 'recurringGift.paymentSource.achAccountNumber');
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardHolderNameReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardHolderNameReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardTypeReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardTypeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardTypeReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardTypeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardExpirationDisplay', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' where FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardExpirationDisplay';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardExpirationDisplay', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardExpirationDisplay';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.paymentSource.achHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' where FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.achHolderNameReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.achHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.achHolderNameReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.paymentSource.achRoutingNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' where FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.achRoutingNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.achRoutingNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.achRoutingNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.paymentSource.achAccountNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' where FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.achAccountNumberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.achAccountNumberReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingAch' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.achAccountNumberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.paymentSource.id', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'recurringGiftPayment' where FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.id', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'recurringGiftPayment' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource';
 
-DELETE FROM FIELD_DEFINITION where FIELD_DEFINITION_ID IN ( 'recurringGift.checkNumber', 'recurringGift.selectedPaymentSource.creditCardExpiration');
+DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.checkNumber', 'recurringGift.selectedPaymentSource.creditCardExpiration');
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.id', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address'  where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.id', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address'  WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'address,newAddress' 
-where FIELD_DEFINITION_ID IN ( 'recurringGift.address.customFieldMap[addressType]', 'recurringGift.address.addressLine1', 'recurringGift.address.addressLine2', 'recurringGift.address.addressLine3', 'recurringGift.address.city', 'recurringGift.address.stateProvince', 'recurringGift.address.postalCode', 'recurringGift.address.country');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'address,newAddress' 
+WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.address.customFieldMap[addressType]', 'recurringGift.address.addressLine1', 'recurringGift.address.addressLine2', 'recurringGift.address.addressLine3', 'recurringGift.address.city', 'recurringGift.address.stateProvince', 'recurringGift.address.postalCode', 'recurringGift.address.country');
 
-UPDATE FIELD_DEFINITION set FIELD_TYPE = 'PICKLIST' where FIELD_DEFINITION_ID = 'recurringGift.address.stateProvince';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST' WHERE FIELD_DEFINITION_ID = 'recurringGift.address.stateProvince';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.customFieldMap[addressTypeReadOnly]', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.customFieldMap[addressTypeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.customFieldMap[addressTypeReadOnly]', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.customFieldMap[addressTypeReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.addressLine1ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.addressLine1ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.addressLine1ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.addressLine1ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.addressLine2ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.addressLine2ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.addressLine2ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.addressLine2ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.addressLine3ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.addressLine3ReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.addressLine3ReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.addressLine3ReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.cityReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.cityReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.cityReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.cityReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.stateProvinceReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY', ENTITY_ATTRIBUTES = 'address' where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.stateProvinceReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.stateProvinceReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY', ENTITY_ATTRIBUTES = 'address' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.stateProvinceReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.postalCodeReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.postalCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.postalCodeReadOnly', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.postalCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.address.countryReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY', ENTITY_ATTRIBUTES = 'address' where FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.countryReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.countryReadOnly', FIELD_NAME = 'address', FIELD_TYPE = 'PICKLIST_DISPLAY', ENTITY_ATTRIBUTES = 'address' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress.countryReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.phone.id', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'phone' where FIELD_DEFINITION_ID = 'recurringGift.selectedPhone';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.phone.id', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'phone' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPhone';
 
-UPDATE FIELD_DEFINITION set ENTITY_ATTRIBUTES = 'phone,newPhone' where FIELD_DEFINITION_ID IN ( 'recurringGift.phone.customFieldMap[phoneType]', 'recurringGift.phone.number');
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'phone,newPhone' WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.phone.customFieldMap[phoneType]', 'recurringGift.phone.number');
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.phone.customFieldMap[phoneTypeReadOnly]', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'phone' where FIELD_DEFINITION_ID = 'recurringGift.selectedPhone.customFieldMap[phoneTypeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.phone.customFieldMap[phoneTypeReadOnly]', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'phone' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPhone.customFieldMap[phoneTypeReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.phone.numberReadOnly', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'phone' where FIELD_DEFINITION_ID = 'recurringGift.selectedPhone.numberReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.phone.numberReadOnly', FIELD_NAME = 'phone', ENTITY_ATTRIBUTES = 'phone' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPhone.numberReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.amount', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.lineAmount';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.amount', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.lineAmount';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.percentage', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.percentage';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.percentage', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.percentage';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.projectCode', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.projectCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.projectCode', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.projectCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.motivationCode', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.motivationCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.motivationCode', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.motivationCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.other_motivationCode', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' where FIELD_DEFINITION_ID = 'recurringGift.other_motivationCode';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.other_motivationCode', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' WHERE FIELD_DEFINITION_ID = 'recurringGift.other_motivationCode';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[reference]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[reference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[reference]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[reference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_reference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_reference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_reference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_reference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tribute]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tribute]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tribute]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tribute]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeReference]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeReference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeReference]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeReference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_tributeReference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_tributeReference]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_tributeReference]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_tributeReference]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeOccasion]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeOccasion]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeOccasion]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeOccasion]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[additional_tributeOccasion]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[additional_tributeOccasion]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[additional_tributeOccasion]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[additional_tributeOccasion]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[onBehalfOf]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[onBehalfOf]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[onBehalfOf]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[onBehalfOf]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_onBehalfOf]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_onBehalfOf]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_onBehalfOf]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_onBehalfOf]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[anonymous]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[anonymous]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[anonymous]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[anonymous]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[recognitionName]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[recognitionName]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[recognitionName]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[recognitionName]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[notified]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[notified]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[notified]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[notified]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_notified]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_notified]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_notified]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_notified]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[message]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[message]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[message]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[message]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[taxDeductible]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[taxDeductible]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[taxDeductible]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[taxDeductible]';
 
 
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'NUMBER_DISPLAY' where FIELD_DEFINITION_ID = 'recurringGift.lineAmountReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'NUMBER_DISPLAY' WHERE FIELD_DEFINITION_ID = 'recurringGift.lineAmountReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'PERCENTAGE_DISPLAY' where FIELD_DEFINITION_ID = 'recurringGift.percentageReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', FIELD_TYPE = 'PERCENTAGE_DISPLAY' WHERE FIELD_DEFINITION_ID = 'recurringGift.percentageReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.projectCodeReadOnly', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.projectCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.projectCodeReadOnly', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.projectCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.motivationCodeReadOnly', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.motivationCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.motivationCodeReadOnly', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.motivationCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.other_motivationCodeReadOnly', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' where FIELD_DEFINITION_ID = 'recurringGift.other_motivationCodeReadOnly';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.other_motivationCodeReadOnly', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Motivation' WHERE FIELD_DEFINITION_ID = 'recurringGift.other_motivationCodeReadOnly';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[referenceReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[referenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[referenceReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[referenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_referenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_referenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_referenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Reference' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_referenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeReferenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeReferenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_tributeReferenceReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_tributeReferenceReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Reference' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_tributeReferenceReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeOccasionReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[tributeOccasionReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[additional_tributeOccasionReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[additional_tributeOccasionReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'Tribute Occasion' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[additional_tributeOccasionReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[onBehalfOfReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[onBehalfOfReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_onBehalfOfReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_onBehalfOfReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'On Behalf Of' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_onBehalfOfReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[anonymousReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[anonymousReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[anonymousReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[anonymousReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[recognitionNameReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[recognitionNameReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[recognitionNameReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[recognitionNameReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[notifiedReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[notifiedReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[notifiedReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[notifiedReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_notifiedReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_notifiedReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[other_notifiedReadOnly]', FIELD_NAME = 'distributionLines', DEFAULT_LABEL = 'To Be Notified' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[other_notifiedReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[messageReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[messageReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[messageReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[messageReadOnly]';
 
-UPDATE FIELD_DEFINITION set FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[taxDeductibleReadOnly]', FIELD_NAME = 'distributionLines' where FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[taxDeductibleReadOnly]';
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.distributionLines.customFieldMap[taxDeductibleReadOnly]', FIELD_NAME = 'distributionLines' WHERE FIELD_DEFINITION_ID = 'recurringGift.customFieldMap[taxDeductibleReadOnly]';
 
 
 
@@ -765,7 +765,7 @@ UPDATE `FIELD_DEFINITION` SET `FIELD_TYPE`='CODE_OTHER_DISPLAY'  WHERE (`FIELD_D
 UPDATE `FIELD_DEFINITION` SET `FIELD_TYPE`='CODE_OTHER_DISPLAY'  WHERE (`FIELD_DEFINITION_ID` = 'pledge.distributionLines.motivationCodeReadOnly') ;
 UPDATE `FIELD_DEFINITION` SET `FIELD_DEFINITION_ID`='paymentSource.phone.numberReadOnly',`ENTITY_ATTRIBUTES`='existingPhone', `FIELD_NAME`='phone'  WHERE (`FIELD_DEFINITION_ID` = 'paymentSource.selectedPhone.numberReadOnly') ;
 
-update FIELD_DEFINITION set FIELD_TYPE ='PICKLIST_DISPLAY' where FIELD_DEFINITION_ID = 'gift.posted';
+UPDATE FIELD_DEFINITION SET FIELD_TYPE ='PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'gift.posted';
 
 /* End of new by alex */
 
@@ -802,7 +802,7 @@ UPDATE `SECTION_DEFINITION` SET `DEFAULT_LABEL`='All Phones', `PAGE_TYPE`='phone
 
 
 /* New by alex */
-UPDATE `SECTION_DEFINITION` SET `DEFAULT_LABEL`='All Gifts-In-Kind' WHERE (`PAGE_TYPE`='giftInKindList' and `SECTION_NAME`='giftInKindList.resultsInfo') ;
+UPDATE `SECTION_DEFINITION` SET `DEFAULT_LABEL`='All Gifts-In-Kind' WHERE (`PAGE_TYPE`='giftInKindList' AND `SECTION_NAME`='giftInKindList.resultsInfo') ;
 UPDATE `SECTION_DEFINITION` SET `DEFAULT_LABEL`='All Payment History', `PAGE_TYPE`='paymentHistoryList' WHERE (`SECTION_NAME`='paymentHistoryList.resultsInfo' AND `PAGE_TYPE`='paymentHistory') ;
 UPDATE `SECTION_DEFINITION` SET `DEFAULT_LABEL`='All Recurring Gifts' WHERE (`PAGE_TYPE`='recurringGiftList' AND `SECTION_NAME`='recurringGiftList.resultsInfo') ;
 UPDATE `SECTION_DEFINITION` SET `DEFAULT_LABEL`='All Pledges' WHERE (`PAGE_TYPE`='pledgeList' AND `SECTION_NAME`='pledgeList.resultsInfo') ;
@@ -1405,10 +1405,10 @@ UPDATE `SECTION_FIELD` SET `FIELD_ORDER`='5000'  WHERE (`SECTION_DEFINITION_ID` 
 /* SYNC TABLE : `FIELD_REQUIRED` */
 
 	/*Start of batch : 1 */
-DELETE FROM `FIELD_REQUIRED`  WHERE (`FIELD_DEFINITION_ID` = 'gift.selectedPaymentSource' and SECTION_NAME = 'gift.payment') ;
-DELETE FROM `FIELD_REQUIRED`  WHERE (`FIELD_DEFINITION_ID` = 'recurringGift.selectedPaymentSource' and SECTION_NAME = 'recurringGift.payment') ;
-DELETE FROM `FIELD_REQUIRED`  WHERE (`FIELD_DEFINITION_ID` = 'recurringGift.projectCode' and SECTION_NAME = 'recurringGift.distribution') ;
-DELETE FROM `FIELD_REQUIRED`  WHERE (`FIELD_DEFINITION_ID` = 'pledge.projectCode' and SECTION_NAME = 'pledge.distribution') ;
+DELETE FROM `FIELD_REQUIRED`  WHERE (`FIELD_DEFINITION_ID` = 'gift.selectedPaymentSource' AND SECTION_NAME = 'gift.payment') ;
+DELETE FROM `FIELD_REQUIRED`  WHERE (`FIELD_DEFINITION_ID` = 'recurringGift.selectedPaymentSource' AND SECTION_NAME = 'recurringGift.payment') ;
+DELETE FROM `FIELD_REQUIRED`  WHERE (`FIELD_DEFINITION_ID` = 'recurringGift.projectCode' AND SECTION_NAME = 'recurringGift.distribution') ;
+DELETE FROM `FIELD_REQUIRED`  WHERE (`FIELD_DEFINITION_ID` = 'pledge.projectCode' AND SECTION_NAME = 'pledge.distribution') ;
 INSERT INTO `FIELD_REQUIRED` VALUES ('1066001', '1', 'recurringGift.distribution', NULL, 'recurringGift.distributionLines.projectCode', 'distributionLines.projectCode');
 INSERT INTO `FIELD_REQUIRED` VALUES ('1022000', '1', 'address.info', NULL, 'address.stateProvince', NULL);
 INSERT INTO `FIELD_REQUIRED` VALUES ('1010000', '1', 'address.edit', NULL, 'address.stateProvince', NULL);
@@ -1501,13 +1501,21 @@ UPDATE `PICKLIST` SET `PICKLIST_NAME_ID`='customFieldMap[organization.eligibleFu
 	/*End   of batch : 1 */
 /* SYNC TABLE : `PICKLIST_ITEM` */
 
-	/*Start of batch : 1 */
-INSERT INTO `PICKLIST_ITEM`
-(`ITEM_NAME`,  `DEFAULT_DISPLAY_VALUE`, `LONG_DESCRIPTION`, `INACTIVE`, `READ_ONLY`, `ITEM_ORDER`, `REFERENCE_VALUE`, `SUPPRESS_REFERENCE_VALUE`, `PICKLIST_ID`)
-SELECT 'Other', 'Other', NULL, '0', '0', '5', '.gift_other', NULL, PICKLIST_ID from PICKLIST where PICKLIST_NAME_ID = 'gift.paymentType';
+/*Start of batch : 1 */
+-- UPDATED BY KERI SO CLIENTS WHO ALREADY HAVE OTHER PAYMETHODS AREN'T AFFECTED BY THIS.
+INSERT INTO `PICKLIST_ITEM` (`ITEM_NAME`,  `DEFAULT_DISPLAY_VALUE`, `LONG_DESCRIPTION`, `INACTIVE`, `READ_ONLY`, `ITEM_ORDER`, `REFERENCE_VALUE`, `SUPPRESS_REFERENCE_VALUE`, `PICKLIST_ID`)
+SELECT 'Other', 'Other', NULL, '0', '0', '5', '.gift_other', NULL, P.PICKLIST_ID 
+	FROM PICKLIST P LEFT OUTER JOIN (SELECT * 
+				FROM PICKLIST_ITEM
+				WHERE ITEM_NAME='Other' 
+				AND PICKLIST_ID IN (SELECT PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'gift.paymentType')) L
+	ON P.PICKLIST_ID=L.PICKLIST_ID
+	WHERE P.PICKLIST_NAME_ID = 'gift.paymentType'
+	AND L.PICKLIST_ID IS NULL;
+
 INSERT INTO `PICKLIST_ITEM` 
 (`ITEM_NAME`,  `DEFAULT_DISPLAY_VALUE`, `LONG_DESCRIPTION`, `INACTIVE`, `READ_ONLY`, `ITEM_ORDER`, `REFERENCE_VALUE`, `SUPPRESS_REFERENCE_VALUE`, `PICKLIST_ID`)
-SELECT 'Other', 'Other', NULL, '0', '0', '5', '.adjustedGift_other', NULL, PICKLIST_ID from PICKLIST where PICKLIST_NAME_ID = 'adjustedGift.paymentType';
+SELECT 'Other', 'Other', NULL, '0', '0', '5', '.adjustedGift_other', NULL, PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'adjustedGift.paymentType';
 UPDATE PICKLIST_ITEM I, PICKLIST L
     SET `REFERENCE_VALUE`='li:has(#paymentSource-td-id),.adjustedGift_editAch'
     WHERE I.PICKLIST_ID=L.PICKLIST_ID
@@ -1584,86 +1592,86 @@ UPDATE `QUERY_LOOKUP` SET `QUERY_LOOKUP_ID`='1000038', `ENTITY_TYPE`='constituen
 /* SYNC TABLE : `ENTITY_DEFAULT ` */
 
 	/*Start of batch : 1 */
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('permanent', 'activationStatus', 'address');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('permanent', 'activationStatus', 'address');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('permanent', 'activationStatus', 'email');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('permanent', 'activationStatus', 'email');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('permanent', 'activationStatus', 'phone');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('permanent', 'activationStatus', 'phone');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('now:', 'activationStatus == ''permanent''', 'effectiveDate', 'address');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('now:', 'activationStatus == ''permanent''', 'effectiveDate', 'address');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('now:', 'activationStatus == ''permanent''', 'effectiveDate', 'phone');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('now:', 'activationStatus == ''permanent''', 'effectiveDate', 'phone');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('now:', 'activationStatus == ''permanent''', 'effectiveDate', 'email');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('now:', 'activationStatus == ''permanent''', 'effectiveDate', 'email');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('bean:constituent.firstLast', 'adjustedPaymentTo', 'adjustedGift');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('bean:constituent.firstLast', 'adjustedPaymentTo', 'adjustedGift');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('0', 'customFieldMap[initialReminder]', 'recurringGift');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('0', 'customFieldMap[initialReminder]', 'recurringGift');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('1', 'customFieldMap[maximumReminders]', 'recurringGift');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('1', 'customFieldMap[maximumReminders]', 'recurringGift');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('0', 'customFieldMap[reminderInterval]', 'recurringGift');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('0', 'customFieldMap[reminderInterval]', 'recurringGift');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('0', 'customFieldMap[initialReminder]', 'pledge');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('0', 'customFieldMap[initialReminder]', 'pledge');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('1', 'customFieldMap[maximumReminders]', 'pledge');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('1', 'customFieldMap[maximumReminders]', 'pledge');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('0', 'customFieldMap[reminderInterval]', 'pledge');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('0', 'customFieldMap[reminderInterval]', 'pledge');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('unknown', 'constituentType == ''organization''', 'customFieldMap[organization.eligibility]', 'constituent');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, CONDITION_EXP, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('unknown', 'constituentType == ''organization''', 'customFieldMap[organization.eligibility]', 'constituent');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('true', 'customFieldMap[taxDeductible]', 'distributionLine');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('true', 'customFieldMap[taxDeductible]', 'distributionLine');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('bean:constituent.recognitionName', 'customFieldMap[recognitionName]', 'distributionLine');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('bean:constituent.recognitionName', 'customFieldMap[recognitionName]', 'distributionLine');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('bean:constituent.recognitionName', 'recognitionName', 'giftInKind');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('bean:constituent.recognitionName', 'recognitionName', 'giftInKind');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('bean:constituent.firstLast', 'creditCardHolderName', 'paymentSource');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('bean:constituent.firstLast', 'creditCardHolderName', 'paymentSource');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('bean:constituent.firstLast', 'achHolderName', 'paymentSource');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('bean:constituent.firstLast', 'achHolderName', 'paymentSource');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:currencyCode', 'currencyCode', 'gift');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('picklist:currencyCode', 'currencyCode', 'gift');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:currencyCode', 'currencyCode', 'recurringGift');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('picklist:currencyCode', 'currencyCode', 'recurringGift');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:currencyCode', 'currencyCode', 'pledge');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('picklist:currencyCode', 'currencyCode', 'pledge');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:currencyCode', 'currencyCode', 'giftInKind');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('picklist:currencyCode', 'currencyCode', 'giftInKind');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:projectCode', 'projectCode', 'distributionLine');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('picklist:projectCode', 'projectCode', 'distributionLine');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('unknown', 'customFieldMap[addressType]', 'address');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('unknown', 'customFieldMap[addressType]', 'address');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('unknown', 'customFieldMap[phoneType]', 'phone');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('unknown', 'customFieldMap[phoneType]', 'phone');
 
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('unknown', 'customFieldMap[emailType]', 'email');
+INSERT INTO ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+VALUES ('unknown', 'customFieldMap[emailType]', 'email');
 	/*End   of batch : 1 */
 
 

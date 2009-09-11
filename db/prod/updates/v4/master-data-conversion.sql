@@ -187,10 +187,10 @@ UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.address.countryR
 
 UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.phone.numberReadOnly', FIELD_NAME = 'phone' WHERE FIELD_DEFINITION_ID = 'adjustedGift.selectedPhone.numberReadOnly';
 
-UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines', 
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.amountReadOnly', FIELD_NAME = 'distributionLines',
 DEFAULT_LABEL = 'Amt', FIELD_TYPE = 'NUMBER_DISPLAY' WHERE FIELD_DEFINITION_ID = 'adjustedGift.lineAmountReadOnly';
 
-UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines', 
+UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'adjustedGift.distributionLines.percentageReadOnly', FIELD_NAME = 'distributionLines',
 FIELD_TYPE = 'PERCENTAGE_DISPLAY' WHERE FIELD_DEFINITION_ID = 'adjustedGift.percentageReadOnly';
 
 
@@ -308,7 +308,7 @@ DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID = 'gift.selectedPaymentSo
 
 UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'gift.address.id', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'gift.selectedAddress';
 
-UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'address,newAddress' 
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'address,newAddress'
 WHERE FIELD_DEFINITION_ID IN ( 'gift.address.customFieldMap[addressType]', 'gift.address.addressLine1', 'gift.address.addressLine2', 'gift.address.addressLine3', 'gift.address.city', 'gift.address.stateProvince', 'gift.address.postalCode', 'gift.address.country');
 
 UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST' WHERE FIELD_DEFINITION_ID = 'gift.address.stateProvince';
@@ -455,7 +455,7 @@ UPDATE FIELD_DEFINITION SET DEFAULT_LABEL = 'Payment Profile', FIELD_TYPE = 'PAY
 
 UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'paymentSource.address.id', FIELD_NAME = 'address' WHERE FIELD_DEFINITION_ID = 'paymentSource.selectedAddress';
 
-UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newAddress' 
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newAddress'
 WHERE FIELD_DEFINITION_ID IN ( 'paymentSource.address.customFieldMap[addressType]', 'paymentSource.address.addressLine1', 'paymentSource.address.addressLine2', 'paymentSource.address.addressLine3', 'paymentSource.address.city', 'paymentSource.address.stateProvince', 'paymentSource.address.postalCode', 'paymentSource.address.country');
 
 UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST' WHERE FIELD_DEFINITION_ID = 'paymentSource.address.stateProvince';
@@ -600,10 +600,10 @@ UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'pledge.distributionLines.cust
 
 UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST_DISPLAY' WHERE FIELD_DEFINITION_ID = 'recurringGift.paymentTypeReadOnly';
 
-UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newCredit' 
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newCredit'
 WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.paymentSource.creditCardType', 'recurringGift.paymentSource.creditCardHolderName', 'recurringGift.paymentSource.creditCardNumber', 'recurringGift.paymentSource.creditCardExpiration');
 
-UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newAch' 
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'newAch'
 WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.paymentSource.achHolderName', 'recurringGift.paymentSource.achRoutingNumber', 'recurringGift.paymentSource.achAccountNumber');
 
 UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.paymentSource.creditCardHolderNameReadOnly', FIELD_NAME = 'paymentSource', ENTITY_ATTRIBUTES = 'existingCredit' WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedPaymentSource.creditCardHolderNameReadOnly';
@@ -626,7 +626,7 @@ DELETE FROM FIELD_DEFINITION WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.check
 
 UPDATE FIELD_DEFINITION SET FIELD_DEFINITION_ID = 'recurringGift.address.id', FIELD_NAME = 'address', ENTITY_ATTRIBUTES = 'address'  WHERE FIELD_DEFINITION_ID = 'recurringGift.selectedAddress';
 
-UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'address,newAddress' 
+UPDATE FIELD_DEFINITION SET ENTITY_ATTRIBUTES = 'address,newAddress'
 WHERE FIELD_DEFINITION_ID IN ( 'recurringGift.address.customFieldMap[addressType]', 'recurringGift.address.addressLine1', 'recurringGift.address.addressLine2', 'recurringGift.address.addressLine3', 'recurringGift.address.city', 'recurringGift.address.stateProvince', 'recurringGift.address.postalCode', 'recurringGift.address.country');
 
 UPDATE FIELD_DEFINITION SET FIELD_TYPE = 'PICKLIST' WHERE FIELD_DEFINITION_ID = 'recurringGift.address.stateProvince';
@@ -1504,16 +1504,16 @@ UPDATE `PICKLIST` SET `PICKLIST_NAME_ID`='customFieldMap[organization.eligibleFu
 /*Start of batch : 1 */
 -- UPDATED BY KERI SO CLIENTS WHO ALREADY HAVE OTHER PAYMETHODS AREN'T AFFECTED BY THIS.
 INSERT INTO `PICKLIST_ITEM` (`ITEM_NAME`,  `DEFAULT_DISPLAY_VALUE`, `LONG_DESCRIPTION`, `INACTIVE`, `READ_ONLY`, `ITEM_ORDER`, `REFERENCE_VALUE`, `SUPPRESS_REFERENCE_VALUE`, `PICKLIST_ID`)
-SELECT 'Other', 'Other', NULL, '0', '0', '5', '.gift_other', NULL, P.PICKLIST_ID 
-	FROM PICKLIST P LEFT OUTER JOIN (SELECT * 
+SELECT 'Other', 'Other', NULL, '0', '0', '5', '.gift_other', NULL, P.PICKLIST_ID
+	FROM PICKLIST P LEFT OUTER JOIN (SELECT *
 				FROM PICKLIST_ITEM
-				WHERE ITEM_NAME='Other' 
+				WHERE ITEM_NAME='Other'
 				AND PICKLIST_ID IN (SELECT PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'gift.paymentType')) L
 	ON P.PICKLIST_ID=L.PICKLIST_ID
 	WHERE P.PICKLIST_NAME_ID = 'gift.paymentType'
 	AND L.PICKLIST_ID IS NULL;
 
-INSERT INTO `PICKLIST_ITEM` 
+INSERT INTO `PICKLIST_ITEM`
 (`ITEM_NAME`,  `DEFAULT_DISPLAY_VALUE`, `LONG_DESCRIPTION`, `INACTIVE`, `READ_ONLY`, `ITEM_ORDER`, `REFERENCE_VALUE`, `SUPPRESS_REFERENCE_VALUE`, `PICKLIST_ID`)
 SELECT 'Other', 'Other', NULL, '0', '0', '5', '.adjustedGift_other', NULL, PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'adjustedGift.paymentType';
 UPDATE PICKLIST_ITEM I, PICKLIST L
@@ -1682,6 +1682,8 @@ UPDATE `PAGE_ACCESS` SET `ROLE`='ROLE_SUPER_ADMIN,ROLE_ADMIN'  WHERE (`PAGE_ACCE
 UPDATE `PAGE_ACCESS` SET `ROLE`='ROLE_SUPER_ADMIN,ROLE_ADMIN'  WHERE (`PAGE_ACCESS_ID` = 1000003) ;
 UPDATE `PAGE_ACCESS` SET `ROLE`='ROLE_SUPER_ADMIN,ROLE_ADMIN'  WHERE (`PAGE_ACCESS_ID` = 1000004) ;
 UPDATE `PAGE_ACCESS` SET `ROLE`='ROLE_SUPER_ADMIN,ROLE_ADMIN'  WHERE (`PAGE_ACCESS_ID` = 1000000) ;
+
+INSERT INTO SITE_OPTION (SITE_NAME, OPTION_NAME, OPTION_NAME_READ_ONLY, OPTION_DESC, OPTION_VALUE, OPTION_VALUE_READ_ONLY, MODIFIED_BY, CREATE_DATE, UPDATE_DATE) VALUES (DATABASE(), 'fiscalYearStartingMonth', 1, 'Starting month of the fiscal year (number only).', 1, 0, 1, NOW(), null);
 
 
 UPDATE VERSION SET SCHEMA_MAJOR_VERSION = 2 WHERE COMPONENT_ID = 'ORANGE' AND COMPONENT_DESC = 'Orange Leap';

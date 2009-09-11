@@ -1105,6 +1105,7 @@ INDEX `THEGURU_SEGMENTATION_RESULT_REPORT_ID_IDX` (`REPORT_ID`)
 
 # Dump of table ENTITY_SEARCH
 # The FULLTEXT index requires MyISAM type, which means this table should be updated last in the transaction if possible.
+# Also strip dashes and periods before searching.
 #
 # Example searching for records containing 'joe' or 'fred' (case insensitive):
 #

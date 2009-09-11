@@ -1108,7 +1108,7 @@ INDEX `THEGURU_SEGMENTATION_RESULT_REPORT_ID_IDX` (`REPORT_ID`)
 #
 # Example searching for records containing 'joe' or 'fred' (case insensitive):
 #
-# SELECT *, MATCH( SEARCH_TEXT ) AGAINST ('joe fred') as relevance FROM `ENTITY_SEARCH` WHERE MATCH( SEARCH_TEXT ) AGAINST ('joe fred' IN BOOLEAN MODE ) HAVING relevance > 0.2;
+# SELECT *, MATCH( SEARCH_TEXT ) AGAINST ('joe fred') as relevance FROM `ENTITY_SEARCH` WHERE MATCH( SEARCH_TEXT ) AGAINST ('joe fred' IN BOOLEAN MODE ) HAVING relevance > 0.2 LIMIT 100;
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `ENTITY_SEARCH`;

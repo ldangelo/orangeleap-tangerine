@@ -39,30 +39,7 @@ public class DateHandler extends AbstractFieldHandler {
 		sb.append(resolveEntityAttributes(currentField)).append("\" ");
 
 		sb.append("type=\"text\" maxlength=\"10\" size=\"16\" value=\"");
-
-		if (fieldValue != null) {
-			final SimpleDateFormat mmDdYyyyFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
-            final SimpleDateFormat YyyyMmDdFormat = new SimpleDateFormat(StringConstants.YYYY_MM_DD_FORMAT);
-			if (fieldValue instanceof Date) {
-				sb.append(mmDdYyyyFormat.format(fieldValue));
-			}
-			else if (fieldValue instanceof String) {
-                String dateFieldValue = (String) fieldValue;
-                try {
-                    if (Pattern.matches("\\d{2}/\\d{2}/\\d{4}", dateFieldValue)) {
-                        mmDdYyyyFormat.parse((String) fieldValue);
-                        sb.append(fieldValue);
-                    }
-                    else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateFieldValue)) {
-                        Date parsedDate = YyyyMmDdFormat.parse(dateFieldValue);
-                        sb.append(mmDdYyyyFormat.format(parsedDate));
-                    }
-				}
-				catch (Exception e) {
-					// ignore parsing date exception
-				}
-			}
-		}
+        sb.append(formatDate(fieldValue, StringConstants.MM_DD_YYYY_FORMAT));
 		sb.append("\" name=\"").append(formFieldName).append("\"/>");
 
 		createScript(formFieldName, sb);
@@ -88,22 +65,39 @@ public class DateHandler extends AbstractFieldHandler {
 
     @Override
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
-        Object displayValue = StringConstants.EMPTY;
+        return formatDate(fieldValue, StringConstants.EXT_DATE_FORMAT);
+    }
+
+    protected String formatDate(final Object fieldValue, final String dateFormat) {
+        String formattedDate = StringConstants.EMPTY;
         if (fieldValue != null) {
-            final SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.EXT_DATE_FORMAT);
+            final SimpleDateFormat toDateFormat = new SimpleDateFormat(dateFormat);
+            final SimpleDateFormat mmDdYyyyFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
+            final SimpleDateFormat YyyyMmDdFormat = new SimpleDateFormat(StringConstants.YYYY_MM_DD_FORMAT);
             if (fieldValue instanceof Date) {
-                displayValue = sdf.format(fieldValue);
+                formattedDate = toDateFormat.format(fieldValue);
             }
             else if (fieldValue instanceof String) {
+                String dateFieldValue = (String) fieldValue;
                 try {
-                    sdf.parse((String) fieldValue);
-                    displayValue = fieldValue;
+                    if (Pattern.matches("\\d{2}/\\d{2}/\\d{4}", dateFieldValue)) {
+                        Date parsedDate = mmDdYyyyFormat.parse((String) fieldValue);
+                        formattedDate = toDateFormat.format(parsedDate);
+                    }
+                    else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateFieldValue)) {
+                        Date parsedDate = YyyyMmDdFormat.parse(dateFieldValue);
+                        formattedDate = toDateFormat.format(parsedDate);
+                    }
+                    else {
+                        toDateFormat.parse(dateFieldValue);
+                        formattedDate = dateFieldValue;
+                    }
                 }
                 catch (Exception e) {
-                    // ignore parsing date exception
+                    logger.warn("formatDate: could not format date = " + fieldValue);
                 }
             }
         }
-        return displayValue; 
+        return formattedDate;
     }
 }

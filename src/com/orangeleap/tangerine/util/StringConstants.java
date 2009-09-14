@@ -161,4 +161,8 @@ public final class StringConstants {
     public static final String CREDIT_CARD_EXP_DISPLAY_FORMAT = "MM / yyyy";
     public static final String EXT_SCRIPT = "extScript";
     public static final String COMMA_SPACE = ", ";
+    public static final String EXT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    public static final String MM_DD_YYYY_FORMAT = "MM/dd/yyyy";
+    public static final String YYYY_MM_DD_FORMAT = "yyyy-MM-dd";
 }

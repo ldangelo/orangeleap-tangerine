@@ -56,7 +56,7 @@ public class DateDisplayHandler extends AbstractFieldHandler {
 
     @Override
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
-        SimpleDateFormat sdf = new SimpleDateFormat(getDateFormat());
+        SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.EXT_DATE_FORMAT);
         Object displayValue = StringConstants.EMPTY;
 
         if (fieldValue != null && fieldValue instanceof Date) {

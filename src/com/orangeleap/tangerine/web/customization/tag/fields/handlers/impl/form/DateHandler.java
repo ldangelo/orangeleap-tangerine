@@ -3,10 +3,10 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.springframework.context.ApplicationContext;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.springframework.beans.BeanWrapper;
+import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +14,7 @@ import javax.servlet.jsp.PageContext;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * User: alexlo
@@ -40,14 +41,22 @@ public class DateHandler extends AbstractFieldHandler {
 		sb.append("type=\"text\" maxlength=\"10\" size=\"16\" value=\"");
 
 		if (fieldValue != null) {
-			final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			final SimpleDateFormat mmDdYyyyFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
+            final SimpleDateFormat YyyyMmDdFormat = new SimpleDateFormat(StringConstants.YYYY_MM_DD_FORMAT);
 			if (fieldValue instanceof Date) {
-				sb.append(sdf.format(fieldValue));
+				sb.append(mmDdYyyyFormat.format(fieldValue));
 			}
 			else if (fieldValue instanceof String) {
-				try {
-					sdf.parse((String) fieldValue);
-					sb.append(fieldValue);
+                String dateFieldValue = (String) fieldValue;
+                try {
+                    if (Pattern.matches("\\d{2}/\\d{2}/\\d{4}", dateFieldValue)) {
+                        mmDdYyyyFormat.parse((String) fieldValue);
+                        sb.append(fieldValue);
+                    }
+                    else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateFieldValue)) {
+                        Date parsedDate = YyyyMmDdFormat.parse(dateFieldValue);
+                        sb.append(mmDdYyyyFormat.format(parsedDate));
+                    }
 				}
 				catch (Exception e) {
 					// ignore parsing date exception
@@ -81,7 +90,7 @@ public class DateHandler extends AbstractFieldHandler {
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object displayValue = StringConstants.EMPTY;
         if (fieldValue != null) {
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.EXT_DATE_FORMAT);
             if (fieldValue instanceof Date) {
                 displayValue = sdf.format(fieldValue);
             }

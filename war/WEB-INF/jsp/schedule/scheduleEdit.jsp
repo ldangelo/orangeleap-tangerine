@@ -57,7 +57,7 @@
                                   <a href="giftView.htm?giftId=${scheduledItem.resultEntityId}&constituentId=${param.constituentId}">View Gift</a>
                                   </c:if>
                                   <c:if test="${scheduledItem.resultEntity == 'adjustedgift' }">
-                                  <a href="giftAdjustmentView.htm?adjustedGiftId=${scheduledItem.resultEntityId}&constituentId=${param.constituentId}">View Adjusted Gift</a>
+                                  <a href="adjustedGiftView.htm?adjustedGiftId=${scheduledItem.resultEntityId}&constituentId=${param.constituentId}">View Adjusted Gift</a>
                                   </c:if>
                                   </c:if>
                               </td>

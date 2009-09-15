@@ -21,23 +21,17 @@ package com.orangeleap.tangerine.json.controller.list;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.PaymentSourceService;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.support.MutableSortDefinition;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.text.SimpleDateFormat;
 
 @Controller
 public class PaymentSourceListController extends TangerineJsonListController {
@@ -52,7 +46,7 @@ public class PaymentSourceListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<PaymentSource> sources = paymentSourceService.readAllPaymentSourcesByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("paymentSourceList");
-        addListFieldsToMap(request, sectionFields, sources, list);
+        addListFieldsToMap(request, sectionFields, sources, list, false);
 
         int count = paymentSourceService.readCountByConstituentId(constituentId);
 

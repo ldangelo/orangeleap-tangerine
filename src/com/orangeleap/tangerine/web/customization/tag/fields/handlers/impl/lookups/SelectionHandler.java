@@ -134,7 +134,7 @@ public class SelectionHandler extends AbstractFieldHandler {
 			        displayValues.add(aAdjGift.getShortDescription());
 			        ids.add(aAdjGift.getId());
 
-				    links.add(new StringBuilder("giftAdjustmentView.htm?").append(referenceType).append("Id=").append(aAdjGift.getId()).append("&").
+				    links.add(new StringBuilder("adjustedGiftView.htm?").append(referenceType).append("Id=").append(aAdjGift.getId()).append("&").
 						    append(StringConstants.CONSTITUENT_ID).append("=").append(request.getParameter(StringConstants.CONSTITUENT_ID)).toString());
 			    }
 			}

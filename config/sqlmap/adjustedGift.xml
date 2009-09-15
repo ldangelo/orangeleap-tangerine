@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="ADJUSTED_GIFT">
 
-	<resultMap id="ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift" groupBy="id">
+	<resultMap id="MIN_ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift" groupBy="id">
 		<result property="id" column="ADJUSTED_GIFT_ID" jdbcType="BIGINT" />
 		<result property="adjustedAmount" column="ADJUSTED_AMOUNT" jdbcType="DECIMAL" />
 		<result property="adjustedReason" column="ADJUSTED_REASON" jdbcType="VARCHAR"/>
@@ -23,14 +23,21 @@
 		<result property="postedDate" column="ADJUSTED_POSTED_DATE" jdbcType="TIMESTAMP" />
 		<result property="txRefNum" column="ADJUSTED_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
 		<result property="paymentType" column="ADJUSTED_PAYMENT_TYPE" jdbcType="VARCHAR" />
-		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
-		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
-		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
-		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="createDate" column="ADJUSTED_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="ADJUSTED_UPDATE_DATE" jdbcType="TIMESTAMP" />
+        <result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 	
+    <resultMap id="ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift" groupBy="id" extends="MIN_ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+        <result property="phone" resultMap="PHONE.PHONE_RESULT" />
+        <result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+    </resultMap>
+
+    <resultMap id="ADJUSTED_GIFT_LIST_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift" groupBy="id" extends="MIN_ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="paymentSource" resultMap="PAYMENT_SOURCE.MIN_PAYMENT_SOURCE_RESULT" />
+    </resultMap>
+
 	<resultMap id="ADJUSTED_GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift" groupBy="id" extends="ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES">
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
@@ -72,7 +79,64 @@
 		<include refid="ADJUSTED_GIFT_QUERY_FRAGMENT" />
 		and ag.GIFT_ID = #originalGiftId#
 	</select>	
-	
+
+    <select id="COUNT_ADJUSTED_GIFTS_BY_ORIGINAL_GIFT_ID" resultClass="java.util.HashMap" parameterClass="map">
+        SELECT ag.GIFT_ID as giftId, count(ag.ADJUSTED_GIFT_ID) AS adjustedGiftCount
+        FROM ADJUSTED_GIFT ag
+        inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+        WHERE ag.GIFT_ID IN
+        <iterate property="giftIds" conjunction="," open="(" close=")">
+            #giftIds[]#
+        </iterate>
+        AND p.SITE_NAME = #siteName#
+        GROUP BY GIFT_ID
+    </select>
+
+    <select id="SELECT_LIMITED_ADJUSTED_GIFTS_BY_CONSTITUENT_GIFT_ID" resultMap="ADJUSTED_GIFT_LIST_RESULT" parameterClass="map">
+        select
+        <include refid="ADJUSTED_GIFT_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from ADJUSTED_GIFT ag
+        inner join GIFT g2 on ag.GIFT_ID = g2.GIFT_ID
+        inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join PAYMENT_SOURCE ps on ag.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on ag.ADJUSTED_GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and ag.CONSTITUENT_ID = #constituentId#
+        and ag.GIFT_ID = #giftId#
+        order by
+        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_ADJUSTED_GIFTS_COUNT_BY_CONSTITUENT_GIFT_ID" parameterClass="map" resultClass="int">
+        select count(ag.ADJUSTED_GIFT_ID)
+        from ADJUSTED_GIFT ag
+        inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and ag.CONSTITUENT_ID = #constituentId#
+        and ag.GIFT_ID = #giftId#
+    </select>
+
 	<select id="SELECT_POST_BATCH_REVIEW_SET_ITEMS_ADJUSTED_GIFT_PAGINATED" resultMap="ADJUSTED_GIFT_RESULT" parameterClass="map" >
 		select
 		<include refid="ADJUSTED_GIFT_COLS_FRAGMENT" />,

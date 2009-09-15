@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 public interface GiftService {
 
@@ -65,4 +66,8 @@ public interface GiftService {
     public void checkAssociatedRecurringGiftIds(Gift gift);
 
     Gift reprocessGift(Gift gift) throws BindException;
+
+    List<Gift> readAllGiftsByConstituentId(Long constituentId, SortInfo sort, Locale locale);
+
+    int readCountByConstituentId(Long constituentId);
 }

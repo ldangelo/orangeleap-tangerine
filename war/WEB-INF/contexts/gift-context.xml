@@ -30,7 +30,7 @@
 	    <property name="successView" value="gift/giftSearch"/>
 	</bean>
 
-	<bean id="giftListController" class="com.orangeleap.tangerine.controller.DummyController">
+	<bean id="giftGridController" class="com.orangeleap.tangerine.controller.gift.GiftGridController">
 	    <property name="viewName" value="gift/giftList"/>
 	</bean>
 
@@ -46,7 +46,7 @@
 		<property name="bindPhone" value="true"/>
         <property name="bindPaymentSource" value="true"/>
 	    <property name="formView" value="adjustedGift/giftAdjustment"/>
-	    <property name="successView" value="redirect:/giftAdjustmentView.htm"/>
+	    <property name="successView" value="redirect:/adjustedGiftView.htm"/>
 	</bean>
 
 	<bean id="adjustedGiftViewController" class="com.orangeleap.tangerine.controller.gift.adjustment.GiftAdjustmentViewController"
@@ -55,7 +55,7 @@
 		<property name="bindPhone" value="true"/>
         <property name="bindPaymentSource" value="true"/>
 	    <property name="formView" value="adjustedGift/giftAdjustmentView"/>
-	    <property name="successView" value="redirect:/giftAdjustmentView.htm"/>
+	    <property name="successView" value="redirect:/adjustedGiftView.htm"/>
 	</bean>
 
     <bean id="giftUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
@@ -63,11 +63,11 @@
 		    <props>
 			    <prop key="/gift.htm">giftFormController</prop>
 			    <prop key="/giftView.htm">giftViewController</prop>
-			    <prop key="/giftAdjustment.htm">adjustedGiftController</prop>
-			    <prop key="/giftAdjustmentView.htm">adjustedGiftViewController</prop>
+			    <prop key="/adjustedGift.htm">adjustedGiftController</prop>
+			    <prop key="/adjustedGiftView.htm">adjustedGiftViewController</prop>
 			    <prop key="/giftCombinedDistributionLines.htm">giftPledgeRecurringGiftLinesController</prop>
 			    <prop key="/giftSearch.htm">giftSearchController</prop>
-			    <prop key="/giftList.htm">giftListController</prop>
+			    <prop key="/giftList.htm">giftGridController</prop>
 			</props>
 		</property>
 	</bean>

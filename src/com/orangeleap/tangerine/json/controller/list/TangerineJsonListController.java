@@ -30,8 +30,10 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
+import org.apache.commons.lang.math.NumberUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -50,11 +52,17 @@ public abstract class TangerineJsonListController {
     @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
 
-    public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities, List<Map<String, Object>> paramMapList) {
+    private static final String SORT_KEY_PREFIX = "a";
+    private static final String PARENT_NODE = "_parent";
+    private static final String LEAF_NODE = "_is_leaf";
+
+    public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities, List<Map<String, Object>> paramMapList, boolean useAliasName) {
         for (Object thisEntity : entities) {
             BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(thisEntity);
 
             Map<String, Object> paramMap = new HashMap<String, Object>();
+
+            int x = 0;
             for (SectionField field : sectionFields) {
                 String fieldPropertyName = field.getFieldPropertyName();
                 if (beanWrapper.isReadableProperty(fieldPropertyName)) {
@@ -84,8 +92,8 @@ public abstract class TangerineJsonListController {
                             displayValue = "true";
                         }
                     }
-
-                    paramMap.put(TangerineForm.escapeFieldName(fieldPropertyName), displayValue);
+                    String key = useAliasName && ! StringConstants.ID.equals(fieldPropertyName) ? new StringBuilder(SORT_KEY_PREFIX).append(x++).toString() : TangerineForm.escapeFieldName(fieldPropertyName);
+                    paramMap.put(key, displayValue);
                 }
             }
             paramMapList.add(paramMap);
@@ -99,7 +107,59 @@ public abstract class TangerineJsonListController {
         SectionDefinition sectionDef = sectionDefinitions.get(0);
         List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
         assert sectionFields != null && !sectionFields.isEmpty();
-        return sectionFields;        
+        return sectionFields;
     }
 
+    protected void setParentNodeAttributes(List<Map<String, Object>> list, Map<Long,Long> parentToChildNodeCountMap, String parentPrefix) {
+        for (Map<String, Object> objectMap : list) {
+            if ( ! objectMap.isEmpty()) {
+                objectMap.put(PARENT_NODE, null);
+                if (parentToChildNodeCountMap.get((Long) objectMap.get(StringConstants.ID)) == null || parentToChildNodeCountMap.get((Long) objectMap.get(StringConstants.ID)) == 0) {
+                    objectMap.put(LEAF_NODE, true);
+                }
+                else {
+                    objectMap.put(LEAF_NODE, false);
+                }
+                objectMap.put(StringConstants.ID, new StringBuilder(parentPrefix).append("-").append(objectMap.get(StringConstants.ID)).toString());
+            }
+        }
+    }
+
+    protected void setChildNodeAttributes(List<Map<String, Object>> list, Long parentId, String parentPrefix, String childPrefix) {
+        for (Map<String, Object> objectMap : list) {
+            if ( ! objectMap.isEmpty()) {
+                objectMap.put(PARENT_NODE, new StringBuilder(parentPrefix).append("-").append(parentId).toString());
+                objectMap.put(LEAF_NODE, true);
+                objectMap.put(StringConstants.ID, new StringBuilder(childPrefix).append("-").append(objectMap.get(StringConstants.ID)).toString());
+            }
+        }        
+    }
+
+    protected void resolveSortFieldName(List<SectionField> allFields, SortInfo sort) {
+        List<SectionField> sectionFields = pageCustomizationService.getFieldsExceptId(allFields);
+        String sortKey = sort.getSort();
+        if (sortKey != null) {
+            String sortIndex = sortKey.replaceFirst(SORT_KEY_PREFIX, StringConstants.EMPTY);
+            if (NumberUtils.isNumber(sortIndex)) {
+                int index = Integer.parseInt(sortIndex);
+                if (index < sectionFields.size()) {
+                    String fieldName = sectionFields.get(index).getFieldPropertyName();
+                    sortKey = TangerineForm.escapeFieldName(fieldName);
+                    sort.setSort(sortKey);
+                }
+            }
+        }
+    }
+
+    protected long getNodeId(HttpServletRequest request) {
+        String aNode = request.getParameter("anode");
+        long id = 0;
+        if (aNode != null) {
+            String aNodeID = aNode.replaceAll(StringConstants.GIFT + "-", StringConstants.EMPTY);
+            if (NumberUtils.isNumber(aNodeID)) {
+                id = Long.parseLong(aNodeID);
+            }
+        }
+        return id;
+    }
 }

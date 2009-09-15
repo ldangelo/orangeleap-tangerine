@@ -46,7 +46,7 @@ public class CommunicationHistoryListController extends TangerineJsonListControl
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<CommunicationHistory> histories = communicationHistoryService.readAllCommunicationHistoryByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("communicationHistoryList");
-        addListFieldsToMap(request, sectionFields, histories, list);
+        addListFieldsToMap(request, sectionFields, histories, list, false);
 
         int count = communicationHistoryService.readCountByConstituentId(constituentId);
 

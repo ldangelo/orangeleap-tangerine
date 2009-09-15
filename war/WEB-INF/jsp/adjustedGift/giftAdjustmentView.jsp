@@ -44,7 +44,7 @@
                             renderTo: 'actions',
                             menu : {
                                 items: [
-                                    { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("giftAdjustment.htm?giftId=${form.domainObject.originalGiftId}&constituentId=${requestScope.constituent.id}"); } }
+                                    { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("adjustedGift.htm?giftId=${form.domainObject.originalGiftId}&constituentId=${requestScope.constituent.id}"); } }
                                 ]
                             },
                             split: false,

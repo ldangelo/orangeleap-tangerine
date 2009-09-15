@@ -90,4 +90,5 @@ public interface PageCustomizationService {
 
     public void maintainQueryLookupParam(QueryLookupParam queryLookupParam);
 
+    List<SectionField> getFieldsExceptId(List<SectionField> fields);
 }

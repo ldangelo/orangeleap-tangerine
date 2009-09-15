@@ -46,7 +46,7 @@ public class PledgeListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<Pledge> pledges = pledgeService.readAllPledgesByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("pledgeList");
-        addListFieldsToMap(request, sectionFields, pledges, list);
+        addListFieldsToMap(request, sectionFields, pledges, list, false);
 
         int count = pledgeService.readCountByConstituentId(constituentId);
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 @Repository("adjustedGiftDAO")
 public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<AdjustedGift> implements AdjustedGiftDao {
@@ -67,4 +68,41 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
         return getSqlMapClientTemplate().queryForList("SELECT_ADJUSTED_GIFTS_BY_ORIGINAL_GIFT_ID", params);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<Long, Long> countAdjustedGiftsByOriginalGiftId(final List<Long> originalGiftIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAdjustedGiftsForOriginalGiftId: originalGiftIds = " + originalGiftIds);
+        }
+        final Map<String, Object> params = setupParams();
+        params.put("giftIds", originalGiftIds);
+        return getSqlMapClientTemplate().queryForMap("COUNT_ADJUSTED_GIFTS_BY_ORIGINAL_GIFT_ID", params, "giftId", "adjustedGiftCount");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<AdjustedGift> readAllAdjustedGiftsByConstituentGiftId(Long constituentId, Long giftId, String sortPropertyName, String direction,
+                                                                      int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllAdjustedGiftsByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.ADJUSTED_GIFT, "ADJUSTED_GIFT.ADJUSTED_GIFT_LIST_RESULT",
+                sortPropertyName, direction, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        params.put(StringConstants.GIFT_ID, giftId);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_ADJUSTED_GIFTS_BY_CONSTITUENT_GIFT_ID", params);
+    }
+
+    @Override
+    public int readCountByConstituentGiftId(Long constituentId, Long giftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        params.put(StringConstants.GIFT_ID, giftId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_ADJUSTED_GIFTS_COUNT_BY_CONSTITUENT_GIFT_ID", params);
+    }
 }

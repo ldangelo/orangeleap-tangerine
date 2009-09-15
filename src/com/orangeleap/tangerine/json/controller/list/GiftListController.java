@@ -18,13 +18,13 @@
 
 package com.orangeleap.tangerine.json.controller.list;
 
-import com.orangeleap.tangerine.domain.customization.PicklistItem;
+import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.service.PicklistItemService;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,74 +32,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * This controller handles JSON requests for populating
- * the grid of gifts.
- *
- * @version 1.0
- */
 @Controller
-public class GiftListController {
-
-    /**
-     * Logger for this class and subclasses
-     */
-    protected final Log logger = OLLogger.getLog(getClass());
-
-    private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
-
-    static {
-        NAME_MAP.put("id", "id");
-        NAME_MAP.put("date", "date");
-        NAME_MAP.put("constituentId", "constituentid");
-        NAME_MAP.put("amount", "amount");
-        NAME_MAP.put("currencycode", "currencycode");
-        NAME_MAP.put("type", "type");
-        NAME_MAP.put("status", "status");
-        NAME_MAP.put("comments", "comments");
-        NAME_MAP.put("refnumber", "refnumber");
-        NAME_MAP.put("authcode", "authcode");
-        NAME_MAP.put("gifttype", "gifttype");
-    }
+public class GiftListController extends TangerineJsonListController {
 
     @Resource(name = "giftService")
     private GiftService giftService;
 
-	@Resource(name = "picklistItemService")
-	private PicklistItemService picklistItemService;
+    @Resource(name = "adjustedGiftService")
+    private AdjustedGiftService adjustedGiftService;
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/giftList.json")
-    public ModelMap getGiftList(HttpServletRequest request, SortInfo sortInfo) {
-        List<Map> rows = new ArrayList<Map>();
+    public ModelMap getGiftList(HttpServletRequest request, SortInfo sort) {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
 
-        // if we're not getting back a valid column name, possible SQL injection,
-        // so send back an empty list.
-        if (!sortInfo.validateSortField(NAME_MAP.keySet())) {
-            logger.warn("getGiftList called with invalid sort column: [" + sortInfo.getSort() + "]");
-            return new ModelMap("rows", rows);
+        long giftId = getNodeId(request);
+        String unresolvedSortField = sort.getSort();
+        int count;
+        if (giftId == 0) {
+            List<SectionField> sectionFields = findSectionFields("giftList");
+            resolveSortFieldName(sectionFields, sort);
+            List<Gift> gifts = giftService.readAllGiftsByConstituentId(constituentId, sort, request.getLocale());
+            addListFieldsToMap(request, sectionFields, gifts, list, true);
+
+            Map<Long,Long> adjustGiftCountMap = adjustedGiftService.countAdjustedGiftsByOriginalGiftId(gifts);
+            setParentNodeAttributes(list, adjustGiftCountMap, StringConstants.GIFT);
+            count = giftService.readCountByConstituentId(constituentId);
+        }
+        else {
+            List<SectionField> sectionFields = findSectionFields("adjustedGiftList");
+            resolveSortFieldName(sectionFields, sort);
+            List<AdjustedGift> adjustedGifts = adjustedGiftService.readAllAdjustedGiftsByConstituentGiftId(constituentId, giftId, sort, request.getLocale());
+            addListFieldsToMap(request, sectionFields, adjustedGifts, list, true);
+            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT);
+            count = adjustedGiftService.readCountByConstituentGiftId(constituentId, giftId);
         }
 
-        // set the sort to the valid column name, based on the map
-        sortInfo.setSort((String) NAME_MAP.get(sortInfo.getSort()));
-
-        String constituentId = request.getParameter("constituentId");
-        PaginatedResult result = giftService.readPaginatedGiftList(Long.valueOf(constituentId), sortInfo);
-	    for (Object row : result.getRows()) {
-		    Map thisGift = (Map) row;
-
-		    PicklistItem item = picklistItemService.getPicklistItem("gift.paymentType", (String) thisGift.get("type"));
-		    if (item != null) {
-			    thisGift.put("type", item.resolveDisplayValue());
-		    }
-	    }
-
-        ModelMap map = new ModelMap("rows", result.getRows());
-        map.put("totalRows", result.getRowCount());
+        sort.setSort(unresolvedSortField);
+        ModelMap map = new ModelMap("rows", list);
+        map.put("totalRows", count);
+        map.put("success", Boolean.TRUE);
         return map;
     }
 }

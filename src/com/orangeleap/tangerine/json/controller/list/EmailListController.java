@@ -47,7 +47,7 @@ public class EmailListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<Email> emails = emailService.readAllEmailsByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("emailList");
-        addListFieldsToMap(request, sectionFields, emails, list);
+        addListFieldsToMap(request, sectionFields, emails, list, false);
 
         int count = emailService.readCountByConstituentId(constituentId);
 

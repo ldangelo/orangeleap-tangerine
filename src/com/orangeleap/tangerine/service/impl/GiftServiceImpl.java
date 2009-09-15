@@ -56,14 +56,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -498,7 +491,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             DistributionLine defaultLine = new DistributionLine(constituent);
 	        siteService.setEntityDefaults(defaultLine, EntityType.distributionLine);
 
-            if (amount.equals(enteredLine.getAmount()) && new BigDecimal("100").equals(enteredLine.getPercentage())) {
+            if (amount != null && amount.equals(enteredLine.getAmount()) && new BigDecimal("100").equals(enteredLine.getPercentage())) {
                 if (org.springframework.util.StringUtils.hasText(enteredLine.getProjectCode()) || org.springframework.util.StringUtils.hasText(enteredLine.getMotivationCode()) ||
                         org.springframework.util.StringUtils.hasText(enteredLine.getOther_motivationCode())) {
                     // do nothing
@@ -599,5 +592,22 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                 }
             }
         }
+    }
+
+    @Override
+    public List<Gift> readAllGiftsByConstituentId(Long constituentId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return giftDao.readAllGiftsByConstituentId(constituentId, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        return giftDao.readCountByConstituentId(constituentId);
     }
 }

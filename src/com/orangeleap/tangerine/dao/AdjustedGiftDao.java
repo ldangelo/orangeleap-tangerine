@@ -21,6 +21,8 @@ package com.orangeleap.tangerine.dao;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Locale;
 
 public interface AdjustedGiftDao {
 
@@ -29,4 +31,11 @@ public interface AdjustedGiftDao {
     public List<AdjustedGift> readAdjustedGiftsForOriginalGiftId(Long originalGiftId);
 
     public AdjustedGift maintainAdjustedGift(AdjustedGift adjustedGift);
+
+    Map<Long, Long> countAdjustedGiftsByOriginalGiftId(final List<Long> originalGiftIds);
+
+    List<AdjustedGift> readAllAdjustedGiftsByConstituentGiftId(Long constituentId, Long giftId, String sortPropertyName, String direction,
+                                                               int start, int limit, Locale locale);
+
+    int readCountByConstituentGiftId(Long constituentId, Long giftId);
 }

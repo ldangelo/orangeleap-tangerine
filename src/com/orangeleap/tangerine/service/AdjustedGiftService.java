@@ -20,10 +20,13 @@ package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.validation.BindException;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.Locale;
 
 public interface AdjustedGiftService {
 
@@ -44,4 +47,10 @@ public interface AdjustedGiftService {
     public boolean isAdjustedAmountEqualGiftAmount(Gift gift);
 
     public boolean isAdjustedAmountEqualGiftAmount(AdjustedGift adjustedGift);
+
+    Map<Long, Long> countAdjustedGiftsByOriginalGiftId(final List<Gift> gifts);
+
+    List<AdjustedGift> readAllAdjustedGiftsByConstituentGiftId(Long constituentId, Long giftId, SortInfo sort, Locale locale);
+
+    int readCountByConstituentGiftId(Long constituentId, Long giftId);
 }

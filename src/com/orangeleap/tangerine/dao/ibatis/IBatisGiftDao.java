@@ -26,6 +26,7 @@ import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
@@ -233,5 +234,30 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
                 getSqlMapClientTemplate().insert("INSERT_RECURRING_GIFT_GIFT", paramMap);
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Gift> readAllGiftsByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.GIFT, "GIFT.GIFT_LIST_RESULT",
+                sortPropertyName, direction, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_GIFTS_BY_CONSTITUENT_ID", params);
+    }
+
+    @Override
+    public int readCountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_GIFTS_COUNT_BY_CONSTITUENT_ID", params);
     }
 }

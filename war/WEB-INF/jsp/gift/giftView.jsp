@@ -49,7 +49,7 @@
                                 { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("gift.htm?constituentId=${requestScope.constituent.id}"); } }
                                 <c:if test="${!requestScope.hideAdjustGiftButton}">
                                     ,
-                                    { text: '<c:out value='${clickText}'/>', handler: function() { OrangeLeap.gotoUrl("giftAdjustment.htm?giftId=${requestScope.form.domainObject.id}&constituentId=${requestScope.constituent.id}"); } }
+                                    { text: '<c:out value='${clickText}'/>', handler: function() { OrangeLeap.gotoUrl("adjustedGift.htm?giftId=${requestScope.form.domainObject.id}&constituentId=${requestScope.constituent.id}"); } }
                                 </c:if>
                             ]
                         },

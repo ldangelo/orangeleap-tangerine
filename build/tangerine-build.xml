@@ -275,7 +275,7 @@
 
 		<delete dir="${stage.dir}/war" />
 	</target>
-	
+
 	<target name="jsp.synch">
 		<echo>Synchronizing JSPs</echo>
 
@@ -286,7 +286,7 @@
 		</sync>
 	</target>
 	
-	
+
 	<target name="optimize-dev">
 		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
 			<classpath path="${compile.lib}"/>
@@ -315,7 +315,7 @@
             <fileset dir="${stage.dir}/war/css" includes="forms.css" />
             <fileset dir="${stage.dir}/war/css" includes="pages.css" />
             <fileset dir="${stage.dir}/war/js/extjs/resources/css" includes="ext-all.css" />
-            <fileset dir="${stage.dir}/war/js/extjs/resources/css" includes="xtheme-gray.css" />
+            <fileset dir="${stage.dir}/war/js/extjs/resources/css/ux/treeGrid" includes="treeGrid.css" />
             <fileset dir="${stage.dir}/war/css" includes="orange-theme.css" />
             <fileset dir="${stage.dir}/war/css" includes="ext-styles.css" />
 		</css-optimization>
@@ -325,7 +325,7 @@
 		</taskdef>
 
 		<javascript-optimization
-			minify="true" 
+			minify="true"
 			yCompressor="true" 
 			gZip="false" 
 			destFile="${stage.dir}/war/js/tangerine.js" 
@@ -342,6 +342,8 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
             <fileset dir="${stage.dir}/war/js" includes="init.js" />            
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/RowExpander.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/TreeGrid.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.bgiframe.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />
 	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.cluetip.js" />
@@ -390,7 +392,7 @@
             <fileset dir="${stage.dir}/war/css" includes="forms.css" />
             <fileset dir="${stage.dir}/war/css" includes="pages.css" />
             <fileset dir="${stage.dir}/war/js/extjs/resources/css" includes="ext-all.css" />
-            <fileset dir="${stage.dir}/war/js/extjs/resources/css" includes="xtheme-gray.css" />
+            <fileset dir="${stage.dir}/war/js/extjs/resources/css/ux/treeGrid" includes="treeGrid.css" />
             <fileset dir="${stage.dir}/war/css" includes="orange-theme.css" />
             <fileset dir="${stage.dir}/war/css" includes="ext-styles.css" />
 		</css-optimization>
@@ -417,6 +419,8 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
             <fileset dir="${stage.dir}/war/js" includes="init.js" />            
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/RowExpander.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/TreeGrid.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.bgiframe.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />
 	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.cluetip.js" />

@@ -25,10 +25,10 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -45,7 +45,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -152,7 +151,7 @@ public class SectionFieldTag extends AbstractTag {
                     List<SectionField> allFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
                     assert allFields != null && !allFields.isEmpty();
 
-                    List<SectionField> fields = getFieldsExceptId(allFields);
+                    List<SectionField> fields = pageCustomizationService.getFieldsExceptId(allFields);
                     Object entity = getTangerineForm().getDomainObject();
                     BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
                     String entityType = StringUtils.uncapitalize(entity.getClass().getSimpleName());
@@ -180,7 +179,7 @@ public class SectionFieldTag extends AbstractTag {
 
                     sb.append("{name: 'id', mapping: 'id', type: 'int'},\n");
                     if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
-                        sb.append("{name: 'constituentId', mapping: 'constituentId', type: 'string'},");
+                        sb.append("{name: 'constituentId', mapping: 'constituentId', type: 'string'},\n");
                     }
 
                     int z = 0;
@@ -210,7 +209,7 @@ public class SectionFieldTag extends AbstractTag {
                         }
                     }
                     sb.append("],\n");
-                    sb.append("sortInfo: { field: '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', direction: 'ASC' }\n");
+                    sb.append("sortInfo: { field: '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', direction: 'DESC' }\n");
                     sb.append("});\n");
 
                     sb.append("OrangeLeap.").append(entityType).append(".pagingBar = new Ext.PagingToolbar({\n");
@@ -308,10 +307,188 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("renderTo: '").append(entityType).append("Grid'\n");
                     sb.append("});\n");
                     sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
-                    sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'ASC'}});\n");
+                    sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC'}});\n");
                     sb.append("});\n");
                     sb.append("</script>");
 				}
+                else if (LayoutType.TREE_GRID.equals(sectionDef.getLayoutType())) {
+                    int nextIndex = x + 1;
+                    if (nextIndex < sectionDefinitions.size()) {
+                        if (LayoutType.TREE_GRID_HIDDEN_ROW.equals(sectionDefinitions.get(nextIndex).getLayoutType())) {
+                            x += 1; // skip the next section (the hidden grid tree row) because it will be handled via ajax request
+                        }
+                    }
+                    List<SectionField> allFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
+                    assert allFields != null && !allFields.isEmpty();
+
+                    List<SectionField> fields = pageCustomizationService.getFieldsExceptId(allFields);
+                    Object entity = getTangerineForm().getDomainObject();
+                    BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
+                    String entityType = StringUtils.uncapitalize(entity.getClass().getSimpleName());
+
+                    sb.append("<script type='text/javascript'>");
+                    sb.append("Ext.namespace('OrangeLeap.").append(entityType).append("');\n");
+                    sb.append("OrangeLeap.").append(entityType).append(".controller = function() {\n");
+                    sb.append("function createGrid() {\n");
+                    sb.append("var record = Ext.data.Record.create([\n");
+                    
+                    sb.append("{name: 'id', mapping: 'id', type: 'int'},\n");
+                    sb.append("{name: '_parent', type: 'auto'},\n");
+                    sb.append("{name: '_is_leaf', type: 'bool'},\n");
+                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                        sb.append("{name: 'constituentId', mapping: 'constituentId', type: 'string'},\n");
+                    }
+
+                    int z = 0;
+                    for (SectionField sectionFld : fields) {
+                        sb.append("{name: 'a").append(z).append("', ");
+                        sb.append("mapping: 'a").append(z).append("', ");
+                        String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
+                        sb.append("type: '").append(extType).append("'");
+                        if ("date".equals(extType)) {
+                            sb.append(", dateFormat: '");
+                            if (FieldType.CC_EXPIRATION.equals(sectionFld.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(sectionFld.getFieldType())) {
+                                sb.append("m-d-Y");
+                            }
+                            else {
+                                sb.append("Y-m-d H:i:s");
+                            }
+                            sb.append("'");
+                        }
+                        sb.append("}");
+                        if (++z < fields.size()) {
+                            sb.append(",\n");
+                        }
+                        else {
+                            sb.append("\n");
+                        }
+                    }
+                    sb.append("]);\n");
+                    sb.append("var store = new Ext.ux.maximgb.tg.AdjacencyListStore({\n");
+                    sb.append("autoLoad : true,\n");
+                    sb.append("remoteSort: true,\n");
+                    sb.append("sortInfo: { field: 'a0', direction: 'DESC' },\n");
+                    sb.append("url: '").append(entityType).append("List.json");
+                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                        sb.append("?constituentId=");
+                        if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
+                            sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+                        }
+                        else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                            sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+                        }
+                    }
+                    sb.append("',\n");
+                    sb.append("reader: new Ext.data.JsonReader({\n");
+                    sb.append("id: 'id',\n");
+                    sb.append("root: 'rows',\n");
+                    sb.append("totalProperty: 'totalRows',\n");
+                    sb.append("successProperty: 'success'\n");
+                    sb.append("}, record)\n");
+                    sb.append("});\n");
+                    sb.append("var grid = new Ext.ux.maximgb.tg.GridPanel({\n");
+                    sb.append("store: store,\n");
+                    sb.append("master_column_id : 'a0',\n");
+                    sb.append("columns: [\n");
+                    
+                    int y = 0;
+                    for (SectionField sectionFld : fields) {
+                        sb.append("{header: '").append(sectionFld.getFieldDefinition().getDefaultLabel()).append("', ");
+                        sb.append("dataIndex: 'a").append(y).append("', sortable: true");
+
+                        String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
+                        if (ExtTypeHandler.EXT_FLOAT.equals(extType) || ExtTypeHandler.EXT_BOOLEAN.equals(extType) ||
+                                ExtTypeHandler.EXT_DATE.equals(extType) || ExtTypeHandler.EXT_STRING.equals(extType)) {
+                            sb.append(", renderer: ");
+                            if (ExtTypeHandler.EXT_DATE.equals(extType)) {
+                                sb.append("Ext.util.Format.dateRenderer('");
+                                if (FieldType.CC_EXPIRATION.equals(sectionFld.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(sectionFld.getFieldType())) {
+                                    sb.append("m / Y");
+                                }
+                                else {
+                                    sb.append("m-d-y g:ia");
+                                }
+                                sb.append("')\n");
+                            }
+                            else if (ExtTypeHandler.EXT_FLOAT.equals(extType)) {
+                                sb.append("OrangeLeap.amountRenderer\n");
+                            }
+                            else if (ExtTypeHandler.EXT_BOOLEAN.equals(extType)) {
+                                sb.append("OrangeLeap.booleanRenderer\n");
+                            }
+                            else {
+                                sb.append("function(value, metaData, record, rowIndex, colIndex, store) {");
+                                sb.append("return '<span ext:qtitle=\"").append(sectionFld.getFieldDefinition().getDefaultLabel()).append("\" ext:qwidth=\"250\" ext:qtip=\"' + value + '\">' + value + '</span>';");
+                                sb.append("}\n");
+                            }
+                        }
+                        sb.append("}");
+
+                        if (++y < fields.size()) {
+                            sb.append(",\n");
+                        }
+                        else {
+                            sb.append("\n");
+                        }
+                    }
+                    sb.append("],\n");
+                    sb.append("bbar: new Ext.ux.maximgb.tg.PagingToolbar({\n");
+                    sb.append("store: store,\n");
+                    sb.append("pageSize: 100,\n");
+                    sb.append("displayInfo: true,\n");
+                    sb.append("displayMsg: '").append(TangerineMessageAccessor.getMessage("displayMsg")).append("',\n");
+                    sb.append("emptyMsg: '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("'\n");
+                    sb.append("}),\n");
+                    sb.append("sm: new Ext.grid.RowSelectionModel({singleSelect: true}),\n");
+                    sb.append("viewConfig: { forceFit: true },\n");
+                    sb.append("height: 600,\n");
+                    sb.append("width: 760,\n");
+                    sb.append("frame: true,\n");
+                    sb.append("header: true,\n");
+                    sb.append("title: '").append(TangerineMessageAccessor.getMessage(entityType)).append(" ").append(TangerineMessageAccessor.getMessage("list")).append("',\n");
+                    sb.append("loadMask: true,\n");
+                    sb.append("listeners: {\n");
+                    sb.append("rowdblclick: function(grid, row, evt) {\n");
+                    sb.append("var rec = grid.getSelectionModel().getSelected();\n");
+                    sb.append("Ext.get(document.body).mask('").append(TangerineMessageAccessor.getMessage("loadingRecord")).append("');\n");
+                    sb.append("var entityArray = rec.id.split(\"-\");\n");
+                    sb.append("var entityType = entityArray[0];\n");
+                    sb.append("var entityId = entityArray[1];\n");
+                    sb.append("if (\"").append(StringConstants.PAYMENT_SOURCE).append("\" == entityType) {\n");
+                    sb.append("entityType = \"paymentManagerEdit\";\n");
+                    sb.append("}\n");
+                    sb.append("else if (\"").append(StringConstants.ADDRESS).append("\" == entityType || \"").append(StringConstants.PHONE).append("\" == entityType || \"").append(StringConstants.EMAIL).append("\" == entityType) {\n");
+                    sb.append("entityType += \"ManagerEdit\";\n");
+                    sb.append("}\n");
+                    sb.append("window.location.href = entityType + \".htm?\" + entityType + \"Id=\" + entityId");
+                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                        sb.append(" + \"&constituentId=");
+                        if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
+                            sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+                        }
+                        else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                            sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+                        }
+                        sb.append("\"");
+                    }
+                    sb.append(";\n");
+                    sb.append("}\n");
+                    sb.append("},\n");
+                    sb.append("renderTo: '").append(entityType).append("Grid'\n");
+                    sb.append("});\n");
+                    sb.append("}\n");
+                    sb.append("return {\n");
+                    sb.append("init: function() {\n");
+                    sb.append("createGrid();\n");
+                    sb.append("}\n");
+                    sb.append("}\n");
+                    sb.append("}();\n");
+                    sb.append("Ext.onReady(function() {\n");
+                    sb.append("Ext.QuickTips.init();\n");
+                    sb.append("OrangeLeap.").append(entityType).append(".controller.init();\n");
+                    sb.append("});\n");
+                    sb.append("</script>");
+                }
 				else if (LayoutType.DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType()) ||
                         LayoutType.DISTRIBUTION_LINE_GRID_DISPLAY.equals(sectionDef.getLayoutType())) {
                     boolean showDeleteButton = LayoutType.DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType()); 
@@ -519,14 +696,4 @@ public class SectionFieldTag extends AbstractTag {
 	private TangerineForm getTangerineForm() {
 		return (TangerineForm) getRequestAttribute(StringConstants.FORM);
 	}
-
-    private List<SectionField> getFieldsExceptId(List<SectionField> fields) {
-        List<SectionField> filteredFields = new ArrayList<SectionField>();
-        for (SectionField thisField : fields) {
-            if (!StringConstants.ID.equals(thisField.getFieldPropertyName()) && !StringConstants.CONSTITUENT_ID.equals(thisField.getFieldPropertyName())) {
-                filteredFields.add(thisField);
-            }
-        }
-        return filteredFields;
-    }
 }

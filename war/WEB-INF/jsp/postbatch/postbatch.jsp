@@ -155,7 +155,7 @@
                         </tr>
                     <c:forEach var="gift" varStatus="status" items="${gifts}" >
                       <tr rowindex="${status.count}">
-                        <td><a href="giftAdjustmentView.htm?adjustedGiftId=<c:out value='${gift.id}'/>&constituentId=<c:out value='${gift.constituent.id}'/>" >View</a></td>
+                        <td><a href="adjustedGiftView.htm?adjustedGiftId=<c:out value='${gift.id}'/>&constituentId=<c:out value='${gift.constituent.id}'/>" >View</a></td>
                         <td><c:out value='${gift.constituent.id}'/></td>
                         <td><c:out value='${gift.shortDescription}'/></td>
                         <td><c:out value='${gift.txRefNum}'/></td>

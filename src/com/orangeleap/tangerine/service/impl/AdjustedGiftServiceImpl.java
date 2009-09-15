@@ -15,6 +15,7 @@ import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,7 +26,11 @@ import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Locale;
 
 @Service("adjustedGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -204,5 +209,39 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         BigDecimal originalAmount = adjustedGift.getOriginalAmount();
         BigDecimal adjustedAmount = adjustedGift.getCurrentTotalAdjustedAmount();
         return originalAmount.add(adjustedAmount).floatValue() == 0;
+    }
+
+    @Override
+    public Map<Long, Long> countAdjustedGiftsByOriginalGiftId(final List<Gift> gifts) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAdjustedGiftsForOriginalGiftId:");
+        }
+        final List<Long> giftIds = new ArrayList<Long>();
+        if (gifts != null) {
+            for (Gift gift : gifts) {
+                giftIds.add(gift.getId());
+            }
+        }
+        if (giftIds.isEmpty()) {
+            return new HashMap<Long, Long>();
+        }
+        return adjustedGiftDao.countAdjustedGiftsByOriginalGiftId(giftIds);
+    }
+
+    @Override
+    public List<AdjustedGift> readAllAdjustedGiftsByConstituentGiftId(Long constituentId, Long giftId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllAdjustedGiftsByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId + " sort = " + sort);
+        }
+        return adjustedGiftDao.readAllAdjustedGiftsByConstituentGiftId(constituentId, giftId, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountByConstituentGiftId(Long constituentId, Long giftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId);
+        }
+        return adjustedGiftDao.readCountByConstituentGiftId(constituentId, giftId);
     }
 }

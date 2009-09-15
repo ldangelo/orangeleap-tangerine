@@ -46,7 +46,7 @@ public class PaymentHistoryListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<PaymentHistory> histories = paymentHistoryService.readAllPaymentHistoryByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("paymentHistoryList");
-        addListFieldsToMap(request, sectionFields, histories, list);
+        addListFieldsToMap(request, sectionFields, histories, list, false);
 
         int count = paymentHistoryService.readCountByConstituentId(constituentId);
         ModelMap map = new ModelMap("rows", list);

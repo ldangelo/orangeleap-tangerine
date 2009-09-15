@@ -26,6 +26,7 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 public interface GiftDao {
 
@@ -47,5 +48,8 @@ public interface GiftDao {
 
     public PaginatedResult readPaginatedGiftListByConstituentId(Long constituentId, SortInfo sortinfo);
 
+    List<Gift> readAllGiftsByConstituentId(Long constituentId, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
 
+    int readCountByConstituentId(Long constituentId);
 }

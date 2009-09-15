@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="GIFT">
 
-	<resultMap id="GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id">
+	<resultMap id="MIN_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id">
 		<result property="id" column="GIFT_ID" jdbcType="BIGINT" />
 		<result property="giftStatus" column="GIFT_STATUS" jdbcType="VARCHAR" />
 		<result property="giftType" column="GIFT_TYPE" jdbcType="VARCHAR" />
@@ -24,14 +24,21 @@
 		<result property="postmarkDate" column="GIFT_POSTMARK_DATE" jdbcType="TIMESTAMP" />
 		<result property="transactionDate" column="GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="txRefNum" column="GIFT_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
-		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
-		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
-		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
-		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="updateDate" column="GIFT_UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="createDate" column="GIFT_CREATE_DATE" jdbcType="TIMESTAMP" />
+        <result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 	
+    <resultMap id="GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+        <result property="phone" resultMap="PHONE.PHONE_RESULT" />
+        <result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+    </resultMap>
+
+    <resultMap id="GIFT_LIST_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="paymentSource" resultMap="PAYMENT_SOURCE.MIN_PAYMENT_SOURCE_RESULT" />
+    </resultMap>
+
 	<resultMap id="GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="GIFT_RESULT_NO_DISTRO_LINES">
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
@@ -129,7 +136,49 @@
 		$sortColumn$ $sortDir$, txndt desc
         limit $offset$,$limit$
 	</select>
-	
+
+    <select id="SELECT_LIMITED_GIFTS_BY_CONSTITUENT_ID" resultMap="GIFT_LIST_RESULT" parameterClass="map">
+        select
+        <include refid="GIFT_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from GIFT g
+        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on g.GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and g.CONSTITUENT_ID = #constituentId#
+        order by
+        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_GIFTS_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
+        select count(g.GIFT_ID)
+        from GIFT g
+        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and g.CONSTITUENT_ID = #constituentId#
+    </select>
+
 	<select id="GIFTS_BY_CONSTITUENT_ID_ROWCOUNT" resultClass="long" parameterClass="map" >
         <include refid="GIFTS_ROWCOUNT_FRAGMENT"/>
 		and g.CONSTITUENT_ID = #constituentId#

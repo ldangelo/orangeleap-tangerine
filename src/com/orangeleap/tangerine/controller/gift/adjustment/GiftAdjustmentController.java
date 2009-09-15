@@ -25,6 +25,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -45,7 +46,19 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
+        if (NumberUtils.isNumber(request.getParameter(StringConstants.ADJUSTED_GIFT_ID))) {
+            return new AdjustedGift();
+        }
         return adjustedGiftService.createdDefaultAdjustedGift(super.getIdAsLong(request, StringConstants.GIFT_ID));
+    }
+
+    @Override
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+        ModelAndView mav = super.showForm(request, response, errors);
+        if (NumberUtils.isNumber(request.getParameter(StringConstants.ADJUSTED_GIFT_ID))) {
+            mav = new ModelAndView(getRedirectUrl(request, new Long(request.getParameter(StringConstants.ADJUSTED_GIFT_ID))));
+        }
+        return mav;
     }
 
     @Override
@@ -63,11 +76,15 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
 	    }
 	    ModelAndView mav;
 	    if (saved) {
-	        mav = new ModelAndView(appendSaved(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+	        mav = new ModelAndView(appendSaved(getRedirectUrl(request, anAdjustedGift.getId())));
 	    }
 	    else {
 			mav = showForm(request, formErrors, getFormView());
 	    }
 	    return mav;
+    }
+
+    private String getRedirectUrl(HttpServletRequest request, Long adjustedGiftId) {
+        return getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + adjustedGiftId + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request);
     }
 }

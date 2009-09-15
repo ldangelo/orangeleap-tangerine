@@ -46,7 +46,7 @@ public class RecurringGiftListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<RecurringGift> recurringGifts = recurringGiftService.readAllRecurringGiftsByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("recurringGiftList");
-        addListFieldsToMap(request, sectionFields, recurringGifts, list);
+        addListFieldsToMap(request, sectionFields, recurringGifts, list, false);
 
         int count = recurringGiftService.readCountByConstituentId(constituentId);
 

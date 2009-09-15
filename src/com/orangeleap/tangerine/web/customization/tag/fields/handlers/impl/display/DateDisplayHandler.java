@@ -39,6 +39,9 @@ public class DateDisplayHandler extends DateHandler {
 		if ( ! StringUtils.hasText(formattedDate)) {
 		    sb.append("&nbsp;");
 		}
+        else {
+            sb.append(formattedDate);
+        }
 		sb.append("</div>");
 	}
 

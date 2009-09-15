@@ -201,6 +201,13 @@ Ext.ux.maximgb.tg.AbstractTreeStore = Ext.extend(Ext.data.Store,
         return Ext.ux.maximgb.tg.AbstractTreeStore.superclass.load.call(this, options);
     },
 
+    sort : function(fieldName, dir){
+        // remove the last tree node parameters, if any, so that sorting can be done on the parent nodes
+        delete this.lastOptions.params[this.paramNames.active_node];
+        delete this.lastOptions.add;
+        return Ext.ux.maximgb.tg.AbstractTreeStore.superclass.sort.call(this, fieldName, dir);
+    },
+
     /**
      * Called as a callback by the Reader during load operation.
      *

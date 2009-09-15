@@ -450,6 +450,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("listeners: {\n");
                     sb.append("rowdblclick: function(grid, row, evt) {\n");
                     sb.append("var rec = grid.getSelectionModel().getSelected();\n");
+                    sb.append("if (rec) {\n");
                     sb.append("Ext.get(document.body).mask('").append(TangerineMessageAccessor.getMessage("loadingRecord")).append("');\n");
                     sb.append("var entityArray = rec.id.split(\"-\");\n");
                     sb.append("var entityType = entityArray[0];\n");
@@ -472,6 +473,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("\"");
                     }
                     sb.append(";\n");
+                    sb.append("}\n");
                     sb.append("}\n");
                     sb.append("},\n");
                     sb.append("renderTo: '").append(entityType).append("Grid'\n");

@@ -190,7 +190,7 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
             logger.trace("readPaymentsAppliedToPledgeId: pledgeId = " + pledgeId);
         }
         Map<String, Object> paramMap = setupParams();
-        paramMap.put("pledgeId", pledgeId);
+        paramMap.put("pledgeId", ""+pledgeId); // use string value to match custom field value
         return (Long) getSqlMapClientTemplate().queryForObject("SELECT_PAYMENTS_APPLIED_TO_PLEDGE_ID", paramMap);
     }
 

@@ -19,11 +19,24 @@
 package com.orangeleap.tangerine.controller.lookup;
 
 import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.QueryLookupService;
+import com.orangeleap.tangerine.service.customization.MessageService;
+import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.type.MessageResourceType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerinePagedListHolder;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,6 +46,7 @@ import org.springframework.web.util.HtmlUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +62,20 @@ public class QueryLookupController extends SimpleFormController {
     @Resource(name = "queryLookupService")
     protected QueryLookupService queryLookupService;
 
+    @Resource(name = "pageCustomizationService")
+    protected PageCustomizationService pageCustomizationService;
+
+    @Resource(name = "tangerineUserHelper")
+    protected TangerineUserHelper tangerineUserHelper;
+
+    @Resource(name = "messageService")
+    protected MessageService messageService;
+
+    @Resource(name = "fieldHandlerHelper")
+    private FieldHandlerHelper fieldHandlerHelper;
+
+    private static final String QUERY_LOOKUP = "queryLookup";
+
     protected String findFieldDef(HttpServletRequest request) {
         return getParameter(request, "fieldDef");
     }
@@ -61,7 +89,7 @@ public class QueryLookupController extends SimpleFormController {
 
     protected QueryLookup doQueryLookup(HttpServletRequest request, String fieldDef) {
         QueryLookup queryLookup = queryLookupService.readQueryLookup(fieldDef);
-        request.setAttribute("queryLookup", queryLookup);
+        request.setAttribute(QUERY_LOOKUP, queryLookup);
         return queryLookup;
     }
 
@@ -86,13 +114,61 @@ public class QueryLookupController extends SimpleFormController {
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
         String fieldDef = findFieldDef(request);
-        doQueryLookup(request, fieldDef);
+        QueryLookup queryLookup = doQueryLookup(request, fieldDef);
         if (logger.isDebugEnabled()) {
             logger.debug("showForm: fieldDef = " + fieldDef);
         }
+        request.setAttribute("fieldMap", findLookupSectionFields(request, QUERY_LOOKUP, queryLookup));
         request.setAttribute("fieldDef", fieldDef);
         request.setAttribute("showOtherField", Boolean.valueOf(request.getParameter("showOtherField")));
         return super.showForm(request, response, errors, controlModel);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Map<String, String> findLookupSectionFields(HttpServletRequest request, String pageName, QueryLookup queryLookup) {
+        List<SectionField> sectionFields = findSectionFields(pageName, queryLookup);
+        Map<String, String> fieldMap = new ListOrderedMap();
+        if (sectionFields != null) {
+            for (SectionField field : sectionFields) {
+                fieldMap.put(getFieldPropertyName(field), getFieldLabel(request, field));
+            }
+        }
+        return fieldMap;
+    }
+
+    protected List<SectionField> findSectionFields(String pageName, QueryLookup queryLookup) {
+        List<SectionField> sectionFields = null;
+        List<SectionDefinition> sectionDefs = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(pageName), tangerineUserHelper.lookupUserRoles());
+        for (SectionDefinition sectionDefinition : sectionDefs) {
+            if (sectionDefinition.getSectionName().equals(queryLookup.getSectionName())) {
+                sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDefinition);
+                break;
+            }
+        }
+        return sectionFields;
+    }
+
+    protected String getFieldPropertyName(SectionField sectionField) {
+        String fieldPropertyName = sectionField.getFieldPropertyName();
+
+        if ((sectionField.isCompoundField() && sectionField.getSecondaryFieldDefinition().isCustom()) ||
+                (!sectionField.isCompoundField() && sectionField.getFieldDefinition().isCustom())) {
+            fieldPropertyName += StringConstants.DOT_VALUE;
+        }
+        return fieldPropertyName;
+    }
+
+    protected String getFieldLabel(HttpServletRequest request, SectionField sectionField) {
+        String labelText = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), request.getLocale());
+        if (!org.springframework.util.StringUtils.hasText(labelText)) {
+            if (!sectionField.isCompoundField()) {
+                labelText = sectionField.getFieldDefinition().getDefaultLabel();
+            }
+            else {
+                labelText = sectionField.getSecondaryFieldDefinition().getDefaultLabel();
+            }
+        }
+        return labelText;
     }
 
     @Override
@@ -113,24 +189,52 @@ public class QueryLookupController extends SimpleFormController {
     }
 
     /**
-     * TODO: move to another class or an interceptor or an annotation
-     *
      * @param request
      * @param objects
      * @param queryLookup
      */
+    @SuppressWarnings("unchecked")
     protected void sortPaginate(HttpServletRequest request, List<Object> objects, QueryLookup queryLookup) {
         String searchOption = getParameter(request, "searchOption");
         if (searchOption == null) {
             searchOption = queryLookup.getQueryLookupParams().get(0).getName();
         }
 
-        Boolean sortAscending = new Boolean(true);
+        Boolean sortAscending = Boolean.TRUE;
         MutableSortDefinition sortDef = new MutableSortDefinition(searchOption, true, sortAscending);
         TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(objects, sortDef);
         pagedListHolder.resort();
 
-        request.setAttribute("results", pagedListHolder.getSource());
+        List<Object> sortedList = pagedListHolder.getSource();
+        List<SectionField> sectionFields = findSectionFields(QUERY_LOOKUP, queryLookup);
+        List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
+
+        for (Object obj : sortedList) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(obj);
+            map.put(StringConstants.ID, beanWrapper.getPropertyValue(StringConstants.ID));
+            map.put(StringConstants.ENTITY_NAME, StringUtils.uncapitalize(beanWrapper.getWrappedClass().getSimpleName()));
+
+            StringBuilder sb = new StringBuilder();
+            for (SectionField field : sectionFields) {
+                String fieldPropertyName = getFieldPropertyName(field);
+                if (beanWrapper.isReadableProperty(fieldPropertyName)) {
+                    Object fieldValue = beanWrapper.getPropertyValue(fieldPropertyName);
+                    FieldHandler fieldHandler = fieldHandlerHelper.lookupFieldHandler(field.getFieldType());
+                    if (fieldHandler != null) {
+                        Object displayValue = fieldHandler.resolveDisplayValue(request, beanWrapper, field, fieldValue);
+                        if (displayValue != null) {
+                            sb.append(displayValue).append(" ");
+                        }
+                    }
+
+                }
+            }
+            map.put("displayValue", sb.toString());
+            results.add(map);
+        }
+
+        request.setAttribute("results", results);
     }
 
     protected String getParameter(HttpServletRequest request, String parameterName) {

@@ -26,5 +26,8 @@ public interface ErrorLogDao {
     public void addErrorMessage(String message, String context, Long constituentId);
 
     public PaginatedResult readErrorMessages(String sortColumn, String dir, int start, int limit);
+    
+	public void logDbStatus();
+
 
 }

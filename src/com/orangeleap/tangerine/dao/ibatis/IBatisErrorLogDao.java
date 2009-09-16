@@ -18,16 +18,20 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.dao.ErrorLogDao;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.dao.ErrorLogDao;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
 
 /** 
  * Corresponds to the ERROR_LOG table
@@ -70,6 +74,30 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
         resp.setRows(rows);
         resp.setRowCount(count);
         return resp;
+	}
+	
+	@Override
+	public void logDbStatus() {
+		
+        try {
+        	
+        	Connection connection = getDataSource().getConnection(); // should use current connection
+
+            StringBuilder sb = new StringBuilder();
+            PreparedStatement ps = connection.prepareStatement("SHOW ENGINE INNODB STATUS");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+            	sb.append(rs.getString(1)+"\r\n");
+            }
+            rs.close();
+            ps.close();
+            
+            logger.error(sb.toString());
+        
+        } catch (Exception e) {
+        	logger.error(e);
+        }
+	
 	}
 	
 }

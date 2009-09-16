@@ -19,9 +19,14 @@
 package com.orangeleap.tangerine.web.filters;
 
 
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.RulesStack;
-import com.orangeleap.tangerine.util.TaskStack;
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -32,12 +37,10 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.orangeleap.tangerine.dao.ErrorLogDao;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.RulesStack;
+import com.orangeleap.tangerine.util.TaskStack;
 
 public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 
@@ -97,14 +100,17 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            if ((ex.getMessage() + "").toLowerCase().contains("timeout")) {
+            	((ErrorLogDao)getBean(request, "errorLogDAO")).logDbStatus();
+            }
             throw new RuntimeException(ex);
         }
 
         try {
+        	
             txManager.commit(status);
 
             TaskStack.execute();
-
 
         } catch (Exception e) {
             // Don't generally log transactions marked as rollback only by service or validation exceptions; logged elsewhere.

@@ -164,55 +164,56 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			throw new RuntimeException(e);
 		}
 
-		workingMemory.setGlobal("giftService", gs);
-		workingMemory.setGlobal("constituentService", ps);
-		workingMemory.setGlobal("mailService", ms);
-		workingMemory.setGlobal("applicationContext", applicationContext);
-		workingMemory.setFocus(getSiteName() + schedule);
-		Site s = ss.readSite(tuh.lookupUserSiteName());
-
-		workingMemory.insert(s);
-		Boolean updated = false;
-
-		//
-		// if the constituent has been updated or one of their
-		// gifts have been updated
-		if (p.getUpdateDate().compareTo(compareDate) > 0) updated = true;
-
-		List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
-
-		//
-		// if the constituent has not been updated check to see if any of their
-		// gifts have been...
-		for (Gift g : giftList) {
-			if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(compareDate) > 0) {
-				updated = true;
-				workingMemory.insert(g);
-			}
-
-		}
-		if (updated) {
-			p.setGifts(giftList);
-			ss.populateDefaultEntityEditorMaps(p);
-			p.setSite(s);
-			FactHandle pfh = workingMemory.insert(p);
-		}
-
-		workingMemory.fireAllRules();
-		workingMemory.dispose();
-
 		try {
+		
+			workingMemory.setGlobal("giftService", gs);
+			workingMemory.setGlobal("constituentService", ps);
+			workingMemory.setGlobal("mailService", ms);
+			workingMemory.setGlobal("applicationContext", applicationContext);
+			workingMemory.setFocus(getSiteName() + schedule);
+			Site s = ss.readSite(tuh.lookupUserSiteName());
+	
+			workingMemory.insert(s);
+			Boolean updated = false;
+	
+			//
+			// if the constituent has been updated or one of their
+			// gifts have been updated
+			if (p.getUpdateDate().compareTo(compareDate) > 0) updated = true;
+	
+			List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
+	
+			//
+			// if the constituent has not been updated check to see if any of their
+			// gifts have been...
+			for (Gift g : giftList) {
+				if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(compareDate) > 0) {
+					updated = true;
+					workingMemory.insert(g);
+				}
+	
+			}
+			if (updated) {
+				p.setGifts(giftList);
+				ss.populateDefaultEntityEditorMaps(p);
+				p.setSite(s);
+				FactHandle pfh = workingMemory.insert(p);
+			}
+	
+			workingMemory.fireAllRules();
+			workingMemory.dispose();
+
+
 			txManager.commit(status);
-
 			TaskStack.execute();
-
-		} catch (TransactionException txe) {
+			
+		} catch (Throwable t) {
+			logger.error("Rules transaction rollback",t);
 			txManager.rollback(status);
-		} catch (Exception e) {
-			// Don't generally log transactions marked as rollback only by service or validation exceptions; logged elsewhere.
-			logger.debug(e);
-
 		}
+
+		TaskStack.clear();
+
 	}
 	
 	private boolean taskValidForSite(String filter) {

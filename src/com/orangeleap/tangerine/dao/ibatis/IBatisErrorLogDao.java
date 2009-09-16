@@ -88,6 +88,8 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
             	sb.append(rs.getString(1)+"\r\n");
+            	sb.append(rs.getString(2)+"\r\n");
+            	sb.append(rs.getString(3)+"\r\n");
             }
             rs.close();
             ps.close();

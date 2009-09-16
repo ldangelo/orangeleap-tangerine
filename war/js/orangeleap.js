@@ -644,7 +644,7 @@ var OrangeLeap = {
 		if (val && OrangeLeap.isNum(val)) {
 			return val.toFixed(2);
 		}
-		return '';
+		return '0.00';
 	},
 
     booleanRenderer: function(val, meta, record) {

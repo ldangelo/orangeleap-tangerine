@@ -20,9 +20,13 @@ package com.orangeleap.tangerine.service.impl;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.EmailService;
+import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RulesService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.communication.MailService;
@@ -86,11 +90,15 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 			logger.info("Executing rules for "+schedule + ", compare date = " + compareDate);
 
+			MailService ms = (MailService) applicationContext.getBean("mailService");
 			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 			GiftService gs = (GiftService) applicationContext.getBean("giftService");
-			MailService ms = (MailService) applicationContext.getBean("mailService");
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
-			TangerineUserHelper tuh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+			PicklistItemService plis = (PicklistItemService)applicationContext.getBean("picklistItemService");
+			TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+	        EmailService es = (EmailService) applicationContext.getBean("emailService");
+			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
+
 
 			int totalContituentCount = constituentService.getConstituentCountBySite();
 			for (int start = 0; start <= totalContituentCount; start += 100){
@@ -103,7 +111,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 
 				RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
-						.getBean("DroolsRuleAgent")).getRuleAgent(tuh.lookupUserSiteName())
+						.getBean("DroolsRuleAgent")).getRuleAgent(uh.lookupUserSiteName())
 						.getRuleBase();
 
 
@@ -111,7 +119,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 				for (Constituent p : peopleList) {
 					try {
 						processConstituent(schedule, compareDate, ps, gs, ms,
-								ss, tuh, ruleBase, p);
+								ss, uh, ruleBase, p, plis);
 					}catch(Throwable t) {
 						logger.error(t);
 						t.printStackTrace();
@@ -134,14 +142,15 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	 * @param gs
 	 * @param ms
 	 * @param ss
-	 * @param tuh
+	 * @param uh
 	 * @param ruleBase
 	 * @param p
+	 * @param plis
 	 */
 	private void processConstituent(String schedule, Date compareDate,
 			ConstituentService ps, GiftService gs, MailService ms,
-			SiteService ss, TangerineUserHelper tuh, RuleBase ruleBase,
-			Constituent p) {
+			SiteService ss, TangerineUserHelper uh, RuleBase ruleBase,
+			Constituent p, PicklistItemService plis) {
 
 		TaskStack.clear();
 
@@ -165,24 +174,25 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		}
 
 		try {
-		
-			workingMemory.setGlobal("giftService", gs);
-			workingMemory.setGlobal("constituentService", ps);
-			workingMemory.setGlobal("mailService", ms);
-			workingMemory.setGlobal("applicationContext", applicationContext);
 			workingMemory.setFocus(getSiteName() + schedule);
-			Site s = ss.readSite(tuh.lookupUserSiteName());
-	
+			workingMemory.setGlobal("applicationContext", applicationContext);
+			workingMemory.setGlobal("constituentService", ps);
+			workingMemory.setGlobal("giftService",gs);
+			workingMemory.setGlobal("picklistItemService",plis);
+			workingMemory.setGlobal("userHelper",uh);
+
+			Site s = ss.readSite(uh.lookupUserSiteName());
 			workingMemory.insert(s);
+
 			Boolean updated = false;
-	
+
 			//
 			// if the constituent has been updated or one of their
 			// gifts have been updated
 			if (p.getUpdateDate().compareTo(compareDate) > 0) updated = true;
-	
+
 			List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
-	
+
 			//
 			// if the constituent has not been updated check to see if any of their
 			// gifts have been...
@@ -191,7 +201,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 					updated = true;
 					workingMemory.insert(g);
 				}
-	
+
 			}
 			if (updated) {
 				p.setGifts(giftList);
@@ -199,14 +209,14 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 				p.setSite(s);
 				FactHandle pfh = workingMemory.insert(p);
 			}
-	
+
 			workingMemory.fireAllRules();
 			workingMemory.dispose();
 
 
 			txManager.commit(status);
 			TaskStack.execute();
-			
+
 		} catch (Throwable t) {
 			logger.error("Rules transaction rollback",t);
 			txManager.rollback(status);
@@ -215,26 +225,26 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		TaskStack.clear();
 
 	}
-	
+
 	private boolean taskValidForSite(String filter) {
         String filtervalue = System.getProperty(filter);
         if (filtervalue == null) return true;
         Pattern pattern = Pattern.compile(filtervalue);
         return pattern.matcher(getSiteName()).matches();
 	}
-	
+
 	// If set, only process rules for sites that match these regexes.
 	// For example, to only execute monthly rules for schema1, schema2, and schema3:   tangerine.rules.monthly.filter=^(schema1|schema2|schema3)$
 	private static final String DAILY_RULES_FILTER_PROPERTY = "tangerine.rules.daily.filter";
 	private static final String WEEKLY_RULES_FILTER_PROPERTY = "tangerine.rules.weekly.filter";
 	private static final String MONTHLY_RULES_FILTER_PROPERTY = "tangerine.rules.monthly.filter";
-	
+
 
 	@Override
 	public void executeDailyJobRules() {
-		
+
 		if (!taskValidForSite(DAILY_RULES_FILTER_PROPERTY)) return;
-		
+
 		Calendar today = Calendar.getInstance();
 		today.add(Calendar.DATE, -1);
 		Date yesterday = new java.sql.Date(today.getTimeInMillis());
@@ -244,9 +254,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 	@Override
 	public void executeWeeklyJobRules() {
-		
+
 		if (!taskValidForSite(WEEKLY_RULES_FILTER_PROPERTY)) return;
-		
+
 		Calendar today = Calendar.getInstance();
 		today.add(Calendar.WEEK_OF_YEAR, -1);
 		Date lastweek = new java.sql.Date(today.getTimeInMillis());
@@ -256,14 +266,14 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 	@Override
 	public void executeMonthlyJobRules() {
-		
+
 		if (!taskValidForSite(MONTHLY_RULES_FILTER_PROPERTY)) return;
-		
+
 		Calendar today = Calendar.getInstance();
 		today.add(Calendar.MONTH, -1);
 		Date lastmonth = new java.sql.Date(today.getTimeInMillis());
 
 		executeRules("schedulemonthly", lastmonth);
 	}
-	
+
 }

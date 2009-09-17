@@ -70,8 +70,6 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	@Resource(name = "constituentService")
 	private ConstituentService constituentService;
 
-	@Resource(name = "giftService")
-	private GiftService giftService;
 
 
 	private ApplicationContext applicationContext;
@@ -88,7 +86,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		long time = System.currentTimeMillis();
 		try {
 
-			logger.info("Executing rules for "+schedule + ", compare date = " + compareDate);
+			logger.info("Executing rules for "+schedule + ", compare date = " + compareDate + ".  Started on " + new java.util.Date());
 
 			MailService ms = (MailService) applicationContext.getBean("mailService");
 			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
@@ -109,20 +107,13 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 				List<Constituent> peopleList = constituentService.readAllConstituentsBySite(sortInfo, Locale.getDefault());
 
-
-				RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
-						.getBean("DroolsRuleAgent")).getRuleAgent(uh.lookupUserSiteName())
-						.getRuleBase();
-
-
-
 				for (Constituent p : peopleList) {
 					try {
-						processConstituent(schedule, compareDate, ps, gs, ms,
-								ss, uh, ruleBase, p, plis);
+						constituentService.processConstituent(schedule, compareDate, ps, gs, ms,
+								ss, uh, p, plis);
 					}catch(Throwable t) {
-						logger.error(t);
 						t.printStackTrace();
+						logger.error(t);
 					}
 				}
 			}
@@ -131,100 +122,10 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			t.printStackTrace();
 		}
 		long time2 = System.currentTimeMillis();
-		logger.info("Rules Processing Took: " + (time2 - time) + " ms");
+		logger.info("Rules Processing Took: " + (time2 - time) + " ms.  Complete on " + new java.util.Date());
 	}
 
 
-	/**
-	 * @param schedule
-	 * @param compareDate
-	 * @param ps
-	 * @param gs
-	 * @param ms
-	 * @param ss
-	 * @param uh
-	 * @param ruleBase
-	 * @param p
-	 * @param plis
-	 */
-	private void processConstituent(String schedule, Date compareDate,
-			ConstituentService ps, GiftService gs, MailService ms,
-			SiteService ss, TangerineUserHelper uh, RuleBase ruleBase,
-			Constituent p, PicklistItemService plis) {
-
-		TaskStack.clear();
-
-		StatefulSession workingMemory = ruleBase.newStatefulSession();
-		if (logger.isInfoEnabled()) {
-			workingMemory.addEventListener(new DebugAgendaEventListener());
-			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-		}
-		PlatformTransactionManager txManager = (PlatformTransactionManager) applicationContext.getBean("transactionManager");
-
-		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		def.setName("TxName");
-		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-
-		TransactionStatus status = null;
-		try {
-			status = txManager.getTransaction(def);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-
-		try {
-			workingMemory.setFocus(getSiteName() + schedule);
-			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setGlobal("constituentService", ps);
-			workingMemory.setGlobal("giftService",gs);
-			workingMemory.setGlobal("picklistItemService",plis);
-			workingMemory.setGlobal("userHelper",uh);
-
-			Site s = ss.readSite(uh.lookupUserSiteName());
-			workingMemory.insert(s);
-
-			Boolean updated = false;
-
-			//
-			// if the constituent has been updated or one of their
-			// gifts have been updated
-			if (p.getUpdateDate().compareTo(compareDate) > 0) updated = true;
-
-			List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
-
-			//
-			// if the constituent has not been updated check to see if any of their
-			// gifts have been...
-			for (Gift g : giftList) {
-				if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(compareDate) > 0) {
-					updated = true;
-					workingMemory.insert(g);
-				}
-
-			}
-			if (updated) {
-				p.setGifts(giftList);
-				ss.populateDefaultEntityEditorMaps(p);
-				p.setSite(s);
-				FactHandle pfh = workingMemory.insert(p);
-			}
-
-			workingMemory.fireAllRules();
-			workingMemory.dispose();
-
-
-			txManager.commit(status);
-			TaskStack.execute();
-
-		} catch (Throwable t) {
-			logger.error("Rules transaction rollback",t);
-			txManager.rollback(status);
-		}
-
-		TaskStack.clear();
-
-	}
 
 	private boolean taskValidForSite(String filter) {
         String filtervalue = System.getProperty(filter);

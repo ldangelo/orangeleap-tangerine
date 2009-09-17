@@ -18,16 +18,19 @@
 
 package com.orangeleap.tangerine.service;
 
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
-import com.orangeleap.tangerine.web.common.SortInfo;
-import org.springframework.validation.BindException;
-
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
+
+import org.springframework.validation.BindException;
+
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.communication.MailService;
+import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface ConstituentService {
 
@@ -66,5 +69,11 @@ public interface ConstituentService {
 
     public boolean hasReceivedCommunication(Long constituentId, String commType,
                                             int number, String timeUnits);
+    
+	public void processConstituent(String schedule, Date compareDate,
+			ConstituentService ps, GiftService gs, MailService ms,
+			SiteService ss, TangerineUserHelper uh,
+			Constituent p, PicklistItemService plis);
+
 
 }

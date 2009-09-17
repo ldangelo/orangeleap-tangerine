@@ -28,6 +28,11 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -46,6 +51,7 @@ import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -57,20 +63,27 @@ import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
+import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PhoneService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
+import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 
 @Service("constituentService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class ConstituentServiceImpl extends AbstractTangerineService implements ConstituentService, ApplicationContextAware {
 
     /**
@@ -116,6 +129,11 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
+    
+	@Resource(name = "giftService")
+	private GiftService giftService;
+
+
 
     @Resource(name = "communicationHistoryService")
     private CommunicationHistoryService communicationHistoryService;
@@ -519,4 +537,68 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         this.context = applicationContext;
 
     }
+    
+    // Used by nightly rules processing
+    @Override
+	public void processConstituent(String schedule, Date compareDate,
+			ConstituentService ps, GiftService gs, MailService ms,
+			SiteService ss, TangerineUserHelper uh, 
+			Constituent p, PicklistItemService plis) {
+
+		TaskStack.clear();
+		
+		RuleBase ruleBase = ((DroolsRuleAgent) context
+				.getBean("DroolsRuleAgent")).getRuleAgent(uh.lookupUserSiteName())
+				.getRuleBase();
+
+		StatefulSession workingMemory = ruleBase.newStatefulSession();
+		if (logger.isInfoEnabled()) {
+			workingMemory.addEventListener(new DebugAgendaEventListener());
+			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+		}
+
+		workingMemory.setFocus(getSiteName() + schedule);
+		workingMemory.setGlobal("applicationContext", context);
+		workingMemory.setGlobal("constituentService", ps);
+		workingMemory.setGlobal("giftService",gs);
+		workingMemory.setGlobal("picklistItemService",plis);
+		workingMemory.setGlobal("userHelper",uh);
+
+		Site s = ss.readSite(uh.lookupUserSiteName());
+		workingMemory.insert(s);
+
+		Boolean updated = false;
+
+		//
+		// if the constituent has been updated or one of their
+		// gifts have been updated
+		if (p.getUpdateDate().compareTo(compareDate) > 0) updated = true;
+
+		List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
+
+		//
+		// if the constituent has not been updated check to see if any of their
+		// gifts have been...
+		for (Gift g : giftList) {
+			if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(compareDate) > 0) {
+				updated = true;
+				workingMemory.insert(g);
+			}
+
+		}
+		if (updated) {
+			p.setGifts(giftList);
+			ss.populateDefaultEntityEditorMaps(p);
+			p.setSite(s);
+			FactHandle pfh = workingMemory.insert(p);
+		}
+
+		workingMemory.fireAllRules();
+		workingMemory.dispose();
+
+		TaskStack.execute();
+		TaskStack.clear();
+
+	}
+
 }

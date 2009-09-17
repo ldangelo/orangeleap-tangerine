@@ -198,7 +198,7 @@ public class EmailService implements ApplicationContextAware {
                         ch.setComments("Sent e-mail using template named " + getTemplateName());
                         ch.setEntryType("Email");
                         ch.setRecordDate(new Date());
-                        ch.setSelectedEmail(e);
+                        ch.setEmail(e);
                         ch.setCustomFieldValue("template", getTemplateName());
 
                         ch.setSuppressValidation(true);

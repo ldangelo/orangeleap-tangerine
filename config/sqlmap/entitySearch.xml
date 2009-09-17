@@ -36,12 +36,12 @@
         SITE_NAME as ENTITY_SEARCH_SITE_NAME,
         SEARCH_TEXT as ENTITY_SEARCH_SEARCH_TEXT,
     	MATCH( SEARCH_TEXT )   
-    	AGAINST (?) as relevance 
+    	AGAINST (#searchText#) as relevance 
     	from `ENTITY_SEARCH` 
     	where 
     	SITE_NAME = #siteName#
         and ENTITY_TYPE = #entityType#
-    	and MATCH( SEARCH_TEXT ) AGAINST (? IN BOOLEAN MODE ) HAVING relevance > 0.2 
+    	and MATCH( SEARCH_TEXT ) AGAINST (#searchText# IN BOOLEAN MODE ) HAVING relevance > 0.2 
     	LIMIT 100;
     </select>
     

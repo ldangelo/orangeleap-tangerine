@@ -22,7 +22,10 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.annotation.XmlType;
 
@@ -66,6 +69,22 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity implemen
         };
 
     }
+    
+    @Override
+    public Set<String> getFullTextSearchKeywords() {
+		Set<String> set = new TreeSet<String>();
+        set.addAll(super.getFullTextSearchKeywords());
+    	Pattern pattern = Pattern.compile("[0-9]("+StringConstants.CUSTOM_FIELD_SEPARATOR+"[0-9])*"); // exclude QUERY_SELECT and MULTI_QUERY_SELECT values
+        for (CustomField cf: this.getCustomFieldMap().values()) {
+        	String value = cf.getValue();
+        	if (value != null && !pattern.matcher(value).matches()) {
+        		String[] sa = value.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
+        		for (String s: sa) if (s.trim().length() > 0) set.add(s.trim().toLowerCase());
+        	}
+        }
+        return set;
+    }
+
 
     public void clearCustomFieldMap() {
         getCustomFieldMap().clear();

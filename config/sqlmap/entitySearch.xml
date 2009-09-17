@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ENTITY_SEARCH">
+
+    <resultMap id="ENTITY_SEARCH_RESULT" class="com.orangeleap.tangerine.domain.EntitySearch">
+        <result property="entityType" column="ENTITY_SEARCH_ENTITY_TYPE" />
+        <result property="entityId" column="ENTITY_SEARCH_ENTITY_ID" />
+        <result property="siteName" column="ENTITY_SEARCH_SITE_NAME" />
+        <result property="searchText" column="ENTITY_SEARCH_SEARCH_TEXT" />
+    </resultMap>
+
+    <sql id="ENTITY_SEARCH_COLS_FRAGMENT">
+        entity_search.ENTITY_TYPE as ENTITY_SEARCH_ENTITY_TYPE,
+        entity_search.ENTITY_ID as ENTITY_SEARCH_ENTITY_ID,
+        entity_search.SITE_NAME as ENTITY_SEARCH_SITE_NAME,
+        entity_search.SEARCH_TEXT as ENTITY_SEARCH_SEARCH_TEXT    
+    </sql>
+
+    <sql id="SELECT_ENTITY_SEARCH_FRAGMENT">
+        select 
+        <include refid="ENTITY_SEARCH_COLS_FRAGMENT"/>
+        from ENTITY_SEARCH entity_search 
+        where entity_search.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_ENTITY_SEARCH_BY_TYPE_AND_ID" resultMap="ENTITY_SEARCH_RESULT" parameterClass="map" >
+        <include refid="SELECT_ENTITY_SEARCH_FRAGMENT"/>
+        and entity_search.ENTITY_TYPE = #entityType#
+        and entity_search.ENTITY_ID = #entityId#
+    </select>
+
+    <insert id="INSERT_ENTITY_SEARCH" parameterClass="map">
+        insert into ENTITY_SEARCH (
+        	ENTITY_TYPE,
+        	ENTITY_ID,
+        	SITE_NAME,
+        	SEARCH_TEXT        )
+        values (
+        	#entityType# ,
+        	#entityId# ,
+        	#siteName# ,
+        	#searchText#         )
+    </insert>
+
+    <update id="UPDATE_ENTITY_SEARCH" parameterClass="map">
+        update ENTITY_SEARCH
+        SET 
+        	SEARCH_TEXT = #searchText#         
+        where 
+        SITE_NAME = #siteName# 
+        and ENTITY_TYPE = #entityType#
+        and ENTITY_ID = #entityId#
+    </update>
+
+</sqlMap>
+

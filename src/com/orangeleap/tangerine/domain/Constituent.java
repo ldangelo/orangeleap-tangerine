@@ -18,18 +18,22 @@
 
 package com.orangeleap.tangerine.domain;
 
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.xml.bind.annotation.XmlType;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.lang.StringUtils;
-
-import javax.xml.bind.annotation.XmlType;
-import java.util.List;
 
 @XmlType(name = "constituent", namespace = "http://www.orangeleap.com/orangeleap/schemas")
-public class Constituent extends AbstractCommunicatorEntity {
+public class Constituent extends AbstractCommunicatorEntity implements FullTextSearchable {
 
     private static final long serialVersionUID = 1L;
 
@@ -122,6 +126,15 @@ public class Constituent extends AbstractCommunicatorEntity {
         this.id = id;
         this.site = site;
     }
+    
+    @Override
+    public Set<String> getFullTextSearchKeywords() {
+		Set<String> set = new TreeSet<String>();
+    	set.addAll(super.getFullTextSearchKeywords());
+    	//TODO could add dereferenced relationship fields constituent names?
+    	return set;
+    }
+
 
     @Override
     public String toString() {

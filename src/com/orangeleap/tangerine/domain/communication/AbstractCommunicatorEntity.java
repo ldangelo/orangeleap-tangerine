@@ -22,16 +22,20 @@
 
 package com.orangeleap.tangerine.domain.communication;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.xml.bind.annotation.XmlType;
+
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
+
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PhoneService;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.ApplicationContext;
-
-import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.List;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
@@ -73,6 +77,22 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
         primaryEmail = emailService.filterByPrimary(emails, getId());
         primaryPhone = phoneService.filterByPrimary(phones, getId());
 
+    }
+    
+    @Override
+    public Set<String> getFullTextSearchKeywords() {
+		Set<String> set = new TreeSet<String>();
+    	set.addAll(super.getFullTextSearchKeywords());
+    	for (Address address: this.getAddresses()) {
+    		set.addAll(address.getFullTextSearchKeywords());
+    	}
+    	for (Phone phone: this.getPhones()) {
+    		set.addAll(phone.getFullTextSearchKeywords());
+    	}
+    	for (Email email: this.getEmails()) {
+    		set.addAll(email.getFullTextSearchKeywords());
+    	}
+    	return set;
     }
 
     public List<Address> getAddresses() {

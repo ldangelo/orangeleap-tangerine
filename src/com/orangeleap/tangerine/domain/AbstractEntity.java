@@ -20,12 +20,14 @@ package com.orangeleap.tangerine.domain;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlType;
 
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.util.ToSearchTextStringBuilder;
 
 /**
  * Base class for all Entities. It provides base functionality
@@ -199,8 +201,8 @@ public abstract class AbstractEntity implements Entity {
     /**
      * Full-text searchable words
      */
-    public String getFullTextSearchString() {
-        return "";
+    public Set<String> getFullTextSearchKeywords() {
+        return ToSearchTextStringBuilder.reflectionToKeywords(this);
     }
     
     @Override

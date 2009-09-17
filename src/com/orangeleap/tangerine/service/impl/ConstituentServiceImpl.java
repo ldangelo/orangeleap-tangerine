@@ -46,7 +46,7 @@ import org.springframework.validation.BindingResult;
 import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
-import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.dao.EntitySearchDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
@@ -124,8 +124,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
 
-	@Resource(name = "fieldDAO")
-	private FieldDao fieldDao;
+	@Resource(name = "entitySearchDAO")
+	private EntitySearchDao entitySearchDao;
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
@@ -191,6 +191,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         auditService.auditObject(constituent, constituent);
 
         routeConstituent(constituent);
+        
+        entitySearchDao.updateFullTextIndex(readConstituentById(constituent.getId()));
 
         return constituent;
     }

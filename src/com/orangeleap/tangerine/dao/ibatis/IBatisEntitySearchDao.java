@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.dao.ibatis;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.EntitySearchDao;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.EntitySearch;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 
@@ -46,6 +49,7 @@ public class IBatisEntitySearchDao extends AbstractIBatisDao implements EntitySe
     }
     
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void insertOrUpdateEntitySearchText(String entityType, Long entityId, String searchText) {
 
@@ -53,9 +57,10 @@ public class IBatisEntitySearchDao extends AbstractIBatisDao implements EntitySe
 
         params.put("entityType", entityType);
         params.put("entityId", entityId);
-        params.put("searchText", searchText); // making searchtext null is like deleting
+        params.put("searchText", searchText); // making searchtext blank is like deleting
         
-        boolean isnew = getSqlMapClientTemplate().queryForList("SELECT_ENTITY_SEARCH_BY_TYPE_AND_ID", params).isEmpty();
+        List<EntitySearch> list = getSqlMapClientTemplate().queryForList("SELECT_ENTITY_SEARCH_BY_TYPE_AND_ID", params);
+        boolean isnew = list.isEmpty();
         if (isnew) {
         	getSqlMapClientTemplate().insert("INSERT_ENTITY_SEARCH", params);
         } else {
@@ -80,5 +85,19 @@ public class IBatisEntitySearchDao extends AbstractIBatisDao implements EntitySe
         resp.setRowCount(count);
         return resp;
 	}
+	
+	@Override
+    public void updateFullTextIndex(AbstractEntity entity) {
+    	try {
+	    	Set<String> set = entity.getFullTextSearchKeywords();
+	    	StringBuilder sb = new StringBuilder();
+	    	for (String s : set) sb.append(s + " ");
+	    	insertOrUpdateEntitySearchText(entity.getType(), entity.getId(), sb.toString());
+    	} catch (Exception e) {
+    		logger.error("Unable to index AbstractEntity " + entity, e);
+    	}
+    }
+
+
 	
 }

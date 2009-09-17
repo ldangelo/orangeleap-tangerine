@@ -45,7 +45,7 @@ public class AdjustedGiftPaymentTypePicklistHandler extends PicklistHandler {
 		String selectedRef = null;
 
 	    if (picklist != null) {
-		    for (PicklistItem item : picklist.getActivePicklistItems()) {
+		    for (PicklistItem item : picklist.getPicklistItems()) { 
 			    if (StringUtils.hasText(item.getItemName())) {
 
 					String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
@@ -54,7 +54,7 @@ public class AdjustedGiftPaymentTypePicklistHandler extends PicklistHandler {
 				    if (StringUtils.hasText(displayValue) &&
 						    (PaymentSource.CASH.equals(item.getItemName()) || PaymentSource.CHECK.equals(item.getItemName()) ||
                                     PaymentSource.OTHER.equalsIgnoreCase(item.getItemName()) ||
-						     (fieldValue != null && item.getItemName().equals(fieldValue.toString())) )) {
+						     (fieldValue != null && item.getItemName().equals(fieldValue.toString())) )) {   
 					    sb.append("<option value=\"").append(StringEscapeUtils.escapeHtml(item.getItemName())).append("\" ");
 					    if (StringUtils.hasText(item.getReferenceValue())) {
 						    sb.append("reference=\"").append(item.getReferenceValue()).append("\" ");
@@ -65,6 +65,9 @@ public class AdjustedGiftPaymentTypePicklistHandler extends PicklistHandler {
 					    }
 					    sb.append(">");
 					    sb.append(displayValue);
+                        if (item.isInactive()) {
+                            sb.append("&nbsp;").append(getMessage("inactive"));
+                        }
 					    sb.append("</option>");
 				    }
 			    }

@@ -67,22 +67,26 @@ public class PicklistHandler extends AbstractPicklistHandler {
 	    String selectedRef = null;
 
         if (picklist != null) {
-	        for (PicklistItem item : picklist.getActivePicklistItems()) {
+	        for (PicklistItem item : picklist.getPicklistItems()) {
 		        if (StringUtils.hasText(item.getItemName())) {
 
 					String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
+                    boolean isSelected = fieldValue != null && fieldValue.toString().equals(item.getItemName());
 
-			        if (StringUtils.hasText(displayValue)) {
+			        if (StringUtils.hasText(displayValue) && ( ! item.isInactive() || (item.isInactive() && isSelected))) {
 				        sb.append("<option value=\"").append(StringEscapeUtils.escapeHtml(item.getItemName())).append("\" ");
 				        if (StringUtils.hasText(item.getReferenceValue())) {
 					        sb.append("reference=\"").append(item.getReferenceValue()).append("\" ");
 				        }
-				        if (fieldValue != null && fieldValue.toString().equals(item.getItemName())) {
+				        if (isSelected) {
 							sb.append("selected=\"selected\" ");
 							selectedRef = item.getReferenceValue();
 				        }
 				        sb.append(">");
 				        sb.append(displayValue);
+                        if (item.isInactive()) {
+                            sb.append(" ").append(getMessage("inactive"));
+                        }
 				        sb.append("</option>");
 			        }
 		        }

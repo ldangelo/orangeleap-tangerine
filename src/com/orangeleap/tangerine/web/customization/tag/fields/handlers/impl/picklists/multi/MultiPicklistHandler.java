@@ -102,9 +102,7 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 	    if (picklist != null) {
 		    Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
 
-		    for (PicklistItem item : picklist.getActivePicklistItems()) {
-			    sb.append("<div class=\"multiPicklistOption multiOption\" style=\"");
-
+		    for (PicklistItem item : picklist.getPicklistItems()) { 
 			    boolean foundValue = false;
 			    for (Object val : fieldVals) {
 				    if (item.getItemName().equals(val.toString())) {
@@ -112,25 +110,29 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 					    break;
 				    }
 			    }
+                if (! item.isInactive() || (item.isInactive() && foundValue)) {
+                    sb.append("<div class=\"multiPicklistOption multiOption\" style=\"");
+                    if (!foundValue) {
+                        sb.append("display:none");
+                    }
+                    else if (StringUtils.hasText(item.getReferenceValue())) {
+                        selectedRefs.add(item.getReferenceValue());
+                    }
 
-				if (!foundValue) {
-				    sb.append("display:none");
-			    }
-			    else if (StringUtils.hasText(item.getReferenceValue())) {
-					selectedRefs.add(item.getReferenceValue());
-				}
-			    
-			    String escapedItemName = StringEscapeUtils.escapeHtml(item.getItemName());
-			    sb.append("\" id=\"option-").append(escapedItemName);
-			    sb.append("\" selectedId=\"").append(escapedItemName).append("\" reference=\"").append(checkForNull(item.getReferenceValue())).append("\">");
+                    String escapedItemName = StringEscapeUtils.escapeHtml(item.getItemName());
+                    sb.append("\" id=\"option-").append(escapedItemName);
+                    sb.append("\" selectedId=\"").append(escapedItemName).append("\" reference=\"").append(checkForNull(item.getReferenceValue())).append("\">");
 
-			    String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
-			    if (StringUtils.hasText(displayValue)) {
-					sb.append(displayValue);
-					writeDeleteLink(sb, "Lookup.deleteOption(this)");
-			    }
-
-			    sb.append("</div>");
+                    String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
+                    if (StringUtils.hasText(displayValue)) {
+                        sb.append(displayValue);
+                        if (item.isInactive()) {
+                            sb.append(" ").append(getMessage("inactive"));
+                        }
+                        writeDeleteLink(sb, "Lookup.deleteOption(this)");
+                    }
+                    sb.append("</div>");
+                }
 		    }
 	    }
 	    return StringUtils.collectionToCommaDelimitedString(selectedRefs);

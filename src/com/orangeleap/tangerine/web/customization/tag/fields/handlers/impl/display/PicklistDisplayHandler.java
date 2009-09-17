@@ -76,9 +76,7 @@ public class PicklistDisplayHandler extends PicklistHandler {
 	protected String createPicklistOptions(PageContext pageContext, Picklist picklist, Object fieldValue, StringBuilder sb) {
 		Set<String> selectedRefs = new TreeSet<String>();
 		if (picklist != null) {
-			for (PicklistItem item : picklist.getActivePicklistItems()) {
-				sb.append("<div class=\"multiPicklistOption multiOption\" style=\"");
-
+			for (PicklistItem item : picklist.getPicklistItems()) {
 				Object[] fieldVals = splitValuesByCustomFieldSeparator(fieldValue);
 
 				boolean foundValue = false;
@@ -90,21 +88,26 @@ public class PicklistDisplayHandler extends PicklistHandler {
 						}
 					}
 				}
+                if (! item.isInactive() || (item.isInactive() && foundValue)) {
+                    sb.append("<div class=\"multiPicklistOption multiOption\" style=\"");
+                    if (foundValue) {
+                        if (StringUtils.hasText(item.getReferenceValue())) {
+                            selectedRefs.add(item.getReferenceValue());
+                        }
+                    }
+                    else {
+                        sb.append("display:none");
+                    }
+                    String itemName = StringEscapeUtils.escapeHtml(item.getItemName());
+                    sb.append("\" id=\"option-").append(itemName).append("\" selectedId=\"").append(itemName).append("\" reference=\"").append(checkForNull(item.getReferenceValue())).append("\">");
 
-				if (foundValue) {
-					if (StringUtils.hasText(item.getReferenceValue())) {
-						selectedRefs.add(item.getReferenceValue());
-					}
-				}
-				else {
-					sb.append("display:none");
-				}
-				String itemName = StringEscapeUtils.escapeHtml(item.getItemName());
-				sb.append("\" id=\"option-").append(itemName).append("\" selectedId=\"").append(itemName).append("\" reference=\"").append(checkForNull(item.getReferenceValue())).append("\">");
-
-				String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
-				sb.append(displayValue);
-				sb.append("</div>");
+                    String displayValue = resolvePicklistItemDisplayValue(item, pageContext.getRequest());
+                    sb.append(displayValue);
+                    if (item.isInactive()) {
+                        sb.append(" ").append(getMessage("inactive"));
+                    }
+                    sb.append("</div>");
+                }
 			}
 		}
 		return StringUtils.collectionToCommaDelimitedString(selectedRefs);

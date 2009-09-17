@@ -7,6 +7,9 @@ $(document).ready(function() {
 		if ($elem.parent().is(":visible")) {
 			/* Done on load for previously entered distributionLines */
 			var val = $elem.val();
+            if (!val) {
+                val = $elem.text();
+            }
 			if (OrangeLeap.isNum(val)) {
 				Distribution.enteredAmt = OrangeLeap.truncateFloat(parseFloat(val));
 				Distribution.reInitDistribution();
@@ -19,6 +22,9 @@ $(document).ready(function() {
 	$("#amount, #amountPerGift, #amountTotal").bind("keyup change", function(event) {
 		var amounts = $("table.distributionLines tbody.gridRow :input[id$='-amount']", "form");
 		var amtVal = $(this).val();
+        if (!amtVal) {
+            amtval = $(this).text();
+        }
 		if (OrangeLeap.isNum(amtVal)) {
 			Distribution.enteredAmt = amtVal;
 			 
@@ -180,7 +186,11 @@ var Distribution = {
         	v = $('#amount');
         }
 
-        if (parseFloat(subTotal) === parseFloat(v.val())) {
+        var val = v.val();
+        if (!val) {
+            val = v.text();
+        }
+        if (parseFloat(subTotal) === parseFloat(val)) {
             $("#totalText").removeClass("warning");
 			$("#amountsErrorSpan").hide();
         } 

@@ -222,6 +222,16 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         return (BigDecimal) getSqlMapClientTemplate().queryForObject("SELECT_AMOUNT_PAID_BY_RECURRING_GIFT_ID", paramMap);
     }
 
+    @Override
+    public Long readPaymentsAppliedToRecurringGiftId(Long recurringGiftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentsAppliedToRecurringGiftId: recurringGiftId = " + recurringGiftId);
+        }
+        Map<String, Object> paramMap = setupParams();
+        paramMap.put("recurringGiftId", recurringGiftId.toString()); // use string value to match custom field value
+        return (Long) getSqlMapClientTemplate().queryForObject("SELECT_PAYMENTS_APPLIED_TO_RECURRING_GIFT_ID", paramMap);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<RecurringGift> readAllRecurringGiftsByConstituentId(Long constituentId, String sortPropertyName, String direction,

@@ -18,39 +18,87 @@
 
 package com.orangeleap.tangerine.controller.gift.commitment.recurringGift;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.gift.AbstractMutableGridFormController;
+import com.orangeleap.tangerine.controller.gift.AssociationEditor;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.controller.TangerineForm;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
-// TODO: fix
-public class RecurringGiftViewController extends RecurringGiftFormController {
+public class RecurringGiftViewController extends AbstractMutableGridFormController {
 
     /**
      * Logger for this class and subclasses
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
+    @Resource(name = "recurringGiftService")
+    protected RecurringGiftService recurringGiftService;
+
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
-	    TangerineForm form = (TangerineForm) command;
+    protected AbstractEntity findEntity(HttpServletRequest request) {
+	    RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(getIdAsLong(request, StringConstants.RECURRING_GIFT_ID));
+        clearPaymentSourceFields(recurringGift);
+        clearAddressFields(recurringGift);
+        clearPhoneFields(recurringGift);
+        return recurringGift;        
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+        Map refData = super.referenceData(request, command, errors);
+        TangerineForm form = (TangerineForm) command;
         RecurringGift recurringGift = (RecurringGift) form.getDomainObject();
+        refData.put(StringConstants.CAN_APPLY_PAYMENT, ! Commitment.STATUS_FULFILLED.equals(recurringGift.getRecurringGiftStatus()) &&
+                ! Commitment.STATUS_CANCELLED.equals(recurringGift.getRecurringGiftStatus()));
+        return refData;        
+    }
+
+    @Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        super.initBinder(request, binder);
+        binder.registerCustomEditor(List.class, "associatedGiftIds", new AssociationEditor());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command,
+                                    BindException formErrors) throws Exception {
+	    TangerineForm form = (TangerineForm) command;
+	    RecurringGift recurringGift = (RecurringGift) form.getDomainObject();
+
+        boolean saved = true;
+        try {
+            recurringGift = recurringGiftService.editRecurringGift(recurringGift);
+        }
+        catch (BindException domainErrors) {
+            saved = false;
+	        bindDomainErrorsToForm(request, formErrors, domainErrors, form, recurringGift);
+        }
 
         ModelAndView mav;
-	    try {
-            recurringGift = recurringGiftService.editRecurringGift(recurringGift);
-            mav = new ModelAndView(appendSaved(getSuccessView() + "?" + getParamId() + "=" + recurringGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
-	    }
-	    catch (BindException domainErrors) {
-		    bindDomainErrorsToForm(request, formErrors, domainErrors, form, recurringGift);
-            mav = showForm(request, formErrors, getFormView());
-	    }
+        if (saved) {
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.RECURRING_GIFT_ID + "=" + recurringGift.getId() + "&" +
+		            StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+        }
+        else {
+			mav = showForm(request, formErrors, getFormView());
+        }
         return mav;
     }
 }

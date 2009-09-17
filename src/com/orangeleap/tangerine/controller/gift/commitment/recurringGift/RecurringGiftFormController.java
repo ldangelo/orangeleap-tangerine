@@ -21,16 +21,17 @@ package com.orangeleap.tangerine.controller.gift.commitment.recurringGift;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public class RecurringGiftFormController extends CommitmentFormController<RecurringGift> {
@@ -41,9 +42,6 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
     @Resource(name="recurringGiftService")
     protected RecurringGiftService recurringGiftService;
 
-	@Resource(name = "picklistItemService")
-	protected PicklistItemService picklistItemService;
-
 	@Override
 	protected RecurringGift readCommitmentCreateIfNull(HttpServletRequest request) {
 		RecurringGift recurringGift = recurringGiftService.readRecurringGiftByIdCreateIfNull(request.getParameter(StringConstants.RECURRING_GIFT_ID), super.getConstituent(request));
@@ -52,6 +50,18 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
         clearPhoneFields(recurringGift);
         return recurringGift;
 	}
+
+    @Override
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+        ModelAndView mv = super.showForm(request, response, errors);
+	    TangerineForm form = (TangerineForm) formBackingObject(request);
+        RecurringGift recurringGift = (RecurringGift) form.getDomainObject();
+
+        if (useRecurringGiftView(recurringGift)) {
+            mv = new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + recurringGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
+        }
+        return mv;
+    }
 
     @Override
     protected RecurringGift maintainCommitment(RecurringGift entity) throws BindException {
@@ -71,5 +81,18 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
     @Override
     protected String getParamId() {
         return StringConstants.RECURRING_GIFT_ID;
+    }
+
+    @Override
+    protected String getReturnView(RecurringGift recurringGift) {
+        String url = formUrl;
+        if (useRecurringGiftView(recurringGift)) {
+            url = getSuccessView();
+        }
+        return url;
+    }
+
+    protected boolean useRecurringGiftView(RecurringGift recurringGift) {
+        return recurringGiftService.arePaymentsAppliedToRecurringGift(recurringGift);
     }
 }

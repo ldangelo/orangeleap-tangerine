@@ -2,6 +2,9 @@
 <page:applyDecorator name="form">
 	<spring:message code='viewRecurringGift' var="titleText" scope="request" />
 	<spring:message code='submit' var="submitText" />
+    <c:if test="${requestScope.canApplyPayment}">
+        <spring:message code='applyPayment' var="clickText" />
+    </c:if>
 
 	<c:set var="headerText" value="${titleText}" scope="request"/>
 
@@ -11,6 +14,7 @@
 		</head>
 		<body>
 			<form:form method="post" commandName="${requestScope.commandObject}">
+                <input type="hidden" name="recurring" id="recurring" value="true"/>
 				<c:set var="topButtons" scope="request">
                     <table cellspacing="2">
                         <tr>
@@ -32,9 +36,10 @@
 				</div>
 			</form:form>
 			<page:param name="scripts">
-				<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
-				<script type="text/javascript">PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
-                <script type="text/javascript" src="js/gift/distributionReadOnly.js"></script>
+                <script type="text/javascript" src="js/gift/recurringGiftCalc.js"></script>
+                <script type="text/javascript" src="js/payment/paymentEditable.js"></script>
+                <script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
+                <script type="text/javascript" src="js/gift/distribution.js"></script>
                 <c:if test="${requestScope.form.domainObject.id > 0}">
                     <script type="text/javascript">
                         var ButtonPanel = Ext.extend(Ext.Panel, {
@@ -45,6 +50,9 @@
                             menu : {
                                 items: [
                                     { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("recurringGift.htm?constituentId=${requestScope.constituent.id}"); } },
+                                    <c:if test="${not empty clickText}">
+                                        { text: '<c:out value="${clickText}"/>', handler: function() { OrangeLeap.gotoUrl("gift.htm?constituentId=${requestScope.constituent.id}&selectedRecurringGiftId=${requestScope.form.domainObject.id}"); } },
+                                    </c:if>
                                     { text: '<spring:message code="paymentSchedule"/>', handler: function() { OrangeLeap.gotoUrl("scheduleEdit.htm?sourceEntity=recurringgift&constituentId=${param.constituentId}&sourceEntityId=${requestScope.form.domainObject.id}"); } }
                                 ]
                             },

@@ -18,31 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.joda.time.DateMidnight;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
@@ -65,6 +40,29 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.joda.time.DateMidnight;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Service("recurringGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -192,7 +190,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isTraceEnabled()) {
             logger.trace("editRecurringGift: recurringGiftId = " + recurringGift.getId());
         }
-	    validateRecurringGift(recurringGift, false);
+	    validateRecurringGift(recurringGift, true);
 	    
 	    RecurringGift oldRecurringGift = getExisting(recurringGift);
         RecurringGift savedRecurringGift = save(recurringGift);
@@ -307,6 +305,21 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         List<RecurringGift> rGifts = new ArrayList<RecurringGift>(1);
         rGifts.add(recurringGift);
         return recurringGift.getId() != null && recurringGift.getId() > 0 && filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime()).size() == 1;
+    }
+    
+    @Override
+    public boolean arePaymentsAppliedToRecurringGift(RecurringGift recurringGift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("arePaymentsAppliedToRecurringGift: recurringGift.id = " + recurringGift.getId());
+        }
+        boolean areApplied = false;
+        if (recurringGift.getId() != null && recurringGift.getId() > 0) {
+            Long paymentsAppliedCount = recurringGiftDao.readPaymentsAppliedToRecurringGiftId(recurringGift.getId());
+            if (paymentsAppliedCount != null && paymentsAppliedCount > 0) {
+                areApplied = true;
+            }
+        }
+        return areApplied;
     }
 
     @Override

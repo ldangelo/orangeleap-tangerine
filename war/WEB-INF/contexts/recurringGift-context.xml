@@ -5,7 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="recurringGiftFormController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftFormController" parent="newCommitmentFormController">
+	<bean id="recurringGiftFormController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftFormController"
+          parent="newCommitmentFormController">
 		<property name="bindAddress" value="true"/>
 		<property name="bindPhone" value="true"/>
         <property name="bindPaymentSource" value="true"/>
@@ -14,7 +15,8 @@
 	    <property name="formUrl" value="redirect:/recurringGift.htm" />
 	</bean>
 
-	<bean id="recurringGiftViewController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftViewController" parent="recurringGiftFormController">
+	<bean id="recurringGiftViewController" class="com.orangeleap.tangerine.controller.gift.commitment.recurringGift.RecurringGiftViewController"
+          parent="abstractDistributionLineFormController">
 		<property name="bindAddress" value="true"/>
 		<property name="bindPhone" value="true"/>
         <property name="bindPaymentSource" value="true"/>

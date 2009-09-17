@@ -57,4 +57,6 @@ public interface RecurringGiftDao {
                                                          int start, int limit, Locale locale);
 
     int readCountByConstituentId(Long constituentId);
+
+    Long readPaymentsAppliedToRecurringGiftId(Long recurringGiftId);
 }

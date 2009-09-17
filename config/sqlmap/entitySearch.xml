@@ -28,6 +28,23 @@
         and entity_search.ENTITY_TYPE = #entityType#
         and entity_search.ENTITY_ID = #entityId#
     </select>
+    
+    <select id="SELECT_ENTITY_SEARCH_BY_SEARCH_STRING" resultMap="ENTITY_SEARCH_RESULT" parameterClass="map" >
+    	select 
+        ENTITY_TYPE as ENTITY_SEARCH_ENTITY_TYPE,
+        ENTITY_ID as ENTITY_SEARCH_ENTITY_ID,
+        SITE_NAME as ENTITY_SEARCH_SITE_NAME,
+        SEARCH_TEXT as ENTITY_SEARCH_SEARCH_TEXT,
+    	MATCH( SEARCH_TEXT )   
+    	AGAINST (?) as relevance 
+    	from `ENTITY_SEARCH` 
+    	where 
+    	SITE_NAME = #siteName#
+        and ENTITY_TYPE = #entityType#
+    	and MATCH( SEARCH_TEXT ) AGAINST (? IN BOOLEAN MODE ) HAVING relevance > 0.2 
+    	LIMIT 100;
+    </select>
+    
 
     <insert id="INSERT_ENTITY_SEARCH" parameterClass="map">
         insert into ENTITY_SEARCH (

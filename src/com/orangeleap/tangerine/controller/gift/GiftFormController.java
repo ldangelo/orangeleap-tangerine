@@ -20,7 +20,6 @@ package com.orangeleap.tangerine.controller.gift;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
@@ -71,8 +70,7 @@ public class GiftFormController extends AbstractGiftController {
     }
 
     private boolean canReprocessGift(Gift gift) {
-    	return isEnteredGift(gift) && (Gift.STATUS_NOT_PAID.equals(gift.getGiftStatus()) || Commitment.STATUS_PENDING.equals(gift.getGiftStatus())) &&
-			(Gift.PAY_STATUS_DECLINED.equals(gift.getPaymentStatus()) || Gift.PAY_STATUS_ERROR.equals(gift.getPaymentStatus()));
+    	return isEnteredGift(gift) && (Gift.PAY_STATUS_DECLINED.equals(gift.getPaymentStatus()) || Gift.PAY_STATUS_ERROR.equals(gift.getPaymentStatus()));
     }
 
     private boolean showGiftView(Gift gift) {

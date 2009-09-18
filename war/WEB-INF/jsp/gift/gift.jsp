@@ -22,16 +22,11 @@
 				</c:when>
 			</c:choose>
 
-			<form:form method="post" commandName="${requestScope.commandObject}">
+			<form:form method="post" commandName="${requestScope.commandObject}" id="giftForm" name="giftForm">
 				<c:set var="topButtons" scope="request">
                     <table cellspacing="2">
                         <tr>
                             <td><div id="actions"></div></td>
-                            <td>
-                                <c:if test="${not empty clickText}">
-                                    <input type="button" value="<c:out value='${clickText}'/>" class="saveButton" id="clickButtonTop"/>
-                                </c:if>
-                            </td>
                             <td><input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/></td>
                         </tr>
                     </table>
@@ -43,9 +38,6 @@
 				<tangerine:fields pageName="gift"/>
 
 				<div class="formButtonFooter constituentFormButtons">
-					<c:if test="${requestScope.allowReprocess}">
-						<input type="button" value="<c:out value='${clickText}'/>" class="saveButton" id="clickButtonBottom" />
-					</c:if>
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?constituentId=${constituent.id}')"/>
@@ -59,11 +51,6 @@
 				<script type="text/javascript" src="js/gift/distribution.js"></script>
 				<script type="text/javascript" src="js/gift/pledgeRecurringGiftSelector.js"></script>
 				<script type="text/javascript">
-					$(document).ready(function() {
-						$("#clickButtonTop, #clickButtonBottom").click(function() {
-							$("div.mainForm form").eq(0).append("<input type='hidden' name='doReprocess' id='doReprocess' value='true'/>").submit();
-						});
-					});
                     <c:if test="${requestScope.form.domainObject.id > 0}">
                         var ButtonPanel = Ext.extend(Ext.Panel, {
                             defaultType: 'button',
@@ -72,6 +59,9 @@
                             renderTo: 'actions',
                             menu : {
                                 items: [
+                                    <c:if test="${requestScope.allowReprocess}">
+                                       { text: '<c:out value='${clickText}'/>', handler: function() { $("div.mainForm form").eq(0).append("<input type='hidden' name='doReprocess' id='doReprocess' value='true'/>").submit(); } },
+                                    </c:if>
                                     { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("gift.htm?constituentId=${requestScope.constituent.id}"); } }
                                 ]
                             },

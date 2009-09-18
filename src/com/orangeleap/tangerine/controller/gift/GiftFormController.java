@@ -134,6 +134,7 @@ public class GiftFormController extends AbstractGiftController {
 		TangerineForm form = (TangerineForm) command;
 		Gift gift = (Gift) form.getDomainObject();
         checkAssociations(gift);
+        validateStatusChange(gift);
 
         boolean saved = true;
         try {
@@ -162,6 +163,16 @@ public class GiftFormController extends AbstractGiftController {
         }
         return mav;
     }
+	
+	private void validateStatusChange(Gift gift) {
+		if (gift == null || gift.isNew() || gift.getId() == null) return;
+		Gift oldgift = giftService.readGiftById(gift.getId());
+		if (oldgift == null) return;
+		if (Gift.STATUS_PAID.equals(oldgift.getGiftStatus()) && !Gift.STATUS_PAID.equals(gift.getGiftStatus())) {
+			// Can't change from Paid to non-Paid
+			gift.setGiftStatus(oldgift.getGiftStatus());
+		}
+	}
 
     protected void checkAssociations(Gift gift) {
         giftService.checkAssociatedPledgeIds(gift);

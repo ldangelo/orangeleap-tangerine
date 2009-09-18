@@ -52,6 +52,7 @@ public class GiftViewController extends TangerineConstituentAttributesFormContro
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 	    TangerineForm form = (TangerineForm) command;
 	    Gift gift = (Gift) form.getDomainObject();
+        validateGiftViewStatusChange(gift);
 
         ModelAndView mav;
 	    try {
@@ -64,4 +65,15 @@ public class GiftViewController extends TangerineConstituentAttributesFormContro
 	    }
         return mav;
     }
+    
+	private void validateGiftViewStatusChange(Gift gift) {
+		if (gift == null || gift.isNew() || gift.getId() == null) return;
+		Gift oldgift = giftService.readGiftById(gift.getId());
+		if (oldgift == null) return;
+		if (Gift.STATUS_PAID.equals(oldgift.getGiftStatus()) && !Gift.STATUS_PAID.equals(gift.getGiftStatus())) {
+			// Can't change from Paid to non-Paid in view
+			gift.setGiftStatus(oldgift.getGiftStatus());
+		}
+	}
+
 }

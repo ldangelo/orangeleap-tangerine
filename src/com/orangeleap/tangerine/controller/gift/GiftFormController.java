@@ -134,7 +134,7 @@ public class GiftFormController extends AbstractGiftController {
 		TangerineForm form = (TangerineForm) command;
 		Gift gift = (Gift) form.getDomainObject();
         checkAssociations(gift);
-        validateStatusChange(gift);
+        validateGiftStatusChange(gift);
 
         boolean saved = true;
         try {
@@ -164,7 +164,7 @@ public class GiftFormController extends AbstractGiftController {
         return mav;
     }
 	
-	private void validateStatusChange(Gift gift) {
+	private void validateGiftStatusChange(Gift gift) {
 		if (gift == null || gift.isNew() || gift.getId() == null) return;
 		Gift oldgift = giftService.readGiftById(gift.getId());
 		if (oldgift == null) return;

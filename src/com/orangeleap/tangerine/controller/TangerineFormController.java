@@ -116,7 +116,7 @@ public abstract class TangerineFormController extends SimpleFormController {
 		    Long giftId = getGiftId(request);
 		    if (giftId != null) {
 		        Gift gift = giftService.readGiftById(giftId); 
-		        constituent = constituentService.readConstituentById(gift.getConstituentId()); 
+		        if (gift != null) constituent = constituentService.readConstituentById(gift.getConstituentId()); 
 		    }
 		    if (constituent == null) {
 		    	throw new IllegalArgumentException("The constituent ID was not found");

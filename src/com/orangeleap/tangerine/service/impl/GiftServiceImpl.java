@@ -163,8 +163,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             originalGift = giftDao.readGiftById(gift.getId());
         }
         
-        validateStatusTransition(originalGift, gift);
-
         gift = giftDao.maintainGift(gift);
         pledgeService.updatePledgeForGift(originalGift, gift);
         recurringGiftService.updateRecurringGiftForGift(originalGift, gift);
@@ -172,14 +170,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         return gift;
     }
     
-    // Need to prevent Paid status changes.
-    private void validateStatusTransition(Gift originalGift, Gift gift) {
-    	if (originalGift == null) return;
-    	if (originalGift.getGiftStatus().equals(Gift.STATUS_PAID)) {
-    		gift.setGiftStatus(Gift.STATUS_PAID);
-    	}
-    }
-
     private void setDefaultDates(Gift gift) {
         if (gift.getId() == null) {
             Calendar transCal = Calendar.getInstance();

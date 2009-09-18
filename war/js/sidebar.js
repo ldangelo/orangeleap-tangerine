@@ -47,7 +47,7 @@ Ext.onReady(function() {
         listeners: {
             rowdblclick: function(grid, row, evt) {
                 var rec = grid.getSelectionModel().getSelected();
-                Sidebar.win.hide();
+                Sidebar.win.hide(this);
                 Ext.get(document.body).mask('Loading ' + rec.data.first + ' ' + rec.data.last);
                 window.location.href = "constituent.htm?constituentId=" + rec.data.id;
             }
@@ -60,15 +60,16 @@ Ext.onReady(function() {
         layout: 'fit',
         width: 650,
         height: 400,
-        buttons: [{text: 'Close', handler: function() {Sidebar.win.hide();}}],
+        buttons: [{text: 'Close', handler: function() { Sidebar.win.hide(this); }}],
         buttonAlign: 'center',
         modal: true,
+        closable: false,
         closeAction: 'hide'
     });
 
     Sidebar.win.add(Sidebar.accountGrid);
 
-    Ext.get('sbAllAccountsLink').on('click', function(){Sidebar.win.show(this);});
+    Ext.get('sbAllAccountsLink').on('click', function() { Sidebar.win.show(this); });
 
     Sidebar.accountStore.load();
 

@@ -142,9 +142,12 @@ public class GiftFormController extends AbstractGiftController {
         	if ("true".equals(request.getParameter("doReprocess")) && canReprocessGift(gift)) {
         		gift = giftService.reprocessGift(gift);
         	}
-        	else {
+        	else if (gift.isNew()) {
         		gift = giftService.maintainGift(gift);
         	}
+            else {
+                gift = giftService.editGift(gift);
+            }
         }
         catch (BindException domainErrors) {
             saved = false;

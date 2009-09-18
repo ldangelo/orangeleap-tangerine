@@ -19,7 +19,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +31,6 @@ import com.orangeleap.tangerine.dao.EntitySearchDao;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.EntitySearch;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
 
 /** 
  * Corresponds to the ENTITY_SEARCH table
@@ -69,23 +67,6 @@ public class IBatisEntitySearchDao extends AbstractIBatisDao implements EntitySe
 		
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public PaginatedResult search(String entityType, String searchText, String sortColumn, String dir, int start, int limit, Locale locale) {
-		
-        Map<String, Object> params = setupSortParams(null, null, sortColumn, dir, start, limit, locale);
-        
-        params.put("entityType", entityType); // optional ?
-        params.put("searchText", searchText);
-        
-        List rows = getSqlMapClientTemplate().queryForList("ENTITY_SEARCH_PAGINATED", params);
-        Long count = (Long)getSqlMapClientTemplate().queryForObject("ENTITY_SEARCH_ROWCOUNT",params);
-        PaginatedResult resp = new PaginatedResult();
-        resp.setRows(rows);
-        resp.setRowCount(count);
-        return resp;
-	}
-	
 	@Override
     public void updateFullTextIndex(AbstractEntity entity) {
     	try {

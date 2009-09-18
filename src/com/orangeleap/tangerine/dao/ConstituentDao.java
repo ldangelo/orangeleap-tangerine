@@ -50,5 +50,8 @@ public interface ConstituentDao {
 
 	public List<Constituent> findConstituents(Map<String, Object> params,
 			List<Long> ignoreIds);
+	
+    public List<Constituent> fullTextSearchConstituents(String searchText);
+
 
 }

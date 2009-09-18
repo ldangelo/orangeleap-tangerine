@@ -18,18 +18,13 @@
 
 package com.orangeleap.tangerine.dao;
 
-import java.util.Locale;
-
 import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
 
 
 public interface EntitySearchDao {
 
     public void insertOrUpdateEntitySearchText(String entityType, Long entityId, String searchText);
 
-	public PaginatedResult search(String entityType, String searchText, String sortColumn, String dir, int start, int limit, Locale locale);
-	
     public void updateFullTextIndex(AbstractEntity entity);
 
 }

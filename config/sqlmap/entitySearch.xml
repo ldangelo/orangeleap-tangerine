@@ -40,7 +40,9 @@
     	from `ENTITY_SEARCH` 
     	where 
     	SITE_NAME = #siteName#
+		<isNotNull property="entityType"> 
         and ENTITY_TYPE = #entityType#
+        </isNotNull>
     	and MATCH( SEARCH_TEXT ) AGAINST (#searchText# IN BOOLEAN MODE ) HAVING relevance > 0.2 
     	LIMIT 100;
     </select>

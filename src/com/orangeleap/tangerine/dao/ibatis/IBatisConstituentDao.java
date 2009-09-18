@@ -18,22 +18,24 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.EntitySearch;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Locale;
 
 /** 
  * Corresponds to the CONSTITUENT tables
@@ -178,5 +180,21 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     public List<Constituent> searchConstituents(Map<String, Object> searchparams) {
         return searchConstituents(searchparams, null);
     }
+
+
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<Constituent> fullTextSearchConstituents(String searchText) {
+    	Map<String, Object> params = setupParams();
+        params.put("searchText", searchText);
+        params.put("entityType", "constituent");
+        
+    	List<EntitySearch> list = getSqlMapClientTemplate().queryForList("SELECT_ENTITY_SEARCH_BY_SEARCH_STRING", params);
+    	
+    	List<Constituent> constituents = new ArrayList();
+    	for (EntitySearch es: list) constituents.add(this.readConstituentById(es.getEntityId()));
+    	return constituents;
+    }
+
 
 }

@@ -74,7 +74,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity implemen
     public Set<String> getFullTextSearchKeywords() {
 		Set<String> set = new TreeSet<String>();
         set.addAll(super.getFullTextSearchKeywords());
-    	Pattern pattern = Pattern.compile("[0-9]("+StringConstants.CUSTOM_FIELD_SEPARATOR+"[0-9])*"); // exclude QUERY_SELECT and MULTI_QUERY_SELECT values
+    	Pattern pattern = Pattern.compile("[0-9]("+StringConstants.CUSTOM_FIELD_SEPARATOR+"[0-9])+"); // try to exclude QUERY_SELECT and MULTI_QUERY_SELECT values
         for (CustomField cf: this.getCustomFieldMap().values()) {
         	String value = cf.getValue();
         	if (value != null && !pattern.matcher(value).matches()) {

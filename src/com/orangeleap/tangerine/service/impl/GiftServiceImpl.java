@@ -157,6 +157,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     private Gift saveAuditGift(Gift gift) throws BindException {
+        // set the scale to 2 to make sure numbers like 5.3 will be set to 5.30 and 55.222 to 55.22
+        if (gift.getAmount() != null) {
+            gift.setAmount(gift.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
+        }
+
         maintainEntityChildren(gift, gift.getConstituent());
         Gift originalGift = null;
         if (!gift.isNew()) {
@@ -342,9 +347,18 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     public List<Gift> searchGifts(Map<String, Object> params) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readGifts: params = " + params);
+            logger.trace("searchGifts: params = " + params);
         }
         return giftDao.searchGifts(params);
+    }
+
+    @Override
+    public List<Gift> searchGifts(Map<String, Object> params, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("searchGifts: params = " + params + " sort = " + sort);
+        }
+        return giftDao.searchGifts(params, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
     }
 
     @Override

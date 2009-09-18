@@ -39,6 +39,12 @@
         <result property="paymentSource" resultMap="PAYMENT_SOURCE.MIN_PAYMENT_SOURCE_RESULT" />
     </resultMap>
 
+    <resultMap id="GIFT_SEARCH_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+        <result property="phone" resultMap="PHONE.PHONE_RESULT" />
+        <result property="paymentSource" resultMap="PAYMENT_SOURCE.MIN_PAYMENT_SOURCE_RESULT" />
+    </resultMap>
+
 	<resultMap id="GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="GIFT_RESULT_NO_DISTRO_LINES">
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
@@ -171,6 +177,51 @@
         limit $offset$,$limit$
     </select>
 
+    <select id="SELECT_GIFT_BY_SEARCH_TERMS" resultMap="GIFT_SEARCH_RESULT" parameterClass="map">
+        select
+
+        <include refid="GIFT_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />,
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from GIFT g
+        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
+        left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
+        left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on g.GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and g.GIFT_TYPE != 'GIFT_IN_KIND'
+
+        <isNotEmpty property="searchTerms">
+            <iterate property="searchTerms" prepend="HAVING" conjunction="AND">
+                $searchTerms[].columnName$ $searchTerms[].columnClause$ #searchTerms[].columnValue#
+            </iterate>
+        </isNotEmpty>
+        <isNotNull property="sortColumn">
+            order by
+            CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+            $sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+            limit $offset$,$limit$
+        </isNotNull>
+    </select>
+
     <select id="SELECT_GIFTS_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
         select count(g.GIFT_ID)
         from GIFT g
@@ -281,53 +332,5 @@
 		and p.SITE_NAME = #site.name#
 		and g.GIFT_ID = #id#
 	</update>
-	
-	<statement id="SELECT_GIFT_BY_SEARCH_TERMS" resultMap="GIFT_RESULT" parameterClass="map">
-		<include refid="GIFT_QUERY_FRAGMENT"/>
-		and g.GIFT_TYPE != 'GIFT_IN_KIND'
-		<isNotNull property="stringParams"> 
-		   <iterate property="stringParams" conjunction="and" open="and" close="">
-		   g.$stringParams[].key$ like #stringParams[].value#
-		   </iterate>
-		</isNotNull>
-		<isNotNull property="nonStringParams"> 
-		   <iterate property="nonStringParams" conjunction="and" open="and" close="">
-		   g.$nonStringParams[].key$ = #nonStringParams[].value#
-		   </iterate>
-		</isNotNull>
-		<isNotNull property="refConstituentParams"> 
-		   <iterate property="refConstituentParams" conjunction="and" open="and" close="">
-		   p.$refConstituentParams[].key$ like #refConstituentParams[].value#
-		   </iterate>
-		</isNotNull>
-		<isNotNull property="phoneParams"> 
-		   and exists (
-		    select * from PHONE sph where 
-		    sph.CONSTITUENT_ID = p.CONSTITUENT_ID
-		    <iterate property="phoneParams" conjunction="and" open="and" close="">
-		    sph.$phoneParams[].key$ like #phoneParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		<isNotNull property="addressParams"> 
-		   and exists (
-		    select * from ADDRESS saddr where 
-		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
-		    <iterate property="addressParams" conjunction="and" open="and" close="">
-		    saddr.$addressParams[].key$ like #addressParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		<isNotNull property="customParams"> 
-		   and exists (
-		    select * from CUSTOM_FIELD scf where 
-		   ((scf.ENTITY_ID = g.GIFT_ID and scf.ENTITY_TYPE = 'gift') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'constituent'))
-		    <iterate property="customParams" conjunction="and" open="and" close="">
-		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		limit 200
-	</statement>
 
 </sqlMap>

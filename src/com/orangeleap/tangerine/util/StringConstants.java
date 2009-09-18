@@ -35,6 +35,7 @@ public final class StringConstants {
 
     public static final String CONSTITUENT = "constituent";
     public static final String CONSTITUENT_ID = "constituentId";
+    public static final String CONSTITUENT_DOT_ID = "constituent.id";
 
     public static final String EMAIL = "email";
     public static final String EMAILS = "emails";
@@ -112,6 +113,7 @@ public final class StringConstants {
     public static final String ANONYMOUS_LOWER_CASE = "anonymous";
     public static final String ANONYMOUS_CAMEL_CASE = "Anonymous";
     public static final String RECOGNITION_NAME = "recognitionName";
+    public static final String AMOUNT = "amount";
     
     public static final String ASSOCIATED_PLEDGE_ID = "associatedPledgeId";
     public static final String ASSOCIATED_RECURRING_GIFT_ID = "associatedRecurringGiftId";

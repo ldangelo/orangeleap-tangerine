@@ -42,9 +42,9 @@ public interface ConstituentDao {
 
     public Constituent maintainConstituent(Constituent constituent);
 
-    public List<Constituent> searchConstituents(Map<String, Object> params);
-
-    public List<Constituent> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
+    List<Constituent> searchConstituents(Map<String, Object> parameters);
+    
+    List<Constituent> searchConstituents(Map<String, Object> params, String sortPropertyName, String direction, int start, int limit, Locale locale);
 
 	public List<Constituent> readAllConstituentsByAccountRange(Long fromId, Long toId);
 

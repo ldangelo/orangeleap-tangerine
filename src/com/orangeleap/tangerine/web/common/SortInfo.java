@@ -40,6 +40,14 @@ public class SortInfo {
     private int limit = 100; // default is to return 100 rows at a time
     private int start = 0;
 
+    public SortInfo() { }
+
+    public SortInfo(String sort, String sortDir, int limit, int start) {
+        this.sort = sort;
+        this.sortDir = sortDir;
+        this.limit = limit;
+        this.start = start;
+    }
 
     public String getDir() {
         return sortDir;

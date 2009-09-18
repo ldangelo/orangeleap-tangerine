@@ -166,8 +166,9 @@
 	</div>
 	<div class="navRightCap"></div>
 	<div class="searchBar">
-		<form method="post" action="constituentSearch.htm" id="searchForm">
-			<input size="30" name="lastName" type="text" />
+		<form method="POST" action="constituentSearch.htm" id="searchForm" name="searchForm">
+            <input type="hidden" name="autoLoad" id="autoLoad" value="true"/>
+			<input size="30" name="searchField" id="searchField" type="text"/>
 			<select name="type" id="typeSearch">
 				<option value="people"><spring:message code="constituents"/></option>
 				<option value="gifts"><spring:message code="gifts"/></option>

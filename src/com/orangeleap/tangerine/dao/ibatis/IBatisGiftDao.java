@@ -20,21 +20,24 @@ package com.orangeleap.tangerine.dao.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.dao.util.QueryUtil;
-import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Repository("giftDAO")
 public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements GiftDao {
@@ -122,15 +125,22 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     }
 
     @SuppressWarnings("unchecked")
-    @Override
-    public List<Gift> searchGifts(Map<String, Object> searchparams) {
-        Map<String, Object> params = setupParams();
-        QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, new SearchFieldMapperFactory().getMapper(EntityType.gift).getMap());
-
-        List<Gift> gifts = getSqlMapClientTemplate().queryForList("SELECT_GIFT_BY_SEARCH_TERMS", params);
-        return gifts;
+	@Override
+    public List<Gift> searchGifts(Map<String, Object> parameters, String sortPropertyName, String direction, int start, int limit, Locale locale) {
+        Map<String, Object> params = setupSortParams(StringConstants.GIFT, "GIFT.GIFT_SEARCH_RESULT", sortPropertyName, direction, start, limit, locale);
+        List<Map<String,Object>> searchColumnList = setupSearchParams(parameters, PropertyAccessorFactory.forBeanPropertyAccess(new Gift()), "GIFT.GIFT_SEARCH_RESULT");
+        params.put("searchTerms", searchColumnList);
+    	return getSqlMapClientTemplate().queryForList("SELECT_GIFT_BY_SEARCH_TERMS", params);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Gift> searchGifts(Map<String, Object> parameters) {
+        Map<String, Object> params = setupParams();
+        List<Map<String,Object>> searchColumnList = setupSearchParams(parameters, PropertyAccessorFactory.forBeanPropertyAccess(new Gift()), "GIFT.GIFT_SEARCH_RESULT");
+        params.put("searchTerms", searchColumnList);
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFT_BY_SEARCH_TERMS", params);
+    }
 
     @Override
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {

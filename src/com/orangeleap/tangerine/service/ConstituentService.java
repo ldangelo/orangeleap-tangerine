@@ -18,19 +18,18 @@
 
 package com.orangeleap.tangerine.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.springframework.validation.BindException;
-
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.springframework.validation.BindException;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public interface ConstituentService {
 
@@ -42,9 +41,9 @@ public interface ConstituentService {
 
     public Constituent readConstituentByLoginId(String id);
 
-    public List<Constituent> searchConstituents(Map<String, Object> params);
+    List<Constituent> searchConstituents(Map<String, Object> params);
 
-    public List<Constituent> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
+    public List<Constituent> searchConstituents(Map<String, Object> params, SortInfo sort, Locale locale);
 
     public List<Constituent> findConstituents(Map<String, Object> params, List<Long> ignoreIds);
 

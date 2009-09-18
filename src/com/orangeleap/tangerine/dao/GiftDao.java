@@ -36,6 +36,8 @@ public interface GiftDao {
 
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId);
 
+    List<Gift> searchGifts(Map<String, Object> parameters, String sortPropertyName, String direction, int start, int limit, Locale locale);
+    
     public List<Gift> searchGifts(Map<String, Object> params);
 
     public List<Gift> readAllGiftsBySite();

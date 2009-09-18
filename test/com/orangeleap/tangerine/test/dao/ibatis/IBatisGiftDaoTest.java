@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class IBatisGiftDaoTest extends AbstractIBatisTest {
@@ -481,17 +482,40 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testSearchGifts" })
     public void testSearchGifts() throws Exception {
     	Map<String, Object> params = new HashMap<String, Object>();
-        params.put("firstName", "Pablo");
-        params.put("accountNumber", new Long(200));
-        params.put("phoneMap[home].number", "214-113-2542");
-        params.put("addressMap[home].addressLine1", "ACORN");
+        params.put("constituent.firstName", "Pablo");
+        params.put("constituent.accountNumber", 2000000L);
         params.put("amount", new BigDecimal(300.00));
 
         List<Gift> gifts = giftDao.searchGifts(params);
-        assert gifts != null && gifts.size() > 0;
+        assert gifts != null && gifts.size() == 1;
         for (Gift gift : gifts) {
             assert gift.getConstituent().getFirstName().equals("Pablo");
             assert gift.getAmount().compareTo(new BigDecimal(300.00)) == 0;
         }
+
+        gifts = giftDao.searchGifts(params, "constituent.accountNumber", "ASC", 0, 100, Locale.US);
+        assert gifts != null && gifts.size() == 1;
+        for (Gift gift : gifts) {
+            assert gift.getConstituent().getFirstName().equals("Pablo");
+            assert gift.getAmount().compareTo(new BigDecimal(300.00)) == 0;
+        }
+
+        params = new HashMap<String, Object>();
+        gifts = giftDao.searchGifts(params, "constituent.accountNumber", "ASC", 0, 100, Locale.US);
+        assert gifts != null && ! gifts.isEmpty();
+
+        params = new HashMap<String, Object>();
+        gifts = giftDao.searchGifts(params);
+        assert gifts != null && ! gifts.isEmpty();
+
+        params = new HashMap<String, Object>();
+        params.put("constituent.firstName", "BOMBAY");
+        params.put("constituent.accountNumber", 2000000L);
+        params.put("amount", new BigDecimal(300.00));
+        gifts = giftDao.searchGifts(params, "constituent.accountNumber", "ASC", 0, 100, Locale.US);
+        Assert.assertTrue("gifts.size = " + gifts.size(), gifts != null && gifts.isEmpty());
+
+        gifts = giftDao.searchGifts(params);
+        Assert.assertTrue("gifts.size = " + gifts.size(), gifts != null && gifts.isEmpty());
     }
 }

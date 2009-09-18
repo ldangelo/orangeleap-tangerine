@@ -1,19 +1,19 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     
@@ -177,21 +177,41 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testSearchConstituents" })
     public void testSearchConstituents() throws Exception {
     	Map<String, Object> params = new HashMap<String, Object>();
-        List<Long> ignoreIds = new ArrayList<Long>();
-        long ignoreId = 100l;
-        ignoreIds.add(ignoreId);
-        
         params.put("firstName", "Pablo");
-        params.put("phoneMap[home].number", "214-113-2542");
-        params.put("addressMap[home].addressLine1", "ACORN");
-        params.put("emailMap[home].email", "");
+        params.put("primaryAddress.addressLine1", "ACORN");
+        params.put("primaryEmail.emailAddress", "");
     	
-        List<Constituent> constituents = constituentDao.searchConstituents(params, ignoreIds);
-        assert constituents != null && constituents.size() > 0;
+        List<Constituent> constituents = constituentDao.searchConstituents(params, "firstName", "ASC", 0, 100, Locale.US);
+        assert constituents != null && ! constituents.isEmpty();
         for (Constituent constituent : constituents) {
-        	System.out.println(constituent);
             assert constituent.getFirstName().equals("Pablo");
-            assert constituent.getId().longValue() != ignoreId;
+        }
+
+        params = new HashMap<String, Object>();
+        params.put("firstName", "Pablo");
+        params.put("primaryAddress.addressLine1", "ACORN");
+        params.put("primaryEmail.emailAddress", "dog@dog.com");
+
+        constituents = constituentDao.searchConstituents(params, "firstName", "ASC", 0, 100, Locale.US);
+        assert constituents != null && constituents.isEmpty();
+
+        params = new HashMap<String, Object>();
+        constituents = constituentDao.searchConstituents(params, "firstName", "ASC", 0, 100, Locale.US);
+        assert constituents != null && ! constituents.isEmpty();        
+
+        params = new HashMap<String, Object>();
+        constituents = constituentDao.searchConstituents(params);
+        assert constituents != null && ! constituents.isEmpty();
+
+        params = new HashMap<String, Object>();
+        params.put("firstName", "Pablo");
+        params.put("primaryAddress.addressLine1", "ACORN");
+        params.put("primaryEmail.emailAddress", "");
+
+        constituents = constituentDao.searchConstituents(params);
+        assert constituents != null && ! constituents.isEmpty();
+        for (Constituent constituent : constituents) {
+            assert constituent.getFirstName().equals("Pablo");
         }
     }
     

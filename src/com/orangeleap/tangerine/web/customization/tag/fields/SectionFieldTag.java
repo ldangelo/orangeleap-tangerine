@@ -147,7 +147,7 @@ public class SectionFieldTag extends AbstractTag {
 						oneColumnCount = 0;
 					}
 				}
-				else if (LayoutType.GRID.equals(sectionDef.getLayoutType())) {
+				else if (LayoutType.GRID.equals(sectionDef.getLayoutType()) || LayoutType.SEARCH_GRID.equals(sectionDef.getLayoutType())) {
                     List<SectionField> allFields = pageCustomizationService.readSectionFieldsBySection(sectionDef);
                     assert allFields != null && !allFields.isEmpty();
 
@@ -161,8 +161,11 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("Ext.onReady(function() {\n");
                     sb.append("Ext.QuickTips.init();\n");
                     sb.append("OrangeLeap.").append(entityType).append(".store = new Ext.data.JsonStore({\n");
-                    sb.append("url: '").append(entityType).append("List.json");
-                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+
+                    boolean isListGrid = LayoutType.GRID.equals(sectionDef.getLayoutType());
+                    String gridType = isListGrid ? "List" : "Search";
+                    sb.append("url: '").append(entityType).append(gridType).append(".json");
+                    if (isListGrid && (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID))) {
                         sb.append("?constituentId=");
                         if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
                             sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
@@ -178,8 +181,11 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("fields: [\n");
 
                     sb.append("{name: 'id', mapping: 'id', type: 'int'},\n");
-                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                    if (isListGrid && (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID))) {
                         sb.append("{name: 'constituentId', mapping: 'constituentId', type: 'string'},\n");
+                    }
+                    else if (!isListGrid && bw.isReadableProperty(StringConstants.CONSTITUENT)) {
+                        sb.append("{name: '").append(TangerineForm.escapeFieldName(StringConstants.CONSTITUENT_DOT_ID)).append("', mapping: '").append(TangerineForm.escapeFieldName(StringConstants.CONSTITUENT_DOT_ID)).append("', type: 'string'},\n");
                     }
 
                     int z = 0;
@@ -268,11 +274,12 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("],\n");
                     sb.append("sm: new Ext.grid.RowSelectionModel({singleSelect: true}),\n");
                     sb.append("viewConfig: { forceFit: true },\n");
-                    sb.append("height: 600,\n");
-                    sb.append("width: 760,\n");
+                    sb.append("height: ").append(isListGrid ? "600" : "400").append(",\n");
+                    sb.append("width: 780,\n");
                     sb.append("frame: true,\n");
                     sb.append("header: true,\n");
-                    sb.append("title: '").append(TangerineMessageAccessor.getMessage(entityType)).append(" ").append(TangerineMessageAccessor.getMessage("list")).append("',\n");
+                    sb.append("title: '").append(TangerineMessageAccessor.getMessage(entityType)).append(" ");
+                    sb.append(isListGrid ? TangerineMessageAccessor.getMessage("list") : TangerineMessageAccessor.getMessage("searchResults")).append("',\n");
                     sb.append("loadMask: true,\n");
                     sb.append("listeners: {\n");
                     sb.append("rowdblclick: function(grid, row, evt) {\n");
@@ -292,13 +299,18 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append(entityType).append("Id=\" + rec.data.id");
                     if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
                         sb.append(" + \"&constituentId=");
-                        if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
-                            sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+                        if (isListGrid) {
+                            if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
+                                sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+                            }
+                            else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                                sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+                            }
+                            sb.append("\"");
                         }
-                        else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
-                            sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+                        else {
+                            sb.append("\" + rec.data['").append(TangerineForm.escapeFieldName(StringConstants.CONSTITUENT_DOT_ID)).append("']");
                         }
-                        sb.append("\"");
                     }
                     sb.append(";\n");
                     sb.append("}\n");
@@ -306,8 +318,44 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("bbar: OrangeLeap.").append(entityType).append(".pagingBar,\n");
                     sb.append("renderTo: '").append(entityType).append("Grid'\n");
                     sb.append("});\n");
-                    sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
-                    sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC'}});\n");
+                    if (isListGrid) {
+                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
+                        sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC'}});\n");
+                    }
+                    else {
+                        if (Boolean.TRUE.toString().equalsIgnoreCase(pageContext.getRequest().getParameter("autoLoad"))) {
+                            sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
+                            sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC' ");
+
+                            String searchFieldValue = pageContext.getRequest().getParameter("searchField");
+                            if (StringUtils.hasText(searchFieldValue)) {
+                                if (StringConstants.CONSTITUENT.equals(entityType)) {
+                                    sb.append(", \"lastName\": '").append(searchFieldValue).append("' ");
+                                }
+                                else if (StringConstants.GIFT.equals(entityType)) {
+                                    sb.append(", \"amount\": '").append(searchFieldValue).append("' ");
+                                }
+                            }
+                            sb.append("}});\n");
+                        }
+                        sb.append("$(\"#").append(entityType).append("SearchButton\").click(function() {\n");
+                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
+                        sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC', ");
+
+                        y = 0;
+                        for (SectionField sectionFld : fields) {
+                            String escapedFieldName = TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName());
+                            sb.append("\"").append(escapedFieldName).append("\"").append(": $(\"#").append(escapedFieldName).append("\").val() ");
+                            if (++y < fields.size()) {
+                                sb.append(", ");
+                            }
+                        }
+                        sb.append("}});\n");
+                        sb.append("});\n");
+                        sb.append("$(\"#").append(entityType).append("SearchForm\").submit(function() {\n");
+                        sb.append("return false;\n");
+                        sb.append("});\n");
+                    }
                     sb.append("});\n");
                     sb.append("</script>");
 				}

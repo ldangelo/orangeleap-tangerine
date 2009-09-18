@@ -254,7 +254,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	public String resolveLabelText(PageContext pageContext, SectionField sectionField) {
 		String labelText = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), pageContext.getRequest().getLocale());
 		if ( ! StringUtils.hasText(labelText)) {
-			if (!sectionField.isCompoundField()) {
+			if ( ! sectionField.isCompoundField() || (sectionField.isCompoundField() && StringUtils.hasText(sectionField.getFieldDefinition().getDefaultLabel()))) {
 				labelText = sectionField.getFieldDefinition().getDefaultLabel();
 			}
 			else {

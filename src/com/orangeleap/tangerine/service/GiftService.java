@@ -47,6 +47,8 @@ public interface GiftService {
 
     public List<Gift> searchGifts(Map<String, Object> params);
 
+    List<Gift> searchGifts(Map<String, Object> params, SortInfo sort, Locale locale);
+
     public Gift createDefaultGift(Constituent constituent);
 
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);

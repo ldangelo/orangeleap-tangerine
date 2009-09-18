@@ -24,6 +24,12 @@
         <result property="site" resultMap="SITE.SITE_NAME_RESULT" />
 	</resultMap>
 
+    <resultMap id="CONSTITUENT_SEARCH_RESULT" class="com.orangeleap.tangerine.domain.Constituent" groupBy="id" extends="CONSTITUENT_RESULT">
+        <result property="primaryAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
+        <result property="primaryPhone" resultMap="PHONE.PHONE_RESULT" />
+        <result property="primaryEmail" resultMap="EMAIL.EMAIL_RESULT" />
+    </resultMap>
+
     <sql id="CONSTITUENT_COLS_FRAGMENT">
     	p.CONSTITUENT_ID, 
 		p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAST_NAME, p.LEGAL_NAME,
@@ -113,6 +119,48 @@
 		and p.LOGIN_ID = #loginId#
 	</select>
 
+    <select id="SELECT_CONSTITUENT_BY_SEARCH_TERMS" resultMap="CONSTITUENT_SEARCH_RESULT" parameterClass="map">
+        select
+
+        <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="EMAIL_COLS_FRAGMENT" />
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from CONSTITUENT p
+        left outer join PHONE ph on p.CONSTITUENT_ID = ph.CONSTITUENT_ID and ph.IS_PRIMARY = 1
+        left outer join ADDRESS addr on p.CONSTITUENT_ID = addr.CONSTITUENT_ID and addr.IS_PRIMARY = 1
+        left outer join EMAIL e on p.CONSTITUENT_ID = e.CONSTITUENT_ID and e.IS_PRIMARY = 1
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on p.CONSTITUENT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        <isNotEmpty property="searchTerms">
+            <iterate property="searchTerms" prepend="HAVING" conjunction="AND">
+                $searchTerms[].columnName$ $searchTerms[].columnClause$ #searchTerms[].columnValue#
+            </iterate>
+        </isNotEmpty>
+        <isNotNull property="sortColumn">
+            order by
+            CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+            $sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+            limit $offset$,$limit$
+        </isNotNull>
+    </select>
+
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Constituent">
 		insert into CONSTITUENT (
 		CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME, BYPASS_DUPLICATE, 
@@ -148,71 +196,6 @@
 		UPDATE_DATE = now()
 		where CONSTITUENT_ID = #id# and SITE_NAME = #site.name#
 	</update>
- 	
-	<statement id="SELECT_CONSTITUENT_BY_SEARCH_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
-	    select
-		<include refid="CONSTITUENT_COLS_FRAGMENT"/> 
-		from CONSTITUENT p
-		where 
-		p.SITE_NAME = #siteName#
-		<isNotNull property="ignoreIds"> 
-	       and p.CONSTITUENT_ID not in 
-		   <iterate property="ignoreIds" conjunction="," open="(" close=")">
-		      #ignoreIds[]#
-		   </iterate>
-		</isNotNull>
-		<isNotNull property="stringParams"> 
-		   <iterate property="stringParams" conjunction="and" open="and" close="">
-		   p.$stringParams[].key$ like #stringParams[].value#
-		   </iterate>
-		</isNotNull>
-		<isNotNull property="nonStringParams"> 
-		   <iterate property="nonStringParams" conjunction="and" open="and" close="">
-		   p.$nonStringParams[].key$ = #nonStringParams[].value#
-		   </iterate>
-		</isNotNull>
-		<isNotNull property="phoneParams"> 
-		   and exists (
-		    select * from PHONE ph where 
-		    ph.CONSTITUENT_ID = p.CONSTITUENT_ID
-		    <iterate property="phoneParams" conjunction="and" open="and" close="">
-		    ph.$phoneParams[].key$ like #phoneParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		<isNotNull property="addressParams"> 
-		   and exists (
-		    select * from ADDRESS saddr where 
-		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
-		    <iterate property="addressParams" conjunction="and" open="and" close="">
-		    saddr.$addressParams[].key$ like #addressParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		<isNotNull property="emailParams"> 
-		   and exists (
-		    select * from EMAIL e where 
-		    e.CONSTITUENT_ID = p.CONSTITUENT_ID
-		    <iterate property="emailParams" conjunction="and" open="and" close="">
-		    e.$emailParams[].key$ like #emailParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		<isNotNull property="customParams"> 
-		   and exists (
-		    select * from CUSTOM_FIELD cf where 
-		    cf.ENTITY_ID = p.CONSTITUENT_ID
-		    and cf.ENTITY_TYPE = 'constituent'
-		    <iterate property="customParams" conjunction="and" open="and" close="">
-		    cf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE like #customParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		<isNotNull property="additionalWhere"> 
-			and $additionalWhere$
-		</isNotNull>
-		limit 200
-	</statement>
 
 	<statement id="SELECT_CONSTITUENT_BY_FIND_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 	    select

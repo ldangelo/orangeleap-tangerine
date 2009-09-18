@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.controller;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class NoneStringTrimmerEditor extends StringTrimmerEditor {
 
@@ -28,7 +29,7 @@ public class NoneStringTrimmerEditor extends StringTrimmerEditor {
 
     @Override
     public void setAsText(String text) {
-        text = text.replaceFirst("^none$", ""); // Set the value 'none' to empty string
+        text = text.replaceFirst("^none$", StringConstants.EMPTY); // Set the value 'none' to empty string
         super.setAsText(text);
     }
 }

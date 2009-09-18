@@ -334,7 +334,8 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     public List<SectionField> getFieldsExceptId(List<SectionField> fields) {
         List<SectionField> filteredFields = new ArrayList<SectionField>();
         for (SectionField thisField : fields) {
-            if (!StringConstants.ID.equals(thisField.getFieldPropertyName()) && !StringConstants.CONSTITUENT_ID.equals(thisField.getFieldPropertyName())) {
+            if (!StringConstants.ID.equals(thisField.getFieldPropertyName()) && !StringConstants.CONSTITUENT_ID.equals(thisField.getFieldPropertyName()) &&
+                    !StringConstants.CONSTITUENT_DOT_ID.equals(thisField.getFieldPropertyName())) {
                 filteredFields.add(thisField);
             }
         }

@@ -31,7 +31,9 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.util.TangerineBeanUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
@@ -40,7 +42,13 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implements ApplicationContextAware {
 
@@ -105,6 +113,31 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
         params.put("offset", start);
         params.put("limit", limit);
         return params;
+    }
+
+    protected List<Map<String,Object>> setupSearchParams(Map<String, Object> parameterPropertyNameValues, BeanWrapper beanWrapper, String resultMapName) {
+        List<Map<String,Object>> searchColumnList = new ArrayList<Map<String,Object>>();
+        Map<String, String> beanPropertyColumnMap = findBeanPropertyColumnMap(resultMapName);
+
+        if (parameterPropertyNameValues != null) {
+            for (Map.Entry<String, Object> entry : parameterPropertyNameValues.entrySet()) {
+                String propertyName = entry.getKey();
+                TangerineBeanUtils.checkInnerBeanCreated(beanWrapper, propertyName);
+                if (beanWrapper.isReadableProperty(propertyName) && beanPropertyColumnMap.get(propertyName) != null &&
+                        entry.getValue() != null && StringUtils.hasText(entry.getValue().toString())) {
+                    Map<String,Object> searchColumnMap = new HashMap<String,Object>();
+                    searchColumnMap.put("columnName", beanPropertyColumnMap.get(propertyName));
+                    boolean useLike = String.class.equals(beanWrapper.getPropertyType(propertyName));
+                    searchColumnMap.put("columnClause", useLike ? "LIKE" : "=");
+                    searchColumnMap.put("columnValue", useLike ? "%" + entry.getValue() + "%" : entry.getValue());
+                    searchColumnList.add(searchColumnMap);
+                }
+                else if ( ! beanWrapper.isReadableProperty(propertyName) || beanPropertyColumnMap.get(propertyName) == null) {
+                    logger.warn("setupSearchParams: Could not resolve search propertyName = " + propertyName);
+                }
+            }
+        }
+        return searchColumnList;
     }
 
     // Ensures literal parameter value is one word to avoid SQL injection.

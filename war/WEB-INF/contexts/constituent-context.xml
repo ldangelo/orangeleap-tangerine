@@ -6,9 +6,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-    <bean id="constituentSearch" class="com.orangeleap.tangerine.controller.constituent.ConstituentSearchFormController">
-        <property name="commandName" value="constituent"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.Constituent"/>
+    <bean id="constituentSearchController" class="com.orangeleap.tangerine.controller.constituent.ConstituentSearchFormController" parent="tangerineFormController">
         <property name="formView" value="constituent/constituentSearch"/>
         <property name="successView" value="constituent/constituentSearch"/>
     </bean>
@@ -30,7 +28,7 @@
 		<property name="mappings">
 		    <props>
 			    <prop key="/constituent.htm">constituentFormController</prop>
-		        <prop key="/constituentSearch.htm">constituentSearch</prop>
+		        <prop key="/constituentSearch.htm">constituentSearchController</prop>
 		        <prop key="/constituentView.htm">constituentViewController</prop>
                 <prop key="/constituentList.htm">constituentGridController</prop>
 			</props>

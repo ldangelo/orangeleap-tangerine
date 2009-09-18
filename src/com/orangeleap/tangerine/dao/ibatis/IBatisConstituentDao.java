@@ -18,15 +18,6 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
@@ -36,6 +27,15 @@ import com.orangeleap.tangerine.domain.EntitySearch;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /** 
  * Corresponds to the CONSTITUENT tables
@@ -148,17 +148,20 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     
     @SuppressWarnings("unchecked")
 	@Override
-    public List<Constituent> searchConstituents(Map<String, Object> searchparams, List<Long> ignoreIds) {
-    	Map<String, Object> params = setupParams();
-    	if (ignoreIds == null) {
-            ignoreIds = new ArrayList<Long>();
-        }
-    	if (ignoreIds.size() > 0) {
-            params.put("ignoreIds", ignoreIds);
-        }
-    	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, new SearchFieldMapperFactory().getMapper(EntityType.constituent).getMap());
-    	List<Constituent> constituents = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
-    	return constituents;
+    public List<Constituent> searchConstituents(Map<String, Object> parameters, String sortPropertyName, String direction, int start, int limit, Locale locale) {
+        Map<String, Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_SEARCH_RESULT", sortPropertyName, direction, start, limit, locale);
+        List<Map<String,Object>> searchColumnList = setupSearchParams(parameters, PropertyAccessorFactory.forBeanPropertyAccess(new Constituent()), "CONSTITUENT.CONSTITUENT_SEARCH_RESULT");
+        params.put("searchTerms", searchColumnList);
+    	return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
+    }
+
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<Constituent> searchConstituents(Map<String, Object> parameters) {
+        Map<String, Object> params = setupParams();
+        List<Map<String,Object>> searchColumnList = setupSearchParams(parameters, PropertyAccessorFactory.forBeanPropertyAccess(new Constituent()), "CONSTITUENT.CONSTITUENT_SEARCH_RESULT");
+        params.put("searchTerms", searchColumnList);
+    	return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
     }
 
 	@Override
@@ -175,12 +178,6 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	List<Constituent> constituents = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_FIND_TERMS", params);
 		return constituents;
 	}
-   
-    @Override
-    public List<Constituent> searchConstituents(Map<String, Object> searchparams) {
-        return searchConstituents(searchparams, null);
-    }
-
     
     // Notes on mysql fulltext index:
     //

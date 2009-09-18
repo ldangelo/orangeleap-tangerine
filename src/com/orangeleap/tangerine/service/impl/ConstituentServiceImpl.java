@@ -18,31 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
 import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
@@ -80,7 +55,29 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
+import javax.annotation.Resource;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Service("constituentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -132,8 +129,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     
 	@Resource(name = "giftService")
 	private GiftService giftService;
-
-
 
     @Resource(name = "communicationHistoryService")
     private CommunicationHistoryService communicationHistoryService;
@@ -362,7 +357,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituentDao.readConstituentByLoginId(loginId);
     }
 
-
     @Override
     public List<Constituent> searchConstituents(Map<String, Object> params) {
         if (logger.isTraceEnabled()) {
@@ -372,11 +366,12 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     }
 
     @Override
-    public List<Constituent> searchConstituents(Map<String, Object> params, List<Long> ignoreIds) {
+    public List<Constituent> searchConstituents(Map<String, Object> params, SortInfo sort, Locale locale) {
         if (logger.isTraceEnabled()) {
-            logger.trace("searchConstituents: params = " + params + " ignoreIds = " + ignoreIds);
+            logger.trace("searchConstituents: params = " + params + " sort = " + sort);
         }
-        return constituentDao.searchConstituents(params, ignoreIds);
+        return constituentDao.searchConstituents(params, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
     }
 
     @Override

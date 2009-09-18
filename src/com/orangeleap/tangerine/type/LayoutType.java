@@ -32,7 +32,8 @@ public enum LayoutType {
 	ADJUSTED_DISTRIBUTION_LINE_GRID,
 	GIFT_IN_KIND_GRID,
     TREE_GRID,
-    TREE_GRID_HIDDEN_ROW;
+    TREE_GRID_HIDDEN_ROW,
+    SEARCH_GRID;
 
 	public static boolean isMultiColumnType(LayoutType layoutType) {
 		return TWO_COLUMN.equals(layoutType);
@@ -52,7 +53,7 @@ public enum LayoutType {
 				DISTRIBUTION_LINE_GRID.equals(layoutType) ||
                 DISTRIBUTION_LINE_GRID_DISPLAY.equals(layoutType) || 
                 GIFT_IN_KIND_GRID.equals(layoutType) ||
-				ADJUSTED_DISTRIBUTION_LINE_GRID.equals(layoutType);
+				ADJUSTED_DISTRIBUTION_LINE_GRID.equals(layoutType) || SEARCH_GRID.equals(layoutType);
 	}
 
     public static boolean isGridTreeType(LayoutType layoutType) {

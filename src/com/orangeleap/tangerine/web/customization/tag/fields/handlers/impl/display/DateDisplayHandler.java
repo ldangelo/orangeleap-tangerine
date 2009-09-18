@@ -34,7 +34,7 @@ public class DateDisplayHandler extends DateHandler {
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
 		sb.append("<div id=\"").append(formFieldName).append("\" class=\"readOnlyField ").append(resolveEntityAttributes(currentField)).append("\">");
-
+                                                                                                            
         String formattedDate = formatDate(fieldValue, getDateFormat());
 		if ( ! StringUtils.hasText(formattedDate)) {
 		    sb.append("&nbsp;");

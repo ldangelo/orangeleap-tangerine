@@ -181,7 +181,14 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         return searchConstituents(searchparams, null);
     }
 
-
+    
+    // Notes on mysql fulltext index:
+    //
+    // Words are broken up at non-alphanumeric chars (except underscore and apostrophe)
+    // To get any matches, there must be at least 3 records in the db since any search term that matches over a certain percentage of the rows is excluded.
+    // There are about 500 common 'stop' words that are never indexed.
+    // The result potentially contains rows that match any of the words in the search string, unless the words are prefixed by + (must have) or - (must not have).
+    // See also: http://dev.mysql.com/tech-resources/articles/full-text-revealed.html
     @SuppressWarnings("unchecked")
 	@Override
     public List<Constituent> fullTextSearchConstituents(String searchText) {

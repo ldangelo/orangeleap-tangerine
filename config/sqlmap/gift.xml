@@ -171,6 +171,7 @@
 
         where p.SITE_NAME = #siteName#
         and g.CONSTITUENT_ID = #constituentId#
+        and g.GIFT_TYPE != 'GIFT_IN_KIND'
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$

@@ -38,7 +38,7 @@ public class DateHandler extends AbstractFieldHandler {
 		writeErrorClass(pageContext, formFieldName, sb);
 		sb.append(resolveEntityAttributes(currentField)).append("\" ");
 
-		sb.append("type=\"text\" maxlength=\"10\" size=\"16\" value=\"");
+		sb.append("type=\"text\" size=\"16\" value=\"");
         sb.append(formatDate(fieldValue, StringConstants.MM_DD_YYYY_FORMAT));
 		sb.append("\" name=\"").append(formFieldName).append("\"/>");
 

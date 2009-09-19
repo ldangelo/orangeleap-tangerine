@@ -19,7 +19,6 @@
 package com.orangeleap.tangerine.domain.communication;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Creatable;
 import com.orangeleap.tangerine.domain.Inactivatible;
 import com.orangeleap.tangerine.type.ActivationType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -33,7 +32,7 @@ import java.util.Locale;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
-public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible, Creatable {
+public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible {
 
     protected Long constituentId;
     protected ActivationType activationStatus;
@@ -49,8 +48,6 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
     protected Date effectiveDate;
     protected boolean current = false; 
-
-    protected boolean userCreated = false; // TODO: remove
 
     public Long getConstituentId() {
         return constituentId;
@@ -134,16 +131,6 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
         this.effectiveDate = effectiveDate;
     }
 
-    @Override
-    public boolean isUserCreated() {
-        return userCreated;
-    }
-
-    @Override
-    public void setUserCreated(boolean userCreated) {
-        this.userCreated = userCreated;
-    }
-
     public boolean isPrimary() {
         return isPrimary;
     }
@@ -212,7 +199,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
         return new ToStringCreator(this).append(super.toString()).append("constituentId", constituentId).append("createDate", getCreateDate()).
                 append("updateDate", getUpdateDate()).append("activationStatus", activationStatus).append("receiveCorrespondence", receiveCorrespondence).append("temporaryStartDate", temporaryStartDate).
                 append("temporaryEndDate", temporaryEndDate).append("seasonalStartDate", seasonalStartDate).append("seasonalEndDate", seasonalEndDate).append("inactive", inactive).
-                append("isPrimary", isPrimary).append("comments", comments).append("effectiveDate", effectiveDate).append("userCreated", userCreated).
+                append("isPrimary", isPrimary).append("comments", comments).append("effectiveDate", effectiveDate).
                 toString();
     }
 

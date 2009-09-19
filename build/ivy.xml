@@ -180,21 +180,6 @@
 		<!-- JSP/Servlets/Ajax -->
 		<dependency org="opensymphony" name="sitemesh" transitive="false" rev="2.4.2"/>
 		
-		<dependency org="org.apache.tiles" name="tiles-api" transitive="false" rev="2.0.5">
-			<artifact name="tiles-api" type="jar" />
-			<artifact name="tiles-api" type="source" ext="jar" classifier="sources" conf="sources"/>
-		</dependency>
-
-		<dependency org="org.apache.tiles" name="tiles-core" transitive="false" rev="2.0.5">
-			<artifact name="tiles-core" type="jar" />
-			<artifact name="tiles-core" type="source" ext="jar" classifier="sources" conf="sources"/>
-		</dependency>
-
-		<dependency org="org.apache.tiles" name="tiles-jsp" transitive="false" rev="2.0.5">
-			<artifact name="tiles-jsp" type="jar" />
-			<artifact name="tiles-jsp" type="source" ext="jar" classifier="sources" conf="sources"/>
-		</dependency>
-
 		<dependency org="org.json" name="json" transitive="false" rev="20080701">
 			<artifact name="json" type="jar" />
 			<artifact name="json" type="source" ext="jar" classifier="sources" conf="sources"/>

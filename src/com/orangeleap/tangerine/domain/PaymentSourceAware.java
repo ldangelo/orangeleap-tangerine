@@ -18,8 +18,6 @@
 
 package com.orangeleap.tangerine.domain;
 
-import com.orangeleap.tangerine.type.FormBeanType;
-
 public interface PaymentSourceAware {
 
     public String getPaymentType();
@@ -29,20 +27,4 @@ public interface PaymentSourceAware {
     public PaymentSource getPaymentSource();
 
     public void setPaymentSource(PaymentSource paymentSource);
-
-    @Deprecated
-    public PaymentSource getSelectedPaymentSource();
-
-    @Deprecated
-    public void setSelectedPaymentSource(PaymentSource paymentSource);
-
-    @Deprecated
-    public void setPaymentSourceType(FormBeanType type);
-    
-    @Deprecated
-    public FormBeanType getPaymentSourceType();
-    
-    public void setPaymentSourcePaymentType();
-    
-    public void setPaymentSourceAwarePaymentType();
 }

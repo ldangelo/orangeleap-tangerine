@@ -198,7 +198,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	    return prefixedFieldName;
 	}
 
-    public String resolvedUnescapedPrefixedFieldName(String prefix, String aFieldName) {
+    public static String resolvedUnescapedPrefixedFieldName(String prefix, String aFieldName) {
         String prefixedFieldName = null;
 
         boolean endsInValue = false;

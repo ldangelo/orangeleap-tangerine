@@ -87,15 +87,6 @@
       	<property name="order" value="1" />
    	</bean>
 
-	<!-- Configures the Tiles layout system -->
-	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
-		<property name="definitions">
-			<list>
-				<value>/WEB-INF/tangerine-tiles.xml</value>
-			</list>
-		</property>
-	</bean>
-
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
         <property name="prefix" value="/WEB-INF/jsp/"></property>

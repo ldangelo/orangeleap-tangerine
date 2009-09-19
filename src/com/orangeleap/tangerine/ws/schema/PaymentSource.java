@@ -65,7 +65,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="constituentId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *         &lt;element name="phone" type="{http://www.orangeleap.com/orangeleap/services/1.0}phone" minOccurs="0"/>
  *         &lt;element name="profile" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="userCreated" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -95,8 +94,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
         "paymentType",
         "constituentId",
         "phone",
-        "profile",
-        "userCreated"
+        "profile"
 })
 public class PaymentSource {
 
@@ -123,7 +121,6 @@ public class PaymentSource {
     protected Long constituentId;
     protected Phone phone;
     protected String profile;
-    protected boolean userCreated;
 
     /**
      * Gets the value of the achAccountNumber property.
@@ -557,20 +554,6 @@ public class PaymentSource {
      */
     public void setProfile(String value) {
         this.profile = value;
-    }
-
-    /**
-     * Gets the value of the userCreated property.
-     */
-    public boolean isUserCreated() {
-        return userCreated;
-    }
-
-    /**
-     * Sets the value of the userCreated property.
-     */
-    public void setUserCreated(boolean value) {
-        this.userCreated = value;
     }
 
 }

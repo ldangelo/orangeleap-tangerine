@@ -8,7 +8,3 @@
 
 <%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
 <%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page" %>
-
-<%-- TODO: below to be removed --%>
-<%@ taglib prefix="mp" uri="/tangerine-old"%>
-<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>

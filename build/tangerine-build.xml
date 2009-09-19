@@ -94,9 +94,6 @@
 		<replace file="${stage.dir}/war/login.jsp" token="$${build.version}" value="${build.TODAY}"/>
 		<replace file="${stage.dir}/war/login.jsp" token="$${build.time}" value="${build.DSTAMP} ${build.TSTAMP}"/>
 
-		<!-- TODO: remove below -->
-		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/footer.jsp" token="$${build.time}" value="${build.DSTAMP}.${build.TSTAMP}"/>
-
 		<replace file="${stage.dir}/war/WEB-INF/jsp/includes/footer.jsp" token="$${build.time}" value="${build.DSTAMP}.${build.TSTAMP}"/>
 	</target>
 
@@ -326,7 +323,7 @@
 
 		<javascript-optimization
 			minify="true"
-			yCompressor="true" 
+			yCompressor="true"
 			gZip="false" 
 			destFile="${stage.dir}/war/js/tangerine.js" 
 			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
@@ -469,43 +466,6 @@
             <fileset dir="${war.dir}/js" includes="orangeleap.js" />
         </javascript-optimization>
         <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="orangeleap.js" value="orangeleap${now.time}.js"/>
-
-        <!-- TODO: remove below -->
-		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="tangerine.css.min.css" value="tangerine${now.time}.css.min.css"/>
-		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="tangerine.js.ycomp.js" value="tangerine${now.time}.js.ycomp.js"/>
-
-		<javascript-optimization
-			minify="false" 
-			yCompressor="false" 
-			gZip="false" 
-			destFile="${stage.dir}/war/js/sidebar${now.time}.js" 
-			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="false">
-            <fileset dir="${war.dir}/js" includes="sidebar.js" />
-		</javascript-optimization>
-		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="sidebar.js" value="sidebar${now.time}.js"/>
-
-		<javascript-optimization
-			minify="false" 
-			yCompressor="false" 
-			gZip="false" 
-			destFile="${stage.dir}/war/js/history${now.time}.js" 
-			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="false">
-            <fileset dir="${war.dir}/js" includes="history.js" />
-		</javascript-optimization>
-		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="history.js" value="history${now.time}.js"/>
-
-		<javascript-optimization
-			minify="false" 
-			yCompressor="false" 
-			gZip="false" 
-			destFile="${stage.dir}/war/js/orangeleap${now.time}.js" 
-			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="false">
-            <fileset dir="${war.dir}/js" includes="orangeleap.js" />
-		</javascript-optimization>
-		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="orangeleap.js" value="orangeleap${now.time}.js"/>
 	</target>
 
 </project>

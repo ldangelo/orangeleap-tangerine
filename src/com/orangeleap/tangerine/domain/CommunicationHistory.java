@@ -22,7 +22,6 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.CommunicationHistoryType;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 import javax.xml.bind.annotation.XmlType;
@@ -47,9 +46,6 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     private Long giftId;
     private Long pledgeId;
     private Long recurringGiftId;
-    private FormBeanType addressType;
-    private FormBeanType phoneType;
-    private FormBeanType emailType;
     private Address address;
     private Phone phone;
     private Email email;
@@ -178,53 +174,4 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
 	public void setConstituentId(Long id) {
 	    constituentId = id;
 	}
-
-	/* TODO: remove below */
-	public Address getSelectedAddress() {
-		return null;
-	}
-
-	public void setSelectedAddress(Address address) {
-
-	}
-
-	public Phone getSelectedPhone() {
-		return null;
-	}
-
-	public void setSelectedPhone(Phone phone) {
-
-	}
-
-	public Email getSelectedEmail() {
-		return null;
-	}
-
-	public void setSelectedEmail(Email email) {
-
-	}
-
-    public FormBeanType getAddressType() {
-        return addressType;
-    }
-
-    public void setAddressType(FormBeanType type) {
-        this.addressType = type;
-    }
-
-    public FormBeanType getPhoneType() {
-        return phoneType;
-    }
-
-    public void setPhoneType(FormBeanType type) {
-        this.phoneType = type;
-    }
-
-    public FormBeanType getEmailType() {
-        return emailType;
-    }
-
-    public void setEmailType(FormBeanType type) {
-        this.emailType = type;
-    }
 }

@@ -218,13 +218,19 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("sortInfo: { field: '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', direction: 'DESC' }\n");
                     sb.append("});\n");
 
-                    sb.append("OrangeLeap.").append(entityType).append(".pagingBar = new Ext.PagingToolbar({\n");
-                    sb.append("pageSize: 100,\n");
-                    sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
-                    sb.append("displayInfo: true,\n");
-                    sb.append("displayMsg: '").append(TangerineMessageAccessor.getMessage("displayMsg")).append("',\n");
-                    sb.append("emptyMsg: '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("'\n");
-                    sb.append("});");
+                    if (isListGrid) {
+                        sb.append("OrangeLeap.").append(entityType).append(".pagingBar = new Ext.PagingToolbar({\n");
+                        sb.append("pageSize: 100,\n");
+                        sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
+                        sb.append("displayInfo: true,\n");
+                        sb.append("displayMsg: '").append(TangerineMessageAccessor.getMessage("displayMsg")).append("',\n");
+                        sb.append("emptyMsg: '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("'\n");
+                        sb.append("});");
+                    }
+                    else {
+                        sb.append("OrangeLeap.").append(entityType).append(".toolBar = new Ext.Toolbar({\n");
+                        sb.append("});");
+                    }
 
                     sb.append("OrangeLeap.").append(entityType).append(".grid = new Ext.grid.GridPanel({\n");
                     sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
@@ -315,7 +321,12 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append(";\n");
                     sb.append("}\n");
                     sb.append("},\n");
-                    sb.append("bbar: OrangeLeap.").append(entityType).append(".pagingBar,\n");
+                    if (isListGrid) {
+                        sb.append("bbar: OrangeLeap.").append(entityType).append(".pagingBar,\n");
+                    }
+                    else {
+                        
+                    }
                     sb.append("renderTo: '").append(entityType).append("Grid'\n");
                     sb.append("});\n");
                     if (isListGrid) {
@@ -324,7 +335,7 @@ public class SectionFieldTag extends AbstractTag {
                     }
                     else {
                         if (Boolean.TRUE.toString().equalsIgnoreCase(pageContext.getRequest().getParameter("autoLoad"))) {
-                            sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
+                            sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 200, sort: '");
                             sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC' ");
 
                             String searchFieldValue = pageContext.getRequest().getParameter("searchField");
@@ -339,7 +350,7 @@ public class SectionFieldTag extends AbstractTag {
                             sb.append("}});\n");
                         }
                         sb.append("$(\"#").append(entityType).append("SearchButton\").click(function() {\n");
-                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
+                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 200, sort: '");
                         sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC', ");
 
                         y = 0;

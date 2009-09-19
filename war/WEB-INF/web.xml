@@ -155,13 +155,6 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 
-	<jsp-config>
-		<taglib>
-			<taglib-uri>/tangerine-old</taglib-uri>
-			<taglib-location>/WEB-INF/tld/tangerine-old.tld</taglib-location>
-		</taglib>
-	</jsp-config>
-
 	<resource-ref>
 		<description>DB Connection</description>
 		<res-ref-name>jdbc/MPowerOpen</res-ref-name>

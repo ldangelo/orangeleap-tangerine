@@ -52,7 +52,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="temporaryEndDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element name="temporaryStartDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element name="undeliverable" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="userCreated" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -72,8 +71,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
         "seasonalStartDate",
         "temporaryEndDate",
         "temporaryStartDate",
-        "undeliverable",
-        "userCreated"
+        "undeliverable"
 })
 @XmlSeeAlso({
         Address.class,
@@ -100,7 +98,6 @@ public abstract class AbstractCommunicationEntity
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar temporaryStartDate;
     protected boolean undeliverable;
-    protected boolean userCreated;
 
     /**
      * Gets the value of the activationStatus property.
@@ -310,20 +307,6 @@ public abstract class AbstractCommunicationEntity
      */
     public void setUndeliverable(boolean value) {
         this.undeliverable = value;
-    }
-
-    /**
-     * Gets the value of the userCreated property.
-     */
-    public boolean isUserCreated() {
-        return userCreated;
-    }
-
-    /**
-     * Sets the value of the userCreated property.
-     */
-    public void setUserCreated(boolean value) {
-        this.userCreated = value;
     }
 
 }

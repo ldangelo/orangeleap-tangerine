@@ -40,19 +40,17 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.orangeleap.com/orangeleap/services/1.0}abstractCustomizableEntity">
  *       &lt;sequence>
- *         &lt;element name="addressType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="comments" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="communicationHistoryType" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="emailType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="entryType" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="giftId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *         &lt;element name="constituentId" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="pledgeId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *         &lt;element name="recordDate" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="recurringGiftId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
- *         &lt;element name="selectedAddress" type="{http://www.orangeleap.com/orangeleap/services/1.0}address" minOccurs="0"/>
- *         &lt;element name="selectedEmail" type="{http://www.orangeleap.com/orangeleap/services/1.0}email" minOccurs="0"/>
- *         &lt;element name="selectedPhone" type="{http://www.orangeleap.com/orangeleap/services/1.0}phone" minOccurs="0"/>
+ *         &lt;element name="address" type="{http://www.orangeleap.com/orangeleap/services/1.0}address" minOccurs="0"/>
+ *         &lt;element name="email" type="{http://www.orangeleap.com/orangeleap/services/1.0}email" minOccurs="0"/>
+ *         &lt;element name="phone" type="{http://www.orangeleap.com/orangeleap/services/1.0}phone" minOccurs="0"/>
  *         &lt;element name="systemGenerated" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/extension>
@@ -62,29 +60,25 @@ import javax.xml.datatype.XMLGregorianCalendar;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "communicationHistory", propOrder = {
-        "addressType",
         "comments",
         "communicationHistoryType",
-        "emailType",
         "entryType",
         "giftId",
         "constituentId",
         "pledgeId",
         "recordDate",
         "recurringGiftId",
-        "selectedAddress",
-        "selectedEmail",
-        "selectedPhone",
+        "address",
+        "email",
+        "phone",
         "systemGenerated"
 })
 public class CommunicationHistory
         extends AbstractCustomizableEntity {
 
-    protected String addressType;
     protected String comments;
     @XmlElement(required = true)
     protected String communicationHistoryType;
-    protected String emailType;
     @XmlElement(required = true)
     protected String entryType;
     protected Long giftId;
@@ -94,31 +88,10 @@ public class CommunicationHistory
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar recordDate;
     protected Long recurringGiftId;
-    protected Address selectedAddress;
-    protected Email selectedEmail;
-    protected Phone selectedPhone;
+    protected Address address;
+    protected Email email;
+    protected Phone phone;
     protected boolean systemGenerated;
-
-    /**
-     * Gets the value of the addressType property.
-     *
-     * @return possible object is
-     *         {@link String }
-     */
-    public String getAddressType() {
-        return addressType;
-    }
-
-    /**
-     * Sets the value of the addressType property.
-     *
-     * @param value allowed object is
-     *              {@link String }
-     */
-    public void setAddressType(String value) {
-        this.addressType = value;
-    }
-
     /**
      * Gets the value of the comments property.
      *
@@ -157,26 +130,6 @@ public class CommunicationHistory
      */
     public void setCommunicationHistoryType(String value) {
         this.communicationHistoryType = value;
-    }
-
-    /**
-     * Gets the value of the emailType property.
-     *
-     * @return possible object is
-     *         {@link String }
-     */
-    public String getEmailType() {
-        return emailType;
-    }
-
-    /**
-     * Sets the value of the emailType property.
-     *
-     * @param value allowed object is
-     *              {@link String }
-     */
-    public void setEmailType(String value) {
-        this.emailType = value;
     }
 
     /**
@@ -294,63 +247,63 @@ public class CommunicationHistory
     }
 
     /**
-     * Gets the value of the selectedAddress property.
+     * Gets the value of the address property.
      *
      * @return possible object is
      *         {@link Address }
      */
-    public Address getSelectedAddress() {
-        return selectedAddress;
+    public Address getAddress() {
+        return address;
     }
 
     /**
-     * Sets the value of the selectedAddress property.
+     * Sets the value of the address property.
      *
      * @param value allowed object is
      *              {@link Address }
      */
-    public void setSelectedAddress(Address value) {
-        this.selectedAddress = value;
+    public void setAddress(Address value) {
+        this.address = value;
     }
 
     /**
-     * Gets the value of the selectedEmail property.
+     * Gets the value of the email property.
      *
      * @return possible object is
      *         {@link Email }
      */
-    public Email getSelectedEmail() {
-        return selectedEmail;
+    public Email getEmail() {
+        return email;
     }
 
     /**
-     * Sets the value of the selectedEmail property.
+     * Sets the value of the email property.
      *
      * @param value allowed object is
      *              {@link Email }
      */
-    public void setSelectedEmail(Email value) {
-        this.selectedEmail = value;
+    public void setEmail(Email value) {
+        this.email = value;
     }
 
     /**
-     * Gets the value of the selectedPhone property.
+     * Gets the value of the phone property.
      *
      * @return possible object is
      *         {@link Phone }
      */
-    public Phone getSelectedPhone() {
-        return selectedPhone;
+    public Phone getPhone() {
+        return phone;
     }
 
     /**
-     * Sets the value of the selectedPhone property.
+     * Sets the value of the phone property.
      *
      * @param value allowed object is
      *              {@link Phone }
      */
-    public void setSelectedPhone(Phone value) {
-        this.selectedPhone = value;
+    public void setPhone(Phone value) {
+        this.phone = value;
     }
 
     /**

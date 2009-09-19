@@ -18,17 +18,20 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import com.orangeleap.tangerine.domain.*;
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.MutableGrid;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.PaymentSourceAware;
+import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.type.FormBeanType;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.list.LazyList;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
@@ -48,27 +51,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 	protected PaymentSource paymentSource;
 
 	protected List<DistributionLine> distributionLines = new ArrayList<DistributionLine>();
-
-    /**
-     * Form bean representation of the DistributionLines
-     */
-    protected List<DistributionLine> mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
-        public Object create() {
-            DistributionLine line = new DistributionLine(getConstituent());
-            return line;
-        }
-    });
-
-    /* Used by the form for cloning */
-    protected List<DistributionLine> dummyDistributionLines;
-
-    private FormBeanType addressType;
-    private FormBeanType phoneType;
-    private FormBeanType paymentSourceType;
-
-    protected Address selectedAddress = new Address();
-    protected Phone selectedPhone = new Phone();
-    protected PaymentSource selectedPaymentSource = new PaymentSource(constituent);
 
     public AbstractPaymentInfoEntity() {
         super();
@@ -159,70 +141,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 		}
 	}
 
-    public List<DistributionLine> getMutableDistributionLines() {
-        return mutableDistributionLines;
-    }
-
-    public void setMutableDistributionLines(List<DistributionLine> mutableDistributionLines) {
-        this.mutableDistributionLines = mutableDistributionLines;
-    }
-
-    public void removeEmptyMutableDistributionLines() {
-        Iterator<DistributionLine> mutableLinesIter = mutableDistributionLines.iterator();
-        distributionLines = new ArrayList<DistributionLine>();
-        while (mutableLinesIter.hasNext()) {
-            DistributionLine line = mutableLinesIter.next();
-            if (line != null) {
-                if (line.isFieldEntered() == false) {
-                    mutableLinesIter.remove();
-                } else {
-                    distributionLines.add(line);
-                }
-            }
-        }
-        if (distributionLines.isEmpty()) {
-            DistributionLine line = new DistributionLine(constituent);
-            distributionLines.add(line);
-        }
-    }
-
-    public void filterValidDistributionLines() {
-        distributionLines = new ArrayList<DistributionLine>();
-        Iterator<DistributionLine> mutableLinesIter = mutableDistributionLines.iterator();
-        while (mutableLinesIter.hasNext()) {
-            DistributionLine line = mutableLinesIter.next();
-            if (line != null && line.isValid()) {
-                distributionLines.add(line);
-            }
-        }
-    }
-
-    public FormBeanType getAddressType() {
-        return this.addressType;
-    }
-
-    public void setAddressType(FormBeanType type) {
-        this.addressType = type;
-    }
-
-    public FormBeanType getPhoneType() {
-        return this.phoneType;
-    }
-
-    public void setPhoneType(FormBeanType type) {
-        this.phoneType = type;
-    }
-
-    @Override
-    public FormBeanType getPaymentSourceType() {
-        return this.paymentSourceType;
-    }
-
-    @Override
-    public void setPaymentSourceType(FormBeanType type) {
-        this.paymentSourceType = type;
-    }
-
     @Override
     public PaymentSource getPaymentSource() {
         return paymentSource;
@@ -253,60 +171,8 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.phone = phone;
     }
 
-    @Override
-    public PaymentSource getSelectedPaymentSource() {
-        if (selectedPaymentSource == null) {
-            selectedPaymentSource = new PaymentSource(); // created only because spring needs to bind to it
-        }
-        return selectedPaymentSource;
-    }
-
-    public void setSelectedPaymentSource(PaymentSource selectedPaymentSource) {
-        this.selectedPaymentSource = selectedPaymentSource;
-    }
-
-    public Address getSelectedAddress() {
-        if (selectedAddress == null) {
-            selectedAddress = new Address(); // created only because spring needs to bind to it
-        }
-        return selectedAddress;
-    }
-
-    public void setSelectedAddress(Address selectedAddress) {
-        this.selectedAddress = selectedAddress;
-    }
-
-    public Phone getSelectedPhone() {
-        if (selectedPhone == null) {
-            selectedPhone = new Phone(); // created only because spring needs to bind to it
-        }
-        return selectedPhone;
-    }
-
-    public void setSelectedPhone(Phone selectedPhone) {
-        this.selectedPhone = selectedPhone;
-    }
-
     public Site getSite() {
         return constituent != null ? constituent.getSite() : null;
-    }
-
-    @Override
-    public void setPaymentSourcePaymentType() {
-        if (paymentSource != null) {
-            paymentSource.setPaymentType(getPaymentType());
-        }
-    }
-
-    @Override
-    public void setPaymentSourceAwarePaymentType() {
-        if (selectedPaymentSource != null) {
-            setPaymentType(selectedPaymentSource.getPaymentType());
-        }
-    }
-
-    public List<DistributionLine> getDummyDistributionLines() {
-        return dummyDistributionLines;
     }
 
     @Override

@@ -21,7 +21,6 @@ package com.orangeleap.tangerine.domain;
 import com.orangeleap.tangerine.domain.annotation.NotAuditable;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.AES;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
@@ -33,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
-public class PaymentSource extends AbstractEntity implements Inactivatible, Creatable, AddressAware, PhoneAware {
+public class PaymentSource extends AbstractEntity implements Inactivatible, AddressAware, PhoneAware {
 
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";
@@ -67,14 +66,9 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     private String achAccountNumber;
     private String lastFourDigits;
 
-    private FormBeanType addressType;
-    private FormBeanType phoneType;
     private Constituent constituent;
     private Address address = new Address(); // Created only because spring binds to it
     private Phone phone = new Phone(); // Created only because spring binds to it
-    private Address selectedAddress = new Address(); // Created only because spring binds to it
-    private Phone selectedPhone = new Phone(); // Created only because spring binds to it
-    private boolean userCreated = false;
 
     public PaymentSource() {
     }
@@ -392,56 +386,8 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
         setAddress(addressAware.getAddress());
     }
 
-    public Address getSelectedAddress() {
-        if (selectedAddress == null) {
-            selectedAddress = new Address(); // created only because spring needs to bind to it
-        }
-        return selectedAddress;
-    }
-
-    public void setSelectedAddress(Address selectedAddress) {
-        this.selectedAddress = selectedAddress;
-    }
-
     public void setFromPhoneAware(PhoneAware phoneAware) {
         setPhone(phoneAware.getPhone());
-    }
-
-    public Phone getSelectedPhone() {
-        if (selectedPhone == null) {
-            selectedPhone = new Phone(); // created only because spring needs to bind to it
-        }
-        return selectedPhone;
-    }
-
-    public void setSelectedPhone(Phone selectedPhone) {
-        this.selectedPhone = selectedPhone;
-    }
-
-    public FormBeanType getAddressType() {
-        return this.addressType;
-    }
-
-    public void setAddressType(FormBeanType type) {
-        this.addressType = type;
-    }
-
-    public FormBeanType getPhoneType() {
-        return this.phoneType;
-    }
-
-    public void setPhoneType(FormBeanType type) {
-        this.phoneType = type;
-    }
-
-    @Override
-    public boolean isUserCreated() {
-        return userCreated;
-    }
-
-    @Override
-    public void setUserCreated(boolean userCreated) {
-        this.userCreated = userCreated;
     }
 
     /**
@@ -553,7 +499,6 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("profile", profile).append("paymentType", paymentType).append(creditCardHolderName, "creditCardHolderName").
                 append("creditCardType", creditCardType).append("achHolderName", achHolderName).append("inactive", inactive).append("address", address).append("phone", phone).append("constituent", constituent).
-                append("userCreated", userCreated).append("selectedAddress", selectedAddress).append("selectedPhone", selectedPhone).
                 toString();
     }
 }

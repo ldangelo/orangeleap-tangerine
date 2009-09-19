@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
@@ -26,8 +25,9 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.web.customization.FieldVO;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -141,7 +141,7 @@ public class CodeValidator implements Validator {
     
     public boolean hasOtherCode(String key, BeanWrapper beanWrapper) {
         boolean hasOtherCode = false;
-        String keyOther = FieldVO.getOtherFieldName(key);
+        String keyOther = AbstractFieldHandler.resolvedUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, key);
         if (logger.isDebugEnabled()) {
             logger.debug("hasOtherCode: keyOther = " + keyOther);
         }

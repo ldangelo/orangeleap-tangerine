@@ -15,19 +15,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for email complex type.
+ * <p>Java class for segmentation complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="email">
+ * &lt;complexType name="segmentation">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.orangeleap.com/orangeleap/services/1.0}abstractCommunicationEntity">
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="emailAddress" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="emailDisplay" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
- *     &lt;/extension>
+ *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -35,64 +36,81 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "email", propOrder = {
-    "emailAddress",
-    "emailDisplay"
+@XmlType(name = "segmentation", propOrder = {
+    "id",
+    "name",
+    "description"
 })
-public class Email
-    extends AbstractCommunicationEntity
-{
+public class Segmentation {
 
+    protected long id;
     @XmlElement(required = true)
-    protected String emailAddress;
-    protected String emailDisplay;
+    protected String name;
+    @XmlElement(required = true)
+    protected String description;
 
     /**
-     * Gets the value of the emailAddress property.
+     * Gets the value of the id property.
+     * 
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     */
+    public void setId(long value) {
+        this.id = value;
+    }
+
+    /**
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the emailAddress property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setEmailAddress(String value) {
-        this.emailAddress = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Gets the value of the emailDisplay property.
+     * Gets the value of the description property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getEmailDisplay() {
-        return emailDisplay;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Sets the value of the emailDisplay property.
+     * Sets the value of the description property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setEmailDisplay(String value) {
-        this.emailDisplay = value;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
 }

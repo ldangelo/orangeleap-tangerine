@@ -303,8 +303,20 @@ public class OrangeLeapWS {
     public GetSegmentationListResponse getSegmentationList(GetSegmentationListRequest req) {
         GetSegmentationListResponse response = new GetSegmentationListResponse();
 
-        response.getSegmentation().add("Major Donor");
-        response.getSegmentation().add("Lapsed Donor");
+        Segmentation segmentation = new Segmentation();
+        segmentation.setId(0);
+        segmentation.setName("Major Donor");
+        segmentation.setDescription("All Major Donors");
+        
+
+        response.getSegmentation().add(segmentation);
+        
+        segmentation = new Segmentation();
+        segmentation.setId(1);
+        segmentation.setName("Lapsed Donor");
+        segmentation.setDescription("All Lapsed Donors");
+        
+        response.getSegmentation().add(segmentation);
 
         return response;
     }

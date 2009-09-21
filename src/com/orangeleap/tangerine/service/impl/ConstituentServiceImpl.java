@@ -375,8 +375,13 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (logger.isTraceEnabled()) {
             logger.trace("searchConstituents: params = " + params + " sort = " + sort);
         }
-        return constituentDao.searchConstituents(params, sort.getSort(), sort.getDir(), sort.getStart(),
+        String fullText = (String) params.get("fullText");
+        if (fullText != null) {
+        	return constituentDao.fullTextSearchConstituents(fullText);
+        } else {
+        	return constituentDao.searchConstituents(params, sort.getSort(), sort.getDir(), sort.getStart(),
                 sort.getLimit(), locale);
+        }
     }
 
     @Override

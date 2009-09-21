@@ -167,6 +167,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("delete this.lastOptions.params['").append(StringConstants.FULLTEXT).append("'];\n");
                         sb.append("return OrangeLeap.SearchStore.superclass.sort.call(this, fieldName, dir);\n");
                         sb.append("}});\n");
+                        sb.append("OrangeLeap.barTextItem = new Ext.Toolbar.TextItem({text: ' '});\n");
                     }
                     sb.append("Ext.onReady(function() {\n");
                     sb.append("Ext.QuickTips.init();\n");
@@ -239,9 +240,9 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("});\n");
                     }
                     else {
-                        sb.append("new Ext.Toolbar({\n");
-                        sb.append("items: [ { text: ' ' } ]\n");
-                        sb.append("});\n");
+                        sb.append("new Ext.Toolbar([\n");
+                        sb.append("OrangeLeap.barTextItem\n");
+                        sb.append("]);\n");
                     }
 
                     sb.append("OrangeLeap.").append(entityType).append(".grid = new Ext.grid.GridPanel({\n");
@@ -382,7 +383,6 @@ public class SectionFieldTag extends AbstractTag {
                     if (!isListGrid) {
                         sb.append("OrangeLeap.").append(entityType).append(".updateBar = function(r, options, success) {\n");
                         sb.append("if (success) {\n");
-                        sb.append("OrangeLeap.").append(entityType).append(".bar.items.clear();\n");
                         sb.append("var thisLength = this.getTotalCount();\n");
                         sb.append("if (thisLength == 0) {\n");
                         sb.append("var thisText = '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("';\n");
@@ -390,7 +390,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("else {\n");
                         sb.append("var thisText = '").append(TangerineMessageAccessor.getMessage("searchDisplayMsg")).append(" ' + thisLength + ' ").append(TangerineMessageAccessor.getMessage("searchResults")).append("';\n");
                         sb.append("}\n");
-                        sb.append("OrangeLeap.").append(entityType).append(".bar.add(thisText);\n");
+                        sb.append("OrangeLeap.barTextItem.setText(thisText);\n");
                         sb.append("};\n");
                         sb.append("};\n");
                     }

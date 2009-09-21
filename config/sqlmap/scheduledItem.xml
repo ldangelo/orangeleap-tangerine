@@ -57,6 +57,7 @@
         delete from SCHEDULED_ITEM where
          SOURCE_ENTITY = #sourceEntity#
         and SOURCE_ENTITY_ID = #sourceEntityId#
+        and COMPLETION_DATE is null
     </delete>
     
     <!-- NOTE: Do not change sort order here or nextrun calculations will be wrong!  -->

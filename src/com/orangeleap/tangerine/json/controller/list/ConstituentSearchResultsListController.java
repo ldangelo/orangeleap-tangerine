@@ -21,16 +21,19 @@ package com.orangeleap.tangerine.json.controller.list;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +46,7 @@ public class ConstituentSearchResultsListController extends TangerineJsonSearchR
     @SuppressWarnings("unchecked")
     @RequestMapping("/constituentSearch.json")
     public ModelMap searchConstituents(HttpServletRequest request, SortInfo sort) {
-        String isAutoLoad = request.getParameter("autoLoad");
+        String fullText = request.getParameter(StringConstants.FULLTEXT);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         List<SectionField> sectionFields = findSectionFields("constituentSearchResults");
 
@@ -52,8 +55,16 @@ public class ConstituentSearchResultsListController extends TangerineJsonSearchR
             sort = new SortInfo(filteredFields.get(0).getFieldPropertyName(), "ASC", 0, 100);
         }
 
-        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(new Constituent());
-        List<Constituent> constituents = constituentService.searchConstituents(findSearchParameters(request, bw), sort, request.getLocale());
+        Map<String, Object> parameters;
+        if (StringUtils.hasText(fullText)) {
+            parameters = new HashMap<String, Object>();
+            parameters.put(StringConstants.FULLTEXT, fullText);
+        }
+        else {
+            BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(new Constituent());
+            parameters = findSearchParameters(request, bw);
+        }
+        List<Constituent> constituents = constituentService.searchConstituents(parameters, sort, request.getLocale());
 
         addListFieldsToMap(request, sectionFields, constituents, list, false);
 

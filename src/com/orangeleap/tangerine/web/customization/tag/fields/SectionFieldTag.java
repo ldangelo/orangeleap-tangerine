@@ -215,21 +215,24 @@ public class SectionFieldTag extends AbstractTag {
                         }
                     }
                     sb.append("],\n");
-                    sb.append("sortInfo: { field: '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', direction: 'DESC' }\n");
+                    String direction = getInitDirection(fields);
+                    sb.append("sortInfo: { field: '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', direction: '").append(direction).append("' }\n");
                     sb.append("});\n");
 
+                    sb.append("OrangeLeap.").append(entityType).append(".bar = ");
                     if (isListGrid) {
-                        sb.append("OrangeLeap.").append(entityType).append(".pagingBar = new Ext.PagingToolbar({\n");
+                        sb.append("new Ext.PagingToolbar({\n");
                         sb.append("pageSize: 100,\n");
                         sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
                         sb.append("displayInfo: true,\n");
                         sb.append("displayMsg: '").append(TangerineMessageAccessor.getMessage("displayMsg")).append("',\n");
                         sb.append("emptyMsg: '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("'\n");
-                        sb.append("});");
+                        sb.append("});\n");
                     }
                     else {
-                        sb.append("OrangeLeap.").append(entityType).append(".toolBar = new Ext.Toolbar({\n");
-                        sb.append("});");
+                        sb.append("new Ext.Toolbar({\n");
+                        sb.append("items: [ { text: ' ' } ]\n");
+                        sb.append("});\n");
                     }
 
                     sb.append("OrangeLeap.").append(entityType).append(".grid = new Ext.grid.GridPanel({\n");
@@ -321,22 +324,19 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append(";\n");
                     sb.append("}\n");
                     sb.append("},\n");
-                    if (isListGrid) {
-                        sb.append("bbar: OrangeLeap.").append(entityType).append(".pagingBar,\n");
-                    }
-                    else {
-                        
-                    }
+                    sb.append("bbar: OrangeLeap.").append(entityType).append(".bar,\n");
                     sb.append("renderTo: '").append(entityType).append("Grid'\n");
                     sb.append("});\n");
                     if (isListGrid) {
                         sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
-                        sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC'}});\n");
+                        sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: '").append(direction).append("'}});\n");
                     }
                     else {
                         if (Boolean.TRUE.toString().equalsIgnoreCase(pageContext.getRequest().getParameter("autoLoad"))) {
-                            sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 200, sort: '");
-                            sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC' ");
+                            sb.append("OrangeLeap.").append(entityType).append(".store.load({");
+                            sb.append("callback: OrangeLeap.").append(entityType).append(".updateBar, ");
+                            sb.append("params: {start: 0, limit: 200, autoLoad: true, sort: '");
+                            sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: '").append(direction).append("' ");
 
                             String searchFieldValue = pageContext.getRequest().getParameter("searchField");
                             if (StringUtils.hasText(searchFieldValue)) {
@@ -350,8 +350,10 @@ public class SectionFieldTag extends AbstractTag {
                             sb.append("}});\n");
                         }
                         sb.append("$(\"#").append(entityType).append("SearchButton\").click(function() {\n");
-                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 200, sort: '");
-                        sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: 'DESC', ");
+                        sb.append("OrangeLeap.").append(entityType).append(".store.load({");
+                        sb.append("callback: OrangeLeap.").append(entityType).append(".updateBar, ");
+                        sb.append("params: {start: 0, limit: 200, autoLoad: false, sort: '");
+                        sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: '").append(direction).append("', ");
 
                         y = 0;
                         for (SectionField sectionFld : fields) {
@@ -368,6 +370,19 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("});\n");
                     }
                     sb.append("});\n");
+                    sb.append("OrangeLeap.").append(entityType).append(".updateBar = function(r, options, success) {\n");
+                    sb.append("if (success) {\n");
+                    sb.append("OrangeLeap.constituent.bar.items.clear();\n");
+                    sb.append("var thisLength = this.getTotalCount();\n");
+                    sb.append("if (thisLength == 0) {\n");
+                    sb.append("var thisText = '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("';\n");
+                    sb.append("}\n");
+                    sb.append("else {\n");
+                    sb.append("var thisText = '").append(TangerineMessageAccessor.getMessage("searchDisplayMsg")).append(" ' + thisLength + ' ").append(TangerineMessageAccessor.getMessage("searchResults")).append("';\n");
+                    sb.append("}\n");
+                    sb.append("OrangeLeap.constituent.bar.add(thisText);\n");
+                    sb.append("};\n");
+                    sb.append("};\n");
                     sb.append("</script>");
 				}
                 else if (LayoutType.TREE_GRID.equals(sectionDef.getLayoutType())) {
@@ -426,7 +441,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("var store = new Ext.ux.maximgb.tg.AdjacencyListStore({\n");
                     sb.append("autoLoad : true,\n");
                     sb.append("remoteSort: true,\n");
-                    sb.append("sortInfo: { field: 'a0', direction: 'DESC' },\n");
+                    sb.append("sortInfo: { field: 'a0', direction: '").append(getInitDirection(fields)).append("' },\n");
                     sb.append("url: '").append(entityType).append("List.json");
                     if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
                         sb.append("?constituentId=");
@@ -753,6 +768,12 @@ public class SectionFieldTag extends AbstractTag {
 			}
 		}
 	}
+
+    private String getInitDirection(List<SectionField> fields) {
+        return FieldType.DATE.equals(fields.get(0).getFieldType()) ||
+                FieldType.DATE_TIME.equals(fields.get(0).getFieldType()) ||
+                FieldType.DATE_DISPLAY.equals(fields.get(0).getFieldType()) ? "DESC" : "ASC";
+    }
 
 	private TangerineForm getTangerineForm() {
 		return (TangerineForm) getRequestAttribute(StringConstants.FORM);

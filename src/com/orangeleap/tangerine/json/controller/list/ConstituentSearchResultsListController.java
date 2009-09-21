@@ -43,6 +43,7 @@ public class ConstituentSearchResultsListController extends TangerineJsonSearchR
     @SuppressWarnings("unchecked")
     @RequestMapping("/constituentSearch.json")
     public ModelMap searchConstituents(HttpServletRequest request, SortInfo sort) {
+        String isAutoLoad = request.getParameter("autoLoad");
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         List<SectionField> sectionFields = findSectionFields("constituentSearchResults");
 

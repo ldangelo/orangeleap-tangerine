@@ -55,7 +55,7 @@ public class GiftSearchFormController extends TangerineFormController {
         gift.setConstituent(constituent);
         if (mapSearchFieldToAmount(request)) {
             // searchField value is mapped to 'amount'
-            gift.setAmount(new BigDecimal(request.getParameter("searchField")));
+            gift.setAmount(new BigDecimal(request.getParameter(StringConstants.SEARCH_FIELD)));
         }
         return gift;
     }
@@ -63,8 +63,10 @@ public class GiftSearchFormController extends TangerineFormController {
     @Override
     protected void onBind(HttpServletRequest request, Object command, BindException e) throws Exception {
         TangerineForm form = (TangerineForm) command;
+        request.setAttribute(StringConstants.SEARCH_TYPE, StringConstants.GIFT);
         if (mapSearchFieldToAmount(request)) {
-            String amountVal = request.getParameter("searchField");
+            String amountVal = request.getParameter(StringConstants.SEARCH_FIELD);
+            request.setAttribute(StringConstants.SEARCH_FIELD, amountVal);
 
             ServletRequestDataBinder binder = new ServletRequestDataBinder(form.getDomainObject());
             initBinder(request, binder);
@@ -78,7 +80,7 @@ public class GiftSearchFormController extends TangerineFormController {
 
     private boolean mapSearchFieldToAmount(HttpServletRequest request) {
         return Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter("autoLoad")) &&
-                NumberUtils.isNumber(request.getParameter("searchField"));
+                NumberUtils.isNumber(request.getParameter(StringConstants.SEARCH_FIELD));
     }
 
     @Override

@@ -51,6 +51,7 @@ public class ConstituentSearchFormController extends TangerineFormController {
 
     @Override
     protected void onBind(HttpServletRequest request, Object command, BindException e) throws Exception {
+        request.setAttribute(StringConstants.SEARCH_TYPE, StringConstants.CONSTITUENT);
         if (mapSearchFieldToLastName(request)) {
             String searchField = request.getParameter(StringConstants.SEARCH_FIELD);
             request.setAttribute(StringConstants.SEARCH_FIELD, searchField);

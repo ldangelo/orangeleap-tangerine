@@ -166,12 +166,16 @@
 	</div>
 	<div class="navRightCap"></div>
 	<div class="searchBar">
-		<form method="POST" action="constituentSearch.htm" id="searchForm" name="searchForm">
+        <c:choose>
+            <c:when test="${requestScope.searchType eq 'gift'}"><c:set var="thisSearchType" value="gift"/></c:when>
+            <c:otherwise><c:set var="thisSearchType" value="constituent"/></c:otherwise>
+        </c:choose>
+		<form method="POST" action="<c:out value='${thisSearchType}'/>Search.htm" id="searchForm" name="searchForm">
             <input type="hidden" name="autoLoad" id="autoLoad" value="true"/>
-			<input size="30" name="searchField" id="searchField" type="text"/>
+			<input size="30" name="searchField" id="searchField" type="text" value="<c:out value='${requestScope.searchField}'/>"/>
 			<select name="type" id="typeSearch">
-				<option value="people"><spring:message code="constituents"/></option>
-				<option value="gifts"><spring:message code="gifts"/></option>
+				<option value="people" <c:if test="${requestScope.searchType ne 'gift'}">selected="selected"</c:if>><spring:message code="constituents"/></option>
+				<option value="gifts" <c:if test="${requestScope.searchType eq 'gift'}">selected="selected"</c:if>><spring:message code="gifts"/></option>
 			</select>
 			<input type="submit" value="<spring:message code='search'/>" class="saveButton" />
 		</form>

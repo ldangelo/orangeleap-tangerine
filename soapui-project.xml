@@ -1,0 +1,1950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="tangerine" soapui-version="3.0.1" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="ProjectSettings@projectNature">com.eviware.soapui.soapuiNature</con:setting></con:settings><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="OrangeLeapBinding" type="wsdl" bindingName="{http://www.orangeleap.com/orangeleap/services/1.0}OrangeLeapBinding" soapVersion="1_1" anonymous="optional" definition="file:/Users/ldangelo/Development/tangerine/war/WEB-INF/orangeleap.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:/Users/ldangelo/Development/tangerine/war/WEB-INF/orangeleap.wsdl"><con:part><con:url>file:/Users/ldangelo/Development/tangerine/war/WEB-INF/orangeleap.wsdl</con:url><con:content><![CDATA[<wsdl:definitions targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:schema="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:tns="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="communicationHistory">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractCustomizableEntity">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="addressType" type="xs:string"/>
+              <xs:element minOccurs="0" name="comments" type="xs:string"/>
+              <xs:element minOccurs="1" name="communicationHistoryType" type="xs:string"/>
+              <xs:element minOccurs="0" name="emailType" type="xs:string"/>
+              <xs:element minOccurs="1" name="entryType" type="xs:string"/>
+              <xs:element minOccurs="0" name="giftId" type="xs:long"/>
+              <xs:element minOccurs="1" name="constituentId" type="xs:long"/>
+              <xs:element minOccurs="0" name="pledgeId" type="xs:long"/>
+              <xs:element minOccurs="1" name="recordDate" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="recurringGiftId" type="xs:long"/>
+              <xs:element minOccurs="0" name="selectedAddress" type="tns:address"/>
+              <xs:element minOccurs="0" name="selectedEmail" type="tns:email"/>
+              <xs:element minOccurs="0" name="selectedPhone" type="tns:phone"/>
+              <xs:element name="systemGenerated" type="xs:boolean"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="customField">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="dataType" type="xs:long"/>
+          <xs:element minOccurs="0" name="displayEndDate" type="xs:string"/>
+          <xs:element minOccurs="0" name="displayStartDate" type="xs:string"/>
+          <xs:element minOccurs="0" name="endDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="entityId" type="xs:long"/>
+          <xs:element minOccurs="1" name="entityType" type="xs:string"/>
+          <xs:element minOccurs="1" name="id" type="xs:long"/>
+          <xs:element minOccurs="1" name="name" type="xs:string"/>
+          <xs:element minOccurs="1" name="sequenceNumber" type="xs:int"/>
+          <xs:element minOccurs="0" name="startDate" type="xs:dateTime"/>
+          <xs:element minOccurs="1" name="value" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType abstract="true" name="abstractCustomizableEntity">
+        <xs:sequence>
+          <!--<xs:element name="createDate" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="updateDate" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>-->
+          <xs:element name="customFieldMap">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="entry">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element maxOccurs="1" minOccurs="1" name="key" type="xs:string"/>
+                      <xs:element maxOccurs="1" minOccurs="1" name="value" type="tns:customField"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="address">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractCommunicationEntity">
+            <xs:sequence>
+              <xs:element maxOccurs="1" minOccurs="1" name="addressLine1" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="0" name="addressLine2" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="0" name="addressLine3" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="1" name="city" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="1" name="country" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="1" name="postalCode" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="1" name="stateProvince" type="xs:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:simpleType name="activationType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="permanent"/>
+          <xs:enumeration value="temporary"/>
+          <xs:enumeration value="seasonal"/>
+          <xs:enumeration value="unknown"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:complexType abstract="true" name="abstractCommunicationEntity">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractCustomizableEntity">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="activationStatus" type="tns:activationType"/>
+              <xs:element minOccurs="0" name="comments" type="xs:string"/>
+              <xs:element minOccurs="0" name="effectiveDate" type="xs:dateTime"/>
+              <xs:element name="inactive" type="xs:boolean"/>
+              <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
+              <xs:element name="primary" type="xs:boolean"/>
+              <xs:element name="receiveCorrespondence" type="xs:boolean"/>
+              <xs:element minOccurs="0" name="seasonalEndDate" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="seasonalStartDate" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="temporaryEndDate" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="temporaryStartDate" type="xs:dateTime"/>
+              <xs:element name="undeliverable" type="xs:boolean"/>
+              <xs:element name="userCreated" type="xs:boolean"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="email">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractCommunicationEntity">
+            <xs:sequence>
+              <xs:element maxOccurs="1" minOccurs="1" name="emailAddress" type="xs:string"/>
+              <xs:element minOccurs="0" name="emailDisplay" type="xs:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="distributionLine">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractCustomizableEntity">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="adjustedGiftId" type="xs:long"/>
+              <xs:element minOccurs="0" name="amount" type="xs:decimal"/>
+              <xs:element minOccurs="0" name="giftId" type="xs:long"/>
+              <xs:element minOccurs="0" name="motivationCode" type="xs:string"/>
+              <xs:element minOccurs="0" name="other_motivationCode" type="xs:string"/>
+              <xs:element minOccurs="0" name="percentage" type="xs:decimal"/>
+              <xs:element minOccurs="0" name="constituentId" type="xs:long"/>
+              <xs:element minOccurs="0" name="pledgeId" type="xs:long"/>
+              <xs:element minOccurs="0" name="projectCode" type="xs:string"/>
+              <xs:element minOccurs="0" name="recurringGiftId" type="xs:long"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="paymentSource">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="achAccountNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="achAccountNumberDisplay" type="xs:string"/>
+          <xs:element minOccurs="0" name="achAccountNumberEncrypted" type="xs:string"/>
+          <xs:element minOccurs="0" name="achHolderName" type="xs:string"/>
+          <xs:element minOccurs="0" name="achRoutingNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="achRoutingNumberDisplay" type="xs:string"/>
+          <xs:element minOccurs="0" name="address" type="tns:address"/>
+          <xs:element minOccurs="0" name="creditCardExpiration" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="creditCardExpirationMonth" type="xs:int"/>
+          <xs:element minOccurs="0" name="creditCardExpirationYear" type="xs:int"/>
+          <xs:element minOccurs="0" name="creditCardHolderName" type="xs:string"/>
+          <xs:element minOccurs="0" name="creditCardNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="creditCardNumberDisplay" type="xs:string"/>
+          <xs:element minOccurs="0" name="creditCardNumberEncrypted" type="xs:string"/>
+          <xs:element minOccurs="0" name="creditCardSecurityCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="creditCardType" type="xs:string"/>
+          <xs:element name="inactive" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="lastFourDigits" type="xs:string"/>
+          <xs:element minOccurs="0" name="paymentType" type="tns:PaymentType"/>
+          <xs:element minOccurs="0" name="constituentId" type="xs:long"/>
+          <xs:element minOccurs="0" name="phone" type="tns:phone"/>
+          <xs:element minOccurs="0" name="profile" type="xs:string"/>
+          <xs:element name="userCreated" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="PaymentType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ACH"/>
+          <xs:enumeration value="Credit Card"/>
+          <xs:enumeration value="Cash"/>
+          <xs:enumeration value="Check"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:complexType abstract="true" name="abstractPaymentInfoEntity">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractCustomizableEntity">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="acknowledgmentDate" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="address" type="tns:address"/>
+              <xs:element minOccurs="0" name="checkNumber" type="xs:int"/>
+              <xs:element minOccurs="0" name="comments" type="xs:string"/>
+              <xs:element minOccurs="0" name="currencyCode" type="xs:string"/>
+              <xs:element maxOccurs="unbounded" minOccurs="0" name="distributionLines" nillable="true" type="tns:distributionLine"/>
+              <xs:element minOccurs="0" name="email" type="tns:email"/>
+              <xs:element minOccurs="0" name="paymentSource" type="tns:paymentSource"/>
+              <xs:element minOccurs="0" name="paymentType" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
+              <xs:element minOccurs="0" name="phone" type="tns:phone"/>
+              <xs:element name="sendAcknowledgment" type="xs:boolean"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="phone">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractCommunicationEntity">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="number" type="xs:string"/>
+              <xs:element minOccurs="0" name="provider" type="xs:string"/>
+              <xs:element minOccurs="0" name="sms" type="xs:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="gift">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractPaymentInfoEntity">
+            <xs:sequence>
+              <xs:element minOccurs="1" name="amount" type="xs:decimal"/>
+              <xs:element minOccurs="0" name="authCode" type="xs:string"/>
+              <xs:element name="deductible" type="xs:boolean"/>
+              <xs:element minOccurs="0" name="deductibleAmount" type="xs:decimal"/>
+              <xs:element minOccurs="0" name="donationDate" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="giftStatus" type="xs:string"/>
+              <xs:element minOccurs="0" name="paymentMessage" type="xs:string"/>
+              <xs:element minOccurs="0" name="paymentStatus" type="xs:string"/>
+              <xs:element minOccurs="0" name="postmarkDate" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="transactionDate" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="txRefNum" type="xs:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="constituent">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractCustomizableEntity">
+            <xs:sequence>
+              <xs:element maxOccurs="1" minOccurs="0" name="accountNumber" type="xs:long"/>
+              <xs:element maxOccurs="1" minOccurs="1" name="firstName" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="1" name="lastName" type="xs:string"/>
+              <xs:element maxOccurs="1" minOccurs="0" name="title" type="xs:string"/>
+              <xs:element maxOccurs="unbounded" minOccurs="0" name="addresses" nillable="true" type="tns:address"/>
+              <xs:element maxOccurs="unbounded" minOccurs="0" name="emails" nillable="true" type="tns:email"/>
+              <xs:element maxOccurs="unbounded" minOccurs="0" name="phones" nillable="true" type="tns:phone"/>
+              <xs:element minOccurs="0" name="primaryAddress" type="tns:address"/>
+              <xs:element minOccurs="0" name="primaryEmail" type="tns:email"/>
+              <xs:element minOccurs="0" name="primaryPhone" type="tns:phone"/>
+              <xs:element minOccurs="0" name="organizationName" type="xs:string"/>
+              <xs:element minOccurs="0" name="constituentAttributes" type="xs:string"/>
+              <xs:element minOccurs="0" name="constituentIndividualRoles" type="xs:string"/>
+              <xs:element minOccurs="0" name="constituentOrganizationRoles" type="xs:string"/>
+              <xs:element minOccurs="0" name="constituentType" type="xs:string"/>
+              <xs:element minOccurs="0" name="preferredPhoneType" type="xs:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="SaveOrUpdateConstituentRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="constituent" type="tns:constituent"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="CreateDefaultConstituentRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="dummy" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="CreateDefaultConstituentResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="FindConstituentsRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="firstName" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="lastName" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="primaryAddress" type="tns:address"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="primaryPhone" type="tns:phone"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="primaryEmail" type="tns:email"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="FindConstituentsResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SearchConstituentsRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="firstName" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="lastName" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="primaryAddress" type="tns:address"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="primaryPhone" type="tns:phone"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="primaryEmail" type="tns:email"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SearchConstituentsResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="constituent" type="tns:constituent"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SaveOrUpdateGiftRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="constituentId" type="xs:long"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="gift" type="tns:gift"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetConstituentGiftRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="constituentId" type="xs:long"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetConstituentGiftResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="gift" type="tns:gift"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetSegmentationRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="segmentation" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetSegmentationResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetSegmentationListRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="dummy" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetSegmentationListResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="segmentation" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="AddCommunicationHistoryRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="communicationHistory" type="tns:communicationHistory"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetCommunicationHistoryRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetCommunicationHistoryResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="communicationHistory" type="tns:communicationHistory"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="GetCommunicationHistoryRequest">
+    <wsdl:part element="schema:GetCommunicationHistoryRequest" name="GetCommunicationHistoryRequest"/>
+  </wsdl:message>
+  <wsdl:message name="AddCommunicationHistoryRequest">
+    <wsdl:part element="schema:AddCommunicationHistoryRequest" name="AddCommunicationHistoryRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetConstituentGiftResponse">
+    <wsdl:part element="schema:GetConstituentGiftResponse" name="GetConstituentGiftResponse"/>
+  </wsdl:message>
+  <wsdl:message name="SaveOrUpdateConstituentRequest">
+    <wsdl:part element="schema:SaveOrUpdateConstituentRequest" name="SaveOrUpdateConstituentRequest"/>
+  </wsdl:message>
+  <wsdl:message name="SaveOrUpdateGiftRequest">
+    <wsdl:part element="schema:SaveOrUpdateGiftRequest" name="SaveOrUpdateGiftRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetCommunicationHistoryResponse">
+    <wsdl:part element="schema:GetCommunicationHistoryResponse" name="GetCommunicationHistoryResponse"/>
+  </wsdl:message>
+  <wsdl:message name="SearchConstituentsResponse">
+    <wsdl:part element="schema:SearchConstituentsResponse" name="SearchConstituentsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="GetSegmentationResponse">
+    <wsdl:part element="schema:GetSegmentationResponse" name="GetSegmentationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="CreateDefaultConstituentResponse">
+    <wsdl:part element="schema:CreateDefaultConstituentResponse" name="CreateDefaultConstituentResponse"/>
+  </wsdl:message>
+  <wsdl:message name="GetSegmentationRequest">
+    <wsdl:part element="schema:GetSegmentationRequest" name="GetSegmentationRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetConstituentGiftRequest">
+    <wsdl:part element="schema:GetConstituentGiftRequest" name="GetConstituentGiftRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetSegmentationListRequest">
+    <wsdl:part element="schema:GetSegmentationListRequest" name="GetSegmentationListRequest"/>
+  </wsdl:message>
+  <wsdl:message name="FindConstituentsResponse">
+    <wsdl:part element="schema:FindConstituentsResponse" name="FindConstituentsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="GetSegmentationListResponse">
+    <wsdl:part element="schema:GetSegmentationListResponse" name="GetSegmentationListResponse"/>
+  </wsdl:message>
+  <wsdl:message name="FindConstituentsRequest">
+    <wsdl:part element="schema:FindConstituentsRequest" name="FindConstituentsRequest"/>
+  </wsdl:message>
+  <wsdl:message name="CreateDefaultConstituentRequest">
+    <wsdl:part element="schema:CreateDefaultConstituentRequest" name="CreateDefaultConstituentRequest"/>
+  </wsdl:message>
+  <wsdl:message name="SearchConstituentsRequest">
+    <wsdl:part element="schema:SearchConstituentsRequest" name="SearchConstituentsRequest"/>
+  </wsdl:message>
+  <wsdl:portType name="OrangeLeap">
+    <wsdl:operation name="GetCommunicationHistory">
+      <wsdl:input message="schema:GetCommunicationHistoryRequest" name="GetCommunicationHistoryRequest"/>
+      <wsdl:output message="schema:GetCommunicationHistoryResponse" name="GetCommunicationHistoryResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="AddCommunicationHistory">
+      <wsdl:input message="schema:AddCommunicationHistoryRequest" name="AddCommunicationHistoryRequest"/>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdateConstituent">
+      <wsdl:input message="schema:SaveOrUpdateConstituentRequest" name="SaveOrUpdateConstituentRequest"/>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdateGift">
+      <wsdl:input message="schema:SaveOrUpdateGiftRequest" name="SaveOrUpdateGiftRequest"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentation">
+      <wsdl:input message="schema:GetSegmentationRequest" name="GetSegmentationRequest"/>
+      <wsdl:output message="schema:GetSegmentationResponse" name="GetSegmentationResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetConstituentGift">
+      <wsdl:input message="schema:GetConstituentGiftRequest" name="GetConstituentGiftRequest"/>
+      <wsdl:output message="schema:GetConstituentGiftResponse" name="GetConstituentGiftResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentationList">
+      <wsdl:input message="schema:GetSegmentationListRequest" name="GetSegmentationListRequest"/>
+      <wsdl:output message="schema:GetSegmentationListResponse" name="GetSegmentationListResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="FindConstituents">
+      <wsdl:input message="schema:FindConstituentsRequest" name="FindConstituentsRequest"/>
+      <wsdl:output message="schema:FindConstituentsResponse" name="FindConstituentsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="CreateDefaultConstituent">
+      <wsdl:input message="schema:CreateDefaultConstituentRequest" name="CreateDefaultConstituentRequest"/>
+      <wsdl:output message="schema:CreateDefaultConstituentResponse" name="CreateDefaultConstituentResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="SearchConstituents">
+      <wsdl:input message="schema:SearchConstituentsRequest" name="SearchConstituentsRequest"/>
+      <wsdl:output message="schema:SearchConstituentsResponse" name="SearchConstituentsResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="OrangeLeapBinding" type="schema:OrangeLeap">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetCommunicationHistory">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetCommunicationHistoryRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetCommunicationHistoryResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddCommunicationHistory">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="AddCommunicationHistoryRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdateConstituent">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="SaveOrUpdateConstituentRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdateGift">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="SaveOrUpdateGiftRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentation">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetSegmentationRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetSegmentationResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetConstituentGift">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetConstituentGiftRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetConstituentGiftResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentationList">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetSegmentationListRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetSegmentationListResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FindConstituents">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="FindConstituentsRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="FindConstituentsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateDefaultConstituent">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="CreateDefaultConstituentRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="CreateDefaultConstituentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchConstituents">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="SearchConstituentsRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SearchConstituentsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="OrangeLeapService">
+    <wsdl:port binding="schema:OrangeLeapBinding" name="OrangeLeapPort">
+      <soap:address location="http://localhost:8080/orangeleap/services/1.0/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="AddCommunicationHistory" bindingOperationName="AddCommunicationHistory" type="One-Way" inputName="AddCommunicationHistoryRequest" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:AddCommunicationHistoryRequest>
+         <ns:constituentId>?</ns:constituentId>
+         <ns:communicationHistory>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:addressType>?</ns:addressType>
+            <!--Optional:-->
+            <ns:comments>?</ns:comments>
+            <ns:communicationHistoryType>?</ns:communicationHistoryType>
+            <!--Optional:-->
+            <ns:emailType>?</ns:emailType>
+            <ns:entryType>?</ns:entryType>
+            <!--Optional:-->
+            <ns:giftId>?</ns:giftId>
+            <ns:constituentId>?</ns:constituentId>
+            <!--Optional:-->
+            <ns:pledgeId>?</ns:pledgeId>
+            <ns:recordDate>?</ns:recordDate>
+            <!--Optional:-->
+            <ns:recurringGiftId>?</ns:recurringGiftId>
+            <!--Optional:-->
+            <ns:selectedAddress>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <ns:addressLine1>?</ns:addressLine1>
+               <!--Optional:-->
+               <ns:addressLine2>?</ns:addressLine2>
+               <!--Optional:-->
+               <ns:addressLine3>?</ns:addressLine3>
+               <ns:city>?</ns:city>
+               <ns:country>?</ns:country>
+               <ns:postalCode>?</ns:postalCode>
+               <ns:stateProvince>?</ns:stateProvince>
+            </ns:selectedAddress>
+            <!--Optional:-->
+            <ns:selectedEmail>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <ns:emailAddress>?</ns:emailAddress>
+               <!--Optional:-->
+               <ns:emailDisplay>?</ns:emailDisplay>
+            </ns:selectedEmail>
+            <!--Optional:-->
+            <ns:selectedPhone>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <!--Optional:-->
+               <ns:number>?</ns:number>
+               <!--Optional:-->
+               <ns:provider>?</ns:provider>
+               <!--Optional:-->
+               <ns:sms>?</ns:sms>
+            </ns:selectedPhone>
+            <ns:systemGenerated>?</ns:systemGenerated>
+         </ns:communicationHistory>
+      </ns:AddCommunicationHistoryRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/AddCommunicationHistoryRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="CreateDefaultConstituent" bindingOperationName="CreateDefaultConstituent" type="Request-Response" outputName="CreateDefaultConstituentResponse" inputName="CreateDefaultConstituentRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:CreateDefaultConstituentRequest>
+         <ns:dummy>?</ns:dummy>
+      </ns:CreateDefaultConstituentRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/CreateDefaultConstituentRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="FindConstituents" bindingOperationName="FindConstituents" type="Request-Response" outputName="FindConstituentsResponse" inputName="FindConstituentsRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:FindConstituentsRequest>
+         <!--Optional:-->
+         <ns:firstName>?</ns:firstName>
+         <!--Optional:-->
+         <ns:lastName>?</ns:lastName>
+         <!--Optional:-->
+         <ns:primaryAddress>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:activationStatus>?</ns:activationStatus>
+            <!--Optional:-->
+            <ns:comments>?</ns:comments>
+            <!--Optional:-->
+            <ns:effectiveDate>?</ns:effectiveDate>
+            <ns:inactive>?</ns:inactive>
+            <ns:constituentId>?</ns:constituentId>
+            <ns:primary>?</ns:primary>
+            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+            <!--Optional:-->
+            <ns:seasonalEndDate>?</ns:seasonalEndDate>
+            <!--Optional:-->
+            <ns:seasonalStartDate>?</ns:seasonalStartDate>
+            <!--Optional:-->
+            <ns:temporaryEndDate>?</ns:temporaryEndDate>
+            <!--Optional:-->
+            <ns:temporaryStartDate>?</ns:temporaryStartDate>
+            <ns:undeliverable>?</ns:undeliverable>
+            <ns:userCreated>?</ns:userCreated>
+            <ns:addressLine1>?</ns:addressLine1>
+            <!--Optional:-->
+            <ns:addressLine2>?</ns:addressLine2>
+            <!--Optional:-->
+            <ns:addressLine3>?</ns:addressLine3>
+            <ns:city>?</ns:city>
+            <ns:country>?</ns:country>
+            <ns:postalCode>?</ns:postalCode>
+            <ns:stateProvince>?</ns:stateProvince>
+         </ns:primaryAddress>
+         <!--Optional:-->
+         <ns:primaryPhone>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:activationStatus>?</ns:activationStatus>
+            <!--Optional:-->
+            <ns:comments>?</ns:comments>
+            <!--Optional:-->
+            <ns:effectiveDate>?</ns:effectiveDate>
+            <ns:inactive>?</ns:inactive>
+            <ns:constituentId>?</ns:constituentId>
+            <ns:primary>?</ns:primary>
+            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+            <!--Optional:-->
+            <ns:seasonalEndDate>?</ns:seasonalEndDate>
+            <!--Optional:-->
+            <ns:seasonalStartDate>?</ns:seasonalStartDate>
+            <!--Optional:-->
+            <ns:temporaryEndDate>?</ns:temporaryEndDate>
+            <!--Optional:-->
+            <ns:temporaryStartDate>?</ns:temporaryStartDate>
+            <ns:undeliverable>?</ns:undeliverable>
+            <ns:userCreated>?</ns:userCreated>
+            <!--Optional:-->
+            <ns:number>?</ns:number>
+            <!--Optional:-->
+            <ns:provider>?</ns:provider>
+            <!--Optional:-->
+            <ns:sms>?</ns:sms>
+         </ns:primaryPhone>
+         <!--Optional:-->
+         <ns:primaryEmail>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:activationStatus>?</ns:activationStatus>
+            <!--Optional:-->
+            <ns:comments>?</ns:comments>
+            <!--Optional:-->
+            <ns:effectiveDate>?</ns:effectiveDate>
+            <ns:inactive>?</ns:inactive>
+            <ns:constituentId>?</ns:constituentId>
+            <ns:primary>?</ns:primary>
+            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+            <!--Optional:-->
+            <ns:seasonalEndDate>?</ns:seasonalEndDate>
+            <!--Optional:-->
+            <ns:seasonalStartDate>?</ns:seasonalStartDate>
+            <!--Optional:-->
+            <ns:temporaryEndDate>?</ns:temporaryEndDate>
+            <!--Optional:-->
+            <ns:temporaryStartDate>?</ns:temporaryStartDate>
+            <ns:undeliverable>?</ns:undeliverable>
+            <ns:userCreated>?</ns:userCreated>
+            <ns:emailAddress>?</ns:emailAddress>
+            <!--Optional:-->
+            <ns:emailDisplay>?</ns:emailDisplay>
+         </ns:primaryEmail>
+      </ns:FindConstituentsRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/FindConstituentsRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetCommunicationHistory" bindingOperationName="GetCommunicationHistory" type="Request-Response" outputName="GetCommunicationHistoryResponse" inputName="GetCommunicationHistoryRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:GetCommunicationHistoryRequest>
+         <ns:constituentId>?</ns:constituentId>
+      </ns:GetCommunicationHistoryRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/GetCommunicationHistoryRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetConstituentGift" bindingOperationName="GetConstituentGift" type="Request-Response" outputName="GetConstituentGiftResponse" inputName="GetConstituentGiftRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:GetConstituentGiftRequest>
+         <ns:constituentId>?</ns:constituentId>
+      </ns:GetConstituentGiftRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/GetConstituentGiftRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetSegmentation" bindingOperationName="GetSegmentation" type="Request-Response" outputName="GetSegmentationResponse" inputName="GetSegmentationRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:GetSegmentationRequest>
+         <ns:segmentation>?</ns:segmentation>
+      </ns:GetSegmentationRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/GetSegmentationRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetSegmentationList" bindingOperationName="GetSegmentationList" type="Request-Response" outputName="GetSegmentationListResponse" inputName="GetSegmentationListRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:GetSegmentationListRequest>
+         <ns:dummy>?</ns:dummy>
+      </ns:GetSegmentationListRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/GetSegmentationListRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="SaveOrUpdateConstituent" bindingOperationName="SaveOrUpdateConstituent" type="One-Way" inputName="SaveOrUpdateConstituentRequest" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:SaveOrUpdateConstituentRequest>
+         <ns:constituent>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:accountNumber>?</ns:accountNumber>
+            <ns:firstName>?</ns:firstName>
+            <ns:lastName>?</ns:lastName>
+            <!--Optional:-->
+            <ns:title>?</ns:title>
+            <!--Zero or more repetitions:-->
+            <ns:addresses>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <ns:addressLine1>?</ns:addressLine1>
+               <!--Optional:-->
+               <ns:addressLine2>?</ns:addressLine2>
+               <!--Optional:-->
+               <ns:addressLine3>?</ns:addressLine3>
+               <ns:city>?</ns:city>
+               <ns:country>?</ns:country>
+               <ns:postalCode>?</ns:postalCode>
+               <ns:stateProvince>?</ns:stateProvince>
+            </ns:addresses>
+            <!--Zero or more repetitions:-->
+            <ns:emails>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <ns:emailAddress>?</ns:emailAddress>
+               <!--Optional:-->
+               <ns:emailDisplay>?</ns:emailDisplay>
+            </ns:emails>
+            <!--Zero or more repetitions:-->
+            <ns:phones>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <!--Optional:-->
+               <ns:number>?</ns:number>
+               <!--Optional:-->
+               <ns:provider>?</ns:provider>
+               <!--Optional:-->
+               <ns:sms>?</ns:sms>
+            </ns:phones>
+            <!--Optional:-->
+            <ns:primaryAddress>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <ns:addressLine1>?</ns:addressLine1>
+               <!--Optional:-->
+               <ns:addressLine2>?</ns:addressLine2>
+               <!--Optional:-->
+               <ns:addressLine3>?</ns:addressLine3>
+               <ns:city>?</ns:city>
+               <ns:country>?</ns:country>
+               <ns:postalCode>?</ns:postalCode>
+               <ns:stateProvince>?</ns:stateProvince>
+            </ns:primaryAddress>
+            <!--Optional:-->
+            <ns:primaryEmail>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <ns:emailAddress>?</ns:emailAddress>
+               <!--Optional:-->
+               <ns:emailDisplay>?</ns:emailDisplay>
+            </ns:primaryEmail>
+            <!--Optional:-->
+            <ns:primaryPhone>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <!--Optional:-->
+               <ns:number>?</ns:number>
+               <!--Optional:-->
+               <ns:provider>?</ns:provider>
+               <!--Optional:-->
+               <ns:sms>?</ns:sms>
+            </ns:primaryPhone>
+            <!--Optional:-->
+            <ns:organizationName>?</ns:organizationName>
+            <!--Optional:-->
+            <ns:constituentAttributes>?</ns:constituentAttributes>
+            <!--Optional:-->
+            <ns:constituentIndividualRoles>?</ns:constituentIndividualRoles>
+            <!--Optional:-->
+            <ns:constituentOrganizationRoles>?</ns:constituentOrganizationRoles>
+            <!--Optional:-->
+            <ns:constituentType>?</ns:constituentType>
+            <!--Optional:-->
+            <ns:preferredPhoneType>?</ns:preferredPhoneType>
+         </ns:constituent>
+      </ns:SaveOrUpdateConstituentRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/SaveOrUpdateConstituentRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="SaveOrUpdateGift" bindingOperationName="SaveOrUpdateGift" type="One-Way" inputName="SaveOrUpdateGiftRequest" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:SaveOrUpdateGiftRequest>
+         <ns:constituentId>?</ns:constituentId>
+         <ns:gift>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:acknowledgmentDate>?</ns:acknowledgmentDate>
+            <!--Optional:-->
+            <ns:address>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <ns:addressLine1>?</ns:addressLine1>
+               <!--Optional:-->
+               <ns:addressLine2>?</ns:addressLine2>
+               <!--Optional:-->
+               <ns:addressLine3>?</ns:addressLine3>
+               <ns:city>?</ns:city>
+               <ns:country>?</ns:country>
+               <ns:postalCode>?</ns:postalCode>
+               <ns:stateProvince>?</ns:stateProvince>
+            </ns:address>
+            <!--Optional:-->
+            <ns:checkNumber>?</ns:checkNumber>
+            <!--Optional:-->
+            <ns:comments>?</ns:comments>
+            <!--Optional:-->
+            <ns:currencyCode>?</ns:currencyCode>
+            <!--Zero or more repetitions:-->
+            <ns:distributionLines>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:adjustedGiftId>?</ns:adjustedGiftId>
+               <!--Optional:-->
+               <ns:amount>?</ns:amount>
+               <!--Optional:-->
+               <ns:giftId>?</ns:giftId>
+               <!--Optional:-->
+               <ns:motivationCode>?</ns:motivationCode>
+               <!--Optional:-->
+               <ns:other_motivationCode>?</ns:other_motivationCode>
+               <!--Optional:-->
+               <ns:percentage>?</ns:percentage>
+               <!--Optional:-->
+               <ns:constituentId>?</ns:constituentId>
+               <!--Optional:-->
+               <ns:pledgeId>?</ns:pledgeId>
+               <!--Optional:-->
+               <ns:projectCode>?</ns:projectCode>
+               <!--Optional:-->
+               <ns:recurringGiftId>?</ns:recurringGiftId>
+            </ns:distributionLines>
+            <!--Optional:-->
+            <ns:email>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <ns:emailAddress>?</ns:emailAddress>
+               <!--Optional:-->
+               <ns:emailDisplay>?</ns:emailDisplay>
+            </ns:email>
+            <!--Optional:-->
+            <ns:paymentSource>
+               <!--Optional:-->
+               <ns:achAccountNumber>?</ns:achAccountNumber>
+               <!--Optional:-->
+               <ns:achAccountNumberDisplay>?</ns:achAccountNumberDisplay>
+               <!--Optional:-->
+               <ns:achAccountNumberEncrypted>?</ns:achAccountNumberEncrypted>
+               <!--Optional:-->
+               <ns:achHolderName>?</ns:achHolderName>
+               <!--Optional:-->
+               <ns:achRoutingNumber>?</ns:achRoutingNumber>
+               <!--Optional:-->
+               <ns:achRoutingNumberDisplay>?</ns:achRoutingNumberDisplay>
+               <!--Optional:-->
+               <ns:address>
+                  <ns:customFieldMap>
+                     <!--Zero or more repetitions:-->
+                     <ns:entry>
+                        <ns:key>?</ns:key>
+                        <ns:value>
+                           <!--Optional:-->
+                           <ns:dataType>?</ns:dataType>
+                           <!--Optional:-->
+                           <ns:displayEndDate>?</ns:displayEndDate>
+                           <!--Optional:-->
+                           <ns:displayStartDate>?</ns:displayStartDate>
+                           <!--Optional:-->
+                           <ns:endDate>?</ns:endDate>
+                           <!--Optional:-->
+                           <ns:entityId>?</ns:entityId>
+                           <ns:entityType>?</ns:entityType>
+                           <ns:id>?</ns:id>
+                           <ns:name>?</ns:name>
+                           <ns:sequenceNumber>?</ns:sequenceNumber>
+                           <!--Optional:-->
+                           <ns:startDate>?</ns:startDate>
+                           <ns:value>?</ns:value>
+                        </ns:value>
+                     </ns:entry>
+                  </ns:customFieldMap>
+                  <!--Optional:-->
+                  <ns:activationStatus>?</ns:activationStatus>
+                  <!--Optional:-->
+                  <ns:comments>?</ns:comments>
+                  <!--Optional:-->
+                  <ns:effectiveDate>?</ns:effectiveDate>
+                  <ns:inactive>?</ns:inactive>
+                  <ns:constituentId>?</ns:constituentId>
+                  <ns:primary>?</ns:primary>
+                  <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+                  <!--Optional:-->
+                  <ns:seasonalEndDate>?</ns:seasonalEndDate>
+                  <!--Optional:-->
+                  <ns:seasonalStartDate>?</ns:seasonalStartDate>
+                  <!--Optional:-->
+                  <ns:temporaryEndDate>?</ns:temporaryEndDate>
+                  <!--Optional:-->
+                  <ns:temporaryStartDate>?</ns:temporaryStartDate>
+                  <ns:undeliverable>?</ns:undeliverable>
+                  <ns:userCreated>?</ns:userCreated>
+                  <ns:addressLine1>?</ns:addressLine1>
+                  <!--Optional:-->
+                  <ns:addressLine2>?</ns:addressLine2>
+                  <!--Optional:-->
+                  <ns:addressLine3>?</ns:addressLine3>
+                  <ns:city>?</ns:city>
+                  <ns:country>?</ns:country>
+                  <ns:postalCode>?</ns:postalCode>
+                  <ns:stateProvince>?</ns:stateProvince>
+               </ns:address>
+               <!--Optional:-->
+               <ns:creditCardExpiration>?</ns:creditCardExpiration>
+               <!--Optional:-->
+               <ns:creditCardExpirationMonth>?</ns:creditCardExpirationMonth>
+               <!--Optional:-->
+               <ns:creditCardExpirationYear>?</ns:creditCardExpirationYear>
+               <!--Optional:-->
+               <ns:creditCardHolderName>?</ns:creditCardHolderName>
+               <!--Optional:-->
+               <ns:creditCardNumber>?</ns:creditCardNumber>
+               <!--Optional:-->
+               <ns:creditCardNumberDisplay>?</ns:creditCardNumberDisplay>
+               <!--Optional:-->
+               <ns:creditCardNumberEncrypted>?</ns:creditCardNumberEncrypted>
+               <!--Optional:-->
+               <ns:creditCardSecurityCode>?</ns:creditCardSecurityCode>
+               <!--Optional:-->
+               <ns:creditCardType>?</ns:creditCardType>
+               <ns:inactive>?</ns:inactive>
+               <!--Optional:-->
+               <ns:lastFourDigits>?</ns:lastFourDigits>
+               <!--Optional:-->
+               <ns:paymentType>?</ns:paymentType>
+               <!--Optional:-->
+               <ns:constituentId>?</ns:constituentId>
+               <!--Optional:-->
+               <ns:phone>
+                  <ns:customFieldMap>
+                     <!--Zero or more repetitions:-->
+                     <ns:entry>
+                        <ns:key>?</ns:key>
+                        <ns:value>
+                           <!--Optional:-->
+                           <ns:dataType>?</ns:dataType>
+                           <!--Optional:-->
+                           <ns:displayEndDate>?</ns:displayEndDate>
+                           <!--Optional:-->
+                           <ns:displayStartDate>?</ns:displayStartDate>
+                           <!--Optional:-->
+                           <ns:endDate>?</ns:endDate>
+                           <!--Optional:-->
+                           <ns:entityId>?</ns:entityId>
+                           <ns:entityType>?</ns:entityType>
+                           <ns:id>?</ns:id>
+                           <ns:name>?</ns:name>
+                           <ns:sequenceNumber>?</ns:sequenceNumber>
+                           <!--Optional:-->
+                           <ns:startDate>?</ns:startDate>
+                           <ns:value>?</ns:value>
+                        </ns:value>
+                     </ns:entry>
+                  </ns:customFieldMap>
+                  <!--Optional:-->
+                  <ns:activationStatus>?</ns:activationStatus>
+                  <!--Optional:-->
+                  <ns:comments>?</ns:comments>
+                  <!--Optional:-->
+                  <ns:effectiveDate>?</ns:effectiveDate>
+                  <ns:inactive>?</ns:inactive>
+                  <ns:constituentId>?</ns:constituentId>
+                  <ns:primary>?</ns:primary>
+                  <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+                  <!--Optional:-->
+                  <ns:seasonalEndDate>?</ns:seasonalEndDate>
+                  <!--Optional:-->
+                  <ns:seasonalStartDate>?</ns:seasonalStartDate>
+                  <!--Optional:-->
+                  <ns:temporaryEndDate>?</ns:temporaryEndDate>
+                  <!--Optional:-->
+                  <ns:temporaryStartDate>?</ns:temporaryStartDate>
+                  <ns:undeliverable>?</ns:undeliverable>
+                  <ns:userCreated>?</ns:userCreated>
+                  <!--Optional:-->
+                  <ns:number>?</ns:number>
+                  <!--Optional:-->
+                  <ns:provider>?</ns:provider>
+                  <!--Optional:-->
+                  <ns:sms>?</ns:sms>
+               </ns:phone>
+               <!--Optional:-->
+               <ns:profile>?</ns:profile>
+               <ns:userCreated>?</ns:userCreated>
+            </ns:paymentSource>
+            <!--Optional:-->
+            <ns:paymentType>?</ns:paymentType>
+            <ns:constituentId>?</ns:constituentId>
+            <!--Optional:-->
+            <ns:phone>
+               <ns:customFieldMap>
+                  <!--Zero or more repetitions:-->
+                  <ns:entry>
+                     <ns:key>?</ns:key>
+                     <ns:value>
+                        <!--Optional:-->
+                        <ns:dataType>?</ns:dataType>
+                        <!--Optional:-->
+                        <ns:displayEndDate>?</ns:displayEndDate>
+                        <!--Optional:-->
+                        <ns:displayStartDate>?</ns:displayStartDate>
+                        <!--Optional:-->
+                        <ns:endDate>?</ns:endDate>
+                        <!--Optional:-->
+                        <ns:entityId>?</ns:entityId>
+                        <ns:entityType>?</ns:entityType>
+                        <ns:id>?</ns:id>
+                        <ns:name>?</ns:name>
+                        <ns:sequenceNumber>?</ns:sequenceNumber>
+                        <!--Optional:-->
+                        <ns:startDate>?</ns:startDate>
+                        <ns:value>?</ns:value>
+                     </ns:value>
+                  </ns:entry>
+               </ns:customFieldMap>
+               <!--Optional:-->
+               <ns:activationStatus>?</ns:activationStatus>
+               <!--Optional:-->
+               <ns:comments>?</ns:comments>
+               <!--Optional:-->
+               <ns:effectiveDate>?</ns:effectiveDate>
+               <ns:inactive>?</ns:inactive>
+               <ns:constituentId>?</ns:constituentId>
+               <ns:primary>?</ns:primary>
+               <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+               <!--Optional:-->
+               <ns:seasonalEndDate>?</ns:seasonalEndDate>
+               <!--Optional:-->
+               <ns:seasonalStartDate>?</ns:seasonalStartDate>
+               <!--Optional:-->
+               <ns:temporaryEndDate>?</ns:temporaryEndDate>
+               <!--Optional:-->
+               <ns:temporaryStartDate>?</ns:temporaryStartDate>
+               <ns:undeliverable>?</ns:undeliverable>
+               <ns:userCreated>?</ns:userCreated>
+               <!--Optional:-->
+               <ns:number>?</ns:number>
+               <!--Optional:-->
+               <ns:provider>?</ns:provider>
+               <!--Optional:-->
+               <ns:sms>?</ns:sms>
+            </ns:phone>
+            <ns:sendAcknowledgment>?</ns:sendAcknowledgment>
+            <ns:amount>?</ns:amount>
+            <!--Optional:-->
+            <ns:authCode>?</ns:authCode>
+            <ns:deductible>?</ns:deductible>
+            <!--Optional:-->
+            <ns:deductibleAmount>?</ns:deductibleAmount>
+            <!--Optional:-->
+            <ns:donationDate>?</ns:donationDate>
+            <!--Optional:-->
+            <ns:giftStatus>?</ns:giftStatus>
+            <!--Optional:-->
+            <ns:paymentMessage>?</ns:paymentMessage>
+            <!--Optional:-->
+            <ns:paymentStatus>?</ns:paymentStatus>
+            <!--Optional:-->
+            <ns:postmarkDate>?</ns:postmarkDate>
+            <!--Optional:-->
+            <ns:transactionDate>?</ns:transactionDate>
+            <!--Optional:-->
+            <ns:txRefNum>?</ns:txRefNum>
+         </ns:gift>
+      </ns:SaveOrUpdateGiftRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/SaveOrUpdateGiftRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="SearchConstituents" bindingOperationName="SearchConstituents" type="Request-Response" outputName="SearchConstituentsResponse" inputName="SearchConstituentsRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:SearchConstituentsRequest>
+         <!--Optional:-->
+         <ns:firstName>?</ns:firstName>
+         <!--Optional:-->
+         <ns:lastName>?</ns:lastName>
+         <!--Optional:-->
+         <ns:primaryAddress>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:activationStatus>?</ns:activationStatus>
+            <!--Optional:-->
+            <ns:comments>?</ns:comments>
+            <!--Optional:-->
+            <ns:effectiveDate>?</ns:effectiveDate>
+            <ns:inactive>?</ns:inactive>
+            <ns:constituentId>?</ns:constituentId>
+            <ns:primary>?</ns:primary>
+            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+            <!--Optional:-->
+            <ns:seasonalEndDate>?</ns:seasonalEndDate>
+            <!--Optional:-->
+            <ns:seasonalStartDate>?</ns:seasonalStartDate>
+            <!--Optional:-->
+            <ns:temporaryEndDate>?</ns:temporaryEndDate>
+            <!--Optional:-->
+            <ns:temporaryStartDate>?</ns:temporaryStartDate>
+            <ns:undeliverable>?</ns:undeliverable>
+            <ns:userCreated>?</ns:userCreated>
+            <ns:addressLine1>?</ns:addressLine1>
+            <!--Optional:-->
+            <ns:addressLine2>?</ns:addressLine2>
+            <!--Optional:-->
+            <ns:addressLine3>?</ns:addressLine3>
+            <ns:city>?</ns:city>
+            <ns:country>?</ns:country>
+            <ns:postalCode>?</ns:postalCode>
+            <ns:stateProvince>?</ns:stateProvince>
+         </ns:primaryAddress>
+         <!--Optional:-->
+         <ns:primaryPhone>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:activationStatus>?</ns:activationStatus>
+            <!--Optional:-->
+            <ns:comments>?</ns:comments>
+            <!--Optional:-->
+            <ns:effectiveDate>?</ns:effectiveDate>
+            <ns:inactive>?</ns:inactive>
+            <ns:constituentId>?</ns:constituentId>
+            <ns:primary>?</ns:primary>
+            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+            <!--Optional:-->
+            <ns:seasonalEndDate>?</ns:seasonalEndDate>
+            <!--Optional:-->
+            <ns:seasonalStartDate>?</ns:seasonalStartDate>
+            <!--Optional:-->
+            <ns:temporaryEndDate>?</ns:temporaryEndDate>
+            <!--Optional:-->
+            <ns:temporaryStartDate>?</ns:temporaryStartDate>
+            <ns:undeliverable>?</ns:undeliverable>
+            <ns:userCreated>?</ns:userCreated>
+            <!--Optional:-->
+            <ns:number>?</ns:number>
+            <!--Optional:-->
+            <ns:provider>?</ns:provider>
+            <!--Optional:-->
+            <ns:sms>?</ns:sms>
+         </ns:primaryPhone>
+         <!--Optional:-->
+         <ns:primaryEmail>
+            <ns:customFieldMap>
+               <!--Zero or more repetitions:-->
+               <ns:entry>
+                  <ns:key>?</ns:key>
+                  <ns:value>
+                     <!--Optional:-->
+                     <ns:dataType>?</ns:dataType>
+                     <!--Optional:-->
+                     <ns:displayEndDate>?</ns:displayEndDate>
+                     <!--Optional:-->
+                     <ns:displayStartDate>?</ns:displayStartDate>
+                     <!--Optional:-->
+                     <ns:endDate>?</ns:endDate>
+                     <!--Optional:-->
+                     <ns:entityId>?</ns:entityId>
+                     <ns:entityType>?</ns:entityType>
+                     <ns:id>?</ns:id>
+                     <ns:name>?</ns:name>
+                     <ns:sequenceNumber>?</ns:sequenceNumber>
+                     <!--Optional:-->
+                     <ns:startDate>?</ns:startDate>
+                     <ns:value>?</ns:value>
+                  </ns:value>
+               </ns:entry>
+            </ns:customFieldMap>
+            <!--Optional:-->
+            <ns:activationStatus>?</ns:activationStatus>
+            <!--Optional:-->
+            <ns:comments>?</ns:comments>
+            <!--Optional:-->
+            <ns:effectiveDate>?</ns:effectiveDate>
+            <ns:inactive>?</ns:inactive>
+            <ns:constituentId>?</ns:constituentId>
+            <ns:primary>?</ns:primary>
+            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
+            <!--Optional:-->
+            <ns:seasonalEndDate>?</ns:seasonalEndDate>
+            <!--Optional:-->
+            <ns:seasonalStartDate>?</ns:seasonalStartDate>
+            <!--Optional:-->
+            <ns:temporaryEndDate>?</ns:temporaryEndDate>
+            <!--Optional:-->
+            <ns:temporaryStartDate>?</ns:temporaryStartDate>
+            <ns:undeliverable>?</ns:undeliverable>
+            <ns:userCreated>?</ns:userCreated>
+            <ns:emailAddress>?</ns:emailAddress>
+            <!--Optional:-->
+            <ns:emailDisplay>?</ns:emailDisplay>
+         </ns:primaryEmail>
+      </ns:SearchConstituentsRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/SearchConstituentsRequest"/></con:call></con:operation></con:interface><con:endpointStrategy xsi:type="con:DefaultEndpointStrategy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:endpoint mode="COMPLEMENT" username="nolan@company1" password="ryan" wssType="PasswordText">http://localhost:8080/orangeleap/services/1.0/</con:endpoint></con:endpointStrategy><con:properties/><con:wssContainer><con:outgoing><con:name>orangeleap</con:name><con:username>nolan@company1</con:username></con:outgoing></con:wssContainer></con:soapui-project>

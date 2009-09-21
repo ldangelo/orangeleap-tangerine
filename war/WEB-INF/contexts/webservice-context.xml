@@ -19,7 +19,7 @@
 				class="org.springframework.ws.wsdl.wsdl11.builder.XsdBasedSoap11Wsdl4jDefinitionBuilder">
 				<property name="schema" value="/WEB-INF/orangeleap.xsd" />
 				<property name="portTypeName" value="OrangeLeap" />
-				<property name="locationUri" value="http://localhost:8080/orangeleap/services/1.0/" />
+				<property name="locationUri" value="/services/1.0/" />
 			</bean>
 		</property>	
 	</bean>

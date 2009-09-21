@@ -45,6 +45,8 @@ public class TangerineAuthenticationToken extends CasAuthenticationToken {
         TangerineAuthenticationDetails details = new TangerineAuthenticationDetails();
         this.setDetails(details);
         details.setSite(site);
+        details.setUserName((String) principal.toString());
+ 
     }
     
 }

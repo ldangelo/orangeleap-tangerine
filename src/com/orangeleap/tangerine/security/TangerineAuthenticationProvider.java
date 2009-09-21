@@ -112,7 +112,7 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
         CasAuthenticationToken userToken = (CasAuthenticationToken)authentication;
         TangerineAuthenticationDetails details = (TangerineAuthenticationDetails)userToken.getDetails();
 
-        String username = details.getUserName();
+        String username = (String) authentication.getPrincipal();
         String site = details.getSite();
         boolean active = checkSiteActive(site);
 
@@ -187,7 +187,7 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
             UserDetails user) {
         Object password = useAuthenticationRequestCredentials ? authentication.getCredentials() : user.getPassword();
 
-        TangerineAuthenticationToken token = new TangerineAuthenticationToken(user, password, ((TangerineAuthenticationDetails)authentication.getDetails()).getSite(), user.getAuthorities());
+        TangerineAuthenticationToken token = new TangerineAuthenticationToken(user.getUsername(), password, ((TangerineAuthenticationDetails)authentication.getDetails()).getSite(), user.getAuthorities());
         token.setDetails(authentication.getDetails());
         return token;
     }

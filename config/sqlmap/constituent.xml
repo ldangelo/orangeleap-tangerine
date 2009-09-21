@@ -148,6 +148,9 @@
         </isNotNull>
 
         where p.SITE_NAME = #siteName#
+        <isNotEmpty property="additionalWhere">
+            AND $additionalWhere$
+        </isNotEmpty>
         <isNotEmpty property="searchTerms">
             <iterate property="searchTerms" prepend="HAVING" conjunction="AND">
                 $searchTerms[].columnName$ $searchTerms[].columnClause$ #searchTerms[].columnValue#

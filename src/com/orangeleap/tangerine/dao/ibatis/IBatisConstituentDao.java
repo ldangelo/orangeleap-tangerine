@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +153,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         Map<String, Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_SEARCH_RESULT", sortPropertyName, direction, start, limit, locale);
         List<Map<String,Object>> searchColumnList = setupSearchParams(parameters, PropertyAccessorFactory.forBeanPropertyAccess(new Constituent()), "CONSTITUENT.CONSTITUENT_SEARCH_RESULT");
         params.put("searchTerms", searchColumnList);
+        addAdditionalWhere(params, parameters);
     	return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
     }
 
@@ -161,7 +163,14 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         Map<String, Object> params = setupParams();
         List<Map<String,Object>> searchColumnList = setupSearchParams(parameters, PropertyAccessorFactory.forBeanPropertyAccess(new Constituent()), "CONSTITUENT.CONSTITUENT_SEARCH_RESULT");
         params.put("searchTerms", searchColumnList);
+        addAdditionalWhere(params, parameters);
     	return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
+    }
+
+    private void addAdditionalWhere(Map<String, Object> returnParameters, Map<String, Object> enteredParameters) {
+        if (StringUtils.hasText((String) enteredParameters.get(QueryUtil.ADDITIONAL_WHERE))) {
+            returnParameters.put(QueryUtil.ADDITIONAL_WHERE, enteredParameters.get(QueryUtil.ADDITIONAL_WHERE));    
+        }
     }
 
 	@Override

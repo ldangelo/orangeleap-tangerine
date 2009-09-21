@@ -134,6 +134,7 @@ public final class StringConstants {
     public static final String ERROR_CLASS = "errorClass";
     
     public static final String SEARCH_OPTION = "searchOption";
+    public static final String FULLTEXT = "fullText";
     public static final String FIELD_DEF = "fieldDef";
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";

@@ -362,7 +362,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (logger.isTraceEnabled()) {
             logger.trace("searchConstituents: params = " + params);
         }
-        String fullText = (String) params.get("fullText");
+        String fullText = (String) params.get(StringConstants.FULLTEXT);
         if (fullText != null) {
         	return constituentDao.fullTextSearchConstituents(fullText);
         } else {
@@ -375,7 +375,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (logger.isTraceEnabled()) {
             logger.trace("searchConstituents: params = " + params + " sort = " + sort);
         }
-        String fullText = (String) params.get("fullText");
+        String fullText = (String) params.get(StringConstants.FULLTEXT);
         if (fullText != null) {
         	return constituentDao.fullTextSearchConstituents(fullText);
         } else {

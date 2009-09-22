@@ -511,6 +511,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     public void maintainSiteOption(SiteOption siteOption) {
     	siteOption.setSiteName(tangerineUserHelper.lookupUserSiteName());
     	siteOption.setModifiedBy(tangerineUserHelper.lookupUserId());
+    	if (siteOption.getOptionDesc() == null) siteOption.setOptionDesc("");
     	siteOptionDao.maintainSiteOption(siteOption);
     }
 

@@ -6,7 +6,10 @@
         <result property="id" column="SITE_OPTION_SITE_OPTION_ID" />
         <result property="siteName" column="SITE_OPTION_SITE_NAME" />
         <result property="optionName" column="SITE_OPTION_OPTION_NAME" />
+        <result property="optionNameReadOnly" column="SITE_OPTION_OPTION_NAME_READ_ONLY" />
+        <result property="optionDesc" column="SITE_OPTION_OPTION_DESC" />
         <result property="optionValue" column="SITE_OPTION_OPTION_VALUE" />
+        <result property="optionValueReadOnly" column="SITE_OPTION_OPTION_VALUE_READ_ONLY" />
         <result property="modifiedBy" column="SITE_OPTION_MODIFIED_BY" />
         <result property="createDate" column="SITE_OPTION_CREATE_DATE" />
         <result property="updateDate" column="SITE_OPTION_UPDATE_DATE" />
@@ -16,7 +19,10 @@
         site_option.SITE_OPTION_ID as SITE_OPTION_SITE_OPTION_ID,
         site_option.SITE_NAME as SITE_OPTION_SITE_NAME,
         site_option.OPTION_NAME as SITE_OPTION_OPTION_NAME,
+        site_option.OPTION_NAME_READ_ONLY as SITE_OPTION_OPTION_NAME_READ_ONLY,
+        site_option.OPTION_DESC as SITE_OPTION_OPTION_DESC,
         site_option.OPTION_VALUE as SITE_OPTION_OPTION_VALUE,
+        site_option.OPTION_VALUE_READ_ONLY as SITE_OPTION_OPTION_VALUE_READ_ONLY,
         site_option.MODIFIED_BY as SITE_OPTION_MODIFIED_BY,
         site_option.CREATE_DATE as SITE_OPTION_CREATE_DATE,
         site_option.UPDATE_DATE as SITE_OPTION_UPDATE_DATE    
@@ -49,7 +55,10 @@
         	SITE_OPTION_ID,
         	SITE_NAME,
         	OPTION_NAME,
+        	OPTION_NAME_READ_ONLY,
+        	OPTION_DESC,
         	OPTION_VALUE,
+        	OPTION_VALUE_READ_ONLY,
         	MODIFIED_BY,
         	CREATE_DATE,
         	UPDATE_DATE        )
@@ -57,7 +66,10 @@
         	#id# ,
         	#siteName# ,
         	#optionName# ,
+        	#optionNameReadOnly# ,
+        	#optionDesc# ,
         	#optionValue# ,
+        	#optionValueReadOnly# ,
         	#modifiedBy# ,
         	now(),
         	now()        )
@@ -72,7 +84,10 @@
         	SITE_OPTION_ID = #id# ,
         	SITE_NAME = #siteName# ,
         	OPTION_NAME = #optionName# ,
+        	OPTION_NAME_READ_ONLY = #optionNameReadOnly# ,
+        	OPTION_DESC = #optionDesc# ,
         	OPTION_VALUE = #optionValue# ,
+        	OPTION_VALUE_READ_ONLY = #optionValueReadOnly# ,
         	MODIFIED_BY = #modifiedBy# ,
         	UPDATE_DATE = now()        
         where SITE_OPTION_ID = #id#

@@ -27,6 +27,7 @@ import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.PageAccess;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
@@ -320,6 +321,11 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         
     }
     
+	@Override
+	public void maintainFieldRequired(FieldRequired fieldRequired) {
+		fieldDao.maintainFieldRequired(fieldRequired);
+	}
+    
     // Copy fields from a to b.
     private void copyFields(SectionDefinition a, SectionDefinition b) {
         List<SectionField> sectionFields = readSectionFieldsBySection(a, true);
@@ -341,4 +347,5 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         }
         return filteredFields;
     }
+
 }

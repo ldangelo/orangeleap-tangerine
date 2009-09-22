@@ -181,6 +181,14 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     }
 
     @Override
+    public FieldRequired maintainFieldRequired(FieldRequired fieldRequired) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainFieldRequired: FieldRequiredId = " + fieldRequired.getId());
+        }
+        return (FieldRequired) insertOrUpdate(fieldRequired, "FIELD_REQUIRED");
+    }
+
+    @Override
     public FieldRelationship maintainFieldRelationship(FieldRelationship fieldRelationship) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainFieldRelationship: FieldRelationship = " + fieldRelationship.getId());

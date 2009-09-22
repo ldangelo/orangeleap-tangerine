@@ -18,6 +18,7 @@
                 	<th>Field Label</th>
                 	<th>Field Name</th>
                 	<th>Visible?</th>
+                	<th>Required?</th>
                 	<th>Move</th>
                 	</tr>
                     <c:forEach var="field" items="${fieldList}">
@@ -30,6 +31,9 @@
 		                </td>
 		                <td>
 		                	<input type="checkbox" <c:if test="${field.visible}">checked</c:if> onchange="update('${field.name}','togglevisible');" />
+		                </td>
+		                <td>
+		                	<input type="checkbox" <c:if test="${field.required}">checked</c:if> onchange="update('${field.name}','togglerequired');" />
 		                </td>
 		                <td>
 		                	<a href="#" onclick="update('${field.name}','moveup');" >^</a>

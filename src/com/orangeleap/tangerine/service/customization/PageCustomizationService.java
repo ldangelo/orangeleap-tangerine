@@ -18,18 +18,19 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import java.util.List;
+import java.util.Map;
+
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
-
-import java.util.List;
-import java.util.Map;
 
 public interface PageCustomizationService {
 
@@ -83,6 +84,8 @@ public interface PageCustomizationService {
     public void maintainSectionFields(List<SectionField> sectionFields);
 
     public void maintainFieldValidation(FieldValidation fieldValidation);
+
+    public void maintainFieldRequired(FieldRequired fieldRequired);
 
     public void maintainCustomFieldGuruData(CustomFieldRequest customFieldRequest);
 

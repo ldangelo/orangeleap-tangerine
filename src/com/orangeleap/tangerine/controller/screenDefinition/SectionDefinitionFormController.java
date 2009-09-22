@@ -35,12 +35,17 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.SectionDao;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -57,8 +62,17 @@ public class SectionDefinitionFormController extends SimpleFormController {
     @Resource(name = "sectionDAO")
     private SectionDao sectionDao;
     
+    @Resource(name = "siteService")
+    private SiteService siteService;
+    
+    @Resource(name = "fieldService")
+    private FieldService fieldService;
+    
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
+
+    @Resource(name = "tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
 
 
   
@@ -81,9 +95,11 @@ public class SectionDefinitionFormController extends SimpleFormController {
         
         ModelAndView mav = new ModelAndView(getSuccessView());
         
-        List<SectionField> sectionFields = getSectionFields(id);
+        SectionDefinition sectionDef = sectionDao.readSectionDefinition(new Long(id));
+        List<SectionField> sectionFields = getSectionFields(sectionDef);
+        
         List<SectionFieldView> fieldList = new ArrayList<SectionFieldView>();
-        for (SectionField sf: sectionFields) fieldList.add(new SectionFieldView(sf));
+        for (SectionField sf: sectionFields) fieldList.add(new SectionFieldView(sf, fieldService.lookupFieldRequired(sf)));
         
         mav.addObject("fieldList", fieldList);
         mav.addObject("id", id);
@@ -131,16 +147,18 @@ public class SectionDefinitionFormController extends SimpleFormController {
     	
 		private SectionField sectionField;
     	private boolean visible;
+    	private boolean required;
     	private String name;
     	private String description;
     	private String longDescription;
 
-    	public SectionFieldView(SectionField sf) {
+    	public SectionFieldView(SectionField sf, FieldRequired fr) {
     		setSectionField(sf);
     		setVisible(sf.getFieldOrder() != 0);
     		setName(getKey(sf));
     		setDescription(sf.getFieldDefinition().getDefaultLabel());
     		setLongDescription(getSectionFieldLongDescription(sf));
+    		setRequired(fr != null && fr.isRequired());
     	}
     	
     	public void setSectionField(SectionField sectionField) {
@@ -154,6 +172,12 @@ public class SectionDefinitionFormController extends SimpleFormController {
 		}
 		public boolean isVisible() {
 			return visible;
+		}
+		public void setRequired(boolean required) {
+			this.required = required;
+		}
+		public boolean isRequired() {
+			return required;
 		}
 		public void setName(String name) {
 			this.name = name;
@@ -179,9 +203,8 @@ public class SectionDefinitionFormController extends SimpleFormController {
 		}
     }
     
-    private List<SectionField> getSectionFields(String id) {
+    private List<SectionField> getSectionFields(SectionDefinition sectionDef) {
     	
-        SectionDefinition sectionDef = sectionDao.readSectionDefinition(new Long(id));
         List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDef, true);
         
         Collections.sort(sectionFields, new Comparator<SectionField>() {
@@ -201,6 +224,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
     
     private static final String MOVE_UP = "moveup";
     private static final String TOGGLE_VISIBLE = "togglevisible";
+    private static final String TOGGLE_REQUIRED = "togglerequired";
     private static final String CHANGE_DESC = "changedescription";
     
     
@@ -214,10 +238,12 @@ public class SectionDefinitionFormController extends SimpleFormController {
         String action = request.getParameter("action"); 
         String description = request.getParameter("description"); 
         boolean toggleVisible = TOGGLE_VISIBLE.equals(action);
+        boolean toggleRequired = TOGGLE_REQUIRED.equals(action);
         boolean moveUp = MOVE_UP.equals(action);
         boolean changeDescription = CHANGE_DESC.equals(action);
         
-        List<SectionField> sectionFields = getSectionFields(id);
+        SectionDefinition sectionDef = sectionDao.readSectionDefinition(new Long(id));
+        List<SectionField> sectionFields = getSectionFields(sectionDef);
 
         // Locate target field
         SectionField targetSectionField = null;
@@ -242,7 +268,26 @@ public class SectionDefinitionFormController extends SimpleFormController {
         		targetSectionField.setFieldOrder(maxvalue + 100);
         	}
             pageCustomizationService.maintainSectionField(targetSectionField);
+
+        } else if (toggleRequired) {
         	
+        	FieldRequired fieldRequired = fieldService.lookupFieldRequired(targetSectionField);
+        	if (fieldRequired == null) fieldRequired = getNewFieldRequired(targetSectionField);
+        	if (fieldRequired.getSite() == null) {
+        		// Create a site-specific copy
+        		fieldRequired.setSite(new Site(tangerineUserHelper.lookupUserSiteName()));
+        		fieldRequired.setId(null);
+        	}
+        	
+        	boolean isRequired = fieldRequired.isRequired();
+        	
+        	if (isRequired) {
+        		fieldRequired.setRequired(false);
+        	} else {
+        		fieldRequired.setRequired(true);
+        	}
+            pageCustomizationService.maintainFieldRequired(fieldRequired);
+
         } else if (changeDescription) {
             	
         	if (!targetSectionField.getFieldDefinition().getDefaultLabel().equals(description)) {
@@ -266,8 +311,20 @@ public class SectionDefinitionFormController extends SimpleFormController {
         }
         
         cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PICKLIST); // Field required is in the picklist cache
 
         return new ModelAndView(getSuccessView());
 
     }
+    
+    private FieldRequired getNewFieldRequired(SectionField sf) {
+    	FieldRequired fieldRequired = new FieldRequired();
+    	fieldRequired.setFieldDefinition(sf.getFieldDefinition());
+    	fieldRequired.setSecondaryFieldDefinition(sf.getSecondaryFieldDefinition());
+    	fieldRequired.setSectionName(sf.getSectionDefinition().getSectionName());
+    	fieldRequired.setRequired(false);
+    	fieldRequired.setSite(new Site(tangerineUserHelper.lookupUserSiteName()));
+    	return fieldRequired;
+    }
+    
 }

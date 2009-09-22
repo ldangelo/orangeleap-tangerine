@@ -36,6 +36,7 @@ public interface FieldDao {
     public List<FieldRelationship> readDetailFieldRelationships(String detailFieldDefId);
     public FieldDefinition maintainFieldDefinition(FieldDefinition fieldDefinition);
     public FieldValidation maintainFieldValidation(FieldValidation fieldValidation);
+    public FieldRequired maintainFieldRequired(FieldRequired fieldRequired);
     public void maintainCustomFieldGuruData(CustomFieldRequest customFieldRequest);
 	public FieldRelationship maintainFieldRelationship(FieldRelationship fieldRelationship);
 }

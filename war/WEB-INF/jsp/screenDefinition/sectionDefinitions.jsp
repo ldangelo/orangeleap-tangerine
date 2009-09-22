@@ -48,6 +48,7 @@
             		 $('#editRoleButton').hide();
             	 }
              }
+             hideShowEditButton();
                  
              </script>
 

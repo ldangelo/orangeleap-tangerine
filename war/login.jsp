@@ -1,10 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Orange Leap Login</title>
+	<title><spring:message code="appName"/> <spring:message code="login"/></title>
 	<link href="<c:url value='css/login.css' />" rel="stylesheet" type="text/css" />
 	<link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
 	<script type="text/javascript" src="js/jquery/jquery-1.3.2.min.js"></script>
@@ -14,7 +15,7 @@
 <div class="loginPane">
 	<div class="loginContent">
 	    <img src="images/orangeleap-logo-tag.png" />
-	    <h1 class="loginHeader">Please sign in.</h1>
+	    <h1 class="loginHeader"><spring:message code="pleaseSignIn"/></h1>
 
     	<c:if test="${not empty param.login_error}">
     		<p style="color:red;padding:0;margin:0;"><c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/></p>
@@ -23,11 +24,11 @@
     	<form id="f" name="f" action="<c:url value="loginProcess" />" method="post">
 			<table class="loginInfo">
 				<tr>
-					<td style="text-align:right"><label for="j_fullname">Username:</label></td>
+					<td style="text-align:right"><label for="j_fullname"><spring:message code="userName"/></label></td>
 					<td><input size="30" class="loginField" type="text" name="j_fullname" id="j_fullname"  <c:if test="${not empty param.login_error}">value="${sessionScope['SPRING_SECURITY_LAST_USERNAME']}"</c:if> /></td>
 	    		</tr>
 				<tr>
-					<td style="text-align:right"><label for="j_password">Password:</label></td>
+					<td style="text-align:right"><label for="j_password"><spring:message code="password"/></label></td>
 					<td><input size="30" class="loginField" type="password" name="j_password" id="j_password" /></td>
 	    		</tr>
 	    		<tr>
@@ -35,7 +36,7 @@
 		    		<td class="loginButton">
 		    		<input class="loginField" type="hidden" name="sitename" id="sitename" />
 		    		<input class="loginField" type="hidden" name="j_username" id="j_username" />
-		    		<input class="loginButton" name="submit" id="submit" type="submit" onclick="return splitLoginName();" value="Sign In" />
+		    		<input class="loginButton" name="submit" id="submit" type="submit" onclick="return splitLoginName();" value="<spring:message code='signIn'/>" />
 		    		</td>
 	            </tr>
 	            <%--
@@ -46,7 +47,7 @@
 	            --%>
     		</table>
     	</form>
-    	Release: ${build.version} <!-- ${build.time}  -->
+    	<spring:message code="release"/>: ${build.version} <!-- ${build.time}  -->
 	</div>
 </div>
 <script type="text/javascript">
@@ -59,7 +60,7 @@ function splitLoginName() {
 
 	var i = fullname.indexOf('@');
 	if (i == -1 || i == fullname.length - 1) {
-		alert('Please enter user name in the form "name@organization".');
+		alert('<spring:message code="loginError"/>');
 		return false;
 	}
 

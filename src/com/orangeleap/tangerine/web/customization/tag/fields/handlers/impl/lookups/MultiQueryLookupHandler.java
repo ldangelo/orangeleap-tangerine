@@ -95,7 +95,7 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 				    displayVal = resolve(Long.parseLong(val.toString()), referenceType);
 
 				    linkSb.append(referenceType).append(".htm?");
-				    linkSb.append(referenceType).append("Id=").append(checkForNull(fieldValue));
+				    linkSb.append(referenceType).append("Id=").append(checkForNull(val));
 				    if ( ! ReferenceType.constituent.equals(referenceType)) {
 					    linkSb.append("&").append(StringConstants.CONSTITUENT_ID).append("=").append(pageContext.getRequest().getParameter(StringConstants.CONSTITUENT_ID));
 				    }

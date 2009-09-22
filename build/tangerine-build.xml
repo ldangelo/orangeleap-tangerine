@@ -151,7 +151,7 @@
 				<include name="${app.name}.jar" />
 			</fileset>
 		</copy>
-
+		
 		<copy todir="${stage.dir}/war/WEB-INF/lib" flatten="true">
 		    <path>
 				<pathelement path="${war.lib}"/> <!-- war.lib from ivyBuild.xml -->
@@ -160,6 +160,8 @@
 	</target>
 
 	<target name="build-integrated-war">
+		<copy file="${src.dir}/log4j.properties" todir="${stage.dir}/war/WEB-INF"/>
+
 		<war destfile="${stage.dir}/${war.name}.war" basedir="${stage.dir}/war">
 			<include name="**/*.*" />
 		</war>

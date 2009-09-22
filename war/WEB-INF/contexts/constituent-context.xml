@@ -5,10 +5,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-
     <bean id="constituentSearchController" class="com.orangeleap.tangerine.controller.constituent.ConstituentSearchFormController" parent="tangerineFormController">
         <property name="formView" value="constituent/constituentSearch"/>
         <property name="successView" value="constituent/constituentSearch"/>
+    </bean>
+
+    <bean id="fullTextSearchController" class="com.orangeleap.tangerine.controller.constituent.FullTextSearchFormController" parent="tangerineFormController">
+        <property name="formView" value="constituent/fullTextSearch"/>
+        <property name="successView" value="constituent/fullTextSearch"/>
     </bean>
 
 	<bean id="constituentFormController" class="com.orangeleap.tangerine.controller.constituent.ConstituentFormController" parent="tangerineFormController">
@@ -29,6 +33,7 @@
 		    <props>
 			    <prop key="/constituent.htm">constituentFormController</prop>
 		        <prop key="/constituentSearch.htm">constituentSearchController</prop>
+                <prop key="/fullTextSearch.htm">fullTextSearchController</prop>
 		        <prop key="/constituentView.htm">constituentViewController</prop>
                 <prop key="/constituentList.htm">constituentGridController</prop>
 			</props>

@@ -49,9 +49,13 @@ $(document).ready(function() {
 	});
 
 	$("#searchForm #typeSearch").bind("change", function() {
-		if ($(this).val() == "gifts") {
+        var thisType = $(this).val();
+		if (thisType == "gifts") {
 			$("#searchForm").attr("action", "giftSearch.htm");	
 		}
+        else if (thisType == "fullText") {
+            $("#searchForm").attr("action", "fullTextSearch.htm");
+        }
 		else {
 			// assume people search
 			$("#searchForm").attr("action", "constituentSearch.htm");	

@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.controller.constituent;
 
-import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.controller.TangerineFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -27,17 +26,15 @@ import com.orangeleap.tangerine.service.SessionService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
-import org.springframework.beans.MutablePropertyValues;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ConstituentSearchFormController extends TangerineFormController {
+public class FullTextSearchFormController extends TangerineFormController {
 
     protected final Log logger = OLLogger.getLog(getClass());
 
@@ -49,34 +46,16 @@ public class ConstituentSearchFormController extends TangerineFormController {
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        Constituent constituent = new Constituent(null, sessionService.lookupSite());
-        if (mapSearchFieldToLastName(request)) {
-            // searchField value is mapped to 'lastName'
-            constituent.setLastName(request.getParameter(StringConstants.SEARCH_FIELD));
-        }
-        return constituent;
+        return new Constituent(null, sessionService.lookupSite());
     }
 
     @Override
     protected void onBind(HttpServletRequest request, Object command, BindException e) throws Exception {
-        TangerineForm form = (TangerineForm) command;
-        request.setAttribute(StringConstants.SEARCH_TYPE, StringConstants.CONSTITUENT);
-        if (mapSearchFieldToLastName(request)) {
-            String lastNameValue = request.getParameter(StringConstants.SEARCH_FIELD);
-            request.setAttribute(StringConstants.SEARCH_FIELD, lastNameValue);
-
-            ServletRequestDataBinder binder = new ServletRequestDataBinder(form.getDomainObject());
-            initBinder(request, binder);
-
-            MutablePropertyValues propertyValues = new MutablePropertyValues();
-            form.addField(StringConstants.LAST_NAME, lastNameValue);
-            propertyValues.addPropertyValue(StringConstants.LAST_NAME, lastNameValue);
-            binder.bind(propertyValues);
+        request.setAttribute(StringConstants.SEARCH_TYPE, StringConstants.FULLTEXT);
+        if (Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter("autoLoad")) && StringUtils.hasText(request.getParameter(StringConstants.SEARCH_FIELD))) {
+            String searchField = request.getParameter(StringConstants.SEARCH_FIELD);
+            request.setAttribute(StringConstants.SEARCH_FIELD, searchField);
         }
-    }
-
-    private boolean mapSearchFieldToLastName(HttpServletRequest request) {
-        return Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter("autoLoad")) && StringUtils.hasText(request.getParameter(StringConstants.SEARCH_FIELD));
     }
 
     @Override

@@ -168,13 +168,16 @@
 	<div class="searchBar">
         <c:choose>
             <c:when test="${requestScope.searchType eq 'gift'}"><c:set var="thisSearchType" value="gift"/></c:when>
-            <c:otherwise><c:set var="thisSearchType" value="constituent"/></c:otherwise>
+            <c:when test="${requestScope.searchType eq 'constituent'}"><c:set var="thisSearchType" value="constituent"/></c:when>
+            <c:otherwise><c:set var="thisSearchType" value="fullText"/></c:otherwise>
         </c:choose>
 		<form method="POST" action="<c:out value='${thisSearchType}'/>Search.htm" id="searchForm" name="searchForm">
             <input type="hidden" name="autoLoad" id="autoLoad" value="true"/>
 			<input size="30" name="searchField" id="searchField" type="text" value="<c:out value='${requestScope.searchField}'/>"/>
 			<select name="type" id="typeSearch">
-				<option value="people" <c:if test="${requestScope.searchType ne 'gift'}">selected="selected"</c:if>><spring:message code="constituents"/></option>
+
+                <option value="fullText" <c:if test="${requestScope.searchType eq 'fullText'}">selected="selected"</c:if>><spring:message code="searchFullText"/></option>
+				<option value="people" <c:if test="${requestScope.searchType eq 'constituent'}">selected="selected"</c:if>><spring:message code="constituents"/></option>
 				<option value="gifts" <c:if test="${requestScope.searchType eq 'gift'}">selected="selected"</c:if>><spring:message code="gifts"/></option>
 			</select>
 			<input type="submit" value="<spring:message code='search'/>" class="saveButton" />

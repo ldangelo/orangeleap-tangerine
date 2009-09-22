@@ -7,6 +7,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -94,7 +95,9 @@ public class DateHandler extends AbstractFieldHandler {
                     }
                 }
                 catch (Exception e) {
-                    logger.warn("formatDate: could not format date = " + fieldValue);
+                    if (StringUtils.hasText(fieldValue.toString())) {
+                        logger.warn("formatDate: could not format date = " + fieldValue);
+                    }
                 }
             }
         }

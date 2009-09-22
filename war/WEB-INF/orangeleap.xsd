@@ -49,12 +49,9 @@
 		<xs:complexContent>
 			<xs:extension base="tns:abstractCustomizableEntity">
 				<xs:sequence>
-					<xs:element name="addressType" type="xs:string"
-						minOccurs="0" />
 					<xs:element name="comments" type="xs:string" minOccurs="0" />
 					<xs:element name="communicationHistoryType" type="xs:string"
 						minOccurs="1" />
-					<xs:element name="emailType" type="xs:string" minOccurs="0" />
 					<xs:element name="entryType" type="xs:string" minOccurs="1" />
 					<xs:element name="giftId" type="xs:long" minOccurs="0" />
 					<xs:element name="constituentId" type="xs:long"
@@ -63,12 +60,6 @@
 					<xs:element name="recordDate" type="xs:dateTime"
 						minOccurs="1" />
 					<xs:element name="recurringGiftId" type="xs:long"
-						minOccurs="0" />
-					<xs:element name="selectedAddress" type="tns:address"
-						minOccurs="0" />
-					<xs:element name="selectedEmail" type="tns:email"
-						minOccurs="0" />
-					<xs:element name="selectedPhone" type="tns:phone"
 						minOccurs="0" />
 					<xs:element name="systemGenerated" type="xs:boolean" />
 				</xs:sequence>

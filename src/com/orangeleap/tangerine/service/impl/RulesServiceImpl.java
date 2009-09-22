@@ -80,6 +80,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		this.applicationContext = applicationContext;
 	}
 
+	private static String REINDEX_FULLTEXT = "nightly.reindex.fulltext";
 
 	public void executeRules(String schedule, Date compareDate) {
 
@@ -97,6 +98,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	        EmailService es = (EmailService) applicationContext.getBean("emailService");
 			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
+			boolean reindexFullText = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(REINDEX_FULLTEXT));
 
 			int totalContituentCount = constituentService.getConstituentCountBySite();
 			for (int start = 0; start <= totalContituentCount; start += 100){
@@ -111,6 +113,12 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 					try {
 						constituentService.processConstituent(schedule, compareDate, ps, gs, ms,
 								ss, uh, p, plis);
+						
+						// Force a fulltext reindex of constituent after rules processing if this site option is set.
+						if (reindexFullText) {
+							ps.maintainConstituent(ps.readConstituentById(p.getId()));
+						}
+						
 					}catch(Throwable t) {
 						t.printStackTrace();
 						logger.error(t);

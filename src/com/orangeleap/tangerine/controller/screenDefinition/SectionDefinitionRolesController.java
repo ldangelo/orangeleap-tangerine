@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.controller.screenDefinition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +43,6 @@ import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SectionDefinitionRolesController extends SimpleFormController {
 
@@ -107,7 +106,7 @@ public class SectionDefinitionRolesController extends SimpleFormController {
     }
     
     private List<String> getAvailableRoleList() {
-    	List<String> result = tangerineUserHelper.lookupUserRoles();
+    	List<String> result = new ArrayList<String>();
     	
     	Picklist list = picklistItemService.getPicklist("screenDefinitionRole");
     	if (list != null) {
@@ -118,7 +117,6 @@ public class SectionDefinitionRolesController extends SimpleFormController {
 	    	}
     	}
     	
-    	Collections.sort(result);
     	return result;
     }
     

@@ -19,6 +19,6 @@
                 </p>
             </div>
         </div>
-        <iframe id="casLogout" src="/cas/logout" height="0" width="100%" style="display: none"></iframe>
+        <iframe id="casLogout" src="/<%= System.getProperty("contextPrefix") %>cas/logout" height="0" width="100%" style="display: none"></iframe>
     </body>
 </html>

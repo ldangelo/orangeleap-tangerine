@@ -103,10 +103,12 @@ public class Picklist extends AbstractCustomizableEntity
 
     public List<PicklistItem> getActivePicklistItems() {
         List<PicklistItem> list = new ArrayList<PicklistItem>();
-        for (PicklistItem item : getPicklistItems()) {
-            if (!item.isInactive()) {
-                list.add(item);
-            }
+        if (picklistItems != null) {
+	        for (PicklistItem item : picklistItems) {
+	            if (item != null && !item.isInactive()) {
+	                list.add(item);
+	            }
+	        }
         }
         return list;
     }

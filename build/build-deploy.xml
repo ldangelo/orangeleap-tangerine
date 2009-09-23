@@ -102,6 +102,7 @@
 		</exec>
 
 		
+		<delete dir="${target.tomcat.dir}/cas" />
 		<delete dir="${target.tomcat.dir}/webapps/orangeleap" />
 		
 		<copy file="${tang.build.output.dir}/cas.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />

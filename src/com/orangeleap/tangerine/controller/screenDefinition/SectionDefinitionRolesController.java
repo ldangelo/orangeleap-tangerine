@@ -34,11 +34,16 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.SectionDao;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SectionDefinitionRolesController extends SimpleFormController {
 
@@ -52,6 +57,9 @@ public class SectionDefinitionRolesController extends SimpleFormController {
     
     @Resource(name = "sectionDAO")
     private SectionDao sectionDao;
+    
+    @Resource(name = "picklistItemService")
+    private PicklistItemService picklistItemService;
     
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
@@ -99,7 +107,19 @@ public class SectionDefinitionRolesController extends SimpleFormController {
     }
     
     private List<String> getAvailableRoleList() {
-    	return tangerineUserHelper.lookupUserRoles();
+    	List<String> result = tangerineUserHelper.lookupUserRoles();
+    	
+    	Picklist list = picklistItemService.getPicklist("screenDefinitionRole");
+    	if (list != null) {
+	    	for (PicklistItem item:list.getActivePicklistItems()) {
+	    		String value = item.getDisplayValue().toUpperCase().replace(' ', '_');
+	    		if (!value.startsWith("ROLE_")) value = "ROLE_" + value;
+	    		if (!result.contains(value)) result.add(value);
+	    	}
+    	}
+    	
+    	Collections.sort(result);
+    	return result;
     }
     
  

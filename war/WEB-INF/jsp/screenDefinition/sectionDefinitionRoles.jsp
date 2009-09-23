@@ -18,7 +18,7 @@
                 <input id="roles" name="roles" value="${roles}"  size="60" />
                 
                 <select  id=availableRoles name="availableRoles" onchange="$('#roles').val($('#availableRoles').val())" >
-                   <option value="" >Or select from this user's roles...</option>
+                   <option value="" >Or select from these roles...</option>
                    <c:forEach var="availableRole" items="${availableRoleList}">
                      <option value="<c:out value='${availableRole}'/>" > <c:out value='${availableRole}'/></option>
                    </c:forEach>

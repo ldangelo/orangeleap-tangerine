@@ -158,10 +158,12 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
         Picklist picklist = populateCustomFieldsOnDependentItems(picklistDao.readPicklistByNameId(picklistNameId));
         List<PicklistItem> result = new ArrayList<PicklistItem>();
         for (PicklistItem item : picklist.getPicklistItems()) {
-            if (showInactive || !item.isInactive()) {
-                if (value != null && item.getDefaultDisplayValue() != null) {
-                    if (item.getDefaultDisplayValue().toUpperCase().contains(value.toUpperCase())) {
-                        result.add(item);
+            if (item != null) {
+                if (showInactive || !item.isInactive()) {
+                    if (value != null && item.getDefaultDisplayValue() != null) {
+                        if (item.getDefaultDisplayValue().toUpperCase().contains(value.toUpperCase())) {
+                            result.add(item);
+                        }
                     }
                 }
             }

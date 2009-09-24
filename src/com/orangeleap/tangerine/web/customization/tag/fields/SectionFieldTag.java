@@ -170,9 +170,17 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("}});\n");
                         sb.append("OrangeLeap.barTextItem = new Ext.Toolbar.TextItem({text: ' '});\n");
                     }
+                    else {
+                        sb.append("OrangeLeap.ListStore = Ext.extend(Ext.data.JsonStore, {\n");
+                        sb.append("sort: function(fieldName, dir) {\n");
+                        sb.append("this.lastOptions.params['start'] = 0;\n");
+                        sb.append("this.lastOptions.params['limit'] = 100;\n");
+                        sb.append("return OrangeLeap.ListStore.superclass.sort.call(this, fieldName, dir);\n");
+                        sb.append("}});\n");
+                    }
                     sb.append("Ext.onReady(function() {\n");
                     sb.append("Ext.QuickTips.init();\n");
-                    sb.append("OrangeLeap.").append(entityType).append(".store = new ").append(isListGrid ? "Ext.data.JsonStore" : "OrangeLeap.SearchStore").append("({\n");
+                    sb.append("OrangeLeap.").append(entityType).append(".store = new ").append(isListGrid ? "OrangeLeap.ListStore" : "OrangeLeap.SearchStore").append("({\n");
 
                     String gridType = isListGrid ? "List" : (StringConstants.FULLTEXT.equals(searchTypeValue) ? "FullTextSearch" : "Search");
                     sb.append("url: '").append(entityType).append(gridType).append(".json");
@@ -225,15 +233,31 @@ public class SectionFieldTag extends AbstractTag {
                             sb.append("\n");
                         }
                     }
-                    sb.append("],\n");
+                    sb.append("]\n");
                     String direction = getInitDirection(fields);
-                    sb.append("sortInfo: { field: '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', direction: '").append(direction).append("' }\n");
                     sb.append("});\n");
 
                     sb.append("OrangeLeap.").append(entityType).append(".bar = ");
                     if (isListGrid) {
                         sb.append("new Ext.PagingToolbar({\n");
                         sb.append("pageSize: 100,\n");
+                        sb.append("stateEvents: ['change'],\n");
+                        sb.append("stateId: '").append(entityType).append("PageBar',\n");
+                        sb.append("stateful: true,\n");
+                        sb.append("getState: function() {\n");
+                        sb.append("var config = {};\n");
+                        sb.append("config.start = this.cursor;\n");
+                        sb.append("config.limit = this.pageSize;\n");
+                        sb.append("return config;\n");
+                        sb.append("},\n");
+                        sb.append("applyState: function(state, config) {\n");
+                        sb.append("if (state.start) {\n");
+                        sb.append("this.cursor = state.start;\n");
+                        sb.append("}\n");
+                        sb.append("if (state.limit) {\n");
+                        sb.append("this.pageSize = state.limit;\n");
+                        sb.append("}\n");
+                        sb.append("},\n");
                         sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
                         sb.append("displayInfo: true,\n");
                         sb.append("displayMsg: '").append(TangerineMessageAccessor.getMessage("displayMsg")).append("',\n");
@@ -247,6 +271,36 @@ public class SectionFieldTag extends AbstractTag {
                     }
 
                     sb.append("OrangeLeap.").append(entityType).append(".grid = new Ext.grid.GridPanel({\n");
+                    sb.append("stateId: '").append(entityType).append(gridType).append("',\n");
+                    sb.append("stateful: true,\n");
+                    sb.append("getState: function() {\n");
+                    sb.append("var config = {};\n");
+                    sb.append("var cm = this.getColumnModel();\n");
+                    sb.append("var sortState = this.store.getSortState();\n");
+                    sb.append("if (sortState) {\n");
+                    sb.append("config.sortField = sortState['field'];\n");
+                    sb.append("config.sortDir = sortState['direction'];\n");
+                    sb.append("}\n");
+                    sb.append("config.colModelConfig = cm.config;\n");
+                    sb.append("return config;\n");
+                    sb.append("},\n");
+                    sb.append("applyState: function(state, config) {\n");
+                    sb.append("if (state.colModelConfig != null) {\n");
+                    sb.append("var cm = this.getColumnModel();\n");
+                    sb.append("for (var i = 0; i < state.colModelConfig.length; i++) {\n");
+                    sb.append("var colIndex = cm.findColumnIndex(state.colModelConfig[i].dataIndex);\n");
+                    sb.append("if (colIndex != -1)\n");
+                    sb.append("if (colIndex != i) {\n");
+                    sb.append("cm.moveColumn(colIndex, i);\n");
+                    sb.append("}\n");
+                    sb.append("cm.setHidden(i, state.colModelConfig[i].hidden);\n");
+                    sb.append("cm.setColumnWidth(i, state.colModelConfig[i].width);\n");
+                    sb.append("}\n");
+                    sb.append("}\n");
+                    sb.append("if (state.sortField && state.sortDir) {\n");
+                    sb.append("this.sortParams = { direction: state.sortDir, dataIndex: state.sortField };\n");
+                    sb.append("}\n");
+                    sb.append("},\n");
                     sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
                     sb.append("addClass: 'pointer',\n");
                     sb.append("columns: [\n");
@@ -340,8 +394,27 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("renderTo: '").append(entityType).append("Grid'\n");
                     sb.append("});\n");
                     if (isListGrid) {
-                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: 0, limit: 100, sort: '");
-                        sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: '").append(direction).append("'}});\n");
+                        sb.append("var sortDir = '").append(direction).append("';\n");
+                        sb.append("var sortProp = '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("';\n");
+                        sb.append("var pageStart = 0;\n");
+                        sb.append("var pageLimit = 100;\n");
+                        sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams) {\n");
+                        sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams.direction) {\n");
+                        sb.append("sortDir = OrangeLeap.").append(entityType).append(".grid.sortParams.direction;\n");
+                        sb.append("}\n");
+                        sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams.dataIndex) {\n");
+                        sb.append("sortProp = OrangeLeap.").append(entityType).append(".grid.sortParams.dataIndex;\n");
+                        sb.append("}\n");
+                        sb.append("}\n");
+                        sb.append("if (OrangeLeap.").append(entityType).append(".bar.cursor) {\n");
+                        sb.append("pageStart = OrangeLeap.").append(entityType).append(".bar.cursor;\n");
+                        sb.append("}\n");
+                        sb.append("if (OrangeLeap.").append(entityType).append(".bar.pageSize) {\n");
+                        sb.append("pageLimit = OrangeLeap.").append(entityType).append(".bar.pageSize;\n");
+                        sb.append("}\n");
+                        sb.append("OrangeLeap.").append(entityType).append(".store.sortToggle[sortProp] = (sortDir == 'ASC' ? 'DESC' : 'ASC');\n");
+                        sb.append("OrangeLeap.").append(entityType).append(".store.sortInfo = { field: sortProp, direction: sortDir };\n");
+                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir}});\n");
                     }
                     else {
                         if (Boolean.TRUE.toString().equalsIgnoreCase(pageContext.getRequest().getParameter("autoLoad"))) {

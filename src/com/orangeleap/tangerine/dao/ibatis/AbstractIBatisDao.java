@@ -133,7 +133,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
                     searchColumnList.add(searchColumnMap);
                 }
                 else if ( ! beanWrapper.isReadableProperty(propertyName) || beanPropertyColumnMap.get(propertyName) == null) {
-                    logger.warn("setupSearchParams: Could not resolve search propertyName = " + propertyName);
+                    logger.debug("setupSearchParams: Could not resolve search propertyName = " + propertyName);
                 }
             }
         }

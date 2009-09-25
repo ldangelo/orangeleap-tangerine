@@ -272,6 +272,7 @@ public class SectionFieldTag extends AbstractTag {
 
                     sb.append("OrangeLeap.").append(entityType).append(".grid = new Ext.grid.GridPanel({\n");
                     sb.append("stateId: '").append(entityType).append(gridType).append("',\n");
+                    sb.append("stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],\n");
                     sb.append("stateful: true,\n");
                     sb.append("getState: function() {\n");
                     sb.append("var config = {};\n");
@@ -281,6 +282,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("config.sortField = sortState['field'];\n");
                     sb.append("config.sortDir = sortState['direction'];\n");
                     sb.append("}\n");
+                    sb.append("config.scrollState = this.getView().getScrollState();\n");
                     sb.append("config.colModelConfig = cm.config;\n");
                     sb.append("return config;\n");
                     sb.append("},\n");
@@ -299,6 +301,9 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("}\n");
                     sb.append("if (state.sortField && state.sortDir) {\n");
                     sb.append("this.sortParams = { direction: state.sortDir, dataIndex: state.sortField };\n");
+                    sb.append("}\n");
+                    sb.append("if (state.scrollState) {\n");
+                    sb.append("this.getView().prevScrollState = state.scrollState;\n");
                     sb.append("}\n");
                     sb.append("},\n");
                     sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
@@ -414,7 +419,13 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("}\n");
                         sb.append("OrangeLeap.").append(entityType).append(".store.sortToggle[sortProp] = (sortDir == 'ASC' ? 'DESC' : 'ASC');\n");
                         sb.append("OrangeLeap.").append(entityType).append(".store.sortInfo = { field: sortProp, direction: sortDir };\n");
-                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir}});\n");
+                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir}, callback: function(rec, options, success) {\n");
+                        sb.append("var thisView = OrangeLeap.").append(entityType).append(".grid.getView();\n");
+                        sb.append("if (thisView.prevScrollState) {\n");
+                        sb.append("thisView.restoreScroll(thisView.prevScrollState);\n");
+                        sb.append("}\n");
+                        sb.append("}\n");
+                        sb.append("});\n");
                     }
                     else {
                         if (Boolean.TRUE.toString().equalsIgnoreCase(pageContext.getRequest().getParameter("autoLoad"))) {

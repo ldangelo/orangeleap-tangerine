@@ -164,6 +164,8 @@ public class SectionFieldTag extends AbstractTag {
                     if (!isListGrid) {
                         sb.append("OrangeLeap.SearchStore = Ext.extend(Ext.data.JsonStore, {\n");
                         sb.append("sort: function(fieldName, dir) {\n");
+                        sb.append("this.lastOptions.params['start'] = 0;\n");
+                        sb.append("this.lastOptions.params['limit'] = 100;\n");
                         sb.append("this.lastOptions.params['autoLoad'] = false;\n");
                         sb.append("delete this.lastOptions.params['").append(StringConstants.FULLTEXT).append("'];\n");
                         sb.append("return OrangeLeap.SearchStore.superclass.sort.call(this, fieldName, dir);\n");
@@ -429,10 +431,23 @@ public class SectionFieldTag extends AbstractTag {
                     }
                     else {
                         if (Boolean.TRUE.toString().equalsIgnoreCase(pageContext.getRequest().getParameter("autoLoad"))) {
+
+                            sb.append("var sortDir = '").append(direction).append("';\n");
+                            sb.append("var sortProp = '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("';\n");
+                            sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams) {\n");
+                            sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams.direction) {\n");
+                            sb.append("sortDir = OrangeLeap.").append(entityType).append(".grid.sortParams.direction;\n");
+                            sb.append("}\n");
+                            sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams.dataIndex) {\n");
+                            sb.append("sortProp = OrangeLeap.").append(entityType).append(".grid.sortParams.dataIndex;\n");
+                            sb.append("}\n");
+                            sb.append("}\n");
+
+                            sb.append("OrangeLeap.").append(entityType).append(".store.sortToggle[sortProp] = (sortDir == 'ASC' ? 'DESC' : 'ASC');\n");
+                            sb.append("OrangeLeap.").append(entityType).append(".store.sortInfo = { field: sortProp, direction: sortDir };\n");
                             sb.append("OrangeLeap.").append(entityType).append(".store.load({");
-                            sb.append("callback: OrangeLeap.").append(entityType).append(".updateBar, ");
-                            sb.append("params: {start: 0, limit: 200, autoLoad: true, sort: '");
-                            sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: '").append(direction).append("' ");
+                            sb.append("callback: OrangeLeap.").append(entityType).append(".searchCallback, ");
+                            sb.append("params: {start: 0, limit: 200, autoLoad: true, sort: sortProp, dir: sortDir ");
 
                             String searchFieldValue = pageContext.getRequest().getParameter(StringConstants.SEARCH_FIELD);
                             if (StringUtils.hasText(searchFieldValue)) {
@@ -472,8 +487,12 @@ public class SectionFieldTag extends AbstractTag {
                     }
                     sb.append("});\n");
                     if (!isListGrid) {
-                        sb.append("OrangeLeap.").append(entityType).append(".updateBar = function(r, options, success) {\n");
+                        sb.append("OrangeLeap.").append(entityType).append(".searchCallback = function(r, options, success) {\n");
                         sb.append("if (success) {\n");
+                        sb.append("var thisView = OrangeLeap.").append(entityType).append(".grid.getView();\n");
+                        sb.append("if (thisView.prevScrollState) {\n");
+                        sb.append("thisView.restoreScroll(thisView.prevScrollState);\n");
+                        sb.append("}\n");
                         sb.append("var thisLength = this.getTotalCount();\n");
                         sb.append("if (thisLength == 0) {\n");
                         sb.append("var thisText = '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("';\n");

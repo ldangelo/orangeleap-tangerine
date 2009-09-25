@@ -327,7 +327,7 @@
 			minify="true"
 			yCompressor="true"
 			gZip="false" 
-			destFile="${stage.dir}/war/js/tangerine.js" 
+			destFile="${stage.dir}/war/js/tangerine.js"
 			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
 			verbose="false">
 
@@ -339,7 +339,11 @@
             <fileset dir="${stage.dir}/war/js" includes="jquery/jquery-1.3.2.min.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
-            <fileset dir="${stage.dir}/war/js" includes="init.js" />            
+            <fileset dir="${stage.dir}/war/js" includes="persist/gears_init.js" />
+            <fileset dir="${stage.dir}/war/js" includes="persist/swfobject.js" />
+            <fileset dir="${stage.dir}/war/js" includes="persist/persist.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/PersistStateProvider.js" />
+            <fileset dir="${stage.dir}/war/js" includes="init.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/RowExpander.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/TreeGrid.js" />
@@ -416,7 +420,11 @@
             <fileset dir="${stage.dir}/war/js" includes="jquery/jquery-1.3.2.min.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
-            <fileset dir="${stage.dir}/war/js" includes="init.js" />            
+            <fileset dir="${stage.dir}/war/js" includes="persist/gears_init.js" />
+            <fileset dir="${stage.dir}/war/js" includes="persist/swfobject.js" />
+            <fileset dir="${stage.dir}/war/js" includes="persist/persist.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/PersistStateProvider.js" />
+            <fileset dir="${stage.dir}/war/js" includes="init.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/RowExpander.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/TreeGrid.js" />

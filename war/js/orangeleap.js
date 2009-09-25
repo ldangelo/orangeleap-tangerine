@@ -5,25 +5,6 @@ $(document).ready(function() {
         Picklist.hideShowSections();
 	})();
 	
-	// Fix IE8 Date Menu being cut off 
-	Ext.override(Ext.menu.Menu, {
-	    autoWidth : function() {
-	        var el = this.el, ul = this.ul;
-	        if (!el){
-	            return;
-	        }
-	        var w = this.width;
-	        if (w) {
-	            el.setWidth(w);
-	        } 
-	        else if (Ext.isIE && !Ext.isIE8) {
-	            el.setWidth(this.minWidth);
-	            var t = el.dom.offsetWidth; // force recalc
-	            el.setWidth(ul.getWidth() + el.getFrameWidth("lr"));
-	        }
-	    }
-	});
-
     // initialize the dialog used for password changes
     var pwdChg = new PasswordChange();
     pwdChg.init();
@@ -238,20 +219,7 @@ function editInPlace(elem) {
 	$(elem).parent().parent().load($(elem).attr("href"));
 	return false;
 };
-function getPage(elem) {
-		var queryString = $(".searchForm").find("input, select, textarea").serialize();
-		var baseUrl = $(elem).attr("href");
-		$.ajax({
-			type: "POST",
-			url: baseUrl,
-			data: queryString+"&view=ajaxResults",
-			success: function(html){
-				$("#searchResults").html(html);
-				//return false;
-			}
-		});
-		return false;
-};
+
 var GenericCustomizer = {	
 	addNewRow : function() {
 		var $newRow = $("table.customFields tr:last", "form").clone(false);
@@ -764,7 +732,16 @@ var OrangeLeap = {
 	
 	escapeIdCharacters: function(idString) {
 		return idString.replace(".", "\\.").replace("[", "\\[").replace("]", "\\]"); // for jQuery selection, escape common characters
-	}	
+	},
+
+    disallowSubmit: function() {
+        $("div.mainForm form").submit(function() {
+            return false;
+        });
+        $("button, submit").each(function() {
+
+        });
+    }
 };
 var Lookup = {
 	lookupCaller: null,

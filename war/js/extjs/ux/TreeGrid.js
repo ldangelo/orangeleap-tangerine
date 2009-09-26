@@ -202,6 +202,9 @@ Ext.ux.maximgb.tg.AbstractTreeStore = Ext.extend(Ext.data.Store,
     },
 
     sort : function(fieldName, dir){
+        this.lastOptions.params['start'] = 0;
+        this.lastOptions.params['limit'] = 100;
+        
         // remove the last tree node parameters, if any, so that sorting can be done on the parent nodes
         delete this.lastOptions.params[this.paramNames.active_node];
         delete this.lastOptions.add;

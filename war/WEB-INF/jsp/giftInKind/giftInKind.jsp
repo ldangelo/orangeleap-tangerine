@@ -9,7 +9,7 @@
 			<title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
 		</head>
 		<body>
-			<form:form method="post" commandName="${requestScope.commandObject}">
+			<form:form method="post" commandName="${requestScope.commandObject}" cssClass="disableForm">
 				<c:set var="topButtons" scope="request">
                     <table cellspacing="2">
                         <tr>
@@ -25,14 +25,19 @@
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftInKindList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftInKindList.htm?constituentId=${constituent.id}')"/>
+                        <input type="button" value="<spring:message code='cancel'/>" class="button" id="cancelButton"/>
 					</c:if>
 				</div>
 			</form:form>
 			<page:param name="scripts">
 				<script type="text/javascript" src="js/gift/giftInKindDetails.js"></script>
-                <c:if test="${requestScope.form.domainObject.id > 0}">
-                    <script type="text/javascript">
+                <script type="text/javascript">
+                    $(function() {
+                        $("#cancelButton").click(function() {
+                            OrangeLeap.gotoUrl('giftInKindList.htm?constituentId=${constituent.id}');
+                        });
+                    });
+                    <c:if test="${requestScope.form.domainObject.id > 0}">
                         var ButtonPanel = Ext.extend(Ext.Panel, {
                             defaultType: 'button',
                             baseCls: 'x-plain',
@@ -65,9 +70,9 @@
                         new ButtonPanel([
                                 { text: 'Actions' }
                         ]);
-                    </script>
-                </c:if>
-			</page:param>
+                    </c:if>
+                </script>
+            </page:param>
 		</body>
 	</html>
 </page:applyDecorator>

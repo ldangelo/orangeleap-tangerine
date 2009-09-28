@@ -45,7 +45,7 @@
 			</table>
 			<div class="buttonsDiv">
 				<input type="button" value="<spring:message code='done'/>" class="saveButton" name="doneButton" id="doneButton" />
-				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" name="cancelButton" id="cancelButton" />
+				<input type="button" value="<spring:message code='cancel'/>" class="button" name="cancelButton" id="cancelButton" />
 			</div>
 		</form>
 	</div>

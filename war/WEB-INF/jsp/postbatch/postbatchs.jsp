@@ -56,7 +56,7 @@
                     <br/>
                     <br/>
 
-                    <input type="button" value="Create New Batch" class="saveButton" onclick="window.location.href='postbatch.htm';" />   <br/><br/>
+                    <input type="button" value="Create" class="button" onclick="window.location.href='postbatch.htm';" />   <br/><br/>
 
                     <br/>
                 </div>

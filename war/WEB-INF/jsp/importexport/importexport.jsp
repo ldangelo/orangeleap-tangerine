@@ -23,7 +23,7 @@
                   <option value="gift">Gift Summary</option>
                 </select>
 
-                <input type="submit" value="Export" onclick="if ( $('#exportEntity').val() === '' ) return false; else return true; "/>
+                <input type="submit" value="Export" class="saveButton" onclick="if ( $('#exportEntity').val() === '' ) return false; else return true; "/>
 
                 <br/>
                 <br/>
@@ -109,8 +109,8 @@
                     <option value="address">Address Cleansing</option>
                    <option value="gift">Gifts</option>
                 </select>
-                <input type="file" name="file"/>
-                <input type="submit" value="Import" onclick="$('#importResult').html(''); return true;" />
+                <input type="file" name="file" class="button"/>
+                <input type="submit" value="Import" class="saveButton" onclick="$('#importResult').html(''); return true;" />
 
                 <br/>
                 <br/>

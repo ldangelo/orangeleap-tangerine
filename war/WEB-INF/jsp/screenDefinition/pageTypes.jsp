@@ -21,7 +21,7 @@
                 <br/>
                 
                 
-                <input type="button" value="Go" onclick="window.location = 'sectionDefinitions.htm?pageType=' + $('#pageType').val();  " />
+                <input type="button" class="button" value="Go" onclick="window.location = 'sectionDefinitions.htm?pageType=' + $('#pageType').val();  " />
                 
              </form>
             

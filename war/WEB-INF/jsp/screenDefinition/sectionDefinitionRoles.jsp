@@ -26,7 +26,7 @@
                 
                 <br />
                 <br />
-                <input type="submit" value="Save" />
+                <input type="submit" value="Save" class="saveButton" />
 
                </form>
             

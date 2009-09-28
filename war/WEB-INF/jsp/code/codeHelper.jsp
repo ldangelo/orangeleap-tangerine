@@ -21,7 +21,7 @@
 				</select>        	
 				<input type="hidden" name="type" value="<c:out value='${param.type}'/>" id="type" />
 	        	<input type="text" value="" id="searchText" name="searchText"/>
-	        	<input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="saveButton" />
+	        	<input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="button" />
 	        </div>
 			<div id="queryResultsDiv">
                	<jsp:include page="codeHelperResults.jsp"/>		 
@@ -34,7 +34,7 @@
 	        </c:if>
 			<div class="buttonsDiv">
 				<input type="button" value="<spring:message code='done'/>" class="saveButton" name="doneButton" id="doneButton" />
-				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" name="cancelButton" id="cancelButton" />
+				<input type="button" value="<spring:message code='cancel'/>" class="button" name="cancelButton" id="cancelButton" />
 			</div>
 		</form>
 	</div>

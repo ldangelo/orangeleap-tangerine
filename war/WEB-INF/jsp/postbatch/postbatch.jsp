@@ -99,7 +99,7 @@
                     </c:forEach>
 
                     </table>
-                    <input type="button" value="Add" class="saveButton" onclick="BatchCustomizer.addNewRow('selectFieldsTable');" />   <br/><br/>
+                    <input type="button" value="Add" class="button" onclick="BatchCustomizer.addNewRow('selectFieldsTable');" />   <br/><br/>
 
                     <br/>
                     Note: Alphabetic values are case-sensitive.
@@ -127,12 +127,12 @@
                     </c:forEach>
 
                     </table>
-                    <input type="button" value="Add" class="saveButton" onclick="BatchCustomizer.addNewRow('updateFieldsTable');" />
+                    <input type="button" value="Add" class="button" onclick="BatchCustomizer.addNewRow('updateFieldsTable');" />
                     <br/>
 
                     <br/><br/>
-
-                    <input type="button" value="Save criteria and select records for update" class="saveButton" onclick="$('#postbatchform').submit();" />
+                    <div>Save criteria and select records for update</div>
+                    <input type="button" value="Save" class="saveButton" onclick="$('#postbatchform').submit();" />
 
 
                 </form>

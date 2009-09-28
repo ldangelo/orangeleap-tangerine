@@ -5,7 +5,7 @@ div.jqmWindow .buttonsDiv, div.modalSearch  { zoom: 1; }
 .jqmWindow .modalTopLeft, .jqmWindow .modalTopRight, .jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { height: auto; }
 .jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { top: -2px; }
 ul.formFields li.side label.desc { padding-top: 2px; }
-.saveButton,.searchButton { height: 23px; }
+.saveButton,.button { height: 23px; }
 a.lookupLink { top: 2px; right: -2px; }
 table.tablesorter tbody tr td a.lookupLink { top: 2px; }
 a.lookupLink:active, .lookupField a.hideText:active, .multiLookupField a.hideText:active, a.multiLookupLink:active { background-color: #DFF1FF; }

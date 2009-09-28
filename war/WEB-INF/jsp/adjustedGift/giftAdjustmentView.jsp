@@ -10,7 +10,7 @@
 			<title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
 		</head>
 		<body>
-			<form:form method="post" commandName="${requestScope.commandObject}">
+			<form:form method="post" commandName="${requestScope.commandObject}" cssClass="disableForm">
 				<c:set var="topButtons" scope="request">
                     <table cellspacing="2">
                         <tr>
@@ -26,7 +26,7 @@
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftView.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftView.htm?constituentId=${constituent.id}&giftId=${form.domainObject.originalGiftId}')"/>
+                        <input type="button" value="<spring:message code='cancel'/>" class="button" id="cancelButton"/>
 					</c:if>
 				</div>
 			</form:form>
@@ -35,8 +35,13 @@
 				<script type="text/javascript">PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
 				<script type="text/javascript" src="js/gift/distributionReadOnly.js"></script>
 				<script type="text/javascript" src="js/gift/adjustedDistributionReadOnly.js"></script>
-                <c:if test="${!requestScope.hideAdjustGiftButton}">
-                    <script type="text/javascript">
+                <script type="text/javascript">
+                    $(function() {
+                        $("#cancelButton").click(function() {
+                            OrangeLeap.gotoUrl('giftView.htm?constituentId=${constituent.id}&giftId=${form.domainObject.originalGiftId}');
+                        });
+                    });
+                    <c:if test="${!requestScope.hideAdjustGiftButton}">
                         var ButtonPanel = Ext.extend(Ext.Panel, {
                             defaultType: 'button',
                             baseCls: 'x-plain',
@@ -69,9 +74,9 @@
                         new ButtonPanel([
                                 { text: 'Actions' }
                         ]);
-                    </script>
-                </c:if>
-			</page:param>
+                    </c:if>
+                </script>
+            </page:param>
 		</body>
 	</html>
 </page:applyDecorator>

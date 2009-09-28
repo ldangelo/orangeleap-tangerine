@@ -10,7 +10,7 @@
 			<title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
 		</head>
 		<body>
-			<form:form method="post" commandName="${requestScope.commandObject}">
+			<form:form method="post" commandName="${requestScope.commandObject}" cssClass="disableForm">
 				<c:set var="topButtons" scope="request">
 					<input type="submit" value="<c:out value='${submitText}'/>" class="saveButton" id="submitButton"/>
 				</c:set>
@@ -21,10 +21,19 @@
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 					<c:if test="${pageAccess['/emailManager.htm']!='DENIED'}"> <%-- TODO: --%>
-                        <input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('emailList.htm?constituentId=${constituent.id}')"/>
+                        <input type="button" value="<spring:message code='cancel'/>" class="button" id="cancelButton"/>
 					</c:if>
 				</div>
 			</form:form>
 		</body>
 	</html>
+    <page:param name="scripts">
+        <script type="text/javascript">
+            $(function() {
+                $("#cancelButton").click(function() {
+                    OrangeLeap.gotoUrl('emailList.htm?constituentId=${constituent.id}');
+                });
+            });
+        </script>
+    </page:param>
 </page:applyDecorator>

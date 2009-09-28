@@ -212,30 +212,43 @@ table.tablesorter tbody tr.lineRow td a.hideText { top: 0; right: 0; padding: 1p
 	font-family:arial;
 }
 
-.saveButton,.searchButton {
+.saveButton, .button, .disabledButton {
 	font-family:arial;
 	text-decoration:none;
 	font-weight:bold;
-	padding:0 5px 0 5px;
-	background: #c8c9c8 url(../images/buttonGradient.gif) repeat-x top left;
-	border:1px solid #777;
-	border-bottom:1px solid #535353;
+	padding: 0 5px 0 5px;
+    -webkit-padding-start: 3px 5px 0 5px;
+    background-image: url(../images/buttons/buttons.png);
+    background-repeat: repeat-x;
+	border: 0;
 	margin:0 4px;
-	color:#000;
-	height:24px;
+	color: #000;
+	height: 24px;
 }
-.saveButton:hover, .searchButton:hover {
-	background-position: bottom left; 
-	cursor:pointer;
-	background-color: #91b5d0;
+.saveButton {
+    background-position: 0 0;
+    border-right: 1px solid #86b2d1;
+    border-bottom: 1px solid #86b2d1;
+}
+.button {
+    background-position: 0 -26px;
+    border-right: 1px solid #b0bec8;
+    border-bottom: 1px solid #b0bec8;
+}
+.saveButton:hover, .button:hover, .saveButton:focus, .button:focus {
+	background-position: 0 -52px; 
+    border-right: 1px solid #9dc7df;
+    border-bottom: 1px solid #9dc7df;
+    cursor: pointer;
+}
+.disabledButton {
+    background-position: 0 -78px; 
+    border-right: 1px solid #adb9c2;
+    border-bottom: 1px solid #adb9c2;
+    color: #A0A0A0;
+    cursor: default;
 }
 
-/*
-.searchButton {
-	font-weight:bold;
-	color:#444;
-}
-*/
 #savedMarker {
 	background:transparent url(../images/icons/check-eee.gif) no-repeat center left;
 	margin-left:12px;

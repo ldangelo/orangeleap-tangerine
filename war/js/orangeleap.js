@@ -132,6 +132,41 @@ $(document).ready(function() {
 		}
 		target.prevAll("label.desc").removeClass("inFocus");
 	});
+
+    $("div.mainForm form").submit(function() {
+        var submitted = false;
+        var $form = $(this);
+        if ($form.hasClass('disableForm') && !submitted) {
+            submitted = true;
+            $("div.mainForm form :button, div.mainForm form :submit, div.mainForm form :reset").each(function() {
+                var $elem = $(this);
+                $elem.unbind("click");
+                $elem.addClass("disabledButton");
+                $elem.removeClass("button");
+                $elem.removeClass("saveButton");
+                $elem.click(function() {
+                    return false;
+                });
+                $elem.focus(function() {
+                    $(this).blur();
+                });
+            });
+            if ($.browser.msie) {
+                // IE will automatically force the form to return false unless we set a timer 
+                setTimeout(function() {
+                    $("div.mainForm form").submit(function() {
+                        return false;
+                    });
+                }, 100);
+            }
+            else {
+                $("div.mainForm form").submit(function() {
+                    return false;
+                });
+            }
+        }
+        return true;
+    });
 	
 	(function focusFirst() {
 		var formLen = document.forms.length;
@@ -732,16 +767,7 @@ var OrangeLeap = {
 	
 	escapeIdCharacters: function(idString) {
 		return idString.replace(".", "\\.").replace("[", "\\[").replace("]", "\\]"); // for jQuery selection, escape common characters
-	},
-
-    disallowSubmit: function() {
-        $("div.mainForm form").submit(function() {
-            return false;
-        });
-        $("button, submit").each(function() {
-
-        });
-    }
+	}
 };
 var Lookup = {
 	lookupCaller: null,

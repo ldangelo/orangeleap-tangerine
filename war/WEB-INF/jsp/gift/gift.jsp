@@ -22,7 +22,7 @@
 				</c:when>
 			</c:choose>
 
-			<form:form method="post" commandName="${requestScope.commandObject}" id="giftForm" name="giftForm">
+			<form:form method="post" commandName="${requestScope.commandObject}" id="giftForm" name="giftForm" cssClass="disableForm">
 				<c:set var="topButtons" scope="request">
                     <table cellspacing="2">
                         <tr>
@@ -40,7 +40,7 @@
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?constituentId=${constituent.id}')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="button" id="cancelButton"/>
 					</c:if>
 				</div>
 			</form:form>
@@ -51,6 +51,11 @@
 				<script type="text/javascript" src="js/gift/distribution.js"></script>
 				<script type="text/javascript" src="js/gift/pledgeRecurringGiftSelector.js"></script>
 				<script type="text/javascript">
+                    $(function() {
+                        $("#cancelButton").click(function() {
+                            OrangeLeap.gotoUrl('giftList.htm?constituentId=${constituent.id}');
+                        });
+                    });
                     <c:if test="${requestScope.form.domainObject.id > 0}">
                         var ButtonPanel = Ext.extend(Ext.Panel, {
                             defaultType: 'button',

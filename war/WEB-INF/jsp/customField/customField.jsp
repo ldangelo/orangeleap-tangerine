@@ -114,7 +114,7 @@
 
 		   </div>
 
-		   <input type="submit" value="Create Custom Field" />
+		   <input type="submit" value="Create" class="saveButton"/>
 
 
 		 </form>

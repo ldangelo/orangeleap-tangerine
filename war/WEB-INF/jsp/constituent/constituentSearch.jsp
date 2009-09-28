@@ -10,7 +10,7 @@
                 <div class="searchSection">
                     <tangerine:fields pageName="constituentSearch"/>
                     <div class="constituentFormButtons searchConstituentButtons">
-                        <input class="searchButton" type="submit" value="<spring:message code='search'/>" id="constituentSearchButton" name="constituentSearchButton"/>
+                        <input class="button" type="submit" value="<spring:message code='search'/>" id="constituentSearchButton" name="constituentSearchButton"/>
                     </div>
                 </div>
             </form>

@@ -21,7 +21,7 @@
 				</select>        	
 				<input type="hidden" name="type" value="<c:out value='${param.type}'/>" id="type" />
 	        	<input type="text" value="" id="searchText" name="searchText"/>
-	        	<input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="saveButton" />
+	        	<input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="button" />
 	        </div>
 	        <div id="codeNoResultsDiv" class="noDisplay noResults"><spring:message code="searchNoResults"/></div>
 			<table cellspacing="0" class="multiSelect" id="codeResultsTable">
@@ -62,7 +62,7 @@
 	        </div>
 			<div class="buttonsDiv">
 				<input type="button" value="<spring:message code='done'/>" class="saveButton" name="doneButton" id="doneButton" />
-				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" name="cancelButton" id="cancelButton" />
+				<input type="button" value="<spring:message code='cancel'/>" class="button" name="cancelButton" id="cancelButton" />
 			</div>
 			<input type="hidden" name="modalTitleText" id="modalTitleText" value="<c:out value='${requestScope.modalTitle}'/>"/>
 		</form>

@@ -10,7 +10,7 @@
 			<title><c:out value="${titleText}"/><c:if test="${form.domainObject.id > 0}"><c:out value=" - ${requestScope.constituent.firstLast}"/></c:if></title>  
         </head>
         <body>
-	        <form:form method="post" commandName="${requestScope.commandObject}">
+	        <form:form method="post" commandName="${requestScope.commandObject}" cssClass="disableForm">
 		        <c:set var="topButtons" scope="request">
                     <table cellspacing="2">
                         <tr>
@@ -26,11 +26,19 @@
 
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
+                    <c:if test="${pageAccess['/constituentList.htm']!='DENIED'}">
+                        <input type="button" value="<spring:message code='cancel'/>" class="button" id="cancelButton"/>
+                    </c:if>
 				</div>
 			</form:form>
 	        <page:param name="scripts">
 				<script type="text/javascript" src="js/contactinfo.js"></script>
 				<script type="text/javascript">
+                    $(function() {
+                        $("#cancelButton").click(function() {
+                            OrangeLeap.gotoUrl('constituentList.htm');
+                        });
+                    });
 					<c:if test="${not empty requestScope.duplicateConstituentName}">
 						$(function() {
 							var duplicateConstituentName = '<c:out value="${requestScope.duplicateConstituentName}"/>';

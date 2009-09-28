@@ -180,7 +180,7 @@
 				<option value="people" <c:if test="${requestScope.searchType eq 'constituent'}">selected="selected"</c:if>><spring:message code="constituents"/></option>
 				<option value="gifts" <c:if test="${requestScope.searchType eq 'gift'}">selected="selected"</c:if>><spring:message code="gifts"/></option>
 			</select>
-			<input type="submit" value="<spring:message code='search'/>" class="saveButton" />
+			<input type="submit" value="<spring:message code='search'/>" class="button" />
 		</form>
 	</div>
 </div>

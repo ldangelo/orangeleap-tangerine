@@ -87,7 +87,7 @@
 						</table>
 						<div>
 							<input id="customizeIndex" type="hidden" name="customizeIndex" value="" />
-							<input type="button" value="<spring:message code='add'/>" class="saveButton" onclick="GenericCustomizer.addNewRow(); decorateDateInputs();" />
+							<input type="button" value="<spring:message code='add'/>" class="button" onclick="GenericCustomizer.addNewRow(); decorateDateInputs();" />
 							<input type="button" value="<spring:message code='save'/>" class="saveButton" onclick="$('#customizeIndex').val('');$('#form').submit();" />
 						</div>
 					</form>

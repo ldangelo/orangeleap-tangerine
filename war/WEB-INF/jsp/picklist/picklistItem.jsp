@@ -9,7 +9,8 @@
 		<input  type="hidden" name="itemName"  value="<c:out value='${picklistItem.itemName}'/>" />
 		</td>
 		<td>
-		<input name="defaultDisplayValue" size="16" value="<c:out value='${picklistItem.defaultDisplayValue}'/>" />
+            <input name="defaultDisplayValue" type="hidden" value="<c:out value='${picklistItem.defaultDisplayValue}'/>" />
+            <c:out value='${picklistItem.defaultDisplayValue}'/>
 		</td>
 		<td>
 		<input name="longDescription" size="40" value="<c:out value='${picklistItem.longDescription}'/>" />

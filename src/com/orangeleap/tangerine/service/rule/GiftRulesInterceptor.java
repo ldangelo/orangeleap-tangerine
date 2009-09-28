@@ -41,81 +41,81 @@ public class GiftRulesInterceptor extends RulesInterceptor {
         RuleAgent agent = (RuleAgent) ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site);
 		RuleBase ruleBase = agent.getRuleBase();
 
-		StatefulSession session = ruleBase.newStatefulSession();
-		WorkingMemory workingMemory = (WorkingMemory) session;
-
-		if (logger.isDebugEnabled()) {
-			workingMemory.addEventListener (new DebugAgendaEventListener());
-			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-		}
-
-
-		@SuppressWarnings("unused")
-		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
-		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-		SiteService ss = (SiteService) applicationContext.getBean("siteService");
-		PicklistItemService plis = (PicklistItemService)applicationContext.getBean("picklistItemService");
-		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
-        EmailService es = (EmailService) applicationContext.getBean("emailService");
-		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
+		StatefulSession workingMemory = ruleBase.newStatefulSession();
+		try{
+			if (logger.isDebugEnabled()) {
+				workingMemory.addEventListener (new DebugAgendaEventListener());
+				workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+			}
 
 
+			@SuppressWarnings("unused")
+			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
+			GiftService gs = (GiftService) applicationContext.getBean("giftService");
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
+			PicklistItemService plis = (PicklistItemService)applicationContext.getBean("picklistItemService");
+			TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+	        EmailService es = (EmailService) applicationContext.getBean("emailService");
+			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
+
+
+
+				try {
+
+					workingMemory.setFocus(site+"gift");
+					workingMemory.setGlobal("applicationContext", applicationContext);
+					workingMemory.setGlobal("constituentService", ps);
+					workingMemory.setGlobal("giftService",gs);
+					workingMemory.setGlobal("picklistItemService",plis);
+					workingMemory.setGlobal("userHelper",uh);
+
+					workingMemory.insert(ss.readSite(site));
+
+					ss.populateDefaultEntityEditorMaps(gift);
+					workingMemory.insert(gift);
+
+					/*List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getConstituent().getId());
+					Iterator<Gift> giftsIter = gifts.iterator();
+					while (giftsIter.hasNext()) {
+						workingMemory.insert(giftsIter.next());
+					}*/
+
+					Constituent constituent = gift.getConstituent();
+
+					constituent.setGifts(gs.readMonetaryGifts(constituent));
+					constituent.setSite(ss.readSite(constituent.getSite().getName()));
+					constituent.setEmails(es.readByConstituentId(constituent.getId()));
+					ss.populateDefaultEntityEditorMaps(constituent);
+					constituent.setSuppressValidation(true);
+
+					TaskStack.push(new RuleTask(applicationContext,site + "email",constituent,gift));
+
+					workingMemory.insert(constituent);
+
+				} catch (Exception ex) {
+					logger.error(ex.getMessage());
+					errorLogService.addErrorMessage(ex.getMessage(), "gift.rule.setup");
+				}
+
+				if (site == null) {
+					site =gift.getSite().getName();
+				}
 
 			try {
+				logger.info("*** firing all rules");
 
-				workingMemory.setFocus(site+"gift");
-				workingMemory.setGlobal("applicationContext", applicationContext);
-				workingMemory.setGlobal("constituentService", ps);
-				workingMemory.setGlobal("giftService",gs);
-				workingMemory.setGlobal("picklistItemService",plis);
-				workingMemory.setGlobal("userHelper",uh);
-
-				workingMemory.insert(ss.readSite(site));
-
-				ss.populateDefaultEntityEditorMaps(gift);
-				workingMemory.insert(gift);
-
-				/*List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getConstituent().getId());
-				Iterator<Gift> giftsIter = gifts.iterator();
-				while (giftsIter.hasNext()) {
-					workingMemory.insert(giftsIter.next());
-				}*/
-
-				Constituent constituent = gift.getConstituent();
-
-				constituent.setGifts(gs.readMonetaryGifts(constituent));
-				constituent.setSite(ss.readSite(constituent.getSite().getName()));
-				constituent.setEmails(es.readByConstituentId(constituent.getId()));
-				ss.populateDefaultEntityEditorMaps(constituent);
-				constituent.setSuppressValidation(true);
-
-				TaskStack.push(new RuleTask(applicationContext,site + "email",constituent,gift));
-
-				workingMemory.insert(constituent);
-
-			} catch (Exception ex) {
-				logger.error(ex.getMessage());
-				errorLogService.addErrorMessage(ex.getMessage(), "gift.rule.setup");
+				workingMemory.fireAllRules();
+			} catch (Exception e) {
+				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
+				logger.error(e);
+				errorLogService.addErrorMessage(e.getMessage(), "gift.rule.fire");
 			}
 
-			if (site == null) {
-				site =gift.getSite().getName();
-			}
-
-		try {
-			logger.info("*** firing all rules");
-
-			workingMemory.fireAllRules();
-
-
-			session.dispose();
-			workingMemory = null;
-
-		} catch (Exception e) {
-			logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
-			logger.error(e);
-			errorLogService.addErrorMessage(e.getMessage(), "gift.rule.fire");
+		}finally{
+			if (workingMemory != null)
+				workingMemory.dispose();
 		}
+
 	}
 
 	@Override

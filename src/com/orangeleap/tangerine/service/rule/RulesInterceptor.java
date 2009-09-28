@@ -63,67 +63,68 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
 		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(gift.getSite().getName()).getRuleBase();
 
-		StatefulSession session = ruleBase.newStatefulSession();
-		WorkingMemory workingMemory = (WorkingMemory) session;
+		StatefulSession workingMemory = ruleBase.newStatefulSession();
+		try{
+			if (logger.isDebugEnabled()) {
+				workingMemory.addEventListener (new DebugAgendaEventListener());
+				workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+			}
 
-		if (logger.isDebugEnabled()) {
-			workingMemory.addEventListener (new DebugAgendaEventListener());
-			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-		}
 
+			@SuppressWarnings("unused")
+			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
+			GiftService gs = (GiftService) applicationContext.getBean("giftService");
+			PicklistItemService plis = (PicklistItemService) applicationContext.getBean("picklistItemService");
+			TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
 
-		@SuppressWarnings("unused")
-		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
-		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-		PicklistItemService plis = (PicklistItemService) applicationContext.getBean("picklistItemService");
-		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
-		SiteService ss = (SiteService) applicationContext.getBean("siteService");
+			String site = null;
 
-		String site = null;
+			workingMemory.setGlobal("applicationContext", applicationContext);
+			workingMemory.setGlobal("constituentService", ps);
+			workingMemory.setGlobal("giftService",gs);
+			workingMemory.setGlobal("picklistItemService",plis);
+			workingMemory.setGlobal("userHelper",uh);
 
-		workingMemory.setGlobal("applicationContext", applicationContext);
-		workingMemory.setGlobal("constituentService", ps);
-		workingMemory.setGlobal("giftService",gs);
-		workingMemory.setGlobal("picklistItemService",plis);
-		workingMemory.setGlobal("userHelper",uh);
+				try {
+					if (site == null) {
+						site =gift.getSite().getName();
+					}
+					workingMemory.setFocus(site+"email");
 
-			try {
+					workingMemory.insert(gift);
+
+					Constituent constituent = gift.getConstituent();
+
+					constituent.setGifts(gs.readMonetaryGifts(constituent));
+					constituent.setSite(ss.readSite(constituent.getSite().getName()));
+
+					workingMemory.insert(constituent);
+
+				} catch (Exception ex) {
+					logger.error(ex.getMessage());
+				}
+
 				if (site == null) {
 					site =gift.getSite().getName();
 				}
-				workingMemory.setFocus(site+"email");
 
-				workingMemory.insert(gift);
+			try {
 
-				Constituent constituent = gift.getConstituent();
+				logger.info("*** firing all rules");
 
-				constituent.setGifts(gs.readMonetaryGifts(constituent));
-				constituent.setSite(ss.readSite(constituent.getSite().getName()));
+				workingMemory.fireAllRules();
 
-				workingMemory.insert(constituent);
-
-			} catch (Exception ex) {
-				logger.error(ex.getMessage());
+			} catch (Exception e) {
+				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
+				logger.error(e);
 			}
 
-			if (site == null) {
-				site =gift.getSite().getName();
-			}
-
-		try {
-
-			logger.info("*** firing all rules");
-
-			workingMemory.fireAllRules();
-
-
-			session.dispose();
-			workingMemory = null;
-
-		} catch (Exception e) {
-			logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
-			logger.error(e);
+		}finally{
+			if(workingMemory != null)
+				workingMemory.dispose();
 		}
+
 	}
 
 	@Override

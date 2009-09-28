@@ -40,60 +40,62 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
+		try{
+			@SuppressWarnings("unused")
+			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
+			GiftService gs = (GiftService) applicationContext.getBean("giftService");
+			PicklistItemService plis = (PicklistItemService)applicationContext.getBean("picklistItemService");
+			TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
 
-		@SuppressWarnings("unused")
-		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
-		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-		PicklistItemService plis = (PicklistItemService)applicationContext.getBean("picklistItemService");
-		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
-		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
-		SiteService ss = (SiteService) applicationContext.getBean("siteService");
-
-		workingMemory.setFocus(site+"constituent");
-		workingMemory.setGlobal("applicationContext", applicationContext);
-		workingMemory.setGlobal("constituentService", ps);
-		workingMemory.setGlobal("giftService",gs);
-		workingMemory.setGlobal("picklistItemService",plis);
-		workingMemory.setGlobal("userHelper",uh);
+			workingMemory.setFocus(site+"constituent");
+			workingMemory.setGlobal("applicationContext", applicationContext);
+			workingMemory.setGlobal("constituentService", ps);
+			workingMemory.setGlobal("giftService",gs);
+			workingMemory.setGlobal("picklistItemService",plis);
+			workingMemory.setGlobal("userHelper",uh);
 
 
-		constituent.setGifts(gs.readMonetaryGifts(constituent));
-		constituent.setSite(ss.readSite(constituent.getSite().getName()));
-		workingMemory.insert(constituent);
+			constituent.setGifts(gs.readMonetaryGifts(constituent));
+			constituent.setSite(ss.readSite(constituent.getSite().getName()));
+			workingMemory.insert(constituent);
 
-		try {
-			List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(constituent.getId());
-			Iterator<Gift> giftsIter = gifts.iterator();
-			while (giftsIter.hasNext()) {
-				workingMemory.insert(giftsIter.next());
+			try {
+				List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(constituent.getId());
+				Iterator<Gift> giftsIter = gifts.iterator();
+				while (giftsIter.hasNext()) {
+					workingMemory.insert(giftsIter.next());
+				}
+			} catch (Exception ex) {
+				logger.info(ex.getMessage());
 			}
-		} catch (Exception ex) {
-			logger.info(ex.getMessage());
+
+			try {
+				logger.info("*** firing all rules");
+
+				workingMemory.fireAllRules();
+
+			} catch (ConsequenceException ce) {
+				if (ce.getCause() instanceof DuplicateConstituentException) {
+					DuplicateConstituentException dce = (DuplicateConstituentException) ce.getCause();
+					throw dce;
+				}
+				if (ce.getCause() instanceof ConstituentValidationException) {
+					ConstituentValidationException cve = (ConstituentValidationException) ce.getCause();
+					throw cve;
+				}
+				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
+				logger.error(ce);
+			} catch (Exception e) {
+				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
+				logger.error(e);
+			}
+		}finally{
+			if (workingMemory != null)
+				workingMemory.dispose();
 		}
-
-		try {
-			logger.info("*** firing all rules");
-
-			workingMemory.fireAllRules();
-
-		} catch (ConsequenceException ce) {
-			if (ce.getCause() instanceof DuplicateConstituentException) {
-				DuplicateConstituentException dce = (DuplicateConstituentException) ce.getCause();
-				throw dce;
-			}
-			if (ce.getCause() instanceof ConstituentValidationException) {
-				ConstituentValidationException cve = (ConstituentValidationException) ce.getCause();
-				throw cve;
-			}
-			logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
-			logger.error(ce);
-		} catch (Exception e) {
-			logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
-			logger.error(e);
-		} finally {
-			workingMemory.dispose();
-		}
-	}
+}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

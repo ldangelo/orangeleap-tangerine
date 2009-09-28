@@ -126,7 +126,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
-    
+
 	@Resource(name = "giftService")
 	private GiftService giftService;
 
@@ -186,7 +186,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         auditService.auditObject(constituent, constituent);
 
         routeConstituent(constituent);
-        
+
         entitySearchDao.updateFullTextIndex(readConstituentById(constituent.getId()));
 
         return constituent;
@@ -211,7 +211,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         try {
 
             try {
-            	
+
                 NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
                 newConstituent.routeConstituent(constituent);
             }
@@ -234,7 +234,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
 
     	boolean isRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
-    	
+
     	if (!wasRollbackOnly && isRollbackOnly) {
     		logger.error("Rules processing caused transaction rollback for constituent "+constituent.getId());
     	}
@@ -544,68 +544,72 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         this.context = applicationContext;
 
     }
-    
+
     // Used by nightly rules processing
     @Override
 	public void processConstituent(String schedule, Date compareDate,
 			ConstituentService ps, GiftService gs, MailService ms,
-			SiteService ss, TangerineUserHelper uh, 
+			SiteService ss, TangerineUserHelper uh,
 			Constituent p, PicklistItemService plis) {
 
 		TaskStack.clear();
-		
+
 		RuleBase ruleBase = ((DroolsRuleAgent) context
 				.getBean("DroolsRuleAgent")).getRuleAgent(uh.lookupUserSiteName())
 				.getRuleBase();
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
-		if (logger.isInfoEnabled()) {
-			workingMemory.addEventListener(new DebugAgendaEventListener());
-			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-		}
-
-		workingMemory.setFocus(getSiteName() + schedule);
-		workingMemory.setGlobal("applicationContext", context);
-		workingMemory.setGlobal("constituentService", ps);
-		workingMemory.setGlobal("giftService",gs);
-		workingMemory.setGlobal("picklistItemService",plis);
-		workingMemory.setGlobal("userHelper",uh);
-
-		Site s = ss.readSite(uh.lookupUserSiteName());
-		workingMemory.insert(s);
-
-		Boolean updated = false;
-
-		//
-		// if the constituent has been updated or one of their
-		// gifts have been updated
-		if (p.getUpdateDate().compareTo(compareDate) > 0) updated = true;
-
-		List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
-
-		//
-		// if the constituent has not been updated check to see if any of their
-		// gifts have been...
-		for (Gift g : giftList) {
-			if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(compareDate) > 0) {
-				updated = true;
-				workingMemory.insert(g);
+		try{
+			if (logger.isInfoEnabled()) {
+				workingMemory.addEventListener(new DebugAgendaEventListener());
+				workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
 			}
 
+			workingMemory.setFocus(getSiteName() + schedule);
+			workingMemory.setGlobal("applicationContext", context);
+			workingMemory.setGlobal("constituentService", ps);
+			workingMemory.setGlobal("giftService",gs);
+			workingMemory.setGlobal("picklistItemService",plis);
+			workingMemory.setGlobal("userHelper",uh);
+
+			Site s = ss.readSite(uh.lookupUserSiteName());
+			workingMemory.insert(s);
+
+			Boolean updated = false;
+
+			//
+			// if the constituent has been updated or one of their
+			// gifts have been updated
+			if (p.getUpdateDate().compareTo(compareDate) > 0) updated = true;
+
+			List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
+
+			//
+			// if the constituent has not been updated check to see if any of their
+			// gifts have been...
+			for (Gift g : giftList) {
+				if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(compareDate) > 0) {
+					updated = true;
+					workingMemory.insert(g);
+				}
+
+			}
+			if (updated) {
+				p.setGifts(giftList);
+				ss.populateDefaultEntityEditorMaps(p);
+				p.setSite(s);
+				FactHandle pfh = workingMemory.insert(p);
+			}
+
+			workingMemory.fireAllRules();
+
+			TaskStack.execute();
+			TaskStack.clear();
+
 		}
-		if (updated) {
-			p.setGifts(giftList);
-			ss.populateDefaultEntityEditorMaps(p);
-			p.setSite(s);
-			FactHandle pfh = workingMemory.insert(p);
+		finally{
+			if (workingMemory != null)
+				workingMemory.dispose();
 		}
-
-		workingMemory.fireAllRules();
-		workingMemory.dispose();
-
-		TaskStack.execute();
-		TaskStack.clear();
-
-	}
-
+    }
 }

@@ -47,57 +47,61 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
         RuleBase ruleBase = ((DroolsRuleAgent) applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
 
         StatefulSession workingMemory = ruleBase.newStatefulSession();
-        if (logger.isDebugEnabled()) {
-            workingMemory.addEventListener(new DebugAgendaEventListener());
-            workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-        }
-        @SuppressWarnings("unused")
-        ConstituentService ps = (ConstituentService) applicationContext
-                .getBean("constituentService");
-        GiftService gs = (GiftService) applicationContext
-                .getBean("giftService");
-        ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
+        try{
+        	if (logger.isDebugEnabled()) {
+                workingMemory.addEventListener(new DebugAgendaEventListener());
+                workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+            }
+            @SuppressWarnings("unused")
+            ConstituentService ps = (ConstituentService) applicationContext
+                    .getBean("constituentService");
+            GiftService gs = (GiftService) applicationContext
+                    .getBean("giftService");
+            ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
 
-        try {
+            try {
 
-            workingMemory.setGlobal("applicationContext", applicationContext);
-            workingMemory.setGlobal("constituentService", ps);
-            workingMemory.setGlobal("giftService", gs);
+                workingMemory.setGlobal("applicationContext", applicationContext);
+                workingMemory.setGlobal("constituentService", ps);
+                workingMemory.setGlobal("giftService", gs);
 
-            workingMemory.setFocus(site + "processpayment");
+                workingMemory.setFocus(site + "processpayment");
 
-            workingMemory.insert(gift.getSite());
-            workingMemory.insert(gift);
+                workingMemory.insert(gift.getSite());
+                workingMemory.insert(gift);
 
-/*			List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift
-					.getConstituent().getId());
-			Iterator<Gift> giftsIter = gifts.iterator();
-			while (giftsIter.hasNext()) {
-				workingMemory.insert(giftsIter.next());
-			}*/
+    /*			List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift
+    					.getConstituent().getId());
+    			Iterator<Gift> giftsIter = gifts.iterator();
+    			while (giftsIter.hasNext()) {
+    				workingMemory.insert(giftsIter.next());
+    			}*/
 
-            Constituent constituent = gift.getConstituent();
-            constituent.setGifts(gs.readMonetaryGifts(constituent));
-            workingMemory.insert(constituent);
+                Constituent constituent = gift.getConstituent();
+                constituent.setGifts(gs.readMonetaryGifts(constituent));
+                workingMemory.insert(constituent);
 
-        } catch (Exception ex) {
-            logger.info(ex.getMessage());
-            errorLogService.addErrorMessage(ex.getMessage(), "payment.rule.setup");
-        }
+            } catch (Exception ex) {
+                logger.info(ex.getMessage());
+                errorLogService.addErrorMessage(ex.getMessage(), "payment.rule.setup");
+            }
 
-        try {
+            try {
 
-            logger.info("*** firing all rules");
+                logger.info("*** firing all rules");
 
-            workingMemory.fireAllRules();
+                workingMemory.fireAllRules();
 
-            workingMemory.dispose();
-        } catch (Exception e) {
-            logger
-                    .info("*** exception firing rules - make sure rule base exists and global variable is set: ");
-            logger.info(e);
-            errorLogService.addErrorMessage(e.getMessage(), "payment.rule.fire");
+            } catch (Exception e) {
+                logger
+                        .info("*** exception firing rules - make sure rule base exists and global variable is set: ");
+                logger.info(e);
+                errorLogService.addErrorMessage(e.getMessage(), "payment.rule.fire");
+            }
+        }finally{
+        	if (workingMemory != null)
+                workingMemory.dispose();
         }
     }
 

@@ -133,6 +133,8 @@ public final class StringConstants {
     public static final String HIDE_ADJUST_GIFT_BUTTON = "hideAdjustGiftButton";
     public static final String ERROR_CLASS = "errorClass";
     
+    public static final String CAS_COOKIE_NAME = "CASTGC";
+    
     public static final String SEARCH_FIELD = "searchField";
     public static final String SEARCH_TYPE = "searchType";
     public static final String SEARCH_OPTION = "searchOption";

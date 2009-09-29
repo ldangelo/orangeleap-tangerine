@@ -66,7 +66,7 @@ public class CodeAdditionalFieldsController extends CodeHelperController {
                 Set<String> chosenCodesStrings = new HashSet<String>(Arrays.asList(chosenCodesStringsArray));
                 if (chosenCodesStrings != null) {
                     for (PicklistItem aCode : allCodes) {
-                        if (chosenCodesStrings.contains(aCode.getDefaultDisplayValue())) {
+                        if (chosenCodesStrings.contains(aCode.getItemName())) {
                             selectedCodes.add(aCode);
                         }
                         else {

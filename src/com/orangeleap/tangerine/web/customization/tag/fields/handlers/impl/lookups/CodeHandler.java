@@ -25,11 +25,10 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import org.apache.commons.logging.Log;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,12 +48,12 @@ public class CodeHandler extends AbstractFieldHandler {
 		picklistItemService = (PicklistItemService) applicationContext.getBean("picklistItemService");
 	}
 
-	protected String resolveCodeValue(String picklistNameId, Object defaultDisplayValue) {
+	protected String resolveCodeValue(String picklistNameId, Object itemName) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("resolve: picklistNameId = " + picklistNameId + " defaultDisplayValue = " + defaultDisplayValue);
+	        logger.trace("resolve: picklistNameId = " + picklistNameId + " itemName = " + itemName);
 	    }
-	    String val = defaultDisplayValue == null ? StringConstants.EMPTY : defaultDisplayValue.toString();
-	    PicklistItem code = picklistItemService.getPicklistItemByDefaultDisplayValue(picklistNameId, val);
+	    PicklistItem code = picklistItemService.getPicklistItem(picklistNameId, (String) itemName);
+        String val = (String) itemName;
 	    if (code != null) {
 	        val = code.getValueDescription();
 	    }
@@ -101,7 +100,7 @@ public class CodeHandler extends AbstractFieldHandler {
                                       SectionField currentField, TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
         sb.append("<input value=\"").append(checkForNull(getCodeDisplayValue(sectionDefinition, currentField, form, formFieldName, fieldValue))).
 		        append("\" class=\"text code ").append(resolveEntityAttributes(currentField));
-	    writeErrorClass(pageContext, formFieldName, sb); // TODO: fix for errors
+	    writeErrorClass(pageContext, formFieldName, sb);
 
         sb.append("\" ");
 	    getDisplayAttributes(sectionDefinition, currentField, form, formFieldName, sb);

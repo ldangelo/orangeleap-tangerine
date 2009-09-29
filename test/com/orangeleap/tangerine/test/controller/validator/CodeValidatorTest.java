@@ -1,16 +1,5 @@
 package com.orangeleap.tangerine.test.controller.validator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.springframework.validation.BindException;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
@@ -21,7 +10,18 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.springframework.validation.BindException;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CodeValidatorTest extends BaseTest {
 
@@ -39,11 +39,11 @@ public class CodeValidatorTest extends BaseTest {
     @BeforeMethod
     public void setupMocks() {
         projCode = new PicklistItem();
-        projCode.setDefaultDisplayValue("001000");
+        projCode.setItemName("001000");
         motivationCode = new PicklistItem();
-        motivationCode.setDefaultDisplayValue("0201");
+        motivationCode.setItemName("0201");
         currencyCode = new PicklistItem();
-        currencyCode.setDefaultDisplayValue("USD");
+        currencyCode.setItemName("USD");
         validator = new CodeValidator();
         mockery = new Mockery();
         final PicklistItemService picklistItemService = mockery.mock(PicklistItemService.class);
@@ -52,15 +52,15 @@ public class CodeValidatorTest extends BaseTest {
         validator.setTangerineUserHelper(tangerineUserHelper);
 
         mockery.checking(new Expectations() {{
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("currencyCode", "USD"); will(returnValue(currencyCode));
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("currencyCode", "foo"); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("currencyCode", " "); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("projectCode", "001000"); will(returnValue(projCode));
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("projectCode", "foo"); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("projectCode", " "); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("motivationCode", "0201"); will(returnValue(motivationCode));
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("motivationCode", "foo"); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("motivationCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("currencyCode", "USD"); will(returnValue(currencyCode));
+            allowing (picklistItemService).getPicklistItem("currencyCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("currencyCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("projectCode", "001000"); will(returnValue(projCode));
+            allowing (picklistItemService).getPicklistItem("projectCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("projectCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("motivationCode", "0201"); will(returnValue(motivationCode));
+            allowing (picklistItemService).getPicklistItem("motivationCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("motivationCode", " "); will(returnValue(null));
             allowing (tangerineUserHelper).lookupUserSiteName(); will(returnValue("company1"));
         }});
 
@@ -68,16 +68,16 @@ public class CodeValidatorTest extends BaseTest {
         distributionLine = new DistributionLine();
         Map<String, FieldDefinition> map = new HashMap<String, FieldDefinition>();
         FieldDefinition fieldDef = new FieldDefinition();
-        fieldDef.setFieldName("projectCode");
+        fieldDef.setFieldName(StringConstants.DISTRIBUTION_LINES + ".projectCode");
         fieldDef.setFieldType(FieldType.CODE);
         fieldDef.setDefaultLabel("Project Code");
-        map.put("projectCode", fieldDef);
+        map.put(StringConstants.DISTRIBUTION_LINES + ".projectCode", fieldDef);
         
         fieldDef = new FieldDefinition();
-        fieldDef.setFieldName("motivationCode");
+        fieldDef.setFieldName(StringConstants.DISTRIBUTION_LINES + ".motivationCode");
         fieldDef.setFieldType(FieldType.CODE_OTHER);
         fieldDef.setDefaultLabel("Motivation Code");
-        map.put("motivationCode", fieldDef);
+        map.put(StringConstants.DISTRIBUTION_LINES + ".motivationCode", fieldDef);
 
         fieldDef = new FieldDefinition();
         fieldDef.setFieldName("currencyCode");

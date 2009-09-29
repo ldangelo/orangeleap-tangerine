@@ -18,24 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-
 import com.orangeleap.tangerine.dao.JournalDao;
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -57,6 +39,22 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -380,8 +378,20 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private void createMaps(Map<String, String> bankmap, Map<String, String> codemap) {
 
         Picklist bankCodes = picklistItemService.getPicklist("customFieldMap[bank]");
+        addItemsToMap(bankCodes, bankmap);
+        if (bankmap.isEmpty())  {
+            throw new RuntimeException("Posting bank GL account codes not defined.  Go to Manage Picklist Items and set up Bank and Designation Code customizations for GL Accounts.");
+        }
 
-        for (PicklistItem item : bankCodes.getActivePicklistItems()) {
+        Picklist projectCodes = picklistItemService.getPicklist("projectCode");
+        addItemsToMap(projectCodes, codemap);
+        if (codemap.isEmpty()) {
+            throw new RuntimeException("No active designation GL codes defined.");
+        }
+    }
+
+    private void addItemsToMap(Picklist picklist, Map<String, String> map) {
+        for (PicklistItem item : picklist.getActivePicklistItems()) {
             if (
             	item.getCustomFieldValue(ACCOUNT_STRING_1) == null
                 || item.getCustomFieldValue(ACCOUNT_STRING_2) == null
@@ -389,48 +399,17 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             ) {
             	continue;
             }
-            bankmap.put(getKey(item.getItemName(), ACCOUNT_STRING_1), item.getCustomFieldValue(ACCOUNT_STRING_1));
-            bankmap.put(getKey(item.getItemName(), ACCOUNT_STRING_2), item.getCustomFieldValue(ACCOUNT_STRING_2));
-            bankmap.put(getKey(item.getItemName(), GL_ACCOUNT_CODE), item.getCustomFieldValue(GL_ACCOUNT_CODE));
+            map.put(getKey(item.getItemName(), ACCOUNT_STRING_1), item.getCustomFieldValue(ACCOUNT_STRING_1));
+            map.put(getKey(item.getItemName(), ACCOUNT_STRING_2), item.getCustomFieldValue(ACCOUNT_STRING_2));
+            map.put(getKey(item.getItemName(), GL_ACCOUNT_CODE), item.getCustomFieldValue(GL_ACCOUNT_CODE));
         }
-        if (bankCodes.getActivePicklistItems().size() > 0) {
-            PicklistItem defaultItem = bankCodes.getActivePicklistItems().get(0);
-            bankmap.put(getKey("", ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(ACCOUNT_STRING_1));
-            bankmap.put(getKey("", ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(ACCOUNT_STRING_2));
-            bankmap.put(getKey("", GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(GL_ACCOUNT_CODE));
-            bankmap.put(DEFAULT, defaultItem.getItemName());
-        } 
-        if (bankmap.size() == 0)  {
-            throw new RuntimeException("Posting bank GL account codes not defined.  Go to Manage Picklist Items and set up Bank and Designation Code customizations for GL Accounts.");
+        if ( ! picklist.getActivePicklistItems().isEmpty()) {
+            PicklistItem defaultItem = picklist.getActivePicklistItems().get(0);
+            map.put(getKey("", ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(ACCOUNT_STRING_1));
+            map.put(getKey("", ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(ACCOUNT_STRING_2));
+            map.put(getKey("", GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(GL_ACCOUNT_CODE));
+            map.put(DEFAULT, defaultItem.getItemName());
         }
-
-        // Project codes are stored in distribution lines as default display values rather than item names
-        Picklist projectCodes = picklistItemService.getPicklist("projectCode");
-
-        for (PicklistItem item : projectCodes.getActivePicklistItems()) {
-            if (
-                item.getCustomFieldValue(ACCOUNT_STRING_1) == null
-                || item.getCustomFieldValue(ACCOUNT_STRING_2) == null
-                || item.getCustomFieldValue(GL_ACCOUNT_CODE) == null
-            ) {
-            	continue;
-            }
-            codemap.put(getKey(item.getDefaultDisplayValue(), ACCOUNT_STRING_1), item.getCustomFieldValue(ACCOUNT_STRING_1));
-            codemap.put(getKey(item.getDefaultDisplayValue(), ACCOUNT_STRING_2), item.getCustomFieldValue(ACCOUNT_STRING_2));
-            codemap.put(getKey(item.getDefaultDisplayValue(), GL_ACCOUNT_CODE), item.getCustomFieldValue(GL_ACCOUNT_CODE));
-        }
-        if (projectCodes.getActivePicklistItems().size() > 0) {
-            PicklistItem defaultItem = projectCodes.getActivePicklistItems().get(0);
-            codemap.put(getKey("", ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(ACCOUNT_STRING_1));
-            codemap.put(getKey("", ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(ACCOUNT_STRING_2));
-            codemap.put(getKey("", GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(GL_ACCOUNT_CODE));
-            codemap.put(DEFAULT, defaultItem.getDefaultDisplayValue());
-        } 
-        if (codemap.size() == 0) {
-            throw new RuntimeException("No active designation GL codes defined.");
-        }
-
-
     }
 
     private void processUpdateItem(PostBatchReviewSetItem item, PostBatch postbatch, boolean post, Map<String, String> codemap, Map<String, String> bankmap) throws Exception {

@@ -45,7 +45,7 @@
 								<c:forEach items="${requestScope.selectedCodes}" var="code">
 									
 									<li id="<c:out value='${code.value}'/>-li">
-										<input type="checkbox" name="<c:out value='${code.defaultDisplayValue}'/>" id="<c:out value='${code.defaultDisplayValue}'/>" title="<spring:message code='clickToSelect'/>" value="<c:out value='${code.defaultDisplayValue}'/>" displayvalue="<c:out value='${code.longDescription}'/>" /> 
+										<input type="checkbox" name="<c:out value='${code.defaultDisplayValue}'/>" id="<c:out value='${code.defaultDisplayValue}'/>" title="<spring:message code='clickToSelect'/>" value="<c:out value='${code.itemName}'/>" displayvalue="<c:out value='${code.valueDescription}'/>" /> 
 										<c:out value="${code.valueDescription}"/>
 									</li>
 								</c:forEach>

@@ -767,7 +767,34 @@ var OrangeLeap = {
 	
 	escapeIdCharacters: function(idString) {
 		return idString.replace(".", "\\.").replace("[", "\\[").replace("]", "\\]"); // for jQuery selection, escape common characters
-	}
+	},
+
+    getQueryParams: function() {
+        var argList = new Object();
+
+        if (window.location != null && window.location.search.length > 1) {
+            var urlParms = window.location.search.substring(1);
+            var argPairs = urlParms.split('&');
+
+            for(var i = 0; i < argPairs.length; i++) {
+                var pos = argPairs[i].indexOf('=')
+
+                if (pos == -1) {
+                    continue;
+                }
+                else {
+                    var argName = argPairs[i].substring(0, pos);
+                    var argVal = argPairs[i].substring(pos + 1);
+
+                    if (argVal.indexOf('+') != -1) {
+                        argVal = argVal.replace(/\+/g, ' ');
+                    }
+                    argList[argName] = unescape(argVal);
+                }
+            }
+        }
+        return argList;
+    }
 };
 var Lookup = {
 	lookupCaller: null,
@@ -903,17 +930,13 @@ var Lookup = {
 	
 	useSingleCode: function() {
 		var $elem = $('#codeResultsUl input[name=option]:checked');
-		var selectedVal = $elem.val();
-		var description = $elem.attr("displayvalue");
+		var itemName = $elem.val();
+		var displayvalue = $elem.attr("displayvalue");
 		
-		if (selectedVal) {
+		if (itemName) {
 			$("#" + Lookup.lookupCaller.attr("otherFieldId")).val("");
-			Lookup.lookupCaller.siblings("input:hidden").val(selectedVal);
-			var thisVal = selectedVal;
-			if (description && description != '') {
-				thisVal += " - " + description;
-			}
-			Lookup.lookupCaller.val(thisVal);
+			Lookup.lookupCaller.siblings("input:hidden").val(itemName);
+			Lookup.lookupCaller.val(displayvalue);
 			Lookup.lookupCaller.vkfade(true);
 		}
 		else {
@@ -952,11 +975,7 @@ var Lookup = {
 			var $cloned = $toBeCloned.clone(true);
 			$cloned.attr("id", "option-" + codes[x]);
 			$cloned.attr("code", codes[x]);
-			var thisVal = codes[x];
-			if (descriptions[x] && descriptions[x] != '') {
-				thisVal += " - " + descriptions[x];
-			}
-			$cloned.find("span").text(thisVal);			
+			$cloned.find("span").text(descriptions[x]);			
 			$cloned.removeClass("clone").removeClass("noDisplay");
 			$cloned.prependTo(Lookup.lookupCaller);
 			$cloned.vkfade(true);

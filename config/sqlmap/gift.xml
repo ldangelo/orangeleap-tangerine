@@ -21,7 +21,6 @@
 		<result property="posted" column="GIFT_POSTED" jdbcType="CHAR" />
 		<result property="postedDate" column="GIFT_POSTED_DATE" jdbcType="TIMESTAMP" />
 		<result property="postmarkDate" column="GIFT_POSTMARK_DATE" jdbcType="TIMESTAMP" />
-		<result property="postmarkDate" column="GIFT_POSTMARK_DATE" jdbcType="TIMESTAMP" />
 		<result property="transactionDate" column="GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="txRefNum" column="GIFT_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
 		<result property="updateDate" column="GIFT_UPDATE_DATE" jdbcType="TIMESTAMP" />

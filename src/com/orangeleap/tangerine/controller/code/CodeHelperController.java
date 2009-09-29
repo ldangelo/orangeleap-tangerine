@@ -61,7 +61,8 @@ public class CodeHelperController extends ParameterizableViewController {
         Boolean showInactive;
         if (StringUtils.equalsIgnoreCase(request.getParameter("inactive"), "all")) {
             showInactive = null;
-        } else {
+        }
+        else {
             showInactive = Boolean.valueOf(request.getParameter("inactive"));
         }
         if (GenericValidator.isBlankOrNull(codeValue)) {
@@ -78,7 +79,8 @@ public class CodeHelperController extends ParameterizableViewController {
         List<PicklistItem> items;
         if (codeDescription != null) {
             items = picklistItemService.findCodeByDescription(codeType, codeDescription, showInactive);
-        } else {
+        }
+        else {
             items = picklistItemService.findCodeByValue(codeType, codeValue, showInactive);
         }
         String view = super.getViewName();

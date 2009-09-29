@@ -78,10 +78,11 @@ public class CodeValidator implements Validator {
                     if (FieldType.CODE == fd.getFieldType() || FieldType.CODE_OTHER == fd.getFieldType()) {
                         BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(entity);
                         
-                        if (PROJECT_CODE.equals(key) || MOTIVATION_CODE.equals(key)) {
+                        if (key.startsWith(DISTRIBUTION_LINES)) {
                             if (beanWrapper.isReadableProperty(DISTRIBUTION_LINES)) {
                                 List<DistributionLine> lines = (List<DistributionLine>)beanWrapper.getPropertyValue(DISTRIBUTION_LINES);
                                 if (lines != null) {
+                                    key = key.replaceFirst(DISTRIBUTION_LINES + ".", StringConstants.EMPTY); 
                                     for (DistributionLine aLine : lines) {
                                         if (aLine != null) {
                                             BeanWrapper lineBw = PropertyAccessorFactory.forBeanPropertyAccess(aLine);
@@ -126,9 +127,9 @@ public class CodeValidator implements Validator {
         boolean isValid = false;
         
         if (propertyValue != null) {
-            String codeValue = (String)propertyValue;
-            PicklistItem item = picklistItemService.getPicklistItemByDefaultDisplayValue(key, codeValue);
-            if (item != null && codeValue.equals(item.getDefaultDisplayValue())) {
+            String itemName = (String)propertyValue;
+            PicklistItem item = picklistItemService.getPicklistItem(key, itemName);
+            if (item != null && itemName.equals(item.getItemName())) {
                 isValid = true;
             }
         }

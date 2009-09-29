@@ -134,14 +134,14 @@
         </isNotNull>
         <isNotNull property="designationCode"> 
         and exists ( 
-        select 1 from DISTRIBUTION_LINE dl1
+        select 1 from DISTRO_LINE dl1
         where dl1.GIFT_ID = g.GIFT_ID
         and dl1.PROJECT_CODE = #designationCode#
         )
         </isNotNull>
         <isNotNull property="motivationCode"> 
         and exists ( 
-        select 1 from DISTRIBUTION_LINE dl2
+        select 1 from DISTRO_LINE dl2
         where dl2.GIFT_ID = g.GIFT_ID
         and dl2.MOTIVATION_CODE = #motivationCode#
         )
@@ -205,14 +205,14 @@
         </isNotNull>
         <isNotNull property="designationCode"> 
         and exists ( 
-        select 1 from DISTRIBUTION_LINE dl1
+        select 1 from DISTRO_LINE dl1
         where dl1.ADJUSTED_GIFT_ID = ag.ADJUSTED_GIFT_ID
         and dl1.PROJECT_CODE = #designationCode#
         )
         </isNotNull>
         <isNotNull property="motivationCode"> 
         and exists ( 
-        select 1 from DISTRIBUTION_LINE dl2
+        select 1 from DISTRO_LINE dl2
         where dl2.ADJUSTED_GIFT_ID = ag.ADJUSTED_GIFT_ID
         and dl2.MOTIVATION_CODE = #motivationCode#
         )

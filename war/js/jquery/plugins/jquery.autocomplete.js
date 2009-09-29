@@ -247,7 +247,7 @@ $.Autocompleter = function(input, options) {
 		
 		$input.val(v);
 		if (realValueInputId) {
-			$('#' + realValueInputId).val(selected.result);
+			$('#' + realValueInputId).val(selected.data[2].replace("&nbsp;", ""));
 		}
 		hideResultsNow();
 		$input.trigger("result", [selected.data, selected.value]);

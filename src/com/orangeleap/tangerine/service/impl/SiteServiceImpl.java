@@ -374,7 +374,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
                     String picklistName = defaultValue.replaceFirst(StringConstants.PICKLIST_COLON, StringConstants.EMPTY);
                     Picklist thisPicklist = picklistItemService.getPicklist(picklistName);
                     if (thisPicklist != null && !thisPicklist.getActivePicklistItems().isEmpty()) {
-                        value = thisPicklist.getActivePicklistItems().get(0).getDefaultDisplayValue();
+                        value = thisPicklist.getActivePicklistItems().get(0).getItemName();
                     }
                 }
 				else if (StringConstants.NOW_COLON.equals(defaultValue)) {

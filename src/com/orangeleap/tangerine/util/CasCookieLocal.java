@@ -39,7 +39,7 @@ public class CasCookieLocal {
 
     public static void setCasCookie(HttpServletRequest request) {
     	cas_cookie.remove();
-    	for (Cookie cookie : request.getCookies()) {
+    	if (request != null && request.getCookies() != null) for (Cookie cookie : request.getCookies()) {
     		if (cookie != null && cookie.getName().equals(StringConstants.CAS_COOKIE_NAME)) {
     			if (cookie.getValue() != null) cas_cookie.set(cookie.getValue());
     		}

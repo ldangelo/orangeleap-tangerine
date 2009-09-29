@@ -109,7 +109,7 @@
                     <option value="address">Address Cleansing</option>
                    <option value="gift">Gifts</option>
                 </select>
-                <input type="file" name="file" class="button"/>
+                <input type="file" name="file"/>
                 <input type="submit" value="Import" class="saveButton" onclick="$('#importResult').html(''); return true;" />
 
                 <br/>

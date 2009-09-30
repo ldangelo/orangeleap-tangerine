@@ -232,7 +232,7 @@
 			<artifact name="spring-security-cas-client" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
-         <dependency org="org.jasig.cas" name="cas-client-core" transitive="false" rev="3.1.6">
+         <dependency org="org.jasig.cas" name="cas-client-core" transitive="false" rev="3.1.8">
 			<artifact name="cas-client-core" type="jar" />
 		</dependency>
 

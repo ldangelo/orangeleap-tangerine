@@ -9,6 +9,7 @@
         <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
     </head>
     <body>
+    
         <div class="loginPane">
             <div class="loginContent">
                 <img src="images/orangeleap-logo-tag.png" />
@@ -19,6 +20,15 @@
                 </p>
             </div>
         </div>
+
+    <%--
+    
+    CAS logout procedure
+	When an application logs out it needs to log out of CAS as well and also erase the browser session tokens of any other apps using CAS or they will still be logged in.  
+	This could cause a problem if they log out and log back in the other app with the shared cas cookie on the root path.
+
+     --%>
+    
         <iframe id="casLogout" src="/<%= System.getProperty("contextPrefix") %>cas/logout" height="0" width="100%" style="display: none"></iframe>
         <script>
         document.cookie = "JSESSIONID=0; path=/<%= System.getProperty("contextPrefix") %>jasperserver;";

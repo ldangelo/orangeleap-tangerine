@@ -112,7 +112,6 @@
     	<constructor-arg ref="defaultSpringSecurityContextSource"/>
     	<constructor-arg value="ou=roles"/>
     	<property name="searchSubtree" value="true"/>
-    	<property name="defaultRole" value="ROLE_USER"/>
 	</bean>
 
     <!-- This bean definition must be available to ApplicationContext.getBean() so StartupListener

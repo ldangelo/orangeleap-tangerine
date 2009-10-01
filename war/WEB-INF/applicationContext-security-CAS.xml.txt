@@ -115,7 +115,6 @@
         <beans:constructor-arg ref="contextSource"/>
         <beans:constructor-arg value="ou=roles"/>
     	<beans:property name="searchSubtree" value="true"/>
-    	<beans:property name="defaultRole" value="ROLE_USER"/>
     </beans:bean>
     <!-- END Custom Authentication Beans -->
 

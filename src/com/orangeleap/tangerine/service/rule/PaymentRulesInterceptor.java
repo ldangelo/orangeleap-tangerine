@@ -21,9 +21,14 @@ package com.orangeleap.tangerine.service.rule;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+
 import org.apache.commons.logging.Log;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -52,21 +57,23 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
                 workingMemory.addEventListener(new DebugAgendaEventListener());
                 workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
             }
-            @SuppressWarnings("unused")
-            ConstituentService ps = (ConstituentService) applicationContext
-                    .getBean("constituentService");
-            GiftService gs = (GiftService) applicationContext
-                    .getBean("giftService");
-            ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
-
+			@SuppressWarnings("unused")
+			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
+			GiftService gs = (GiftService) applicationContext.getBean("giftService");
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
+			PicklistItemService plis = (PicklistItemService)applicationContext.getBean("picklistItemService");
+			TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+	        EmailService es = (EmailService) applicationContext.getBean("emailService");
+			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
             try {
-
-                workingMemory.setGlobal("applicationContext", applicationContext);
-                workingMemory.setGlobal("constituentService", ps);
-                workingMemory.setGlobal("giftService", gs);
-
                 workingMemory.setFocus(site + "processpayment");
+				workingMemory.setGlobal("applicationContext", applicationContext);
+				workingMemory.setGlobal("constituentService", ps);
+				workingMemory.setGlobal("giftService",gs);
+				workingMemory.setGlobal("picklistItemService",plis);
+				workingMemory.setGlobal("userHelper",uh);
+
 
                 workingMemory.insert(gift.getSite());
                 workingMemory.insert(gift);

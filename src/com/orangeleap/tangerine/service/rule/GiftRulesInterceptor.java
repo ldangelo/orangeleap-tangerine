@@ -74,12 +74,6 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 					ss.populateDefaultEntityEditorMaps(gift);
 					workingMemory.insert(gift);
 
-					/*List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getConstituent().getId());
-					Iterator<Gift> giftsIter = gifts.iterator();
-					while (giftsIter.hasNext()) {
-						workingMemory.insert(giftsIter.next());
-					}*/
-
 					Constituent constituent = gift.getConstituent();
 
 					constituent.setGifts(gs.readMonetaryGifts(constituent));

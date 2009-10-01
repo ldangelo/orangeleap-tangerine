@@ -46,20 +46,9 @@ p.x-indented {
     color: #555;
 }
 
-#contactInfoPanel .x-panel-header {
-    text-align: left;
-}
-
-#contactInfoPanel x-window-header-text {
-    text-align: left;
-}
 
 strong {
     font-weight: bold;
-}
-
-p.left {
-    text-align: left;
 }
 
 div.ext-widget {
@@ -68,21 +57,12 @@ div.ext-widget {
     margin: 0;
 }
 
-div.x-menu a.x-menu-item {
-    text-align: left;
-}
-
-div.ext-widget span.x-window-header-text {
-    text-align: left;
-}
-
-div.ext-widget span.x-panel-header-text {
-    text-align: left;
-}
-
-div.ext-widget div.x-grid3-cell-inner {
+#contactInfoPanel .x-panel-header, #contactInfoPanel x-window-header-text, p.left, div.x-combo-list-item,
+    div.x-menu a.x-menu-item, div.ext-widget span.x-window-header-text, div.ext-widget span.x-panel-header-text,
+    div.ext-widget div.x-grid3-cell-inner {
     text-align: left;
 }
 div#actions .x-btn-noicon .x-btn-small .x-btn-text {
     height: 20px;
 }
+

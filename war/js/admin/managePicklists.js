@@ -14,7 +14,7 @@ Ext.onReady(function() {
             {
                 header: 'Short Display Name',
                 dataIndex: 'displayVal',
-                width: 100,
+                width: 120,
                 editable: true,
                 editor: new Ext.form.TextField({
                     allowBlank: false,
@@ -34,7 +34,7 @@ Ext.onReady(function() {
             {
                 header: 'Description',
                 dataIndex: 'detail',
-                width: 200,
+                width: 190,
                 editable: true,
                 editor: new Ext.form.TextField({
                     allowBlank: true,
@@ -120,8 +120,8 @@ Ext.onReady(function() {
         xtype: "grid",
         // specify the check column plugin on the grid so the plugin is initialized
         plugins: [ checkColumn, filters//, new Ext.ux.dd.GridDragDropRowOrder({
-            //scrollable: true // enable scrolling support (default is false)
-        //})
+//                scrollable: true // enable scrolling support (default is false)
+//            })
         ],
         clicksToEdit: 1,
         tbar: [
@@ -141,10 +141,7 @@ Ext.onReady(function() {
                         grid.stopEditing();
                         var nextIndex = gStore.getCount();
                         gStore.add(item);
-//                        grid.getView().focusCell(nextIndex, 0);
-//                        setTimeout(function() {
-                            grid.startEditing(nextIndex, 0);
-//                        }, 100);
+                        grid.startEditing(nextIndex, 1);
                     }
                 }
         ]

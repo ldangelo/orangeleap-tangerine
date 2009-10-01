@@ -23,10 +23,7 @@
 	            </div>
 	        </div>
 	        <iframe id="casLogout" src="/<%= System.getProperty("contextPrefix") %>cas/logout" height="0" width="100%" style="display: none"></iframe>
-	        <script>
-             document.cookie = "JSESSIONID=0; path=/<%= System.getProperty("contextPrefix") %>jasperserver;";
-             document.cookie = "JSESSIONID=0; path=/<%= System.getProperty("contextPrefix") %>orangeleap;";
-            </script>
-	    </body>
+	        <%@ include file="/WEB-INF/jsp/includes/clearcookies.jsp"%>
+ 	    </body>
 	    
 </html>

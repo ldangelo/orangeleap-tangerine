@@ -64,7 +64,7 @@
 
     <beans:bean id="casProcessingFilterEntryPoint"
                 class="org.springframework.security.ui.cas.CasProcessingFilterEntryPoint">
-        <beans:property name="loginUrl" value="${casClient.serverUrl}/${casClient.serverContextPrefix}${casClient.serverContext}/login"/>
+        <beans:property name="loginUrl" value="${casClient.serverUrl.external}/${casClient.serverContextPrefix}${casClient.serverContext}/login"/>
         <beans:property name="serviceProperties" ref="serviceProperties"/>
     </beans:bean>
 

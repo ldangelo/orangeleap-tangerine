@@ -57,6 +57,7 @@ var returnDashboard = function(resp) {
     	if (itemData.graphType === 'Rss' ) rss(itemData, elem);
     	if (itemData.graphType === 'Area' ) areaChart(itemData, elem);
     	if (itemData.graphType === 'IFrame' ) iframe(itemData, elem);
+    	if (itemData.graphType === 'Guru' ) guru(itemData, elem);
 
     	if (j % 2 == 1) {
     		dashboard.append('<div class="clearColumns" />');
@@ -159,6 +160,35 @@ function iframe(itemData, elem) {
         $(div).attr("scrolling","no");
         $(div).attr("frameborder","0");
         elem.appendChild(div);
+    } catch (e) {
+    }
+}
+
+function guru(itemData, elem) {
+    try {
+        var url = ""+itemData.url;
+        url = url.replace(/amp;/g, "");
+        var div = document.createElement("div");
+        var adiv = $(div);
+        adiv.attr("width","350");
+        adiv.attr("height","220");
+
+        $.ajax({
+                type: "GET",
+                url: url,
+                data: "",
+                success: function(html){
+                        adiv.html(html);
+
+                        var aele = adiv.find("a[name='JR_PAGE_ANCHOR_0_1']");
+                        var aimg = aele.parent().find("tbody tr:eq(2) td:eq(1) img");
+//alert("src = "+aimg.attr("src"));     
+                    elem.appendChild(aimg.get(0));
+                    return false;
+                }
+
+        });
+
     } catch (e) {
     }
 }

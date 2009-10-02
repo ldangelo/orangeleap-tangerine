@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="managePicklistController" class="com.orangeleap.tangerine.controller.picklist.ManagePicklistsController">
+    <bean id="managePicklistsController" class="com.orangeleap.tangerine.controller.picklist.ManagePicklistsController">
         <property name="viewName" value="picklist/managePicklist"/>
     </bean>
 
@@ -45,7 +45,7 @@
                 <prop key="/picklistItemCustomize.htm">picklistItemCustomize</prop>
 
 
-                <prop key="/managePicklist.htm">managePicklistController</prop>
+                <prop key="/managePicklists.htm">managePicklistsController</prop>
 			</props>
 		</property>
 	</bean>

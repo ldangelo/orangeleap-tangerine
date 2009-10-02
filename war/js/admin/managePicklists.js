@@ -127,25 +127,29 @@ Ext.onReady(function() {
         selModel: new Ext.grid.RowSelectionModel({}),
         clicksToEdit: 1,
         tbar: [
-            'Picklist: ', ' ', combo, ' ', ' ', ' ',
-                { text: 'Add Item', tooltip:'Add a new Picklist Item', iconCls:'add', ref: '../addButton',
-                  disabled: true, handler : function() {
-                        var gStore = grid.getStore();
-                        var PickItem = gStore.recordType;
-                        var item = new PickItem({
-                            id: 0,
-                            itemName: 'NewItemName',
-                            displayVal: 'New Short Display Name',
-                            desc: ' ',
-                            detail: ' ',
-                            inactive: false
-                        });
-                        grid.stopEditing();
-                        var nextIndex = gStore.getCount();
-                        gStore.add(item);
-                        grid.startEditing(nextIndex, 1);
-                    }
+            'Picklist: ', ' ', combo, ' ', ' ', '-',
+            { text: 'Customize', tooltip:'Customize Picklist', iconCls:' ', ref: '../customizeButton',
+              disabled: true, handler : function() {
                 }
+            }, '-',
+            { text: 'Add Item', tooltip:'Add a new Picklist Item', iconCls:'add', ref: '../addButton',
+              disabled: true, handler : function() {
+                    var gStore = grid.getStore();
+                    var PickItem = gStore.recordType;
+                    var item = new PickItem({
+                        id: 0,
+                        itemName: 'NewItemName',
+                        displayVal: 'New Short Display Name',
+                        desc: ' ',
+                        detail: ' ',
+                        inactive: false
+                    });
+                    grid.stopEditing();
+                    var nextIndex = gStore.getCount();
+                    gStore.add(item);
+                    grid.startEditing(nextIndex, 1);
+                }
+            }
         ]
     });
     var dropTgt = new Ext.ux.dd.GridDropTarget(grid.getEl(), {

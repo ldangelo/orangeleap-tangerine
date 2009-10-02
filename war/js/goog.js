@@ -172,7 +172,7 @@ function guru(itemData, elem) {
         var adiv = $(div);
 
         $.ajax({
-                type: "GET",
+                type: "POST",
                 url: url,
                 data: "",
                 success: function(html){

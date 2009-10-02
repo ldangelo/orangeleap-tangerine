@@ -1,3 +1,24 @@
+Ext.override(Ext.data.Store, {
+	insert : function(index, records){
+		records = [].concat(records);
+		var snapshotIx;
+		if(this.snapshot){
+			snapshotIx = index ? this.snapshot.indexOf(this.getAt(index - 1)) + 1 : 0;
+		}
+		for(var i = 0, len = records.length; i < len; i++){
+			this.data.insert(index, records[i]);
+			if(this.snapshot){
+				this.snapshot.insert(snapshotIx, records[i]);
+			}
+			records[i].join(this);
+		}
+		this.fireEvent("add", this, records, index);
+	},
+	getById : function(id){
+		return (this.snapshot || this.data).key(id);
+	}
+});
+
 Ext.onReady(function() {
     var checkColumn = new Ext.grid.CheckColumn({
        header: 'Inactive?',
@@ -81,6 +102,7 @@ Ext.onReady(function() {
     var picklistItemsLoaded = function(record, options, success) {
         if (success) {
             grid.addButton.enable();
+            grid.customizeButton.enable();
         }
     };
 
@@ -105,6 +127,7 @@ Ext.onReady(function() {
     combo.on('select', function(comboBox, record, index) {
         if (record && record.data && record.data['nameId']) {
             grid.addButton.disable();
+            grid.customizeButton.disable();
             store.load({ params: { 'picklistNameId' : record.data['nameId'] }, callback: picklistItemsLoaded });
         }
     });
@@ -128,7 +151,7 @@ Ext.onReady(function() {
         clicksToEdit: 1,
         tbar: [
             'Picklist: ', ' ', combo, ' ', ' ', '-',
-            { text: 'Customize', tooltip:'Customize Picklist', iconCls:' ', ref: '../customizeButton',
+            { text: 'Customize', tooltip:'Customize Picklist', iconCls: 'customize', ref: '../customizeButton',
               disabled: true, handler : function() {
                 }
             }, '-',
@@ -139,9 +162,9 @@ Ext.onReady(function() {
                     var item = new PickItem({
                         id: 0,
                         itemName: 'NewItemName',
-                        displayVal: 'New Short Display Name',
-                        desc: ' ',
-                        detail: ' ',
+                        displayVal: '',
+                        desc: '',
+                        detail: '',
                         inactive: false
                     });
                     grid.stopEditing();

@@ -66,3 +66,7 @@ div#actions .x-btn-noicon .x-btn-small .x-btn-text {
     height: 20px;
 }
 
+button.add { background-image: url("../images/icons/add.png"); }
+button.customize { background-image: url("../images/icons/gears.png"); }
+
+div#managerGrid .x-grid3-td-numberer { cursor: move; }

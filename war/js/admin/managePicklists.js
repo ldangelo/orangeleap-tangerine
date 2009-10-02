@@ -117,12 +117,14 @@ Ext.onReady(function() {
         height: 600,
         title: 'Manage Picklist Items',
         loadMask: true,
+        enableDragDrop: true,
         xtype: "grid",
         // specify the check column plugin on the grid so the plugin is initialized
         plugins: [ checkColumn, filters//, new Ext.ux.dd.GridDragDropRowOrder({
 //                scrollable: true // enable scrolling support (default is false)
 //            })
         ],
+        selModel: new Ext.grid.RowSelectionModel({}),
         clicksToEdit: 1,
         tbar: [
             'Picklist: ', ' ', combo, ' ', ' ', ' ',
@@ -146,6 +148,11 @@ Ext.onReady(function() {
                 }
         ]
     });
+    var dropTgt = new Ext.ux.dd.GridDropTarget(grid.getEl(), {
+        grid: grid,
+        ddGroup: grid.ddGroup || 'GridDD'
+    });
+
     grid.on('afteredit', function(edit) {
     });
 });

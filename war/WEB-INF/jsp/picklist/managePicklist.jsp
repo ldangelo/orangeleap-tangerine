@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <page:applyDecorator name="form">
-    <spring:message code='manageCodes' var="titleText" />
+    <spring:message code='managePicklists' var="titleText" />
     <html>
         <head>
             <title><c:out value="${titleText}"/></title>
@@ -16,7 +16,7 @@
         <script type="text/javascript" src="js/extjs/ux/filters/Filter.js"></script>
         <script type="text/javascript" src="js/extjs/ux/filters/StringFilter.js"></script>
         <script type="text/javascript" src="js/extjs/ux/filters/BooleanFilter.js"></script>
-        <script type="text/javascript" src="js/extjs/ux/GridDragDropRowOrder.js"></script>
+        <script type="text/javascript" src="js/extjs/ux/grid/GridDropTarget.js"></script>
         <script type="text/javascript">
             Ext.ns("OrangeLeap");
             OrangeLeap.Picklists = [

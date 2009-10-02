@@ -170,8 +170,6 @@ function guru(itemData, elem) {
         url = url.replace(/amp;/g, "");
         var div = document.createElement("div");
         var adiv = $(div);
-        adiv.attr("width","350");
-        adiv.attr("height","220");
 
         $.ajax({
                 type: "GET",

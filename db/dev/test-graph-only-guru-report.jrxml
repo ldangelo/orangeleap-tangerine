@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+        <queryString language="SQL">
+                <![CDATA[select c.CONSTITUENT_TYPE, count(*) as cnt from CONSTITUENT c group by c.CONSTITUENT_TYPE]]>
+        </queryString>
+        <field name="CONSTITUENT_TYPE" class="java.lang.String">
+                <fieldDescription><![CDATA[]]></fieldDescription>
+        </field>
+        <field name="cnt" class="java.lang.Long">
+                <fieldDescription><![CDATA[]]></fieldDescription>
+        </field>
+        <group name="CONSTITUENT_TYPE">
+                <groupExpression><![CDATA[$F{CONSTITUENT_TYPE}]]></groupExpression>
+        </group>
+        <background>
+                <band/>
+        </background>
+        <title>
+                <band/>
+        </title>
+        <pageHeader>
+                <band/>
+        </pageHeader>
+        <columnHeader>
+                <band/>
+        </columnHeader>
+        <detail>
+                <band/>
+        </detail>
+        <columnFooter>
+                <band/>
+        </columnFooter>
+        <pageFooter>
+                <band height="9"/>
+        </pageFooter>
+        <summary>
+                <band height="309">
+                        <pieChart>
+                                <chart>
+                                        <reportElement x="0" y="0" width="200" height="100"/>
+                                        <chartTitle/>
+                                        <chartSubtitle/>
+                                        <chartLegend/>
+                                </chart>
+                                <pieDataset maxCount="5" minPercentage="5.0">
+                                        <dataset resetType="None"/>
+                                        <keyExpression><![CDATA[$F{CONSTITUENT_TYPE}]]></keyExpression>
+                                        <valueExpression><![CDATA[$F{cnt}]]></valueExpression>
+                                        <labelExpression><![CDATA[$F{CONSTITUENT_TYPE}]]></labelExpression>
+                                </pieDataset>
+                                <piePlot>
+                                        <plot/>
+                                </piePlot>
+                        </pieChart>
+                </band>
+        </summary>
+</jasperReport>

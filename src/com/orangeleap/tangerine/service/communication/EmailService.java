@@ -60,6 +60,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.util.CasCookieLocal;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 //@Service("emailSendingService")
@@ -90,8 +91,12 @@ public class EmailService implements ApplicationContextAware {
 
         try {
         	
-        	// TODO pass this CAS cookie to web service (if casCookie != null) ...
+        	// CAS login
         	String casCookie = CasCookieLocal.getCasCookie();
+        	if (casCookie != null && casCookie.length() > 0) {
+        		jserver.setUsername(casCookie);
+        		jserver.setPassword(""); 
+        	}
         	
             WSClient client = jserver.getWSClient();
 

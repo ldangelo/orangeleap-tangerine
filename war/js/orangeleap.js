@@ -135,37 +135,37 @@ $(document).ready(function() {
 
     $("div.mainForm form").submit(function() {
         var submitted = false;
-        if (!submitted) {
-            $("#currentFunctionTitle").append("submitted = " + submitted + ";&nbsp;");
+        var $form = $(this);
+        if ($form.hasClass('disableForm') && !submitted) {
             submitted = true;
-            var $form = $(this);
-            if ($form.hasClass('disableForm')) {
+            $("div.mainForm form :button, div.mainForm form :submit, div.mainForm form :reset").each(function() {
+                var $elem = $(this);
+                $elem.unbind("click");
+                $elem.addClass("disabledButton");
+                $elem.removeClass("button");
+                $elem.removeClass("saveButton");
+                $elem.click(function() {
+                    return false;
+                });
+                $elem.focus(function() {
+                    $(this).blur();
+                });
+            });
+            if ($.browser.msie) {
+                // IE will automatically force the form to return false unless we set a timer
                 setTimeout(function() {
                     $("div.mainForm form").submit(function() {
                         return false;
                     });
-                }, 50);
-                $("div.mainForm form :submit, div.mainForm form :button, div.mainForm form :reset").each(function() {
-                    var $elem = $(this);
-                    $elem.unbind("click");
-                    $elem.addClass("disabledButton");
-                    $elem.click(function() {
-                        return false;
-                    });
-                    $elem.focus(function() {
-                        $(this).blur();
-                        return false;
-                    });
-                    $elem.removeClass("saveButton");
-                    $elem.removeClass("button");
-                });
+                }, 100);
             }
             else {
-                submitted = false;
+                $("div.mainForm form").submit(function() {
+                    return false;
+                });
             }
-            return submitted;
         }
-        return !submitted;
+        return true;
     });
 	
 	(function focusFirst() {

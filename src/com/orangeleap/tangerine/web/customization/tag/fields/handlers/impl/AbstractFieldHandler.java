@@ -309,6 +309,12 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 		sb.append("</label>");
 	}
 
+    protected void writeTabIndex(SectionField currentField, StringBuilder sb) {
+        if (currentField.getTabIndex() != null && currentField.getTabIndex() != 0) {
+            sb.append(" tabindex=\"").append(currentField.getTabIndex()).append("\" ");
+        }
+    }
+
 	protected void writeDeleteLink(StringBuilder sb, String deleteHandler) {
 		String removeOptionMsg = getMessage("removeThisOption");
 		sb.append("<a href=\"javascript:void(0)\" onclick=\"").append(deleteHandler).append("\" class=\"deleteOption\">");

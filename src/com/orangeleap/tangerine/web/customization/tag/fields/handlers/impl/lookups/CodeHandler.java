@@ -67,7 +67,7 @@ public class CodeHandler extends AbstractFieldHandler {
 		createLookupWrapperBegin(sb);
 		createDisplayInput(request, pageContext, sectionDefinition, currentField, form, formFieldName, fieldValue, sb);
 		createHiddenInput(formFieldName, fieldValue, sb);
-		createLookup(sb);
+		createLookup(currentField, sb);
 		createLookupWrapperEnd(sb);
 	}
 
@@ -103,6 +103,7 @@ public class CodeHandler extends AbstractFieldHandler {
 	    writeErrorClass(pageContext, formFieldName, sb);
 
         sb.append("\" ");
+        writeTabIndex(currentField, sb);
 	    getDisplayAttributes(sectionDefinition, currentField, form, formFieldName, sb);
 	    
         sb.append("name=\"display-").append(formFieldName).append("\" id=\"display-").append(formFieldName).append("\"/>");
@@ -113,8 +114,9 @@ public class CodeHandler extends AbstractFieldHandler {
 	    sb.append(formFieldName).append("\" value=\"").append(checkForNull(fieldValue)).append("\"/>");
     }
 
-    protected void createLookup(StringBuilder sb) {
+    protected void createLookup(SectionField currentField, StringBuilder sb) {
         sb.append("<a class=\"lookupLink\" href=\"javascript:void(0)\" ");
+        writeTabIndex(currentField, sb);
         sb.append("onclick=\"").append(getLookupClickHandler()).append("\" ");
         String lookupMsg = getMessage("lookup");
         sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");

@@ -43,7 +43,7 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 		createHiddenInput(formFieldName, fieldValue, sb);
 
 		if (!FieldType.QUERY_LOOKUP_DISPLAY.equals(currentField.getFieldType())) {
-			createClone(sb);
+			createClone(currentField, sb);
 		}
 		
 		createContainerEnd(sb);
@@ -107,7 +107,10 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 			    sb.append(StringEscapeUtils.escapeHtml(displayVal)).append("\" selectedId=\"").append(val).append("\">");
 
 			    if (linkSb.length() > 0) {
-			        sb.append("<a href=\"").append(linkSb.toString()).append("\" target=\"_blank\" alt=\"").append(linkMsg).append("\" title=\"").append(linkMsg).append("\">");
+			        sb.append("<a href=\"").append(linkSb.toString()).append("\" target=\"_blank\" alt=\"");
+                    sb.append(linkMsg).append("\" title=\"").append(linkMsg).append("\"");
+                    writeTabIndex(currentField, sb);
+                    sb.append(">");
 				    sb.append(displayVal);
 				    sb.append("</a>");
 
@@ -137,9 +140,11 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 	    sb.append("\"/>");
     }
 
-	protected void createClone(StringBuilder sb) {
+	protected void createClone(SectionField currentField, StringBuilder sb) {
 		sb.append("<div class=\"multiQueryLookupOption multiOption noDisplay clone\" selectedId=\"\">");
-		sb.append("<a href=\"\" target=\"_blank\"></a>");
+		sb.append("<a href=\"\" target=\"_blank\"");
+        writeTabIndex(currentField, sb);
+        sb.append("></a>");
 		writeDeleteLink(sb, "Lookup.deleteOption(this)");
 		sb.append("</div>");
 	}
@@ -158,6 +163,7 @@ public class MultiQueryLookupHandler extends QueryLookupHandler {
 		String lookupMsg = getMessage("lookup");
 		sb.append("<a href=\"javascript:void(0)\" onclick=\"").append(getLookupClickHandler()).append("\" class=\"multiLookupLink hideText\" ");
 		sb.append("fieldDef=\"").append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId())).append("\" ");
+        writeTabIndex(currentField, sb);
 		sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
 	}
 

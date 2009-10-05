@@ -28,7 +28,9 @@ public class LookupHandler extends TextHandler {
 	                                  SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
 		super.doHandler(request, response, pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
-		sb.append("<a class=\"lookupLink jqModal\" href=\"javascript:void(0)\">");
+		sb.append("<a class=\"lookupLink jqModal\" href=\"javascript:void(0)\"");
+        writeTabIndex(currentField, sb);
+        sb.append(">");
 		sb.append(getMessage("lookup"));
 		sb.append("</a>");
 	}

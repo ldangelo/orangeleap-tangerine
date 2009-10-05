@@ -55,7 +55,7 @@ public class CheckboxHandler extends AbstractFieldHandler {
 				((fieldValue instanceof Boolean && Boolean.TRUE.equals(fieldValue)) || "true".equalsIgnoreCase(fieldValue.toString()))) {
 		    sb.append("checked=\"true\" ");
 		}
-
+        writeTabIndex(currentField, sb);
 		writeDisabled(currentField, form, sb);
 
 		sb.append("/>");

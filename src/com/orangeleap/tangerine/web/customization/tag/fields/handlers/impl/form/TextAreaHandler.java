@@ -33,6 +33,7 @@ public class TextAreaHandler extends AbstractFieldHandler {
 
 		sb.append("\" ");
 
+        writeTabIndex(currentField, sb);
 		writeDisabled(currentField, form, sb);
 
 		sb.append("name=\"").append(formFieldName).append("\" id=\"").append(formFieldName).append("\">");

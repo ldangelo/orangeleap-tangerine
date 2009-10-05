@@ -68,7 +68,9 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
         sb.append("<select name=\"").append(formFieldName).append("Month\" id=\"").append(formFieldName);
 	    sb.append("Month\" class=\"expMonth ").append(resolveEntityAttributes(currentField));
 	    writeErrorClass(pageContext, formFieldName, sb); 
-	    sb.append("\">");
+	    sb.append("\"");
+        writeTabIndex(currentField, sb);
+        sb.append(">");
 
 	    String expirationMonth = null;
         if (paymentSource != null) {
@@ -94,7 +96,9 @@ public class CreditCardExpirationHandler extends AbstractFieldHandler {
         sb.append("<select name=\"").append(formFieldName).append("Year\" id=\"").append(formFieldName);
 	    sb.append("Year\" class=\"expYear ").append(resolveEntityAttributes(currentField));
 	    writeErrorClass(pageContext, formFieldName, sb); 
-	    sb.append("\">");
+	    sb.append("\"");
+        writeTabIndex(currentField, sb);
+        sb.append(">");
 	    Integer expirationYear = null;
         if (paymentSource != null) {
             expirationYear = paymentSource.getCreditCardExpirationYear();

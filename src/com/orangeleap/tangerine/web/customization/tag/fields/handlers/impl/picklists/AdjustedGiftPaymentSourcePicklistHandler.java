@@ -62,8 +62,9 @@ public class AdjustedGiftPaymentSourcePicklistHandler extends PaymentSourcePickl
 
     protected void createAchSelectField(SectionField currentField, PaymentSource selectedPaymentSource,
                                         String formFieldName, StringBuilder sb) {
-	    sb.append("<select name=\"ach-").append(formFieldName).append("\" id=\"ach-").append(formFieldName);
-		sb.append("\" class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\">");
+	    sb.append("<select name=\"ach-").append(formFieldName).append("\" ");
+        writeTabIndex(currentField, sb);
+        sb.append("id=\"ach-").append(formFieldName).append("\" class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\">");
 	    sb.append("<option value=\"").append(selectedPaymentSource.getId()).append("\" address=\"");
 		if (selectedPaymentSource.getAddress() != null) {
 		    sb.append(checkForNull(selectedPaymentSource.getAddress().getId()));
@@ -89,7 +90,9 @@ public class AdjustedGiftPaymentSourcePicklistHandler extends PaymentSourcePickl
                                         String formFieldName, StringBuilder sb) {
 	    SimpleDateFormat sdf = new SimpleDateFormat("MM / yyyy");
 
-	    sb.append("<select name=\"creditCard-").append(formFieldName).append("\" id=\"creditCard-").append(formFieldName);
+	    sb.append("<select name=\"creditCard-").append(formFieldName).append("\" ");
+        writeTabIndex(currentField, sb);
+        sb.append("id=\"creditCard-").append(formFieldName);
 		sb.append("\" class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\">");
 	    sb.append("<option value=\"").append(selectedPaymentSource.getId()).append("\" address=\"");
 		if (selectedPaymentSource.getAddress() != null) {

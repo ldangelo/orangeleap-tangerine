@@ -46,11 +46,6 @@ import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: alexlo
- * Date: Jul 9, 2009
- * Time: 4:03:26 PM
- */
 public class SelectionHandler extends AbstractFieldHandler {
 
 	protected final Log logger = OLLogger.getLog(getClass());
@@ -79,7 +74,7 @@ public class SelectionHandler extends AbstractFieldHandler {
 
 		if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldType())) {
 			createHiddenInput(formFieldName, fieldValue, sb);
-			createClone(sb);
+			createClone(currentField, sb);
 		}
 		createContainerEnd(sb);
 		createBottom(request, pageContext, formFieldName, sb);
@@ -158,7 +153,9 @@ public class SelectionHandler extends AbstractFieldHandler {
                     String link = links.get(i);
 
                     sb.append("<div class='multiQueryLookupOption multiOption' id=\"lookup-").append(thisId).append("\" selectedId=\"").append(thisId).append("\">");
-                    sb.append("<a href=\"").append(link).append("\" target=\"_blank\" alt=\"").append(gotoMsg).append("\" title=\"").append(gotoMsg).append("\">").append(displayVal).append("</a>");
+                    sb.append("<a href=\"").append(link).append("\" target=\"_blank\" ");
+                    writeTabIndex(currentField, sb);
+                    sb.append("alt=\"").append(gotoMsg).append("\" title=\"").append(gotoMsg).append("\">").append(displayVal).append("</a>");
 
                     if ( ! FieldType.SELECTION_DISPLAY.equals(currentField.getFieldType())) {
                         writeDeleteLink(sb, "PledgeRecurringGiftSelector.deleteThis(this)");
@@ -217,9 +214,11 @@ public class SelectionHandler extends AbstractFieldHandler {
 	    sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" id=\"").append(formFieldName).append("\" value=\"").append(checkForNull(fieldValue)).append("\"/>");
 	}
 
-	protected void createClone(StringBuilder sb) {
+	protected void createClone(SectionField currentField, StringBuilder sb) {
 		sb.append("<div class=\"multiQueryLookupOption multiOption noDisplay clone\" selectedId=\"\">");
-		sb.append("<a href=\"\" target=\"_blank\"></a>");
+		sb.append("<a href=\"\" target=\"_blank\"");
+        writeTabIndex(currentField, sb);
+        sb.append("></a>");
 		writeDeleteLink(sb, "PledgeRecurringGiftSelector.deleteThis(this)");
 		sb.append("</div>");
 	}
@@ -236,7 +235,9 @@ public class SelectionHandler extends AbstractFieldHandler {
 
 	protected void createLookupLink(SectionField currentField, StringBuilder sb) {
 		String lookupMsg = getMessage("lookup");
-		sb.append("<a href=\"javascript:void(0)\" fieldDef=\"").append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId()));
+		sb.append("<a href=\"javascript:void(0)\" ");
+        writeTabIndex(currentField, sb);
+        sb.append("fieldDef=\"").append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId()));
 		sb.append("\" class=\"multiLookupLink hideText selectorLookup\" ");
 		sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
 	}

@@ -35,6 +35,7 @@ public class TextHandler extends AbstractFieldHandler {
 
 		sb.append("\" ");
 
+        writeTabIndex(currentField, sb);
 		writeDisabled(currentField, form, sb);
 
 		sb.append("size=\"").append(getSize()).append("\" maxLength=\"").append(getMaxLength()).append("\" ");

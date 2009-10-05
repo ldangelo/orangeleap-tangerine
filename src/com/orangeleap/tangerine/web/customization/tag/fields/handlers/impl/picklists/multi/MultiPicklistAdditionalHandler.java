@@ -34,11 +34,6 @@ import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: alexlo
- * Date: Jul 8, 2009
- * Time: 12:55:40 PM
- */
 public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 
 	public MultiPicklistAdditionalHandler(ApplicationContext applicationContext) {
@@ -67,7 +62,7 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
 		createContainerEnd(sb);
 		createBottom(request, pageContext, formFieldName, sb);
 		createSelectedRefs(formFieldName, selectedRefs, sb);
-		createLookupLink(sb);
+		createLookupLink(currentField, sb);
 	}
 
 	protected void createAdditionalFields(SectionField currentField, TangerineForm form, String formFieldName, StringBuilder sb) {

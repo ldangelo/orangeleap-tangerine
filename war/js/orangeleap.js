@@ -135,37 +135,37 @@ $(document).ready(function() {
 
     $("div.mainForm form").submit(function() {
         var submitted = false;
-        var $form = $(this);
-        if ($form.hasClass('disableForm') && !submitted) {
+        if (!submitted) {
+            $("#currentFunctionTitle").append("submitted = " + submitted + ";&nbsp;");
             submitted = true;
-            $("div.mainForm form :button, div.mainForm form :submit, div.mainForm form :reset").each(function() {
-                var $elem = $(this);
-                $elem.unbind("click");
-                $elem.addClass("disabledButton");
-                $elem.removeClass("button");
-                $elem.removeClass("saveButton");
-                $elem.click(function() {
-                    return false;
-                });
-                $elem.focus(function() {
-                    $(this).blur();
-                });
-            });
-            if ($.browser.msie) {
-                // IE will automatically force the form to return false unless we set a timer 
+            var $form = $(this);
+            if ($form.hasClass('disableForm')) {
                 setTimeout(function() {
                     $("div.mainForm form").submit(function() {
                         return false;
                     });
-                }, 100);
-            }
-            else {
-                $("div.mainForm form").submit(function() {
-                    return false;
+                }, 50);
+                $("div.mainForm form :submit, div.mainForm form :button, div.mainForm form :reset").each(function() {
+                    var $elem = $(this);
+                    $elem.unbind("click");
+                    $elem.addClass("disabledButton");
+                    $elem.click(function() {
+                        return false;
+                    });
+                    $elem.focus(function() {
+                        $(this).blur();
+                        return false;
+                    });
+                    $elem.removeClass("saveButton");
+                    $elem.removeClass("button");
                 });
             }
+            else {
+                submitted = false;
+            }
+            return submitted;
         }
-        return true;
+        return !submitted;
     });
 	
 	(function focusFirst() {
@@ -175,36 +175,42 @@ $(document).ready(function() {
 			for (var y = 0; y < formLen; y++) {
 				var thisForm = document.forms[y];
 				if (thisForm.id != "searchForm") {
-					var $elems = $("input, select, textarea, a.lookupLink, a.hideText", $(thisForm));
-					if ($elems && $elems.length > 0) {
-						var elemLen = $elems.length;
-						for (var x = 0; x < elemLen; x++) {
-							var thisElem = $elems[x];
-							if (!thisElem.disabled) {
-								if (thisElem.tagName.toLowerCase() == "input") {
-									if (thisElem.type != "hidden" && thisElem.type != "submit" && thisElem.type != "button" && thisElem.type != "reset") {
-										try {
-											thisElem.focus();
-										}
-										catch (exception) {}
-										isFound = true;
-										break;
-									}
-								}
-								else {
-									try {
-										thisElem.focus();
-									}
-									catch (exception) {}
-									isFound = true;
-									break;
-								}
-							}
-						}
-						if (isFound) {
-							break;
-						}
-					}
+                    var $firstElem = $("[tabindex=1]");
+                    if ($firstElem.length) {
+                        $firstElem.focus();
+                    }
+                    else {
+                        var $elems = $("input, select, textarea, a.lookupLink, a.hideText", $(thisForm));
+                        if ($elems && $elems.length > 0) {
+                            var elemLen = $elems.length;
+                            for (var x = 0; x < elemLen; x++) {
+                                var thisElem = $elems[x];
+                                if (!thisElem.disabled) {
+                                    if (thisElem.tagName.toLowerCase() == "input") {
+                                        if (thisElem.type != "hidden" && thisElem.type != "submit" && thisElem.type != "button" && thisElem.type != "reset") {
+                                            try {
+                                                thisElem.focus();
+                                            }
+                                            catch (exception) {}
+                                            isFound = true;
+                                            break;
+                                        }
+                                    }
+                                    else {
+                                        try {
+                                            thisElem.focus();
+                                        }
+                                        catch (exception) {}
+                                        isFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (isFound) {
+                                break;
+                            }
+                        }
+                    }
 				}		
 			}
 		}

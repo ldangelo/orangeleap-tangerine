@@ -124,7 +124,7 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 
 		if (!FieldType.ASSOCIATION_DISPLAY.equals(currentField.getFieldType())) {
 			createHiddenField(currentField, formFieldName, fieldValue, sb);
-			createCloneable(sb);
+			createCloneable(currentField, sb);
 		}
 		
 		createHiearchy(request, currentField, formFieldName, sb);
@@ -167,7 +167,9 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 				}
 				String linkMsg = getMessage("gotoLink");
 				
-				sb.append("<a href=\"").append(linkSb.toString()).append("\" target=\"_blank\" alt=\"").append(linkMsg).append("\" title=\"").append(linkMsg).append("\">");
+				sb.append("<a href=\"").append(linkSb.toString()).append("\" ");
+                writeTabIndex(currentField, sb);
+                sb.append("target=\"_blank\" alt=\"").append(linkMsg).append("\" title=\"").append(linkMsg).append("\">");
 				sb.append(displayValue);
 				sb.append("</a>");
 			}
@@ -198,7 +200,10 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 	    sb.append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId()));
 	    
         String lookupMsg = getMessage("lookup");
-        sb.append("\" class=\"hideText\" alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
+        sb.append("\" class=\"hideText\" alt=\"");
+        sb.append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\"");
+        writeTabIndex(currentField, sb);
+        sb.append(">").append(lookupMsg).append("</a>");
     }
 
     protected String getQueryClickHandler() {
@@ -213,10 +218,12 @@ public class QueryLookupHandler extends AbstractFieldHandler {
         sb.append("<input type=\"hidden\" name=\"").append(formFieldName).append("\" value=\"").append(checkForNull(fieldValue)).append("\" id=\"").append(formFieldName).append("\"/>");
     }
 
-    protected void createCloneable(StringBuilder sb) {
+    protected void createCloneable(SectionField currentField, StringBuilder sb) {
         String removeMsg = getMessage("removeThisOption");
         sb.append("<div class=\"queryLookupOption noDisplay clone\">");
-        sb.append("<span><a href=\"\" target=\"_blank\"></a></span>");
+        sb.append("<span><a href=\"\" target=\"_blank\"");
+        writeTabIndex(currentField, sb);
+        sb.append("></a></span>");
         sb.append("<a href=\"javascript:void(0)\" onclick=\"").append(getDeleteClickHandler()).append("\" class=\"deleteOption\">");
         sb.append("<img src=\"images/icons/deleteRow.png\" alt=\"").append(removeMsg).append("\" title=\"").append(removeMsg).append("\"/>");
         sb.append("</a>");
@@ -225,7 +232,9 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 
     protected void createHiearchy(HttpServletRequest request, SectionField currentField, String formFieldName, StringBuilder sb) {
         if (relationshipService.isHierarchy(currentField.getFieldDefinition())) {
-            sb.append("<a href=\"javascript:void(0)\" onclick=\"Lookup.loadTreeView(this)\" divid=\"treeview-").append(formFieldName).append("\" ");
+            sb.append("<a href=\"javascript:void(0)\" ");
+            writeTabIndex(currentField, sb);
+            sb.append("onclick=\"Lookup.loadTreeView(this)\" divid=\"treeview-").append(formFieldName).append("\" ");
             sb.append("constituentid=\"").append(request.getParameter(StringConstants.CONSTITUENT_ID)).append("\" fieldDef=\"");
 	        sb.append(StringEscapeUtils.escapeHtml(currentField.getFieldDefinition().getId())).append("\">");
             sb.append(getMessage("viewHierarchy"));

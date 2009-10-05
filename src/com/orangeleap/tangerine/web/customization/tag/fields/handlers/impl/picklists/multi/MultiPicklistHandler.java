@@ -66,7 +66,7 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 		createContainerEnd(sb);
 		createBottom(request, pageContext, formFieldName, sb);
 		createSelectedRefs(formFieldName, selectedRefs, sb);
-		createLookupLink(sb);
+		createLookupLink(currentField, sb);
 	}
 
     protected void createTop(HttpServletRequest request, PageContext pageContext, String formFieldName, StringBuilder sb) {
@@ -170,9 +170,10 @@ public class MultiPicklistHandler extends AbstractPicklistHandler {
 		sb.append("<div style=\"display:none\" id=\"selectedRef-").append(formFieldName).append("\">").append(selectedRefs).append("</div>");
 	}
 
-	protected void createLookupLink(StringBuilder sb) {
+	protected void createLookupLink(SectionField currentField, StringBuilder sb) {
 		String lookupMsg = getMessage("lookup");
 		sb.append("<a href=\"javascript:void(0)\" onclick=\"").append(getLookupClickHandler()).append("\" class=\"multiLookupLink hideText\" ");
+        writeTabIndex(currentField, sb);
 		sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
 	}
 

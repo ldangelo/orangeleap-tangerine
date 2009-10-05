@@ -164,6 +164,7 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 		String lookupMsg = getMessage("lookup");
 		sb.append("<a href=\"javascript:void(0)\" onclick=\"Lookup.loadCodeAdditionalPopup(this)\" class=\"multiLookupLink hideText\" ");
 		sb.append("lookup=\"").append(currentField.getFieldPropertyName()).append("\" ");
+        writeTabIndex(currentField, sb);
 		sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
 	}
 

@@ -51,8 +51,9 @@ public class PaymentSourcePicklistHandler extends AbstractPicklistHandler {
 
     @SuppressWarnings("unchecked")
     protected void createAchSelectField(HttpServletRequest request, SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
-        sb.append("<select name=\"ach-").append(formFieldName).append("\" id=\"ach-").append(formFieldName);
-	    sb.append("\" class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\" style=\"display:none\">");
+        sb.append("<select name=\"ach-").append(formFieldName).append("\" id=\"ach-").append(formFieldName).append("\" ");
+        writeTabIndex(currentField, sb);
+        sb.append("class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\" style=\"display:none\">");
 
         createNewOption(fieldValue, null, sb);
 
@@ -91,8 +92,9 @@ public class PaymentSourcePicklistHandler extends AbstractPicklistHandler {
 
     @SuppressWarnings("unchecked")
     protected void createCreditCardSelectField(HttpServletRequest request, SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
-        sb.append("<select name=\"creditCard-").append(formFieldName).append("\" id=\"creditCard-").append(formFieldName);
-	    sb.append("\" class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\" style=\"display:none\">");
+        sb.append("<select name=\"creditCard-").append(formFieldName).append("\" id=\"creditCard-").append(formFieldName).append("\" ");
+        writeTabIndex(currentField, sb);
+        sb.append("class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\" style=\"display:none\">");
 
 	    createNewOption(fieldValue, null, sb);
 

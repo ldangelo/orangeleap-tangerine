@@ -34,6 +34,7 @@ public class SectionField implements GeneratedId, Serializable {
     private FieldDefinition secondaryFieldDefinition;
     private Site site;
     private Integer fieldOrder;
+    private Integer tabIndex;
     private SectionDefinition sectionDefinition;
 
     @Override
@@ -60,6 +61,14 @@ public class SectionField implements GeneratedId, Serializable {
 
     public void setFieldOrder(Integer fieldOrder) {
         this.fieldOrder = fieldOrder;
+    }
+
+    public Integer getTabIndex() {
+        return tabIndex;
+    }
+
+    public void setTabIndex(Integer tabIndex) {
+        this.tabIndex = tabIndex;
     }
 
     public FieldDefinition getSecondaryFieldDefinition() {

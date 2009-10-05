@@ -9,6 +9,7 @@
 	<resultMap id="SECTION_FIELD_RESULT" class="com.orangeleap.tangerine.domain.customization.SectionField">
 		<result property="id" column="SECTION_FIELD_ID" jdbcType="BIGINT" />
 		<result property="fieldOrder" column="SEC_FLD_FIELD_ORDER" jdbcType="INTEGER" />
+		<result property="tabIndex" column="SEC_FLD_TAB_INDEX" jdbcType="INTEGER" />
 		<result property="fieldDefinition" resultMap="FIELD_DEFINITION.FIELD_DEFINITION_RESULT" />
 		<result property="secondaryFieldDefinition" resultMap="FIELD_DEFINITION.SECONDARY_FIELD_DEFINITION_RESULT" />
 		<result property="sectionDefinition" resultMap="SECTION_DEFINITION.SECTION_DEFINITION_RESULT" />
@@ -17,7 +18,7 @@
 
 
 	<sql id="SELECT_SECTION_FIELD_FRAGMENT">
-		select sf.SECTION_FIELD_ID, sf.FIELD_ORDER as SEC_FLD_FIELD_ORDER, 
+		select sf.SECTION_FIELD_ID, sf.FIELD_ORDER as SEC_FLD_FIELD_ORDER, sf.TAB_INDEX as SEC_FLD_TAB_INDEX, 
 		sf.SECTION_DEFINITION_ID as SECTION_DEFINITION_ID, sf.SITE_NAME as SEC_FLD_SITE_NAME,
 		
 		<include refid="SECTION_DEF_COLS_FRAGMENT" />,		
@@ -46,9 +47,9 @@
 	</select>
 
 	<insert id="INSERT_SECTION_FIELD" parameterClass="com.orangeleap.tangerine.domain.customization.SectionField">
-		insert into SECTION_FIELD (FIELD_ORDER, FIELD_DEFINITION_ID,
+		insert into SECTION_FIELD (FIELD_ORDER, TAB_INDEX, FIELD_DEFINITION_ID,
 		SECONDARY_FIELD_DEFINITION_ID, SECTION_DEFINITION_ID, SITE_NAME)
-		values (#fieldOrder#, #fieldDefinition.id#,
+		values (#fieldOrder#, #tabIndex#, #fieldDefinition.id#,
 		#secondaryFieldDefinition.id#, #sectionDefinition.id#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -57,7 +58,9 @@
 
 	<update id="UPDATE_SECTION_FIELD" parameterClass="com.orangeleap.tangerine.domain.customization.SectionField">
 		update SECTION_FIELD
-		set FIELD_ORDER = #fieldOrder#,
+		set 
+		FIELD_ORDER = #fieldOrder#,
+		TAB_INDEX = #tabIndex#,
 		FIELD_DEFINITION_ID = #fieldDefinition.id#,
 		SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinition.id#,
 		SECTION_DEFINITION_ID = #sectionDefinition.id#,

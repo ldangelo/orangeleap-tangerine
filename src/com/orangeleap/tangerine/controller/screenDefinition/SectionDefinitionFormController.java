@@ -151,6 +151,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
     	private String name;
     	private String description;
     	private String longDescription;
+    	private String tabIndex;
 
     	public SectionFieldView(SectionField sf, FieldRequired fr) {
     		setSectionField(sf);
@@ -159,6 +160,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
     		setDescription(sf.getFieldDefinition().getDefaultLabel());
     		setLongDescription(getSectionFieldLongDescription(sf));
     		setRequired(fr != null && fr.isRequired());
+    		setTabIndex(""+sf.getTabIndex());
     	}
     	
     	public void setSectionField(SectionField sectionField) {
@@ -201,6 +203,15 @@ public class SectionDefinitionFormController extends SimpleFormController {
 		public String getLongDescription() {
 			return longDescription;
 		}
+		
+		public void setTabIndex(String tabIndex) {
+			this.tabIndex = tabIndex;
+		}
+
+		public String getTabIndex() {
+			return tabIndex;
+		}
+
     }
     
     private List<SectionField> getSectionFields(SectionDefinition sectionDef) {
@@ -226,6 +237,7 @@ public class SectionDefinitionFormController extends SimpleFormController {
     private static final String TOGGLE_VISIBLE = "togglevisible";
     private static final String TOGGLE_REQUIRED = "togglerequired";
     private static final String CHANGE_DESC = "changedescription";
+    private static final String CHANGE_TAB_INDEX = "changetabindex";
     
     
     @Override
@@ -237,10 +249,12 @@ public class SectionDefinitionFormController extends SimpleFormController {
         String fieldName = request.getParameter("fieldName"); 
         String action = request.getParameter("action"); 
         String description = request.getParameter("description"); 
+        String tabIndex = request.getParameter("tabIndex"); 
         boolean toggleVisible = TOGGLE_VISIBLE.equals(action);
         boolean toggleRequired = TOGGLE_REQUIRED.equals(action);
         boolean moveUp = MOVE_UP.equals(action);
         boolean changeDescription = CHANGE_DESC.equals(action);
+        boolean changeTabIndex = CHANGE_TAB_INDEX.equals(action);
         
         SectionDefinition sectionDef = sectionDao.readSectionDefinition(new Long(id));
         List<SectionField> sectionFields = getSectionFields(sectionDef);
@@ -289,11 +303,21 @@ public class SectionDefinitionFormController extends SimpleFormController {
             pageCustomizationService.maintainFieldRequired(fieldRequired);
 
         } else if (changeDescription) {
-            	
+        	
         	if (!targetSectionField.getFieldDefinition().getDefaultLabel().equals(description)) {
 	            targetSectionField.getFieldDefinition().setDefaultLabel(description);
 	            pageCustomizationService.maintainFieldDefinition(targetSectionField.getFieldDefinition());
         	}
+        	
+        } else if (changeTabIndex) {
+        	
+        	try {
+        		Integer itabIndex = new Integer(tabIndex);
+	        	if (!targetSectionField.getTabIndex().equals(itabIndex)) {
+		            targetSectionField.setTabIndex(itabIndex);
+		            pageCustomizationService.maintainSectionField(targetSectionField);
+	        	}
+        	} catch (Exception e) {}
         	
         } else if (moveUp && index > 0) {
         	

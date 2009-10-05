@@ -19,6 +19,7 @@
                 	<th>Field Name</th>
                 	<th>Visible?</th>
                 	<th>Required?</th>
+                	<th>Tab Order</th>
                 	<th>Move</th>
                 	</tr>
                     <c:forEach var="field" items="${fieldList}">
@@ -34,6 +35,9 @@
 		                </td>
 		                <td>
 		                	<input type="checkbox" <c:if test="${field.required}">checked</c:if> onchange="update('${field.name}','togglerequired');" />
+		                </td>
+		                <td>
+		                    <input id="tabIndex" name="tabIndex" value="<c:out value='${field.tabIndex}'/>"  onchange="update('${field.name}','changetabindex', this);" />
 		                </td>
 		                <td>
 		                	<a href="#" onclick="update('${field.name}','moveup');" >^</a>
@@ -52,13 +56,13 @@
                  	
                  	var parms = 'pageType=${pageType}&id='+$('#id').val();
              		var data = parms + '&fieldName=' + field + '&action=' + action;
-             		if (action === 'changedescription') data = data + '&' + $(input).serialize();
+             		if (action === 'changedescription' || action === 'changetabindex') data = data + '&' + $(input).serialize();
                     $.ajax({
                  	   type: "POST",
                  	   url: "sectionDefinition.htm",
                  	   data: data,
                  	   success: function(msg){
-                 	     if (action != 'changedescription') {
+                 	     if (action != 'changedescription' && action != 'changetabindex') {
                      	     window.location = "sectionDefinition.htm?"+parms;
                  	     }
                  	   },

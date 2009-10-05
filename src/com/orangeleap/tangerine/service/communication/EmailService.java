@@ -43,6 +43,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.ui.cas.CasProcessingFilter;
 import org.springframework.validation.BindException;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
@@ -60,7 +61,6 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.util.CasCookieLocal;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 //@Service("emailSendingService")
@@ -94,8 +94,9 @@ public class EmailService implements ApplicationContextAware {
         	// CAS login
         	String casCookie = CasCookieLocal.getCasCookie();
         	if (casCookie != null && casCookie.length() > 0) {
-        		jserver.setUsername(casCookie);
-        		jserver.setPassword(""); 
+        		// see http://www.docjar.com/html/api/org/acegisecurity/providers/cas/CasAuthenticationProvider.java.html
+        		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
+        		jserver.setPassword(casCookie); 
         	}
         	
             WSClient client = jserver.getWSClient();

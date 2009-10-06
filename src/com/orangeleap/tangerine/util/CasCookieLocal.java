@@ -33,11 +33,22 @@ public class CasCookieLocal {
         }
     };
 
+    private static ThreadLocal<HttpServletRequest> cas_request = new ThreadLocal<HttpServletRequest>() {
+        protected synchronized HttpServletRequest initialValue() {
+            return null;
+        }
+    };
+
     public static String getCasCookie() {
         return cas_cookie.get();
     }
 
+    public static HttpServletRequest getCasRequest() {
+        return cas_request.get();
+    }
+
     public static void setCasCookie(HttpServletRequest request) {
+    	cas_request.set(request);
     	cas_cookie.remove();
     	if (request != null && request.getCookies() != null) for (Cookie cookie : request.getCookies()) {
     		if (cookie != null && cookie.getName().equals(StringConstants.CAS_COOKIE_NAME)) {

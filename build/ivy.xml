@@ -73,6 +73,11 @@
             <artifact name="spring-test" type="jar" ext="jar"/>
         </dependency>
 
+        <!--  JUnit -->
+        <dependency org="junit" name="junit" rev="4.5" conf="test->default">
+            <artifact name="junit" type="jar" ext="jar"/>
+        </dependency>
+
         <!-- Logging -->
         <dependency org="commons-logging" name="commons-logging" rev="1.1.1">
             <artifact name="commons-logging" type="jar"/>

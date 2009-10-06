@@ -22,8 +22,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
+import org.springframework.security.Authentication;
 import org.springframework.security.context.HttpSessionContextIntegrationFilter;
-import org.springframework.security.providers.cas.CasAuthenticationToken;
+import org.springframework.security.context.SecurityContextImpl;
 
 public class CasCookieLocal {
 
@@ -59,8 +60,8 @@ public class CasCookieLocal {
     	}
     }
     
-    public static CasAuthenticationToken getCasAuthenticationToken() {
-		return (CasAuthenticationToken)getCasRequest().getSession().getAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY);
+    public static Authentication getAuthenticationToken() {
+    	return  ((SecurityContextImpl)getCasRequest().getSession().getAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY)).getAuthentication();
     }
 
 }

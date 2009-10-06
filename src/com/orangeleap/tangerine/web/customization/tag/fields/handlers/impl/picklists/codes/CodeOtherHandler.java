@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups;
+package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.codes;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;

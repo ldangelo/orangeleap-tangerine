@@ -35,6 +35,14 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
 		return fieldService.readPicklistByFieldNameEntityType(currentField.getPicklistName(), entityType);
 	}
 
+    protected Object resolveFieldValueIfRequired(SectionField currentField, Picklist picklist, Object fieldValue) {
+        if (fieldValue == null && isFieldRequired(currentField) &&
+                picklist != null && ! picklist.getActivePicklistItems().isEmpty()) {
+            fieldValue = picklist.getActivePicklistItems().get(0).getItemName();
+        }
+        return fieldValue;
+    }
+
 	@SuppressWarnings("unchecked")
 	protected String resolveReferenceValues(SectionField currentField, Picklist picklist) {
 		Set<String> refValues = new TreeSet<String>();
@@ -117,7 +125,6 @@ public abstract class AbstractPicklistHandler extends AbstractFieldHandler {
             sb.append(" reference=\"").append(StringEscapeUtils.escapeHtml(reference)).append("\"");
         }
 
-	    // TODO: fix for user created?
 	    if (fieldValue != null && NEW_ID.equals(fieldValue.toString())) {
 		   sb.append(" selected=\"selected\"");
 	    }

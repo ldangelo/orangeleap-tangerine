@@ -22,10 +22,9 @@ import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.TextAreaHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.TextHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.AssociationHandler;
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.CodeHandler;
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.CodeOtherHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.codes.CodeHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.LookupHandler;
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.MultiCodeAdditionalHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.codes.MultiCodeAdditionalHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.MultiQueryLookupHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.QueryLookupHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.QueryLookupOtherHandler;
@@ -174,7 +173,7 @@ public class FieldHandlerHelper implements ApplicationContextAware {
 		FieldHandler codeHandler = new CodeHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.CODE, codeHandler);
 
-		FieldHandler codeOtherHandler = new CodeOtherHandler(appContext);
+		FieldHandler codeOtherHandler = new com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.codes.CodeOtherHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, codeOtherHandler);
 
 		FieldHandler multiCodeAdditionalHandler = new MultiCodeAdditionalHandler(appContext);

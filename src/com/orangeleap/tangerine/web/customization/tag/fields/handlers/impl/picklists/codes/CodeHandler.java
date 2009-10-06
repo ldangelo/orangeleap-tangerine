@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups;
+package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.codes;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
@@ -48,15 +49,27 @@ public class CodeHandler extends AbstractFieldHandler {
 		picklistItemService = (PicklistItemService) applicationContext.getBean("picklistItemService");
 	}
 
+    protected Object resolveItemNameIfRequired(SectionDefinition sectionDefinition, SectionField currentField,
+	                                     TangerineForm form, Object itemName) {
+        String picklistNameId = resolveCodeLookupName(sectionDefinition, currentField, form);
+        if (itemName == null && isFieldRequired(currentField)) {
+            Picklist picklist = picklistItemService.getPicklist(picklistNameId);
+            if (picklist != null && ! picklist.getActivePicklistItems().isEmpty()) {
+                itemName = picklist.getActivePicklistItems().get(0).getItemName();
+            }
+        }
+        return itemName;
+    }
+
 	protected String resolveCodeValue(String picklistNameId, Object itemName) {
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("resolve: picklistNameId = " + picklistNameId + " itemName = " + itemName);
 	    }
-	    PicklistItem code = picklistItemService.getPicklistItem(picklistNameId, (String) itemName);
         String val = (String) itemName;
-	    if (code != null) {
-	        val = code.getValueDescription();
-	    }
+        PicklistItem code = picklistItemService.getPicklistItem(picklistNameId, (String) itemName);
+        if (code != null) {
+            val = code.getValueDescription();
+        }
 	    return val;
 	}
 
@@ -64,6 +77,7 @@ public class CodeHandler extends AbstractFieldHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                       SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                       TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
+        fieldValue = resolveItemNameIfRequired(sectionDefinition, currentField, form, fieldValue);
 		createLookupWrapperBegin(sb);
 		createDisplayInput(request, pageContext, sectionDefinition, currentField, form, formFieldName, fieldValue, sb);
 		createHiddenInput(formFieldName, fieldValue, sb);
@@ -138,6 +152,6 @@ public class CodeHandler extends AbstractFieldHandler {
 
     @Override
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
-        return resolveCodeValue(currentField.getFieldPropertyName(), fieldValue);  
+        return resolveCodeValue(currentField.getFieldPropertyName(), fieldValue);
     }
 }

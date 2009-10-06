@@ -56,21 +56,6 @@ insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('bean:constituent.firstLast', 'achHolderName', 'paymentSource');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:currencyCode', 'currencyCode', 'gift');
-
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:currencyCode', 'currencyCode', 'recurringGift');
-
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:currencyCode', 'currencyCode', 'pledge');
-
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:currencyCode', 'currencyCode', 'giftInKind');
-
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
-values ('picklist:projectCode', 'projectCode', 'distributionLine');
-
-insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('unknown', 'customFieldMap[addressType]', 'address');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)

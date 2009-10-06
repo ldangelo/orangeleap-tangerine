@@ -50,6 +50,7 @@ public class PhonePicklistHandler extends AbstractPicklistHandler {
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
 		Picklist picklist = resolvePicklist(currentField);
+        fieldValue = resolveFieldValueIfRequired(currentField, picklist, fieldValue);
 		createBeginSelect(pageContext, currentField, formFieldName, picklist, sb);
 		createNoneOption(currentField, fieldValue, sb);
 

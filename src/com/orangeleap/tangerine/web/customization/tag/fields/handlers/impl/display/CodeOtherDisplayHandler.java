@@ -18,7 +18,7 @@
 
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display;
 
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups.CodeOtherHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.codes.CodeOtherHandler;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.controller.TangerineForm;

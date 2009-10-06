@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.lookups;
+package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.picklists.codes;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
@@ -48,6 +48,7 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
+        fieldValue = resolveItemNameIfRequired(sectionDefinition, currentField, form, fieldValue);
 		createTop(request, pageContext, formFieldName, sb);
 		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiCodeBegin(currentField, sb);

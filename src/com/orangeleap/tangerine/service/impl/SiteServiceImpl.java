@@ -297,7 +297,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         if (sfs != null) {
             BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(object);
             for (SectionField sectionField : sfs) {
-            	getFieldValue(sectionField, returnMap, bean);   // TODO: configure for grids?
+            	getFieldValue(sectionField, returnMap, bean);
 	            
             }
             returnMap.put(StringConstants.ID, bean.getPropertyValue(StringConstants.ID));
@@ -370,13 +370,6 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 						value = bean.getPropertyValue(propertyName + StringConstants.DOT_VALUE);
 					}
 				}
-                else if (defaultValue.startsWith(StringConstants.PICKLIST_COLON)) {
-                    String picklistName = defaultValue.replaceFirst(StringConstants.PICKLIST_COLON, StringConstants.EMPTY);
-                    Picklist thisPicklist = picklistItemService.getPicklist(picklistName);
-                    if (thisPicklist != null && !thisPicklist.getActivePicklistItems().isEmpty()) {
-                        value = thisPicklist.getActivePicklistItems().get(0).getItemName();
-                    }
-                }
 				else if (StringConstants.NOW_COLON.equals(defaultValue)) {
 					value = Calendar.getInstance(Locale.getDefault()).getTime();
 				}

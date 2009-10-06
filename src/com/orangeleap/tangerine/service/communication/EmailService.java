@@ -43,6 +43,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.context.HttpSessionContextIntegrationFilter;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.ui.cas.CasProcessingFilter;
 import org.springframework.validation.BindException;
 
@@ -96,7 +98,8 @@ public class EmailService implements ApplicationContextAware {
         	if (casCookie != null && casCookie.length() > 0) {
         		// see http://www.docjar.com/html/api/org/acegisecurity/providers/cas/CasAuthenticationProvider.java.html
         		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
-        		jserver.setPassword(casCookie); 
+        		CasAuthenticationToken token = (CasAuthenticationToken)CasCookieLocal.getCasRequest().getSession().getAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY);
+        		jserver.setPassword(""+token.getCredentials()); 
         	}
         	
             WSClient client = jserver.getWSClient();

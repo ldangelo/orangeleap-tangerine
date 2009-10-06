@@ -98,8 +98,8 @@ public class EmailService implements ApplicationContextAware {
         	if (casCookie != null && casCookie.length() > 0) {
         		// see http://www.docjar.com/html/api/org/acegisecurity/providers/cas/CasAuthenticationProvider.java.html
         		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
-        		CasAuthenticationToken token = (CasAuthenticationToken)CasCookieLocal.getCasRequest().getSession().getAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY);
-        		jserver.setPassword(""+token.getCredentials()); 
+        		CasAuthenticationToken token = CasCookieLocal.getCasAuthenticationToken();
+        		jserver.setPassword(token == null ? "" : ""+token.getCredentials()); 
         	}
         	
             WSClient client = jserver.getWSClient();

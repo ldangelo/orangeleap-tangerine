@@ -45,7 +45,7 @@ Ext.onReady(function() {
             {header: 'Id', width: 30, dataIndex: 'id', sortable: true},
             {header: 'Date', width: 60, dataIndex: 'createdate', sortable: true, renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
             {header: 'User', width: 40, dataIndex: 'constituentid', sortable: true},
-            {header: 'Message', width: 250,  dataIndex: 'message', sortable: true, renderer: LogView.descriptionRenderer},
+            {header: 'Message', width: 250,  dataIndex: 'message', sortable: true, renderer: LogView.descriptionRenderer}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {

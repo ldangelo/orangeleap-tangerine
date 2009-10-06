@@ -1,10 +1,24 @@
- /**
-  * @class Ext.ux.dd.GridDropTarget
-  * @extends Ext.dd.DropTarget
-  * @since 05/13/08
-  * @author Eliezer Reis
-  * @msn eliezerreis@hotmail.com
-  */
+Ext.override(Ext.data.Store, {
+	insert : function(index, records){
+		records = [].concat(records);
+		var snapshotIx;
+		if(this.snapshot){
+			snapshotIx = index ? this.snapshot.indexOf(this.getAt(index - 1)) + 1 : 0;
+		}
+		for(var i = 0, len = records.length; i < len; i++){
+			this.data.insert(index, records[i]);
+			if(this.snapshot){
+				this.snapshot.insert(snapshotIx, records[i]);
+			}
+			records[i].join(this);
+		}
+		this.fireEvent("add", this, records, index);
+	},
+	getById : function(id){
+		return (this.snapshot || this.data).key(id);
+	}
+}); 
+
 Ext.ns('Ext.ux.dd');
 
 Ext.ux.dd.GridDropTarget = function(grid, config){
@@ -23,8 +37,9 @@ Ext.extend(Ext.ux.dd.GridDropTarget, Ext.dd.DropTarget, {
         ds.insert(rindex, data.selections);
 
 		var sm = this.grid.getSelectionModel();
-        if (sm)
+        if (sm) {
             sm.selectRecords(data.selections);
+        }
 
         this.grid.getView().refresh();
         return true;

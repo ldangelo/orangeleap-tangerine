@@ -1,22 +1,11 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<page:applyDecorator name="form">
-    <spring:message code='managePicklists' var="titleText" />
+<page:applyDecorator name="admin">
     <html>
         <head>
-            <title><c:out value="${titleText}"/></title>
+            <title><spring:message code='managePicklists'/></title>
         </head>
-        <body>
-            <div id="managerGrid"></div>
-        </body>
     </html>
     <page:param name="scripts">
-        <script type="text/javascript" src="js/extjs/ux/CheckColumn.js"></script>
-        <script type="text/javascript" src="js/extjs/ux/SelectBox.js"></script>
-        <script type="text/javascript" src="js/extjs/ux/filters/GridFilters.js"></script>
-        <script type="text/javascript" src="js/extjs/ux/filters/Filter.js"></script>
-        <script type="text/javascript" src="js/extjs/ux/filters/StringFilter.js"></script>
-        <script type="text/javascript" src="js/extjs/ux/filters/BooleanFilter.js"></script>
-        <script type="text/javascript" src="js/extjs/ux/grid/GridDropTarget.js"></script>
         <script type="text/javascript">
             Ext.ns("OrangeLeap");
             OrangeLeap.Picklists = [

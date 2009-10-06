@@ -360,6 +360,27 @@
 	        <fileset dir="${stage.dir}/war/js" includes="date.js" />
 		</javascript-optimization>
 
+        <javascript-optimization
+            minify="false"
+            yCompressor="false"
+            gZip="false"
+            destFile="${stage.dir}/war/js/tangerine-admin.js.ycomp.js"
+            optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+            verbose="false">
+
+            <!--
+                Defines the set of files that will be concatenated and
+                then optimized. All the files need to be JavaScript files
+                or errors will occur.
+            -->
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/CheckColumn.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/GridFilters.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/Filter.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/StringFilter.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/BooleanFilter.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/GridDropTarget.js" />
+        </javascript-optimization>
+
 	</target>
 
 	
@@ -443,6 +464,29 @@
 
         <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="tangerine.css.min.css" value="tangerine${now.time}.css.min.css"/>
         <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="tangerine.js.ycomp.js" value="tangerine${now.time}.js.ycomp.js"/>
+
+        <javascript-optimization
+            minify="true"
+            yCompressor="true"
+            gZip="false"
+            destFile="${stage.dir}/war/js/tangerine-admin.js.ycomp.js"
+            optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+            verbose="false">
+
+            <!--
+                Defines the set of files that will be concatenated and
+                then optimized. All the files need to be JavaScript files
+                or errors will occur.
+            -->
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/CheckColumn.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/GridFilters.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/Filter.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/StringFilter.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/BooleanFilter.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/GridDropTarget.js" />
+        </javascript-optimization>
+
+        <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/admin.jsp" token="tangerine-admin.js.ycomp.js" value="tangerine-admin{now.time}.js.ycomp.js"/>
 
         <javascript-optimization
             minify="false"

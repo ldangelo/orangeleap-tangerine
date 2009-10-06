@@ -1,23 +1,7 @@
-Ext.override(Ext.data.Store, {
-	insert : function(index, records){
-		records = [].concat(records);
-		var snapshotIx;
-		if(this.snapshot){
-			snapshotIx = index ? this.snapshot.indexOf(this.getAt(index - 1)) + 1 : 0;
-		}
-		for(var i = 0, len = records.length; i < len; i++){
-			this.data.insert(index, records[i]);
-			if(this.snapshot){
-				this.snapshot.insert(snapshotIx, records[i]);
-			}
-			records[i].join(this);
-		}
-		this.fireEvent("add", this, records, index);
-	},
-	getById : function(id){
-		return (this.snapshot || this.data).key(id);
-	}
-});
+Ext.ns('OrangeLeap.ManagePicklists');
+OrangeLeap.ManagePicklists.serializeOrder = function() {
+    
+}
 
 Ext.onReady(function() {
     var checkColumn = new Ext.grid.CheckColumn({
@@ -140,13 +124,17 @@ Ext.onReady(function() {
         height: 600,
         title: 'Manage Picklist Items',
         loadMask: true,
+        frame: true,
+        id: 'managementGrid',
+        buttons: [
+            {text:'Save'},
+            {text:'Cancel'}
+        ],
+        buttonAlign:'center',
         enableDragDrop: true,
         xtype: "grid",
         // specify the check column plugin on the grid so the plugin is initialized
-        plugins: [ checkColumn, filters//, new Ext.ux.dd.GridDragDropRowOrder({
-//                scrollable: true // enable scrolling support (default is false)
-//            })
-        ],
+        plugins: [ checkColumn, filters ],
         selModel: new Ext.grid.RowSelectionModel({}),
         clicksToEdit: 1,
         tbar: [
@@ -155,7 +143,7 @@ Ext.onReady(function() {
               disabled: true, handler : function() {
                 }
             }, '-',
-            { text: 'Add Item', tooltip:'Add a new Picklist Item', iconCls:'add', ref: '../addButton',
+            { text: 'Add Item', tooltip:'Add a new Picklist Item', iconCls:'add', id: 'addButton', ref: '../addButton',
               disabled: true, handler : function() {
                     var gStore = grid.getStore();
                     var PickItem = gStore.recordType;
@@ -180,7 +168,10 @@ Ext.onReady(function() {
         ddGroup: grid.ddGroup || 'GridDD'
     });
 
-    grid.on('afteredit', function(edit) {
+    Ext.getCmp('managementGrid').on('keydown', function(e) {
+        if (e.getKey() == 65 && e.altKey) {
+            Ext.getCmp('addButton').handler();
+        }
     });
 });
 

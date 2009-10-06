@@ -207,28 +207,30 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     	boolean wasRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
 
-    	RulesStack.push(ROUTE_METHOD);
+        boolean reentrant = RulesStack.push(ROUTE_METHOD);
         try {
 
-            try {
+        	if (!reentrant){
+            	try {
 
-                NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
-                newConstituent.routeConstituent(constituent);
-            }
-            catch (DuplicateConstituentException dce) {
-                throw dce;
-            }
-            catch (ConstituentValidationException cve) {
-                throw cve;
-            }
-            catch (Exception ex) {
-                logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
-                // Cannot start new transaction to record error when current transaction has timed out waiting on external connection issue.
-                String msg = "" + ex.getMessage();
-                if (!msg.contains("timeout") && !msg.contains("Connection refused")) {
-                    writeRulesFailureLog(ex.getMessage() + "\r\n" + constituent);
+                    NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
+                    newConstituent.routeConstituent(constituent);
                 }
-            }
+                catch (DuplicateConstituentException dce) {
+                    throw dce;
+                }
+                catch (ConstituentValidationException cve) {
+                    throw cve;
+                }
+                catch (Exception ex) {
+                    logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
+                    // Cannot start new transaction to record error when current transaction has timed out waiting on external connection issue.
+                    String msg = "" + ex.getMessage();
+                    if (!msg.contains("timeout") && !msg.contains("Connection refused")) {
+                        writeRulesFailureLog(ex.getMessage() + "\r\n" + constituent);
+                    }
+                }
+        	}
         } finally {
             RulesStack.pop(ROUTE_METHOD);
         }

@@ -95,7 +95,7 @@ public class EmailService implements ApplicationContextAware {
         	String casCookie = CasCookieLocal.getCasCookie();
         	if (casCookie != null && casCookie.length() > 0) {
         		// see http://www.docjar.com/html/api/org/acegisecurity/providers/cas/CasAuthenticationProvider.java.html
-        		jserver.setUsername(CasProcessingFilter.CAS_STATEFUL_IDENTIFIER);
+        		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
         		jserver.setPassword(casCookie); 
         	}
         	

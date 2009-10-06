@@ -97,6 +97,8 @@ public class EmailService implements ApplicationContextAware {
         	if (casCookie != null && casCookie.length() > 0) {
         		// see http://www.docjar.com/html/api/org/acegisecurity/providers/cas/CasAuthenticationProvider.java.html
         		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
+        		
+        		// I think this needs a proxy ticket instead...
         		Authentication token = CasCookieLocal.getAuthenticationToken();
         		jserver.setPassword(token == null ? "" : ""+token.getCredentials()); 
         	}

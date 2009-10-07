@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans:beans xmlns="http://www.springframework.org/schema/security"
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -60,6 +59,8 @@
         <beans:property name="authenticationFailureUrl" value="/casfailed.jsp"/>
         <beans:property name="defaultTargetUrl" value="/"/>
         <beans:property name="authenticationDetailsSource" ref="customDetails"/>
+        <beans:property name="proxyGrantingTicketStorage" ref="proxyGrantingTicketStorage" />
+        <beans:property name="proxyReceptorUrl" value="/secure/receptor" />
     </beans:bean>
 
     <beans:bean id="casProcessingFilterEntryPoint"
@@ -76,10 +77,16 @@
         <beans:property name="ticketValidator">
             <beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
                 <beans:constructor-arg index="0" value="${casClient.serverUrl}/${casClient.serverContextPrefix}${casClient.serverContext}"/>
+                <beans:property name="proxyGrantingTicketStorage" ref="proxyGrantingTicketStorage" />
+                <beans:property name="proxyCallbackUrl" value="${casClient.serviceUrl}/secure/receptor" />
             </beans:bean>
         </beans:property>
         <beans:property name="key" value="tangerine-client-key"/>
     </beans:bean>
+    
+    <beans:bean id="proxyGrantingTicketStorage" class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl" />
+
+    
     <!-- END CAS Authentication configuration -->
 
     <!-- This custom filter populates the HTTP Session with information needed by the Tangerine application -->

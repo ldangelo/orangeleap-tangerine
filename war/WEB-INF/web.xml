@@ -102,6 +102,10 @@
 	<listener>
 		<listener-class>org.springframework.security.ui.session.HttpSessionEventPublisher</listener-class>
 	</listener>
+	<listener>
+        <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    </listener>
+	
 
    <!-- This servlet declaration is used as the Dispatcher Servlet (front 
         controller) in our Spring MVC framework and it also loads our web

@@ -33,58 +33,58 @@
 
     <dependencies>
         <!-- Commons -->
-        <dependency org="commons-collections" name="commons-collections" rev="3.2.1">
+        <dependency org="commons-collections" name="commons-collections" transitive="false" rev="3.2.1">
             <artifact name="commons-collections" type="jar"/>
             <artifact name="commons-collections" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
-        <dependency org="commons-lang" name="commons-lang" rev="2.3">
+        <dependency org="commons-lang" name="commons-lang" transitive="false" rev="2.3">
             <artifact name="commons-lang" type="jar"/>
             <artifact name="commons-lang" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
 
         <!-- JSP/Servlets/Ajax -->
-        <dependency org="org.directwebremoting" name="dwr" rev="2.0.3">
+        <dependency org="org.directwebremoting" name="dwr" transitive="false" rev="2.0.3">
             <artifact name="dwr" type="jar"/>
             <artifact name="dwr" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
-        <dependency org="javax.servlet" name="jstl" rev="1.1.2">
+        <dependency org="javax.servlet" name="jstl" transitive="false" rev="1.1.2">
             <artifact name="jstl" type="jar"/>
         </dependency>
-        <dependency org="taglibs" name="standard" rev="1.1.2">
+        <dependency org="taglibs" name="standard" transitive="false" rev="1.1.2">
             <artifact name="standard" type="jar"/>
         </dependency>
-        <dependency org="javax.servlet.jsp" name="jsp-api" rev="2.1" conf="compile->default">
+        <dependency org="javax.servlet.jsp" name="jsp-api" transitive="false" rev="2.1" conf="compile->default">
             <artifact name="jsp-api" type="jar"/>
         </dependency>
-        <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="compile->default">
+        <dependency org="javax.servlet" name="servlet-api" transitive="false" rev="2.5" conf="compile->default">
             <artifact name="servlet-api" type="jar"/>
         </dependency>
 
         <!-- Spring -->
-        <dependency org="org.springframework" name="spring" rev="2.5.6">
+        <dependency org="org.springframework" name="spring" transitive="false" rev="2.5.6">
             <artifact name="spring" type="jar"/>
             <artifact name="spring" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
-        <dependency org="org.springframework" name="spring-webmvc" rev="2.5.6">
+        <dependency org="org.springframework" name="spring-webmvc" transitive="false" rev="2.5.6">
             <artifact name="spring-webmvc" type="jar"/>
             <artifact name="spring-webmvc" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
-        <dependency org="org.springframework" name="spring-test" rev="2.5.6" conf="test->default">
+        <dependency org="org.springframework" name="spring-test" transitive="false" rev="2.5.6" conf="test->default">
             <artifact name="spring-test" type="jar" ext="jar"/>
         </dependency>
 
         <!--  JUnit -->
-        <dependency org="junit" name="junit" rev="4.5" conf="test->default">
+        <dependency org="junit" name="junit" rev="4.5" transitive="false" conf="test->default">
             <artifact name="junit" type="jar" ext="jar"/>
         </dependency>
 
         <!-- Logging -->
-        <dependency org="commons-logging" name="commons-logging" rev="1.1.1">
+        <dependency org="commons-logging" name="commons-logging" transitive="false" rev="1.1.1">
             <artifact name="commons-logging" type="jar"/>
             <artifact name="commons-logging" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
 
-        <dependency org="log4j" name="log4j" rev="1.2.15">
+        <dependency org="log4j" name="log4j" transitive="false" rev="1.2.15">
             <artifact name="log4j" type="jar"/>
             <artifact name="log4j" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>

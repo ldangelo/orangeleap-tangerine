@@ -37,8 +37,11 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import org.apache.commons.logging.Log;
+
+import com.orangeleap.tangerine.util.CasCookieLocal;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.ui.cas.CasProcessingFilter;
 import org.springframework.validation.BindException;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
@@ -56,8 +59,12 @@ import com.orangeleap.tangerine.service.ConstituentService;
 //@Service("emailSendingService")
 public class MailService {
 	protected final Log logger = OLLogger.getLog(getClass());
+	
+	// TODO Need to make jserver & print threadsafe!
+	
 	private JServer jserver = null;
-	private String uri = null;
+    private String baseUri = null;
+    private String repositoryUri = null;
 	private String templateName = null;
 	private String labelTemplateName = null;
 
@@ -77,9 +84,16 @@ public class MailService {
 		jserver = new JServer();
 		jserver.setUsername(site.getJasperUserId());
 		jserver.setPassword(site.getJasperPassword());
-		jserver.setUrl(uri);
+        jserver.setUrl(baseUri + repositoryUri);
 		try {
-			WSClient client = jserver.getWSClient();
+			
+        	// CAS login
+        	String casCookie = CasCookieLocal.getCasCookie();
+        	if (casCookie != null && casCookie.length() > 0) {
+        		// CasAuthenticationProvider can use key for username and password for (proxy) ticket
+        		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
+        		jserver.setPassword(CasCookieLocal.getProxyTicketFor(baseUri)); 
+        	}
 
 			Map params = getReportParameters();
 
@@ -94,10 +108,10 @@ public class MailService {
 			
 		} catch (JRException e) {
 
-			logger.error(e.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
+			logger.error(e.getMessage() + " " + jserver.getUrl() + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		} catch (Exception e) {
-			logger.error(e.getMessage()+ " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
+			logger.error(e.getMessage()+ " " + jserver.getUrl() + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		}
 		return temp;
@@ -113,9 +127,16 @@ public class MailService {
         }
 		jserver.setUsername(site.getJasperUserId());
 		jserver.setPassword(site.getJasperPassword());
-		jserver.setUrl(uri);
+        jserver.setUrl(baseUri + repositoryUri);
 		try {
-			WSClient client = jserver.getWSClient();
+			
+        	// CAS login
+        	String casCookie = CasCookieLocal.getCasCookie();
+        	if (casCookie != null && casCookie.length() > 0) {
+        		// CasAuthenticationProvider can use key for username and password for (proxy) ticket
+        		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
+        		jserver.setPassword(CasCookieLocal.getProxyTicketFor(baseUri)); 
+        	}
 
 			print = getServer().getWSClient().runReport(
 					getLabelReportUnit().getDescriptor(), this.labelMap);
@@ -128,10 +149,10 @@ public class MailService {
 			
 		} catch (JRException e) {
 
-			logger.error(e.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
+			logger.error(e.getMessage() + " " + jserver.getUrl() + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		} catch (Exception e) {
-			logger.error(e.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
+			logger.error(e.getMessage() + " " + jserver.getUrl() + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		}
 		return temp;
@@ -244,7 +265,7 @@ public class MailService {
 			tempLabelFile.delete();
 			tempFile.delete();
 		} catch (Exception ex) {
-			logger.error(ex.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
+			logger.error(ex.getMessage() + " " + jserver.getUrl() + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 		}
 
 	}
@@ -314,13 +335,21 @@ public class MailService {
 		return jserver;
 	}
 
-	public String getUri() {
-		return uri;
-	}
+    public String getBaseUri() {
+        return baseUri;
+    }
 
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+    public void setBaseUri(String uri) {
+        this.baseUri = uri;
+    }
+
+    public String getRepositoryUri() {
+        return repositoryUri;
+    }
+
+    public void setRepositoryUri(String uri) {
+        this.repositoryUri = uri;
+    }
 
 	public Log getLogger() {
 		return logger;

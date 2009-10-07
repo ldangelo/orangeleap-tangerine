@@ -179,11 +179,13 @@
 
 	<bean id="emailSendingService" class="com.orangeleap.tangerine.service.communication.EmailService">
 		<property name="communicationHistoryService" ref="communicationHistoryService"/>
-		<property name="uri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver/services/repository"/>
+		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
+		<property name="repositoryUri" value="/services/repository"/>
 	</bean>
 	
 	<bean id="mailService" class="com.orangeleap.tangerine.service.communication.MailService">
 		<property name="communicationHistoryService" ref="communicationHistoryService"/>
-		<property name="uri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver/services/repository"/>
+		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
+		<property name="repositoryUri" value="/services/repository"/>
 	</bean>
 </beans>

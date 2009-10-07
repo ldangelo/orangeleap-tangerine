@@ -44,6 +44,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.Authentication;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.ui.cas.CasProcessingFilter;
 import org.springframework.validation.BindException;
 
@@ -51,7 +52,6 @@ import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescript
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceProperty;
 import com.jaspersoft.jasperserver.irplugin.JServer;
 import com.jaspersoft.jasperserver.irplugin.RepositoryReportUnit;
-import com.jaspersoft.jasperserver.irplugin.wsclient.WSClient;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
@@ -67,10 +67,14 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 //@Service("emailSendingService")
 public class EmailService implements ApplicationContextAware {
     protected final Log logger = OLLogger.getLog(getClass());
+	
+    // TODO Need to make jserver & print threadsafe!
+    
     private JServer jserver = null;
     private String userName = null;
     private String password = null;
-    private String uri = null;
+    private String baseUri = null;
+    private String repositoryUri = null;
     private String templateName = null;
     private String subject = null;
     private CommunicationHistoryService communicationHistoryService;
@@ -88,19 +92,16 @@ public class EmailService implements ApplicationContextAware {
         jserver.setUsername(site.getJasperUserId());
 //		jserver.setPassword(tuh.lookupUserPassword());
         jserver.setPassword(site.getJasperPassword());
-        jserver.setUrl(uri);
+        jserver.setUrl(baseUri + repositoryUri);
 
         try {
         	
         	// CAS login
         	String casCookie = CasCookieLocal.getCasCookie();
         	if (casCookie != null && casCookie.length() > 0) {
-        		// see http://www.docjar.com/html/api/org/acegisecurity/providers/cas/CasAuthenticationProvider.java.html
+        		// CasAuthenticationProvider can use key for username and password for (proxy) ticket
         		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
-        		
-        		// I think this needs a proxy ticket instead...
-        		Authentication token = CasCookieLocal.getAuthenticationToken();
-        		jserver.setPassword(token == null ? "" : ""+token.getCredentials()); 
+        		jserver.setPassword(CasCookieLocal.getProxyTicketFor(baseUri)); 
         	}
         	
             Map<String, String> params = getReportParameters();
@@ -375,12 +376,20 @@ public class EmailService implements ApplicationContextAware {
         this.password = password;
     }
 
-    public String getUri() {
-        return uri;
+    public String getBaseUri() {
+        return baseUri;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setBaseUri(String uri) {
+        this.baseUri = uri;
+    }
+
+    public String getRepositoryUri() {
+        return repositoryUri;
+    }
+
+    public void setRepositoryUri(String uri) {
+        this.repositoryUri = uri;
     }
 
     public Log getLogger() {

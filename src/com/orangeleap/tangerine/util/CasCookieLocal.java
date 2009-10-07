@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.HttpSessionContextIntegrationFilter;
 import org.springframework.security.context.SecurityContextImpl;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
 
 public class CasCookieLocal {
 
@@ -61,7 +62,15 @@ public class CasCookieLocal {
     }
     
     public static Authentication getAuthenticationToken() {
-    	return  ((SecurityContextImpl)getCasRequest().getSession().getAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY)).getAuthentication();
+    	SecurityContextImpl si = (SecurityContextImpl)getCasRequest().getSession().getAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY);
+    	return  si.getAuthentication();
+    }
+    
+    public static String getProxyTicketFor(String baseUrl) {
+		Authentication token = getAuthenticationToken();
+		if (token == null) return null;
+		String serviceUrl = baseUrl + "/j_acegi_cas_security_check";
+		return ((CasAuthenticationToken)token).getAssertion().getPrincipal().getProxyTicketFor(serviceUrl);
     }
 
 }

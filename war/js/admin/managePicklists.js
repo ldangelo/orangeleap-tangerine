@@ -1,14 +1,11 @@
-Ext.ns('OrangeLeap.ManagePicklists');
-OrangeLeap.ManagePicklists.serializeOrder = function() {
-    
-}
-
 Ext.onReady(function() {
     var checkColumn = new Ext.grid.CheckColumn({
        header: 'Inactive?',
        dataIndex: 'inactive',
        width: 55
     });
+
+    var originalItemsOrder = null;
 
     var colModel = new Ext.grid.ColumnModel({
         defaults: {
@@ -83,6 +80,11 @@ Ext.onReady(function() {
             {name: 'inactive', mapping: 'inactive', type: 'boolean'}
         ]
     });
+    store.on('load', function(store, records, options) {
+        if (store.data && store.data.keys) {
+            originalItemsOrder = store.data.keys.toString();
+        }
+    });
     var picklistItemsLoaded = function(record, options, success) {
         if (success) {
             grid.addButton.enable();
@@ -109,12 +111,52 @@ Ext.onReady(function() {
         stateEvents: ['select']
     });
     combo.on('select', function(comboBox, record, index) {
-        if (record && record.data && record.data['nameId']) {
-            grid.addButton.disable();
-            grid.customizeButton.disable();
-            store.load({ params: { 'picklistNameId' : record.data['nameId'] }, callback: picklistItemsLoaded });
+        var doSelect = function(record) {
+            if (record && record.data && record.data['nameId']) {
+                grid.addButton.disable();
+                grid.customizeButton.disable();
+                store.load({ params: { 'picklistNameId' : record.data['nameId'] }, callback: picklistItemsLoaded });
+            }
+        }
+        if (checkForModifiedRecords()) {
+            undoChanges(function() {
+                doSelect(record);
+            });
+        }
+        else {
+            doSelect(record);
         }
     });
+
+    var checkForModifiedRecords = function() {
+        var data = store.data;
+        var hasModified = false;
+        if (data) {
+            var itemNames = data.keys;
+            if ((store.getModifiedRecords() && store.getModifiedRecords().length > 0) ||
+                (itemNames && originalItemsOrder && (itemNames.toString() != originalItemsOrder))) {
+                hasModified = true;
+            }
+        }
+        return hasModified;
+    }
+
+    var undoChanges = function(callback) {
+        Ext.Msg.show({
+            title: 'Lose Changes?',
+            msg: 'You have made changes to this picklist.  Would you like to continue without saving?',
+            buttons: Ext.Msg.OKCANCEL,
+            icon: Ext.MessageBox.WARNING,
+            fn: function(btn, text) {
+                if (btn == "ok") {
+                    store.rejectChanges();
+                    if (callback && Ext.isFunction(callback)) {
+                        callback();
+                    }
+                }
+            }
+        });
+    }
 
     var grid = new Ext.grid.EditorGridPanel({
         store: store,
@@ -127,8 +169,18 @@ Ext.onReady(function() {
         frame: true,
         id: 'managementGrid',
         buttons: [
-            {text:'Save'},
-            {text:'Cancel'}
+            {text: 'Save', handler: function() {
+                    if (checkForModifiedRecords()) {
+
+                    }
+                }
+            },
+            {text: 'Undo', handler: function() {
+                    if (checkForModifiedRecords()) {
+                        undoChanges();
+                    }
+                }
+            }
         ],
         buttonAlign:'center',
         enableDragDrop: true,
@@ -140,11 +192,11 @@ Ext.onReady(function() {
         tbar: [
             'Picklist: ', ' ', combo, ' ', ' ', '-',
             { text: 'Customize', tooltip:'Customize Picklist', iconCls: 'customize', ref: '../customizeButton',
-              disabled: true, handler : function() {
+              disabled: true, handler: function() {
                 }
             }, '-',
             { text: 'Add Item', tooltip:'Add a new Picklist Item', iconCls:'add', id: 'addButton', ref: '../addButton',
-              disabled: true, handler : function() {
+              disabled: true, handler: function() {
                     var gStore = grid.getStore();
                     var PickItem = gStore.recordType;
                     var item = new PickItem({
@@ -168,8 +220,8 @@ Ext.onReady(function() {
         ddGroup: grid.ddGroup || 'GridDD'
     });
 
-    Ext.getCmp('managementGrid').on('keydown', function(e) {
-        if (e.getKey() == 65 && e.altKey) {
+    $('#managerGrid').keydown(function(e) {
+        if (e.keyCode == 65 && e.altKey) {
             Ext.getCmp('addButton').handler();
         }
     });

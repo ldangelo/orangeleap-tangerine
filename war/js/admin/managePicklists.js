@@ -239,6 +239,7 @@ Ext.onReady(function() {
             {text: 'Undo', handler: function() {
                     if (checkForModifiedRecords()) {
                         store.rejectChanges();
+                        undoOrdering();
                     }
                 }
             }
@@ -280,6 +281,19 @@ Ext.onReady(function() {
         grid: grid,
         ddGroup: grid.ddGroup || 'GridDD'
     });
+
+    var undoOrdering = function() {
+        if (didItemOrderChange()) {
+            var originalOrder = originalItemsOrder.split(",");
+            var originalItems = [];
+            for (var x = 0; x < originalOrder.length; x++) {
+                originalItems[x] = store.getById(originalOrder[x]);
+            }
+            store.removeAll();
+            store.add(originalItems);
+            grid.getView().refresh();
+        }
+    }
 
     $('#managerGrid').keydown(function(e) {
         if (e.keyCode == 65 && e.altKey) {

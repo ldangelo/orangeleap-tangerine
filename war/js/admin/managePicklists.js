@@ -24,18 +24,33 @@ Ext.onReady(function() {
        width: 55
     });
 
-    var originalItemsOrder = null;
+//    var originalItemsOrder = null;
+
+    var rowNumberer = new Ext.grid.RowNumberer();
 
     var colModel = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
         },
         columns: [
-            new Ext.grid.RowNumberer(),
+            rowNumberer,
+            {
+                header: 'Order',
+                dataIndex: 'itemOrder',
+                width: 23,
+                fixed: true,
+                sortable: false,
+                editor: new Ext.form.NumberField({
+                    allowBlank: false,
+                    allowNegative: false,
+                    allowDecimals: false,
+                    minValue: 0,
+                    width: 23
+                })
+            },
             {
                 header: 'Short Display Name',
                 dataIndex: 'displayVal',
-                width: 120,
                 editable: true,
                 editor: new Ext.form.TextField({
                     allowBlank: false,
@@ -45,7 +60,6 @@ Ext.onReady(function() {
             {
                 header: 'Long Display Name',
                 dataIndex: 'desc',
-                width: 255,
                 editable: true,
                 editor: new Ext.form.TextField({
                     allowBlank: true,
@@ -55,7 +69,6 @@ Ext.onReady(function() {
             {
                 header: 'Description',
                 dataIndex: 'detail',
-                width: 190,
                 editable: true,
                 editor: new Ext.form.TextField({
                     allowBlank: true,
@@ -67,9 +80,8 @@ Ext.onReady(function() {
         ]
     });
     var filters = new Ext.ux.grid.GridFilters({
-        // encode and local configuration options defined previously for easier reuse
-        encode: false, // json encode the filter query
-        local: true,   // defaults to false (remote filtering)
+        encode: false,
+        local: true,
         filters: [{
             type: 'string',
             dataIndex: 'displayVal'
@@ -96,31 +108,17 @@ Ext.onReady(function() {
 
     var writer = new Ext.data.JsonWriter({ listful: true });
 
-//    var reader = new Ext.data.JsonReader({
-//        totalProperty: 'totalRows',
-//        root: 'rows',
-//        fields: [
-//            {name: 'id', mapping: 'id', type: 'int'},
-//            {name: 'itemName', mapping: 'itemName', type: 'string'},
-//            {name: 'displayVal', mapping: 'displayVal', type: 'string'},
-//            {name: 'desc', mapping: 'desc', type: 'string'},
-//            {name: 'detail', mapping: 'detail', type: 'string'},
-//            {name: 'inactive', mapping: 'inactive', type: 'boolean'}
-//        ]
-//    });
-    
     var store = new OrangeLeap.BulkSaveStore({
         batch: true,
         proxy: proxy,
         writer: writer,
         autoSave: false,
-//        reader: reader,
-//        fields: reader.fields,
         remoteSort: false,
         totalProperty: 'totalRows',
         root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int', allowBlank: false},
+            {name: 'itemOrder', mapping: 'itemOrder', type: 'int', allowBlank: false, sortDir: 'ASC'},
             {name: 'itemName', mapping: 'itemName', type: 'string', allowBlank: false},
             {name: 'displayVal', mapping: 'displayVal', type: 'string', allowBlank: false},
             {name: 'desc', mapping: 'desc', type: 'string'},
@@ -128,16 +126,18 @@ Ext.onReady(function() {
             {name: 'inactive', mapping: 'inactive', type: 'boolean'}
         ]
     });
-    store.on('load', function(store, records, options) {
-        if (store.data && store.data.keys) {
-            originalItemsOrder = store.data.keys.toString();
-        }
-    });
-    store.on('beforewrite', function(proxy, action, rs, options, args) {
-        if (didItemOrderChange()) {
-            options.params['newItemOrder'] = store.data.keys.toString();
-        }
-    });
+    store.setDefaultSort('itemOrder', 'ASC');
+    
+//    store.on('load', function(store, records, options) {
+//        if (store.data && store.data.keys) {
+//            originalItemsOrder = store.data.keys.toString();
+//        }
+//    });
+//    store.on('beforewrite', function(proxy, action, rs, options, args) {
+//        if (didItemOrderChange()) {
+//            options.params['newItemOrder'] = store.data.keys.toString();
+//        }
+//    });
     var picklistItemsLoaded = function(record, options, success) {
         if (success) {
             grid.addButton.enable();
@@ -169,11 +169,16 @@ Ext.onReady(function() {
             if (record && record.data && record.data['nameId']) {
                 grid.addButton.disable();
                 grid.customizeButton.disable();
-                store.load({ params: { 'picklistNameId' : record.data['nameId'] }, callback: picklistItemsLoaded });
+                var state = store.getSortState();
+                if (state) {
+                    state.field = 'itemOrder';
+                    state.direction = 'ASC';
+                }
+                store.load({ params: { 'picklistNameId' : record.data['nameId'] }, sortInfo: {field: 'itemOrder', direction: 'ASC'}, callback: picklistItemsLoaded });
             }
         }
         if (checkForModifiedRecords()) {
-            undoChanges(function() {
+            confirmUndoChanges(function() {
                 doSelect(record);
             });
         }
@@ -184,25 +189,26 @@ Ext.onReady(function() {
 
     var checkForModifiedRecords = function() {
         var hasModified = false;
-        if ((store.getModifiedRecords() && store.getModifiedRecords().length > 0) || didItemOrderChange()) {
+//        if ((store.getModifiedRecords() && store.getModifiedRecords().length > 0) || didItemOrderChange()) {
+        if (store.getModifiedRecords() && store.getModifiedRecords().length > 0) {
             hasModified = true;
         }
         return hasModified;
     }
 
-    var didItemOrderChange = function() {
-        var data = store.data;
-        var orderChanged = false;
-        if (data) {
-            var itemNames = data.keys;
-            if (itemNames && originalItemsOrder && (itemNames.toString() != originalItemsOrder)) {
-                orderChanged = true;
-            }
-        }
-        return orderChanged;
-    }
+//    var didItemOrderChange = function() {
+//        var data = store.data;
+//        var orderChanged = false;
+//        if (data) {
+//            var itemNames = data.keys;
+//            if (itemNames && originalItemsOrder && (itemNames.toString() != originalItemsOrder)) {
+//                orderChanged = true;
+//            }
+//        }
+//        return orderChanged;
+//    }
 
-    var undoChanges = function(callback) {
+    var confirmUndoChanges = function(callback) {
         Ext.Msg.show({
             title: 'Lose Changes?',
             msg: 'You have made changes to this picklist.  Would you like to continue without saving?',
@@ -229,6 +235,7 @@ Ext.onReady(function() {
         loadMask: true,
         frame: true,
         id: 'managementGrid',
+        viewConfig: { forceFit: true, minColumnWidth: 21 },
         buttons: [
             {text: 'Save', handler: function() {
                     if (checkForModifiedRecords()) {
@@ -239,7 +246,7 @@ Ext.onReady(function() {
             {text: 'Undo', handler: function() {
                     if (checkForModifiedRecords()) {
                         store.rejectChanges();
-                        undoOrdering();
+                        undoChanges();
                     }
                 }
             }
@@ -263,6 +270,7 @@ Ext.onReady(function() {
                     var PickItem = gStore.recordType;
                     var item = new PickItem({
                         id: 0,
+                        itemOrder: store.data.length + 1,
                         itemName: 'NewItemName',
                         displayVal: '',
                         desc: '',
@@ -281,18 +289,30 @@ Ext.onReady(function() {
         grid: grid,
         ddGroup: grid.ddGroup || 'GridDD'
     });
-
-    var undoOrdering = function() {
-        if (didItemOrderChange()) {
-            var originalOrder = originalItemsOrder.split(",");
-            var originalItems = [];
-            for (var x = 0; x < originalOrder.length; x++) {
-                originalItems[x] = store.getById(originalOrder[x]);
+    grid.on('sortchange', function() {
+        if (store.data) {
+            for (var x = 0; x < store.data.length; x++) {
+                var rec = store.getAt(x);
+                rec.set('itemOrder', x + 1);
             }
-            store.removeAll();
-            store.add(originalItems);
             grid.getView().refresh();
         }
+    });
+
+    var undoChanges = function() {
+        var len = store.data.length;
+        var y = 0;
+        var toRemove = [];
+        for (var x = 0; x < len; x++) {
+            var rec = store.getAt(x);
+            if ( ! rec.isValid()) {
+                toRemove[y++] = rec;
+            }
+        }
+        for (var z = 0; z < toRemove.length; z++) {
+            store.remove(toRemove[z]);
+        }
+        store.sort('itemOrder', 'ASC');        
     }
 
     $('#managerGrid').keydown(function(e) {

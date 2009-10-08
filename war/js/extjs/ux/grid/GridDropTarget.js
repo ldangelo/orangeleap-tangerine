@@ -36,11 +36,15 @@ Ext.extend(Ext.ux.dd.GridDropTarget, Ext.dd.DropTarget, {
         }
         ds.insert(rindex, data.selections);
 
+        for (var x = 0; x < ds.data.length; x++) {
+            var rec = ds.getAt(x);
+            rec.set('itemOrder', x + 1);
+        }
+
 		var sm = this.grid.getSelectionModel();
         if (sm) {
             sm.selectRecords(data.selections);
         }
-
         this.grid.getView().refresh();
         return true;
     },

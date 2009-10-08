@@ -214,15 +214,15 @@ Ext.onReady(function() {
         loadMask: true,
         frame: true,
         id: 'managementGrid',
-        viewConfig: { forceFit: true },
+        viewConfig: { forceFit: false },
         buttons: [
-            {text: 'Save', handler: function() {
+            {text: 'Save', cls: 'saveButton', handler: function() {
                     if (checkForModifiedRecords()) {
                         store.save();
                     }
                 }
             },
-            {text: 'Undo', handler: function() {
+            {text: 'Undo', cls: 'button', handler: function() {
                     if (checkForModifiedRecords()) {
                         store.rejectChanges();
                         undoChanges();

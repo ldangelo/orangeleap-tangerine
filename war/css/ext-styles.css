@@ -70,3 +70,23 @@ button.add { background-image: url("../images/icons/add.png"); }
 button.customize { background-image: url("../images/icons/gears.png"); }
 
 div#managerGrid td.x-grid3-col.x-grid3-cell.x-grid3-td-grip { cursor: move; background: #C8CAC8 url(../images/icons/grip.jpg) center center no-repeat; }
+div#managerGrid table.saveButton td.x-btn-mc, 
+    div#managerGrid table.saveButton td.x-btn-tl, 
+    div#managerGrid table.saveButton td.x-btn-tr, 
+    div#managerGrid table.saveButton td.x-btn-tc, 
+    div#managerGrid table.saveButton td.x-btn-ml, 
+    div#managerGrid table.saveButton td.x-btn-mr, 
+    div#managerGrid table.saveButton td.x-btn-mc, 
+    div#managerGrid table.saveButton td.x-btn-bl, 
+    div#managerGrid table.saveButton td.x-btn-br, 
+    div#managerGrid table.saveButton td.x-btn-bc,
+    div#managerGrid table.button td.x-btn-mc, 
+    div#managerGrid table.button td.x-btn-tl, 
+    div#managerGrid table.button td.x-btn-tr, 
+    div#managerGrid table.button td.x-btn-tc, 
+    div#managerGrid table.button td.x-btn-ml, 
+    div#managerGrid table.button td.x-btn-mr, 
+    div#managerGrid table.button td.x-btn-mc, 
+    div#managerGrid table.button td.x-btn-bl, 
+    div#managerGrid table.button td.x-btn-br, 
+    div#managerGrid table.button td.x-btn-bc  { background-image: none; }

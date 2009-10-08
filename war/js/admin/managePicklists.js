@@ -1,3 +1,22 @@
+Ext.ns('OrangeLeap');
+
+OrangeLeap.BulkSaveStore = function(config){
+ 	OrangeLeap.BulkSaveStore.superclass.constructor.call(this, config);
+};
+
+Ext.extend(OrangeLeap.BulkSaveStore, Ext.data.JsonStore, {
+    save: function() {
+        var rs = [].concat(this.getModifiedRecords());
+        for (var i = rs.length-1; i >= 0; i--) {
+            if (!rs[i].isValid()) { // splice-off any !isValid real records
+                rs.splice(i,1);
+            }
+        }
+        this.doTransaction('update', rs);
+        return true;
+    }
+});
+
 Ext.onReady(function() {
     var checkColumn = new Ext.grid.CheckColumn({
        header: 'Inactive?',
@@ -66,15 +85,44 @@ Ext.onReady(function() {
         }]
     });
 
-    var store = new Ext.data.JsonStore({
-        url: 'getPicklistItems.json',
+    var proxy = new Ext.data.HttpProxy({
+        api: {
+            read    : 'getPicklistItems.json',
+            create  : 'managePicklistItems.json',
+            update  : 'managePicklistItems.json',
+            destroy : 'managePicklistItems.json'
+        }
+    });
+
+    var writer = new Ext.data.JsonWriter({ listful: true });
+
+//    var reader = new Ext.data.JsonReader({
+//        totalProperty: 'totalRows',
+//        root: 'rows',
+//        fields: [
+//            {name: 'id', mapping: 'id', type: 'int'},
+//            {name: 'itemName', mapping: 'itemName', type: 'string'},
+//            {name: 'displayVal', mapping: 'displayVal', type: 'string'},
+//            {name: 'desc', mapping: 'desc', type: 'string'},
+//            {name: 'detail', mapping: 'detail', type: 'string'},
+//            {name: 'inactive', mapping: 'inactive', type: 'boolean'}
+//        ]
+//    });
+    
+    var store = new OrangeLeap.BulkSaveStore({
+        batch: true,
+        proxy: proxy,
+        writer: writer,
+        autoSave: false,
+//        reader: reader,
+//        fields: reader.fields,
+        remoteSort: false,
         totalProperty: 'totalRows',
         root: 'rows',
-        remoteSort: false,
         fields: [
-            {name: 'id', mapping: 'id', type: 'int'},
-            {name: 'itemName', mapping: 'itemName', type: 'string'},
-            {name: 'displayVal', mapping: 'displayVal', type: 'string'},
+            {name: 'id', mapping: 'id', type: 'int', allowBlank: false},
+            {name: 'itemName', mapping: 'itemName', type: 'string', allowBlank: false},
+            {name: 'displayVal', mapping: 'displayVal', type: 'string', allowBlank: false},
             {name: 'desc', mapping: 'desc', type: 'string'},
             {name: 'detail', mapping: 'detail', type: 'string'},
             {name: 'inactive', mapping: 'inactive', type: 'boolean'}
@@ -83,6 +131,11 @@ Ext.onReady(function() {
     store.on('load', function(store, records, options) {
         if (store.data && store.data.keys) {
             originalItemsOrder = store.data.keys.toString();
+        }
+    });
+    store.on('beforewrite', function(proxy, action, rs, options, args) {
+        if (didItemOrderChange()) {
+            options.params['newItemOrder'] = store.data.keys.toString();
         }
     });
     var picklistItemsLoaded = function(record, options, success) {
@@ -95,6 +148,7 @@ Ext.onReady(function() {
     var picklistStore = new Ext.data.ArrayStore({
         fields: ['nameId', 'desc'],
         data : OrangeLeap.Picklists
+        
     });
     var combo = new Ext.form.ComboBox({
         store: picklistStore,
@@ -129,16 +183,23 @@ Ext.onReady(function() {
     });
 
     var checkForModifiedRecords = function() {
-        var data = store.data;
         var hasModified = false;
-        if (data) {
-            var itemNames = data.keys;
-            if ((store.getModifiedRecords() && store.getModifiedRecords().length > 0) ||
-                (itemNames && originalItemsOrder && (itemNames.toString() != originalItemsOrder))) {
-                hasModified = true;
-            }
+        if ((store.getModifiedRecords() && store.getModifiedRecords().length > 0) || didItemOrderChange()) {
+            hasModified = true;
         }
         return hasModified;
+    }
+
+    var didItemOrderChange = function() {
+        var data = store.data;
+        var orderChanged = false;
+        if (data) {
+            var itemNames = data.keys;
+            if (itemNames && originalItemsOrder && (itemNames.toString() != originalItemsOrder)) {
+                orderChanged = true;
+            }
+        }
+        return orderChanged;
     }
 
     var undoChanges = function(callback) {
@@ -171,13 +232,13 @@ Ext.onReady(function() {
         buttons: [
             {text: 'Save', handler: function() {
                     if (checkForModifiedRecords()) {
-
+                        store.save();
                     }
                 }
             },
             {text: 'Undo', handler: function() {
                     if (checkForModifiedRecords()) {
-                        undoChanges();
+                        store.rejectChanges();
                     }
                 }
             }

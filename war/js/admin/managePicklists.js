@@ -24,16 +24,12 @@ Ext.onReady(function() {
        width: 55
     });
 
-//    var originalItemsOrder = null;
-
-    var rowNumberer = new Ext.grid.RowNumberer();
-
     var colModel = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
         },
         columns: [
-            rowNumberer,
+            new OrangeLeap.RowGrip({ css: 'grip', tooltip: 'Click and Hold to Drag Row' } ),
             {
                 header: 'Order',
                 dataIndex: 'itemOrder',
@@ -128,16 +124,6 @@ Ext.onReady(function() {
     });
     store.setDefaultSort('itemOrder', 'ASC');
     
-//    store.on('load', function(store, records, options) {
-//        if (store.data && store.data.keys) {
-//            originalItemsOrder = store.data.keys.toString();
-//        }
-//    });
-//    store.on('beforewrite', function(proxy, action, rs, options, args) {
-//        if (didItemOrderChange()) {
-//            options.params['newItemOrder'] = store.data.keys.toString();
-//        }
-//    });
     var picklistItemsLoaded = function(record, options, success) {
         if (success) {
             grid.addButton.enable();
@@ -189,24 +175,11 @@ Ext.onReady(function() {
 
     var checkForModifiedRecords = function() {
         var hasModified = false;
-//        if ((store.getModifiedRecords() && store.getModifiedRecords().length > 0) || didItemOrderChange()) {
         if (store.getModifiedRecords() && store.getModifiedRecords().length > 0) {
             hasModified = true;
         }
         return hasModified;
     }
-
-//    var didItemOrderChange = function() {
-//        var data = store.data;
-//        var orderChanged = false;
-//        if (data) {
-//            var itemNames = data.keys;
-//            if (itemNames && originalItemsOrder && (itemNames.toString() != originalItemsOrder)) {
-//                orderChanged = true;
-//            }
-//        }
-//        return orderChanged;
-//    }
 
     var confirmUndoChanges = function(callback) {
         Ext.Msg.show({
@@ -235,7 +208,7 @@ Ext.onReady(function() {
         loadMask: true,
         frame: true,
         id: 'managementGrid',
-        viewConfig: { forceFit: true, minColumnWidth: 21 },
+        viewConfig: { forceFit: true },
         buttons: [
             {text: 'Save', handler: function() {
                     if (checkForModifiedRecords()) {

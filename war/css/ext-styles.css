@@ -69,4 +69,4 @@ div#actions .x-btn-noicon .x-btn-small .x-btn-text {
 button.add { background-image: url("../images/icons/add.png"); }
 button.customize { background-image: url("../images/icons/gears.png"); }
 
-div#managerGrid .x-grid3-td-numberer { cursor: move; }
+div#managerGrid td.x-grid3-col.x-grid3-cell.x-grid3-td-grip { cursor: move; background: #C8CAC8 url(../images/icons/grip.jpg) center center no-repeat; }

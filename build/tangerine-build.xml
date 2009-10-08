@@ -379,6 +379,7 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/StringFilter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/BooleanFilter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/GridDropTarget.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/RowGrip.js" />
         </javascript-optimization>
 
 	</target>
@@ -484,6 +485,7 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/StringFilter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/filters/BooleanFilter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/GridDropTarget.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/RowGrip.js" />
         </javascript-optimization>
 
         <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/admin.jsp" token="tangerine-admin.js.ycomp.js" value="tangerine-admin{now.time}.js.ycomp.js"/>

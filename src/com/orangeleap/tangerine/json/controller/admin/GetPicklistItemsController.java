@@ -59,6 +59,7 @@ public class GetPicklistItemsController {
                     pMap.put("displayVal", item.getDefaultDisplayValue());
                     pMap.put("desc", item.getLongDescription());
                     pMap.put("inactive", item.isInactive());
+                    pMap.put("itemOrder", item.getItemOrder());
                     returnList.add(pMap);
                 }
             }

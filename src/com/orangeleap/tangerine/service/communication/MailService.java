@@ -39,6 +39,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.logging.Log;
 
 import com.orangeleap.tangerine.util.CasCookieLocal;
+import com.orangeleap.tangerine.util.CasUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.ui.cas.CasProcessingFilter;
@@ -60,9 +61,6 @@ import com.orangeleap.tangerine.service.ConstituentService;
 public class MailService {
 	protected final Log logger = OLLogger.getLog(getClass());
 	
-	// TODO Need to make jserver & print threadsafe!
-	
-	private JServer jserver = null;
     private String baseUri = null;
     private String repositoryUri = null;
 	private String templateName = null;
@@ -77,28 +75,21 @@ public class MailService {
 	private java.util.Map labelMap = new HashMap();
 	private Site site;
 	
-	private JasperPrint print;
 
 	private File runReport() {
 		File temp = null;
-		jserver = new JServer();
+		JServer jserver = new JServer();
 		jserver.setUsername(site.getJasperUserId());
 		jserver.setPassword(site.getJasperPassword());
         jserver.setUrl(baseUri + repositoryUri);
 		try {
 			
-        	// CAS login
-        	String casCookie = CasCookieLocal.getCasCookie();
-        	if (casCookie != null && casCookie.length() > 0) {
-        		// CasAuthenticationProvider can use key for username and password for (proxy) ticket
-        		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
-        		jserver.setPassword(CasCookieLocal.getProxyTicketFor(baseUri)); 
-        	}
+        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
 
 			Map params = getReportParameters();
 
-			print = getServer().getWSClient().runReport(
-					getReportUnit().getDescriptor(), params);
+			JasperPrint print = jserver.getWSClient().runReport(
+					getReportUnit(jserver).getDescriptor(), params);
 
 			temp = File.createTempFile("orangeleap", ".pdf");
 			temp.deleteOnExit();
@@ -119,10 +110,10 @@ public class MailService {
 	
 	private File runLabels() {
 		File temp = null;
-		jserver = new JServer();
+		JServer jserver = new JServer();
 
         if (site.getJasperUserId() == null) {
-            logger.error("Something went horribly wrong.  Jasper userId is NULL!");
+            logger.error("Something went wrong.  Jasper userId is NULL!");
             return null;
         }
 		jserver.setUsername(site.getJasperUserId());
@@ -130,16 +121,10 @@ public class MailService {
         jserver.setUrl(baseUri + repositoryUri);
 		try {
 			
-        	// CAS login
-        	String casCookie = CasCookieLocal.getCasCookie();
-        	if (casCookie != null && casCookie.length() > 0) {
-        		// CasAuthenticationProvider can use key for username and password for (proxy) ticket
-        		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
-        		jserver.setPassword(CasCookieLocal.getProxyTicketFor(baseUri)); 
-        	}
+        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
 
-			print = getServer().getWSClient().runReport(
-					getLabelReportUnit().getDescriptor(), this.labelMap);
+			JasperPrint print = jserver.getWSClient().runReport(
+					getLabelReportUnit(jserver).getDescriptor(), this.labelMap);
 
 			temp = File.createTempFile("orangeleap", ".pdf");
 			temp.deleteOnExit();
@@ -159,6 +144,7 @@ public class MailService {
 	}
 
 	public void generateMail(List<Constituent> list, String lableTemplateName, String mailingTemplateName) {
+		
 
 		setTemplateName(mailingTemplateName);
 		setLabelTemplateName(lableTemplateName);
@@ -171,9 +157,6 @@ public class MailService {
 		
 		for (Constituent constituent : list) {
 			ids.add(constituent.getId());
-			
-
-
 		}
 		//
 		// first we run the report passing in the constituent.id as a parameter
@@ -197,6 +180,9 @@ public class MailService {
             return;
         }
 		
+        
+		JServer jserver = new JServer();
+
 		//
 		// now put this report into the "Content files" directory of the repository
 		ResourceDescriptor labelRD = new ResourceDescriptor();
@@ -219,8 +205,14 @@ public class MailService {
 				RequestAttachment attachment = new RequestAttachment(fileDataSource);
 				attachment.setContentID(labelRD.getName());
 				attachments = new RequestAttachment[]{attachment};
-			
-			jserver.getWSClient().putResource(labelRD, attachments);
+
+				jserver = new JServer();
+				jserver.setUsername(site.getJasperUserId());
+				jserver.setPassword(site.getJasperPassword());
+		        jserver.setUrl(baseUri + repositoryUri);
+		        CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
+
+		        jserver.getWSClient().putResource(labelRD, attachments);
 			}
 			
 			reportRD.setName(getTemplateName() + dateFormat.format(date));
@@ -239,7 +231,14 @@ public class MailService {
 				RequestAttachment attachment = new RequestAttachment(fileDataSource);
 				attachment.setContentID(reportRD.getName());
 				attachments = new RequestAttachment[]{attachment};
-				jserver.getWSClient().putResource(reportRD, attachments);
+
+				jserver = new JServer();
+				jserver.setUsername(site.getJasperUserId());
+				jserver.setPassword(site.getJasperPassword());
+		        jserver.setUrl(baseUri + repositoryUri);
+		        CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
+				
+		        jserver.getWSClient().putResource(reportRD, attachments);
 			}
 
             for (Constituent constituent : list) {
@@ -293,7 +292,7 @@ public class MailService {
 		return map;
 	}
 
-	private RepositoryReportUnit getReportUnit() 
+	private RepositoryReportUnit getReportUnit(JServer jserver) 
 	{
 			ResourceDescriptor rd = new ResourceDescriptor();
 			
@@ -313,10 +312,10 @@ public class MailService {
 			
 			rd.setParameters(p);
 			
-			return new RepositoryReportUnit(getServer(),rd);
+			return new RepositoryReportUnit(jserver,rd);
 	}
 
-	private RepositoryReportUnit getLabelReportUnit() 
+	private RepositoryReportUnit getLabelReportUnit(JServer jserver) 
 	{
 			ResourceDescriptor rd = new ResourceDescriptor();
 			
@@ -328,11 +327,7 @@ public class MailService {
 			
 
 
-			return new RepositoryReportUnit(getServer(),rd);
-	}
-
-	private JServer getServer() {
-		return jserver;
+			return new RepositoryReportUnit(jserver,rd);
 	}
 
     public String getBaseUri() {

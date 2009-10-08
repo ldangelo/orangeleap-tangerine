@@ -43,9 +43,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.Authentication;
-import org.springframework.security.providers.cas.CasAuthenticationToken;
-import org.springframework.security.ui.cas.CasProcessingFilter;
 import org.springframework.validation.BindException;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
@@ -60,17 +57,13 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
-import com.orangeleap.tangerine.util.CasCookieLocal;
+import com.orangeleap.tangerine.util.CasUtil;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 //@Service("emailSendingService")
 public class EmailService implements ApplicationContextAware {
     protected final Log logger = OLLogger.getLog(getClass());
 	
-    // TODO Need to make jserver & print threadsafe!
-    
-    private JServer jserver = null;
     private String userName = null;
     private String password = null;
     private String baseUri = null;
@@ -81,33 +74,23 @@ public class EmailService implements ApplicationContextAware {
     private java.util.Map<String, String> map = new HashMap<String, String>();
     private Site site;
     private ApplicationContext applicationContext;
-    private JasperPrint print;
 
     private File runReport() {
 
         File temp = null;
-        TangerineUserHelper tuh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
-        jserver = new JServer();
-//		jserver.setUsername(tuh.lookupUserName() + "@" + site.getName());
+        JServer jserver = new JServer();
         jserver.setUsername(site.getJasperUserId());
-//		jserver.setPassword(tuh.lookupUserPassword());
         jserver.setPassword(site.getJasperPassword());
         jserver.setUrl(baseUri + repositoryUri);
 
         try {
         	
-        	// CAS login
-        	String casCookie = CasCookieLocal.getCasCookie();
-        	if (casCookie != null && casCookie.length() > 0) {
-        		// CasAuthenticationProvider can use key for username and password for (proxy) ticket
-        		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
-        		jserver.setPassword(CasCookieLocal.getProxyTicketFor(baseUri)); 
-        	}
+        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
         	
             Map<String, String> params = getReportParameters();
 
-            print = getServer().getWSClient().runReport(
-                    getReportUnit().getDescriptor(), params);
+            JasperPrint print = jserver.getWSClient().runReport(
+                    getReportUnit(jserver).getDescriptor(), params);
 
             temp = File.createTempFile("orangeleap", ".pdf");
             temp.deleteOnExit();
@@ -334,7 +317,7 @@ public class EmailService implements ApplicationContextAware {
         return map;
     }
 
-    private RepositoryReportUnit getReportUnit() {
+    private RepositoryReportUnit getReportUnit(JServer jserver) {
         ResourceDescriptor rd = new ResourceDescriptor();
 
         rd.setName(this.getTemplateName());
@@ -353,11 +336,7 @@ public class EmailService implements ApplicationContextAware {
 
         rd.setParameters(p);
 
-        return new RepositoryReportUnit(getServer(), rd);
-    }
-
-    private JServer getServer() {
-        return jserver;
+        return new RepositoryReportUnit(jserver, rd);
     }
 
     public String getUserName() {

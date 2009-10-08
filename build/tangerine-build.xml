@@ -470,7 +470,7 @@
             minify="true"
             yCompressor="true"
             gZip="false"
-            destFile="${stage.dir}/war/js/tangerine-admin.js.ycomp.js"
+            destFile="${stage.dir}/war/js/tangerine-admin${now.time}.js"
             optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
             verbose="false">
 

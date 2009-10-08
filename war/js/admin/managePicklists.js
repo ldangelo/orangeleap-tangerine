@@ -150,7 +150,8 @@ Ext.onReady(function() {
         stateful: true,
         stateEvents: ['select']
     });
-    combo.on('select', function(comboBox, record, index) {
+    combo.on('beforeselect', function(comboBox, record, index) {
+        var prevSelValue = comboBox.getValue();
         var doSelect = function(record) {
             if (record && record.data && record.data['nameId']) {
                 grid.addButton.disable();
@@ -166,6 +167,8 @@ Ext.onReady(function() {
         if (checkForModifiedRecords()) {
             confirmUndoChanges(function() {
                 doSelect(record);
+            }, function() {
+                comboBox.setValue(prevSelValue);
             });
         }
         else {
@@ -181,7 +184,7 @@ Ext.onReady(function() {
         return hasModified;
     }
 
-    var confirmUndoChanges = function(callback) {
+    var confirmUndoChanges = function(okCallback, cancelCallback) {
         Ext.Msg.show({
             title: 'Lose Changes?',
             msg: 'You have made changes to this picklist.  Would you like to continue without saving?',
@@ -190,9 +193,12 @@ Ext.onReady(function() {
             fn: function(btn, text) {
                 if (btn == "ok") {
                     store.rejectChanges();
-                    if (callback && Ext.isFunction(callback)) {
-                        callback();
+                    if (okCallback && Ext.isFunction(okCallback)) {
+                        okCallback();
                     }
+                }
+                else if (cancelCallback && Ext.isFunction(cancelCallback)) {
+                    cancelCallback();
                 }
             }
         });

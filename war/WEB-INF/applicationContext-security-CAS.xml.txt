@@ -97,7 +97,7 @@
        </bean>
      </constructor-arg>
      <constructor-arg>
-        <bean ref="orangeLeapLdapAuthoritiesPopulator" />
+        <ref bean="orangeLeapLdapAuthoritiesPopulator" />
      </constructor-arg>
     </bean>
    

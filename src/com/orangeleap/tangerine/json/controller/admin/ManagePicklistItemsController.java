@@ -38,6 +38,8 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Controller
 public class ManagePicklistItemsController {
@@ -81,15 +83,34 @@ public class ManagePicklistItemsController {
             }
         }
         List<PicklistItem> modifiedPicklistItems = picklistItemService.getPicklist(picklistNameId).getPicklistItems();
+        picklistItemService.removeInvalidItems(modifiedPicklistItems);
+
         replaceExistingItemWithModifiedNew(modifiedPicklistItems, newModifiedItems);
         picklistItemService.maintainPicklistItems(originalPicklist, modifiedPicklistItems);
+
+        List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+        for (PicklistItem item : modifiedPicklistItems) {
+            if (item != null) {
+                Map<String, Object> pMap = new HashMap<String, Object>();
+                pMap.put(StringConstants.ID, item.getId());
+                pMap.put("itemName", item.getItemName());
+                pMap.put("displayVal", item.getDefaultDisplayValue());
+                pMap.put("desc", item.getLongDescription());
+                pMap.put("detail", item.getDetail());
+                pMap.put("inactive", item.isInactive());
+                pMap.put("itemOrder", item.getItemOrder());
+                returnList.add(pMap);
+            }
+        }
+        map.put("rows", returnList);
+        map.put("totalRows", returnList.size());
+        map.put("success", Boolean.TRUE.toString().toLowerCase());
         return map;
     }
 
     private void replaceExistingItemWithModifiedNew(List<PicklistItem> picklistItems, List<PicklistItem> newModifiedItems) {
         for (int i = 0; i < picklistItems.size(); i++) {
             PicklistItem item = picklistItems.get(i);
-
             Iterator<PicklistItem> iter = newModifiedItems.iterator();
             while (iter.hasNext()) {
                 PicklistItem modifiedItem = iter.next();

@@ -48,4 +48,6 @@ public interface PicklistItemService {
     public List<PicklistItem> findCodeByDescription(String picklistNameId, String description, Boolean showInactive);
 
     public List<PicklistItem> findCodeByValue(String picklistNameId, String value, Boolean showInactive);
+
+    void removeInvalidItems(List<PicklistItem> items);
 }

@@ -258,15 +258,20 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
         return picklist;
     }
 
-    private void validate(Picklist picklist) {
-        if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) {
-            throw new RuntimeException("Cannot update non-site-specific entry for Picklist " + picklist.getId());
-        }
-        Iterator<PicklistItem> it = picklist.getPicklistItems().iterator();
+    @Override
+    public void removeInvalidItems(List<PicklistItem> items) {
+        Iterator<PicklistItem> it = items.iterator();
         while (it.hasNext()) {
             PicklistItem item = it.next();
             if (item == null || item.getItemName() == null) it.remove();
         }
+    }
+
+    private void validate(Picklist picklist) {
+        if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) {
+            throw new RuntimeException("Cannot update non-site-specific entry for Picklist " + picklist.getId());
+        }
+        removeInvalidItems(picklist.getPicklistItems());
     }
 
     // Since this is now auto-generated based on the display value, ensure it's unique
@@ -346,7 +351,9 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
                 return order;
             }
         };
-        Collections.sort(items, itemOrderComparator);
+        if (items.size() > 1) {
+            Collections.sort(items, itemOrderComparator);
+        }
 
         for (int i = 0; i < items.size(); i++) {
             PicklistItem item = items.get(i);

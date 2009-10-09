@@ -46,6 +46,30 @@
 			</beans:list>
 		</beans:property>
 	</beans:bean>
+	
+	
+	<!-- Ldap authenticator for alternative to CAS -->
+	<bean id="ldapAuthenticationProvider" class="org.springframework.security.providers.ldap.LdapAuthenticationProvider">
+     <custom-authentication-provider/>
+     <constructor-arg>
+       <bean class="com.orangeleap.tangerine.security.OrangeLeapBindAuthenticator">
+           <constructor-arg ref="contextSource"/>
+	    	<property name="userSearch" ref="userSearch"/>
+       </bean>
+     </constructor-arg>
+     <constructor-arg>
+       <bean class="org.springframework.security.ldap.populator.DefaultLdapAuthoritiesPopulator">
+           <constructor-arg ref="contextSource"/>
+           <constructor-arg value=""/>
+          <property name="groupRoleAttribute"><value>cn</value></property>
+          <property name="groupSearchFilter"><value>(&amp;(uniqueMember={0})(objectclass=groupofuniquenames))</value></property>
+          <property name="searchSubtree"><value>true</value></property>            
+       </bean>
+     </constructor-arg>
+   </bean>
+
+
+   
 
      <!-- BEGIN CAS Authentication configuration -->
      <beans:bean id="serviceProperties" class="org.springframework.security.ui.cas.ServiceProperties">

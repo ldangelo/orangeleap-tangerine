@@ -36,10 +36,8 @@ import org.springframework.security.providers.UsernamePasswordAuthenticationToke
 import org.springframework.security.providers.ldap.authenticator.AbstractLdapAuthenticator;
 import org.springframework.util.Assert;
 
-import com.orangeleap.tangerine.util.OLLogger;
-
 public class OrangeLeapBindAuthenticator extends AbstractLdapAuthenticator {
-    private static final Log logger = OLLogger.getLog(OrangeLeapBindAuthenticator.class);
+    private static final Log logger = OrangeLeapLogger.getLog(OrangeLeapBindAuthenticator.class);
 
     /**
      * Create an initialized instance using the {@link SpringSecurityContextSource} provided.

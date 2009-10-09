@@ -26,14 +26,12 @@ import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.providers.AuthenticationProvider;
 
-import com.orangeleap.tangerine.util.OLLogger;
-
 /*
  * Provides an ordered list of authentication providers to call
  */
 public class OrangeLeapAuthenticationProvider implements AuthenticationProvider {
 
-	private static final Log logger = OLLogger.getLog(OrangeLeapBindAuthenticator.class);
+	private static final Log logger = OrangeLeapLogger.getLog(OrangeLeapBindAuthenticator.class);
 
 	private List<AuthenticationProvider> providerList = new ArrayList<AuthenticationProvider>();
     

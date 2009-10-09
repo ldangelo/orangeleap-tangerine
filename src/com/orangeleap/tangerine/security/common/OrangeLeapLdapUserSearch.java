@@ -30,14 +30,12 @@ import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
-import com.orangeleap.tangerine.util.OLLogger;
-
 public class OrangeLeapLdapUserSearch implements LdapUserSearch {
 
     /**
      * Logger for this class and subclasses
      */
-    protected final Log logger = OLLogger.getLog(getClass());
+    protected final Log logger = OrangeLeapLogger.getLog(getClass());
 
 
     private ContextSource contextSource;

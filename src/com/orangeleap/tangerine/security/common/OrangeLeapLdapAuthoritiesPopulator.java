@@ -35,8 +35,6 @@ import org.springframework.security.ldap.LdapAuthoritiesPopulator;
 import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.util.Assert;
 
-import com.orangeleap.tangerine.util.OLLogger;
-
 /**
  * Clone of the DefaultLdapAuthoritiesPopulator class. This class copies it completely,
  * but is modified to know how to deal with usernames in the user@site format. It
@@ -50,7 +48,7 @@ public class OrangeLeapLdapAuthoritiesPopulator implements LdapAuthoritiesPopula
 
      //~ Static fields/initializers =====================================================================================
 
-    protected final Log logger = OLLogger.getLog(getClass());
+    protected final Log logger = OrangeLeapLogger.getLog(getClass());
 
     //~ Instance fields ================================================================================================
 

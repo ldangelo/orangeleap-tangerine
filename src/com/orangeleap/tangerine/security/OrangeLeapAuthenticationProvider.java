@@ -49,22 +49,15 @@ public class OrangeLeapAuthenticationProvider implements AuthenticationProvider 
 		// IMPORTANT: Be sure to clear this from the last authentication when switching authentication methods
 		OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().clear();
 		
-		List<AuthenticationException> exceptions = new ArrayList<AuthenticationException>();
-		
 		for (AuthenticationProvider authenticationProvider: providerList) {
 			if (authenticationProvider.supports(authentication.getClass())) {
-				try {
-					Authentication result = authenticationProvider.authenticate(authentication);
-					// Return first successful authentication
-					return result;
-				} catch (AuthenticationException e) {
-					exceptions.add(e);
-				}
+				Authentication result = authenticationProvider.authenticate(authentication);
+				// Return first successful authentication
+				if (result != null) return result;
 			}
 		}
 		
-		// throw last failed authentication
-		throw exceptions.get(exceptions.size()-1);
+		return null;
 	}
 
 

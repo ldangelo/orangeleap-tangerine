@@ -48,10 +48,21 @@
 		</property>
 	</bean>
 	
+
+	<!-- OrangeLeap ordered list of providers to try -->
+	<bean id="orangeLeapAuthenticationProvider" class="com.orangeleap.tangerine.security.OrangeLeapAuthenticationProvider">
+     <sec:custom-authentication-provider/>
+     <property name="providerList" >
+     	<list>
+       	 	<ref bean="casAuthenticationProvider"/>
+        	<ref bean="ldapAuthenticationProvider"/>
+     	</list>
+     </property>
+    </bean>
+
 	
 	<!-- Ldap authenticator for alternative to CAS -->
 	<bean id="ldapAuthenticationProvider" class="org.springframework.security.providers.ldap.LdapAuthenticationProvider">
-     <sec:custom-authentication-provider/>
      <constructor-arg>
        <bean class="com.orangeleap.tangerine.security.OrangeLeapBindAuthenticator">
            <constructor-arg ref="contextSource"/>
@@ -96,7 +107,6 @@
 
     <bean id="casAuthenticationProvider"
                 class="org.springframework.security.providers.cas.CasAuthenticationProvider">
-        <sec:custom-authentication-provider/>
         <property name="userDetailsService" ref="userDetailsService"/>
         <property name="serviceProperties" ref="serviceProperties"/>
         <property name="ticketValidator">

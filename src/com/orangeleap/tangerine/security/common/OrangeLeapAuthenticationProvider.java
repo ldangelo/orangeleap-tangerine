@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.security.common;
+package com.mpower.security.common;
 
 import java.util.ArrayList;
 import java.util.List;

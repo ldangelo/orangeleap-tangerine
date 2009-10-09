@@ -70,12 +70,10 @@
        </bean>
      </constructor-arg>
      <constructor-arg>
-       <bean class="org.springframework.security.ldap.populator.DefaultLdapAuthoritiesPopulator">
-           <constructor-arg ref="contextSource"/>
-           <constructor-arg value=""/>
-          <property name="groupRoleAttribute"><value>cn</value></property>
-          <property name="groupSearchFilter"><value>(&amp;(uniqueMember={0})(objectclass=groupofuniquenames))</value></property>
-          <property name="searchSubtree"><value>true</value></property>            
+       <bean class="com.orangeleap.tangerine.security.OrangeLeapLdapAuthoritiesPopulator">
+    	<constructor-arg ref="contextSource"/>
+    	<constructor-arg value="ou=roles"/>
+    	<property name="searchSubtree" value="true"/>
        </bean>
      </constructor-arg>
    </bean>

@@ -21,14 +21,19 @@ package com.orangeleap.tangerine.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.providers.AuthenticationProvider;
+
+import com.orangeleap.tangerine.util.OLLogger;
 
 /*
  * Provides an ordered list of authentication providers to call
  */
 public class OrangeLeapAuthenticationProvider implements AuthenticationProvider {
+
+	private static final Log logger = OLLogger.getLog(TangerineBindAuthenticator.class);
 
 	private List<AuthenticationProvider> providerList = new ArrayList<AuthenticationProvider>();
     
@@ -51,12 +56,17 @@ public class OrangeLeapAuthenticationProvider implements AuthenticationProvider 
 		
 		for (AuthenticationProvider authenticationProvider: providerList) {
 			if (authenticationProvider.supports(authentication.getClass())) {
+				logger.debug("Attempting authentication with "+authentication.getClass().getName());
 				Authentication result = authenticationProvider.authenticate(authentication);
 				// Return first successful authentication
-				if (result != null) return result;
+				if (result != null) {
+					logger.debug("Authentication succeeded with "+authentication.getClass().getName());
+					return result;
+				}
 			}
 		}
 		
+		logger.debug("No authentication succeeded.");
 		return null;
 	}
 

@@ -17,7 +17,6 @@ public class ManagePicklistsController extends ParameterizableViewController {
 
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        StringBuilder picklistNameIds = new StringBuilder();
         List<Picklist> picklists = picklistItemService.listPicklists();
         return new ModelAndView(getViewName(), "picklists", picklists);
     }

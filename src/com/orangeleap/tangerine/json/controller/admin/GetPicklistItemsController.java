@@ -58,6 +58,7 @@ public class GetPicklistItemsController {
                     pMap.put("itemName", item.getItemName());
                     pMap.put("displayVal", item.getDefaultDisplayValue());
                     pMap.put("desc", item.getLongDescription());
+                    pMap.put("detail", item.getDetail());
                     pMap.put("inactive", item.isInactive());
                     pMap.put("itemOrder", item.getItemOrder());
                     returnList.add(pMap);

@@ -35,6 +35,8 @@ public interface PicklistItemService {
 
     PicklistItem maintainPicklistItem(PicklistItem picklistItem);
 
+    void maintainPicklistItems(Picklist picklist, List<PicklistItem> items);
+
     PicklistItem getPicklistItem(String picklistId, String picklistItemName);
 
     PicklistItem getPicklistItem(Long picklistItemId);

@@ -34,7 +34,6 @@ Ext.onReady(function() {
                 header: 'Order',
                 dataIndex: 'itemOrder',
                 width: 23,
-                fixed: true,
                 sortable: false,
                 editor: new Ext.form.NumberField({
                     allowBlank: false,
@@ -123,7 +122,10 @@ Ext.onReady(function() {
         ]
     });
     store.setDefaultSort('itemOrder', 'ASC');
-    
+    store.on('beforewrite', function(proxy, action, rs, options, args) {
+        options.params['picklistNameId'] = combo.getValue();
+    });
+
     var picklistItemsLoaded = function(record, options, success) {
         if (success) {
             grid.addButton.enable();
@@ -134,11 +136,12 @@ Ext.onReady(function() {
     var picklistStore = new Ext.data.ArrayStore({
         fields: ['nameId', 'desc'],
         data : OrangeLeap.Picklists
-        
     });
+
     var combo = new Ext.form.ComboBox({
         store: picklistStore,
         displayField: 'desc',
+        valueField: 'nameId',
         typeAhead: true,
         mode: 'local',
         forceSelection: true,

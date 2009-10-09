@@ -27,6 +27,7 @@ import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -35,7 +36,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * Manages picklist items for site.
@@ -270,6 +275,82 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
             if (item.getItemName().equals(picklistItem.getItemName())) {
                 picklistItem.setItemName(picklistItem.getItemName() + "0");
             }
+        }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void maintainPicklistItems(final Picklist originalPicklist, List<PicklistItem> modifiedItems) {
+        validate(originalPicklist);
+        resolveItemOrder(originalPicklist, modifiedItems);
+        for (PicklistItem item : modifiedItems) {
+            if ( ! org.springframework.util.StringUtils.hasText(item.getItemName())) {
+                item.setItemName(item.getDefaultDisplayValue().toLowerCase().replaceAll(" ", StringConstants.EMPTY));
+                checkUnique(originalPicklist, item);
+            }
+            item = picklistDao.maintainPicklistItem(item);
+        }
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PICKLIST);
+
+        // Audit only the truly modified items - compare the fields to see if anything changed
+        for (PicklistItem modifiedItem : modifiedItems) {
+            boolean doAudit = true;
+            for (PicklistItem originalItem : originalPicklist.getPicklistItems()) {
+                if (modifiedItem.getId().equals(originalItem.getId()) &&
+                        modifiedItem.getDefaultDisplayValue().equals(originalItem.getDefaultDisplayValue()) &&
+                        ((modifiedItem.getLongDescription() == null && originalItem.getLongDescription() == null) ||
+                                (modifiedItem.getLongDescription() != null && modifiedItem.getLongDescription().equals(originalItem.getLongDescription()))) &&
+                        ((modifiedItem.getDetail() == null && originalItem.getDetail() == null) ||
+                                (modifiedItem.getDetail() != null && modifiedItem.getDetail().equals(originalItem.getDetail()))) &&
+                        (modifiedItem.isInactive() == originalItem.isInactive()) &&
+                        (modifiedItem.getItemOrder().equals(originalItem.getItemOrder()))) {
+                    // No changes - don't do the audit
+                    doAudit = false;
+                }
+            }
+            if (doAudit) {
+                auditService.auditObject(modifiedItem);
+            }
+        }
+    }
+
+    private void resolveItemOrder(final Picklist originalPicklist, final List<PicklistItem> items) {
+        // First sort the picklist items in their specified order and determine which items have duplicate item orders
+        Comparator itemOrderComparator = new Comparator() {
+            @Override
+            public int compare(Object item1, Object item2) {
+                PicklistItem picklistItem1 = (PicklistItem) item1;
+                PicklistItem picklistItem2 = (PicklistItem) item2;
+                int order = picklistItem1.getItemOrder().compareTo(picklistItem2.getItemOrder());
+                if (order == 0) {
+                    List<PicklistItem> existingPicklistItems = originalPicklist.getPicklistItems();
+                    for (PicklistItem existingItem : existingPicklistItems) {
+                        if (existingItem.getId().equals(picklistItem1.getId())) {
+                            if (existingItem.getItemOrder().equals(picklistItem1.getItemOrder())) {
+                                order = 1;    // If 2 items have the same order but the first item has the same order as before, make it come after the second item
+                                break;
+                            }
+                        }
+                        else if (existingItem.getId().equals(picklistItem2.getId())) {
+                            if (existingItem.getItemOrder().equals(picklistItem2.getItemOrder())) {
+                                order = -1;    // If 2 items have the same order but the second item has the same order as before, make it come after the first item
+                                break;
+                            }
+                        }
+                    }
+                    if (order == 0) {
+                        // Otherwise if the ordering is different from before, just order by default display value
+                        order = picklistItem1.getDefaultDisplayValue().compareToIgnoreCase(picklistItem2.getDefaultDisplayValue());
+                    }
+                 }
+                return order;
+            }
+        };
+        Collections.sort(items, itemOrderComparator);
+
+        for (int i = 0; i < items.size(); i++) {
+            PicklistItem item = items.get(i);
+            item.setItemOrder(i + 1);
         }
     }
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.security;
+package com.orangeleap.tangerine.security.common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import com.orangeleap.tangerine.util.OLLogger;
  */
 public class OrangeLeapAuthenticationProvider implements AuthenticationProvider {
 
-	private static final Log logger = OLLogger.getLog(TangerineBindAuthenticator.class);
+	private static final Log logger = OLLogger.getLog(OrangeLeapBindAuthenticator.class);
 
 	private List<AuthenticationProvider> providerList = new ArrayList<AuthenticationProvider>();
     

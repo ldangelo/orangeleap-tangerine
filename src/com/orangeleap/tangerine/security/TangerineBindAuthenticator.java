@@ -36,6 +36,7 @@ import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.providers.ldap.authenticator.AbstractLdapAuthenticator;
 import org.springframework.util.Assert;
 
+import com.orangeleap.tangerine.security.common.OrangeLeapLdapUserSearch;
 import com.orangeleap.tangerine.util.OLLogger;
 
 public class TangerineBindAuthenticator extends AbstractLdapAuthenticator {
@@ -69,7 +70,7 @@ public class TangerineBindAuthenticator extends AbstractLdapAuthenticator {
         // Otherwise use the configured locator to find the user
         // and authenticate with the returned DN.
         if (user == null && getUserSearch() != null) {
-            DirContextOperations userFromSearch = ((TangerineLdapUserSearch) getUserSearch()).searchForUser(username, site);
+            DirContextOperations userFromSearch = ((OrangeLeapLdapUserSearch) getUserSearch()).searchForUser(username, site);
             user = bindWithDn(userFromSearch.getDn().toString(), username, password);
         }
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.security;
+package com.orangeleap.tangerine.security.common;
 
 import javax.naming.directory.SearchControls;
 
@@ -32,7 +32,7 @@ import org.springframework.util.Assert;
 
 import com.orangeleap.tangerine.util.OLLogger;
 
-public class TangerineLdapUserSearch implements LdapUserSearch {
+public class OrangeLeapLdapUserSearch implements LdapUserSearch {
 
     /**
      * Logger for this class and subclasses
@@ -66,7 +66,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
 
     // ~ Constructors ===================================================================================================
 
-    public TangerineLdapUserSearch(String searchBase, String searchFilter, BaseLdapPathContextSource contextSource) {
+    public OrangeLeapLdapUserSearch(String searchBase, String searchFilter, BaseLdapPathContextSource contextSource) {
         Assert.notNull(contextSource, "contextSource must not be null");
         Assert.notNull(searchFilter, "searchFilter must not be null.");
         Assert.notNull(searchBase, "searchBase must not be null (an empty string is acceptable).");
@@ -78,7 +78,7 @@ public class TangerineLdapUserSearch implements LdapUserSearch {
         setSearchSubtree(true);
     }
 
-    public TangerineLdapUserSearch(String searchFilter, BaseLdapPathContextSource contextSource) {
+    public OrangeLeapLdapUserSearch(String searchFilter, BaseLdapPathContextSource contextSource) {
         Assert.notNull(contextSource, "contextSource must not be null");
         Assert.notNull(searchFilter, "searchFilter must not be null.");
 

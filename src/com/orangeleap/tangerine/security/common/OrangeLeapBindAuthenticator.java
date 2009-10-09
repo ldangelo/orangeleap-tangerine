@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.security;
+package com.orangeleap.tangerine.security.common;
 
 import java.util.Iterator;
 
@@ -39,7 +39,7 @@ import org.springframework.util.Assert;
 import com.orangeleap.tangerine.util.OLLogger;
 
 public class OrangeLeapBindAuthenticator extends AbstractLdapAuthenticator {
-    private static final Log logger = OLLogger.getLog(TangerineBindAuthenticator.class);
+    private static final Log logger = OLLogger.getLog(OrangeLeapBindAuthenticator.class);
 
     /**
      * Create an initialized instance using the {@link SpringSecurityContextSource} provided.
@@ -76,7 +76,7 @@ public class OrangeLeapBindAuthenticator extends AbstractLdapAuthenticator {
         // Otherwise use the configured locator to find the user
         // and authenticate with the returned DN.
         if (user == null && getUserSearch() != null) {
-            DirContextOperations userFromSearch = ((TangerineLdapUserSearch) getUserSearch()).searchForUser(username, site);
+            DirContextOperations userFromSearch = ((OrangeLeapLdapUserSearch) getUserSearch()).searchForUser(username, site);
             user = bindWithDn(userFromSearch.getDn().toString(), username, password);
         }
 

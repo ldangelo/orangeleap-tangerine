@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.security;
+package com.orangeleap.tangerine.security.common;
 
 import java.util.HashMap;
 import java.util.HashSet;

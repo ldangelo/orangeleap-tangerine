@@ -108,7 +108,7 @@
     	<property name="userSearch" ref="ldapUserSearch"/>
 	</bean>
 
-	<bean id="defaultLdapAuthoritiesPopulator" class="com.orangeleap.tangerine.security.common.OrangeLeapLdapAuthoritiesPopulator">
+	<bean id="defaultLdapAuthoritiesPopulator" class="com.orangeleap.tangerine.security.TangerineLdapAuthoritiesPopulator">
     	<constructor-arg ref="defaultSpringSecurityContextSource"/>
     	<constructor-arg value="ou=roles"/>
     	<property name="searchSubtree" value="true"/>

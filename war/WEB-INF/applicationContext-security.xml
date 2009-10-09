@@ -97,7 +97,7 @@
         <property name="key" value="anonymous"/>
     </bean>
 
-	<bean id="ldapUserSearch" class="com.orangeleap.tangerine.security.TangerineLdapUserSearch">
+	<bean id="ldapUserSearch" class="com.orangeleap.tangerine.security.common.OrangeLeapLdapUserSearch">
 	  <constructor-arg index="0" value=""/>
 	  <constructor-arg index="1" value="(uid={0})"/>
 	  <constructor-arg index="2" ref="defaultSpringSecurityContextSource" />
@@ -108,7 +108,7 @@
     	<property name="userSearch" ref="ldapUserSearch"/>
 	</bean>
 
-	<bean id="defaultLdapAuthoritiesPopulator" class="com.orangeleap.tangerine.security.TangerineLdapAuthoritiesPopulator">
+	<bean id="defaultLdapAuthoritiesPopulator" class="com.orangeleap.tangerine.security.common.OrangeLeapLdapAuthoritiesPopulator">
     	<constructor-arg ref="defaultSpringSecurityContextSource"/>
     	<constructor-arg value="ou=roles"/>
     	<property name="searchSubtree" value="true"/>

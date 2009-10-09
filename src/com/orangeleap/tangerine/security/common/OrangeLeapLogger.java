@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.mpower.security.common;
+package com.orangeleap.tangerine.security.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

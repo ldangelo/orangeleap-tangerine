@@ -24,7 +24,6 @@ import java.util.List;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.providers.AuthenticationProvider;
-import org.springframework.security.providers.cas.CasAuthenticationToken;
 
 /*
  * Provides an ordered list of authentication providers to call
@@ -37,9 +36,9 @@ public class OrangeLeapAuthenticationProvider implements AuthenticationProvider 
     }
 
 
-    @SuppressWarnings("unchecked")
+	@Override
     public boolean supports(Class authentication) {
-        return (CasAuthenticationToken.class.isAssignableFrom(authentication));
+        return true;
     }
 
 

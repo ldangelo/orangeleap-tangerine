@@ -193,6 +193,7 @@ CREATE TABLE `PICKLIST_ITEM` (
 `ITEM_NAME` varchar(255) NOT NULL,
 `DEFAULT_DISPLAY_VALUE` varchar(255) default NULL,
 `LONG_DESCRIPTION` varchar(255) default NULL,
+`DETAIL` varchar(255) default NULL,
 `INACTIVE` char(1) NOT NULL default '0',
 `READ_ONLY` char(1) NOT NULL default '0',
 `ITEM_ORDER` int(11) default NULL,

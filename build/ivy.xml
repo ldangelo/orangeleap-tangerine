@@ -37,7 +37,7 @@
             <artifact name="commons-collections" type="jar"/>
             <artifact name="commons-collections" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
-        <dependency org="commons-lang" name="commons-lang" transitive="false" rev="2.3">
+        <dependency org="commons-lang" name="commons-lang" transitive="false" rev="2.4">
             <artifact name="commons-lang" type="jar"/>
             <artifact name="commons-lang" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
@@ -131,7 +131,7 @@
         </dependency>
 
         <!-- Commons -->
-        <dependency org="commons-beanutils" name="commons-beanutils" transitive="false" rev="1.7.0">
+        <dependency org="commons-beanutils" name="commons-beanutils" transitive="false" rev="1.8.0">
             <artifact name="commons-beanutils" type="jar"/>
             <artifact name="commons-beanutils" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
@@ -235,6 +235,15 @@
         <dependency org="org.json" name="json" transitive="false" rev="20080701">
             <artifact name="json" type="jar"/>
             <artifact name="json" type="source" ext="jar" classifier="sources" conf="sources"/>
+        </dependency>
+
+        <dependency org="net.sf.json-lib" name="json-lib" transitive="false" rev="2.3" classifier="jdk15">
+            <artifact name="json-lib" type="jar"/>
+            <artifact name="json-lib" type="source" ext="jar" classifier="jdk15-sources" conf="sources"/>
+        </dependency>
+
+        <dependency org="net.sf.ezmorph" name="ezmorph" transitive="false" rev="1.0.6">
+            <artifact name="ezmorph" type="jar"/>
         </dependency>
 
         <!-- Logging -->

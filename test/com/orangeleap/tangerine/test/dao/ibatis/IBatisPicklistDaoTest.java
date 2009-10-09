@@ -1,14 +1,13 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.util.List;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.dao.PicklistDao;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.type.EntityType;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.List;
 
 public class IBatisPicklistDaoTest extends AbstractIBatisTest {
 
@@ -100,6 +99,7 @@ public class IBatisPicklistDaoTest extends AbstractIBatisTest {
             if ("donor".equals(item.getItemName())) {
                 assert "Donor".equals(item.getDefaultDisplayValue());
                 assert "li:has(.ea-donor)".equals(item.getReferenceValue());
+                assert "Big Time Donor".equals(item.getDetail());
                 assert 100 == item.getItemOrder();
                 assert item.isInactive() == false;
                 assert item.getSuppressReferenceValue() == null;

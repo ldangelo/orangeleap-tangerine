@@ -32,6 +32,7 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
     private String itemName;
     private String defaultDisplayValue;
     private String longDescription;
+    private String detail;
     private String referenceValue;
     private String suppressReferenceValue;
     private Integer itemOrder;
@@ -54,6 +55,14 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
 
     public void setDefaultDisplayValue(String defaultDisplayValue) {
         this.defaultDisplayValue = defaultDisplayValue;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getReferenceValue() {

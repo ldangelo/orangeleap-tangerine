@@ -52,8 +52,12 @@ public class OrangeLeapBindAuthenticator extends AbstractLdapAuthenticator {
     @SuppressWarnings("unchecked")
     public DirContextOperations authenticate(Authentication authentication) {
 
-    	Assert.isInstanceOf(UsernamePasswordAuthenticationToken.class, authentication,
+        logger.debug("OrangeLeapBindAuthenticator invoked with " + authentication.getClass().getName());
+
+        Assert.isInstanceOf(UsernamePasswordAuthenticationToken.class, authentication,
         "Can only process UsernamePasswordAuthenticationToken objects");
+
+        logger.debug("Attempting to authenticate with OrangeLeapBindAuthenticator...");
 
         String[] principal = authentication.getPrincipal().toString().split("@");
         if (principal.length != 2) throw new RuntimeException("Invalid principal: "+principal);
@@ -84,6 +88,7 @@ public class OrangeLeapBindAuthenticator extends AbstractLdapAuthenticator {
         OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().put(OrangeLeapUsernamePasswordLocal.USER_NAME, username);
         OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().put(OrangeLeapUsernamePasswordLocal.PASSWORD, password);
 
+        logger.debug("Authenticated with OrangeLeapBindAuthenticator.");
         
         return user;
     }

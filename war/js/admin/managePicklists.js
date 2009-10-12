@@ -129,7 +129,7 @@ Ext.onReady(function() {
     });
     proxy.on('write', function(proxy, action, data, response, records, options) {
         if (response.success === 'true' && store.data && store.data.items) {
-//            var updatedRecords = [];
+            var updatedRecords = [];
 
             var recLength = store.data.items.length;
             var dataLength = data.length;
@@ -144,17 +144,19 @@ Ext.onReady(function() {
                             thisClientRec.set('id', thisServerRec['id']);
                             thisClientRec.set('itemName', thisServerRec['itemName']);
                             thisClientRec.set('itemOrder', thisServerRec['itemOrder']);
-//                            updatedRecords[updatedRecords.length] = Ext.data.Record.create
+                            updatedRecords[updatedRecords.length] = thisClientRec.copy();
                             break;
                         }
                     }
                     else if (thisClientRec.id == thisServerRec.id) {
                         thisClientRec.set('itemOrder', thisServerRec['itemOrder']);
+                        updatedRecords[updatedRecords.length] = thisClientRec.copy();
                         break;
                     }
                 }
             }
-            store.commitChanges();
+            store.removeAll();
+            store.add(updatedRecords);
             store.sort('itemOrder', 'ASC');
             grid.getView().refresh();
         }

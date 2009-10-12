@@ -126,6 +126,8 @@ Ext.onReady(function() {
         if (options) {
             options.params['picklistNameId'] = combo.getValue();
         }
+        var thisGrid = Ext.get('managementGrid');
+        thisGrid.mask("Saving...");
     });
     proxy.on('write', function(proxy, action, data, response, records, options) {
         if (response.success === 'true' && store.data && store.data.items) {
@@ -159,6 +161,8 @@ Ext.onReady(function() {
             store.add(updatedRecords);
             store.sort('itemOrder', 'ASC');
             grid.getView().refresh();
+            var thisGrid = Ext.get('managementGrid');
+            thisGrid.unmask();
         }
     });
 

@@ -24,6 +24,29 @@ Ext.onReady(function() {
        width: 55
     });
 
+    function checkUniqueDisplayVal(val) {
+        var isUnique = true;
+        var valCount = 0;
+        if (store.data && store.data.items) {
+            var len = store.data.items.length;
+            for (var x = 0; x < len; x++) {
+                if (valCount < 2) {
+                    var thisItem = store.data.items[x];
+                    if (thisItem.get('displayVal') == val) {
+                        valCount++;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        if (valCount > 1) {
+            isUnique = false;
+        }
+        return isUnique;
+    }
+
     var colModel = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
@@ -49,8 +72,33 @@ Ext.onReady(function() {
                 editable: true,
                 editor: new Ext.form.TextField({
                     allowBlank: false,
-                    maxLength: 255
-                })
+                    maxLength: 255,
+                    validator: function(val) {
+                        var results = true;
+                        if ( ! checkUniqueDisplayVal(val)) {
+                            results = "The Short Display Name " + val + " is not unique for this picklist.";
+                        }
+                        return results;
+                    }
+                }),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    if (record) {
+                        if (Ext.isEmpty(value)) {
+                            // No value so highlight this cell as in an error state
+                            metaData.css += ' x-form-invalid';
+                            metaData.attr = 'ext:qtip="A value is required"; ext:qclass="x-form-invalid-tip"';
+                        }
+                        else if ( ! checkUniqueDisplayVal(value)) {
+                            metaData.css += ' x-form-invalid';
+                            metaData.attr = 'ext:qtip="The Short Display Name ' + value + ' is not unique for this picklist."; ext:qclass="x-form-invalid-tip"';
+                        }
+                        else {
+                            metaData.css = '';
+                            metaData.attr = 'ext:qtip=""';
+                        }
+                    }
+                    return value;
+                }
             },
             {
                 header: 'Long Display Name',
@@ -164,6 +212,11 @@ Ext.onReady(function() {
             var thisGrid = Ext.get('managementGrid');
             thisGrid.unmask();
         }
+    });
+    proxy.on('exception', function(proxy, type, action, options, response, args) {
+
+        var thisGrid = Ext.get('managementGrid');
+        thisGrid.unmask();
     });
 
     var picklistItemsLoaded = function(record, options, success) {

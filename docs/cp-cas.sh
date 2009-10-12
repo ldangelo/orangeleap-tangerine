@@ -18,3 +18,8 @@ cp navigation-CAS.jsp navigation.jsp
 cd $PTH/orangeleap/WEB-INF/contexts
 cp webservice-context-CAS.xml.txt webservice-context.xml
 
+cd $PTH/clementine/WEB-INF
+cp webservice-context-CAS.xml.txt webservice-context.xml
+
+cd $PTH/clementine/WEB-INF
+cp web-CAS.xml web.xml

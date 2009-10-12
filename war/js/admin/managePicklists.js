@@ -123,7 +123,41 @@ Ext.onReady(function() {
     });
     store.setDefaultSort('itemOrder', 'ASC');
     store.on('beforewrite', function(proxy, action, rs, options, args) {
-        options.params['picklistNameId'] = combo.getValue();
+        if (options) {
+            options.params['picklistNameId'] = combo.getValue();
+        }
+    });
+    proxy.on('write', function(proxy, action, data, response, records, options) {
+        if (response.success === 'true' && store.data && store.data.items) {
+//            var updatedRecords = [];
+
+            var recLength = store.data.items.length;
+            var dataLength = data.length;
+            for (var x = 0; x < recLength; x++) {
+                var thisClientRec = store.data.items[x];
+                for (var y = 0; y < dataLength; y++) {
+                    var thisServerRec = data[y];
+                    if (thisClientRec.phantom) {
+                        if (thisClientRec.get('displayVal') == thisServerRec.displayVal) {
+                            thisClientRec.id = thisServerRec['id'];
+                            thisClientRec.phantom = false;
+                            thisClientRec.set('id', thisServerRec['id']);
+                            thisClientRec.set('itemName', thisServerRec['itemName']);
+                            thisClientRec.set('itemOrder', thisServerRec['itemOrder']);
+//                            updatedRecords[updatedRecords.length] = Ext.data.Record.create
+                            break;
+                        }
+                    }
+                    else if (thisClientRec.id == thisServerRec.id) {
+                        thisClientRec.set('itemOrder', thisServerRec['itemOrder']);
+                        break;
+                    }
+                }
+            }
+            store.commitChanges();
+            store.sort('itemOrder', 'ASC');
+            grid.getView().refresh();
+        }
     });
 
     var picklistItemsLoaded = function(record, options, success) {

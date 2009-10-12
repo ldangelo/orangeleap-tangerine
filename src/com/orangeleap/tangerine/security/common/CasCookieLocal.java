@@ -20,15 +20,17 @@ package com.orangeleap.tangerine.security.common;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.security.Authentication;
 import org.springframework.security.context.HttpSessionContextIntegrationFilter;
 import org.springframework.security.context.SecurityContextImpl;
 import org.springframework.security.providers.cas.CasAuthenticationToken;
 
-import com.orangeleap.tangerine.util.StringConstants;
-
 public class CasCookieLocal {
+	
+	public final static String CAS_COOKIE_NAME = "CASTGC";
+
 
     private static ThreadLocal<String> cas_cookie = new ThreadLocal<String>() {
         protected synchronized String initialValue() {
@@ -54,14 +56,19 @@ public class CasCookieLocal {
     	cas_request.set(request);
     	cas_cookie.remove();
     	if (request != null && request.getCookies() != null) for (Cookie cookie : request.getCookies()) {
-    		if (cookie != null && cookie.getName().equals(StringConstants.CAS_COOKIE_NAME)) {
+    		if (cookie != null && cookie.getName().equals(CAS_COOKIE_NAME)) {
     			if (cookie.getValue() != null) cas_cookie.set(cookie.getValue());
     		}
     	}
     }
     
     public static Authentication getAuthenticationToken() {
-    	SecurityContextImpl si = (SecurityContextImpl)getCasRequest().getSession().getAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY);
+    	HttpServletRequest request = getCasRequest();
+    	if (request == null) return null;
+    	HttpSession session = request.getSession();
+    	if (session == null) return null;
+    	SecurityContextImpl si = (SecurityContextImpl)session.getAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY);
+    	if (si == null) return null;
     	return  si.getAuthentication();
     }
     

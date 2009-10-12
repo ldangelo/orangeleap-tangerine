@@ -214,6 +214,12 @@ var PledgeRecurringGiftSelector = {
 				Distribution.distributionLineBuilder($gridRows);
 				Distribution.reInitDistribution();
 				Distribution.rowCloner("table.distributionLines tbody.gridRow:last");
+
+                $(".distributionLines").bind("click", function(event) {
+                    var $target = $(event.target);
+                    Distribution.hideShowAnonymous($target);
+                });
+
 				giftDistElem.unmask();
 			}
 		});

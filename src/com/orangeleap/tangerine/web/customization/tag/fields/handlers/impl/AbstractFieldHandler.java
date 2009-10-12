@@ -123,7 +123,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 			if (bean.isReadableProperty(collectionFieldName) && bean.getPropertyValue(collectionFieldName) instanceof Collection) {
 				StringBuilder key = new StringBuilder();
 				if (isDummy) {
-					key.append("tangDummy-");
+					key.append(StringConstants.TANG_DUMMY);
 				}
 				key.append(collectionFieldName);
 				key.append("[").append(rowCounter).append("]");

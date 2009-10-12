@@ -150,6 +150,7 @@ public final class StringConstants {
     public final static String START_DT = "startDt-";
     public final static String END_DT = "endDt-";
     public final static String CUSTOM_FLD_ID = "customFldId-";
+    public final static String TANG_DUMMY = "tangDummy-";
     
     public static final String FIELD_MAP_START = "fieldMap[";
     public static final String FIELD_MAP_END = "]";

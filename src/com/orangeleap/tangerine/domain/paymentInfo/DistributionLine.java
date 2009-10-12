@@ -26,6 +26,8 @@ import org.springframework.util.StringUtils;
 
 import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
+import java.util.Set;
+
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class DistributionLine extends AbstractCustomizableEntity {  
  
@@ -160,6 +162,45 @@ public class DistributionLine extends AbstractCustomizableEntity {
             valid = true;
         }
         return valid;
+    }
+
+    public boolean usesDefaultValues(BigDecimal giftAmount, DistributionLine defaultLine) {
+        boolean usesDefaultValues = true;
+        // First check the distribution line's amount is equal to the gift amount and the percentage is 100%
+        if (giftAmount == null || ! giftAmount.equals(amount) || ! new BigDecimal("100").equals(percentage)) {
+            usesDefaultValues = false;
+        }
+        else {
+            if ((projectCode == null && defaultLine.getProjectCode() != null) ||
+                    (projectCode != null && defaultLine.getProjectCode() == null) ||
+                    (projectCode != null && ! projectCode.equals(defaultLine.getProjectCode())) ||
+                    (motivationCode == null && defaultLine.getMotivationCode() != null) ||
+                    (motivationCode != null && defaultLine.getMotivationCode() == null) ||
+                    (motivationCode != null && ! motivationCode.equals(defaultLine.getMotivationCode())) ||
+                    (other_motivationCode == null && defaultLine.getOther_motivationCode() != null) ||
+                    (other_motivationCode != null && defaultLine.getOther_motivationCode() == null) ||
+                    (other_motivationCode != null && ! other_motivationCode.equals(defaultLine.getOther_motivationCode()))) {
+                usesDefaultValues = false;
+            }
+            if (usesDefaultValues) {
+                Set<String> keys = getCustomFieldMap().keySet();
+                for (String aKey : keys) {
+                    // Empty string and null are considered equivalent values for custom fields
+                    if ((getCustomFieldValue(aKey) == null || StringConstants.EMPTY.equals(getCustomFieldValue(aKey)))
+                            && (defaultLine.getCustomFieldValue(aKey) == null || StringConstants.EMPTY.equals(defaultLine.getCustomFieldValue(aKey)))) {
+                        // do nothing
+                    }
+                    else if (getCustomFieldValue(aKey) != null && getCustomFieldValue(aKey).equals(defaultLine.getCustomFieldValue(aKey))) {
+                        // do nothing
+                    }
+                    else {
+                        usesDefaultValues = false;
+                        break;
+                    }
+                }
+            }
+        }
+        return usesDefaultValues;
     }
     
     public boolean isFieldEntered() {

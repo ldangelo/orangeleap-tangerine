@@ -29,7 +29,11 @@ public class NoneStringTrimmerEditor extends StringTrimmerEditor {
 
     @Override
     public void setAsText(String text) {
-        text = text.replaceFirst("^none$", StringConstants.EMPTY); // Set the value 'none' to empty string
+        text = replaceNone(text);
         super.setAsText(text);
+    }
+
+    public static String replaceNone(String text) {
+        return text.replaceFirst("^none$", StringConstants.EMPTY); // Set the value 'none' to empty string 
     }
 }

@@ -13,8 +13,6 @@ import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,23 +34,13 @@ public class GiftServiceTest extends BaseTest {
     @Autowired
     private ConstituentService constituentService;
     
-    @SuppressWarnings("unchecked")
-    private List<DistributionLine> initLazyListDistributionLines() {
-        return LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
-            public Object create() {
-                DistributionLine line = new DistributionLine();
-                line.setDefaults();
-                return line;
-            }
-        });
-    }
-
     @Test
     public void testCombineGiftPledgeDistributionLines() throws Exception {
-        List<DistributionLine> lines = giftService.combineGiftCommitmentDistributionLines(null, null, BigDecimal.ZERO, 2, null, true);
+        DistributionLine defaultDistributionLine = new DistributionLine();
+        List<DistributionLine> lines = giftService.combineGiftCommitmentDistributionLines(null, null, defaultDistributionLine, BigDecimal.ZERO, 2, null, true);
         assert lines != null && lines.isEmpty();
         
-        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForPledge(), null, BigDecimal.TEN, 2, null, true);
+        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForPledge(), null, defaultDistributionLine, BigDecimal.TEN, 2, null, true);
         assert lines != null && lines.size() == 1;
         for (DistributionLine line : lines) {
             assert line.getId() == 1L;
@@ -60,7 +48,7 @@ public class GiftServiceTest extends BaseTest {
             assert new BigDecimal(15).equals(line.getPercentage());
         }
         
-        lines = giftService.combineGiftCommitmentDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal("33.33"), 2, null, true);
+        lines = giftService.combineGiftCommitmentDistributionLines(null, setupPledgeDistributionLines(), defaultDistributionLine, new BigDecimal("33.33"), 2, null, true);
         assert lines != null && lines.size() == 3;
         BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal totalPct = BigDecimal.ZERO;
@@ -88,7 +76,7 @@ public class GiftServiceTest extends BaseTest {
         Assert.assertEquals("Expected total amount = 33.33", new BigDecimal("33.33"), totalAmount);
         Assert.assertEquals("Expected total percentage = 100.00", new BigDecimal("100.00"), totalPct);
 
-        lines = giftService.combineGiftCommitmentDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(0), 2, null, true);
+        lines = giftService.combineGiftCommitmentDistributionLines(null, setupPledgeDistributionLines(), defaultDistributionLine, new BigDecimal(0), 2, null, true);
         assert lines != null && lines.size() == 3;
         for (DistributionLine line : lines) {
             assert line.getId() == 98L || line.getId() == 99L || line.getId() == 100L;
@@ -108,7 +96,7 @@ public class GiftServiceTest extends BaseTest {
             }
         }
         
-        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForPledge(), setupPledgeDistributionLines(), new BigDecimal(20), 2, null, true);
+        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForPledge(), setupPledgeDistributionLines(), defaultDistributionLine, new BigDecimal(20), 2, null, true);
         assert lines != null && lines.size() == 4;
         for (DistributionLine line : lines) {
             assert line.getId() == 1L || line.getId() == 3L || line.getId() == 98L || line.getId() == 99L;
@@ -132,7 +120,7 @@ public class GiftServiceTest extends BaseTest {
             }
         }
 
-        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForPledge(), setupPledgeDistributionLines(), BigDecimal.ZERO, 2, null, true);
+        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForPledge(), setupPledgeDistributionLines(), defaultDistributionLine, BigDecimal.ZERO, 2, null, true);
         assert lines != null && lines.size() == 4;
         for (DistributionLine line : lines) {
             assert line.getId() == 1L || line.getId() == 3L || line.getId() == 98L || line.getId() == 99L;
@@ -198,10 +186,11 @@ public class GiftServiceTest extends BaseTest {
 
     @Test
     public void testCombineGiftRecurringGiftDistributionLines() throws Exception {
-        List<DistributionLine> lines = giftService.combineGiftCommitmentDistributionLines(null, null, BigDecimal.ZERO, 2, null, false);
+        DistributionLine defaultDistributionLine = new DistributionLine();
+        List<DistributionLine> lines = giftService.combineGiftCommitmentDistributionLines(null, null, defaultDistributionLine, BigDecimal.ZERO, 2, null, false);
         assert lines != null && lines.isEmpty();
         
-        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForRecurringGift(), null, BigDecimal.TEN, 2, null, false);
+        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForRecurringGift(), null, defaultDistributionLine, BigDecimal.TEN, 2, null, false);
         assert lines != null && lines.size() == 1;
         for (DistributionLine line : lines) {
             assert line.getId() == 1L;
@@ -209,7 +198,7 @@ public class GiftServiceTest extends BaseTest {
             assert new BigDecimal(15).equals(line.getPercentage());
         }
         
-        lines = giftService.combineGiftCommitmentDistributionLines(null, setupRecurringGiftDistributionLines(), new BigDecimal("33.33"), 2, null, false);
+        lines = giftService.combineGiftCommitmentDistributionLines(null, setupRecurringGiftDistributionLines(), defaultDistributionLine, new BigDecimal("33.33"), 2, null, false);
         assert lines != null && lines.size() == 2;
         BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal totalPct = BigDecimal.ZERO;
@@ -232,7 +221,7 @@ public class GiftServiceTest extends BaseTest {
         Assert.assertEquals("Expected total amount = 33.32", new BigDecimal("33.32"), totalAmount);
         Assert.assertEquals("Expected total percentage = 100.00", new BigDecimal("100.00"), totalPct);
 
-        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForRecurringGift(), setupRecurringGiftDistributionLines(), new BigDecimal(20), 2, null, false);
+        lines = giftService.combineGiftCommitmentDistributionLines(setupGiftDistributionLinesForRecurringGift(), setupRecurringGiftDistributionLines(), defaultDistributionLine, new BigDecimal(20), 2, null, false);
         assert lines != null && lines.size() == 3;
         for (DistributionLine line : lines) {
             assert line.getId() == 1L || line.getId() == 5L || line.getId() == 101L;

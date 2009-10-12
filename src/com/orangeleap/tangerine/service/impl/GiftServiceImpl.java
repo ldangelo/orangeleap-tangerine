@@ -35,7 +35,6 @@ import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
@@ -56,7 +55,15 @@ import org.springframework.validation.BindingResult;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -420,14 +427,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount,
+    public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines,
+                                                                         DistributionLine defaultDistributionLine, BigDecimal amount,
                                                                          int numCommitments, Constituent constituent, boolean isPledge) {
         if (logger.isTraceEnabled()) {
             logger.trace("combineGiftPledgeDistributionLines: amount = " + amount + " numCommitments = " + numCommitments + " isPledge = " + isPledge);
         }
         List<DistributionLine> returnLines = new ArrayList<DistributionLine>();
 
-        giftDistributionLines = removeDefaultDistributionLine(giftDistributionLines, amount, constituent);
+        giftDistributionLines = removeDefaultDistributionLine(giftDistributionLines, defaultDistributionLine, amount);
 
         String associatedIdName = isPledge ? StringConstants.ASSOCIATED_PLEDGE_ID : StringConstants.ASSOCIATED_RECURRING_GIFT_ID;
 
@@ -473,10 +481,13 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     /**
-     * Check if a default distribution line was created; remove if necessary
+     * Check if the distribution line associated with the gift should be removed if it has only the default values
      * @param giftDistributionLines
+     * @param defaultLine
+     * @param amount
      */
-    private List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Constituent constituent) {
+    private List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines,
+                                                                 DistributionLine defaultLine, BigDecimal amount) {
         if (logger.isTraceEnabled()) {
             logger.trace("removeDefaultDistributionLine: amount = " + amount);
         }
@@ -492,35 +503,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         /* If only 1 line is entered, check if it is the default */
         if (count == 1) {
-            DistributionLine defaultLine = new DistributionLine(constituent);
-	        siteService.setEntityDefaults(defaultLine, EntityType.distributionLine);
-
-            if (amount != null && amount.equals(enteredLine.getAmount()) && new BigDecimal("100").equals(enteredLine.getPercentage())) {
-                if (org.springframework.util.StringUtils.hasText(enteredLine.getProjectCode()) || org.springframework.util.StringUtils.hasText(enteredLine.getMotivationCode()) ||
-                        org.springframework.util.StringUtils.hasText(enteredLine.getOther_motivationCode())) {
-                    // do nothing
-                }
-                else {
-                    boolean isSame = true;
-                    Set<String> keys = enteredLine.getCustomFieldMap().keySet();
-                    for (String aKey : keys) {
-                        // Empty string and null are considered equivalent values for custom fields
-                        if ((enteredLine.getCustomFieldValue(aKey) == null || StringConstants.EMPTY.equals(enteredLine.getCustomFieldValue(aKey)))
-                                && (defaultLine.getCustomFieldValue(aKey) == null || StringConstants.EMPTY.equals(defaultLine.getCustomFieldValue(aKey)))) {
-                            // do nothing
-                        }
-                        else if (enteredLine.getCustomFieldValue(aKey) != null && enteredLine.getCustomFieldValue(aKey).equals(defaultLine.getCustomFieldValue(aKey))) {
-                            // do nothing
-                        }
-                        else {
-                            isSame = false;
-                            break;
-                        }
-                    }
-                    if (isSame) {
-                        return new ArrayList<DistributionLine>();
-                    }
-                }
+            if (enteredLine.usesDefaultValues(amount, defaultLine)) {
+                giftDistributionLines = new ArrayList<DistributionLine>();
             }
         }
         return giftDistributionLines;

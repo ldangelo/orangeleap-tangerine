@@ -61,7 +61,7 @@ public interface GiftService {
 
     public PaginatedResult readPaginatedGiftList(Long constituentId, SortInfo sortinfo);
 
-    public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, int numCommitments, Constituent constituent, boolean isPledge);
+    public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, DistributionLine defaultDistributionLine, BigDecimal amount, int numCommitments, Constituent constituent, boolean isPledge);
 
     public void checkAssociatedPledgeIds(Gift gift);
 

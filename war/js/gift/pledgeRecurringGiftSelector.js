@@ -235,7 +235,7 @@ var PledgeRecurringGiftSelector = {
 	
 	serializeDistributionLines: function() {
 		var queryString = "";
-		$(":text, :radio, :checkbox, input[type=hidden]", $("tbody.gridRow")).each(function() {
+		$(":radio, :checkbox, :input", $("tbody")).each(function() {
 			var $elem = $(this);
 			var elemType = $elem.attr("type").toLowerCase();
 			if (elemType == "checkbox" || elemType == "radio") {

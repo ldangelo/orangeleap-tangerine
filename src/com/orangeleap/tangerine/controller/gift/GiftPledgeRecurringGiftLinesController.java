@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.controller.gift;
 
+import com.orangeleap.tangerine.controller.NoneStringTrimmerEditor;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -26,7 +27,10 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,7 +38,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class GiftPledgeRecurringGiftLinesController extends AbstractMutableGridFormController {
@@ -63,6 +69,7 @@ public class GiftPledgeRecurringGiftLinesController extends AbstractMutableGridF
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 	    TangerineForm form = (TangerineForm) command;
 	    Gift gift = (Gift) form.getDomainObject();
+        DistributionLine defaultDistributionLine = determineDefaultDistributionLine(request, form);
 
         List<DistributionLine> commitmentLines = null;
         int numCommitments = 0;
@@ -82,11 +89,36 @@ public class GiftPledgeRecurringGiftLinesController extends AbstractMutableGridF
 
 	    // The Gift object has been changed - make sure the TangerineForm is updated also
 	    List<DistributionLine> combinedLines = giftService.combineGiftCommitmentDistributionLines(gift.getDistributionLines(), commitmentLines,
-                gift.getAmount(), numCommitments, getConstituent(request), isPledge);
+                defaultDistributionLine, gift.getAmount(), numCommitments, getConstituent(request), isPledge);
 	    gift.setDistributionLines(combinedLines);
 
 	    rebindEntityValuesToForm(request, form, gift);
 	    
         return new ModelAndView(getSuccessView(), getCommandName(), form);
+    }
+
+    private DistributionLine determineDefaultDistributionLine(HttpServletRequest request, TangerineForm form) {
+        DistributionLine line = new DistributionLine(getConstituent(request));
+        Gift gift = (Gift) form.getDomainObject();
+        line.setAmount(gift.getAmount());
+        line.setPercentage(new BigDecimal("100.00"));
+
+        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(line);
+        for (Map.Entry<String, Object> entry : form.getFieldMap().entrySet()) {
+            if (entry.getKey().startsWith(new StringBuilder(StringConstants.TANG_DUMMY).append(StringConstants.DISTRIBUTION_LINES).toString()) &&
+                    entry.getValue() != null && StringUtils.hasText(entry.getValue().toString())) {
+                String unescapedKey = TangerineForm.unescapeFieldName(entry.getKey());
+                unescapedKey = unescapedKey.replaceFirst(new StringBuilder(StringConstants.TANG_DUMMY).append(StringConstants.DISTRIBUTION_LINES).append("\\[0\\]\\.").toString(), StringConstants.EMPTY);
+                if (unescapedKey.startsWith(StringConstants.CUSTOM_FIELD_MAP_START)) {
+                    unescapedKey = new StringBuilder(unescapedKey).append(StringConstants.DOT_VALUE).toString();
+                }
+                Object value = entry.getValue();
+                if (value instanceof String && value != null) {
+                    value = NoneStringTrimmerEditor.replaceNone((String) value); // Make sure the word 'none' is replaced with empty string
+                }
+                bw.setPropertyValue(unescapedKey, value);
+            }
+        }
+        return line;
     }
 }

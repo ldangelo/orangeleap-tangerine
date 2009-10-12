@@ -33,8 +33,6 @@ import com.orangeleap.tangerine.util.OLLogger;
 
 public class ReadCasCookieFilter extends OncePerRequestFilter {
 
-    protected final Log logger = OLLogger.getLog(getClass());
-
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

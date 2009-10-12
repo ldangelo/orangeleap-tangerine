@@ -8,6 +8,8 @@ public class CasUtil {
 	
 	public static void populateJserverWithCasCredentials(JServer jserver, String baseUrl) {
 		
+		if (true) return;
+		
     	// CAS login
     	String casCookie = CasCookieLocal.getCasCookie();
     	if (casCookie != null && casCookie.length() > 0) {

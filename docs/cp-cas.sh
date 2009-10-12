@@ -22,4 +22,7 @@ cd $PTH/clementine/WEB-INF
 cp webservice-context-CAS.xml webservice-context.xml
 
 cd $PTH/clementine/WEB-INF
+cp applicationContext-security-CAS.xml applicationContext-security.xml
+
+cd $PTH/clementine/WEB-INF
 cp web-CAS.xml web.xml

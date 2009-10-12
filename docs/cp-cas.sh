@@ -19,7 +19,7 @@ cd $PTH/orangeleap/WEB-INF/contexts
 cp webservice-context-CAS.xml.txt webservice-context.xml
 
 cd $PTH/clementine/WEB-INF
-cp webservice-context-CAS.xml.txt webservice-context.xml
+cp webservice-context-CAS.xml webservice-context.xml
 
 cd $PTH/clementine/WEB-INF
 cp web-CAS.xml web.xml

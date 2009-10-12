@@ -37,12 +37,6 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import org.apache.commons.logging.Log;
-
-import com.orangeleap.tangerine.util.CasCookieLocal;
-import com.orangeleap.tangerine.util.CasUtil;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.ui.cas.CasProcessingFilter;
 import org.springframework.validation.BindException;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
@@ -50,12 +44,13 @@ import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceProperty
 import com.jaspersoft.jasperserver.irplugin.JServer;
 import com.jaspersoft.jasperserver.irplugin.RepositoryReportUnit;
 import com.jaspersoft.jasperserver.irplugin.wsclient.RequestAttachment;
-import com.jaspersoft.jasperserver.irplugin.wsclient.WSClient;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.security.common.CasUtil;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.util.OLLogger;
 
 //@Service("emailSendingService")
 public class MailService {

@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.util;
+package com.orangeleap.tangerine.security.common;
 
 import org.springframework.security.ui.cas.CasProcessingFilter;
 

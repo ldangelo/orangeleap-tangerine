@@ -56,8 +56,8 @@ import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.security.common.CasUtil;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
-import com.orangeleap.tangerine.util.CasUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 
 //@Service("emailSendingService")

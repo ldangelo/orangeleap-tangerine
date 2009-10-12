@@ -16,20 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.util;
+package com.orangeleap.tangerine.security.common;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.HttpSessionContextIntegrationFilter;
 import org.springframework.security.context.SecurityContextImpl;
 import org.springframework.security.providers.cas.CasAuthenticationToken;
 
-public class CasCookieLocal {
+import com.orangeleap.tangerine.util.StringConstants;
 
-    protected static final Log logger = OLLogger.getLog(RulesStack.class);
+public class CasCookieLocal {
 
     private static ThreadLocal<String> cas_cookie = new ThreadLocal<String>() {
         protected synchronized String initialValue() {

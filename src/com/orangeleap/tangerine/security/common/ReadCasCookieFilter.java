@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.web.filters;
+package com.orangeleap.tangerine.security.common;
 
 
 import java.io.IOException;
@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.orangeleap.tangerine.util.CasCookieLocal;
 import com.orangeleap.tangerine.util.OLLogger;
 
 public class ReadCasCookieFilter extends OncePerRequestFilter {

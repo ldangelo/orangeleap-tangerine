@@ -45,6 +45,7 @@
          <property name="callbackHandlers">
              <list>
                  <ref bean="springSecurityHandler"/>
+                 <ref bean="tangerineSecurityHandler"/>
              </list>
          </property>
      </bean>
@@ -52,12 +53,12 @@
     <bean id="springSecurityHandler"
           class="org.springframework.ws.soap.security.xwss.callback.SpringPlainTextPasswordValidationCallbackHandler">
         <property name="authenticationManager" ref="authenticationManager"/>
-      </bean>
-<!-- 
-      <bean id="authenticationManager" class="com.orangeleap.tangerine.security.TangerineAuthenticationManager">
-         <property name="provider" ref="tangerineAuthenticationProvider"/>
-      </bean>
--->
+    </bean>
+    <bean id="tangerineSecurityHandler"
+          class="com.orangeleap.tangerine.security.TangerineWsCallbackHandler">
+        <property name="tangerineSessionInformationFilter" ref="tangerineSessionInformationFilter"/>
+    </bean>
+      
 
     <bean class="org.springframework.ws.server.endpoint.adapter.GenericMarshallingMethodEndpointAdapter">
         <constructor-arg ref="marshaller"/>

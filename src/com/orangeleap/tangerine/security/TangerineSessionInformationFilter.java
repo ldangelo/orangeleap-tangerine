@@ -118,9 +118,9 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
      * This method will make use of the ConstituentService and PageCustomizationService
      * to load the needed information about the constituent.
      *
-     * @param token the CasAuthenticationToken with the constituent information
+     * @param token the Authentication with the constituent information
      */
-    public void loadTangerineDetails(CasAuthenticationToken token) {
+    public void loadTangerineDetails(Authentication token) {
 
         GrantedAuthority[] authorities = token.getAuthorities();
         LdapUserDetails user = (LdapUserDetails) token.getPrincipal();

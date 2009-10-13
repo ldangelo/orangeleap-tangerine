@@ -139,7 +139,7 @@ Ext.onReady(function() {
                 }
             },
             checkColumn,
-            {header: 'Customize', width: 95, menuDisabled: true, fixed: true, renderer: function() { return '<a href=""><img src="images/icons/gears.png" alt="Customize" title="Customize"/></a>'; } }
+            {header: 'Customize', width: 95, menuDisabled: true, fixed: true, renderer: function() { return '<a href="" class="customizeLink">Customize</a>'; } }
         ]
     });
     var filters = new Ext.ux.grid.GridFilters({

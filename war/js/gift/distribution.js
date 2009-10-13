@@ -259,7 +259,7 @@ var Distribution = {
 			});
 		} 
 		else {
-			alert("Sorry, you cannot delete that row since it's the only remaining row.")
+			Ext.MessageBox.alert('Error', "Sorry, you cannot delete that row since it's the only remaining row.")
 		};
 	}
 };

@@ -123,7 +123,9 @@ var PledgeRecurringGiftSelector = {
             });
         }
         else {
-            alert("Please enter a gift amount first");
+            Ext.MessageBox.show({ title: 'Enter Amount First', icon: Ext.MessageBox.INFO,
+                buttons: Ext.MessageBox.OK,
+                msg: 'Enter a gift amount first.'});
         }
 	},
 	

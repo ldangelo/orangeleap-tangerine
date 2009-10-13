@@ -13,10 +13,12 @@ $(document).ready(function() {
 		timeout: 30000, // 30 seconds before the request times out
 		error: function(xhr, errorType, exception) {
 			if (errorType == "timeout")	{
-				alert("The server was not available.  Please try again or contact your administrator if this issue continues.");
+                Ext.MessageBox.show({ title: 'Error', icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: 'The server was not available.  Please try again or contact your administrator if this issue continues.'});
 			}
 //			else if (xhr.status == 508 || errorType == "error") {
-//				alert("An unexpected error has occurred and has been logged.  Please try again or contact your administrator if this issue continues.");
+//				Ext.MessageBox.alert('Error', "An unexpected error has occurred and has been logged.  Please try again or contact your administrator if this issue continues.");
 //			}
 		}
 	});
@@ -228,7 +230,7 @@ function saveInPlace(elem, baseUrl) {
 		},
 		error: function(xhr) {
 			if (xhr.status == 508) {
-				alert("The code could not be saved. Please ensure that the code has a unique value.");
+				Ext.MessageBox.alert('Error', "The code could not be saved. Please ensure that the code has a unique value.");
 				return false;
 			}
 		}
@@ -249,7 +251,7 @@ function newInPlace(elem, baseUrl) {
 		},
 		error: function(xhr) {
 			if (xhr.status == 508) {
-				alert("The code could not be saved. Please ensure that the code has a unique value.");
+				Ext.MessageBox.alert('Error', "The code could not be saved. Please ensure that the code has a unique value.");
 				return false;
 			}
 		}

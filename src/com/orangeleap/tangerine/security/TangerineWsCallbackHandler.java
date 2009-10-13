@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.security;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.security.auth.callback.Callback;
@@ -10,7 +9,6 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 
 import com.orangeleap.tangerine.security.common.OrangeLeapUsernamePasswordLocal;
-import com.orangeleap.tangerine.type.AccessType;
 
 public class TangerineWsCallbackHandler extends org.springframework.ws.soap.security.callback.AbstractCallbackHandler  {
 	

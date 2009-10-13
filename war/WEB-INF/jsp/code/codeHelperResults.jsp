@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <c:choose>
 	<c:when test="${empty codes}">
-		<div class="noResults"><spring:message code="noCodesFound"/></li>
+		<div class="noResults"><spring:message code="noCodesFound"/></div>
 	</c:when>
 	<c:otherwise>
 		<ul id="codeResultsUl" class="queryUl">

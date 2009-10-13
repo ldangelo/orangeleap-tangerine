@@ -300,8 +300,33 @@ Ext.onReady(function() {
         return hasModified;
     }
 
-    var checkUniqueDisplayValues = function() {
-        
+    var checkDisplayValuesValid = function() {
+        var isValid = true;
+        var valCtMap = {};
+        if (store.data && store.data.items) {
+            var len = store.data.items.length;
+            for (var x = 0; x < len; x++) {
+                var thisDisplayValue = store.data.items[x].get('displayVal');
+                if (Ext.isEmpty(thisDisplayValue)) {
+                    isValid = false;
+                    break;
+                }
+                else {
+                    if ( ! valCtMap[thisDisplayValue]) {
+                        valCtMap[thisDisplayValue] = 1;
+                    }
+                    else {
+                        var count = valCtMap[thisDisplayValue];
+                        valCtMap[thisDisplayValue] = ++count;
+                        if (count > 1) {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return isValid;
     }
 
     var confirmUndoChanges = function(okCallback, cancelCallback) {
@@ -338,7 +363,14 @@ Ext.onReady(function() {
         buttons: [
             {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true, handler: function() {
                     if (checkForModifiedRecords()) {
-                        store.save();
+                        if (checkDisplayValuesValid()) {
+                            store.save();
+                        }
+                        else {
+                            Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
+                                buttons: Ext.MessageBox.OK,
+                                msg: 'You must fix the errors in the grid first before you can save.'});
+                        }
                     }
                 }
             },

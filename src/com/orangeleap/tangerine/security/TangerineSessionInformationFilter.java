@@ -53,6 +53,7 @@ import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.ldap.LdapService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.util.HttpUtil;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 /**
  * This security filter will decorate the web HttpSession with information needed
@@ -80,6 +81,9 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
 
     @Autowired
     private SiteService siteService;
+
+    @Autowired
+    private TangerineUserHelper tangerineUserHelper;
 
     @Override
     protected void doFilterHttp(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -115,13 +119,18 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
     }
 
     
+    // Non-CAS authenticators (API/LDAP, ireport, quartz) 
+    // TODO  Review if system user is ok to use for these access methods
     public void loadTangerineDetails(UsernamePasswordAuthenticationToken token) {
+
+    	String principal = token.getPrincipal().toString();
+    	String site = principal.substring(principal.indexOf('@')+1);
     	
-		TangerineAuthenticationDetails details = new TangerineAuthenticationDetails();
-		
-		// TODO populate additional info needed by API/Ldap authenticators
-		
-		token.setDetails(details);
+    	// Set system user with SUPER_ADMIN as current tangerine user
+    	tangerineUserHelper.setSystemUserAndSiteName(site);
+    	
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		token.setDetails(auth.getDetails());
 		
     }
     

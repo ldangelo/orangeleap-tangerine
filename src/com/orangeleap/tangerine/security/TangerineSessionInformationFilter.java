@@ -18,13 +18,17 @@
 
 package com.orangeleap.tangerine.security;
 
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.SessionService;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.service.ldap.LdapService;
-import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.util.HttpUtil;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.NamingException;
 import org.springframework.ldap.core.ContextSource;
@@ -39,15 +43,15 @@ import org.springframework.security.ui.SpringSecurityFilter;
 import org.springframework.security.userdetails.ldap.LdapUserDetails;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.SessionService;
+import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.service.ldap.LdapService;
+import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.util.HttpUtil;
 
 /**
  * This security filter will decorate the web HttpSession with information needed
@@ -72,6 +76,9 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
 
     @Autowired
     private SessionService sessionService;
+
+    @Autowired
+    private SiteService siteService;
 
     @Override
     protected void doFilterHttp(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -113,7 +120,7 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
      *
      * @param token the CasAuthenticationToken with the constituent information
      */
-    private void loadTangerineDetails(CasAuthenticationToken token) {
+    public void loadTangerineDetails(CasAuthenticationToken token) {
 
         GrantedAuthority[] authorities = token.getAuthorities();
         LdapUserDetails user = (LdapUserDetails) token.getPrincipal();
@@ -146,11 +153,22 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
         * just to do this.
         */
         sessionService.lookupSite();
+        if (!checkSiteActive(sitename)) throw new RuntimeException("Inactive site");
+        
 
         Constituent constituent = constituentService.readConstituentByLoginId(username);
         details.setConstituentId(constituent.getId());
         details.setLastName(constituent.getLastName());
         details.setFirstName(constituent.getFirstName());
+    }
+    
+    
+    protected boolean checkSiteActive(String siteName) {
+        Site site = siteService.readSite(siteName);
+        if (site == null) {
+           return true; 
+        }
+        return site.isActive();
     }
 
 

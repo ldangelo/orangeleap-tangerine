@@ -90,3 +90,5 @@ div#managerGrid table.saveButton td.x-btn-mc,
     div#managerGrid table.button td.x-btn-bl, 
     div#managerGrid table.button td.x-btn-br, 
     div#managerGrid table.button td.x-btn-bc  { background-image: none; }
+
+#managementGrid #savedMarker { visibility: hidden; font-size: 12px; }

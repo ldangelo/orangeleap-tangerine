@@ -177,6 +177,15 @@ Ext.onReady(function() {
         var thisGrid = Ext.get('managementGrid');
         thisGrid.mask("Saving...");
     });
+    store.on('add', function(store, records, index) {
+        grid.saveButton.enable();
+        grid.undoButton.enable();
+    });
+    store.on('update', function(store, record, operation) {
+        grid.saveButton.enable();
+        grid.undoButton.enable();
+    });
+
     proxy.on('write', function(proxy, action, data, response, records, options) {
         if (response.success === 'true' && store.data && store.data.items) {
             var updatedRecords = [];
@@ -209,8 +218,14 @@ Ext.onReady(function() {
             store.add(updatedRecords);
             store.sort('itemOrder', 'ASC');
             grid.getView().refresh();
+            grid.saveButton.disable();
+            grid.undoButton.disable();
             var thisGrid = Ext.get('managementGrid');
             thisGrid.unmask();
+            $("#savedMarker").css('visibility', 'visible');
+            setTimeout(function() {
+                $("#savedMarker").css('visibility', 'hidden');
+            }, 20000);
         }
     });
     proxy.on('exception', function(proxy, type, action, options, response, args) {
@@ -250,8 +265,11 @@ Ext.onReady(function() {
         var prevSelValue = comboBox.getValue();
         var doSelect = function(record) {
             if (record && record.data && record.data['nameId']) {
+                $("#savedMarker").css('visibility', 'hidden');
                 grid.addButton.disable();
                 grid.customizeButton.disable();
+                grid.saveButton.disable();
+                grid.undoButton.disable();
                 var state = store.getSortState();
                 if (state) {
                     state.field = 'itemOrder';
@@ -306,22 +324,25 @@ Ext.onReady(function() {
         renderTo: 'managerGrid',
         width: 780,
         height: 600,
-        title: 'Manage Picklist Items',
+        title: 'Manage Picklist Items <span id="savedMarker">Saved</span>',
         loadMask: true,
         frame: true,
         id: 'managementGrid',
         viewConfig: { forceFit: false },
         buttons: [
-            {text: 'Save', cls: 'saveButton', handler: function() {
+            {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true, handler: function() {
                     if (checkForModifiedRecords()) {
                         store.save();
                     }
                 }
             },
-            {text: 'Undo', cls: 'button', handler: function() {
+            {text: 'Undo', cls: 'button', ref: '../undoButton', disabled: true, handler: function() {
                     if (checkForModifiedRecords()) {
                         store.rejectChanges();
                         undoChanges();
+                        $("#savedMarker").css('visibility', 'hidden');
+                        grid.saveButton.disable();
+                        grid.undoButton.disable();
                     }
                 }
             }

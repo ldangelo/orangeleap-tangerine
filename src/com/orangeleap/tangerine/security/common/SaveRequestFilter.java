@@ -26,18 +26,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.orangeleap.tangerine.util.OLLogger;
-
-public class ReadCasCookieFilter extends OncePerRequestFilter {
+public class SaveRequestFilter extends OncePerRequestFilter {
 
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-    	CasCookieLocal.setCasCookie(request);
+    	OrangeLeapRequestLocal.setRequest(request);
     	
         filterChain.doFilter(request, response);
 

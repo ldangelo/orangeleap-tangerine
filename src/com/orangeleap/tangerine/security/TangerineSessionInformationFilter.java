@@ -37,6 +37,7 @@ import org.springframework.ldap.core.simple.SimpleLdapTemplate;
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.ui.FilterChainOrder;
 import org.springframework.security.ui.SpringSecurityFilter;
@@ -113,14 +114,25 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
         return FilterChainOrder.EXCEPTION_TRANSLATION_FILTER + 10;
     }
 
+    
+    public void loadTangerineDetails(UsernamePasswordAuthenticationToken token) {
+    	
+		TangerineAuthenticationDetails details = new TangerineAuthenticationDetails();
+		
+		// TODO populate additional info needed by API/Ldap authenticators
+		
+		token.setDetails(details);
+		
+    }
+    
     /**
      * Initialize the TangerineAuthenticationDetails object inside the CasAuthenticationToken.
      * This method will make use of the ConstituentService and PageCustomizationService
      * to load the needed information about the constituent.
      *
-     * @param token the Authentication with the constituent information
+     * @param token the CasAuthenticationToken with the constituent information
      */
-    public void loadTangerineDetails(Authentication token) {
+    private void loadTangerineDetails(CasAuthenticationToken token) {
 
         GrantedAuthority[] authorities = token.getAuthorities();
         LdapUserDetails user = (LdapUserDetails) token.getPrincipal();
@@ -161,7 +173,6 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
         details.setLastName(constituent.getLastName());
         details.setFirstName(constituent.getFirstName());
     }
-    
     
     protected boolean checkSiteActive(String siteName) {
         Site site = siteService.readSite(siteName);

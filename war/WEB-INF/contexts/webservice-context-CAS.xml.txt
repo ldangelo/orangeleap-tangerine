@@ -56,7 +56,7 @@
     </bean>
     <bean id="tangerineSecurityHandler"
           class="com.orangeleap.tangerine.security.TangerineWsCallbackHandler">
-        <property name="tangerineSessionInformationFilter" ref="tangerineSessionInformationFilter"/>
+        <property name="tangerineSessionInformationFilter" ref="tangerineFilter"/>
     </bean>
       
 

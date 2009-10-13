@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.security.common;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.naming.directory.DirContext;
 
@@ -82,9 +83,10 @@ public class OrangeLeapBindAuthenticator extends AbstractLdapAuthenticator {
             throw new BadCredentialsException(messages.getMessage("BindAuthenticator.badCredentials", "Bad credentials"));
         }
 
-        OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().put(OrangeLeapUsernamePasswordLocal.SITE, site);
-        OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().put(OrangeLeapUsernamePasswordLocal.USER_NAME, username);
-        OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().put(OrangeLeapUsernamePasswordLocal.PASSWORD, password);
+        Map<String, Object> info = OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo();
+        info.put(OrangeLeapUsernamePasswordLocal.SITE, site);
+        info.put(OrangeLeapUsernamePasswordLocal.USER_NAME, username);
+        info.put(OrangeLeapUsernamePasswordLocal.PASSWORD, password);
 
         logger.debug("Authenticated with OrangeLeapBindAuthenticator.");
         

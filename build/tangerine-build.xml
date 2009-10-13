@@ -488,7 +488,7 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/RowGrip.js" />
         </javascript-optimization>
 
-        <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/admin.jsp" token="tangerine-admin.js.ycomp.js" value="tangerine-admin{now.time}.js.ycomp.js"/>
+        <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/admin.jsp" token="tangerine-admin.js.ycomp.js" value="tangerine-admin${now.time}.js.ycomp.js"/>
 
         <javascript-optimization
             minify="false"

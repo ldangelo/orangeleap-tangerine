@@ -8,15 +8,12 @@ public class CasUtil {
 	
 	public static void populateJserverWithCasCredentials(JServer jserver, String baseUrl) {
 		
-		if (true) return;
+		if (!"true".equalsIgnoreCase(System.getProperty("use.cas"))) return; // TODO remove
 		
     	// CAS login
-    	String casCookie = CasCookieLocal.getCasCookie();
-    	if (casCookie != null && casCookie.length() > 0) {
-    		// CasAuthenticationProvider can use key for username and password for (proxy) ticket
-    		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
-    		jserver.setPassword(CasCookieLocal.getProxyTicketFor(baseUrl)); 
-    	}
+    	// CasAuthenticationProvider can use key for username and password for (proxy) ticket
+		jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
+		jserver.setPassword(CasCookieLocal.getProxyTicketFor(baseUrl)); 
 
 	}
 

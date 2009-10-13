@@ -135,16 +135,16 @@ public class ManagePicklistItemsController {
         if (item != null) {
             if (bean.getDynaClass().getDynaProperty("displayVal") != null && bean.get("displayVal") != null &&
                     StringUtils.hasText(bean.get("displayVal").toString())) {
-                item.setDefaultDisplayValue(bean.get("displayVal").toString());
+                item.setDefaultDisplayValue(escapeScriptTag(bean.get("displayVal").toString()));
             }
             else if (item.isNew()) {
                 throw new IllegalArgumentException("Default display value is a required field.");
             }
             if (bean.getDynaClass().getDynaProperty("desc") != null && bean.get("desc") != null) {
-                item.setLongDescription(bean.get("desc").toString());
+                item.setLongDescription(escapeScriptTag(bean.get("desc").toString()));
             }
             if (bean.getDynaClass().getDynaProperty("detail") != null && bean.get("detail") != null) {
-                item.setDetail(bean.get("detail").toString());
+                item.setDetail(escapeScriptTag(bean.get("detail").toString()));
             }
             if (bean.getDynaClass().getDynaProperty("inactive") != null && bean.get("inactive") != null) {
                 item.setInactive(Boolean.TRUE.toString().equalsIgnoreCase(bean.get("inactive").toString()));
@@ -157,5 +157,13 @@ public class ManagePicklistItemsController {
                 item.setItemOrder(1);
             }
         }
+    }
+
+    private String escapeScriptTag(String val) {
+        if (val != null && (val.toLowerCase().indexOf("<script") > -1)) {
+            int index = val.toLowerCase().indexOf("<script");
+            val = new StringBuilder(val.substring(0, index)).append("&lt;script").append(val.substring(index + 7)).toString();
+        }
+        return val;
     }
 }

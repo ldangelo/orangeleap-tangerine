@@ -47,12 +47,26 @@ Ext.onReady(function() {
         return isUnique;
     }
 
+    var escapeScriptTag = function(val) {
+        if (val) {
+            if (val.indexOf('<script') > -1) {
+                var beginIndex = val.indexOf('<script');
+                val =  val.substring(0, beginIndex) + '&lt;script' + val.substring(beginIndex + 7);
+            }
+            if (val.indexOf('</script') > -1) {
+                var endIndex = val.indexOf('</script');
+                val =  val.substring(0, endIndex) + '&gt;/script' + val.substring(endIndex + 8);
+            }
+        }
+        return val;
+    }
+
     var colModel = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
         },
         columns: [
-            new OrangeLeap.RowGrip({ css: 'grip', tooltip: 'Click and Hold to Drag Row' } ),
+            new OrangeLeap.RowGrip({ tooltip: 'Click and Hold to Drag Row' } ),
             {
                 header: 'Order',
                 dataIndex: 'itemOrder',
@@ -97,7 +111,7 @@ Ext.onReady(function() {
                             metaData.attr = 'ext:qtip=""';
                         }
                     }
-                    return value;
+                    return escapeScriptTag(value);
                 }
             },
             {
@@ -107,7 +121,10 @@ Ext.onReady(function() {
                 editor: new Ext.form.TextField({
                     allowBlank: true,
                     maxLength: 255
-                })
+                }),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return escapeScriptTag(value);
+                }
             },
             {
                 header: 'Description',
@@ -116,7 +133,10 @@ Ext.onReady(function() {
                 editor: new Ext.form.TextField({
                     allowBlank: true,
                     maxLength: 255
-                })
+                }),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return escapeScriptTag(value);
+                }
             },
             checkColumn,
             {header: 'Customize', width: 95, menuDisabled: true, fixed: true, renderer: function() { return '<a href=""><img src="images/icons/gears.png" alt="Customize" title="Customize"/></a>'; } }

@@ -28,7 +28,6 @@ OrangeLeap.RowGrip.prototype = {
     dataIndex: '',
     id: 'grip',
     rowspan: undefined,
-    css: 'grip',
     tooltip: 'Click and Hold to Drag Row',
 
     // private

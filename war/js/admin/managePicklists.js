@@ -229,9 +229,11 @@ Ext.onReady(function() {
         }
     });
     proxy.on('exception', function(proxy, type, action, options, response, args) {
-
         var thisGrid = Ext.get('managementGrid');
         thisGrid.unmask();
+        Ext.MessageBox.show({ title: 'Error', icon: Ext.MessageBox.ERROR,
+            buttons: Ext.MessageBox.OK,
+            msg: 'The picklist changes could not be saved.  Please try again or contact your administrator if this issue continues.'});
     });
 
     var picklistItemsLoaded = function(record, options, success) {
@@ -298,6 +300,10 @@ Ext.onReady(function() {
         return hasModified;
     }
 
+    var checkUniqueDisplayValues = function() {
+        
+    }
+
     var confirmUndoChanges = function(okCallback, cancelCallback) {
         Ext.Msg.show({
             title: 'Lose Changes?',
@@ -328,7 +334,7 @@ Ext.onReady(function() {
         loadMask: true,
         frame: true,
         id: 'managementGrid',
-        viewConfig: { forceFit: false },
+        viewConfig: { forceFit: true },
         buttons: [
             {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true, handler: function() {
                     if (checkForModifiedRecords()) {

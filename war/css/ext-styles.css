@@ -94,3 +94,5 @@ div#managerGrid table.saveButton td.x-btn-mc,
 #managementGrid #savedMarker { visibility: hidden; font-size: 12px; }
 
 a.customizeLink { background-image: url(../images/icons/gears.png); background-position: top left; background-repeat: no-repeat; height: 16px; width: 16px; display: block; text-indent: -3000px; }
+
+.ext-el-mask { z-index: 9000; }

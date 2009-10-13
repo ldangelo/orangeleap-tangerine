@@ -55,7 +55,7 @@
 	/*height:57px;*/
 	height:33px;
 	/*padding-top:2px;*/
-    z-index: 20001;
+    z-index: 8900;
 }
 #navmain ul {
 	margin: 0;
@@ -127,7 +127,7 @@
 	border-bottom: 1px solid #000;
 	border-left: 1px solid #000;
 	border-right: 1px solid #000;
-	z-index: 20001;
+	z-index: 8901;
 	padding:2px;
 }
 #navmain ul.primaryNav li ul li {

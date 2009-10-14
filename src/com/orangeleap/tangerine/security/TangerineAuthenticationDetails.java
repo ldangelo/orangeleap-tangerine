@@ -113,7 +113,13 @@ public class TangerineAuthenticationDetails implements SessionIdentifierAware, S
 
     @Override
     public String getSessionId() {
-    	if (sessionId == null) return WebUtils.getSessionId(OrangeLeapRequestLocal.getRequest());
+    	if (sessionId == null) {
+    		try {
+    			return WebUtils.getSessionId(OrangeLeapRequestLocal.getRequest());
+    		} catch (Exception e) {
+    			return null;
+    		}
+    	}
         return sessionId;
     }
 

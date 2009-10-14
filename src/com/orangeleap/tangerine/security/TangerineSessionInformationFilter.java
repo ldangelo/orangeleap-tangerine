@@ -120,11 +120,11 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
     
     
     /**
-     * Initialize the TangerineAuthenticationDetails object inside the CasAuthenticationToken.
+     * Initialize the TangerineAuthenticationDetails object inside the Authentication Token.
      * This method will make use of the ConstituentService and PageCustomizationService
      * to load the needed information about the constituent.
      *
-     * @param token the CasAuthenticationToken with the constituent information
+     * @param token the Authentication Token with the constituent information
      */
     public void loadTangerineDetails(Authentication token) {
 

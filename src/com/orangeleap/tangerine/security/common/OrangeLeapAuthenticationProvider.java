@@ -24,7 +24,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
+import org.springframework.security.concurrent.SessionIdentifierAware;
 import org.springframework.security.providers.AuthenticationProvider;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.web.util.WebUtils;
 
 /*
  * Provides an ordered list of authentication providers to call
@@ -60,6 +63,19 @@ public class OrangeLeapAuthenticationProvider implements AuthenticationProvider 
 				if (result != null && result.isAuthenticated()) {
 					logger.debug("Authentication succeeded with "+authentication.getClass().getName());
 					OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().put(OrangeLeapUsernamePasswordLocal.AUTH_TOKEN, result);
+					
+					if (result instanceof UsernamePasswordAuthenticationToken) {
+						UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)result;
+						if (upat.getDetails() == null) {
+							upat.setDetails(new SessionIdentifierAware(){
+								@Override
+								public String getSessionId() {
+									return WebUtils.getSessionId(OrangeLeapRequestLocal.getRequest());
+								}
+							});
+						}
+					}
+					
 					return result;
 				}
 			}

@@ -7,7 +7,9 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.web.util.WebUtils;
 
+import com.orangeleap.tangerine.security.common.OrangeLeapRequestLocal;
 import com.orangeleap.tangerine.security.common.OrangeLeapUsernamePasswordLocal;
 
 public class TangerineWsCallbackHandler extends org.springframework.ws.soap.security.callback.AbstractCallbackHandler  {
@@ -26,7 +28,9 @@ public class TangerineWsCallbackHandler extends org.springframework.ws.soap.secu
 		if (obj instanceof UsernamePasswordAuthenticationToken) {
 			UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken)obj;
 			SecurityContextHolder.getContext().setAuthentication(token);
-			token.setDetails(new TangerineAuthenticationDetails());
+			TangerineAuthenticationDetails tad = new TangerineAuthenticationDetails();
+			token.setDetails(tad);
+			tad.setSessionId(WebUtils.getSessionId(OrangeLeapRequestLocal.getRequest()));
 			tangerineSessionInformationFilter.loadTangerineDetails(token);
 		}
 		

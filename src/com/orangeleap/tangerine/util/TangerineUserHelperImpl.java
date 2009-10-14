@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.jasig.cas.client.validation.Assertion;
-import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -32,10 +30,9 @@ import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.cas.CasAuthenticationToken;
-import org.springframework.security.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 import com.orangeleap.tangerine.service.SiteService;
 
@@ -122,7 +119,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
 
     @Override
     public Map<String, String> getSiteOptionsMap() {
-    	return ((SiteService)applicationContext.getBean("siteService")).getSiteOptionsMap();
+    	return getSiteService().getSiteOptionsMap();
     }
 
     @Override
@@ -132,26 +129,36 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
 
     	//return ((SiteService)applicationContext.getBean("siteService")).getSiteOptionById(id).getOptionValue().toString();
     }
+    
+    private SiteService getSiteService() {
+    	return ((SiteService)applicationContext.getBean("siteService"));
+    }
+
+    public Site getSite(String sitename) {
+    	return getSiteService().readSite(sitename);
+    }
 
     // Used by nightly scheduled job functions
     @Override
     @Transactional
     public void setSystemUserAndSiteName(String siteName) {
-        // Give system user super admin role
-        GrantedAuthority[] ga = new GrantedAuthority[] {new GrantedAuthorityImpl("ROLE_SUPER_ADMIN"), new GrantedAuthorityImpl("ROLE_USER")};
-        User user = new User("system","",true,true,true,true,ga);
-        Assertion assertion = new AssertionImpl("system");
-
-        // Create a fake CAS authentication token
-        CasAuthenticationToken token = new CasAuthenticationToken("tangerine-client-key", user, "none",ga,user,assertion);
-
+       
+    	// Give system user super admin role
+        final GrantedAuthority[] ga = new GrantedAuthority[] {new GrantedAuthorityImpl("ROLE_SUPER_ADMIN"), new GrantedAuthorityImpl("ROLE_USER")};
+        
+        final Site site = getSite(siteName);
+       
         // Set the details so that the operations on this class will still work with one
         // of our fabricated auth tokens
-        TangerineAuthenticationDetails details = new TangerineAuthenticationDetails();
-        details.setUserName("system");
+        final TangerineAuthenticationDetails details = new TangerineAuthenticationDetails();
+        details.setUserName(site.getJasperUserId());
         details.setSite(siteName);
         details.setConstituentId(0L);
-        token.setDetails(details);
+
+        // Create a fake authentication token for tangerine system user
+        Authentication token = new TangerineSystemAuthenticationToken(
+        		site.getJasperUserId(), site.getJasperUserId(), site.getJasperPassword(), details, ga);
+        
 
         SecurityContextHolder.getContext().setAuthentication(token);
     }

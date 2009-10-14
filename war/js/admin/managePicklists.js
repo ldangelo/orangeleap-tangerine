@@ -177,43 +177,43 @@ Ext.onReady(function() {
                 header: 'Short Display Name',
                 dataIndex: 'c',
                 editable: true,
-                editor: displayValFld//,
-//                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-//                    if (record) {
-//                        if (Ext.isEmpty(value)) {
-//                            // No value so highlight this cell as in an error state
-//                            metaData.css += ' x-form-invalid';
-//                            metaData.attr = 'ext:qtip="A value is required"; ext:qclass="x-form-invalid-tip"';
-//                        }
-//                        else if ( ! checkUniqueDisplayVal(value)) {
-//                            metaData.css += ' x-form-invalid';
-//                            metaData.attr = 'ext:qtip="The Short Display Name ' + value + ' is not unique for this picklist."; ext:qclass="x-form-invalid-tip"';
-//                        }
-//                        else {
-//                            metaData.css = '';
-//                            metaData.attr = 'ext:qtip=""';
-//                        }
-//                    }
-//                    return escapeScriptTag(value);
-//                }
+                editor: displayValFld,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    if (record) {
+                        if (Ext.isEmpty(value)) {
+                            // No value so highlight this cell as in an error state
+                            metaData.css += ' x-form-invalid';
+                            metaData.attr = 'ext:qtip="A value is required"; ext:qclass="x-form-invalid-tip"';
+                        }
+                        else if ( ! checkUniqueDisplayVal(value)) {
+                            metaData.css += ' x-form-invalid';
+                            metaData.attr = 'ext:qtip="The Short Display Name ' + value + ' is not unique for this picklist."; ext:qclass="x-form-invalid-tip"';
+                        }
+                        else {
+                            metaData.css = '';
+                            metaData.attr = 'ext:qtip=""';
+                        }
+                    }
+                    return escapeScriptTag(value);
+                }
             },
             {
                 header: 'Long Display Name',
                 dataIndex: 'd',
                 editable: true,
-                editor: longDisplayFld//,
-//                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-//                    return escapeScriptTag(value);
-//                }
+                editor: longDisplayFld,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return escapeScriptTag(value);
+                }
             },
             {
                 header: 'Description',
                 dataIndex: 'e',
                 editable: true,
-                editor: descFld//,
-//                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-//                    return escapeScriptTag(value);
-//                }
+                editor: descFld,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return escapeScriptTag(value);
+                }
             },
             checkColumn,
             {header: 'Customize', width: 95, menuDisabled: true, fixed: true,

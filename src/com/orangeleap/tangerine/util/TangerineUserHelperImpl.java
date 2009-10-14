@@ -65,6 +65,8 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     public TangerineAuthenticationDetails getDetails() {
     	Authentication cat = getToken();
     	if (cat == null) return null;
+    	Object obj = cat.getDetails();
+    	if (!(obj instanceof TangerineAuthenticationDetails)) return null;
     	return (TangerineAuthenticationDetails)cat.getDetails();
     }
 

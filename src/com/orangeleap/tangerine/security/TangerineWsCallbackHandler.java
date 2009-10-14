@@ -7,10 +7,9 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.web.util.WebUtils;
 
-import com.orangeleap.tangerine.security.common.OrangeLeapRequestLocal;
 import com.orangeleap.tangerine.security.common.OrangeLeapUsernamePasswordLocal;
+import com.sun.xml.wss.impl.callback.PasswordValidationCallback;
 
 public class TangerineWsCallbackHandler extends org.springframework.ws.soap.security.callback.AbstractCallbackHandler  {
 	
@@ -24,6 +23,10 @@ public class TangerineWsCallbackHandler extends org.springframework.ws.soap.secu
 	@Override
 	protected void handleInternal(Callback cb) throws IOException, UnsupportedCallbackException {
 		
+		if (!(cb instanceof PasswordValidationCallback)) {
+			return;
+		}
+		
 		// Previous filter failed if this is null.  This is required for tangerineUserHelper.
 		if (SecurityContextHolder.getContext() == null) {
 			return;
@@ -32,9 +35,7 @@ public class TangerineWsCallbackHandler extends org.springframework.ws.soap.secu
 		Object obj = OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().get(OrangeLeapUsernamePasswordLocal.AUTH_TOKEN);
 		if (obj instanceof UsernamePasswordAuthenticationToken) {
 			UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken)obj;
-			TangerineAuthenticationDetails tad = new TangerineAuthenticationDetails();
-			tad.setSessionId(WebUtils.getSessionId(OrangeLeapRequestLocal.getRequest()));
-			token.setDetails(tad);
+			token.setDetails(new TangerineAuthenticationDetails());
 			tangerineSessionInformationFilter.loadTangerineDetails(token);
 		}
 		

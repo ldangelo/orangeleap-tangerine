@@ -18,12 +18,14 @@
 
 package com.orangeleap.tangerine.security;
 
-import com.orangeleap.tangerine.type.AccessType;
-
 import java.io.Serializable;
 import java.util.Map;
 
 import org.springframework.security.concurrent.SessionIdentifierAware;
+import org.springframework.web.util.WebUtils;
+
+import com.orangeleap.tangerine.security.common.OrangeLeapRequestLocal;
+import com.orangeleap.tangerine.type.AccessType;
 
 /**
  * This Object carries the Tangerine-specific information which is needed
@@ -111,6 +113,7 @@ public class TangerineAuthenticationDetails implements SessionIdentifierAware, S
 
     @Override
     public String getSessionId() {
+    	if (sessionId == null) return WebUtils.getSessionId(OrangeLeapRequestLocal.getRequest());
         return sessionId;
     }
 

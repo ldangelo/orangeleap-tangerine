@@ -119,20 +119,6 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
     }
 
     
-    // Non-CAS authenticators (API/LDAP, ireport, quartz) 
-    // TODO  Review if system user is ok to use for these access methods
-    public void loadTangerineDetails(UsernamePasswordAuthenticationToken token) {
-
-    	String principal = token.getPrincipal().toString();
-    	String site = principal.substring(principal.indexOf('@')+1);
-    	
-    	// Set system user with SUPER_ADMIN as current tangerine user
-    	tangerineUserHelper.setSystemUserAndSiteName(site);
-    	
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		token.setDetails(auth.getDetails());
-		
-    }
     
     /**
      * Initialize the TangerineAuthenticationDetails object inside the CasAuthenticationToken.
@@ -141,10 +127,14 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
      *
      * @param token the CasAuthenticationToken with the constituent information
      */
-    private void loadTangerineDetails(CasAuthenticationToken token) {
+    public void loadTangerineDetails(Authentication token) {
 
-        GrantedAuthority[] authorities = token.getAuthorities();
+    	if (!(token.getPrincipal() instanceof LdapUserDetails)) {
+    		throw new RuntimeException("Missing authentication token principal LdapUserDetails.");
+    	}
+    	
         LdapUserDetails user = (LdapUserDetails) token.getPrincipal();
+        GrantedAuthority[] authorities = token.getAuthorities();
 
         String username = user.getUsername();
         String sitename = "";

@@ -1,12 +1,11 @@
 package com.orangeleap.tangerine.security;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.Authentication;
 
 import com.orangeleap.tangerine.security.common.OrangeLeapUsernamePasswordLocal;
 
@@ -22,11 +21,9 @@ public class TangerineWsCallbackHandler extends org.springframework.ws.soap.secu
 	@Override
 	protected void handleInternal(Callback cb) throws IOException, UnsupportedCallbackException {
 		
-		Map<String, Object> info = OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo();
-		Object obj = info.get(OrangeLeapUsernamePasswordLocal.AUTH_TOKEN);
-		if (obj instanceof UsernamePasswordAuthenticationToken) {
-			UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken)obj;
-			tangerineSessionInformationFilter.loadTangerineDetails(authentication);
+		Object obj = OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().get(OrangeLeapUsernamePasswordLocal.AUTH_TOKEN);
+		if (obj instanceof Authentication) {
+			tangerineSessionInformationFilter.loadTangerineDetails((Authentication)obj);
 		}
 		
 	}

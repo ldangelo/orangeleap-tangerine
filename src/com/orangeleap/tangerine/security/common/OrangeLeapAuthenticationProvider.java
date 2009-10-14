@@ -57,9 +57,9 @@ public class OrangeLeapAuthenticationProvider implements AuthenticationProvider 
 				logger.debug("Attempting authentication with "+authentication.getClass().getName());
 				Authentication result = authenticationProvider.authenticate(authentication);
 				// Return first successful authentication
-				if (result != null) {
+				if (result != null && result.isAuthenticated()) {
 					logger.debug("Authentication succeeded with "+authentication.getClass().getName());
-					OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().put(OrangeLeapUsernamePasswordLocal.AUTH_TOKEN, authentication);
+					OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().put(OrangeLeapUsernamePasswordLocal.AUTH_TOKEN, result);
 					return result;
 				}
 			}

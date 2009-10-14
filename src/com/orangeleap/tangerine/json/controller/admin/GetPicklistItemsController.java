@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,20 @@ public class GetPicklistItemsController {
         Picklist picklist = picklistItemService.getPicklist(picklistNameId);
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         if (picklist != null && picklist.getPicklistItems() != null) {
+            Collections.sort(picklist.getPicklistItems(), new Comparator() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    PicklistItem item1 = (PicklistItem) o1;
+                    PicklistItem item2 = (PicklistItem) o2;
+                    if (item1.getItemOrder() == null) {
+                        item1.setItemOrder(0);
+                    }
+                    if (item2.getItemOrder() == null) {
+                        item2.setItemOrder(0);
+                    }
+                    return item1.getItemOrder().compareTo(item2.getItemOrder());
+                }
+            });
             for (PicklistItem item : picklist.getPicklistItems()) {
                 if (item != null) {
                     Map<String, Object> pMap = new HashMap<String, Object>();

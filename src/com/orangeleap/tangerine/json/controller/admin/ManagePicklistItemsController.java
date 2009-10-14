@@ -40,6 +40,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 
 @Controller
 public class ManagePicklistItemsController {
@@ -89,6 +91,14 @@ public class ManagePicklistItemsController {
         picklistItemService.maintainPicklistItems(originalPicklist, modifiedPicklistItems);
 
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+        Collections.sort(modifiedPicklistItems, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                PicklistItem item1 = (PicklistItem) o1;
+                PicklistItem item2 = (PicklistItem) o2;
+                return item1.getItemOrder().compareTo(item2.getItemOrder());
+            }
+        });
         for (PicklistItem item : modifiedPicklistItems) {
             if (item != null) {
                 Map<String, Object> pMap = new HashMap<String, Object>();

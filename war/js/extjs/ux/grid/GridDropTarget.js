@@ -27,33 +27,21 @@ Ext.ux.dd.GridDropTarget = function(grid, config){
 
 Ext.extend(Ext.ux.dd.GridDropTarget, Ext.dd.DropTarget, {
     notifyDrop: function(dd, e, data){
-        var thisGrid = Ext.get('managementGrid');
-        thisGrid.mask("Updating...");
-
         var t = e.getTarget();
         var rindex = this.grid.view.findRowIndex(t);
         var ds = this.grid.getStore();
 
-        ds.suspendEvents(true);
         var sLen = data.selections.length;
         for (i = 0; i < sLen; i++) {
             ds.remove(ds.getById(data.selections[i].id));
         }
         ds.insert(rindex, data.selections);
 
-        var len = ds.data.items.length;
-        for (var x = 0; x < len; x++) {
-            ds.data.items[x].set('f', x + 1);
-        }
-
 		var sm = this.grid.getSelectionModel();
         if (sm) {
             sm.selectRecords(data.selections);
         }
         this.grid.getView().refresh();
-        ds.resumeEvents();
-        
-        thisGrid.unmask();
         return true;
     },
 

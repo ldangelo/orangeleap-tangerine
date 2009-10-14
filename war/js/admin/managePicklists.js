@@ -6,22 +6,27 @@ OrangeLeap.BulkSaveStore = function(config){
 
 Ext.extend(OrangeLeap.BulkSaveStore, Ext.data.JsonStore, {
     save: function() {
+        this.suspendEvents();
+        if (this.data && this.data.items) {
+            var items = this.data.items;
+            var len = items.length;
+            for (var x = 0; x < len; x++) {
+                var nextIndex = x + 1;
+                if (items[x].get('f') != nextIndex) {
+                    items[x].set('f', nextIndex);   // Update the itemOrder if necessary
+                }
+            }
+        }
         var rs = [].concat(this.getModifiedRecords());
         for (var i = rs.length-1; i >= 0; i--) {
             if (!rs[i].isValid()) { // splice-off any !isValid real records
                 rs.splice(i,1);
             }
         }
+        this.resumeEvents();
         this.doTransaction('update', rs);
         return true;
-    }//,
-
-//    afterEdit: function(record) {
-//        // overridden to not consistently fire update after a bulk record edit
-//        if (this.modified.indexOf(record) == -1){
-//            this.modified.push(record);
-//        }
-//    }
+    }
 });
 
 Ext.onReady(function() {
@@ -79,12 +84,41 @@ Ext.onReady(function() {
     numberFld.on('keydown', function(fld, event) {
         saveOnEnter(fld, event);
     });
+    numberFld.on('change', function(fld, newVal, oldVal) {
+        var index = store.find('f', oldVal);
+        if (index > -1) {
+            var endIndex = store.data.items.length - 1;
+            if (endIndex < 0) {
+                endIndex = 0;
+            }
+            var rec = store.getAt(index);
+            store.removeAt(index);
+            if (newVal > 0) {
+                newVal = newVal - 1; // decrement
+            }
+            if (newVal > endIndex) {
+                newVal = endIndex;
+            }
+            rec.set('f', newVal + 1);
+            store.insert(newVal, rec)
+            grid.getView().refresh();
+            setTimeout(function() {
+                var sm = grid.getSelectionModel();
+                if (sm) {
+                    sm.selectRecords(rec);
+                }
+            }, 200);
+        }
+    });
 
     var displayValFld = new Ext.form.TextField({
         allowBlank: false,
         maxLength: 255,
         validator: function(val) {
             var results = true;
+            if (Ext.isEmpty(val)) {
+                results = "This field is required";
+            }
             if ( ! checkUniqueDisplayVal(val)) {
                 results = "The Short Display Name " + val + " is not unique for this picklist.";
             }
@@ -118,7 +152,7 @@ Ext.onReady(function() {
         if (event.getKey() == 13) {
             setTimeout(function() {
                 grid.saveButton.handler();
-            }, 200);
+            }, 100);
         }
     }
 
@@ -133,49 +167,53 @@ Ext.onReady(function() {
                 dataIndex: 'f',
                 width: 23,
                 sortable: false,
-                editor: numberFld
+                editor: numberFld,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    var nextIndex = rowIndex + 1;
+                    return nextIndex;
+                }
             },
             {
                 header: 'Short Display Name',
                 dataIndex: 'c',
                 editable: true,
-                editor: displayValFld,
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    if (record) {
-                        if (Ext.isEmpty(value)) {
-                            // No value so highlight this cell as in an error state
-                            metaData.css += ' x-form-invalid';
-                            metaData.attr = 'ext:qtip="A value is required"; ext:qclass="x-form-invalid-tip"';
-                        }
-                        else if ( ! checkUniqueDisplayVal(value)) {
-                            metaData.css += ' x-form-invalid';
-                            metaData.attr = 'ext:qtip="The Short Display Name ' + value + ' is not unique for this picklist."; ext:qclass="x-form-invalid-tip"';
-                        }
-                        else {
-                            metaData.css = '';
-                            metaData.attr = 'ext:qtip=""';
-                        }
-                    }
-                    return escapeScriptTag(value);
-                }
+                editor: displayValFld//,
+//                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+//                    if (record) {
+//                        if (Ext.isEmpty(value)) {
+//                            // No value so highlight this cell as in an error state
+//                            metaData.css += ' x-form-invalid';
+//                            metaData.attr = 'ext:qtip="A value is required"; ext:qclass="x-form-invalid-tip"';
+//                        }
+//                        else if ( ! checkUniqueDisplayVal(value)) {
+//                            metaData.css += ' x-form-invalid';
+//                            metaData.attr = 'ext:qtip="The Short Display Name ' + value + ' is not unique for this picklist."; ext:qclass="x-form-invalid-tip"';
+//                        }
+//                        else {
+//                            metaData.css = '';
+//                            metaData.attr = 'ext:qtip=""';
+//                        }
+//                    }
+//                    return escapeScriptTag(value);
+//                }
             },
             {
                 header: 'Long Display Name',
                 dataIndex: 'd',
                 editable: true,
-                editor: longDisplayFld,
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return escapeScriptTag(value);
-                }
+                editor: longDisplayFld//,
+//                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+//                    return escapeScriptTag(value);
+//                }
             },
             {
                 header: 'Description',
                 dataIndex: 'e',
                 editable: true,
-                editor: descFld,
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return escapeScriptTag(value);
-                }
+                editor: descFld//,
+//                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+//                    return escapeScriptTag(value);
+//                }
             },
             checkColumn,
             {header: 'Customize', width: 95, menuDisabled: true, fixed: true,
@@ -281,7 +319,6 @@ Ext.onReady(function() {
             }
             store.removeAll();
             store.add(updatedRecords);
-            store.sort('f', 'ASC');
             grid.getView().refresh();
             grid.saveButton.disable();
             grid.undoButton.disable();
@@ -291,7 +328,7 @@ Ext.onReady(function() {
             $("#savedMarker").css('visibility', 'visible');
             setTimeout(function() {
                 $("#savedMarker").css('visibility', 'hidden');
-            }, 20000);
+            }, 15000);
         }
     });
     proxy.on('exception', function(proxy, type, action, options, response, args) {
@@ -346,7 +383,7 @@ Ext.onReady(function() {
                 store.load({ params: { 'picklistNameId' : record.data['nameId'] }, sortInfo: {field: 'f', direction: 'ASC'}, callback: picklistItemsLoaded });
             }
         }
-        if (checkForModifiedRecords()) {
+        if ( ! grid.saveButton.disabled) {
             confirmUndoChanges(function() {
                 doSelect(record);
             }, function() {
@@ -357,14 +394,6 @@ Ext.onReady(function() {
             doSelect(record);
         }
     });
-
-    var checkForModifiedRecords = function() {
-        var hasModified = false;
-        if (store.getModifiedRecords() && store.getModifiedRecords().length > 0) {
-            hasModified = true;
-        }
-        return hasModified;
-    }
 
     var checkDisplayValuesValid = function() {
         var isValid = true;
@@ -428,28 +457,25 @@ Ext.onReady(function() {
         viewConfig: { forceFit: true },
         buttons: [
             {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true, handler: function() {
-                    if (checkForModifiedRecords()) {
-                        if (checkDisplayValuesValid()) {
-                            store.save();
-                        }
-                        else {
-                            Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
-                                buttons: Ext.MessageBox.OK,
-                                msg: 'You must fix the errors in the grid first before saving.'});
-                        }
+                    if (checkDisplayValuesValid()) {
+                        $("#savedMarker").css('visibility', 'hidden');
+                        store.save();
+                    }
+                    else {
+                        Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
+                            buttons: Ext.MessageBox.OK,
+                            msg: 'You must fix the errors in the grid first before saving.'});
                     }
                 }
             },
             {text: 'Undo', cls: 'button', ref: '../undoButton', disabled: true, handler: function() {
-                    if (checkForModifiedRecords()) {
-                        var thisGrid = Ext.get('managementGrid');
-                        thisGrid.mask("Undoing...");
-                        undoChanges();
-                        $("#savedMarker").css('visibility', 'hidden');
-                        grid.saveButton.disable();
-                        grid.undoButton.disable();
-                        thisGrid.unmask();
-                    }
+                    var thisGrid = Ext.get('managementGrid');
+                    thisGrid.mask("Undoing...");
+                    undoChanges();
+                    $("#savedMarker").css('visibility', 'hidden');
+                    grid.saveButton.disable();
+                    grid.undoButton.disable();
+                    thisGrid.unmask();
                 }
             }
         ],
@@ -492,26 +518,23 @@ Ext.onReady(function() {
         grid: grid,
         ddGroup: grid.ddGroup || 'GridDD'
     });
+    grid.on('cellclick', function(grid, rowIndex, columnIndex, event) {
+        if (columnIndex == 1) {
+            var record = store.data.items[rowIndex];
+            var myIndex = rowIndex + 1;
+            if (record.get('f') != myIndex) {
+                record.set('f', myIndex);
+            }
+        }
+    });
     grid.on('sortchange', function() {
         if (store.data && store.data.items) {
-            var thisGrid = Ext.get('managementGrid');
-            thisGrid.mask("Sorting...");
-            store.suspendEvents();
-            var items = store.data.items;
-            var len = items.length;
-            for (var x = 0; x < len; x++) {
-                items[x].set('f', x + 1);
-            }
-            grid.getView().refresh();
             grid.saveButton.enable();
             grid.undoButton.enable();
-            store.resumeEvents();
-            thisGrid.unmask();
         }
     });
 
     var undoChanges = function() {
-        store.suspendEvents();
         store.rejectChanges();
         var len = store.data.items.length;
         var y = 0;
@@ -526,8 +549,6 @@ Ext.onReady(function() {
             store.remove(toRemove[z]);
         }
         store.sort('f', 'ASC');
-        grid.getView().refresh();
-        store.resumeEvents();
     }
 
     $('#managerGrid').keydown(function(e) {

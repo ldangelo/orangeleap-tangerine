@@ -55,12 +55,12 @@ public class GetPicklistItemsController {
                 if (item != null) {
                     Map<String, Object> pMap = new HashMap<String, Object>();
                     pMap.put(StringConstants.ID, item.getId());
-                    pMap.put("itemName", item.getItemName());
-                    pMap.put("displayVal", item.getDefaultDisplayValue());
-                    pMap.put("desc", item.getLongDescription());
-                    pMap.put("detail", item.getDetail());
-                    pMap.put("inactive", item.isInactive());
-                    pMap.put("itemOrder", item.getItemOrder());
+                    pMap.put("b", item.getItemName());
+                    pMap.put("c", item.getDefaultDisplayValue());
+                    pMap.put("d", item.getLongDescription());
+                    pMap.put("e", item.getDetail());
+                    pMap.put("f", item.getItemOrder());
+                    pMap.put("g", item.isInactive());
                     returnList.add(pMap);
                 }
             }

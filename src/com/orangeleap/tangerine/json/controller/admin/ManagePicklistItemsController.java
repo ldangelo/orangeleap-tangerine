@@ -93,12 +93,12 @@ public class ManagePicklistItemsController {
             if (item != null) {
                 Map<String, Object> pMap = new HashMap<String, Object>();
                 pMap.put(StringConstants.ID, item.getId());
-                pMap.put("itemName", item.getItemName());
-                pMap.put("displayVal", item.getDefaultDisplayValue());
-                pMap.put("desc", item.getLongDescription());
-                pMap.put("detail", item.getDetail());
-                pMap.put("inactive", item.isInactive());
-                pMap.put("itemOrder", item.getItemOrder());
+                pMap.put("b", item.getItemName());
+                pMap.put("c", item.getDefaultDisplayValue());
+                pMap.put("d", item.getLongDescription());
+                pMap.put("e", item.getDetail());
+                pMap.put("f", item.getItemOrder());
+                pMap.put("g", item.isInactive());
                 returnList.add(pMap);
             }
         }
@@ -133,25 +133,25 @@ public class ManagePicklistItemsController {
 
     private void populateItem(PicklistItem item, DynaBean bean) {
         if (item != null) {
-            if (bean.getDynaClass().getDynaProperty("displayVal") != null && bean.get("displayVal") != null &&
-                    StringUtils.hasText(bean.get("displayVal").toString())) {
-                item.setDefaultDisplayValue(escapeScriptTag(bean.get("displayVal").toString()));
+            if (bean.getDynaClass().getDynaProperty("c") != null && bean.get("c") != null &&
+                    StringUtils.hasText(bean.get("c").toString())) {
+                item.setDefaultDisplayValue(escapeScriptTag(bean.get("c").toString()));
             }
             else if (item.isNew()) {
                 throw new IllegalArgumentException("Default display value is a required field.");
             }
-            if (bean.getDynaClass().getDynaProperty("desc") != null && bean.get("desc") != null) {
-                item.setLongDescription(escapeScriptTag(bean.get("desc").toString()));
+            if (bean.getDynaClass().getDynaProperty("d") != null && bean.get("d") != null) {
+                item.setLongDescription(escapeScriptTag(bean.get("d").toString()));
             }
-            if (bean.getDynaClass().getDynaProperty("detail") != null && bean.get("detail") != null) {
-                item.setDetail(escapeScriptTag(bean.get("detail").toString()));
+            if (bean.getDynaClass().getDynaProperty("e") != null && bean.get("e") != null) {
+                item.setDetail(escapeScriptTag(bean.get("e").toString()));
             }
-            if (bean.getDynaClass().getDynaProperty("inactive") != null && bean.get("inactive") != null) {
-                item.setInactive(Boolean.TRUE.toString().equalsIgnoreCase(bean.get("inactive").toString()));
+            if (bean.getDynaClass().getDynaProperty("f") != null && bean.get("f") != null && NumberUtils.isDigits(bean.get("f").toString()) &&
+                    Integer.parseInt(bean.get("f").toString()) > -1) {
+                item.setItemOrder(new Integer(bean.get("f").toString()));
             }
-            if (bean.getDynaClass().getDynaProperty("itemOrder") != null && bean.get("itemOrder") != null && NumberUtils.isDigits(bean.get("itemOrder").toString()) &&
-                    Integer.parseInt(bean.get("itemOrder").toString()) > -1) {
-                item.setItemOrder(new Integer(bean.get("itemOrder").toString()));
+            if (bean.getDynaClass().getDynaProperty("g") != null && bean.get("g") != null) {
+                item.setInactive(Boolean.TRUE.toString().equalsIgnoreCase(bean.get("g").toString()));
             }
             else if (item.getItemOrder() == null) {
                 item.setItemOrder(1);

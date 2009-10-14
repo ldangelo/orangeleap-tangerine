@@ -14,7 +14,6 @@ import com.orangeleap.tangerine.test.dataprovider.GiftDataProvider;
 
 public class OrbitalPaymentGatewayTest extends BaseTest {
 	
-
 	 private OrbitalPaymentGateway paymentGateway;
 
     // Don't fail build if gateway is down.
@@ -25,6 +24,8 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 		 paymentGateway = (OrbitalPaymentGateway) applicationContext.getBean("paymentGateway");
 //		 paymentGateway.setConfigFile("/usr/local/paymentech/config/linehandler.properties");
 	 }
+
+    /*
 	 
 	 @Test(groups = { "authorizeTest" }, dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)
 	 public void authorizeTest(Site site, Constituent constituent, Gift gift)
@@ -63,5 +64,5 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 		 assert gift.getIsAuthorized() == true;
 		 assert gift.getIsCaptured() == true;
 	 }
-	 
+	 */
 }

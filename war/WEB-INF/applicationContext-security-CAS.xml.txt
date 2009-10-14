@@ -58,6 +58,11 @@
         	<ref bean="ldapAuthenticationProvider"/>
      	</list>
      </property>
+     <property name="authenticationHelper" ref="tangerineAuthenticationHelper" />
+    </bean>
+
+	<bean id="tangerineAuthenticationHelper" class="com.orangeleap.tangerine.security.TangerineAuthenticationHelper">
+      <property name="tangerineSessionInformationFilter" ref="tangerineFilter" />
     </bean>
     
     

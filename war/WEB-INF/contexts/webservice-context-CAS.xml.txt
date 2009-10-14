@@ -45,7 +45,6 @@
          <property name="callbackHandlers">
              <list>
                  <ref bean="springSecurityHandler"/>
-                 <ref bean="tangerineSecurityHandler"/>
              </list>
          </property>
      </bean>
@@ -53,10 +52,6 @@
     <bean id="springSecurityHandler"
           class="org.springframework.ws.soap.security.xwss.callback.SpringPlainTextPasswordValidationCallbackHandler">
         <property name="authenticationManager" ref="authenticationManager"/>
-    </bean>
-    <bean id="tangerineSecurityHandler"
-          class="com.orangeleap.tangerine.security.TangerineWsCallbackHandler">
-        <property name="tangerineSessionInformationFilter" ref="tangerineFilter"/>
     </bean>
       
 

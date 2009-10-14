@@ -26,7 +26,6 @@ public class OrangeLeapUsernamePasswordLocal {
 	public static final String SITE = "site";
 	public static final String USER_NAME = "username";
 	public static final String PASSWORD = "password";
-	public static final String AUTH_TOKEN = "authToken";
 
     private static ThreadLocal<Map<String, Object>> authinfo = new ThreadLocal<Map<String, Object>>() {
         protected synchronized Map<String, Object> initialValue() {

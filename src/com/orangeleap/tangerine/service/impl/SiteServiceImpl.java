@@ -18,15 +18,53 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.dao.SiteOptionDao;
-import com.orangeleap.tangerine.domain.*;
-import com.orangeleap.tangerine.domain.customization.*;
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.SiteOption;
+import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
+import com.orangeleap.tangerine.domain.customization.FieldValidation;
+import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.VersionService;
-import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
@@ -38,24 +76,6 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.validator.GenericValidator;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.providers.cas.CasAuthenticationToken;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @Service("siteService")
 public class SiteServiceImpl extends AbstractTangerineService implements SiteService {
@@ -104,7 +124,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 			site = siteDao.createSite(new Site(siteName));
 		}
 
-		CasAuthenticationToken authentication = tangerineUserHelper.getToken();
+		Authentication authentication = tangerineUserHelper.getToken();
 
 		if (tangerineUserHelper.lookupUserId() == null) {
 			String name = tangerineUserHelper.lookupUserName();
@@ -128,7 +148,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 	}
 
 	// Create a Constituent object row corresponding to the login user.
-	private Constituent createConstituent(CasAuthenticationToken authentication, String siteName)  throws ConstituentValidationException, BindException, javax.naming.NamingException {
+	private Constituent createConstituent(Authentication authentication, String siteName)  throws ConstituentValidationException, BindException, javax.naming.NamingException {
 		TangerineAuthenticationDetails details = (TangerineAuthenticationDetails)authentication.getDetails();
 	    logger.info("Creating user for login id: "+details.getUserName());
 	    Constituent constituent = constituentService.createDefaultConstituent();

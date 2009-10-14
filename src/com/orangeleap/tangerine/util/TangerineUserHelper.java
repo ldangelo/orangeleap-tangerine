@@ -21,14 +21,13 @@ package com.orangeleap.tangerine.util;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.security.providers.cas.CasAuthenticationToken;
+import org.springframework.security.Authentication;
 
-import com.orangeleap.tangerine.domain.SiteOption;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 
 public interface TangerineUserHelper {
 
-    public CasAuthenticationToken getToken();
+    public Authentication getToken();
 
     public TangerineAuthenticationDetails getDetails();
 

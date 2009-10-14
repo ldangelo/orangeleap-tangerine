@@ -37,7 +37,6 @@ import org.springframework.ldap.core.simple.SimpleLdapTemplate;
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.ui.FilterChainOrder;
 import org.springframework.security.ui.SpringSecurityFilter;
@@ -145,6 +144,7 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
         }
 
         TangerineAuthenticationDetails details = (TangerineAuthenticationDetails) token.getDetails();
+        if (details == null) throw new RuntimeException("Missing authentication details.");
         details.setUserName(username);
         details.setSite(sitename);
         getLdapDetails(details, user.getDn());

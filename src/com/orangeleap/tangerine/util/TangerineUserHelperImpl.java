@@ -28,15 +28,14 @@ import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.AbstractAuthenticationToken;
 import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.orangeleap.tangerine.domain.SiteOption;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 import com.orangeleap.tangerine.service.SiteService;
 
@@ -58,17 +57,13 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
 
 
     @Override
-    public CasAuthenticationToken getToken() {
-        AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication instanceof CasAuthenticationToken) {
-            return (CasAuthenticationToken) authentication;
-        }
-        return null;
+    public Authentication getToken() {
+    	return SecurityContextHolder.getContext().getAuthentication();
     }
 
     @Override
     public TangerineAuthenticationDetails getDetails() {
-    	CasAuthenticationToken cat = getToken();
+    	Authentication cat = getToken();
     	if (cat == null) return null;
     	return (TangerineAuthenticationDetails)cat.getDetails();
     }
@@ -96,7 +91,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
      */
     @Override
     public String lookupUserPassword() {
-    	CasAuthenticationToken token = getToken();
+    	Authentication token = getToken();
         return token == null ? null : (String) token.getCredentials();
     }
 

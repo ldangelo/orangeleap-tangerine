@@ -24,13 +24,17 @@ public class TangerineWsCallbackHandler extends org.springframework.ws.soap.secu
 	@Override
 	protected void handleInternal(Callback cb) throws IOException, UnsupportedCallbackException {
 		
+		// Previous filter failed if this is null.  This is required for tangerineUserHelper.
+		if (SecurityContextHolder.getContext() == null) {
+			return;
+		}
+		
 		Object obj = OrangeLeapUsernamePasswordLocal.getOrangeLeapAuthInfo().get(OrangeLeapUsernamePasswordLocal.AUTH_TOKEN);
 		if (obj instanceof UsernamePasswordAuthenticationToken) {
 			UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken)obj;
-			SecurityContextHolder.getContext().setAuthentication(token);
 			TangerineAuthenticationDetails tad = new TangerineAuthenticationDetails();
-			token.setDetails(tad);
 			tad.setSessionId(WebUtils.getSessionId(OrangeLeapRequestLocal.getRequest()));
+			token.setDetails(tad);
 			tangerineSessionInformationFilter.loadTangerineDetails(token);
 		}
 		

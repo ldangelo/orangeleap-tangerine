@@ -27,7 +27,6 @@ import org.springframework.security.Authentication;
 import org.springframework.security.context.HttpSessionContextIntegrationFilter;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.context.SecurityContextImpl;
-import org.springframework.security.providers.AbstractAuthenticationToken;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.ui.cas.CasProcessingFilter;

@@ -18,25 +18,28 @@
 
 package com.orangeleap.tangerine.controller.importexport.importers;
 
-import com.orangeleap.tangerine.controller.importexport.ImportRequest;
-import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
-import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.util.OLLogger;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import com.orangeleap.tangerine.controller.importexport.ImportRequest;
+import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 
 public class GiftImporter extends EntityImporter {
@@ -45,11 +48,23 @@ public class GiftImporter extends EntityImporter {
 
     private final ConstituentService constituentService;
     private final GiftService giftservice;
+    private final PicklistItemService picklistItemService;
+    private String defaultProjectCode;
 
     public GiftImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
         super(importRequest, applicationContext);
         constituentService = (ConstituentService) applicationContext.getBean("constituentService");
         giftservice = (GiftService) applicationContext.getBean("giftService");
+        picklistItemService = (PicklistItemService) applicationContext.getBean("picklistItemService");
+        defaultProjectCode = getDefaultProjectCode();
+    }
+    
+    private String getDefaultProjectCode() {
+    	Picklist picklist = picklistItemService.getPicklist("projectCode");
+    	List<PicklistItem> items = picklist.getPicklistItems();
+    	if (items == null || items.size() == 0) return "";
+    	PicklistItem item = picklist.getPicklistItems().get(0);
+    	return item.getItemName();
     }
 
     @Override
@@ -121,6 +136,7 @@ public class GiftImporter extends EntityImporter {
         }
 
         DistributionLine dl = new DistributionLine(0L, constituent);
+        dl.setProjectCode(defaultProjectCode);
         dl.setAmount(gift.getAmount());
         dl.setPercentage(new BigDecimal("100.00"));
         gift.clearDistributionLines();

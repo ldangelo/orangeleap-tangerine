@@ -61,9 +61,9 @@ public class GiftImporter extends EntityImporter {
     
     private String getDefaultProjectCode() {
     	Picklist picklist = picklistItemService.getPicklist("projectCode");
-    	List<PicklistItem> items = picklist.getPicklistItems();
+    	List<PicklistItem> items = picklist.getActivePicklistItems();
     	if (items == null || items.size() == 0) return "";
-    	PicklistItem item = picklist.getPicklistItems().get(0);
+    	PicklistItem item = items.get(0);
     	return item.getItemName();
     }
 

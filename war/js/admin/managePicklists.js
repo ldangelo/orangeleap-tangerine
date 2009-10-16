@@ -117,13 +117,24 @@ Ext.onReady(function() {
         trapKeyDown(grid, fld, event, 'addButton');
     });
     numberFld.on('change', function(fld, newVal, oldVal) {
-        var index = store.find('f', oldVal);
-        if (index > -1) {
+        var rec = null;
+        var index = -1;
+        if (Ext.isIE && previouslySelectedRecord) {
+            rec = previouslySelectedRecord; // Apparent bug in Ext/IE where the Store's record value is set to the newVal by the time the change method is called
+            index = store.indexOf(previouslySelectedRecord);
+        }
+        else {
+            index = store.find('f', oldVal);
+            if (index > -1) {
+                rec = store.getAt(index);
+            }
+        }
+
+        if (rec && index > -1) {
             var endIndex = store.data.items.length - 1;
             if (endIndex < 0) {
                 endIndex = 0;
             }
-            var rec = store.getAt(index);
             store.removeAt(index);
             if (newVal > 0) {
                 newVal = newVal - 1; // decrement
@@ -579,10 +590,12 @@ Ext.onReady(function() {
             }
         }
     });
+    var previouslySelectedRec = null;
     grid.on('cellclick', function(grid, rowIndex, columnIndex, event) {
         if (columnIndex == 1) {
             var record = store.data.items[rowIndex];
             var myIndex = rowIndex + 1;
+            previouslySelectedRecord = record;
             if (record.get('f') != myIndex) {
                 record.set('f', myIndex);
             }

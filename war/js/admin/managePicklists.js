@@ -786,6 +786,17 @@ Ext.onReady(function() {
             }
         ]
     });
+    customizeGrid.on('keydown', function(e) {
+        if (e.getKey() == e.A && e.altKey) {
+            Ext.getCmp('addFldButton').handler();
+        }
+    });
+    customizeGrid.on('beforeedit', function(obj) {
+        var fldName = obj.record.get('key');
+        if (fldName && fldName.toLowerCase().indexOf('accountstring') > -1) {
+            obj.cancel = true;
+        }
+    });
 
     var customizeWin = new Ext.Window({
         title: 'Customize Fields <span id="customizedFieldsSavedMarker">Saved</span>',
@@ -825,11 +836,6 @@ Ext.onReady(function() {
     });
 
     customizeWin.add(customizeGrid);
-    customizeGrid.on('keydown', function(e) {
-        if (e.getKey() == e.A && e.altKey) {
-            Ext.getCmp('addFldButton').handler();
-        }
-    });
 
     var customizedPicklistNameId = null;
     var customizedPicklistItemId = null;

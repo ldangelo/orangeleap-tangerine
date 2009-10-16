@@ -23,7 +23,6 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.PicklistItemService;
-import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import net.sf.json.JSONArray;
@@ -35,7 +34,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.util.WebUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +45,7 @@ import java.util.TreeMap;
 
 @Controller
 @RequestMapping("/customizePicklist.json")
-public class PicklistCustomizeController {
+public class PicklistCustomizeController extends AbstractPicklistController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -68,9 +66,7 @@ public class PicklistCustomizeController {
     @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET)
     public ModelMap getCustomFields(HttpServletRequest request, String picklistNameId, Long picklistItemId) {
-        if (!picklistEditAllowed(request)) {
-            throw new RuntimeException("You are not authorized to access this page");
-        }
+        checkPicklistEditAllowed(request);
         ModelMap map = new ModelMap();
         List<Map<String, String>> returnList = new ArrayList<Map<String, String>>();
         if (picklistItemId == null || picklistItemId <= 0) {
@@ -149,12 +145,6 @@ public class PicklistCustomizeController {
         }
     }
 
-	@SuppressWarnings("unchecked")
-	public static boolean picklistEditAllowed(HttpServletRequest request) {
-		Map<String, AccessType> pageAccess = (Map<String, AccessType>)WebUtils.getSessionAttribute(request, "pageAccess");
-		return pageAccess.get("/picklistItems.htm") == AccessType.ALLOWED;
-	}
-
     private boolean isOutOfBoxDependentPicklist(Picklist picklist) {
         return picklist.getPicklistName().equals("stateProvince");
     }
@@ -181,11 +171,12 @@ public class PicklistCustomizeController {
 
     @RequestMapping(method = RequestMethod.POST)
     @SuppressWarnings("unchecked")
-    public ModelMap saveCustomFields(String rows, String picklistNameId, Long picklistItemId) {
+    public ModelMap saveCustomFields(HttpServletRequest request, String rows, String picklistNameId, Long picklistItemId) {
         if (logger.isTraceEnabled()) {
             logger.trace("saveCustomFields: rows = " + rows + " picklistNameId = " + picklistNameId +
                     " picklistItemId = " + picklistItemId);
         }
+        checkPicklistEditAllowed(request);
         Picklist picklist = picklistItemService.getPicklist(picklistNameId);
         if (picklist == null) {
             throw new IllegalArgumentException("The picklist was not found for " + picklistNameId);
@@ -202,8 +193,14 @@ public class PicklistCustomizeController {
         else {
             PicklistItem item = getPicklistItem(picklist, picklistItemId);
             if (isGLCoded(picklist)) {
-                customFieldMap.put(ACCOUNT_STRING_1, getAccountString(customFieldMap, false));
-                customFieldMap.put(ACCOUNT_STRING_2, getAccountString(customFieldMap, true));
+                String accountString = getAccountString(customFieldMap, false);
+                if (StringUtils.hasText(accountString)) {
+                    customFieldMap.put(ACCOUNT_STRING_1, accountString);
+                }
+                accountString = getAccountString(customFieldMap, true);
+                if (StringUtils.hasText(accountString)) {
+                    customFieldMap.put(ACCOUNT_STRING_2, accountString);
+                }
             }
             updateCustomFieldMap(customFieldMap, item);
             item = picklistItemService.maintainPicklistItem(item);

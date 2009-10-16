@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +45,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 @Controller
-public class ManagePicklistItemsController {
+public class ManagePicklistItemsController extends AbstractPicklistController {
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "picklistItemService")
@@ -52,10 +53,12 @@ public class ManagePicklistItemsController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/managePicklistItems.json")
-    public ModelMap managePicklistItems(@RequestParam("rows") String rows, @RequestParam("picklistNameId") String picklistNameId) {
+    public ModelMap managePicklistItems(HttpServletRequest request, @RequestParam("rows") String rows,
+                                        @RequestParam("picklistNameId") String picklistNameId) {
         if (logger.isTraceEnabled()) {
             logger.trace("managePicklistItems: rows = " + rows + " picklistNameId = " + picklistNameId);
         }
+        checkPicklistEditAllowed(request);
         ModelMap map = new ModelMap();
         Picklist originalPicklist = picklistItemService.getPicklist(picklistNameId);
         if (originalPicklist == null) {

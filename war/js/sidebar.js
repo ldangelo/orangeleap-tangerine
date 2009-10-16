@@ -73,6 +73,19 @@ Ext.onReady(function() {
 
     Sidebar.accountStore.load();
 
+    var hideOnEscape = function(e, win) {
+        if (e.keyCode == 27) {
+            win.hide(win);
+        }
+    }
+    Sidebar.win.on('beforeshow', function(win) {
+        $(window).bind('keydown', function(e) {
+            hideOnEscape(e, win);
+        });
+    });
+    Sidebar.win.on('beforehide', function(win) {
+        $(window).unbind('keydown', hideOnEscape);
+    });
 });
 
 Sidebar.majorDonorRenderer = function(val, meta, record) {

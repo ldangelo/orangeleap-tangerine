@@ -643,9 +643,9 @@ Ext.onReady(function() {
             customizeStore.resumeEvents();
             var thisGrid = Ext.get('customizeWin');
             thisGrid.unmask();
-            $("#customizedFieldsSavedMarker").css('display', '');
+            $("#customizedFieldsSavedMarker").show();
             setTimeout(function() {
-                $("#customizedFieldsSavedMarker").css('display', 'none');
+                $("#customizedFieldsSavedMarker").hide();
             }, 10000);
         }
         else {
@@ -797,7 +797,7 @@ Ext.onReady(function() {
                 ref: '../saveButton',
                 handler: function(button, event) {
                     if (checkIfValid(customizeStore, 'key')) {
-                        $("#customizedFieldsSavedMarker").css('visibility', 'hidden');
+                        $("#customizedFieldsSavedMarker").hide();
                         customizeStore.saveAll();
                     }
                     else {

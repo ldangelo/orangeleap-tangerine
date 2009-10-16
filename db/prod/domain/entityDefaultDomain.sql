@@ -64,3 +64,8 @@ values ('unknown', 'customFieldMap[phoneType]', 'phone');
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('unknown', 'customFieldMap[emailType]', 'email');
 
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+values ('', 'customFieldMap[recurringGiftName]', 'recurringGift');
+
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+values ('', 'customFieldMap[pledgeName]', 'pledge');

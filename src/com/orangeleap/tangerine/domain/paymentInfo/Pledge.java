@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.domain.paymentInfo;
 
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
+import org.springframework.util.StringUtils;
 
 import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
@@ -139,8 +140,12 @@ public class Pledge extends Commitment implements Schedulable {
         StringBuilder sb = new StringBuilder();
         if (isRecurring()) {
             sb.append(getAmountPerGift()).append(", ");
-        } else {
+        }
+        else {
             sb.append(getAmountTotal()).append(", ");
+        }
+        if (StringUtils.hasText(getCustomFieldValue("pledgeName"))) {
+            sb.append(getCustomFieldValue("pledgeName")).append(", ");
         }
         sb.append(DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(pledgeDate)).append(", ");
         if (isRecurring()) {

@@ -12,7 +12,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.pledgeCancelReason', 'pledge', 'pledgeCancelReason', 'Pledge Cancel Reason', 'LONG_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.associatedGiftIdsReadOnly', 'pledge', 'gift', 'associatedGiftIds', 'Associated Gifts', 'SELECTION_DISPLAY');
 
-
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.customFieldMap[pledgeName]', 'pledge', 'customFieldMap[pledgeName]', 'Pledge Name', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.customFieldMap[initialReminder]', 'pledge', 'customFieldMap[initialReminder]', 'Initial Reminder (days)', 'NUMBER');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.customFieldMap[maximumReminders]', 'pledge', 'customFieldMap[maximumReminders]', 'Maximum Reminders', 'NUMBER');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('pledge.customFieldMap[reminderInterval]', 'pledge', 'customFieldMap[reminderInterval]', 'Reminder Interval (days)', 'NUMBER');

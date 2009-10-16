@@ -19,12 +19,14 @@
 package com.orangeleap.tangerine.domain.paymentInfo;
 
 import com.orangeleap.tangerine.domain.Schedulable;
+import org.springframework.util.StringUtils;
 
 import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class RecurringGift extends Commitment implements Schedulable {
 
@@ -83,6 +85,9 @@ public class RecurringGift extends Commitment implements Schedulable {
 	public String getShortDescription() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getAmountPerGift()).append(", ");
+        if (StringUtils.hasText(getCustomFieldValue("recurringGiftName"))) {
+            sb.append(getCustomFieldValue("recurringGiftName")).append(", ");
+        }
 		sb.append(getFrequency()).append(", ");
 
 		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());

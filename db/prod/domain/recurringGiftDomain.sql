@@ -10,6 +10,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.associatedGiftIdsReadOnly', 'recurringGift', 'gift', 'associatedGiftIds', 'Associated Gifts', 'SELECTION_DISPLAY');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.recurringGiftStatus', 'recurringGift', 'recurringGiftStatus', 'Status', 'PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[recurringGiftName]', 'recurringGift', 'customFieldMap[recurringGiftName]', 'Recurring Gift Name', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[initialReminder]', 'recurringGift', 'customFieldMap[initialReminder]', 'Initial Reminder (days)', 'NUMBER');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[maximumReminders]', 'recurringGift', 'customFieldMap[maximumReminders]', 'Maximum Reminders', 'NUMBER');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[reminderInterval]', 'recurringGift', 'customFieldMap[reminderInterval]', 'Reminder Interval (days)', 'NUMBER');

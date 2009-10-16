@@ -5,26 +5,29 @@ OrangeLeap.BulkSaveStore = function(config){
 };
 
 Ext.extend(OrangeLeap.BulkSaveStore, Ext.data.JsonStore, {
-    doSave: function(rs) {
+    removeInvalid: function(rs) {
         for (var i = rs.length-1; i >= 0; i--) {
             if (!rs[i].isValid()) { // splice-off any !isValid real records
                 rs.splice(i,1);
             }
         }
-        this.doTransaction('update', rs);
-        return true;
     },
 
     /* Save only modified records */
     save: function() {
         var rs = [].concat(this.getModifiedRecords());
-        this.doSave(rs);
+        this.removeInvalid(rs);
+        this.doTransaction('update', rs);
+        return true;
     },
 
     /* Save all records, regardless if they are modified or not */
     saveAll: function() {
         var rs = [].concat(this.data.items);
-        this.doSave(rs);
+        this.removeInvalid(rs);
+        var txn = rs.length > 0 ? 'update' : 'destroy';
+        this.doTransaction(txn, rs);
+        return true;
     }
 });
 

@@ -779,7 +779,7 @@ Ext.onReady(function() {
                     if (fldName && fldName.toLowerCase().indexOf('accountstring') > -1) {
                         return '';
                     }
-                    return '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.get('id') + '" title="Remove Custom Field">Remove</a>';
+                    return '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id + '" title="Remove Custom Field">Remove</a>';
                 }
             }
         ],
@@ -789,7 +789,6 @@ Ext.onReady(function() {
                     var cgStore = customizeGrid.getStore();
                     var CustFld = cgStore.recordType;
                     var field = new CustFld({
-                        id: '0',
                         key: '',
                         value: ''
                     });

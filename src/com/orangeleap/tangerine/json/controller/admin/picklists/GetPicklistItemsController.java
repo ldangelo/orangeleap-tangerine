@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.json.controller.admin;
+package com.orangeleap.tangerine.json.controller.admin.picklists;
 
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
@@ -64,7 +64,12 @@ public class GetPicklistItemsController {
                     if (item2.getItemOrder() == null) {
                         item2.setItemOrder(0);
                     }
-                    return item1.getItemOrder().compareTo(item2.getItemOrder());
+                    int compared = item1.getItemOrder().compareTo(item2.getItemOrder());
+                    if (compared == 0) {
+                        compared = item1.getDefaultDisplayValue() != null ? item1.getDefaultDisplayValue().compareTo(item2.getDefaultDisplayValue()) :
+                                (item2.getDefaultDisplayValue() != null ? (-1 * item2.getDefaultDisplayValue().compareTo(item1.getDefaultDisplayValue())) : 0);
+                    }
+                    return compared;
                 }
             });
             for (PicklistItem item : picklist.getPicklistItems()) {

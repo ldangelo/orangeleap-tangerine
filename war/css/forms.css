@@ -249,7 +249,7 @@ table.tablesorter tbody tr.lineRow td a.hideText { top: 0; right: 0; padding: 1p
     cursor: default;
 }
 
-#savedMarker {
+#savedMarker, .savedIcon {
 	background:transparent url(../images/icons/check-eee.gif) no-repeat center left;
 	margin-left:12px;
 	padding-left:18px;

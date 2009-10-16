@@ -5,6 +5,34 @@ OrangeLeap.BulkSaveStore = function(config){
 };
 
 Ext.extend(OrangeLeap.BulkSaveStore, Ext.data.JsonStore, {
+    doSave: function(rs) {
+        for (var i = rs.length-1; i >= 0; i--) {
+            if (!rs[i].isValid()) { // splice-off any !isValid real records
+                rs.splice(i,1);
+            }
+        }
+        this.doTransaction('update', rs);
+        return true;
+    },
+
+    /* Save only modified records */
+    save: function() {
+        var rs = [].concat(this.getModifiedRecords());
+        this.doSave(rs);
+    },
+
+    /* Save all records, regardless if they are modified or not */
+    saveAll: function() {
+        var rs = [].concat(this.data.items);
+        this.doSave(rs);
+    }
+});
+
+OrangeLeap.OrderedBulkSaveStore = function(config){
+ 	OrangeLeap.OrderedBulkSaveStore.superclass.constructor.call(this, config);
+};
+
+Ext.extend(OrangeLeap.OrderedBulkSaveStore, OrangeLeap.BulkSaveStore, {
     save: function() {
         this.suspendEvents();
         if (this.data && this.data.items) {
@@ -36,15 +64,15 @@ Ext.onReady(function() {
        width: 55
     });
 
-    function checkUniqueDisplayVal(val) {
+    function checkUnique(storeObj, fieldName, val) {
         var isUnique = true;
         var valCount = 0;
-        if (val && store.data && store.data.items) {
-            var len = store.data.items.length;
+        if (val && storeObj.data && storeObj.data.items) {
+            var len = storeObj.data.items.length;
             for (var x = 0; x < len; x++) {
                 if (valCount < 2) {
-                    var thisItem = store.data.items[x];
-                    if (thisItem.get('c').toLowerCase() == val.toLowerCase()) {
+                    var thisItem = storeObj.data.items[x];
+                    if (thisItem.get(fieldName).toLowerCase() == val.toLowerCase()) {
                         valCount++;
                     }
                 }
@@ -82,7 +110,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     numberFld.on('keydown', function(fld, event) {
-        saveOnEnter(fld, event);
+        saveOnEnter(grid, fld, event);
     });
     numberFld.on('change', function(fld, newVal, oldVal) {
         var index = store.find('f', oldVal);
@@ -119,7 +147,7 @@ Ext.onReady(function() {
             if (Ext.isEmpty(val)) {
                 results = "This field is required";
             }
-            if ( ! checkUniqueDisplayVal(val)) {
+            if ( ! checkUnique(store, 'c', val)) {
                 results = "The Short Display Name " + val + " is not unique for this picklist.";
             }
             return results;
@@ -127,7 +155,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     displayValFld.on('keydown', function(fld, event) {
-        saveOnEnter(fld, event);
+        saveOnEnter(grid, fld, event);
     });
 
     var longDisplayFld = new Ext.form.TextField({
@@ -136,7 +164,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     longDisplayFld.on('keydown', function(fld, event) {
-        saveOnEnter(fld, event);
+        saveOnEnter(grid, fld, event);
     });
 
     var descFld = new Ext.form.TextField({
@@ -145,13 +173,13 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     descFld.on('keydown', function(fld, event) {
-        saveOnEnter(fld, event);
+        saveOnEnter(grid, fld, event);
     });
 
-    var saveOnEnter = function(fld, event) {
+    var saveOnEnter = function(obj, fld, event) {
         if (event.getKey() == 13) {
             setTimeout(function() {
-                grid.saveButton.handler();
+                obj.saveButton.handler();
             }, 100);
         }
     }
@@ -185,7 +213,7 @@ Ext.onReady(function() {
                             metaData.css += ' x-form-invalid';
                             metaData.attr = 'ext:qtip="A value is required"; ext:qclass="x-form-invalid-tip"';
                         }
-                        else if ( ! checkUniqueDisplayVal(value)) {
+                        else if ( ! checkUnique(store, 'c', value)) {
                             metaData.css += ' x-form-invalid';
                             metaData.attr = 'ext:qtip="The Short Display Name ' + value + ' is not unique for this picklist."; ext:qclass="x-form-invalid-tip"';
                         }
@@ -220,7 +248,9 @@ Ext.onReady(function() {
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     var url = 'picklistItemCustomize.htm?picklistNameId=' + escape(combo.getValue()) + '&picklistItemId=' +
                               record.data['id'] + '&defaultDisplayValue=' + escape(record.data['c']);
-                    return '<a href="javascript:void(0)" onclick="Manager.customize(\'' + url + '\')" class="customizeLink">Customize</a>';
+                    return '<a href="javascript:void(0)" class="customizeLink' +
+                           (Ext.isNumber(parseInt(record.data['id'], 10)) && parseInt(record.data['id'], 10) > 0 ? '' : ' disabled') +
+                           '" id="custom-link-' + record.data['id'] + '" title="Customize">Customize</a>';
                 } 
             }
         ]
@@ -254,7 +284,7 @@ Ext.onReady(function() {
 
     var writer = new Ext.data.JsonWriter({ listful: true });
 
-    var store = new OrangeLeap.BulkSaveStore({
+    var store = new OrangeLeap.OrderedBulkSaveStore({
         batch: true,
         proxy: proxy,
         writer: writer,
@@ -395,25 +425,25 @@ Ext.onReady(function() {
         }
     });
 
-    var checkDisplayValuesValid = function() {
+    var checkIfValid = function(storeObj, key) {
         var isValid = true;
         var valCtMap = {};
-        if (store.data && store.data.items) {
-            var len = store.data.items.length;
+        if (storeObj.data && storeObj.data.items) {
+            var len = storeObj.data.items.length;
             for (var x = 0; x < len; x++) {
-                var thisDisplayValue = store.data.items[x].get('c');
-                if (Ext.isEmpty(thisDisplayValue)) {
+                var thisVal = storeObj.data.items[x].get(key);
+                if (Ext.isEmpty(thisVal)) {
                     isValid = false;
                     break;
                 }
                 else {
-                    thisDisplayValue = thisDisplayValue.toLowerCase();
-                    if ( ! valCtMap[thisDisplayValue]) {
-                        valCtMap[thisDisplayValue] = 1;
+                    thisVal = thisVal.toLowerCase();
+                    if ( ! valCtMap[thisVal]) {
+                        valCtMap[thisVal] = 1;
                     }
                     else {
-                        var count = valCtMap[thisDisplayValue];
-                        valCtMap[thisDisplayValue] = ++count;
+                        var count = valCtMap[thisVal];
+                        valCtMap[thisVal] = ++count;
                         if (count > 1) {
                             isValid = false;
                             break;
@@ -457,14 +487,14 @@ Ext.onReady(function() {
         viewConfig: { forceFit: true },
         buttons: [
             {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true, handler: function() {
-                    if (checkDisplayValuesValid()) {
+                    if (checkIfValid(store, 'c')) {
                         $("#savedMarker").css('visibility', 'hidden');
                         store.save();
                     }
                     else {
                         Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
                             buttons: Ext.MessageBox.OK,
-                            msg: 'You must fix the errors in the grid first before saving.'});
+                            msg: 'You must fix the highlighted errors first before saving.'});
                     }
                 }
             },
@@ -490,7 +520,8 @@ Ext.onReady(function() {
             'Picklist: ', ' ', combo, ' ', ' ', '-',
             { text: 'Customize', tooltip:'Customize Picklist', iconCls: 'customize', ref: '../customizeButton',
               disabled: true, handler: function(button, event) {
-                    Manager.customize('picklistCustomize.htm?picklistNameId=' + escape(combo.getValue()));
+                    var picklistNameId = combo.getValue();
+                    customizeThisPicklist({ 'picklistNameId': picklistNameId }, combo.getRawValue(), picklistNameId, null);
                 }
             }, '-',
             { text: 'Add Item', tooltip:'Add a new Picklist Item', iconCls:'add', id: 'addButton', ref: '../addButton',
@@ -517,6 +548,27 @@ Ext.onReady(function() {
     var dropTgt = new Ext.ux.dd.GridDropTarget(grid.getEl(), {
         grid: grid,
         ddGroup: grid.ddGroup || 'GridDD'
+    });
+
+    grid.on('click', function(event) {
+        var target = event.getTarget('a.customizeLink');
+        if (target) {
+            event.stopPropagation();
+            var id = target.id;
+            id = id.replace('custom-link-', '');
+            id = parseInt(id, 10);
+            if (Ext.isNumber(id) && id > 0) {
+                var rec = store.getById(id);
+                var picklistNameId = combo.getValue();
+                customizeThisPicklist({ 'picklistNameId': picklistNameId, 'picklistItemId': id },
+                        combo.getRawValue() + ': ' + (rec ? rec.get('c') : ''), picklistNameId, id);
+            }
+            else {
+                Ext.MessageBox.show({ title: 'Save Item First', icon: Ext.MessageBox.INFO,
+                    buttons: Ext.MessageBox.OK,
+                    msg: 'You must save this item first before you can customize it.'});
+            }
+        }
     });
     grid.on('cellclick', function(grid, rowIndex, columnIndex, event) {
         if (columnIndex == 1) {
@@ -556,12 +608,248 @@ Ext.onReady(function() {
             Ext.getCmp('addButton').handler();
         }
     });
-});
 
-Ext.ns('Manager');
-Manager.customize = function(url) {
-    if (url) {
-        
+    /* All of the following below is to Customize a Picklist and a Picklist Item */
+    var customizeProxy = new Ext.data.HttpProxy({
+        api: {
+            read: {url: 'customizePicklist.json', method: 'GET'},
+            load: {url: 'customizePicklist.json', method: 'GET'},
+            create: {url: 'customizePicklist.json', method: 'POST'},
+            update: {url: 'customizePicklist.json', method: 'POST'},
+            destroy: {url: 'customizePicklist.json', method: 'POST'}
+        }
+    });
+    var customizeSaveError = function() {
+        var thisGrid = Ext.get('customizeWin');
+        thisGrid.unmask();
+        Ext.MessageBox.show({ title: 'Error', icon: Ext.MessageBox.ERROR,
+            buttons: Ext.MessageBox.OK,
+            msg: 'The custom field changes could not be saved.  Please try again or contact your administrator if this issue continues.'});
     }
-}
+
+    customizeProxy.on('write', function(proxy, action, data, response, records, options) {
+        if (response.success === 'true') {
+            customizeStore.suspendEvents();
+            customizeStore.removeAll();
+            
+            var dataLength = data.length;
+            var updatedRecords = [];
+            for (var y = 0; y < dataLength; y++) {
+                updatedRecords[updatedRecords.length] = new customizeStore.recordType(data[y], data[y].id);
+            }
+            customizeStore.add(updatedRecords);
+            customizeGrid.getView().refresh();
+            customizeWin.saveButton.disable();
+            customizeStore.resumeEvents();
+            var thisGrid = Ext.get('customizeWin');
+            thisGrid.unmask();
+            $("#customizedFieldsSavedMarker").css('display', '');
+            setTimeout(function() {
+                $("#customizedFieldsSavedMarker").css('display', 'none');
+            }, 10000);
+        }
+        else {
+            customizeSaveError();
+        }
+    });
+    customizeProxy.on('exception', function(proxy, type, action, options, response, args) {
+        customizeSaveError();
+    });
+    
+    var customizeWriter = new Ext.data.JsonWriter({ listful: true, writeAllFields: true });
+
+    var customizeStore = new OrangeLeap.BulkSaveStore({
+        batch: true,
+        proxy: customizeProxy,
+        writer: customizeWriter,
+        autoSave: false,
+        remoteSort: false,
+        totalProperty: 'totalRows',
+        root: 'rows',
+        fields:[
+            {name: 'id', type: 'string'},
+            {name: 'key', type: 'string'},
+            {name: 'value', type: 'string'}
+        ]
+    });
+    customizeStore.on('beforewrite', function(proxy, action, rs, options, args) {
+        var thisGrid = Ext.get('customizeWin');
+        thisGrid.mask("Saving...");
+        if (options) {
+            if (customizedPicklistNameId) {
+                options.params['picklistNameId'] = customizedPicklistNameId;
+            }
+            if (customizedPicklistItemId) {
+                options.params['picklistItemId'] = customizedPicklistItemId;
+            }
+        }
+    });
+    customizeStore.on('add', function(store, records, index) {
+        customizeWin.saveButton.enable();
+    });
+    customizeStore.on('update', function(store, record, operation) {
+        customizeWin.saveButton.enable();
+    });
+
+    var cusFieldNameFld = new Ext.form.TextField({
+        allowBlank: false,
+        maxLength: 255,
+        enableKeyEvents: true,
+        validator: function(val) {
+            var results = true;
+            if (Ext.isEmpty(val)) {
+                results = "This field is required";
+            }
+            if ( ! checkUnique(customizeStore, 'key', val)) {
+                results = "The custom field name " + val + " is not unique.";
+            }
+            return results;
+        }
+    });
+    cusFieldNameFld.on('keydown', function(fld, event) {
+        saveOnEnter(customizeWin, fld, event);
+    });
+    
+    var cusFieldValueFld = new Ext.form.TextField({
+        allowBlank: true,
+        maxLength: 255,
+        enableKeyEvents: true
+    });
+    cusFieldValueFld.on('keydown', function(fld, event) {
+        saveOnEnter(customizeWin, fld, event);
+    });
+
+    var customizeGrid = new Ext.grid.EditorGridPanel({
+        store: customizeStore,
+        header: false,
+        frame: false,
+        border: false,
+        id: 'customizeGrid',
+        viewConfig: { forceFit: true },
+        clicksToEdit: 1,
+        columns: [
+            {   header: 'Field Name', 
+                width: 170,
+                sortable: true,
+                dataIndex: 'key',
+                align: 'left',
+                editable: true,
+                editor: cusFieldNameFld,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    if (record) {
+                        if (Ext.isEmpty(value)) {
+                            metaData.css += ' x-form-invalid';
+                            metaData.attr = 'ext:qtip="A custom field name is required"; ext:qclass="x-form-invalid-tip"';
+                        }
+                        else if ( ! checkUnique(customizeStore, 'key', value)) {
+                            metaData.css += ' x-form-invalid';
+                            metaData.attr = 'ext:qtip="The custom field name ' + value + ' is not unique."; ext:qclass="x-form-invalid-tip"';
+                        }
+                        else {
+                            metaData.css = '';
+                            metaData.attr = 'ext:qtip=""';
+                        }
+                    }
+                    return escapeScriptTag(value);
+                }
+            },
+            {   header: 'Field Default',
+                width: 170,
+                sortable: true,
+                dataIndex: 'value',
+                align: 'left',
+                editable: true,
+                editor: cusFieldValueFld,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return escapeScriptTag(value);
+                }
+            }
+        ],
+        tbar: [
+            { text: 'Add New', tooltip:'Add a new Custom Field', iconCls:'add', id: 'addFldButton', ref: '../addFldButton',
+              handler: function() {
+                    var cgStore = customizeGrid.getStore();
+                    var CustFld = cgStore.recordType;
+                    var field = new CustFld({
+                        id: '0',
+                        key: '',
+                        value: ''
+                    });
+                    customizeGrid.stopEditing();
+                    var nextIndex = cgStore.getCount();
+                    cgStore.add(field);
+                    customizeGrid.startEditing(nextIndex, 0);
+                }
+            }
+        ]
+    });
+
+    var customizeWin = new Ext.Window({
+        title: 'Customize Fields <span id="customizedFieldsSavedMarker">Saved</span>',
+        layout: 'fit',
+        width: 350,
+        height: 300,
+        id: 'customizeWin',
+        buttons: [
+            {   text: 'Save',
+                disabled: true,
+                cls: 'saveButton',
+                ref: '../saveButton',
+                handler: function(button, event) {
+                    if (checkIfValid(customizeStore, 'key')) {
+                        $("#customizedFieldsSavedMarker").css('visibility', 'hidden');
+                        customizeStore.saveAll();
+                    }
+                    else {
+                        Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
+                            buttons: Ext.MessageBox.OK,
+                            msg: 'You must fix the highlighted errors first before saving.'});
+                    }
+                }
+            },
+            {   text: 'Close',
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    customizeWin.hide(this);
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        modal: true,
+        closable: false,
+        closeAction: 'hide'
+    });
+
+    customizeWin.add(customizeGrid);
+    customizeGrid.on('keydown', function(e) {
+        if (e.getKey() == 65) {
+            Ext.getCmp('addFldButton').handler();
+        }
+    });
+
+    var customizedPicklistNameId = null;
+    var customizedPicklistItemId = null;
+
+    var customizeThisPicklist = function(params, title, picklistNameId, picklistItemId) {
+        customizedPicklistNameId = picklistNameId;
+        customizedPicklistItemId = picklistItemId;
+        
+        customizeStore.load({ params: params, sortInfo: { field: 'key', direction: 'ASC'},
+            callback: function(records, options, success) {
+                if (success) {
+                    if (title) {
+                        customizeWin.setTitle('Customize Fields for ' + title + ' <span id="customizedFieldsSavedMarker" class="savedIcon">Saved</span>');
+                    }
+                    customizeWin.show();
+                }
+                else {
+                    Ext.MessageBox.show({ title: 'Error', icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.MessageBox.OK,
+                        msg: 'Could not load the customize window.  Please try again or contact your administrator if this issue continues.'});
+                }
+            }
+        });
+    }
+});
 

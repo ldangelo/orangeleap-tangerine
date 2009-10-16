@@ -89,14 +89,36 @@ div#managerGrid table.saveButton td.x-btn-mc,
     div#managerGrid table.button td.x-btn-mc, 
     div#managerGrid table.button td.x-btn-bl, 
     div#managerGrid table.button td.x-btn-br, 
-    div#managerGrid table.button td.x-btn-bc  { background-image: none; }
+    div#managerGrid table.button td.x-btn-bc,
+    div#customizeWin table.saveButton td.x-btn-mc, 
+    div#customizeWin table.saveButton td.x-btn-tl, 
+    div#customizeWin table.saveButton td.x-btn-tr, 
+    div#customizeWin table.saveButton td.x-btn-tc, 
+    div#customizeWin table.saveButton td.x-btn-ml, 
+    div#customizeWin table.saveButton td.x-btn-mr, 
+    div#customizeWin table.saveButton td.x-btn-mc, 
+    div#customizeWin table.saveButton td.x-btn-bl, 
+    div#customizeWin table.saveButton td.x-btn-br, 
+    div#customizeWin table.saveButton td.x-btn-bc,
+    div#customizeWin table.button td.x-btn-mc, 
+    div#customizeWin table.button td.x-btn-tl, 
+    div#customizeWin table.button td.x-btn-tr, 
+    div#customizeWin table.button td.x-btn-tc, 
+    div#customizeWin table.button td.x-btn-ml, 
+    div#customizeWin table.button td.x-btn-mr, 
+    div#customizeWin table.button td.x-btn-mc, 
+    div#customizeWin table.button td.x-btn-bl, 
+    div#customizeWin table.button td.x-btn-br, 
+    div#customizeWin table.button td.x-btn-bc { background-image: none; }
 
 #managementGrid #savedMarker { visibility: hidden; font-size: 12px; }
+#customizeWin #customizedFieldsSavedMarker { display: none; font-size: 11px; }
 
 a.customizeLink { background-image: url(../images/icons/gears.png); background-position: top left; background-repeat: no-repeat; height: 16px; width: 16px; display: block; text-indent: -3000px; }
+a.customizeLink.disabled { background-image: url(../images/icons/gearsDisabled.png); cursor: default; }
 
 .ext-el-mask { z-index: 9000; background-color: #000; }
 
-#managementGrid .ext-el-mask { background-color: #EFEFEF; }
+div .ext-el-mask { background-color: #EFEFEF; }
 
 div.x-window-dlg { z-index: 12000; }

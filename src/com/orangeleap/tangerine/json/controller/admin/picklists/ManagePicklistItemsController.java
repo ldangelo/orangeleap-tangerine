@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.json.controller.admin;
+package com.orangeleap.tangerine.json.controller.admin.picklists;
 
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
@@ -54,7 +54,7 @@ public class ManagePicklistItemsController {
     @RequestMapping("/managePicklistItems.json")
     public ModelMap managePicklistItems(@RequestParam("rows") String rows, @RequestParam("picklistNameId") String picklistNameId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("managePicklistItems:");
+            logger.trace("managePicklistItems: rows = " + rows + " picklistNameId = " + picklistNameId);
         }
         ModelMap map = new ModelMap();
         Picklist originalPicklist = picklistItemService.getPicklist(picklistNameId);

@@ -661,7 +661,6 @@ Ext.onReady(function() {
             }
             customizeStore.add(updatedRecords);
             customizeGrid.getView().refresh();
-            customizeWin.saveButton.disable();
             customizeStore.resumeEvents();
             var thisGrid = Ext.get('customizeWin');
             thisGrid.unmask();
@@ -705,12 +704,6 @@ Ext.onReady(function() {
                 options.params['picklistItemId'] = customizedPicklistItemId;
             }
         }
-    });
-    customizeStore.on('add', function(store, records, index) {
-        customizeWin.saveButton.enable();
-    });
-    customizeStore.on('update', function(store, record, operation) {
-        customizeWin.saveButton.enable();
     });
 
     var cusFieldNameFld = new Ext.form.TextField({
@@ -833,7 +826,6 @@ Ext.onReady(function() {
                 id = id.replace('delete-link-', '');
                 var rec = customizeStore.getById(id);
                 customizeStore.remove(rec);
-                customizeWin.saveButton.enable();
             }
         }
     });
@@ -846,7 +838,6 @@ Ext.onReady(function() {
         id: 'customizeWin',
         buttons: [
             {   text: 'Save',
-                disabled: true,
                 cls: 'saveButton',
                 ref: '../saveButton',
                 handler: function(button, event) {

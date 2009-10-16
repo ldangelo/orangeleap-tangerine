@@ -23,7 +23,7 @@
 	</sql>
 
     <sql id="ERROR_LOG_ROWCOUNT_FRAGMENT">
-        select count(1)
+        select count(*)
         from ERROR_LOG el
         where el.SITE_NAME = #siteName#
     </sql>

@@ -823,7 +823,7 @@ Ext.onReady(function() {
 
     customizeWin.add(customizeGrid);
     customizeGrid.on('keydown', function(e) {
-        if (e.getKey() == 65) {
+        if (e.getKey() == 65 && e.altKey) {
             Ext.getCmp('addFldButton').handler();
         }
     });

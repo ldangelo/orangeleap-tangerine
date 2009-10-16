@@ -64,7 +64,7 @@ Ext.onReady(function() {
        width: 55
     });
 
-    function checkUnique(storeObj, fieldName, val) {
+    function checkUnique(storeObj, fieldName, val, isCaseSensitive) {
         var isUnique = true;
         var valCount = 0;
         if (val && storeObj.data && storeObj.data.items) {
@@ -72,7 +72,8 @@ Ext.onReady(function() {
             for (var x = 0; x < len; x++) {
                 if (valCount < 2) {
                     var thisItem = storeObj.data.items[x];
-                    if (thisItem.get(fieldName).toLowerCase() == val.toLowerCase()) {
+                    if ((isCaseSensitive && thisItem.get(fieldName).toLowerCase() == val.toLowerCase()) ||
+                        ( ! isCaseSensitive && thisItem.get(fieldName) == val)){
                         valCount++;
                     }
                 }
@@ -147,7 +148,7 @@ Ext.onReady(function() {
             if (Ext.isEmpty(val)) {
                 results = "This field is required";
             }
-            if ( ! checkUnique(store, 'c', val)) {
+            if ( ! checkUnique(store, 'c', val, true)) {
                 results = "The Short Display Name " + val + " is not unique for this picklist.";
             }
             return results;
@@ -216,7 +217,7 @@ Ext.onReady(function() {
                             metaData.css += ' x-form-invalid';
                             metaData.attr = 'ext:qtip="A value is required"; ext:qclass="x-form-invalid-tip"';
                         }
-                        else if ( ! checkUnique(store, 'c', value)) {
+                        else if ( ! checkUnique(store, 'c', value, true)) {
                             metaData.css += ' x-form-invalid';
                             metaData.attr = 'ext:qtip="The Short Display Name ' + value + ' is not unique for this picklist."; ext:qclass="x-form-invalid-tip"';
                         }
@@ -428,7 +429,7 @@ Ext.onReady(function() {
         }
     });
 
-    var checkIfValid = function(storeObj, key) {
+    var checkIfValid = function(storeObj, key, isCaseSensitive) {
         var isValid = true;
         var valCtMap = {};
         if (storeObj.data && storeObj.data.items) {
@@ -440,7 +441,9 @@ Ext.onReady(function() {
                     break;
                 }
                 else {
-                    thisVal = thisVal.toLowerCase();
+                    if (isCaseSensitive) {
+                        thisVal = thisVal.toLowerCase();
+                    }
                     if ( ! valCtMap[thisVal]) {
                         valCtMap[thisVal] = 1;
                     }
@@ -490,7 +493,7 @@ Ext.onReady(function() {
         viewConfig: { forceFit: true },
         buttons: [
             {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true, handler: function() {
-                    if (checkIfValid(store, 'c')) {
+                    if (checkIfValid(store, 'c', true)) {
                         $("#savedMarker").css('visibility', 'hidden');
                         store.save();
                     }
@@ -703,7 +706,7 @@ Ext.onReady(function() {
             if (Ext.isEmpty(val)) {
                 results = "This field is required";
             }
-            if ( ! checkUnique(customizeStore, 'key', val)) {
+            if ( ! checkUnique(customizeStore, 'key', val, false)) {
                 results = "The custom field name " + val + " is not unique.";
             }
             return results;
@@ -744,7 +747,7 @@ Ext.onReady(function() {
                             metaData.css += ' x-form-invalid';
                             metaData.attr = 'ext:qtip="A custom field name is required"; ext:qclass="x-form-invalid-tip"';
                         }
-                        else if ( ! checkUnique(customizeStore, 'key', value)) {
+                        else if ( ! checkUnique(customizeStore, 'key', value, false)) {
                             metaData.css += ' x-form-invalid';
                             metaData.attr = 'ext:qtip="The custom field name ' + value + ' is not unique."; ext:qclass="x-form-invalid-tip"';
                         }
@@ -810,7 +813,7 @@ Ext.onReady(function() {
                 cls: 'saveButton',
                 ref: '../saveButton',
                 handler: function(button, event) {
-                    if (checkIfValid(customizeStore, 'key')) {
+                    if (checkIfValid(customizeStore, 'key', false)) {
                         $("#customizedFieldsSavedMarker").hide();
                         customizeStore.saveAll();
                     }

@@ -863,6 +863,19 @@ Ext.onReady(function() {
     });
 
     customizeWin.add(customizeGrid);
+    var hideOnEscape = function(e, win) {
+        if (e.keyCode == 27) {
+            win.hide();
+        }
+    }
+    customizeWin.on('beforeshow', function(win) {
+        $(window).bind('keydown', function(e) {
+            hideOnEscape(e, win);
+        });
+    });
+    customizeWin.on('beforehide', function(win) {
+        $(window).unbind('keydown', hideOnEscape);
+    });
 
     var customizedPicklistNameId = null;
     var customizedPicklistItemId = null;

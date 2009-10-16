@@ -110,7 +110,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     numberFld.on('keydown', function(fld, event) {
-        saveOnEnter(grid, fld, event);
+        trapKeyDown(grid, fld, event, 'addButton');
     });
     numberFld.on('change', function(fld, newVal, oldVal) {
         var index = store.find('f', oldVal);
@@ -155,7 +155,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     displayValFld.on('keydown', function(fld, event) {
-        saveOnEnter(grid, fld, event);
+        trapKeyDown(grid, fld, event, 'addButton');
     });
 
     var longDisplayFld = new Ext.form.TextField({
@@ -164,7 +164,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     longDisplayFld.on('keydown', function(fld, event) {
-        saveOnEnter(grid, fld, event);
+        trapKeyDown(grid, fld, event, 'addButton');
     });
 
     var descFld = new Ext.form.TextField({
@@ -173,14 +173,17 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     descFld.on('keydown', function(fld, event) {
-        saveOnEnter(grid, fld, event);
+        trapKeyDown(grid, fld, event, 'addButton');
     });
 
-    var saveOnEnter = function(obj, fld, event) {
-        if (event.getKey() == 13) {
+    var trapKeyDown = function(obj, fld, event, addButtonId) {
+        if (event.getKey() == event.ENTER) {
             setTimeout(function() {
                 obj.saveButton.handler();
             }, 100);
+        }
+        else if (event.getKey() == event.A && event.altKey) {
+            Ext.getCmp(addButtonId).handler();
         }
     }
 
@@ -604,7 +607,7 @@ Ext.onReady(function() {
     }
 
     $('#managerGrid').keydown(function(e) {
-        if (e.keyCode == 65 && e.altKey) {
+        if (e.keyCode == e.A && e.altKey) {
             Ext.getCmp('addButton').handler();
         }
     });
@@ -707,7 +710,7 @@ Ext.onReady(function() {
         }
     });
     cusFieldNameFld.on('keydown', function(fld, event) {
-        saveOnEnter(customizeWin, fld, event);
+        trapKeyDown(customizeWin, fld, event, 'addFldButton');
     });
     
     var cusFieldValueFld = new Ext.form.TextField({
@@ -716,7 +719,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     cusFieldValueFld.on('keydown', function(fld, event) {
-        saveOnEnter(customizeWin, fld, event);
+        trapKeyDown(customizeWin, fld, event, 'addFldButton');
     });
 
     var customizeGrid = new Ext.grid.EditorGridPanel({
@@ -823,7 +826,7 @@ Ext.onReady(function() {
 
     customizeWin.add(customizeGrid);
     customizeGrid.on('keydown', function(e) {
-        if (e.getKey() == 65 && e.altKey) {
+        if (e.getKey() == e.A && e.altKey) {
             Ext.getCmp('addFldButton').handler();
         }
     });

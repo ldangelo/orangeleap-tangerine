@@ -114,9 +114,6 @@ public class PicklistCustomizeController {
     @SuppressWarnings("unchecked")
     private void appendToModelMap(ModelMap map, List<Map<String, String>> returnList,
                                   Map<String, String> customFieldNameValueMap, Picklist picklist) {
-        if (customFieldNameValueMap.isEmpty()) {
-            customFieldNameValueMap.put(StringConstants.EMPTY, StringConstants.EMPTY);
-        }
         for (Map.Entry<String, String> entry : customFieldNameValueMap.entrySet()) {
             Map<String, String> fldMap = new HashMap<String, String>();
             fldMap.put(StringConstants.ID, entry.getKey()); 

@@ -769,6 +769,15 @@ Ext.onReady(function() {
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     return escapeScriptTag(value);
                 }
+            },
+            {   header: ' ', width: 25, menuDisabled: true, fixed: true,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    var fldName = record.get('key');
+                    if (fldName && fldName.toLowerCase().indexOf('accountstring') > -1) {
+                        return '';
+                    }
+                    return '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.get('id') + '" title="Remove Custom Field">Remove</a>';
+                }
             }
         ],
         tbar: [
@@ -800,11 +809,24 @@ Ext.onReady(function() {
             obj.cancel = true;
         }
     });
+    customizeGrid.on('click', function(event) {
+        var target = event.getTarget('a.deleteLink');
+        if (target) {
+            event.stopPropagation();
+            var id = target.id;
+            if (id) {
+                id = id.replace('delete-link-', '');
+                var rec = customizeStore.getById(id);
+                customizeStore.remove(rec);
+                customizeWin.saveButton.enable();
+            }
+        }
+    });
 
     var customizeWin = new Ext.Window({
         title: 'Customize Fields <span id="customizedFieldsSavedMarker">Saved</span>',
         layout: 'fit',
-        width: 350,
+        width: 400,
         height: 300,
         id: 'customizeWin',
         buttons: [

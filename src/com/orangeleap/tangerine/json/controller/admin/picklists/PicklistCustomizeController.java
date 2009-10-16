@@ -255,14 +255,15 @@ public class PicklistCustomizeController {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> e : map.entrySet()) {
             if (e.getKey().matches("^[0-9]+-.*")) {
-                String value = e.getValue().trim();
-                boolean hasValue = value.length() > 0;
+                boolean hasValue = ! BLANK.equals(e.getValue()) && StringUtils.hasText(e.getValue());
                 if (sb.length() > 0) {
                     if (hasValue || extraDash) {
                         sb.append("-");
                     }
                 }
-                sb.append(e.getValue());
+                if (hasValue) {
+                    sb.append(e.getValue());
+                }
             }
         }
         return sb.toString();

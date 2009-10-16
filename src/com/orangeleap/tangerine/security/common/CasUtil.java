@@ -32,7 +32,6 @@ import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.ui.cas.CasProcessingFilter;
 
 import com.jaspersoft.jasperserver.irplugin.JServer;
-import com.orangeleap.tangerine.util.TangerineSystemAuthenticationToken;
 
 public class CasUtil {
 	
@@ -63,7 +62,7 @@ public class CasUtil {
 			jserver.setUsername(CasProcessingFilter.CAS_STATELESS_IDENTIFIER);
 			jserver.setPassword(getProxyTicketFor(baseUrl)); 
 			
-		} else if (authentication instanceof TangerineSystemAuthenticationToken) {
+		} else if (authentication instanceof OrangeLeapSystemAuthenticationToken) {
 
 			jserver.setUsername(""+authentication.getPrincipal());
 			jserver.setPassword(""+authentication.getCredentials()); 

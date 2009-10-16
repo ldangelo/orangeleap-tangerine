@@ -10,6 +10,7 @@
     </bean>
 
 
+    <!-- the following are deprecated and will be removed -->
     <bean id="picklistItemHelper" class="com.orangeleap.tangerine.controller.picklist.PicklistItemHelperController">
         <property name="viewName" value="picklist/picklistItemHelper"/>
     </bean>
@@ -38,14 +39,13 @@
     <bean id="picklistItemUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
+                <prop key="/picklistItems.htm">managePicklistsController</prop>
+
+                <!-- the following are deprecated and will be removed -->
                 <prop key="/picklistItemHelper.htm">picklistItemHelper</prop>
                 <prop key="/picklistItem.htm">picklistItem</prop>
-                <prop key="/picklistItems.htm">picklistItems</prop>
                 <prop key="/picklistCustomize.htm">picklistCustomize</prop>
                 <prop key="/picklistItemCustomize.htm">picklistItemCustomize</prop>
-
-
-                <prop key="/managePicklists.htm">managePicklistsController</prop>
 			</props>
 		</property>
 	</bean>

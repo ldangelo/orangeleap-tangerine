@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
+import com.orangeleap.tangerine.security.common.OrangeLeapSystemAuthenticationToken;
 import com.orangeleap.tangerine.service.SiteService;
 
 public class TangerineUserHelperImpl implements TangerineUserHelper, ApplicationContextAware {
@@ -156,7 +157,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
         details.setConstituentId(0L);
 
         // Create a fake authentication token for tangerine system user
-        Authentication token = new TangerineSystemAuthenticationToken(
+        Authentication token = new OrangeLeapSystemAuthenticationToken(
         		site.getJasperUserId(), site.getJasperUserId(), site.getJasperPassword(), details, ga);
         
 

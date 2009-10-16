@@ -32,6 +32,7 @@
     </publications>
 
     <dependencies>
+
         <!-- Commons -->
         <dependency org="commons-collections" name="commons-collections" transitive="false" rev="3.2.1">
             <artifact name="commons-collections" type="jar"/>
@@ -90,8 +91,8 @@
         </dependency>
 
         <!-- Custom JsonView -->
-        <dependency org="com.mpower" name="JsonView" transitive="false" rev="1.1">
-            <artifact name="JsonView" type="jar"/>
+        <dependency org="com.orangeleap" name="jsonView" transitive="false" rev="1.2">
+            <artifact name="jsonView" type="jar"/>
         </dependency>
 
         <!-- Ant -->

@@ -75,12 +75,13 @@ public class GiftControllerHelper {
     }
 
     public boolean showGiftPaidView(Gift gift) {
-    	return isEnteredGift(gift) &&
-			    ((PaymentType.OTHER.getPaymentName().equals(gift.getPaymentType()) && Gift.STATUS_PAID.equals(gift.getGiftStatus())) ||
+    	return isEnteredGift(gift) && Gift.STATUS_PAID.equals(gift.getGiftStatus()) && 
+			    (PaymentType.OTHER.getPaymentName().equals(gift.getPaymentType()) ||
 			    PaymentType.CASH.getPaymentName().equals(gift.getPaymentType()) ||
 			    PaymentType.CHECK.getPaymentName().equals(gift.getPaymentType()) ||
-    			((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&
-    					Gift.STATUS_PAID.equals(gift.getGiftStatus()) && Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
+    			((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) ||
+                        PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&
+                        Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
     }
 
     public void validateGiftViewStatusChange(Gift gift) {

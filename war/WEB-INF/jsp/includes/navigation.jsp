@@ -99,7 +99,7 @@
 					if (contextPrefix == null) contextPrefix = "";
 					pageContext.setAttribute("contextPrefix",contextPrefix);
 					%>
-						<a href="../${contextPrefix}jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
+						<a href="../${contextPrefix}jasperserver/" target="_blank"><spring:message code="reporting"/></a>
 					</li>
 					<li>
 			            <c:if test="${pageAccess['/importexport.htm']=='ALLOWED'}">

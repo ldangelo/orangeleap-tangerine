@@ -37,8 +37,6 @@ public class CasUtil {
 	
 	public static void populateJserverWithCasCredentials(JServer jserver, String baseUrl) {
 		
-		if (!"true".equalsIgnoreCase(System.getProperty("use.cas"))) return; // TODO remove
-		
         Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication instanceof UsernamePasswordAuthenticationToken) {

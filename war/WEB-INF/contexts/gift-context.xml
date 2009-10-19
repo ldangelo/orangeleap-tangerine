@@ -5,23 +5,34 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="abstractGiftController" class="com.orangeleap.tangerine.controller.gift.AbstractGiftController" parent="abstractDistributionLineFormController" abstract="true">
-		<property name="bindAddress" value="true"/>
-		<property name="bindPhone" value="true"/>
-        <property name="bindPaymentSource" value="true"/>
+	<bean id="giftControllerHelper" class="com.orangeleap.tangerine.controller.gift.GiftControllerHelper">
         <property name="giftUrl" value="redirect:/gift.htm" />
-        <property name="giftViewUrl" value="redirect:/giftView.htm" />
+        <property name="giftPaidUrl" value="redirect:/giftPaid.htm" />
+        <property name="giftPostedUrl" value="redirect:/giftPosted.htm" />
     </bean>
 
-	<bean id="giftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="abstractGiftController">
+	<bean id="giftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="abstractDistributionLineFormController">
         <property name="formView" value="gift/gift" />
         <property name="successView" value="redirect:/gift.htm" />
+        <property name="bindAddress" value="true"/>
+        <property name="bindPhone" value="true"/>
+        <property name="bindPaymentSource" value="true"/>
+        <property name="giftControllerHelper" ref="giftControllerHelper"/>
     </bean>
 
-	<bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="tangerineConstituentAttributesFormController">
-	    <property name="formView" value="gift/giftView"/>
-	    <property name="successView" value="redirect:/giftView.htm"/>
+	<bean id="giftPaidController" class="com.orangeleap.tangerine.controller.gift.GiftPaidController" parent="tangerineConstituentAttributesFormController">
+	    <property name="formView" value="gift/giftPaid"/>
+	    <property name="successView" value="redirect:/giftPaid.htm"/>
+        <property name="bindAddress" value="true"/>
+        <property name="bindPhone" value="true"/>
+        <property name="giftControllerHelper" ref="giftControllerHelper"/>
 	</bean>
+
+    <bean id="giftPostedController" class="com.orangeleap.tangerine.controller.gift.GiftPostedController" parent="tangerineConstituentAttributesFormController">
+        <property name="formView" value="gift/giftPosted"/>
+        <property name="successView" value="redirect:/giftPosted.htm"/>
+        <property name="giftControllerHelper" ref="giftControllerHelper"/>
+    </bean>
 
 	<bean id="giftSearchController" class="com.orangeleap.tangerine.controller.gift.GiftSearchFormController">
 	    <property name="commandName" value="gift"/>
@@ -62,7 +73,8 @@
 		<property name="mappings">
 		    <props>
 			    <prop key="/gift.htm">giftFormController</prop>
-			    <prop key="/giftView.htm">giftViewController</prop>
+			    <prop key="/giftPaid.htm">giftPaidController</prop>
+                <prop key="/giftPosted.htm">giftPostedController</prop>
 			    <prop key="/adjustedGift.htm">adjustedGiftController</prop>
 			    <prop key="/adjustedGiftView.htm">adjustedGiftViewController</prop>
 			    <prop key="/giftCombinedDistributionLines.htm">giftPledgeRecurringGiftLinesController</prop>

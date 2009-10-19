@@ -20,7 +20,7 @@
 
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
-					<c:if test="${pageAccess['/giftView.htm']!='DENIED'}">
+					<c:if test="${pageAccess['/giftPaid.htm']!='DENIED'}">
                         <input type="button" value="<spring:message code='cancel'/>" class="button" id="cancelButton"/>
 					</c:if>
 				</div>
@@ -29,7 +29,7 @@
                 <script type="text/javascript">
                     $(function() {
                         $("#cancelButton").click(function() {
-                            OrangeLeap.gotoUrl('giftView.htm?constituentId=${constituent.id}&giftId=${form.domainObject.originalGiftId}');
+                            OrangeLeap.gotoUrl('giftPaid.htm?constituentId=${constituent.id}&giftId=${form.domainObject.originalGiftId}');
                         });
                     });
                 </script>

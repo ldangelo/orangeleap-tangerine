@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <page:applyDecorator name="form">
-	<spring:message code='viewGift' var="titleText" scope="request" />
+	<spring:message code='editGift' var="titleText" scope="request" />
 	<spring:message code='submit' var="submitText" />
 	<c:if test="${requestScope.hideAdjustGiftButton == false}">
         <spring:message code='adjust' var="clickText"  />
@@ -25,7 +25,7 @@
 
 				<%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
 
-				<tangerine:fields pageName="giftView"/>
+				<tangerine:fields pageName="giftPaid"/>
 				
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />

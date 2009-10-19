@@ -31,7 +31,8 @@ public enum PageType {
     giftSearch("/giftSearch.htm"),
     giftSearchResults("/giftSearchResults.htm"),
 	giftCombinedDistributionLines("/giftCombinedDistributionLines.htm"),
-    giftView("/giftView.htm"),
+    giftPaid("/giftPaid.htm"),
+    giftPosted("/giftPosted.htm"),
     adjustedGift("/adjustedGift.htm"),
     adjustedGiftList("/adjustedGiftList.htm"),
     adjustedGiftView("/adjustedGiftView.htm"),
@@ -82,8 +83,7 @@ public enum PageType {
     siteSettings("/siteSettings.htm"),
     postbatch("/postbatch.htm"),
     logView("/logView.htm"),
-    screenDefinition("/screenDefinition.htm")
-    ;
+    screenDefinition("/screenDefinition.htm");
 
     private String pageName;
 

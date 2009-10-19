@@ -29,7 +29,7 @@
 			            <span class="secondary ${requestScope.thisUrl eq '/gift.htm' ? 'active' : ''}">
 				            <a class="${(requestScope.thisUrl eq '/gift.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="gift.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newGift"/></a>
 							<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-			            		<a class="${((requestScope.thisUrl eq '/gift.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/giftList.htm' || requestScope.thisUrl eq '/giftView.htm' || requestScope.thisUrl eq '/adjustedGift.htm' || requestScope.thisUrl eq '/adjustedGiftView.htm') ? 'active' : ''}" href="giftList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="gifts"/></a>
+			            		<a class="${((requestScope.thisUrl eq '/gift.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/giftList.htm' || requestScope.thisUrl eq '/giftPaid.htm' || requestScope.thisUrl eq '/adjustedGift.htm' || requestScope.thisUrl eq '/adjustedGiftView.htm') ? 'active' : ''}" href="giftList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="gifts"/></a>
 							</c:if>
 							<a class="${(requestScope.thisUrl eq '/recurringGift.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="recurringGift.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newRecurringGift"/></a>
 				            <c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">

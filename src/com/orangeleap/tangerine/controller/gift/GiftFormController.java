@@ -26,7 +26,6 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.type.PaymentType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.lang.math.NumberUtils;
@@ -42,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-public class GiftFormController extends AbstractGiftController {
+public class GiftFormController extends AbstractMutableGridFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -56,6 +55,12 @@ public class GiftFormController extends AbstractGiftController {
 	@Resource(name = "picklistItemService")
 	protected PicklistItemService picklistItemService;
 
+    protected GiftControllerHelper giftControllerHelper;
+
+    public void setGiftControllerHelper(GiftControllerHelper giftControllerHelper) {
+        this.giftControllerHelper = giftControllerHelper;
+    }
+
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         Gift gift = giftService.readGiftByIdCreateIfNull(getConstituent(request), request.getParameter(StringConstants.GIFT_ID));
@@ -65,21 +70,8 @@ public class GiftFormController extends AbstractGiftController {
 	    return gift;
     }
 
-    private boolean isEnteredGift(Gift gift) {
-    	return gift != null && !gift.isNew();
-    }
-
     private boolean canReprocessGift(Gift gift) {
-    	return isEnteredGift(gift) && (Gift.PAY_STATUS_DECLINED.equals(gift.getPaymentStatus()) || Gift.PAY_STATUS_ERROR.equals(gift.getPaymentStatus()));
-    }
-
-    private boolean showGiftView(Gift gift) {
-    	return isEnteredGift(gift) &&
-			    ((PaymentType.OTHER.getPaymentName().equals(gift.getPaymentType()) && Gift.STATUS_PAID.equals(gift.getGiftStatus())) || 
-			    PaymentType.CASH.getPaymentName().equals(gift.getPaymentType()) ||
-			    PaymentType.CHECK.getPaymentName().equals(gift.getPaymentType()) ||
-    			((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&
-    					Gift.STATUS_PAID.equals(gift.getGiftStatus()) && Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
+    	return giftControllerHelper.isEnteredGift(gift) && (Gift.PAY_STATUS_DECLINED.equals(gift.getPaymentStatus()) || Gift.PAY_STATUS_ERROR.equals(gift.getPaymentStatus()));
     }
 
 	@Override
@@ -88,9 +80,16 @@ public class GiftFormController extends AbstractGiftController {
         TangerineForm form = (TangerineForm) formBackingObject(request);
 		Gift gift = (Gift) form.getDomainObject();
 
-        if (showGiftView(gift)) {
-            String redirectUrl = appendGiftParameters(request, giftViewUrl, gift);
-            if ("true".equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
+        if (giftControllerHelper.showGiftPaidView(gift)) {
+            String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPaidUrl(), gift, getConstituentId(request));
+            if (Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
+                redirectUrl = appendSaved(redirectUrl);
+            }
+        	mav = new ModelAndView(redirectUrl);
+        }
+        else if (giftControllerHelper.showGiftPostedView(gift)) {
+            String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPostedUrl(), gift, getConstituentId(request));
+            if (Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
                 redirectUrl = appendSaved(redirectUrl);
             }
         	mav = new ModelAndView(redirectUrl);
@@ -134,7 +133,7 @@ public class GiftFormController extends AbstractGiftController {
 		TangerineForm form = (TangerineForm) command;
 		Gift gift = (Gift) form.getDomainObject();
         checkAssociations(gift);
-        validateGiftStatusChange(gift);
+        giftControllerHelper.validateGiftViewStatusChange(gift);
 
         boolean saved = true;
         try {
@@ -155,7 +154,17 @@ public class GiftFormController extends AbstractGiftController {
 
         ModelAndView mav;
         if (saved) {
-            mav = new ModelAndView(super.appendSaved(appendGiftParameters(request, getSuccessView(), gift)));
+            if (giftControllerHelper.showGiftPaidView(gift)) {
+                String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPaidUrl(), gift, getConstituentId(request));
+                mav = new ModelAndView(redirectUrl);
+            }
+            else if (giftControllerHelper.showGiftPostedView(gift)) {
+                String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPostedUrl(), gift, getConstituentId(request));
+                mav = new ModelAndView(redirectUrl);
+            }
+            else {
+                mav = new ModelAndView(super.appendSaved(giftControllerHelper.appendGiftParameters(getSuccessView(), gift, getConstituentId(request))));
+            }
         }
         else {
 			checkAssociations(gift);
@@ -164,16 +173,6 @@ public class GiftFormController extends AbstractGiftController {
         return mav;
     }
 	
-	private void validateGiftStatusChange(Gift gift) {
-		if (gift == null || gift.isNew() || gift.getId() == null) return;
-		Gift oldgift = giftService.readGiftById(gift.getId());
-		if (oldgift == null) return;
-		if (Gift.STATUS_PAID.equals(oldgift.getGiftStatus()) && !Gift.STATUS_PAID.equals(gift.getGiftStatus())) {
-			// Can't change from Paid to non-Paid
-			gift.setGiftStatus(oldgift.getGiftStatus());
-		}
-	}
-
     protected void checkAssociations(Gift gift) {
         giftService.checkAssociatedPledgeIds(gift);
         giftService.checkAssociatedRecurringGiftIds(gift);

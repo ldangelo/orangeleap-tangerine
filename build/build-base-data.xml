@@ -36,14 +36,15 @@
 	     	<transaction src="${basedir}/db/prod/domain/communicationHistoryDomain.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/dashboardDomain.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/cacheGroupDomain.sql"/>
-	     	
+
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/constituent.sql"/> 
             <transaction src="${basedir}/db/prod/pages/constituentList.sql"/> 
 	     	<transaction src="${basedir}/db/prod/pages/constituentSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/constituentSearchResults.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftPaid.sql"/>
+            <transaction src="${basedir}/db/prod/pages/giftPosted.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentManager.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentSourceList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentManagerEdit.sql"/>
@@ -82,7 +83,7 @@
 		    <transaction src="${basedir}/db/prod/pages/giftCombinedDistributionLines.sql"/>
 
 	     	<!-- Query Lookups -->
-	     	<transaction src="db/prod/domain/queryLookupDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/queryLookupDomain.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/queryLookup.sql"/>
 	     	
 	     	<!-- Field Validation -->

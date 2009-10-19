@@ -54,7 +54,7 @@
                               <td>
                                   <c:if test="${sourceEntity == 'recurringgift' || sourceEntity == 'pledge'}">
                                   <c:if test="${scheduledItem.resultEntity == 'gift' }">
-                                  <a href="giftView.htm?giftId=${scheduledItem.resultEntityId}&constituentId=${param.constituentId}">View Gift</a>
+                                  <a href="giftPaid.htm?giftId=${scheduledItem.resultEntityId}&constituentId=${param.constituentId}">View Gift</a>
                                   </c:if>
                                   <c:if test="${scheduledItem.resultEntity == 'adjustedgift' }">
                                   <a href="adjustedGiftView.htm?adjustedGiftId=${scheduledItem.resultEntityId}&constituentId=${param.constituentId}">View Adjusted Gift</a>

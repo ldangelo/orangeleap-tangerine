@@ -58,7 +58,7 @@ public class GiftPostedController extends TangerineConstituentAttributesFormCont
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 	    TangerineForm form = (TangerineForm) command;
 	    Gift gift = (Gift) form.getDomainObject();
-        giftControllerHelper.validateGiftViewStatusChange(gift);
+        giftControllerHelper.validateGiftStatusChange(gift);
 
         ModelAndView mav;
 	    try {

@@ -133,7 +133,7 @@ public class GiftFormController extends AbstractMutableGridFormController {
 		TangerineForm form = (TangerineForm) command;
 		Gift gift = (Gift) form.getDomainObject();
         checkAssociations(gift);
-        giftControllerHelper.validateGiftViewStatusChange(gift);
+        giftControllerHelper.validateGiftStatusChange(gift);
 
         boolean saved = true;
         try {

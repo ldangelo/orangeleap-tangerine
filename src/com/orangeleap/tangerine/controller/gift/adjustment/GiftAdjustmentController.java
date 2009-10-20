@@ -22,6 +22,7 @@ import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormCon
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -77,6 +78,7 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 	    TangerineForm form = (TangerineForm) command;
 	    AdjustedGift anAdjustedGift = (AdjustedGift) form.getDomainObject();
+        validateAdjustedGiftStatusChange(anAdjustedGift);
 
         ModelAndView mav;
 	    try {
@@ -94,5 +96,17 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
     private String getRedirectUrl(HttpServletRequest request, String view, Long adjustedGiftId) {
         return new StringBuilder(view).append("?").append(StringConstants.ADJUSTED_GIFT_ID).append("=").append(adjustedGiftId).
                 append("&").append(StringConstants.CONSTITUENT_ID).append("=").append(super.getConstituentId(request)).toString();
+    }
+
+    public void validateAdjustedGiftStatusChange(AdjustedGift adjustedGift) {
+        if (adjustedGift != null && !adjustedGift.isNew()) {
+            AdjustedGift oldAdjustedGift = adjustedGiftService.readAdjustedGiftById(adjustedGift.getId());
+            if (oldAdjustedGift != null) {
+                if (Gift.STATUS_PAID.equals(oldAdjustedGift.getAdjustedStatus()) && !Gift.STATUS_PAID.equals(adjustedGift.getAdjustedStatus())) {
+                    // Can't change from Paid to non-Paid in view
+                    adjustedGift.setAdjustedStatus(oldAdjustedGift.getAdjustedStatus());
+                }
+            }
+        }
     }
 }

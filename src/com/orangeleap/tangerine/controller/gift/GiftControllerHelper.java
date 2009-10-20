@@ -84,7 +84,7 @@ public class GiftControllerHelper {
                         Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
     }
 
-    public void validateGiftViewStatusChange(Gift gift) {
+    public void validateGiftStatusChange(Gift gift) {
         if (gift != null && !gift.isNew()) {
             Gift oldGift = giftService.readGiftById(gift.getId());
             if (oldGift != null) {

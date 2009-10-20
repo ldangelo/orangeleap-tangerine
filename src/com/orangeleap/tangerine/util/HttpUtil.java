@@ -18,11 +18,11 @@
 
 package com.orangeleap.tangerine.util;
 
+import org.apache.commons.logging.Log;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
 
 public class HttpUtil {
 
@@ -62,7 +62,7 @@ public class HttpUtil {
 
     public static String jsEscape(String s) {
     	if (s != null) {
-			s = s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\'", "\\\'").replace("\r","").replace("\n","\\n");
+			s = s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\'", "\\\'").replace("\r", " ").replace("\n", " ");
     	}
     	return s;
     }

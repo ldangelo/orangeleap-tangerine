@@ -90,23 +90,29 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth != null && (auth instanceof CasAuthenticationToken) && auth.isAuthenticated()) {
+        	
+        	// Sync due to potential multiple calls from ajax
+        	synchronized (this) {
 
-            // Set some session values based on LDAP login information, but only do this once
-            // to save unnecessary LDAP calls
-            if (WebUtils.getSessionAttribute(request, "pageAccess") == null) {
-
-                CasAuthenticationToken token = (CasAuthenticationToken) auth;
-                loadTangerineDetails(token);
-
-                TangerineAuthenticationDetails details = (TangerineAuthenticationDetails) token.getDetails();
-
-                HttpUtil.setCookie("siteCookie", details.getSite(), Integer.MAX_VALUE, response);
-                WebUtils.setSessionAttribute(request, "pageAccess", details.getPageAccess());
-                WebUtils.setSessionAttribute(request, "passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
-                WebUtils.setSessionAttribute(request, "lastLoginDate", ldapService.getLastLogin());
-                WebUtils.setSessionAttribute(request, "currentDate", new Date());
-                ldapService.setLastLogin();
-            }
+	            // Set some session values based on LDAP login information, but only do this once
+	            // to save unnecessary LDAP calls
+	            if (WebUtils.getSessionAttribute(request, "pageAccess") == null) {
+	
+	                CasAuthenticationToken token = (CasAuthenticationToken) auth;
+	                loadTangerineDetails(token);
+	
+	                TangerineAuthenticationDetails details = (TangerineAuthenticationDetails) token.getDetails();
+	
+	                HttpUtil.setCookie("siteCookie", details.getSite(), Integer.MAX_VALUE, response);
+	                WebUtils.setSessionAttribute(request, "pageAccess", details.getPageAccess());
+	                WebUtils.setSessionAttribute(request, "passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
+	                WebUtils.setSessionAttribute(request, "lastLoginDate", ldapService.getLastLogin());
+	                WebUtils.setSessionAttribute(request, "currentDate", new Date());
+	                ldapService.setLastLogin();
+	            }
+            
+        	}
+            
         }
 
         chain.doFilter(request, response);

@@ -49,9 +49,13 @@ Ext.extend(OrangeLeap.OrderedBulkSaveStore, OrangeLeap.BulkSaveStore, {
             }
         }
         var rs = [].concat(this.getModifiedRecords());
+        var rsIds  = {};
         for (var i = rs.length-1; i >= 0; i--) {
-            if (!rs[i].isValid()) { // splice-off any !isValid real records
+            if (!rs[i].isValid() || rsIds[rs[i].id]) { // splice-off any !isValid or duplicate records
                 rs.splice(i,1);
+            }
+            else {
+                rsIds[rs[i].id] = rs[i];
             }
         }
         this.resumeEvents();
@@ -616,7 +620,7 @@ Ext.onReady(function() {
         var toRemove = [];
         for (var x = 0; x < len; x++) {
             var rec = store.data.items[x];
-            if ( ! rec.isValid()) {
+            if ( ! rec.isValid() || rec.phantom) {
                 toRemove[y++] = rec;
             }
         }

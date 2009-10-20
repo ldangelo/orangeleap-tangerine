@@ -6,6 +6,7 @@ import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.AdjustedGiftDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
@@ -62,6 +63,23 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
 
 	@Resource(name = "adjustedDistributionLinesValidator")
 	protected AdjustedDistributionLinesValidator adjustedDistributionLinesValidator;
+
+    @Override
+    public AdjustedGift readAdjustedGiftByIdCreateIfNull(Constituent constituent, String adjustedGiftId, String originalGiftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAdjustedGiftByIdCreateIfNull: adjustedGiftId = " + adjustedGiftId + " originalGiftId = " + originalGiftId + 
+                    " constituentId = " + (constituent == null ? null : constituent.getId()));
+        }
+        AdjustedGift adjustedGift;
+        if (adjustedGiftId == null) {
+            adjustedGift = this.createdDefaultAdjustedGift(Long.valueOf(originalGiftId));
+        }
+        else {
+            adjustedGift = readAdjustedGiftById(Long.valueOf(adjustedGiftId));
+        }
+        adjustedGift.setConstituent(constituent);
+        return adjustedGift;
+    }
 
     @Override
     public AdjustedGift createdDefaultAdjustedGift(Long originalGiftId) {

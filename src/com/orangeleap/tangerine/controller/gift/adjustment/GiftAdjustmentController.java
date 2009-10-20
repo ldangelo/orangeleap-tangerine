@@ -25,7 +25,6 @@ import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,20 +43,33 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
 
+    private String adjustedGiftPostedUrl;
+
+    public void setAdjustedGiftPostedUrl(String adjustedGiftPostedUrl) {
+        this.adjustedGiftPostedUrl = adjustedGiftPostedUrl;
+    }
+
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        if (NumberUtils.isNumber(request.getParameter(StringConstants.ADJUSTED_GIFT_ID))) {
-            return new AdjustedGift();
-        }
-        return adjustedGiftService.createdDefaultAdjustedGift(super.getIdAsLong(request, StringConstants.GIFT_ID));
+        return adjustedGiftService.readAdjustedGiftByIdCreateIfNull(getConstituent(request),
+                request.getParameter(StringConstants.ADJUSTED_GIFT_ID), request.getParameter(StringConstants.GIFT_ID));
+    }
+
+    private boolean isPosted(AdjustedGift adjustedGift) {
+        return adjustedGift != null && ! adjustedGift.isNew() && adjustedGift.isPosted();
     }
 
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
         ModelAndView mav = super.showForm(request, response, errors);
-        if (NumberUtils.isNumber(request.getParameter(StringConstants.ADJUSTED_GIFT_ID))) {
-            mav = new ModelAndView(getRedirectUrl(request, new Long(request.getParameter(StringConstants.ADJUSTED_GIFT_ID))));
+        TangerineForm form = (TangerineForm) formBackingObject(request);
+        AdjustedGift adjustedGift = (AdjustedGift) form.getDomainObject();
+
+        if (isPosted(adjustedGift)) {
+            mav = new ModelAndView(getRedirectUrl(request, adjustedGiftPostedUrl,
+                    new Long(request.getParameter(StringConstants.ADJUSTED_GIFT_ID))));
         }
+        
         return mav;
     }
 
@@ -66,25 +78,21 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
 	    TangerineForm form = (TangerineForm) command;
 	    AdjustedGift anAdjustedGift = (AdjustedGift) form.getDomainObject();
 
-	    boolean saved = true;
+        ModelAndView mav;
 	    try {
             anAdjustedGift = adjustedGiftService.maintainAdjustedGift(anAdjustedGift);
+            String view = isPosted(anAdjustedGift) ? adjustedGiftPostedUrl : getSuccessView();
+            mav = new ModelAndView(appendSaved(getRedirectUrl(request, view, anAdjustedGift.getId())));
 	    }
 	    catch (BindException domainErrors) {
-		    saved = false;
 		    bindDomainErrorsToForm(request, formErrors, domainErrors, form, anAdjustedGift);
-	    }
-	    ModelAndView mav;
-	    if (saved) {
-	        mav = new ModelAndView(appendSaved(getRedirectUrl(request, anAdjustedGift.getId())));
-	    }
-	    else {
-			mav = showForm(request, formErrors, getFormView());
+            mav = showForm(request, formErrors, getFormView());
 	    }
 	    return mav;
     }
 
-    private String getRedirectUrl(HttpServletRequest request, Long adjustedGiftId) {
-        return getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + adjustedGiftId + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request);
+    private String getRedirectUrl(HttpServletRequest request, String view, Long adjustedGiftId) {
+        return new StringBuilder(view).append("?").append(StringConstants.ADJUSTED_GIFT_ID).append("=").append(adjustedGiftId).
+                append("&").append(StringConstants.CONSTITUENT_ID).append("=").append(super.getConstituentId(request)).toString();
     }
 }

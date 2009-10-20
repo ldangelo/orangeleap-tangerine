@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.validation.BindException;
 
@@ -30,6 +31,8 @@ import java.util.Locale;
 
 public interface AdjustedGiftService {
 
+    AdjustedGift readAdjustedGiftByIdCreateIfNull(Constituent constituent, String adjustedGiftId, String originalGiftId);
+    
     public AdjustedGift createdDefaultAdjustedGift(Long originalGiftId);
 
     public AdjustedGift readAdjustedGiftById(Long adjustedGiftId);

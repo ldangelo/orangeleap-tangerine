@@ -57,7 +57,8 @@
 		<property name="bindPhone" value="true"/>
         <property name="bindPaymentSource" value="true"/>
 	    <property name="formView" value="adjustedGift/giftAdjustment"/>
-	    <property name="successView" value="redirect:/adjustedGiftView.htm"/>
+	    <property name="successView" value="redirect:/adjustedGift.htm"/>
+        <property name="adjustedGiftPostedUrl" value="redirect:/adjustedGiftView.htm" />
 	</bean>
 
 	<bean id="adjustedGiftViewController" class="com.orangeleap.tangerine.controller.gift.adjustment.GiftAdjustmentViewController"

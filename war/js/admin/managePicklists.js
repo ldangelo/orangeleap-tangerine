@@ -571,6 +571,7 @@ Ext.onReady(function() {
     });
 
     grid.on('click', function(event) {
+        $("#savedMarker").css('visibility', 'hidden');
         var target = event.getTarget('a.customizeLink');
         if (target) {
             event.stopPropagation();
@@ -818,6 +819,7 @@ Ext.onReady(function() {
         }
     });
     customizeGrid.on('click', function(event) {
+        $("#customizedFieldsSavedMarker").hide();
         var target = event.getTarget('a.deleteLink');
         if (target) {
             event.stopPropagation();

@@ -194,5 +194,11 @@
         <error-code>404</error-code>
         <location>/WEB-INF/jsp/errors/404.jsp</location>
     </error-page>
+    
+    
+    <session-config>
+	             <!-- 12 hours -->
+      <session-timeout>720</session-timeout> 
+    </session-config>
 
 </web-app>

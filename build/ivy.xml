@@ -32,6 +32,15 @@
     </publications>
 
     <dependencies>
+    
+    
+    	<!-- Orange Leap -->
+        <dependency org="orangeleap" name="orangeleap-common-security" transitive="false" rev="1.0" >
+            <artifact name="orangeleap-common-security" type="jar"/>
+        </dependency>
+    
+    
+    
 
         <!-- Commons -->
         <dependency org="commons-collections" name="commons-collections" transitive="false" rev="3.2.1">

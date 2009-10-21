@@ -105,6 +105,10 @@ public class ConstituentImporter extends EntityImporter {
 			constituent.setId(null);
 		}
 
+		if (constituent.getLoginId() != null && constituent.getLoginId().trim().length() == 0) {
+			constituent.setLoginId(null);
+		}
+		
 		if (importRequest.isBypassDuplicateDetection()) constituent.setByPassDuplicateDetection(true);
 		constituentService.maintainConstituent(constituent);
 		

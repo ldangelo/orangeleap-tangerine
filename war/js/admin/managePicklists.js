@@ -213,18 +213,17 @@ Ext.onReady(function() {
         columns: [
             new OrangeLeap.RowGrip({ tooltip: 'Click and Hold to Drag Row' } ),
             {
-                header: 'Order',
+                header: "<span class='required'>*</span> Order",
                 dataIndex: 'f',
                 width: 23,
                 sortable: false,
                 editor: numberFld,
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    var nextIndex = rowIndex + 1;
-                    return nextIndex;
+                    return rowIndex + 1;
                 }
             },
             {
-                header: 'Short Display Name',
+                header: "<span class='required'>*</span> Short Display Name",
                 dataIndex: 'c',
                 editable: true,
                 editor: displayValFld,

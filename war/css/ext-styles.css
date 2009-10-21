@@ -123,3 +123,5 @@ a.deleteLink { background-image: url(../images/icons/deleteRow.png); background-
 div .ext-el-mask { background-color: #EFEFEF; }
 
 div.x-window-dlg { z-index: 12000; }
+
+#managementGrid span.required { font-size: inherit; vertical-align: inherit; } 

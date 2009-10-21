@@ -32,9 +32,9 @@ import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.orangeleap.common.security.OrangeLeapSystemAuthenticationToken;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
-import com.orangeleap.tangerine.security.common.OrangeLeapSystemAuthenticationToken;
 import com.orangeleap.tangerine.service.SiteService;
 
 public class TangerineUserHelperImpl implements TangerineUserHelper, ApplicationContextAware {

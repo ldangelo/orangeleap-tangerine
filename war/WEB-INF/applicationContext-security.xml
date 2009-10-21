@@ -51,7 +51,7 @@
 	
 
 	<!-- OrangeLeap ordered list of providers to try -->
-	<bean id="orangeLeapAuthenticationProvider" class="com.orangeleap.tangerine.security.common.OrangeLeapAuthenticationProvider">
+	<bean id="orangeLeapAuthenticationProvider" class="com.orangeleap.common.security.OrangeLeapAuthenticationProvider">
      <sec:custom-authentication-provider/>
      <property name="providerList" >
      	<list>
@@ -74,12 +74,12 @@
         <property name="userDn" value="${ldap.userDn}"/>
         <property name="password" value="${ldap.password}"/>
     </bean>
-    <bean  id="orangeLeapLdapAuthoritiesPopulator" class="com.orangeleap.tangerine.security.common.OrangeLeapLdapAuthoritiesPopulator">
+    <bean  id="orangeLeapLdapAuthoritiesPopulator" class="com.orangeleap.common.security.OrangeLeapLdapAuthoritiesPopulator">
       <constructor-arg ref="contextSource"/>
       <constructor-arg value="ou=roles"/>
       <property name="searchSubtree" value="true"/>
     </bean>
-    <bean id="orangeLeapUserSearch" class="com.orangeleap.tangerine.security.common.OrangeLeapLdapUserSearch">
+    <bean id="orangeLeapUserSearch" class="com.orangeleap.common.security.OrangeLeapLdapUserSearch">
         <constructor-arg value="(uid={0})"/>
         <constructor-arg ref="contextSource"/>
     </bean>
@@ -97,7 +97,7 @@
 	
 	<bean id="ldapAuthenticationProvider" class="org.springframework.security.providers.ldap.LdapAuthenticationProvider">
      <constructor-arg>
-       <bean class="com.orangeleap.tangerine.security.common.OrangeLeapBindAuthenticator">
+       <bean class="com.orangeleap.common.security.OrangeLeapBindAuthenticator">
            <constructor-arg ref="contextSource"/>
 	       <property name="userSearch" ref="orangeLeapUserSearch"/>
        </bean>

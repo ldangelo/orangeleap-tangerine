@@ -24,7 +24,7 @@ import java.util.Map;
 import org.springframework.security.concurrent.SessionIdentifierAware;
 import org.springframework.web.util.WebUtils;
 
-import com.orangeleap.tangerine.security.common.OrangeLeapRequestLocal;
+import com.orangeleap.common.security.OrangeLeapRequestLocal;
 import com.orangeleap.tangerine.type.AccessType;
 
 /**

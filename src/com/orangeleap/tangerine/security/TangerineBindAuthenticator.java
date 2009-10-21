@@ -36,7 +36,7 @@ import org.springframework.security.providers.cas.CasAuthenticationToken;
 import org.springframework.security.providers.ldap.authenticator.AbstractLdapAuthenticator;
 import org.springframework.util.Assert;
 
-import com.orangeleap.tangerine.security.common.OrangeLeapLdapUserSearch;
+import com.orangeleap.common.security.OrangeLeapLdapUserSearch;
 import com.orangeleap.tangerine.util.OLLogger;
 
 public class TangerineBindAuthenticator extends AbstractLdapAuthenticator {

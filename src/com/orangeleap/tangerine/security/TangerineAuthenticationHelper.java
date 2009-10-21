@@ -4,7 +4,7 @@ import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 
-import com.orangeleap.tangerine.security.common.OrangeLeapAuthenticationProvider.AuthenticationHelper;
+import com.orangeleap.common.security.OrangeLeapAuthenticationProvider.AuthenticationHelper;
 
 /*
  * Used for non-CAS auth to populate user details 

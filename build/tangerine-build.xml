@@ -14,27 +14,23 @@
 	</taskdef>
 
 	<!-- Integrated targets -->
-	<target name="build" depends="resolve, clean-build, setup, compile, setup-war, optimize-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a clean build including precompiling JSPs"/>
+	<target name="build" depends="resolve, clean-build, setup, compile, setup-war, fork-optimization-release, wait-for-optimize-fork-finish-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a clean build including precompiling JSPs"/>
 
 	<target name="local-unit-build" depends="resolve, setup, compile, jar" description="Used ONLY for local unit test builds"/>
 	
-	<target name="dirty" depends="resolve, setup, compile, setup-war, optimize-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a build of only changed Java files"/>
+	<target name="dirty" depends="resolve, setup, compile, setup-war, fork-optimization-release, wait-for-optimize-fork-finish-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a build of only changed Java files"/>
 
-	<target name="deploy-integrated-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, optimize-dev, build-integrated-war, copy-tangerine.properties">
+	<target name="deploy-integrated-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, fork-optimization-dev, wait-for-optimize-fork-finish-dev, build-integrated-war, copy-tangerine.properties">
 		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
 	</target>
 
-	<target name="deploy-exploded-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, optimize-dev, build-exploded-war, copy-tangerine.properties">
+	<target name="deploy-exploded-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, fork-optimization-dev, wait-for-optimize-fork-finish-dev, build-exploded-war, copy-tangerine.properties">
 		<copy todir="${deploy.path}/${war.name}">
 			<fileset dir="${stage.dir}/${war.name}.war" />
 		</copy>
 		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
 	</target>
 
-	<target name="compress-build" depends="resolve, optimize-release" description="Compress CSS and JS files, creates timestamped CSS/JS files"/>
-	
-	<target name="compress-dev" depends="resolve, optimize-dev" description="Compress CSS and JS files, does NOT create timestamped CSS/JS files"/>
-	
 	<!-- Singular targets -->
 	<target name="setup">
 		<echo>Setting up for environment = ${build.env}</echo>
@@ -56,6 +52,9 @@
 			</else>
 		</if>
 
+        <tstamp>
+            <format property="now.time" pattern="yyyyMMddkkmm"/>
+        </tstamp>
 	</target>
 	
 	<target name="compile">
@@ -239,7 +238,7 @@
 			</fileset>
 		</copy>
 
-		<antcall target="compress-dev"/>
+		<antcall target="optimize-dev"/>
 
 		<sync todir="${deploy.path}/${war.name}/css">
 			<fileset dir="${stage.dir}/war/css">
@@ -284,25 +283,74 @@
 			</fileset>
 		</sync>
 	</target>
-	
 
-	<target name="optimize-dev">
-		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
-			<classpath path="${compile.lib}"/>
-		</taskdef>
-		
-		<css-optimization
-			minify="true" 
-			gZip="true" 
-			destFile="${stage.dir}/war/css/tangerine.css" 
-			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="false">
-	
-			<!--	
-				Defines the set of files that will be concatenated and
-				then optimized. All the files need to be css files or 
-				errors will occur.
-			-->
+    <target name="fork-optimization-dev">
+        <java classname="org.apache.tools.ant.launch.Launcher"
+            fork="true"
+            failonerror="true"
+            dir="${build.dir}"
+            timeout="900000"
+            taskname="startAnt">
+            <classpath>
+                <pathelement location="${ant.home}/lib/ant-launcher.jar"/>
+            </classpath>
+            <arg value="-buildfile"/>
+            <arg file="${build.dir}/tangerine-build.xml"/>
+            <arg value="-Dbasedir=${basedir}"/>
+            <arg value="-Dnow.time=${now.time}"/>
+            <arg value="-Ddebug.compile=${debug.compile}"/>
+            <arg value="optimize-dev"/>
+        </java>
+    </target>
+
+    <target name="fork-optimization-release">
+        <java classname="org.apache.tools.ant.launch.Launcher"
+            fork="true"
+            failonerror="true"
+            dir="${build.dir}"
+            timeout="900000"
+            taskname="startAnt">
+            <classpath>
+                <pathelement location="${ant.home}/lib/ant-launcher.jar"/>
+            </classpath>
+            <arg value="-buildfile"/>
+            <arg file="${build.dir}/tangerine-build.xml"/>
+            <arg value="-Dbasedir=${basedir}"/>
+            <arg value="-Dnow.time=${now.time}"/>
+            <arg value="-Ddebug.compile=${debug.compile}"/>
+            <arg value="optimize-release"/>
+        </java>
+    </target>
+
+    <target name="wait-for-optimize-fork-finish-dev">
+        <waitfor maxwait="10" maxwaitunit="minute" checkevery="10" checkeveryunit="second">
+            <available file="${stage.dir}/war/js/tangerine-admin.js.ycomp.js"/>
+        </waitfor>
+    </target>
+
+    <target name="wait-for-optimize-fork-finish-release">
+        <waitfor maxwait="10" maxwaitunit="minute" checkevery="10" checkeveryunit="second">
+            <available file="${stage.dir}/war/js/orangeleap${now.time}.js"/>
+        </waitfor>
+    </target>
+
+	<target name="optimize-dev" depends="resolve">
+        <taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
+            <classpath path="${compile.lib}"/>
+        </taskdef>
+
+        <css-optimization
+            minify="true"
+            gZip="true"
+            destFile="${stage.dir}/war/css/tangerine.css"
+            optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+            verbose="false">
+
+            <!--
+                Defines the set of files that will be concatenated and
+                then optimized. All the files need to be css files or
+                errors will occur.
+            -->
             <fileset dir="${stage.dir}/war/css" includes="tablesorter.css" />
             <fileset dir="${stage.dir}/war/css" includes="jquery.tooltip.css" />
             <fileset dir="${stage.dir}/war/css" includes="datePicker.css" />
@@ -317,28 +365,28 @@
             <fileset dir="${stage.dir}/war/js/extjs/resources/css/ux/treeGrid" includes="treeGrid.css" />
             <fileset dir="${stage.dir}/war/css" includes="orange-theme.css" />
             <fileset dir="${stage.dir}/war/css" includes="ext-styles.css" />
-		</css-optimization>
+        </css-optimization>
 
-		<taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
-			<classpath path="${compile.lib}"/>
-		</taskdef>
+        <taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
+            <classpath path="${compile.lib}"/>
+        </taskdef>
 
-		<javascript-optimization
-			minify="true"
-			yCompressor="true"
-			gZip="false" 
-			destFile="${stage.dir}/war/js/tangerine.js"
-			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="false">
+        <javascript-optimization
+            minify="false"
+            yCompressor="false"
+            gZip="false"
+            destFile="${stage.dir}/war/js/tangerine.js.ycomp.js"
+            optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+            verbose="false">
 
-			<!--	
-				Defines the set of files that will be concatenated and
-				then optimized. All the files need to be JavaScript files
-				or errors will occur.
-			-->
+            <!--
+                Defines the set of files that will be concatenated and
+                then optimized. All the files need to be JavaScript files
+                or errors will occur.
+            -->
             <fileset dir="${stage.dir}/war/js" includes="jquery/jquery-1.3.2.min.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
-            <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all-debug.js" />
             <fileset dir="${stage.dir}/war/js" includes="persist/gears_init.js" />
             <fileset dir="${stage.dir}/war/js" includes="persist/swfobject.js" />
             <fileset dir="${stage.dir}/war/js" includes="persist/persist.js" />
@@ -349,16 +397,16 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/TreeGrid.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.bgiframe.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.cluetip.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.selectboxes.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqModal.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqDnR.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.numeric.pack.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.fade.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.autocomplete.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="date.js" />
-		</javascript-optimization>
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.cluetip.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.selectboxes.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqModal.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqDnR.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.numeric.pack.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.fade.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.autocomplete.js" />
+            <fileset dir="${stage.dir}/war/js" includes="date.js" />
+        </javascript-optimization>
 
         <javascript-optimization
             minify="false"
@@ -381,31 +429,32 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/GridDropTarget.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/RowGrip.js" />
         </javascript-optimization>
-
 	</target>
 
-	
-	<target name="optimize-release">
-		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
-			<classpath path="${compile.lib}"/>
-		</taskdef>
-		
-		<tstamp>
-			<format property="now.time" pattern="yyyyMMddkkmm"/>
-		</tstamp>
+	<target name="optimize-release" depends="resolve">
+        <taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
+            <classpath path="${compile.lib}"/>
+        </taskdef>
 
-		<css-optimization
-			minify="true" 
-			gZip="true" 
-			destFile="${stage.dir}/war/css/tangerine${now.time}.css" 
-			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="false">
-	
-			<!--	
-				Defines the set of files that will be concatenated and
-				then optimized. All the files need to be css files or 
-				errors will occur.
-			-->
+        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="tangerine.css.min.css" value="tangerine${now.time}.css.min.css"/>
+        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="tangerine.js.ycomp.js" value="tangerine${now.time}.js.ycomp.js"/>
+        <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/admin.jsp" token="tangerine-admin.js.ycomp.js" value="tangerine-admin${now.time}.js.ycomp.js"/>
+        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="sidebar.js" value="sidebar${now.time}.js"/>
+        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="history.js" value="history${now.time}.js"/>
+        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="orangeleap.js" value="orangeleap${now.time}.js"/>
+
+        <css-optimization
+            minify="true"
+            gZip="true"
+            destFile="${stage.dir}/war/css/tangerine${now.time}.css"
+            optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+            verbose="false">
+
+            <!--
+                Defines the set of files that will be concatenated and
+                then optimized. All the files need to be css files or
+                errors will occur.
+            -->
             <fileset dir="${stage.dir}/war/css" includes="tablesorter.css" />
             <fileset dir="${stage.dir}/war/css" includes="jquery.tooltip.css" />
             <fileset dir="${stage.dir}/war/css" includes="datePicker.css" />
@@ -420,25 +469,25 @@
             <fileset dir="${stage.dir}/war/js/extjs/resources/css/ux/treeGrid" includes="treeGrid.css" />
             <fileset dir="${stage.dir}/war/css" includes="orange-theme.css" />
             <fileset dir="${stage.dir}/war/css" includes="ext-styles.css" />
-		</css-optimization>
+        </css-optimization>
+        
+        <taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
+            <classpath path="${compile.lib}"/>
+        </taskdef>
 
-		<taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
-			<classpath path="${compile.lib}"/>
-		</taskdef>
+        <javascript-optimization
+            minify="true"
+            yCompressor="true"
+            gZip="false"
+            destFile="${stage.dir}/war/js/tangerine${now.time}.js"
+            optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+            verbose="false">
 
-		<javascript-optimization
-			minify="true" 
-			yCompressor="true" 
-			gZip="false" 
-			destFile="${stage.dir}/war/js/tangerine${now.time}.js" 
-			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="false">
-
-			<!--	
-				Defines the set of files that will be concatenated and
-				then optimized. All the files need to be JavaScript files
-				or errors will occur.
-			-->
+            <!--
+                Defines the set of files that will be concatenated and
+                then optimized. All the files need to be JavaScript files
+                or errors will occur.
+            -->
             <fileset dir="${stage.dir}/war/js" includes="jquery/jquery-1.3.2.min.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
@@ -452,19 +501,16 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/TreeGrid.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.bgiframe.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.cluetip.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.selectboxes.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqModal.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqDnR.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.numeric.pack.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.fade.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.autocomplete.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="date.js" />
-		</javascript-optimization>
-
-        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="tangerine.css.min.css" value="tangerine${now.time}.css.min.css"/>
-        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="tangerine.js.ycomp.js" value="tangerine${now.time}.js.ycomp.js"/>
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.cluetip.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.selectboxes.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqModal.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqDnR.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.numeric.pack.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.fade.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.autocomplete.js" />
+            <fileset dir="${stage.dir}/war/js" includes="date.js" />
+        </javascript-optimization>
 
         <javascript-optimization
             minify="true"
@@ -488,7 +534,6 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ux/grid/RowGrip.js" />
         </javascript-optimization>
 
-        <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/admin.jsp" token="tangerine-admin.js.ycomp.js" value="tangerine-admin${now.time}.js.ycomp.js"/>
 
         <javascript-optimization
             minify="false"
@@ -499,7 +544,6 @@
             verbose="false">
             <fileset dir="${war.dir}/js" includes="sidebar.js" />
         </javascript-optimization>
-        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="sidebar.js" value="sidebar${now.time}.js"/>
 
         <javascript-optimization
             minify="false"
@@ -510,7 +554,6 @@
             verbose="false">
             <fileset dir="${war.dir}/js" includes="history.js" />
         </javascript-optimization>
-        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="history.js" value="history${now.time}.js"/>
 
         <javascript-optimization
             minify="false"
@@ -521,7 +564,5 @@
             verbose="false">
             <fileset dir="${war.dir}/js" includes="orangeleap.js" />
         </javascript-optimization>
-        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="orangeleap.js" value="orangeleap${now.time}.js"/>
-	</target>
-
+    </target>
 </project>

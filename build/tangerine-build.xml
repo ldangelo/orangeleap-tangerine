@@ -290,7 +290,7 @@
             failonerror="true"
             dir="${build.dir}"
             timeout="900000"
-            taskname="startAnt">
+            taskname="startAnt" maxmemory="2048m">
             <classpath>
                 <pathelement location="${ant.home}/lib/ant-launcher.jar"/>
             </classpath>
@@ -310,7 +310,7 @@
             failonerror="true"
             dir="${build.dir}"
             timeout="900000"
-            taskname="startAnt">
+            taskname="startAnt" maxmemory="2048m">
             <classpath>
                 <pathelement location="${ant.home}/lib/ant-launcher.jar"/>
             </classpath>

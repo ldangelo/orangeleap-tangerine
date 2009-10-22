@@ -299,6 +299,7 @@
             <arg value="-Dbasedir=${basedir}"/>
             <arg value="-Dnow.time=${now.time}"/>
             <arg value="-Ddebug.compile=${debug.compile}"/>
+            <arg value="-DcommonBuild.dir=${commonBuild.dir}"/>
             <arg value="optimize-dev"/>
         </java>
     </target>
@@ -318,6 +319,7 @@
             <arg value="-Dbasedir=${basedir}"/>
             <arg value="-Dnow.time=${now.time}"/>
             <arg value="-Ddebug.compile=${debug.compile}"/>
+            <arg value="-DcommonBuild.dir=${commonBuild.dir}"/>
             <arg value="optimize-release"/>
         </java>
     </target>

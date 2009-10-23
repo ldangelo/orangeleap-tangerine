@@ -1662,3 +1662,69 @@ function PasswordChange() {
         return (val === pass);
     };
 }
+
+Ext.ns('OrangeLeap');
+
+OrangeLeap.BulkSaveStore = function(config){
+ 	OrangeLeap.BulkSaveStore.superclass.constructor.call(this, config);
+};
+
+Ext.extend(OrangeLeap.BulkSaveStore, Ext.data.JsonStore, {
+    removeInvalid: function(rs) {
+        for (var i = rs.length-1; i >= 0; i--) {
+            if (!rs[i].isValid()) { // splice-off any !isValid real records
+                rs.splice(i,1);
+            }
+        }
+    },
+
+    /* Save only modified records */
+    save: function() {
+        var rs = [].concat(this.getModifiedRecords());
+        this.removeInvalid(rs);
+        this.doTransaction('update', rs);
+        return true;
+    },
+
+    /* Save all records, regardless if they are modified or not */
+    saveAll: function() {
+        var rs = [].concat(this.data.items);
+        this.removeInvalid(rs);
+        var txn = rs.length > 0 ? 'update' : 'destroy';
+        this.doTransaction(txn, rs);
+        return true;
+    }
+});
+
+OrangeLeap.OrderedBulkSaveStore = function(config){
+ 	OrangeLeap.OrderedBulkSaveStore.superclass.constructor.call(this, config);
+};
+
+Ext.extend(OrangeLeap.OrderedBulkSaveStore, OrangeLeap.BulkSaveStore, {
+    save: function() {
+        this.suspendEvents();
+        if (this.data && this.data.items) {
+            var items = this.data.items;
+            var len = items.length;
+            for (var x = 0; x < len; x++) {
+                var nextIndex = x + 1;
+                if (items[x].get('f') != nextIndex) {
+                    items[x].set('f', nextIndex);   // Update the itemOrder if necessary
+                }
+            }
+        }
+        var rs = [].concat(this.getModifiedRecords());
+        var rsIds  = {};
+        for (var i = rs.length-1; i >= 0; i--) {
+            if (!rs[i].isValid() || rsIds[rs[i].id]) { // splice-off any !isValid or duplicate records
+                rs.splice(i,1);
+            }
+            else {
+                rsIds[rs[i].id] = rs[i];
+            }
+        }
+        this.resumeEvents();
+        this.doTransaction('update', rs);
+        return true;
+    }
+});

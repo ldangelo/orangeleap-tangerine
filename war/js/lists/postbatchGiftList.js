@@ -76,7 +76,7 @@ Ext.onReady(function() {
 PostbatchGiftList.navigate = function(id) {
 	var rec = PostbatchGiftList.grid.getSelectionModel().getSelected();
 	PostbatchGiftList.grid.getGridEl().mask('Loading Record');
-	window.location.href='giftView.htm?giftId=' + id + '&constituentId=' + rec.data.constituentId;
+	window.location.href='giftPaid.htm?giftId=' + id + '&constituentId=' + rec.data.constituentId;
 };
 
 

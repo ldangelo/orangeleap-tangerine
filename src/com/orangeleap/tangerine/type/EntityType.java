@@ -41,11 +41,5 @@ public enum EntityType {
     paymentSource,
     paymentHistory,
     communicationHistory,
-    constituentCustomFieldRelationship,
-
-    // TODO: remove below
-    selectedAddress,
-    selectedEmail,
-    selectedPhone,
-    selectedPaymentSource
+    constituentCustomFieldRelationship
 }

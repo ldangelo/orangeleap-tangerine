@@ -18,13 +18,6 @@
 
 package com.orangeleap.tangerine.service;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.springframework.beans.BeanWrapper;
-import org.springframework.security.GrantedAuthority;
-
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.SiteOption;
@@ -35,6 +28,12 @@ import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.PageType;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.security.GrantedAuthority;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public interface SiteService {
 
@@ -97,7 +96,6 @@ public interface SiteService {
      *
      * @param pageType the page type to search
      * @param roles    the roles of the current user
-     * @param object
      * @return
      */
     public Map<String, FieldDefinition> readFieldTypes(PageType pageType, List<String> roles);
@@ -118,6 +116,10 @@ public interface SiteService {
 
 	EntityDefault readEntityDefaultByTypeName(EntityType entityType, String fieldName);
 
+    List<EntityDefault> readEntityDefaults();
+
+    List<EntityDefault> readEntityDefaults(EntityType entityType);
+
 	void setEntityDefaults(AbstractEntity entity, EntityType entityType);
 	
     List<SiteOption> getSiteOptions();
@@ -128,5 +130,5 @@ public interface SiteService {
     
     Map<String, String> getSiteOptionsMap();
 
-
+    void updateEntityDefault(EntityDefault entityDefault);
 }

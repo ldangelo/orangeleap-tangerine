@@ -99,7 +99,7 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
 	@Override
 	public List<EntityDefault> readEntityDefaults(EntityType entityType) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("readEntityDefaults: entityTypes = " + entityType);
+	        logger.trace("readEntityDefaults: entityType = " + entityType);
 	    }
 	    Map<String, Object> params = setupParams();
 	    params.put("entityType", entityType);

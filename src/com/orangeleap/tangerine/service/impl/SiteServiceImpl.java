@@ -18,34 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.validator.GenericValidator;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.security.Authentication;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.dao.SiteOptionDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -76,6 +48,32 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service("siteService")
 public class SiteServiceImpl extends AbstractTangerineService implements SiteService {
@@ -454,6 +452,22 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 	}
 
     @Override
+    public List<EntityDefault> readEntityDefaults() {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readEntityDefaults: ");
+        }
+        return readEntityDefaults(null);
+    }
+
+    @Override
+    public List<EntityDefault> readEntityDefaults(EntityType entityType) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readEntityDefaults: entityType = " + entityType);
+        }
+        return siteDao.readEntityDefaults(entityType);
+    }
+
+    @Override
     public Map<String, FieldDefinition> readFieldTypes(PageType pageType, List<String> roles) {
         Map<String, FieldDefinition> returnMap = new HashMap<String, FieldDefinition>();
         List<SectionField> sfs = getSectionFields(pageType, roles);
@@ -534,4 +548,9 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     	siteOptionDao.deleteSiteOptionById(id);
     }
 
+    @Override
+	@Transactional(propagation = Propagation.REQUIRED)
+    public void updateEntityDefault(EntityDefault entityDefault) {
+        siteDao.updateEntityDefault(entityDefault);
+    }
 }

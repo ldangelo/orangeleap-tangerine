@@ -22,6 +22,7 @@ import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.type.EntityType;
 
 import java.util.List;
@@ -39,4 +40,6 @@ public interface FieldService {
     public boolean isFieldDisabled(SectionField sectionField, Object model);
 
 	Map<String,List<SectionField>> groupSectionFields(List<SectionField> sectionFields);
+
+    FieldDefinition readFieldDefinition(String id);
 }

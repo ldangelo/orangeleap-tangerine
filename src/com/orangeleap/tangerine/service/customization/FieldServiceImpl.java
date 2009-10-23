@@ -26,6 +26,7 @@ import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.FieldType;
@@ -86,6 +87,14 @@ public class FieldServiceImpl implements FieldService {
 		groupedSectionFields.put(StringConstants.DISPLAYED, displayedSectionFields);
 		return groupedSectionFields;
 	}
+
+    @Override
+    public FieldDefinition readFieldDefinition(String id) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFieldDefinition: id=" + id);
+        }
+        return fieldDao.readFieldDefinition(id);
+    }
 
 	@Override
 	public boolean isFieldRequired(SectionField currentField) {

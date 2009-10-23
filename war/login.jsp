@@ -13,17 +13,12 @@
 </head>
 
 	    <body>
-	        <div class="loginPane">
-	            <div class="loginContent">
-	                <br /><br />
-	                <h1 class="loginHeader"><spring:message code='loggedOut'/></h1>
-	                <p style="padding:8px;">
-	                    <a style="font-size:14px;" href="/<%= System.getProperty("contextPrefix") %>orangeleap/"><spring:message code='returnLoginPage'/></a>
-	                </p>
-	            </div>
-	        </div>
+	       
 	        <iframe id="casLogout" src="/<%= System.getProperty("contextPrefix") %>cas/logout" height="0" width="100%" style="display: none"></iframe>
 	        <%@ include file="/WEB-INF/jsp/includes/clearcookies.jsp"%>
+	        <script>
+	        window.location.href="index.htm";
+	        </script>
  	    </body>
 	    
 </html>

@@ -166,8 +166,7 @@ function iframe(itemData, elem) {
 function guru(itemData, elem) {
     try {
     	
-        var url = '/jasperserver'+itemData.url;
-        //TODO: var url = '/<%= System.getProperty("contextPrefix"); %>jasperserver'+itemData.url;
+        var url = '/'+contextPrefix+'jasperserver/'+itemData.url;
         
         url = url.replace(/amp;/g, "");
         var div = document.createElement("div");

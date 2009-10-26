@@ -7,7 +7,7 @@
         </head>
         <body>
             <script>
-              var contextPrefix = <%= System.getProperty("contextPrefix") %>;
+              var contextPrefix = '<%= System.getProperty("contextPrefix") %>';
             </script>
             <c:set var="loadGoogle" value="true" scope="request" />
             <div class="content760 mainForm welcomePage">

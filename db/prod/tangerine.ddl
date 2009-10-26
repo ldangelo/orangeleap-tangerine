@@ -1134,4 +1134,4 @@ FULLTEXT INDEX (`SEARCH_TEXT`)
 SET foreign_key_checks = 1;
 
 // Increment this value and OrangeLeapSchemaVersion.java when the tangerine.ddl has an incompatible change for a release.
-INSERT INTO VERSION (COMPONENT_ID, COMPONENT_DESC, SCHEMA_MAJOR_VERSION, SCHEMA_MINOR_VERSION) VALUES ('ORANGE', 'Orange Leap', 3, 0);
+INSERT INTO VERSION (COMPONENT_ID, COMPONENT_DESC, SCHEMA_MAJOR_VERSION, SCHEMA_MINOR_VERSION) VALUES ('ORANGE', 'Orange Leap', 6, 0);

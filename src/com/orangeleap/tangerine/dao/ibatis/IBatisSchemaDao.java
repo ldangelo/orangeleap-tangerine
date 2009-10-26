@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,6 +47,8 @@ public class IBatisSchemaDao extends AbstractIBatisDao implements SchemaDao {
         super(sqlMapClient);
     }
     
+    private boolean split = "true".equals(System.getProperty("mysql.splitDatabases"));
+
     @Override
 	public List<String> readSchemas() {
     	
@@ -73,5 +76,49 @@ public class IBatisSchemaDao extends AbstractIBatisDao implements SchemaDao {
 		return list;
 		
 	}
+    
+    @Override
+    public void use(String schema) {
+
+    	Connection connection = null;
+    	try {
+    		connection = getDataSource().getConnection();
+    	} catch (Exception e) {
+    		throw new RuntimeException(e);
+    	}
+    	
+    	try {
+    		
+			Statement stat = connection.createStatement();
+    		try {
+    			stat.execute("USE " + (split ? getSiteName() : "orangeleap"));
+    		} finally {
+    			stat.close();
+    		}    
+
+    	} catch (Exception e) {
+    		
+    		e.printStackTrace();
+
+    		try {
+				Statement stat = connection.createStatement();
+	    		try {
+	    			stat.execute("USE orangeleap");
+	    		} finally {
+	    			stat.close();
+	    		}    
+    		} catch (Exception e1) {
+        		e.printStackTrace();
+    		}
+
+    		
+    		logger.error("Unable to change to " + schema, e);
+    		throw new RuntimeException(e); 
+    		
+    	}	    
+
+    }
+
+
 
 }

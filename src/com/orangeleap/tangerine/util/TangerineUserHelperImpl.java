@@ -33,6 +33,7 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.common.security.OrangeLeapSystemAuthenticationToken;
+import com.orangeleap.tangerine.dao.SchemaDao;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 import com.orangeleap.tangerine.service.SiteService;
@@ -135,6 +136,10 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     	return ((SiteService)applicationContext.getBean("siteService"));
     }
 
+    private SchemaDao getSchemaDao() {
+    	return ((SchemaDao)applicationContext.getBean("schemaDAO"));
+    }
+
     public Site getSite(String sitename) {
     	return getSiteService().readSite(sitename);
     }
@@ -144,6 +149,8 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     @Transactional
     public void setSystemUserAndSiteName(String siteName) {
        
+        getSchemaDao().use(siteName);
+
     	// Give system user super admin role
         final GrantedAuthority[] ga = new GrantedAuthority[] {new GrantedAuthorityImpl("ROLE_SUPER_ADMIN"), new GrantedAuthorityImpl("ROLE_USER")};
         

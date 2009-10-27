@@ -10,11 +10,6 @@
         <property name="viewName" value="siteSettings/manageSiteSettings" />
     </bean>
 
-    <bean id="siteOptions" class="com.orangeleap.tangerine.controller.siteSettings.SiteOptionsController" >
-        <property name="formView" value="siteSettings/siteOptions" />
-        <property name="successView" value="redirect:/siteOptions.htm" />
-    </bean>
-
     <bean id="manageSiteDefaults" class="com.orangeleap.tangerine.controller.siteSettings.SiteDefaultsController">
         <property name="viewName" value="siteSettings/manageSiteDefaults" />
     </bean>
@@ -23,7 +18,6 @@
 		<property name="mappings">
 		    <props>
 		        <prop key="siteSettings.htm">siteSettings</prop>
-		        <prop key="siteOptions.htm">siteOptions</prop>
 		        <prop key="siteDefaults.htm">manageSiteDefaults</prop>
 			</props>
 		</property>

@@ -165,9 +165,9 @@ function iframe(itemData, elem) {
 
 function guru(itemData, elem) {
     try {
-    	
+
         var url = '/'+contextPrefix+'jasperserver/'+itemData.url;
-        
+
         url = url.replace(/amp;/g, "");
         var div = document.createElement("iframe");
         var adiv = $(div);
@@ -177,10 +177,25 @@ function guru(itemData, elem) {
                 url: url,
                 data: "",
                 success: function(html){
+                
+                    var i;
+
+                    i = html.indexOf("<body");
+                    html = html.substring(i);
+
+                    i = html.indexOf(">");
+                    html = html.substring(i);
+                    
+                    i = html.indexOf("</body>");
+                    html = html.substring(0,i-1);
+
+
                     adiv.html(html);
                     var aele = adiv.find("a[name='JR_PAGE_ANCHOR_0_1']");
                     var aimg = aele.parent().find("tbody tr:eq(2) td:eq(1) img");
-                    //alert("src = "+aimg.attr("src"));     
+                    
+                    //alert("src = "+aimg.attr("src"));
+
                     elem.appendChild(aimg.get(0));
                     return false;
                 }

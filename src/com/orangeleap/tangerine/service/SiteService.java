@@ -130,5 +130,7 @@ public interface SiteService {
     
     Map<String, String> getSiteOptionsMap();
 
+    void updateSite(Site site);
+
     void updateEntityDefault(EntityDefault entityDefault);
 }

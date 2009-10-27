@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.json.controller.admin.siteDefaults;
+package com.orangeleap.tangerine.json.controller.admin.site;
 
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -57,8 +57,8 @@ public class ManageSiteDefaultsController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET)
-    protected ModelMap getSiteDefaults(HttpServletRequest request) throws Exception {
-        checkPrivileges(request);
+    public ModelMap getSiteDefaults(HttpServletRequest request) throws Exception {
+        checkAccess(request);
         List<EntityDefault> defaults = siteService.readEntityDefaults();
         if (defaults != null) {
             findEditableEntityDefaults(defaults);
@@ -106,8 +106,8 @@ public class ManageSiteDefaultsController {
 
     @RequestMapping(method = RequestMethod.POST)
     @SuppressWarnings("unchecked")
-    protected ModelMap saveSiteDefaults(HttpServletRequest request, String rows) throws Exception {
-        checkPrivileges(request);
+    public ModelMap saveSiteDefaults(HttpServletRequest request, String rows) throws Exception {
+        checkAccess(request);
         JSONArray jsonArray = JSONArray.fromObject(rows);
         List<DynaBean> beans = (List<DynaBean>) JSONSerializer.toJava(jsonArray);
 
@@ -144,7 +144,8 @@ public class ManageSiteDefaultsController {
         return map;
     }
 
-    private void checkPrivileges(HttpServletRequest request) {
+    @SuppressWarnings("unchecked")
+    private void checkAccess(HttpServletRequest request) {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
         if (pageAccess.get("/siteSettings.htm") != AccessType.ALLOWED) {
             throw new RuntimeException("You are not authorized to access this page");

@@ -7,11 +7,7 @@
 
 
     <bean id="siteSettings" class="com.orangeleap.tangerine.controller.siteSettings.SiteSettingsController" >
-        <property name="commandName" value="site"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.Site"/>
-
-        <property name="formView" value="siteSettings/siteSettings" />
-        <property name="successView" value="redirect:/siteSettings.htm" />
+        <property name="viewName" value="siteSettings/manageSiteSettings" />
     </bean>
 
     <bean id="siteOptions" class="com.orangeleap.tangerine.controller.siteSettings.SiteOptionsController" >
@@ -19,7 +15,7 @@
         <property name="successView" value="redirect:/siteOptions.htm" />
     </bean>
 
-    <bean id="manageSiteDefaults" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+    <bean id="manageSiteDefaults" class="com.orangeleap.tangerine.controller.siteSettings.SiteDefaultsController">
         <property name="viewName" value="siteSettings/manageSiteDefaults" />
     </bean>
 

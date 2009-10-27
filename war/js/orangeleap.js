@@ -1728,3 +1728,35 @@ Ext.extend(OrangeLeap.OrderedBulkSaveStore, OrangeLeap.BulkSaveStore, {
         return true;
     }
 });
+
+
+OrangeLeap.GroupingBulkSaveStore = function(config){
+ 	OrangeLeap.GroupingBulkSaveStore.superclass.constructor.call(this, config);
+};
+
+Ext.extend(OrangeLeap.GroupingBulkSaveStore, Ext.data.GroupingStore, {
+    removeInvalid: function(rs) {
+        for (var i = rs.length-1; i >= 0; i--) {
+            if (!rs[i].isValid()) { // splice-off any !isValid real records
+                rs.splice(i,1);
+            }
+        }
+    },
+
+    /* Save only modified records */
+    save: function() {
+        var rs = [].concat(this.getModifiedRecords());
+        this.removeInvalid(rs);
+        this.doTransaction('update', rs);
+        return true;
+    },
+
+    /* Save all records, regardless if they are modified or not */
+    saveAll: function() {
+        var rs = [].concat(this.data.items);
+        this.removeInvalid(rs);
+        var txn = rs.length > 0 ? 'update' : 'destroy';
+        this.doTransaction(txn, rs);
+        return true;
+    }
+});

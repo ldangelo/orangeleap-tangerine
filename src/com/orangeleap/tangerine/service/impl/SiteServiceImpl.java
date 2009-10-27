@@ -534,6 +534,15 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateSite(Site site) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateSite: site.name = " + site.getName());
+        }
+        siteDao.updateSite(site);
+    }
+
+    @Override
 	@Transactional(propagation = Propagation.REQUIRED)
     public void maintainSiteOption(SiteOption siteOption) {
     	siteOption.setSiteName(tangerineUserHelper.lookupUserSiteName());

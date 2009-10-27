@@ -774,6 +774,7 @@ Ext.onReady(function() {
         layout: 'fit',
         width: 400,
         height: 300,
+        cls: 'win',
         id: 'customizeWin',
         buttons: [
             {   text: 'Save',

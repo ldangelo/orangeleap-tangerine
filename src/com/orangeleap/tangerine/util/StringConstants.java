@@ -173,4 +173,12 @@ public final class StringConstants {
 
     public static final String MM_DD_YYYY_FORMAT = "MM/dd/yyyy";
     public static final String YYYY_MM_DD_FORMAT = "yyyy-MM-dd";
+
+    public static final String NAME = "name";
+    public static final String GROUP = "group";
+    public static final String LABEL = "label";
+    public static final String VALUE = "value";
+    public static final String ROWS = "rows";
+    public static final String TOTAL_ROWS = "totalRows";
+    public static final String SUCCESS = "success";
 }

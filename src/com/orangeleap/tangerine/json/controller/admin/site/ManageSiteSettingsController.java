@@ -62,6 +62,8 @@ public class ManageSiteSettingsController {
     private TangerineUserHelper tangerineUserHelper;
 
     private final static String MASK = "*****";
+    private final static String CLASS = "class";
+    private final static String MAX_LEN = "maxLen";
 
     // TODO: move to a filter or something and throw an UnauthorizedAccessException
     @SuppressWarnings("unchecked")
@@ -93,6 +95,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("merchantNumber"));
         map.put(VALUE, site.getMerchantNumber());
         map.put(GROUP, paymentProcessingMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "255");
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -100,6 +104,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("merchantBin"));
         map.put(VALUE, site.getMerchantBin());
         map.put(GROUP, paymentProcessingMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "255");
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -107,6 +113,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("merchantTerminalId"));
         map.put(VALUE, site.getMerchantTerminalId());
         map.put(GROUP, paymentProcessingMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "8");
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -114,6 +122,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("achSiteNumber"));
         map.put(VALUE, site.getAchSiteNumber());
         map.put(GROUP, paymentProcessingMsg);
+        map.put(CLASS, "int");
+        map.put(MAX_LEN, "9");  // temporarily set to 9 - should be 20, but we need to use Long instead of Integer
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -121,6 +131,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("achMerchantId"));
         map.put(VALUE, site.getAchMerchantId());
         map.put(GROUP, paymentProcessingMsg);
+        map.put(CLASS, "int");
+        map.put(MAX_LEN, "9");  // temporarily set to 9 - should be 20, but we need to use Long instead of Integer
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -128,6 +140,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("achRuleNumber"));
         map.put(VALUE, site.getAchRuleNumber());
         map.put(GROUP, paymentProcessingMsg);
+        map.put(CLASS, "int");
+        map.put(MAX_LEN, "9");  // temporarily set to 9 - should be 20, but we need to use Long instead of Integer
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -135,6 +149,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("achCompanyName"));
         map.put(VALUE, site.getAchCompanyName());
         map.put(GROUP, paymentProcessingMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "128");
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -142,6 +158,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("achTestModeForm"));
         map.put(VALUE, site.getAchTestModeForm());
         map.put(GROUP, paymentProcessingMsg);
+        map.put(CLASS, "boolean");
+        map.put(MAX_LEN, "1");
         returnList.add(map);
 
         String emailServerMsg = TangerineMessageAccessor.getMessage("emailServer");
@@ -150,6 +168,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("smtpServerName"));
         map.put(VALUE, site.getSmtpServerName());
         map.put(GROUP, emailServerMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "128");
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -157,6 +177,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("smtpAccountName"));
         map.put(VALUE, site.getSmtpAccountName());
         map.put(GROUP, emailServerMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "128");
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -164,6 +186,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("smtpPassword"));
         map.put(VALUE, MASK);
         map.put(GROUP, emailServerMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "128");
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -171,6 +195,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("smtpFromAddress"));
         map.put(VALUE, site.getSmtpFromAddress());
         map.put(GROUP, emailServerMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "128");
         returnList.add(map);
 
         String guruConnectionMsg = TangerineMessageAccessor.getMessage("guruConnection");
@@ -179,6 +205,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("jasperUserId"));
         map.put(VALUE, site.getJasperUserId());
         map.put(GROUP, guruConnectionMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "64");
         returnList.add(map);
 
         map = new HashMap<String, Object>();
@@ -186,6 +214,8 @@ public class ManageSiteSettingsController {
         map.put(LABEL, TangerineMessageAccessor.getMessage("jasperPassword"));
         map.put(VALUE, MASK);
         map.put(GROUP, guruConnectionMsg);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "64");
         returnList.add(map);
     }
 
@@ -215,7 +245,14 @@ public class ManageSiteSettingsController {
                         }
                     }
                     else {
-                        bw.setPropertyValue(fieldName, fieldValue);
+                        Class clazz = bw.getPropertyType(fieldName);
+                        if (String.class.equals(clazz)) {
+                            bw.setPropertyValue(fieldName, fieldValue);
+                        }
+                        else if (Integer.class.equals(clazz)) {
+                            Integer thisInt = fieldValue == null ? null : new Integer(fieldValue);
+                            bw.setPropertyValue(fieldName, thisInt);
+                        }
                     }
                 }
             }

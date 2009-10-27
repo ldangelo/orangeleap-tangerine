@@ -44,7 +44,9 @@ Ext.onReady(function() {
             {name: 'id', type: 'string'},
             {name: 'label', type: 'string'},
             {name: 'value', type: 'string'},
-            {name: 'group', type: 'string'}
+            {name: 'group', type: 'string'},
+            {name: 'class', type: 'string'},
+            {name: 'maxLen', type: 'int'}
         ]
     });
     var writer = new Ext.data.JsonWriter({ listful: true });
@@ -91,11 +93,44 @@ Ext.onReady(function() {
                 grid.saveButton.handler();
             }, 100);
         }
-    });
-    valueFld.on('focus', function(fld) {
-        if (fld.getValue() == '*****') {
+        else {
+            fld.filterKeys(event);
         }
     });
+    valueFld.on('focus', function(fld) {
+        if (fld.gridEditor) {
+            var rec = fld.gridEditor.record;
+            if (rec) {
+                var extClazz = rec.get('class');
+                var maxLen = rec.get('maxLen');
+                if (maxLen && Ext.isNumber(maxLen)) {
+                    fld.maxLength = parseInt(maxLen, 10);
+                    if (fld.maxLength){
+                        fld.el.dom.setAttribute('maxLength', fld.maxLength);
+                    }
+                }
+                else {
+                    fld.maxLength = 255;
+                    fld.el.dom.setAttribute('maxLength', 255);
+                }
+                if (extClazz && extClazz !== 'string') {
+                    if (extClazz === 'int') {
+                        fld.maskRe = /[0-9]/;
+                    }
+                    else if (extClazz === 'boolean') {
+                        fld.maskRe = /[0-1]/;
+                    }
+                }
+                else {
+                    fld.maskRe = null;
+                }
+            }
+        }
+    });
+    valueFld.on('blur', function(fld) {
+        fld.maxLength = 255;
+        fld.el.dom.setAttribute('maxLength', 255);
+    });    
 
     var grid = new Ext.grid.EditorGridPanel({
         store: store,

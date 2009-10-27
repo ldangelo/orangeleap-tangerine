@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.NightlyBatchService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
@@ -64,12 +65,19 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
     @Resource(name = "reminderService")
     private ReminderService reminderService;
 
+    @Resource(name = "constituentService")
+    private ConstituentService constituentService;
+
     
     // Non-transactional method
     @Override
     public synchronized void processRecurringGifts() {
     	
     	((OLLogger)logger).logFreeMemory();
+    	
+		int totalContituentCount = constituentService.getConstituentCountBySite();
+		logger.info("Total number of constituents for " + this.getSiteName() + " = " +totalContituentCount);
+
     	
     	internalProcessRecurringGifts();
         processPledges();

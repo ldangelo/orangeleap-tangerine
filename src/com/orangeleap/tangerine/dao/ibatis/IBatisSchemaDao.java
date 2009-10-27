@@ -91,7 +91,7 @@ public class IBatisSchemaDao extends AbstractIBatisDao implements SchemaDao {
     		
 			Statement stat = connection.createStatement();
     		try {
-    			stat.execute("USE " + (split ? getSiteName() : "orangeleap"));
+    			stat.execute("USE " + (split ? schema : "orangeleap"));
     		} finally {
     			stat.close();
     		}    

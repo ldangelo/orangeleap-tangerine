@@ -329,6 +329,7 @@ Ext.onReady(function() {
                 var endIndex = val.indexOf('</script');
                 val =  val.substring(0, endIndex) + '&gt;/script' + val.substring(endIndex + 8);
             }
+            val = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
         return val;
     }
@@ -441,25 +442,27 @@ Ext.onReady(function() {
                 }
             },
             {   header: 'Description',
-                width: 170,
+                width: 255,
                 sortable: true,
                 dataIndex: 'desc',
                 align: 'left',
                 editable: true,
                 editor: optionDescFld,
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return escapeScriptTag(value);
+                    var val = escapeScriptTag(value);
+                    return '<span ext:qtitle="Description" ext:qwidth="250" ext:qtip="' + val + '">' + val + '</span>';
                 }
             },
             {   header: 'Value',
-                width: 170,
+                width: 255,
                 sortable: true,
                 dataIndex: 'value',
                 align: 'left',
                 editable: true,
                 editor: optionValueFld,
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return escapeScriptTag(value);
+                    var val = escapeScriptTag(value);
+                    return '<span ext:qtitle="Value" ext:qwidth="250" ext:qtip="' + val + '">' + val + '</span>';
                 }
             },
             {   header: ' ', width: 25, menuDisabled: true, fixed: true,
@@ -516,7 +519,7 @@ Ext.onReady(function() {
     var optionsWin = new Ext.Window({
         title: 'Manage Site Options <span id="optionsFieldsSavedMarker" class="savedIcon">Saved</span>',
         layout: 'fit',
-        width: 600,
+        width: 700,
         height: 500,
         cls: 'win',
         id: 'optionsWin',

@@ -169,7 +169,7 @@ function guru(itemData, elem) {
         var url = '/'+contextPrefix+'jasperserver/'+itemData.url;
         
         url = url.replace(/amp;/g, "");
-        var div = document.createElement("div");
+        var div = document.createElement("iframe");
         var adiv = $(div);
 
         $.ajax({

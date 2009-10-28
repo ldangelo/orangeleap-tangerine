@@ -114,9 +114,13 @@ div#managerGrid table.saveButton td.x-btn-mc,
 #managementGrid #savedMarker, #managerGrid #savedMarker { visibility: hidden; font-size: 12px; }
 #customizeWin #customizedFieldsSavedMarker, #optionsWin #optionsFieldsSavedMarker { display: none; font-size: 11px; }
 
-a.customizeLink { background-image: url(../images/icons/gears.png); background-position: top left; background-repeat: no-repeat; height: 16px; width: 16px; display: block; text-indent: -3000px; }
+a.customizeLink, a.deleteLink, a.executeLink { background-position: top left; background-repeat: no-repeat; height: 16px; width: 16px; display: inline-block; text-indent: -3000px; }
+a.customizeLink { background-image: url(../images/icons/gears.png); }
 a.customizeLink.disabled { background-image: url(../images/icons/gearsDisabled.png); cursor: default; }
-a.deleteLink { background-image: url(../images/icons/deleteRow.png); background-position: top left; background-repeat: no-repeat; height: 16px; width: 16px; display: block; text-indent: -3000px; }
+a.deleteLink { background-image: url(../images/icons/deleteRow.png); }
+a.executeLink { background-image: url(../images/icons/play.png); }
+div#managerGrid a.executeLink { margin-right: 5px; }
+div#managerGrid a.executeLink:hover, div#managerGrid a.deleteLink:hover, div#managerGrid a.executeLink:focus, div#managerGrid a.deleteLink:focus { background-position: bottom left; }
 
 .ext-el-mask { z-index: 9000; background-color: #000; }
 

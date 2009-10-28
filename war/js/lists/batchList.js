@@ -1,3 +1,4 @@
+Ext.ns('OrangeLeap', 'OrangeLeap.msgBundle');
 OrangeLeap.ListStore = Ext.extend(Ext.data.JsonStore, {
     sort: function(fieldName, dir) {
         this.lastOptions.params['start'] = 0;
@@ -5,8 +6,36 @@ OrangeLeap.ListStore = Ext.extend(Ext.data.JsonStore, {
         return OrangeLeap.ListStore.superclass.sort.call(this, fieldName, dir);
     }
 });
+
+OrangeLeap.msgBundle = {
+    displayMsg: 'Displaying {0} - {1} of {2}',
+    emptyMsg: 'No rows to display',
+    addNew: 'Add New',
+    save: 'Save',
+    close: 'Close',
+    showCurrentBatches: 'Show Current Batches',
+    showExecutedBatches: 'Show Executed Batches',
+    batchId: 'Batch ID',
+    type: 'Type',
+    size: 'Size',
+    description: 'Description',
+    executeDate: 'Execute Date',
+    creationDate: 'Creation Date',
+    userId: 'User ID',
+    executeBatch: 'Execute Batch',
+    removeBatch: 'Remove Batch',
+    batchList: 'Batch List',
+    addNewBatch: 'Add a new Batch',
+    manageBatch: 'Manage Batch',
+    step1: '<span class="stepNum">1</span> Choose the Batch Type' ,
+    step2: '<span class="stepNum">2</span> Choose Segmentations',
+    step3: '<span class="stepNum">3</span> Update Fields'
+}
+
 Ext.onReady(function() {
     Ext.QuickTips.init();
+
+    var msgs = OrangeLeap.msgBundle;
 
     var store = new OrangeLeap.ListStore({
         url: 'batchList.json',
@@ -26,19 +55,25 @@ Ext.onReady(function() {
         ]
     });
     store.on('load', function(store, recs, options) {
+        var batchIdCol = 0;
         var executeDtCol = 4;
         var createDtCol = 5;
         var loginIdCol = 6;
+        var actionsCol = 7;
         if (combo.getValue() == 'true') {
-            // for executed batches, hide createDt column
+            // for executed batches, hide batchId, actions & createDt column
+            grid.colModel.setHidden(batchIdCol, true);
             grid.colModel.setHidden(createDtCol, true);
+            grid.colModel.setHidden(actionsCol, true);
             grid.colModel.setHidden(executeDtCol, false);
             grid.colModel.setHidden(loginIdCol, false);
         }
         else {
-           // for not executed batches, hide executeDt & loginId column
+           // for not executed batches, hide batchId, executeDt & loginId column
+            grid.colModel.setHidden(batchIdCol, true);
             grid.colModel.setHidden(executeDtCol, true);
             grid.colModel.setHidden(loginIdCol, true);
+            grid.colModel.setHidden(actionsCol, false);
             grid.colModel.setHidden(createDtCol, false);
         }
     });
@@ -64,8 +99,8 @@ Ext.onReady(function() {
         },
         store: store,
         displayInfo: true,
-        displayMsg: 'Displaying {0} - {1} of {2}',
-        emptyMsg: 'No rows to display'
+        displayMsg: msgs.displayMsg,
+        emptyMsg: msgs.emptyMsg
     });
 
     var combo = new Ext.form.ComboBox({
@@ -74,7 +109,7 @@ Ext.onReady(function() {
                 'showRanBatches',
                 'desc'
             ],
-            data: [['false', 'Show Current Batches'], ['true', 'Show Executed Batches']] 
+            data: [['false', msgs.showCurrentBatches], ['true', msgs.showExecutedBatches]] 
         }),
         displayField: 'desc',
         valueField: 'showRanBatches',
@@ -144,20 +179,24 @@ Ext.onReady(function() {
         store: store,
         addClass: 'pointer',
         columns: [
-            { header: 'Batch Id', dataIndex: 'id', sortable: true },
-            { header: 'Type', dataIndex: 'entity', sortable: true },
-            { header: 'Size', dataIndex: 'reviewSetSize', sortable: true },
-            { header: 'Description', dataIndex: 'postBatchDesc', sortable: true,
+            { header: msgs.batchId, dataIndex: 'id', width: 50, sortable: true, hidden: true },
+            { header: msgs.type, dataIndex: 'entity', width: 150, sortable: true },
+            { header: msgs.size, dataIndex: 'reviewSetSize', width: 100, sortable: true },
+            { header: msgs.description, dataIndex: 'postBatchDesc', sortable: true,
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return '<span ext:qtitle="Description" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                    return '<span ext:qtitle="' + msgs.description + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                 }
             },
-            { header: 'Execute Date', dataIndex: 'batchUpdatedDate', sortable: true, id: 'executeDt' },
-            { header: 'Creation Date', dataIndex: 'createDate', sortable: true, id: 'createDt' },
-            { header: 'User ID', dataIndex: 'loginId', sortable: true },
-            { header: ' ', width: 25, menuDisabled: true, fixed: true,
+            { header: msgs.executeDate, dataIndex: 'batchUpdatedDate', sortable: true, id: 'executeDt' },
+            { header: msgs.creationDate, dataIndex: 'createDate', sortable: true, id: 'createDt' },
+            { header: msgs.userId, dataIndex: 'loginId', sortable: true },
+            { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;',
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id + '" title="Remove Batch">Remove</a>';
+                    if ( ! record.get('batchUpdated')) {
+                        var html = '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id + '" title="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
+                        html += '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id + '" title="' + msgs.removeBatch + '">' + msgs.removeBatch + '</a>';
+                        return html;
+                    }
                 }
             }
         ],
@@ -167,11 +206,12 @@ Ext.onReady(function() {
         width: 780,
         frame: true,
         header: true,
-        title: 'Batch List',
+        title: msgs.batchList,
         loadMask: true,
         listeners: {
             rowdblclick: function(grid, row, evt) {
                 var rec = grid.getSelectionModel().getSelected();
+                batchWin.show();
                 // TODO: modal
 //                Ext.get(document.body).mask('Loading Record');
 //                window.location.href = "constituent.htm?constituentId=" + rec.data.id;
@@ -180,8 +220,9 @@ Ext.onReady(function() {
         tbar: [
             combo, ' ', '-', ' ', 
             {
-                text: 'Add New', tooltip:'Add a new Batch', iconCls:'add', id: 'addButton', ref: '../addButton',
+                text: msgs.addNew, tooltip: msgs.addNewBatch, iconCls:'add', id: 'addButton', ref: '../addButton',
                 handler: function() {
+                    batchWin.show();
                 }
             }
         ],
@@ -218,5 +259,110 @@ Ext.onReady(function() {
                 thisView.restoreScroll(thisView.prevScrollState);
             }
         }
+    });
+
+    /* Following is for the edit/add batch modal */
+    var batchForm = new Ext.form.FormPanel({
+        layout: 'absolute',
+        defaultType: 'textfield',
+        items: [{
+            x: 0,
+            y: 5,
+            xtype: 'label',
+            html: '<span class="steps"></span>'
+        },{
+            x: 55,
+            y: 0,
+            name: 'from',
+            anchor:'100%'  // anchor width by %
+        },{
+            x: 0,
+            y: 32,
+            xtype: 'label',
+            text: 'To:'
+        },{
+            // The button is not a Field subclass, so it must be
+            // wrapped in a panel for proper positioning to work
+            xtype: 'panel',
+            x: 55,
+            y: 27,
+            items: {
+                xtype: 'button',
+                text: 'Contacts...'
+            }
+        },{
+            x: 135,
+            y: 27,
+            name: 'to',
+            anchor: '100%'  // anchor width by %
+        },{
+            x: 0,
+            y: 59,
+            xtype: 'label',
+            text: 'Subject:'
+        },{
+            x: 55,
+            y: 54,
+            name: 'subject',
+            anchor: '100%'  // anchor width by %
+        },{
+            x:0,
+            y: 81,
+            xtype: 'textarea',
+            name: 'msg',
+            anchor: '100% 100%'  // anchor width and height
+        }]
+    });
+
+    var batchWin = new Ext.Window({
+        title: msgs.manageBatch,
+        layout: 'fit',
+        width: 875,
+        height: 500,
+        cls: 'win',
+        id: 'batchWin',
+        modal: true,
+        closable: false,
+        closeAction: 'hide',
+        buttons: [
+            {   text: msgs.save,
+                cls: 'saveButton',
+                ref: '../saveButton',
+                disabled: true,
+                handler: function(button, event) {
+//                    if (checkIfValid()) {
+//                        $("#optionsFieldsSavedMarker").hide();
+//                        optionsStore.saveAll();
+//                    }
+//                    else {
+//                        Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
+//                            buttons: Ext.MessageBox.OK,
+//                            msg: 'You must fix the highlighted errors first before saving.'});
+//                    }
+                }
+            },
+            {   text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    batchWin.hide(this);
+                }
+            }
+        ],
+        buttonAlign: 'center'
+    });
+
+    var hideOnEscape = function(e) {
+        if (e.keyCode == 27) {
+            batchWin.hide();
+        }
+    }
+    batchWin.on('beforeshow', function() {
+        $(window).bind('keydown', function(e) {
+            hideOnEscape(e);
+        });
+    });
+    batchWin.on('beforehide', function() {
+        $(window).unbind('keydown', hideOnEscape);
     });
 });

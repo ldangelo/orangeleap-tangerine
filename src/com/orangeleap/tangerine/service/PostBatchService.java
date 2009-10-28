@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
@@ -39,4 +40,5 @@ public interface PostBatchService {
     public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
 	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
 
+    List<PostBatch> readBatches(boolean batchUpdated, SortInfo sort, Locale locale);
 }

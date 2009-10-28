@@ -57,7 +57,16 @@
         <include refid="SELECT_POST_BATCH_FRAGMENT"/>
         and post_batch.POST_BATCH_ID = #id#
     </select>
-    
+
+    <select id="SELECT_LIMITED_POST_BATCHES" resultMap="POST_BATCH_RESULT" parameterClass="map">
+        <include refid="SELECT_POST_BATCH_FRAGMENT"/>
+        and post_batch.BATCH_UPDATED = #showRanBatches#
+        order by
+        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$, $limit$
+    </select>
+
     <delete id="DELETE_POST_BATCH" parameterClass="map" >
         delete from POST_BATCH 
         where 

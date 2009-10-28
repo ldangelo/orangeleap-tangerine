@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Locale;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -224,6 +225,15 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     @Override
     public List<PostBatch> listBatchs() {
         return postBatchDao.listBatchs();
+    }
+
+    @Override
+    public List<PostBatch> readBatches(boolean showRanBatches, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readBatches: showRanBatches = " + showRanBatches + " sort = " + sort);
+        }
+        return postBatchDao.readBatches(showRanBatches, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
     }
 
     @Override

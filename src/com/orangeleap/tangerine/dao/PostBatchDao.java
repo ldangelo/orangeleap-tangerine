@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
@@ -51,4 +52,5 @@ public interface PostBatchDao {
 
     public Long getReviewSetSize(Long postBatchId);
 
+    List<PostBatch> readBatches(boolean batchUpdated, String sortPropertyName, String direction, int start, int limit, Locale locale);
 }

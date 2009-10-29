@@ -122,3 +122,32 @@ div.errorDiv { font-size: 1.2em; font-family: arial; padding-top: 15px; }
 /* Used in ExtJS forms to space out entries */
 div.spaced { padding-bottom: 10px; }
 div.x-grid3-row { cursor: pointer; }
+
+span.step { margin-left: 8px; min-height: 5em; display: block; }
+span.stepNum { display: table-cell; background-color: #D0D0D0; color: #FFF; font-family: Times New Roman; font-size:3em; margin: 0 10px 0 5px; padding:0 4px;
+    text-align: left; vertical-align:baseline; box-shadow: 2px 2px 2px #AAA; -moz-box-shadow: 2px 2px 2px #AAA; -webkit-box-shadow: 2px 2px 2px #AAA; -o-box-shadow: 2px 2px 2px #AAA;
+    text-shadow: 1px 1px 1px #111; }
+span.stepNum.complete { background-color: #00BF3E; }
+span.stepNum a, span.stepNum a:visited { color: #FFF; }
+span.stepTxt { display: table-cell; padding: 0 10px; vertical-align: middle; font-size: 1.1em; font-family: arial; color: #000; }
+span.stepTxt a { margin: auto 0; }
+a.x-grouptabs-text:hover span.stepNum, a.x-grouptabs-text:focus span.stepNum,
+    a.x-grouptabs-text:active span.stepNum, a.x-grouptabs-text:active span.stepNum,
+    li.x-grouptabs-strip-active span.stepNum { color: #FFF; background-color: #FF7800; }
+a.x-grouptabs-text:hover span.stepTxt, a.x-grouptabs-text:focus span.stepTxt,
+    a.x-grouptabs-text:active span.stepTxt, a.x-grouptabs-text:active span.stepTxt,
+    li.x-grouptabs-strip-active span.stepTxt { font-weight: bold; }
+ul.x-grouptabs-tab-strip-left li { padding: 10px 0; }
+
+.x-tab-panel-left .x-grouptabs-panel-header, .x-tab-panel-right .x-grouptabs-panel-header { background: transparent none repeat scroll 0 0; border: 0 none; float: left; }
+
+#batchWin .x-tab-panel { background-color: #EFEFEF; }
+#batchWin li.x-grouptabs-strip-active { background-color: #FFF; }
+#batchWin .x-tab-strip-wrap { text-align: left; }
+.x-grouptabs-panel ul.x-grouptabs-sub .x-grouptabs-main-item { display: none; }
+
+.x-tab-panel-left .x-tab-panel-header ul.x-grouptabs-strip a.x-grouptabs-text,
+    .x-tab-panel-right .x-tab-panel-header ul.x-grouptabs-strip a.x-grouptabs-text { cursor: pointer; text-decoration: none; }
+
+.x-grouptabs-panel .x-grouptabs-panel-body { border: 0; }
+

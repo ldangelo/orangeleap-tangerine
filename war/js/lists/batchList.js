@@ -27,9 +27,14 @@ OrangeLeap.msgBundle = {
     batchList: 'Batch List',
     addNewBatch: 'Add a new Batch',
     manageBatch: 'Manage Batch',
-    step1: '<span class="stepNum">1</span> Choose the Batch Type' ,
-    step2: '<span class="stepNum">2</span> Choose Segmentations',
-    step3: '<span class="stepNum">3</span> Update Fields'
+    step1Title: '<span class="step"><span class="stepNum">1</span><span class="stepTxt">Choose Batch Type</span>',
+    step2Title: '<span class="step"><span class="stepNum">2</span><span class="stepTxt">Choose Segmentations</span>',
+    step3Title: '<span class="step"><span class="stepNum">3</span><span class="stepTxt">Choose Rows from Segmentations</span>',
+    step4Title: '<span class="step"><span class="stepNum">4</span><span class="stepTxt">Update Field Values</span>',
+    step1Tip: 'Step 1',
+    step2Tip: 'Step 2',
+    step3Tip: 'Step 3',
+    step4Tip: 'Step 4'
 }
 
 Ext.onReady(function() {
@@ -262,56 +267,20 @@ Ext.onReady(function() {
     });
 
     /* Following is for the edit/add batch modal */
-    var batchForm = new Ext.form.FormPanel({
-        layout: 'absolute',
+    var step1Form = new Ext.form.FormPanel({
+        xtype: 'form', // FormPanel
+        labelWidth: 75,
+        width: 350,
         defaultType: 'textfield',
         items: [{
-            x: 0,
-            y: 5,
-            xtype: 'label',
-            html: '<span class="steps"></span>'
-        },{
-            x: 55,
-            y: 0,
-            name: 'from',
-            anchor:'100%'  // anchor width by %
-        },{
-            x: 0,
-            y: 32,
-            xtype: 'label',
-            text: 'To:'
-        },{
-            // The button is not a Field subclass, so it must be
-            // wrapped in a panel for proper positioning to work
-            xtype: 'panel',
-            x: 55,
-            y: 27,
-            items: {
-                xtype: 'button',
-                text: 'Contacts...'
+                fieldLabel: msgs.description,
+                name: 'description',
+                xtype: 'textarea'
+            },{
+                fieldLabel: msgs.type,
+                name: 'type'
             }
-        },{
-            x: 135,
-            y: 27,
-            name: 'to',
-            anchor: '100%'  // anchor width by %
-        },{
-            x: 0,
-            y: 59,
-            xtype: 'label',
-            text: 'Subject:'
-        },{
-            x: 55,
-            y: 54,
-            name: 'subject',
-            anchor: '100%'  // anchor width by %
-        },{
-            x:0,
-            y: 81,
-            xtype: 'textarea',
-            name: 'msg',
-            anchor: '100% 100%'  // anchor width and height
-        }]
+        ]
     });
 
     var batchWin = new Ext.Window({
@@ -349,7 +318,43 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center'
+        buttonAlign: 'center',
+
+        items:[{
+             xtype: 'grouptabpanel',
+             tabWidth: 135,
+             activeGroup: 0,
+             items: [
+                 {
+                     items: [{
+                         title: msgs.step1Title,
+                         tabTip: msgs.step1Tip,
+                         items: [ step1Form ]
+                     }]
+                 },
+                 {
+                     items: [{
+                         title: msgs.step2Title,
+                         tabTip: msgs.step2Tip,
+                         html: '<div>23</div>'
+                     }]
+                 },
+                 {
+                     items: [{
+                         title: msgs.step3Title,
+                         tabTip: msgs.step3Tip,
+                         html: '<div>30</div>'
+                     }]
+                 },
+                 {
+                     items: [{
+                         title: msgs.step4Title,
+                         tabTip: msgs.step4Tip,
+                         html: '<div>40</div>'
+                     }]
+                 }
+             ]
+         }]
     });
 
     var hideOnEscape = function(e) {

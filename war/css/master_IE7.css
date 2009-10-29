@@ -38,3 +38,7 @@ tr.hiddenRow td table ul.width350 li.queryLookupLi { padding-bottom: 8px; }
 tr.hiddenRow td table ul.width350 a.multiLookupLink { top: 7px; }
 table.distributionLines .lineRow .lookupField { top: 1px; }
 tr.hiddenRow.noDisplay td table ul.width350, tr.hiddenRow.noDisplay td table div, tr.hiddenRow.noDisplay td table ul.width350 li { display: none; }
+
+span.step { margin: 10px 5px; clear: both; }
+span.stepNum { display: block; float: left; }
+span.stepTxt { display: block; min-height: 3.6em; vertical-align: inherit; padding: 0 0; }

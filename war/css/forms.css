@@ -241,10 +241,14 @@ table.tablesorter tbody tr.lineRow td a.hideText { top: 0; right: 0; padding: 1p
     border-bottom: 1px solid #9dc7df;
     cursor: pointer;
 }
-.disabledButton {
+.disabledButton, .disabledButton:hover, .disabledButton:focus {
     background-position: 0 -78px; 
     border-right: 1px solid #adb9c2;
     border-bottom: 1px solid #adb9c2;
+    color: #A0A0A0;
+    cursor: default;
+}
+table.disabledButton button {
     color: #A0A0A0;
     cursor: default;
 }

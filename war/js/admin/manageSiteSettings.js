@@ -185,12 +185,16 @@ Ext.onReady(function() {
             }
         ],
         buttons: [
-            {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true, handler: function() {
+            {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true,
+                disabledClass: 'disabledButton',
+                handler: function() {
                     $("#savedMarker").css('visibility', 'hidden');
                     store.save();
                 }
             },
-            {text: 'Undo', cls: 'button', ref: '../undoButton', disabled: true, handler: function() {
+            {text: 'Undo', cls: 'button', ref: '../undoButton', disabled: true,
+                disabledClass: 'disabledButton',
+                handler: function() {
                     var thisGrid = Ext.get('managerGrid');
                     thisGrid.mask("Undoing...");
                     store.rejectChanges();

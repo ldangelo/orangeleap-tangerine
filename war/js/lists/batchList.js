@@ -281,12 +281,10 @@ Ext.onReady(function() {
 
     function initFocus(groups, thisGrp) {
         if (thisGrp.mainItem.id == 'step1Grp') {
-            setTimeout(function() {
-                var elem = Ext.getCmp('batchDesc');
-                if (elem && elem.el) {
-                    elem.el.focus();
-                }
-            }, 900);
+            var elem = Ext.getCmp('batchDesc');
+            if (elem && elem.el) {
+                elem.el.focus(false, 900);
+            }
         }
     }
 
@@ -296,6 +294,7 @@ Ext.onReady(function() {
         margins: '10 0',
         formId: 'step1Form',
         ctCls: 'wizard',
+        monitorValid: true,
         layoutConfig: {
             labelSeparator: '' 
         },
@@ -304,6 +303,8 @@ Ext.onReady(function() {
                 text: msgs.next,
                 cls: 'button',
                 ref: '../nextButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
                 handler: function(button, event) {
 //                    batchWin.hide(this);
                 }
@@ -351,6 +352,10 @@ Ext.onReady(function() {
             }
         ]
     });
+
+    var step2Form = {
+
+    }
 
     var batchWin = new Ext.Window({
         title: msgs.manageBatch,

@@ -11,8 +11,12 @@ OrangeLeap.msgBundle = {
     displayMsg: 'Displaying {0} - {1} of {2}',
     emptyMsg: 'No rows to display',
     addNew: 'Add New',
+    next: 'Next',
+    previous: 'Previous',
     save: 'Save',
     close: 'Close',
+    gift: 'Gift',
+    adjustedGift: 'Adjusted Gift',
     showCurrentBatches: 'Show Current Batches',
     showExecutedBatches: 'Show Executed Batches',
     batchId: 'Batch ID',
@@ -266,19 +270,74 @@ Ext.onReady(function() {
         }
     });
 
+    var descText = new Ext.form.TextArea({
+        maxLength: 255
+    });
+
+    var typeCombo = new Ext.form.ComboBox({
+       store: new Ext.data.ArrayStore({
+            fields: [
+                'value',
+                'desc'
+            ],
+            data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]]
+        }),
+        displayField: 'desc',
+        valueField: 'value',
+        typeAhead: false,
+        mode: 'local',
+        forceSelection: true,
+        triggerAction: 'all',
+        emptyText: ' ',
+        selectOnFocus: true,
+        minListWidth: 100,
+        stateId: 'typeCombo'
+    });
+
     /* Following is for the edit/add batch modal */
     var step1Form = new Ext.form.FormPanel({
-        xtype: 'form', // FormPanel
-        labelWidth: 75,
-        width: 350,
-        defaultType: 'textfield',
-        items: [{
-                fieldLabel: msgs.description,
-                name: 'description',
-                xtype: 'textarea'
-            },{
-                fieldLabel: msgs.type,
-                name: 'type'
+        baseCls: 'x-plain',
+        labelAlign: 'right',
+        margins: '10 0',
+        layoutConfig: {
+            labelSeparator: '' 
+        },
+        buttons: [
+            {
+                text: msgs.next,
+                cls: 'button',
+                ref: '../nextButton',
+                handler: function(button, event) {
+//                    batchWin.hide(this);
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        items: [
+            {
+                fieldLabel: msgs.description, name: 'batchDesc', id: 'batchDesc', xtype: 'textarea',
+                maxLength: 255, height: 60, width: 500, grow: true, growMin: 60, growMax: 400
+            },
+            {
+                fieldLabel: msgs.type, name: 'batchType', id: 'batchType', xtype: 'combo',
+                store: new Ext.data.ArrayStore({
+                    fields: [
+                        'value',
+                        'desc'
+                    ],
+                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]]
+                }),
+                displayField: 'desc',
+                valueField: 'value',
+                typeAhead: false,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                stateId: 'typeCombo'
             }
         ]
     });
@@ -329,6 +388,7 @@ Ext.onReady(function() {
                      items: [{
                          title: msgs.step1Title,
                          tabTip: msgs.step1Tip,
+                         style: 'padding: 20px 40px;',
                          items: [ step1Form ]
                      }]
                  },
@@ -370,4 +430,6 @@ Ext.onReady(function() {
     batchWin.on('beforehide', function() {
         $(window).unbind('keydown', hideOnEscape);
     });
+
+    batchWin.show(); // TODO: remove
 });

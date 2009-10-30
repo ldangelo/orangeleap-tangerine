@@ -123,6 +123,8 @@ div.errorDiv { font-size: 1.2em; font-family: arial; padding-top: 15px; }
 div.spaced { padding-bottom: 10px; }
 div.x-grid3-row { cursor: pointer; }
 
+div.win .x-panel-bwrap { text-align: left; }
+
 span.step { margin-left: 8px; min-height: 5em; display: block; }
 span.stepNum { display: table-cell; background-color: #D0D0D0; color: #FFF; font-family: Times New Roman; font-size:3em; margin: 0 10px 0 5px; padding:0 4px;
     text-align: left; vertical-align:baseline; box-shadow: 2px 2px 2px #AAA; -moz-box-shadow: 2px 2px 2px #AAA; -webkit-box-shadow: 2px 2px 2px #AAA; -o-box-shadow: 2px 2px 2px #AAA;
@@ -144,10 +146,12 @@ ul.x-grouptabs-tab-strip-left li { padding: 10px 0; }
 #batchWin .x-tab-panel { background-color: #EFEFEF; }
 #batchWin li.x-grouptabs-strip-active { background-color: #FFF; }
 #batchWin .x-tab-strip-wrap { text-align: left; }
+#batchWin div.x-form-item { margin-bottom: 20px; font-family: arial; }
+#batchWin div.x-form-item label { color: #173D5F; }
 .x-grouptabs-panel ul.x-grouptabs-sub .x-grouptabs-main-item { display: none; }
 
 .x-tab-panel-left .x-tab-panel-header ul.x-grouptabs-strip a.x-grouptabs-text,
     .x-tab-panel-right .x-tab-panel-header ul.x-grouptabs-strip a.x-grouptabs-text { cursor: pointer; text-decoration: none; }
 
 .x-grouptabs-panel .x-grouptabs-panel-body { border: 0; }
-
+.x-tab-joint { background:#FFFFFF none repeat scroll 0 0; position:absolute; top:1px; width:3px; z-index:9999; }

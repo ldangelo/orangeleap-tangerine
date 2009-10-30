@@ -30,6 +30,18 @@
 		<property name="targetMethod"><value>getProperties</value></property>
 	</bean>
 
+	<bean id="serverUrl"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject"><ref local="sysProps" /></property>
+		<property name="targetMethod"><value>setProperty</value></property>
+		<property name="arguments">
+			<list>
+				<value>casClient.serverUrl</value>
+				<value>${casClient.serverUrl}</value>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="contextPrefix"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject"><ref local="sysProps" /></property>
@@ -188,4 +200,6 @@
 		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
 		<property name="repositoryUri" value="/services/repository"/>
 	</bean>
+	
+	<bean id="applicationContextProvider" class="com.orangeleap.tangerine.util.ApplicationContextProvider"/>
 </beans>

@@ -148,6 +148,7 @@ ul.x-grouptabs-tab-strip-left li { padding: 10px 0; }
 #batchWin .x-tab-strip-wrap { text-align: left; }
 #batchWin div.x-form-item { margin-bottom: 20px; font-family: arial; }
 #batchWin div.x-form-item label { color: #173D5F; }
+#batchWin div.x-form-item label.inFocus { color: #000; }
 .x-grouptabs-panel ul.x-grouptabs-sub .x-grouptabs-main-item { display: none; }
 
 .x-tab-panel-left .x-tab-panel-header ul.x-grouptabs-strip a.x-grouptabs-text,
@@ -155,3 +156,4 @@ ul.x-grouptabs-tab-strip-left li { padding: 10px 0; }
 
 .x-grouptabs-panel .x-grouptabs-panel-body { border: 0; }
 .x-tab-joint { background:#FFFFFF none repeat scroll 0 0; position:absolute; top:1px; width:3px; z-index:9999; }
+div.wizard span.required { font-size: inherit; padding-right: 3px; }

@@ -528,7 +528,7 @@ table.alignLeft td,
 
 input:focus, textarea:focus, .focused { background-color: #DFF1FF; }
 input.defaultText { color: #AFAFAF; }
-ul.formFields li.side label.inFocus { font-weight: bold; color: black; }
+ul.formFields li.side label.inFocus, label.inFocus { font-weight: bold; color: black; }
 
 .mainForm h3.info { color: #070; }
 

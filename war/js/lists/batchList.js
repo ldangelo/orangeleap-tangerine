@@ -270,35 +270,32 @@ Ext.onReady(function() {
         }
     });
 
-    var descText = new Ext.form.TextArea({
-        maxLength: 255
-    });
-
-    var typeCombo = new Ext.form.ComboBox({
-       store: new Ext.data.ArrayStore({
-            fields: [
-                'value',
-                'desc'
-            ],
-            data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]]
-        }),
-        displayField: 'desc',
-        valueField: 'value',
-        typeAhead: false,
-        mode: 'local',
-        forceSelection: true,
-        triggerAction: 'all',
-        emptyText: ' ',
-        selectOnFocus: true,
-        minListWidth: 100,
-        stateId: 'typeCombo'
-    });
-
     /* Following is for the edit/add batch modal */
+    function elementFocus(fld) {
+        $('#' + fld.getId()).parents('div.x-form-element').prev('label').addClass('inFocus');
+    }
+
+    function elementBlur(fld) {
+        $('#' + fld.getId()).parents('div.x-form-element').prev('label').removeClass('inFocus');
+    }
+
+    function initFocus(groups, thisGrp) {
+        if (thisGrp.mainItem.id == 'step1Grp') {
+            setTimeout(function() {
+                var elem = Ext.getCmp('batchDesc');
+                if (elem && elem.el) {
+                    elem.el.focus();
+                }
+            }, 900);
+        }
+    }
+
     var step1Form = new Ext.form.FormPanel({
         baseCls: 'x-plain',
         labelAlign: 'right',
         margins: '10 0',
+        formId: 'step1Form',
+        ctCls: 'wizard',
         layoutConfig: {
             labelSeparator: '' 
         },
@@ -314,12 +311,19 @@ Ext.onReady(function() {
         ],
         buttonAlign: 'center',
         items: [
+            // Textarea for description is first
             {
                 fieldLabel: msgs.description, name: 'batchDesc', id: 'batchDesc', xtype: 'textarea',
-                maxLength: 255, height: 60, width: 500, grow: true, growMin: 60, growMax: 400
+                maxLength: 255, height: 60, width: 500, grow: true, growMin: 60, growMax: 400,
+                listeners: {
+                    'focus': elementFocus,
+                    'blur': elementBlur,
+                    scope: this
+                }
             },
+            // Combobox for type is second
             {
-                fieldLabel: msgs.type, name: 'batchType', id: 'batchType', xtype: 'combo',
+                fieldLabel: '<span class="required">*</span>' + msgs.type, name: 'batchType', id: 'batchType', xtype: 'combo',
                 store: new Ext.data.ArrayStore({
                     fields: [
                         'value',
@@ -327,6 +331,7 @@ Ext.onReady(function() {
                     ],
                     data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]]
                 }),
+                value: 'gift',
                 displayField: 'desc',
                 valueField: 'value',
                 typeAhead: false,
@@ -337,7 +342,12 @@ Ext.onReady(function() {
                 selectOnFocus: true,
                 minListWidth: 500,
                 width: 500,
-                stateId: 'typeCombo'
+                stateId: 'typeCombo',
+                listeners: {
+                    'focus': elementFocus,
+                    'blur': elementBlur,
+                    scope: this
+                }
             }
         ]
     });
@@ -354,7 +364,7 @@ Ext.onReady(function() {
         closeAction: 'hide',
         buttons: [
             {   text: msgs.save,
-                cls: 'saveButton',
+                cls: 'disabledButton',
                 ref: '../saveButton',
                 disabled: true,
                 handler: function(button, event) {
@@ -383,9 +393,14 @@ Ext.onReady(function() {
              xtype: 'grouptabpanel',
              tabWidth: 135,
              activeGroup: 0,
+             ref: '../groupTabPanel',
+             listeners: {
+                 'groupchange': initFocus
+             },
              items: [
                  {
                      items: [{
+                         id: 'step1Grp',
                          title: msgs.step1Title,
                          tabTip: msgs.step1Tip,
                          style: 'padding: 20px 40px;',
@@ -394,6 +409,7 @@ Ext.onReady(function() {
                  },
                  {
                      items: [{
+                         id: 'step2Grp',
                          title: msgs.step2Title,
                          tabTip: msgs.step2Tip,
                          html: '<div>23</div>'
@@ -401,6 +417,7 @@ Ext.onReady(function() {
                  },
                  {
                      items: [{
+                         id: 'step3Grp',
                          title: msgs.step3Title,
                          tabTip: msgs.step3Tip,
                          html: '<div>30</div>'
@@ -408,6 +425,7 @@ Ext.onReady(function() {
                  },
                  {
                      items: [{
+                         id: 'step4Grp',
                          title: msgs.step4Title,
                          tabTip: msgs.step4Tip,
                          html: '<div>40</div>'

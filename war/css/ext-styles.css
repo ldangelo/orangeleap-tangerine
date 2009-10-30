@@ -90,6 +90,15 @@ div#managerGrid table.saveButton td.x-btn-mc,
     div#managerGrid table.button td.x-btn-bl, 
     div#managerGrid table.button td.x-btn-br, 
     div#managerGrid table.button td.x-btn-bc,
+    div#managerGrid table.disabledButton td.x-btn-tl,
+    div#managerGrid table.disabledButton td.x-btn-tr,
+    div#managerGrid table.disabledButton td.x-btn-tc,
+    div#managerGrid table.disabledButton td.x-btn-ml,
+    div#managerGrid table.disabledButton td.x-btn-mr,
+    div#managerGrid table.disabledButton td.x-btn-mc,
+    div#managerGrid table.disabledButton td.x-btn-bl,
+    div#managerGrid table.disabledButton td.x-btn-br,
+    div#managerGrid table.disabledButton td.x-btn-bc,
     div.win table.saveButton td.x-btn-mc,
     div.win table.saveButton td.x-btn-tl,
     div.win table.saveButton td.x-btn-tr,
@@ -109,7 +118,17 @@ div#managerGrid table.saveButton td.x-btn-mc,
     div.win table.button td.x-btn-mc,
     div.win table.button td.x-btn-bl,
     div.win table.button td.x-btn-br,
-    div.win table.button td.x-btn-bc { background-image: none; }
+    div.win table.button td.x-btn-bc,
+    div.win table.disabledButton td.x-btn-mc,
+    div.win table.disabledButton td.x-btn-tl,
+    div.win table.disabledButton td.x-btn-tr,
+    div.win table.disabledButton td.x-btn-tc,
+    div.win table.disabledButton td.x-btn-ml,
+    div.win table.disabledButton td.x-btn-mr,
+    div.win table.disabledButton td.x-btn-mc,
+    div.win table.disabledButton td.x-btn-bl,
+    div.win table.disabledButton td.x-btn-br,
+    div.win table.disabledButton td.x-btn-bc { background-image: none; }
 
 #managementGrid #savedMarker, #managerGrid #savedMarker { visibility: hidden; font-size: 12px; }
 #customizeWin #customizedFieldsSavedMarker, #optionsWin #optionsFieldsSavedMarker { display: none; font-size: 11px; }
@@ -128,4 +147,6 @@ div .ext-el-mask { background-color: #EFEFEF; }
 
 div.x-window-dlg { z-index: 12000; }
 
-#managementGrid span.required { font-size: inherit; vertical-align: inherit; } 
+#managementGrid span.required { font-size: inherit; vertical-align: inherit; }
+
+

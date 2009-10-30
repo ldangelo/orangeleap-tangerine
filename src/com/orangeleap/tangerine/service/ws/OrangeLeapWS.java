@@ -27,15 +27,33 @@ import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.ws.schema.*;
 import com.orangeleap.tangerine.ws.util.ObjectConverter;
+import com.orangeleap.theguru.client.GetSegmentationListResponse;
+import com.orangeleap.theguru.client.PWCallbackHandler;
+import com.orangeleap.theguru.client.Segmentation;
+import com.orangeleap.theguru.client.Theguru;
+import com.orangeleap.theguru.client.TheguruService;
+import com.orangeleap.theguru.client.WSClient;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
+import org.apache.ws.security.WSConstants;
+import org.apache.ws.security.handler.WSHandlerConstants;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.providers.ldap.LdapAuthenticationProvider;
 import org.springframework.validation.BindException;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 
+
 import javax.annotation.Resource;
+import javax.xml.namespace.QName;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +71,7 @@ public class OrangeLeapWS {
 
     private static final Log logger = LogFactory.getLog(LdapAuthenticationProvider.class);
 
+    ApplicationContext applicationContext;
 
     private GiftService giftService;
 
@@ -300,23 +319,27 @@ public class OrangeLeapWS {
     }
 
     @PayloadRoot(localPart = "GetSegmentationListRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-    public GetSegmentationListResponse getSegmentationList(GetSegmentationListRequest req) {
-        GetSegmentationListResponse response = new GetSegmentationListResponse();
+    public com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse getSegmentationList(com.orangeleap.tangerine.ws.schema.GetSegmentationListRequest req) throws MalformedURLException {
+        com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse response = new com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse();
 
-        Segmentation segmentation = new Segmentation();
-        segmentation.setId(0);
-        segmentation.setName("Major Donor");
-        segmentation.setDescription("All Major Donors");
-        
+		Theguru guruPort = WSClient.getTheGuru();
 
-        response.getSegmentation().add(segmentation);
+		com.orangeleap.theguru.client.ObjectFactory of = new com.orangeleap.theguru.client.ObjectFactory();
+		com.orangeleap.theguru.client.GetSegmentationListRequest getSegmentationListRequest = of.createGetSegmentationListRequest();
+		getSegmentationListRequest.setDummy("");
+        com.orangeleap.theguru.client.GetSegmentationListResponse thegururesponse = guruPort.getSegmentationList(getSegmentationListRequest);
         
-        segmentation = new Segmentation();
-        segmentation.setId(1);
-        segmentation.setName("Lapsed Donor");
-        segmentation.setDescription("All Lapsed Donors");
+        Iterator<Segmentation> it = thegururesponse.getSegmentation().iterator();
+        while (it.hasNext()) {
+        	Segmentation seg = it.next();
+        	com.orangeleap.tangerine.ws.schema.Segmentation segmentation = new com.orangeleap.tangerine.ws.schema.Segmentation();
+        	
+        	segmentation.setId(seg.getId());
+        	segmentation.setName(seg.getName());
+        	segmentation.setDescription(seg.getDescription());
         
-        response.getSegmentation().add(segmentation);
+        	response.getSegmentation().add(segmentation);
+        }
 
         return response;
     }

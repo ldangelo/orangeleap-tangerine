@@ -28,5 +28,8 @@ public interface DashboardDao {
 	
 	public List<DashboardItem> getDashboard();
 	public List<DashboardItemDataValue> getDashboardQueryResults(DashboardItemDataset ds, Long userid);
-	
+    public DashboardItem maintainDashboardItem(DashboardItem item);
+    public void deleteDashboardItemById(Long dashboardItemId);
+
+
 }

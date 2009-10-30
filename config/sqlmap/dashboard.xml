@@ -27,7 +27,7 @@
 		<result property="dataValue" column="DATA_VALUE" jdbcType="BIGDECIMAL" />
 	</resultMap>
 
-	<select id="SELECT_DASHBOARD_ITEM" resultMap="DASHBOARD_ITEM_RESULT" parameterClass="map">
+	<sql id="SELECT_DASHBOARD_ITEM_FRAGMENT" >
 		select
 		di.DASHBOARD_ITEM_ID,
  		di.DASHBOARD_ITEM_TYPE,
@@ -43,14 +43,67 @@
  		did.SQL_TEXT
  		from DASHBOARD_ITEM di
 		left outer join DASHBOARD_ITEM_DATASET did on di.DASHBOARD_ITEM_ID = did.DASHBOARD_ITEM_ID
- 		where 
- 		(di.SITE_NAME = #siteName# or di.SITE_NAME is null)
- 		order by di.ITEM_ORDER, did.DATASET_NUM
- 	</select>
+ 	</sql>
  	
+	<select id="SELECT_SITE_DASHBOARD_ITEMS" resultMap="DASHBOARD_ITEM_RESULT" parameterClass="map">
+	        <include refid="SELECT_DASHBOARD_ITEM_FRAGMENT"/>
+ 		where 
+ 		di.SITE_NAME = #siteName#
+ 		order by di.ITEM_ORDER, did.DATASET_NUM
+	</select>
+ 	
+	<select id="SELECT_DEFAULT_DASHBOARD_ITEMS" resultMap="DASHBOARD_ITEM_RESULT" parameterClass="map">
+	        <include refid="SELECT_DASHBOARD_ITEM_FRAGMENT"/>
+ 		where 
+ 		di.SITE_NAME is null
+ 		order by di.ITEM_ORDER, did.DATASET_NUM
+	</select>
+	
+    <delete id="DELETE_DASHBOARD_ITEM_BY_ID" parameterClass="map" >
+        delete from DASHBOARD_ITEM
+        where SITE_NAME = #siteName# and DASHBOARD_ITEM_ID = #id#
+    </delete>
+
 	<select id="SELECT_DASHBOARD_ITEM_DATA" resultMap="DASHBOARD_ITEM_DATA_RESULT" parameterClass="map">
 	$sql$
 	</select>
+ 	
+    <insert id="INSERT_DASHBOARD_ITEM" parameterClass="com.orangeleap.tangerine.domain.customization.DashboardItem">
+        insert into DASHBOARD_ITEM (
+        	DASHBOARD_ITEM_ID,
+        	DASHBOARD_ITEM_TYPE,
+        	DASHBOARD_ITEM_TITLE,
+        	URL,
+        	ITEM_ORDER,
+        	ROLES,
+        	SITE_NAME
+        	)
+        values (
+        	#id# ,
+        	#type#,
+        	#title#,
+        	#url#,
+        	#order#,
+        	#roles#,
+        	#site.name# 
+        	)
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_DASHBOARD_ITEM" parameterClass="com.orangeleap.tangerine.domain.customization.DashboardItem">
+        update DASHBOARD_ITEM
+        SET 
+        	DASHBOARD_ITEM_ID = #id#,
+        	DASHBOARD_ITEM_TYPE = #type#,
+        	DASHBOARD_ITEM_TITLE = #title#,
+        	URL = #url#,
+        	ITEM_ORDER = #order#,
+        	ROLES = #roles#,
+        	SITE_NAME = #site.name# 
+        where DASHBOARD_ITEM_ID = #id#
+    </update>
  	
 	
 </sqlMap>

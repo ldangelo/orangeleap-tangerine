@@ -27,6 +27,12 @@ public interface DashboardService {
 
     public List<DashboardItem> getDashboard();
 
+    public List<DashboardItem> getAllDashboardItems();
+
+    public DashboardItem maintainDashboardItem(DashboardItem item);
+
+    public void deleteDashboardItemById(Long id);
+
     public DashboardData getDashboardQueryContent(DashboardItem item);
 
 }

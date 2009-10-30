@@ -18,13 +18,17 @@
 
 package com.orangeleap.tangerine.domain.customization;
 
-import com.orangeleap.tangerine.domain.Site;
-
+import java.io.Serializable;
 import java.util.List;
 
-public class DashboardItem {
+import com.orangeleap.tangerine.domain.GeneratedId;
+import com.orangeleap.tangerine.domain.Site;
 
-    private Long id;
+public class DashboardItem implements GeneratedId, Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	private Long id;
     private String type;
     private String title;
     private String url;

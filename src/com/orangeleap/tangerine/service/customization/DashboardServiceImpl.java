@@ -18,6 +18,18 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+
 import com.orangeleap.tangerine.dao.DashboardDao;
 import com.orangeleap.tangerine.domain.customization.DashboardData;
 import com.orangeleap.tangerine.domain.customization.DashboardItem;
@@ -26,12 +38,6 @@ import com.orangeleap.tangerine.domain.customization.DashboardItemDataset;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.*;
 
 @Service("dashboardService")
 public class DashboardServiceImpl extends AbstractTangerineService implements DashboardService {
@@ -49,6 +55,22 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
     @Resource(name = "tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
 
+    
+	@Override
+	public List<DashboardItem> getAllDashboardItems() {
+		return dashboardDao.getDashboard();
+	}
+
+	@Override
+	public DashboardItem maintainDashboardItem(DashboardItem item) {
+		return dashboardDao.maintainDashboardItem(item);
+	}
+
+	@Override
+	public void deleteDashboardItemById(Long id) {
+		dashboardDao.deleteDashboardItemById(id);
+	}
+    
     @Override
     public List<DashboardItem> getDashboard() {
         if (logger.isTraceEnabled()) {
@@ -164,5 +186,6 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
 
         return data;
     }
+
 
 }

@@ -103,7 +103,7 @@ Ext.onReady(function() {
         if (dashboardStore.data && dashboardStore.data.items) {
             var len = dashboardStore.data.items.length;
             for (var x = 0; x < len; x++) {
-                var thisVal = dashboardStore.data.items[x].set('order', ""+x);
+                dashboardStore.data.items[x].set('order', ""+x);
             }
         }
         return isValid;

@@ -32,6 +32,7 @@
 	<import resource="contexts/webservice-context.xml"/>
 	<import resource="contexts/customField-context.xml"/>
     <import resource="contexts/siteSettings-context.xml"/>
+    <import resource="contexts/manageDashboard-context.xml"/>
     <import resource="contexts/postbatch-context.xml"/>
     <import resource="contexts/logView-context.xml"/>
     <import resource="contexts/schedule-context.xml"/>

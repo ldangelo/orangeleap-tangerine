@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.util;
 
-
 public final class StringConstants {
     public static final String EMPTY = "";
     public static final String NEW = "new";
@@ -181,4 +180,8 @@ public final class StringConstants {
     public static final String ROWS = "rows";
     public static final String TOTAL_ROWS = "totalRows";
     public static final String SUCCESS = "success";
+
+    public static final String CONSTITUENT_SEGMENTATION = "Constituent Segmentation";
+    public static final String GIFT_SEGMENTATION = "Gift Segmentation";
+    public static final String GIFT_DISTRIBUTION_SEGMENTATION = "Gift Distribution Segmentation";
 }

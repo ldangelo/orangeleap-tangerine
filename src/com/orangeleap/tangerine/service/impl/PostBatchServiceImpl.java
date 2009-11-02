@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Journal;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
+import com.orangeleap.tangerine.domain.Segmentation;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
@@ -36,9 +37,15 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.theguru.client.GetSegmentationListByTypeRequest;
+import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
+import com.orangeleap.theguru.client.ObjectFactory;
+import com.orangeleap.theguru.client.Theguru;
+import com.orangeleap.theguru.client.WSClient;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -53,9 +60,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Locale;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -614,5 +621,38 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         return s1 + " : " + s2;
     }
 
+    @Override
+    public List<Segmentation> findSegmentations(String batchType) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findSegmentations: batchType = " + batchType);
+        }
+        Theguru theGuru = WSClient.getTheGuru();
+        ObjectFactory objFactory = new ObjectFactory();
+        GetSegmentationListByTypeRequest req = objFactory.createGetSegmentationListByTypeRequest();
 
+        List<Segmentation> returnSegmentations = new ArrayList<Segmentation>();
+        String resolvedType = null;
+        if (StringConstants.GIFT.equals(batchType)) {
+            resolvedType = StringConstants.GIFT_SEGMENTATION;
+        }
+        if (resolvedType != null) {
+            req.setType(batchType);
+            GetSegmentationListByTypeResponse resp = theGuru.getSegmentationListByType(req);
+            if (resp != null) {
+                List<com.orangeleap.theguru.client.Segmentation> wsSegmentations = resp.getSegmentation();
+                if (wsSegmentations != null) {
+                    for (com.orangeleap.theguru.client.Segmentation wsSegmentation : wsSegmentations) {
+                        if (wsSegmentation != null) {
+                            Segmentation segmentation = new Segmentation(wsSegmentation.getId(), wsSegmentation.getName(),
+                                    wsSegmentation.getDescription(), wsSegmentation.getExecutionCount(),
+                                    wsSegmentation.getExecutionDate() == null ? null : wsSegmentation.getExecutionDate().toGregorianCalendar().getTime(),
+                                    wsSegmentation.getExecutionUser());
+                            returnSegmentations.add(segmentation);
+                        }
+                    }
+                }
+            }
+        }
+        return returnSegmentations;
+    }
 }

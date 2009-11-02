@@ -10,13 +10,13 @@ public class Segmentation implements Serializable {
     private Long id;
     private String name;
     private String description;
-    private int count;
+    private long count;
     private Date lastRunDate;
     private String lastRunByUser;
 
     public Segmentation() { }
 
-    public Segmentation(Long id, String name, String description, int count, Date lastRunDate, String lastRunByUser) {
+    public Segmentation(Long id, String name, String description, long count, Date lastRunDate, String lastRunByUser) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -49,11 +49,11 @@ public class Segmentation implements Serializable {
         this.description = description;
     }
 
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(long count) {
         this.count = count;
     }
 

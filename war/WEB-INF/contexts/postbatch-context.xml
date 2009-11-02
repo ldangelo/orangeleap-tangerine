@@ -10,6 +10,10 @@
         <property name="successView" value="postbatch/postbatch" />
     </bean>
 
+    <bean id="postBatchesGridController" class="com.orangeleap.tangerine.controller.postbatch.PostBatchesGridController">
+        <property name="viewName" value="postbatch/batchList"/>
+    </bean>
+
     <bean id="postbatchs" class="com.orangeleap.tangerine.controller.postbatch.PostBatchListController">
         <property name="formView" value="postbatch/postbatchs" />
         <property name="successView" value="postbatch/postbatchs" />
@@ -19,6 +23,7 @@
 		<property name="mappings">
 		    <props>
                 <prop key="/postbatchs.htm">postbatchs</prop>   
+                <prop key="/postBatchGrid.htm">postBatchesGridController</prop>
                 <prop key="/postbatch.htm">postbatch</prop>
 			</props>
 		</property>

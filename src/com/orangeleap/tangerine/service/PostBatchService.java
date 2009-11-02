@@ -18,14 +18,15 @@
 
 package com.orangeleap.tangerine.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Locale;
-
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.Segmentation;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public interface PostBatchService {
 
@@ -41,4 +42,6 @@ public interface PostBatchService {
 	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
 
     List<PostBatch> readBatches(boolean batchUpdated, SortInfo sort, Locale locale);
+
+    List<Segmentation> findSegmentations(String batchType);
 }

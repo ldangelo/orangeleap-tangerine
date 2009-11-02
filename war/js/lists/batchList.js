@@ -16,6 +16,7 @@ OrangeLeap.msgBundle = {
     save: 'Save',
     close: 'Close',
     gift: 'Gift',
+    name: 'Name',
     adjustedGift: 'Adjusted Gift',
     showCurrentBatches: 'Show Current Batches',
     showExecutedBatches: 'Show Executed Batches',
@@ -31,9 +32,13 @@ OrangeLeap.msgBundle = {
     batchList: 'Batch List',
     addNewBatch: 'Add a new Batch',
     manageBatch: 'Manage Batch',
+    chooseSegmentations: 'Choose Segmentations',
+    count: 'Count',
+    lastExecDt: 'Last Execution Date',
+    lastExecBy: 'Last Executed By',
     step1Title: '<span class="step"><span class="stepNum">1</span><span class="stepTxt">Choose Batch Type</span>',
     step2Title: '<span class="step"><span class="stepNum">2</span><span class="stepTxt">Choose Segmentations</span>',
-    step3Title: '<span class="step"><span class="stepNum">3</span><span class="stepTxt">Choose Rows from Segmentations</span>',
+    step3Title: '<span class="step"><span class="stepNum">3</span><span class="stepTxt">Confirm Choices</span>',
     step4Title: '<span class="step"><span class="stepNum">4</span><span class="stepTxt">Update Field Values</span>',
     step1Tip: 'Step 1',
     step2Tip: 'Step 2',
@@ -281,10 +286,16 @@ Ext.onReady(function() {
 
     function initFocus(groups, thisGrp) {
         if (thisGrp.mainItem.id == 'step1Grp') {
-            var elem = Ext.getCmp('batchDesc');
-            if (elem && elem.el) {
-                elem.el.focus(false, 900);
-            }
+            setTimeout(function() {
+                var elem = Ext.getCmp('batchDesc');
+                if (elem && elem.el) {
+                    elem.el.focus();
+                }
+            }, 900);
+        }
+        else if (thisGrp.mainItem.id == 'step2Grp') {
+            var batchType = Ext.getCmp('batchType').getValue();
+            step2Store.load({ params: { batchType: batchType }});
         }
     }
 
@@ -330,7 +341,7 @@ Ext.onReady(function() {
                         'value',
                         'desc'
                     ],
-                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]]
+                    data: [['gift', msgs.gift] ]//, ['adjustedGift', msgs.adjustedGift]] TODO: put back adjustedGift when adjustedGift segmentations ready
                 }),
                 value: 'gift',
                 displayField: 'desc',
@@ -343,7 +354,6 @@ Ext.onReady(function() {
                 selectOnFocus: true,
                 minListWidth: 500,
                 width: 500,
-                stateId: 'typeCombo',
                 listeners: {
                     'focus': elementFocus,
                     'blur': elementBlur,
@@ -352,10 +362,129 @@ Ext.onReady(function() {
             }
         ]
     });
+    
+    var step2Store = new OrangeLeap.ListStore({
+        url: 'findSegmentations.json',
+        totalProperty: 'totalRows',
+        root: 'rows',
+        remoteSort: true,
+        sortInfo: {field: 'name', direction: 'ASC'},
+        fields: [
+            {name: 'id', mapping: 'id', type: 'int'},
+            {name: 'name', mapping: 'name', type: 'string'},
+            {name: 'desc', mapping: 'desc', type: 'string'},
+            {name: 'count', mapping: 'count', type: 'int'},
+            {name: 'lastDt', mapping: 'lastDt', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'lastUser', mapping: 'lastUser', type: 'string'}
+        ]
+    });
 
-    var step2Form = {
+    var step2Bar = new Ext.PagingToolbar({
+        pageSize: 50,
+        stateEvents: ['change'],
+        stateId: 'step2Bar',
+        stateful: true,
+        getState: function() {
+            var config = {};
+            config.start = this.cursor;
+            config.limit = this.pageSize;
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.start) {
+                this.cursor = state.start;
+            }
+            if (state.limit) {
+                this.pageSize = state.limit;
+            }
+        },
+        store: step2Store,
+        displayInfo: true,
+        displayMsg: msgs.displayMsg,
+        emptyMsg: msgs.emptyMsg
+    });
 
-    }
+    var step2Form = new Ext.grid.GridPanel({
+        stateId: 'step2List',
+        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
+        stateful: true,
+        store: step2Store,
+        bbar: step2Bar,
+        width: 726,
+        height: 428,
+        loadMask: true,
+        header: false,
+        frame: false,
+        border: false,
+        sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+//        style: 'margin: 0 3px;',
+        viewConfig: { forceFit: true },
+        columns: [
+            {
+                header: msgs.name,
+                sortable: true,
+                dataIndex: 'name'
+            },
+            {
+                header: msgs.description,
+                sortable: true,
+                dataIndex: 'desc'
+            },
+            {
+                header: msgs.count,
+                sortable: true,
+                dataIndex: 'count'
+            },
+            {
+                header: msgs.lastExecDt,
+                sortable: true,
+                dataIndex: 'lastDt'
+            },
+            {
+                header: msgs.lastExecBy,
+                sortable: true,
+                dataIndex: 'lastUser'
+            },
+        ],
+        getState: function() {
+            var config = {};
+            var cm = this.getColumnModel();
+            var sortState = this.store.getSortState();
+            if (sortState) {
+                config.sf = sortState['field'];
+                config.sd = sortState['direction'];
+            }
+            config.ss = this.getView().getScrollState();
+            config.mc = [];
+            for (var i = 0; i < cm.config.length; i++) {
+                config.mc[i] = {};
+                config.mc[i].di = cm.config[i].dataIndex;
+                config.mc[i].h = cm.config[i].hidden;
+                config.mc[i].w = cm.config[i].width;
+            }
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.mc != null) {
+                var cm = this.getColumnModel();
+                for (var i = 0; i < state.mc.length; i++) {
+                    var colIndex = cm.findColumnIndex(state.mc[i].di);
+                    if (colIndex != -1)
+                    if (colIndex != i) {
+                        cm.moveColumn(colIndex, i);
+                    }
+                    cm.setHidden(i, state.mc[i].h);
+                    cm.setColumnWidth(i, state.mc[i].w);
+                }
+            }
+            if (state.sf && state.sd) {
+                this.sortParams = { direction: state.sd, dataIndex: state.sf };
+            }
+            if (state.ss) {
+                this.getView().prevScrollState = state.ss;
+            }
+        }        
+    });
 
     var batchWin = new Ext.Window({
         title: msgs.manageBatch,
@@ -417,7 +546,7 @@ Ext.onReady(function() {
                          id: 'step2Grp',
                          title: msgs.step2Title,
                          tabTip: msgs.step2Tip,
-                         html: '<div>23</div>'
+                         items: [ step2Form ]
                      }]
                  },
                  {

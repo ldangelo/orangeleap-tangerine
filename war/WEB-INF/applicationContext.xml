@@ -41,6 +41,18 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="serviceUrl"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject"><ref local="sysProps" /></property>
+		<property name="targetMethod"><value>setProperty</value></property>
+		<property name="arguments">
+			<list>
+				<value>casClient.serviceUrl</value>
+				<value>${casClient.serviceUrl}</value>
+			</list>
+		</property>
+	</bean>
 
 	<bean id="contextPrefix"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">

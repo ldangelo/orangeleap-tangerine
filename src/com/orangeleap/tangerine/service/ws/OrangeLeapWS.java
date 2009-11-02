@@ -36,10 +36,7 @@ import com.orangeleap.theguru.client.WSClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
-import org.apache.ws.security.WSConstants;
-import org.apache.ws.security.handler.WSHandlerConstants;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.providers.ldap.LdapAuthenticationProvider;
 import org.springframework.validation.BindException;
@@ -321,8 +318,8 @@ public class OrangeLeapWS {
     @PayloadRoot(localPart = "GetSegmentationListRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     public com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse getSegmentationList(com.orangeleap.tangerine.ws.schema.GetSegmentationListRequest req) throws MalformedURLException {
         com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse response = new com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse();
-
-		Theguru guruPort = WSClient.getTheGuru();
+        WSClient wsClient = new WSClient();
+		Theguru guruPort = wsClient.getTheGuru();
 
 		com.orangeleap.theguru.client.ObjectFactory of = new com.orangeleap.theguru.client.ObjectFactory();
 		com.orangeleap.theguru.client.GetSegmentationListRequest getSegmentationListRequest = of.createGetSegmentationListRequest();

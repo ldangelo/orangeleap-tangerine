@@ -15,10 +15,11 @@ import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.util.ApplicationContextProvider;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.common.security.*;
 
-public class WSClient {
-
-	public static Theguru getTheGuru() {
+public class WSClient extends OrangeLeapAuthentication {
+	
+	public Theguru getTheGuru() {
 		TheguruService guruService;
 		try {
 			guruService = new TheguruService(new URL(System.getProperty("casClient.serverUrl") +  "/" + System.getProperty("contextPrefix") + "clementine/services/1.0/theguru.wsdl"),new QName("http://www.orangeleap.com/theguru/services/1.0", "theguruService"));
@@ -31,15 +32,15 @@ public class WSClient {
 		Theguru guruPort = guruService.getTheguruPort();
 
 		ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
-		TangerineUserHelper userHelper = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
-    	String user = userHelper.lookupUserName() + "@" + userHelper.lookupUserSiteName();
+
+		CasUtil.populateOrageLeapAuthenticationWithCasCredentials(this, System.getProperty("casClient.serviceUrl"));
     	
         Map outProps = new HashMap();
 		Client client = org.apache.cxf.frontend.ClientProxy.getClient(guruPort);
 		org.apache.cxf.endpoint.Endpoint cxfEndpoint = client.getEndpoint();
 		
 		outProps.put(WSHandlerConstants.ACTION,WSHandlerConstants.USERNAME_TOKEN);
-		outProps.put(WSHandlerConstants.USER, user);
+		outProps.put(WSHandlerConstants.USER, this.getUserName());
 		outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
 		outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS, PWCallbackHandler.class.getName());
 		outProps.put(WSHandlerConstants.ADD_UT_ELEMENTS,WSConstants.NONCE_LN + " " + WSConstants.CREATED_LN);

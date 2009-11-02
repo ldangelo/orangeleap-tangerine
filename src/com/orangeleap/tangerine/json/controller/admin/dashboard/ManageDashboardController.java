@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.WebUtils;
 
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.DashboardItem;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.DashboardService;
@@ -81,14 +82,16 @@ public class ManageDashboardController {
         
         // Cannot edit default items - this editor can be used to point to guru reports only - don't allow custom SQL report creation in tangerine.
         // Also cannot mix default and guru-type dashboards.
-        if (items.size() > 0 && items.get(0).getSite() == null) {
-        	Iterator<DashboardItem> it = items.iterator();
-        	while (it.hasNext()) {
-        		DashboardItem item = it.next();
-        		if (!("Rss".equals(item.getType()))) it.remove();
-        		item.setId(null);
-        	}
-        }
+    	Iterator<DashboardItem> it = items.iterator();
+    	while (it.hasNext()) {
+    		DashboardItem item = it.next();
+    		if (item.getSite() == null) {
+    			item.setId(null);
+    			item.setSite(new Site(tangerineUserHelper.lookupUserSiteName()));
+    		}
+    		if (!("Rss".equals(item.getType())) && !("Guru".equals(item.getType()))) it.remove();
+    		item.setId(null);
+    	}
         
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         addItems(items, returnList);

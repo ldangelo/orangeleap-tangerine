@@ -79,12 +79,12 @@ Ext.onReady(function() {
         grid.undoButton.enable();
     });
 
-    var entityValueFld = new Ext.form.TextField({
+    var stringFld = new Ext.form.TextField({
         allowBlank: true,
         maxLength: 255,
         enableKeyEvents: true
     });
-    entityValueFld.on('keydown', function(fld, event) {
+    stringFld.on('keydown', function(fld, event) {
         if (event.getKey() == event.ENTER) {
             setTimeout(function() {
                 grid.saveButton.handler();
@@ -117,7 +117,7 @@ Ext.onReady(function() {
                 dataIndex: 'title',
                 align: 'left',
                 editable: true,
-                editor: new Ext.form.DisplayField()
+                editor: stringFld
             },
             {   header: 'Url',
                 width: 170,
@@ -125,7 +125,7 @@ Ext.onReady(function() {
                 dataIndex: 'url',
                 align: 'left',
                 editable: true,
-                editor: entityValueFld
+                editor: stringFld
             }
         ],
         buttons: [

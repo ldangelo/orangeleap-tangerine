@@ -46,7 +46,7 @@ Ext.onReady(function() {
         autoLoad: true,
         autoSave: false,
         remoteSort: false,
-        sortInfo: { field: 'label', direction: 'ASC'},
+        sortInfo: { field: 'order', direction: 'ASC'},
         totalProperty: 'totalRows',
         root: 'rows',
         fields:[
@@ -116,7 +116,7 @@ Ext.onReady(function() {
                 sortable: true,
                 dataIndex: 'title',
                 align: 'left',
-                editable: false,
+                editable: true,
                 editor: new Ext.form.DisplayField()
             },
             {   header: 'Url',

@@ -29,7 +29,7 @@ public class DashboardItem implements GeneratedId, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-    private String type;
+    private String type = "Guru";
     private String title;
     private String url;
     private Integer order;

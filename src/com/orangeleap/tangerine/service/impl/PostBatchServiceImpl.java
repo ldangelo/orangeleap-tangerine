@@ -626,7 +626,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         if (logger.isTraceEnabled()) {
             logger.trace("findSegmentations: batchType = " + batchType);
         }
-        Theguru theGuru = WSClient.getTheGuru();
+        Theguru theGuru = new WSClient().getTheGuru();
         ObjectFactory objFactory = new ObjectFactory();
         GetSegmentationListByTypeRequest req = objFactory.createGetSegmentationListByTypeRequest();
 

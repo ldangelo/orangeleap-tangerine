@@ -9,7 +9,7 @@
 		<result property="url" column="URL" jdbcType="VARCHAR" />
 		<result property="order" column="ITEM_ORDER" jdbcType="BIGINT" />
 		<result property="roles" column="ROLES"	jdbcType="VARCHAR" />
-		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
+		<result property="siteName" column="SITE_NAME"	jdbcType="VARCHAR" />
         <result property="datasets" resultMap="DASHBOARD.DASHBOARD_ITEM_DATASET_RESULT" />
 	</resultMap>
 
@@ -85,7 +85,7 @@
         	#url#,
         	#order#,
         	#roles#,
-        	#site.name# 
+        	#siteName# 
         	)
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
@@ -101,7 +101,7 @@
         	URL = #url#,
         	ITEM_ORDER = #order#,
         	ROLES = #roles#,
-        	SITE_NAME = #site.name# 
+        	SITE_NAME = #siteName# 
         where DASHBOARD_ITEM_ID = #id#
     </update>
  	

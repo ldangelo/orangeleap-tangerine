@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.orangeleap.tangerine.domain.GeneratedId;
-import com.orangeleap.tangerine.domain.Site;
 
 public class DashboardItem implements GeneratedId, Serializable {
 
@@ -34,7 +33,7 @@ public class DashboardItem implements GeneratedId, Serializable {
     private String url;
     private Integer order;
     private String roles;
-    private Site site;
+    private String siteName;
     private List<DashboardItemDataset> datasets;
 
     public void setId(Long id) {
@@ -85,12 +84,12 @@ public class DashboardItem implements GeneratedId, Serializable {
         return roles;
     }
 
-    public void setSite(Site site) {
-        this.site = site;
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
     }
 
-    public Site getSite() {
-        return site;
+    public String getSiteName() {
+        return siteName;
     }
 
     public void setDatasets(List<DashboardItemDataset> datasets) {

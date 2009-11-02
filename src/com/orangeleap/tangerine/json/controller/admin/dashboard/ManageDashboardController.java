@@ -85,9 +85,9 @@ public class ManageDashboardController {
     	Iterator<DashboardItem> it = items.iterator();
     	while (it.hasNext()) {
     		DashboardItem item = it.next();
-    		if (item.getSite() == null) {
+    		if (item.getSiteName() == null) {
     			item.setId(null);
-    			item.setSite(new Site(tangerineUserHelper.lookupUserSiteName()));
+    			item.setSiteName(tangerineUserHelper.lookupUserSiteName());
     		}
     		if (!("Rss".equals(item.getType())) && !("Guru".equals(item.getType()))) it.remove();
     		item.setId(null);

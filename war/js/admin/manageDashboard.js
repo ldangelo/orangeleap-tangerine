@@ -108,7 +108,7 @@ Ext.onReady(function() {
                 sortable: true,
                 dataIndex: 'type',
                 align: 'left',
-                editable: false,
+                editable: true,
                 editor: new Ext.form.DisplayField()
             },
             {   header: 'Title',
@@ -126,8 +126,32 @@ Ext.onReady(function() {
                 align: 'left',
                 editable: true,
                 editor: stringFld
+            },
+            {   header: ' ', width: 25, menuDisabled: true, fixed: true,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id + '" title="Remove Dashboard Item">Remove</a>';
+                }
             }
         ],
+        tbar: [
+               { text: 'Add New', tooltip:'Add a new Dashboard Item', iconCls:'add', id: 'addFldButton', ref: '../addFldButton',
+                 handler: function() {
+                       var aStore = grid.getStore();
+                       var Rec = aStore.recordType;
+                       var row = new Rec({
+                    	   id: '0',
+                           type: 'Guru',
+                           title: '',
+                           url: '',
+                           order: '0'
+                       });
+                       grid.stopEditing();
+                       var nextIndex = aStore.getCount();
+                       aStore.add(row);
+                       grid.startEditing(nextIndex, 0);
+                   }
+               }
+           ],
         buttons: [
             {text: 'Save', cls: 'saveButton', ref: '../saveButton', disabled: true,
                 disabledClass: 'disabledButton',
@@ -151,8 +175,20 @@ Ext.onReady(function() {
         ],
         buttonAlign: 'center'
     });
+    
 
     grid.on('click', function(event) {
         $("#savedMarker").css('visibility', 'hidden');
+        var target = event.getTarget('a.deleteLink');
+        if (target) {
+            event.stopPropagation();
+            var id = target.id;
+            if (id) {
+                id = id.replace('delete-link-', '');
+                var rec = optionsStore.getById(id);
+                optionsStore.remove(rec);
+            }
+        }
     });    
+    
 });

@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.WebUtils;
 
-import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.DashboardItem;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.DashboardService;
@@ -141,11 +140,11 @@ public class ManageDashboardController {
                     }
                     
                     if (bean.getDynaClass().getDynaProperty("url") != null && bean.get("url") != null) {
-                        item.setTitle((String) bean.get("url"));
+                        item.setUrl((String) bean.get("url"));
                     }
 
                     if (bean.getDynaClass().getDynaProperty("order") != null && bean.get("order") != null) {
-                        item.setTitle((String) bean.get("order"));
+                        item.setOrder( new Integer( (String)bean.get("order")));
                     }
 
                     found = true;
@@ -179,11 +178,11 @@ public class ManageDashboardController {
                 }
                 
                 if (bean.getDynaClass().getDynaProperty("url") != null && bean.get("url") != null) {
-                    item.setTitle((String) bean.get("url"));
+                    item.setUrl((String) bean.get("url"));
                 }
 
                 if (bean.getDynaClass().getDynaProperty("order") != null && bean.get("order") != null) {
-                    item.setTitle((String) bean.get("order"));
+                    item.setOrder( new Integer( (String)bean.get("order")));
                 }
 
             	dashboardService.maintainDashboardItem(item);

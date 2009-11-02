@@ -96,7 +96,7 @@ Ext.onReady(function() {
         store: store,
         width: 780,
         height: 600,
-        title: 'Manage Dashboard <span id="savedMarker">Saved</span>',
+        title: 'Manage Dashboard Items <span id="savedMarker">Saved</span>',
         loadMask: true,
         frame: true,
         renderTo: 'managerGrid',

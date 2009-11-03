@@ -16,8 +16,8 @@
 	        <div class="modalSearch">
 	        	<label for="searchText"><spring:message code="searchBy"/></label>
 	        	<select name="searchOption" id="searchOption">
-					<option value="value"><spring:message code="code"/></option>
-					<option value="description"><spring:message code="description"/></option>
+					<option value="value"><spring:message code="shortDisplayName"/></option>
+					<option value="description"><spring:message code="longDisplayName"/></option>
 				</select>        	
 				<input type="hidden" name="type" value="<c:out value='${param.type}'/>" id="type" />
 	        	<input type="text" value="" id="searchText" name="searchText"/>
@@ -29,7 +29,7 @@
 	        <c:if test="${param.showOtherField}">
 		        <div class="otherOptionDiv">
 		        	<label for="otherOptionText"><spring:message code='orEnter'/></label>
-		        	<input type="text" value="<spring:message code="description"/>" defaultValue="<spring:message code="description"/>" id="otherOptionText" name="otherOptionText" class="defaultText"/>
+		        	<input type="text" value="<spring:message code="longDisplayName"/>" defaultValue="<spring:message code="longDisplayName"/>" id="otherOptionText" name="otherOptionText" class="defaultText"/>
 		        </div>
 	        </c:if>
 			<div class="buttonsDiv">

@@ -84,19 +84,23 @@ public class ManageDashboardController {
     	Iterator<DashboardItem> it = items.iterator();
     	while (it.hasNext()) {
     		DashboardItem item = it.next();
-    		if (item.getSiteName() == null) {
+    		if (item.getSiteName() == null && isAllowedType(item.getType())) {
     			item.setId(null);
     			item.setSiteName(tangerineUserHelper.lookupUserSiteName());
+        		dashboardService.maintainDashboardItem(item);
     		}
-    		if (!("Rss".equals(item.getType())) && !("Guru".equals(item.getType()))) it.remove();
-    		item.setId(null);
     	}
+        items = dashboardService.getAllDashboardItems(); 
         
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         addItems(items, returnList);
         modelMap.put(StringConstants.ROWS, returnList);
         modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
         return modelMap;
+    }
+    	
+    private boolean isAllowedType(String type) {
+    	return "Rss".equals(type) || "Guru".equals(type);
     }
 
     private void addItems(List<DashboardItem> items, List<Map<String, Object>> returnList) {

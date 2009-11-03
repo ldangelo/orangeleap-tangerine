@@ -68,6 +68,7 @@ Ext.onReady(function() {
                 store.data.items[x].set('order', ""+x);
             }
         }
+        store.commitChanges();
         
     });
     store.on('add', function(store, records, index) {
@@ -109,7 +110,7 @@ Ext.onReady(function() {
                 dataIndex: 'type',
                 align: 'left',
                 editable: true,
-                editor: new Ext.form.DisplayField()
+                editor: stringFld
             },
             {   header: 'Title',
                 width: 170,
@@ -185,8 +186,8 @@ Ext.onReady(function() {
             var id = target.id;
             if (id) {
                 id = id.replace('delete-link-', '');
-                var rec = optionsStore.getById(id);
-                optionsStore.remove(rec);
+                var rec = store.getById(id);
+                store.remove(rec);
             }
         }
     });    

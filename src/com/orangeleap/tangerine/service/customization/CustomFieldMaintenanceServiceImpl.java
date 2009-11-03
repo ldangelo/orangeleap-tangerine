@@ -18,21 +18,6 @@
 
 package com.orangeleap.tangerine.service.customization;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import net.sf.ehcache.Cache;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.FieldDao;
@@ -55,7 +40,20 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.type.RelationshipType;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import net.sf.ehcache.Cache;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Service("customFieldMaintenanceService")
 @Transactional
@@ -137,6 +135,15 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             
         }
         
+        if (hasPaidPostedPage(customFieldRequest.getEntityType())) {
+            PageType paidPage = PageType.valueOf(sPageType + "Paid");
+            addSectionFieldsAndValidations(paidPage, customFieldRequest, fieldDefinition, site);
+
+            PageType postedPage = PageType.valueOf(sPageType + "Posted");
+            addSectionFieldsAndValidations(postedPage, customFieldRequest, readOnlyFieldDefinition, site);
+
+        }
+        
         if (hasAdjustmentPage(customFieldRequest.getEntityType())) {
 
             PageType adjustedPage = PageType.valueOf("adjusted" + StringUtils.capitalize(sPageType));
@@ -171,7 +178,11 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     }
 
     private boolean hasViewPage(String entityType) {
-        return !("constituent".equals(entityType) || "giftInKind".equals(entityType));
+        return !("constituent".equals(entityType) || "giftInKind".equals(entityType) || StringConstants.GIFT.equals(entityType));
+    }
+
+    private boolean hasPaidPostedPage(String entityType) {
+        return StringConstants.GIFT.equals(entityType);
     }
     
     private FieldDefinition getFieldDefinition(boolean readOnly, boolean distributionLine, CustomFieldRequest customFieldRequest, Site site) {

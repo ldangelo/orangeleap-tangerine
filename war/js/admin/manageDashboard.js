@@ -92,6 +92,59 @@ Ext.onReady(function() {
             }, 100);
         }
     });
+    
+    var numberFld = new Ext.form.NumberField({
+        allowBlank: false,
+        allowNegative: false,
+        allowDecimals: false,
+        minValue: 0,
+        width: 23,
+        enableKeyEvents: true
+    });
+    numberFld.on('keydown', function(fld, event) {
+        trapKeyDown(grid, fld, event, 'addButton');
+    });
+    numberFld.on('change', function(fld, newVal, oldVal) {
+        var rec = null;
+        var index = -1;
+        if (Ext.isIE && previouslySelectedRecord) {
+            rec = previouslySelectedRecord; // Apparent bug in Ext/IE where the Store's record value is set to the newVal by the time the change method is called
+            index = store.indexOf(previouslySelectedRecord);
+        }
+        else {
+            index = store.find('order', oldVal);
+            if (index > -1) {
+                rec = store.getAt(index);
+            }
+        }
+
+        if (rec && index > -1) {
+            var endIndex = store.data.items.length - 1;
+            if (endIndex < 0) {
+                endIndex = 0;
+            }
+            store.removeAt(index);
+            if (newVal > 0) {
+                newVal = newVal - 1; // decrement
+            }
+            if (newVal > endIndex) {
+                newVal = endIndex;
+            }
+            rec.set('order', newVal + 1);
+            store.insert(newVal, rec)
+            grid.getView().refresh();
+            setTimeout(function() {
+                var sm = grid.getSelectionModel();
+                if (sm) {
+                    sm.selectRecords(rec);
+                }
+            }, 200);
+        }
+    });
+    
+
+
+
 
     var grid = new Ext.grid.EditorGridPanel({
         store: store,
@@ -102,9 +155,22 @@ Ext.onReady(function() {
         frame: true,
         renderTo: 'managerGrid',
         viewConfig: { forceFit: true },
+        selModel: new Ext.grid.RowSelectionModel({}),
+        enableDragDrop: true,
         clicksToEdit: 1,
         columns: [
-            {   header: 'Type',
+             new OrangeLeap.RowGrip({ tooltip: 'Click and Hold to Drag Row' } ),
+             {
+                 header: "<span class='required'>*</span> Order",
+                 dataIndex: 'order',
+                 width: 23,
+                 sortable: false,
+                 editor: numberFld,
+                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                     return rowIndex + 1;
+                 }
+             },            
+             {  header: 'Type',
                 width: 100,
                 sortable: true,
                 dataIndex: 'type',
@@ -176,7 +242,10 @@ Ext.onReady(function() {
         ],
         buttonAlign: 'center'
     });
-    
+    var dropTgt = new Ext.ux.dd.GridDropTarget(grid.getEl(), {
+        grid: grid,
+        ddGroup: grid.ddGroup || 'GridDD'
+    });    
 
     grid.on('click', function(event) {
         $("#savedMarker").css('visibility', 'hidden');
@@ -193,5 +262,23 @@ Ext.onReady(function() {
             grid.undoButton.enable();
         }
     });    
+    
+    var previouslySelectedRec = null;
+    grid.on('cellclick', function(grid, rowIndex, columnIndex, event) {
+        if (columnIndex == 1) {
+            var record = store.data.items[rowIndex];
+            var myIndex = rowIndex + 1;
+            previouslySelectedRecord = record;
+            if (record.get('order') != myIndex) {
+                record.set('order', myIndex);
+            }
+        }
+    });
+    grid.on('sortchange', function() {
+        if (store.data && store.data.items) {
+            grid.saveButton.enable();
+            grid.undoButton.enable();
+        }
+    });
     
 });

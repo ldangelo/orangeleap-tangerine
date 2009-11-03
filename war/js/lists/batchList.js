@@ -36,10 +36,10 @@ OrangeLeap.msgBundle = {
     count: 'Count',
     lastExecDt: 'Last Execution Date',
     lastExecBy: 'Last Executed By',
-    step1Title: '<span class="step"><span class="stepNum">1</span><span class="stepTxt">Choose Batch Type</span>',
-    step2Title: '<span class="step"><span class="stepNum">2</span><span class="stepTxt">Choose Segmentations</span>',
-    step3Title: '<span class="step"><span class="stepNum">3</span><span class="stepTxt">Confirm Choices</span>',
-    step4Title: '<span class="step"><span class="stepNum">4</span><span class="stepTxt">Update Field Values</span>',
+    step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
+    step2Title: '<span class="step"><span class="stepNum" id="step2Num">2</span><span class="stepTxt">Choose Segmentations</span>',
+    step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">Confirm Choices</span>',
+    step4Title: '<span class="step"><span class="stepNum" id="step4Num">4</span><span class="stepTxt">Update Field Values</span>',
     step1Tip: 'Step 1',
     step2Tip: 'Step 2',
     step3Tip: 'Step 3',
@@ -312,12 +312,16 @@ Ext.onReady(function() {
         buttons: [
             {
                 text: msgs.next,
-                cls: 'button',
+                cls: 'saveButton',
                 ref: '../nextButton',
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-//                    batchWin.hide(this);
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(1);
+                    var firstItem = panel.items.items[1];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
+                    $('#step1Num').addClass('complete');
                 }
             }
         ],
@@ -404,46 +408,86 @@ Ext.onReady(function() {
         emptyMsg: msgs.emptyMsg
     });
 
-    var step2Form = new Ext.grid.GridPanel({
+    var checkColumn = new Ext.grid.CheckColumn({
+        header: 'Choose?',
+        dataIndex: 'picked',
+        width: 55
+    });
+    checkColumn.on('click', function(el, event, htmlEl, record) {
+        if (htmlEl) {
+            var index = step2Form.getView().findRowIndex(htmlEl);
+            if (record.get('picked')) {
+                step2Form.getSelectionModel().selectRow(index, true);
+            }
+            else {
+                step2Form.getSelectionModel().deselectRow(index);
+            }
+        }
+    });
+
+    var step2RowSelModel = new Ext.grid.RowSelectionModel({singleSelect: false});
+
+    step2RowSelModel.on({
+        'rowselect': function(selModel, rowIndex, record) {
+            record.set('picked', true);
+        },
+        'rowdeselect': function(selModel, rowIndex, record) {
+            record.set('picked', false);
+        }
+    });
+
+    var step2Form = new Ext.grid.EditorGridPanel({
         stateId: 'step2List',
         stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
         stateful: true,
         store: step2Store,
         bbar: step2Bar,
         width: 726,
-        height: 428,
+        height: 400,
         loadMask: true,
         header: false,
         frame: false,
         border: false,
-        sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+        selModel: step2RowSelModel,
 //        style: 'margin: 0 3px;',
         viewConfig: { forceFit: true },
+        plugins: [ checkColumn ],
         columns: [
+            checkColumn,
             {
                 header: msgs.name,
                 sortable: true,
-                dataIndex: 'name'
+                dataIndex: 'name',
+                editable: false,
+                editor: new Ext.form.DisplayField()
             },
             {
                 header: msgs.description,
                 sortable: true,
-                dataIndex: 'desc'
+                dataIndex: 'desc',
+                editable: false,
+                editor: new Ext.form.DisplayField()
             },
             {
                 header: msgs.count,
                 sortable: true,
-                dataIndex: 'count'
+                dataIndex: 'count',
+                editable: false,
+                editor: new Ext.form.DisplayField()
             },
             {
                 header: msgs.lastExecDt,
                 sortable: true,
-                dataIndex: 'lastDt'
+                dataIndex: 'lastDt',
+                editable: false,
+                editor: new Ext.form.DisplayField()
             },
             {
                 header: msgs.lastExecBy,
                 sortable: true,
-                dataIndex: 'lastUser'
+                dataIndex: 'lastUser',
+                editable: false,
+                editor: new Ext.form.DisplayField()
             },
         ],
         getState: function() {
@@ -485,6 +529,8 @@ Ext.onReady(function() {
             }
         }        
     });
+
+    var step3Reader = new Ext.data.JsonReader();
 
     var batchWin = new Ext.Window({
         title: msgs.manageBatch,

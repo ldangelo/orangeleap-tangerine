@@ -532,7 +532,7 @@ Ext.onReady(function() {
             }
         }
     });
-    var previouslySelectedRec = null;
+    var previouslySelectedRecord = null;
     grid.on('cellclick', function(grid, rowIndex, columnIndex, event) {
         if (columnIndex == 1) {
             var record = store.data.items[rowIndex];

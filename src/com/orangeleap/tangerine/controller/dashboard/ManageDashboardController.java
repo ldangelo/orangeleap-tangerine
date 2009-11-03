@@ -33,7 +33,7 @@ public class ManageDashboardController extends ParameterizableViewController {
     @SuppressWarnings("unchecked")
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get("/siteSettings.htm") != AccessType.ALLOWED) {
+        if (pageAccess.get("/manageDashboard.htm") != AccessType.ALLOWED) {
             throw new RuntimeException("You are not authorized to access this page");
         }
         return super.handleRequestInternal(request, response);

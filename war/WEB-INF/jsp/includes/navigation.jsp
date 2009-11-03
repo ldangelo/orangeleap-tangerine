@@ -158,7 +158,12 @@
 							<a href="siteAudit.htm"><spring:message code="siteAudit"/></a>
 						</c:if>
 					</li>
-				</ul>
+ 			  		<li>
+			            <c:if test="${pageAccess['/manageDashboard.htm']=='ALLOWED'}">
+   						   <a href="manageDashboard.htm"><spring:message code="manageDashboard"/></a>
+						</c:if>
+					</li> 
+ 				</ul>
 						</c:if>
             </li>
 		</ul>

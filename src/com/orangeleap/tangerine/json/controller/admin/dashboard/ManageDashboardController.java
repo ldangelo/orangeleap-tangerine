@@ -65,7 +65,7 @@ public class ManageDashboardController {
     @SuppressWarnings("unchecked")
     private void checkAccess(HttpServletRequest request) {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get("/siteSettings.htm") != AccessType.ALLOWED) {
+        if (pageAccess.get("/manageDashboard.htm") != AccessType.ALLOWED) {
             throw new RuntimeException("You are not authorized to access this page");
         }
     }

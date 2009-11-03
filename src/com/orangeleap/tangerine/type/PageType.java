@@ -83,7 +83,8 @@ public enum PageType {
     siteSettings("/siteSettings.htm"),
     postbatch("/postbatch.htm"),
     logView("/logView.htm"),
-    screenDefinition("/screenDefinition.htm");
+    screenDefinition("/screenDefinition.htm"),
+    manageDashboard("/manageDashboard.htm");
 
     private String pageName;
 

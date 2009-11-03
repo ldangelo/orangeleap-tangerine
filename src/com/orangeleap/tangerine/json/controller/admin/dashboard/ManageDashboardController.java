@@ -86,7 +86,7 @@ public class ManageDashboardController {
     		DashboardItem item = it.next();
     		if (isAllowedType(item.getType())) {
     			if (item.getSiteName() == null) {
-	    			item.setId(null);
+	    			item.setId(0L);
 	    			item.setSiteName(tangerineUserHelper.lookupUserSiteName());
     			}
     		} else {
@@ -106,9 +106,11 @@ public class ManageDashboardController {
     }
 
     private void addItems(List<DashboardItem> items, List<Map<String, Object>> returnList) {
+    	int i = 0;
         for (DashboardItem item : items) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put(StringConstants.ID, item.getId());
+            map.put("id", i++);
+            map.put("itemid", item.getId());
             map.put("type", item.getType());
             map.put("title", item.getTitle());
             map.put("url", item.getUrl());
@@ -133,9 +135,9 @@ public class ManageDashboardController {
             boolean found = false;
             while (beanIterator.hasNext()) {
                 DynaBean bean = beanIterator.next();
-                if (bean.getDynaClass().getDynaProperty(StringConstants.ID) != null &&
-                        bean.get(StringConstants.ID) != null && 
-                        item.getId().equals(bean.get(StringConstants.ID))) {
+                if (bean.getDynaClass().getDynaProperty("itemid") != null &&
+                        bean.get("itemid") != null && 
+                        item.getId().equals(bean.get("itemid"))) {
                 	
                     if (bean.getDynaClass().getDynaProperty("type") != null && bean.get("type") != null) {
                         item.setType((String) bean.get("type"));
@@ -170,8 +172,8 @@ public class ManageDashboardController {
         beanIterator = beans.iterator();
         while (beanIterator.hasNext()) {
             DynaBean bean = beanIterator.next();
-            if (bean.getDynaClass().getDynaProperty(StringConstants.ID) != null &&
-                    bean.get(StringConstants.ID) != null) {
+            if (bean.getDynaClass().getDynaProperty("itemid") != null &&
+                    bean.get("itemid") != null) {
             	
             	DashboardItem item = new DashboardItem();
 

@@ -37,7 +37,7 @@ Ext.onReady(function() {
         saveError();
     });
 
-    var writer = new Ext.data.JsonWriter({ listful: true });
+    var writer = new Ext.data.JsonWriter({ listful: true, writeAllFields: true });
 
     var store = new OrangeLeap.BulkSaveStore({
         batch: true,
@@ -51,6 +51,7 @@ Ext.onReady(function() {
         root: 'rows',
         fields:[
                 {name: 'id', type: 'int'},
+                {name: 'itemid', type: 'int'},
                 {name: 'type', type: 'string'},
                 {name: 'title', type: 'string'},
                 {name: 'url', type: 'string'},
@@ -68,7 +69,6 @@ Ext.onReady(function() {
                 store.data.items[x].set('order', ""+x);
             }
         }
-        store.commitChanges();
         
     });
     store.on('add', function(store, records, index) {
@@ -140,7 +140,7 @@ Ext.onReady(function() {
                        var aStore = grid.getStore();
                        var Rec = aStore.recordType;
                        var row = new Rec({
-                    	   id: '0',
+                    	   itemid: '0',
                            type: 'Guru',
                            title: '',
                            url: '',

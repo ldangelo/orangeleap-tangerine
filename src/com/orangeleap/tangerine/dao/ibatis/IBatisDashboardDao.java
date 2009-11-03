@@ -51,6 +51,7 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
         if (logger.isTraceEnabled()) {
             logger.trace("maintainDashboardItem: dashboardItemId = " + dashboardItem.getId());
         }
+        dashboardItem.setSiteName(this.getSiteName());
         return (DashboardItem)insertOrUpdate(dashboardItem, "DASHBOARD_ITEM");
     }
     

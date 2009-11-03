@@ -158,7 +158,7 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function() {
                     $("#savedMarker").css('visibility', 'hidden');
-                    store.save();
+                    store.saveAll();
                 }
             },
             {text: 'Undo', cls: 'button', ref: '../undoButton', disabled: true,
@@ -189,6 +189,8 @@ Ext.onReady(function() {
                 var rec = store.getById(id);
                 store.remove(rec);
             }
+            grid.saveButton.enable();
+            grid.undoButton.enable();
         }
     });    
     

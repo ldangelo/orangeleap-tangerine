@@ -78,19 +78,21 @@ public class ManageDashboardController {
         
         // Gets either site-customized dashboard or default (legacy) one.
         List<DashboardItem> items = dashboardService.getAllDashboardItems(); 
-        
         // Cannot edit default items - this editor can be used to point to guru reports only - don't allow custom SQL report creation in tangerine.
-        // Also cannot mix default and guru-type dashboards.
+        
+        // If there are no dashboard items set up, copy from defaults.
     	Iterator<DashboardItem> it = items.iterator();
     	while (it.hasNext()) {
     		DashboardItem item = it.next();
-    		if (item.getSiteName() == null && isAllowedType(item.getType())) {
-    			item.setId(null);
-    			item.setSiteName(tangerineUserHelper.lookupUserSiteName());
-        		dashboardService.maintainDashboardItem(item);
+    		if (isAllowedType(item.getType())) {
+    			if (item.getSiteName() == null) {
+	    			item.setId(null);
+	    			item.setSiteName(tangerineUserHelper.lookupUserSiteName());
+    			}
+    		} else {
+    			it.remove();
     		}
     	}
-        items = dashboardService.getAllDashboardItems(); 
         
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         addItems(items, returnList);

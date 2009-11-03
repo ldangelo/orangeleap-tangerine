@@ -323,6 +323,14 @@ Ext.onReady(function() {
                     firstItem.setActiveTab(firstItem.items.items[0]);
                     $('#step1Num').addClass('complete');
                 }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    batchWin.hide(this);
+                }
             }
         ],
         buttonAlign: 'center',
@@ -418,21 +426,39 @@ Ext.onReady(function() {
             var index = step2Form.getView().findRowIndex(htmlEl);
             if (record.get('picked')) {
                 step2Form.getSelectionModel().selectRow(index, true);
+                pickedRows++;
+                if (pickedRows > 0) {
+                    step2Form.nextButton.enable();
+                }
             }
             else {
                 step2Form.getSelectionModel().deselectRow(index);
+                pickedRows--;
+                if (pickedRows == 0) {
+                    step2Form.nextButton.disable();
+                }
             }
         }
     });
+
+    var pickedRows = 0;
 
     var step2RowSelModel = new Ext.grid.RowSelectionModel({singleSelect: false});
 
     step2RowSelModel.on({
         'rowselect': function(selModel, rowIndex, record) {
             record.set('picked', true);
+            pickedRows++;
+            if (pickedRows > 0) {
+                step2Form.nextButton.enable();
+            }
         },
         'rowdeselect': function(selModel, rowIndex, record) {
             record.set('picked', false);
+            pickedRows--;
+            if (pickedRows == 0) {
+                step2Form.nextButton.disable();
+            }
         }
     });
 
@@ -443,7 +469,7 @@ Ext.onReady(function() {
         store: step2Store,
         bbar: step2Bar,
         width: 726,
-        height: 400,
+        height: 468,
         loadMask: true,
         header: false,
         frame: false,
@@ -452,6 +478,45 @@ Ext.onReady(function() {
 //        style: 'margin: 0 3px;',
         viewConfig: { forceFit: true },
         plugins: [ checkColumn ],
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(1);
+                    var firstItem = panel.items.items[0];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
+                }
+            },
+            {
+                text: msgs.next,
+                cls: 'saveButton',
+                ref: '../nextButton',
+                formBind: true,
+                disabled: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(2);
+                    var firstItem = panel.items.items[2];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
+                    $('#step2Num').addClass('complete');
+                }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    batchWin.hide(this);
+                }
+            }
+        ],
+        buttonAlign: 'center',
         columns: [
             checkColumn,
             {
@@ -542,32 +607,32 @@ Ext.onReady(function() {
         modal: true,
         closable: false,
         closeAction: 'hide',
-        buttons: [
-            {   text: msgs.save,
-                cls: 'disabledButton',
-                ref: '../saveButton',
-                disabled: true,
-                handler: function(button, event) {
-//                    if (checkIfValid()) {
-//                        $("#optionsFieldsSavedMarker").hide();
-//                        optionsStore.saveAll();
-//                    }
-//                    else {
-//                        Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
-//                            buttons: Ext.MessageBox.OK,
-//                            msg: 'You must fix the highlighted errors first before saving.'});
-//                    }
-                }
-            },
-            {   text: msgs.close,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    batchWin.hide(this);
-                }
-            }
-        ],
-        buttonAlign: 'center',
+//        buttons: [
+//            {   text: msgs.save,
+//                cls: 'disabledButton',
+//                ref: '../saveButton',
+//                disabled: true,
+//                handler: function(button, event) {
+////                    if (checkIfValid()) {
+////                        $("#optionsFieldsSavedMarker").hide();
+////                        optionsStore.saveAll();
+////                    }
+////                    else {
+////                        Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
+////                            buttons: Ext.MessageBox.OK,
+////                            msg: 'You must fix the highlighted errors first before saving.'});
+////                    }
+//                }
+//            },
+//            {   text: msgs.close,
+//                cls: 'button',
+//                ref: '../closeButton',
+//                handler: function(button, event) {
+//                    batchWin.hide(this);
+//                }
+//            }
+//        ],
+//        buttonAlign: 'center',
 
         items:[{
              xtype: 'grouptabpanel',

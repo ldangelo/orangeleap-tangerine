@@ -53,4 +53,8 @@
     <sqlMap resource="sqlmap/scheduledItem.xml"/>
     <sqlMap resource="sqlmap/siteOption.xml"/>
 
+    <sqlMap resource="sqlmap/rollupSeries.xml"/>
+    <sqlMap resource="sqlmap/rollupAttribute.xml"/>
+    <sqlMap resource="sqlmap/rollupValue.xml"/>
+
 </sqlMapConfig>

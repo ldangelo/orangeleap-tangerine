@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ROLLUP_VALUE">
+
+    <resultMap id="ROLLUP_VALUE_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupValue">
+        <result property="id" column="ROLLUP_VALUE_ROLLUP_VALUE_ID" />
+        <result property="rollupAttributeId" column="ROLLUP_VALUE_ROLLUP_ATTRIBUTE_ID" />
+        <result property="groupByValue" column="ROLLUP_VALUE_GROUP_BY_VALUE" />
+        <result property="startDate" column="ROLLUP_VALUE_START_DATE" />
+        <result property="endDate" column="ROLLUP_VALUE_END_DATE" />
+        <result property="currencyCode" column="ROLLUP_VALUE_CURRENCY_CODE" />
+        <result property="totalValue" column="ROLLUP_VALUE_TOTAL_VALUE" />
+    </resultMap>
+
+    <sql id="ROLLUP_VALUE_COLS_FRAGMENT">
+        rollup_value.ROLLUP_VALUE_ID as ROLLUP_VALUE_ROLLUP_VALUE_ID,
+        rollup_value.ROLLUP_ATTRIBUTE_ID as ROLLUP_VALUE_ROLLUP_ATTRIBUTE_ID,
+        rollup_value.GROUP_BY_VALUE as ROLLUP_VALUE_GROUP_BY_VALUE,
+        rollup_value.START_DATE as ROLLUP_VALUE_START_DATE,
+        rollup_value.END_DATE as ROLLUP_VALUE_END_DATE,
+        rollup_value.CURRENCY_CODE as ROLLUP_VALUE_CURRENCY_CODE,
+        rollup_value.TOTAL_VALUE as ROLLUP_VALUE_TOTAL_VALUE    
+    </sql>
+
+    <sql id="SELECT_ROLLUP_VALUE_FRAGMENT">
+        select 
+        <include refid="ROLLUP_VALUE_COLS_FRAGMENT"/>
+        from ROLLUP_VALUE rollup_value 
+        where rollup_value.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_ROLLUP_VALUE_BY_ID" resultMap="ROLLUP_VALUE_RESULT" parameterClass="map" >
+        <include refid="SELECT_ROLLUP_VALUE_FRAGMENT"/>
+        and rollup_value.ROLLUP_VALUE_ID = #id#
+    </select>
+
+    <insert id="INSERT_ROLLUP_VALUE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupValue">
+        insert into ROLLUP_VALUE (
+        	ROLLUP_VALUE_ID,
+        	ROLLUP_ATTRIBUTE_ID,
+        	GROUP_BY_VALUE,
+        	START_DATE,
+        	END_DATE,
+        	CURRENCY_CODE,
+        	TOTAL_VALUE        )
+        values (
+        	#id# ,
+        	#rollupAttributeId# ,
+        	#groupByValue# ,
+        	#startDate# ,
+        	#endDate# ,
+        	#currencyCode# ,
+        	#totalValue#         )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_ROLLUP_VALUE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupValue">
+        update ROLLUP_VALUE
+        SET 
+        	ROLLUP_VALUE_ID = #id# ,
+        	ROLLUP_ATTRIBUTE_ID = #rollupAttributeId# ,
+        	GROUP_BY_VALUE = #groupByValue# ,
+        	START_DATE = #startDate# ,
+        	END_DATE = #endDate# ,
+        	CURRENCY_CODE = #currencyCode# ,
+        	TOTAL_VALUE = #totalValue#         
+        where ROLLUP_VALUE_ID = #id#
+    </update>
+
+</sqlMap>
+

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ROLLUP_SERIES">
+
+    <resultMap id="ROLLUP_SERIES_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupSeries">
+        <result property="id" column="ROLLUP_SERIES_ROLLUP_SERIES_ID" />
+        <result property="seriesDesc" column="ROLLUP_SERIES_SERIES_DESC" />
+        <result property="seriesType" column="ROLLUP_SERIES_SERIES_TYPE" />
+        <result property="beginDate" column="ROLLUP_SERIES_BEGIN_DATE" />
+        <result property="maintainPeriods" column="ROLLUP_SERIES_MAINTAIN_PERIODS" />
+        <result property="keepUnmaintained" column="ROLLUP_SERIES_KEEP_UNMAINTAINED" />
+        <result property="siteName" column="ROLLUP_SERIES_SITE_NAME" />
+    </resultMap>
+
+    <sql id="ROLLUP_SERIES_COLS_FRAGMENT">
+        rollup_series.ROLLUP_SERIES_ID as ROLLUP_SERIES_ROLLUP_SERIES_ID,
+        rollup_series.SERIES_DESC as ROLLUP_SERIES_SERIES_DESC,
+        rollup_series.SERIES_TYPE as ROLLUP_SERIES_SERIES_TYPE,
+        rollup_series.BEGIN_DATE as ROLLUP_SERIES_BEGIN_DATE,
+        rollup_series.MAINTAIN_PERIODS as ROLLUP_SERIES_MAINTAIN_PERIODS,
+        rollup_series.KEEP_UNMAINTAINED as ROLLUP_SERIES_KEEP_UNMAINTAINED,
+        rollup_series.SITE_NAME as ROLLUP_SERIES_SITE_NAME    
+    </sql>
+
+    <sql id="SELECT_ROLLUP_SERIES_FRAGMENT">
+        select 
+        <include refid="ROLLUP_SERIES_COLS_FRAGMENT"/>
+        from ROLLUP_SERIES rollup_series 
+        where rollup_series.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_ROLLUP_SERIES_BY_ID" resultMap="ROLLUP_SERIES_RESULT" parameterClass="map" >
+        <include refid="SELECT_ROLLUP_SERIES_FRAGMENT"/>
+        and rollup_series.ROLLUP_SERIES_ID = #id#
+    </select>
+
+    <insert id="INSERT_ROLLUP_SERIES" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupSeries">
+        insert into ROLLUP_SERIES (
+        	ROLLUP_SERIES_ID,
+        	SERIES_DESC,
+        	SERIES_TYPE,
+        	BEGIN_DATE,
+        	MAINTAIN_PERIODS,
+        	KEEP_UNMAINTAINED,
+        	SITE_NAME        )
+        values (
+        	#id# ,
+        	#seriesDesc# ,
+        	#seriesType# ,
+        	#beginDate# ,
+        	#maintainPeriods# ,
+        	#keepUnmaintained# ,
+        	#siteName#         )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_ROLLUP_SERIES" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupSeries">
+        update ROLLUP_SERIES
+        SET 
+        	ROLLUP_SERIES_ID = #id# ,
+        	SERIES_DESC = #seriesDesc# ,
+        	SERIES_TYPE = #seriesType# ,
+        	BEGIN_DATE = #beginDate# ,
+        	MAINTAIN_PERIODS = #maintainPeriods# ,
+        	KEEP_UNMAINTAINED = #keepUnmaintained# ,
+        	SITE_NAME = #siteName#         
+        where ROLLUP_SERIES_ID = #id#
+    </update>
+
+</sqlMap>
+

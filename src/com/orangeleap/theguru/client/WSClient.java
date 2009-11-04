@@ -33,16 +33,18 @@ public class WSClient extends OrangeLeapAuthentication {
 
 		ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
 
-		CasUtil.populateOrageLeapAuthenticationWithCasCredentials(this, System.getProperty("casClient.serviceUrl"));
+		CasUtil.populateOrageLeapAuthenticationWithCasCredentials(this, "http://localhost:8080/clementine/j_spring_cas_security_check");
     	
         Map outProps = new HashMap();
 		Client client = org.apache.cxf.frontend.ClientProxy.getClient(guruPort);
 		org.apache.cxf.endpoint.Endpoint cxfEndpoint = client.getEndpoint();
-		
+	
+		PWCallbackHandler pwHandler = new PWCallbackHandler(this.getUserName(),this.getPassword());
 		outProps.put(WSHandlerConstants.ACTION,WSHandlerConstants.USERNAME_TOKEN);
 		outProps.put(WSHandlerConstants.USER, this.getUserName());
 		outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
-		outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS, PWCallbackHandler.class.getName());
+//		outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS, PWCallbackHandler.class.getName());
+		outProps.put(WSHandlerConstants.PW_CALLBACK_REF, pwHandler);
 		outProps.put(WSHandlerConstants.ADD_UT_ELEMENTS,WSConstants.NONCE_LN + " " + WSConstants.CREATED_LN);
 
 		WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);

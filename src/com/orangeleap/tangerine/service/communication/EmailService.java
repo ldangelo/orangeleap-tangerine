@@ -85,7 +85,7 @@ public class EmailService implements ApplicationContextAware {
 
         try {
         	
-        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
+        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri+"/j_acegi_cas_security_check");
         	
             Map<String, String> params = getReportParameters();
 

@@ -203,8 +203,8 @@
 		<antcall target="9.1. Clear Schema"/>
 		<antcall target="9.3 Load Schema"/>
 		<antcall target="9.4 Load Extra Schema"/>
-        <antcall target="9.4 Load Sample Merchant Ids"/>
         <antcall target="9.2 Load Base Data Only"/>
+        <antcall target="9.4 Load Sample Merchant Ids"/>
 	</target>
 
 	<target name="9.5 Generate XML Schema">

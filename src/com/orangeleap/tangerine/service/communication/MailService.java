@@ -79,7 +79,7 @@ public class MailService {
         jserver.setUrl(baseUri + repositoryUri);
 		try {
 			
-        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
+        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri+"/j_acegi_cas_security_check");
 
 			Map params = getReportParameters();
 
@@ -116,7 +116,7 @@ public class MailService {
         jserver.setUrl(baseUri + repositoryUri);
 		try {
 			
-        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
+        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri+"/j_acegi_cas_security_check");
 
 			JasperPrint print = jserver.getWSClient().runReport(
 					getLabelReportUnit(jserver).getDescriptor(), this.labelMap);
@@ -205,7 +205,7 @@ public class MailService {
 				jserver.setUsername(site.getJasperUserId());
 				jserver.setPassword(site.getJasperPassword());
 		        jserver.setUrl(baseUri + repositoryUri);
-		        CasUtil.populateJserverWithCasCredentials(jserver, baseUri);
+		        CasUtil.populateJserverWithCasCredentials(jserver, baseUri+"/j_acegi_cas_security_check");
 
 		        jserver.getWSClient().putResource(labelRD, attachments);
 			}

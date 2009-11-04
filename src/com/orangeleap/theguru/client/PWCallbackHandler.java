@@ -16,10 +16,13 @@ import com.orangeleap.common.security.*;
 
 public class PWCallbackHandler extends  OrangeLeapAuthentication implements CallbackHandler
 {
+	public PWCallbackHandler(String userName, String password) {
+		this.setUserName(userName);
+		this.setPassword(password);
+	}
+
 	public void handle (Callback[] callbacks) throws IOException, UnsupportedCallbackException
     {
-    	CasUtil.populateOrageLeapAuthenticationWithCasCredentials(this, System.getProperty("casClient.serviceUrl"));
-    	
     	for (int i = 0; i < callbacks.length; i++)
         {
             if (callbacks[i] instanceof WSPasswordCallback)

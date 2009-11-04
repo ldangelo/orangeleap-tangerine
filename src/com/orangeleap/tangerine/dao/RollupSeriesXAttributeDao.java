@@ -6,6 +6,7 @@ import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
 
 public interface RollupSeriesXAttributeDao {
 
-    public void maintainRollupSeriesXAttribute(List<RollupSeriesXAttribute> rollupSeriesXAttributes);
+    public List<RollupSeriesXAttribute> selectRollupSeriesForAttribute(Long attributeId);
+    public void maintainRollupSeriesXAttribute(Long attributeId, List<RollupSeriesXAttribute> rollupSeriesXAttributes);
 
 }

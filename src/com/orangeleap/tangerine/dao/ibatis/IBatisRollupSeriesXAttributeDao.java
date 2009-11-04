@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,23 @@ public class IBatisRollupSeriesXAttributeDao extends AbstractIBatisDao implement
         super(sqlMapClient);
     }
   
+	@SuppressWarnings("unchecked")
 	@Override
-    public void maintainRollupSeriesXAttribute(List<RollupSeriesXAttribute> rollupSeriesXAttributes) {
-		// TODO replace all based on rollupAttribute
+    public List<RollupSeriesXAttribute> selectRollupSeriesForAttribute(Long attributeId) {
+		return getSqlMapClientTemplate().queryForList("SELECT_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID");
+	}
+    
+	@Override
+    public void maintainRollupSeriesXAttribute(Long attributeId, List<RollupSeriesXAttribute> rollupSeriesXAttributes) {
+		
+        Map<String, Object> params = setupParams();
+        params.put("attributeId", attributeId);
+        
+        getSqlMapClientTemplate().delete("DELETE_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID", params);
+        
+        for (RollupSeriesXAttribute rollupSeriesXAttribute : rollupSeriesXAttributes)
+        	getSqlMapClientTemplate().insert("INSERT_ROLLUP_SERIES_X_ATTRIBUTE", rollupSeriesXAttribute);
+		
     }
     
 }

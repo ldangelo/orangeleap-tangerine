@@ -61,7 +61,8 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     
 	@Override
     public void validateCubeSize(RollupSeries rollupSeries, RollupAttribute rollupAttribute) {
-    	// TODO Determine if parameter combinations (such as daily x constituent) are invalid
+    	// TODO Determine if parameter combinations (such as daily x constituent) are invalid. 
+		// TODO Prob not do basic cardinality checks (will not work for large number of obsolete designation codes)
 		// TODO Add attribute x series join table to avoid redefining attributes for different series, need to add site to attribute
     }
     
@@ -94,17 +95,24 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	}
 
 	@Override
-	public void maintainRollupSeriesForAttribute(List<RollupSeriesXAttribute> rollupSeriesXAttributes) {
-		rollupSeriesXAttributeDao.maintainRollupSeriesXAttribute(rollupSeriesXAttributes);
+	public List<RollupSeriesXAttribute> selectRollupSeriesForAttribute(Long attributeId) {
+		return rollupSeriesXAttributeDao.selectRollupSeriesForAttribute(attributeId);
+	}
+	
+	@Override
+	public void maintainRollupSeriesForAttribute(Long attributeId, List<RollupSeriesXAttribute> rollupSeriesXAttributes) {
+		rollupSeriesXAttributeDao.maintainRollupSeriesXAttribute(attributeId, rollupSeriesXAttributes);
 	}
     
 
 	@Override
     public void updateRollupsForGift(Gift gift) {
+		//TODO
 	}
 	
 	@Override
     public void updateRollupsForConstituent(Constituent constituent) {
+		//TODO
 	}
 
 }

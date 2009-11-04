@@ -16,13 +16,13 @@
         select 
         <include refid="ROLLUP_SERIES_X_ATTRIBUTE_COLS_FRAGMENT"/>
         from ROLLUP_SERIES_X_ATTRIBUTE rollup_series_x_attribute 
-        where rollup_series_x_attribute.ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
+        where rollup_series_x_attribute.ROLLUP_ATTRIBUTE_ID = #attributeId#
     </select>
 
     <delete id="DELETE_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID">
         delete from  
         from ROLLUP_SERIES_X_ATTRIBUTE  
-        where ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
+        where ROLLUP_ATTRIBUTE_ID = #attributeId#
     </delete>
 
     <insert id="INSERT_ROLLUP_SERIES_X_ATTRIBUTE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute">

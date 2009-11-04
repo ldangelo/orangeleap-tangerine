@@ -39,7 +39,8 @@ public interface RollupService {
     public void deleteRollupSeriesById(Long id);
     public void deleteRollupAttributeById(Long id);
 
-    public void maintainRollupSeriesForAttribute(List<RollupSeriesXAttribute> rollupSeriesXAttributes);
+    public List<RollupSeriesXAttribute> selectRollupSeriesForAttribute(Long attributeId);
+    public void maintainRollupSeriesForAttribute(Long attributeId, List<RollupSeriesXAttribute> rollupSeriesXAttributes);
 
     public void updateRollupsForGift(Gift gift);
     public void updateRollupsForConstituent(Constituent constituent);

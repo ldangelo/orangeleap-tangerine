@@ -13,7 +13,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private Long rollupSeriesId;
+    private String attributeDesc;
     private boolean sumOrCount;
     private String tableName;
     private String valueColumnName;
@@ -22,6 +22,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
     private String dateColumnName;
     private String groupByColumnName;
     private boolean isGroupByCustomField;
+    private String siteName;
 	
     public RollupAttribute() { }
 
@@ -35,12 +36,12 @@ public class RollupAttribute implements GeneratedId, Serializable {
     }
 
     
-    public Long getRollupSeriesId() {
-        return rollupSeriesId;
+    public String getAttributeDesc() {
+        return attributeDesc;
     }
 
-    public void setRollupSeriesId(Long rollupSeriesId) {
-        this.rollupSeriesId = rollupSeriesId;
+    public void setAttributeDesc(String attributeDesc) {
+        this.attributeDesc = attributeDesc;
     }
 
     
@@ -115,6 +116,15 @@ public class RollupAttribute implements GeneratedId, Serializable {
         this.isGroupByCustomField = isGroupByCustomField;
     }
 
+    
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
 	
     @Override
     public boolean equals(Object obj) {
@@ -125,7 +135,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         EqualsBuilder eb = new EqualsBuilder();
         eb
         .append(id, a.getId())
-        .append(rollupSeriesId, a.getRollupSeriesId())
+        .append(attributeDesc, a.getAttributeDesc())
         .append(sumOrCount, a.getSumOrCount())
         .append(tableName, a.getTableName())
         .append(valueColumnName, a.getValueColumnName())
@@ -134,6 +144,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append(dateColumnName, a.getDateColumnName())
         .append(groupByColumnName, a.getGroupByColumnName())
         .append(isGroupByCustomField, a.getIsGroupByCustomField())
+        .append(siteName, a.getSiteName())
 		;
         return eb.isEquals();
     }
@@ -143,7 +154,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb
         .append(""+id)
-        .append(""+rollupSeriesId)
+        .append(""+attributeDesc)
         .append(""+sumOrCount)
         .append(""+tableName)
         .append(""+valueColumnName)
@@ -152,6 +163,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append(""+dateColumnName)
         .append(""+groupByColumnName)
         .append(""+isGroupByCustomField)
+        .append(""+siteName)
 		;
         return hcb.hashCode();
     }
@@ -161,7 +173,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         return new ToStringCreator(this)
         .append(super.toString())
         .append("id", ""+id)
-        .append("rollupSeriesId", ""+rollupSeriesId)
+        .append("attributeDesc", ""+attributeDesc)
         .append("sumOrCount", ""+sumOrCount)
         .append("tableName", ""+tableName)
         .append("valueColumnName", ""+valueColumnName)
@@ -170,6 +182,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append("dateColumnName", ""+dateColumnName)
         .append("groupByColumnName", ""+groupByColumnName)
         .append("isGroupByCustomField", ""+isGroupByCustomField)
+        .append("siteName", ""+siteName)
         .toString();
     }
 

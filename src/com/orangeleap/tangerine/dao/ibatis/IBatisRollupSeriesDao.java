@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -31,6 +32,7 @@ public class IBatisRollupSeriesDao extends AbstractIBatisDao implements RollupSe
         if (logger.isTraceEnabled()) {
             logger.trace("maintainRollupSeries: rollupSeriesId = " + rollupSeries.getId());
         }
+        rollupSeries.setSiteName(this.getSiteName());
         return (RollupSeries)insertOrUpdate(rollupSeries, "ROLLUP_SERIES");
     }
 
@@ -42,6 +44,13 @@ public class IBatisRollupSeriesDao extends AbstractIBatisDao implements RollupSe
         Map<String, Object> params = setupParams();
         params.put("id", id);
         return (RollupSeries)getSqlMapClientTemplate().queryForObject("SELECT_ROLLUP_SERIES_BY_ID", params);
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<RollupSeries> readAllRollupSeries() {
+        Map<String, Object> params = setupParams();
+        return getSqlMapClientTemplate().queryForList("READ_ALL_ROLLUP_SERIES", params);
     }
     
 }

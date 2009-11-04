@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ROLLUP_SERIES_X_ATTRIBUTE">
+
+    <resultMap id="ROLLUP_SERIES_X_ATTRIBUTE_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute">
+        <result property="rollupSeriesId" column="ROLLUP_SERIES_X_ATTRIBUTE_ROLLUP_SERIES_ID" />
+        <result property="rollupAttributeId" column="ROLLUP_SERIES_X_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID" />
+    </resultMap>
+
+    <sql id="ROLLUP_SERIES_X_ATTRIBUTE_COLS_FRAGMENT">
+        rollup_series_x_attribute.ROLLUP_SERIES_ID as ROLLUP_SERIES_X_ATTRIBUTE_ROLLUP_SERIES_ID,
+        rollup_series_x_attribute.ROLLUP_ATTRIBUTE_ID as ROLLUP_SERIES_X_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID    
+    </sql>
+
+    <select id="SELECT_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID">
+        select 
+        <include refid="ROLLUP_SERIES_X_ATTRIBUTE_COLS_FRAGMENT"/>
+        from ROLLUP_SERIES_X_ATTRIBUTE rollup_series_x_attribute 
+        where rollup_series_x_attribute.ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
+    </select>
+
+    <delete id="DELETE_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID">
+        delete from  
+        from ROLLUP_SERIES_X_ATTRIBUTE  
+        where ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
+    </delete>
+
+    <insert id="INSERT_ROLLUP_SERIES_X_ATTRIBUTE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute">
+        insert into ROLLUP_SERIES_X_ATTRIBUTE (
+        	ROLLUP_SERIES_ID,
+        	ROLLUP_ATTRIBUTE_ID        )
+        values (
+        	#rollupSeriesId# ,
+        	#rollupAttributeId#         )
+    </insert>
+
+
+</sqlMap>
+

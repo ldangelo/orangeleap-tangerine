@@ -4,7 +4,7 @@
 
     <resultMap id="ROLLUP_ATTRIBUTE_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupAttribute">
         <result property="id" column="ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID" />
-        <result property="rollupSeriesId" column="ROLLUP_ATTRIBUTE_ROLLUP_SERIES_ID" />
+        <result property="attributeDesc" column="ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC" />
         <result property="sumOrCount" column="ROLLUP_ATTRIBUTE_SUM_OR_COUNT" />
         <result property="tableName" column="ROLLUP_ATTRIBUTE_TABLE_NAME" />
         <result property="valueColumnName" column="ROLLUP_ATTRIBUTE_VALUE_COLUMN_NAME" />
@@ -13,11 +13,12 @@
         <result property="dateColumnName" column="ROLLUP_ATTRIBUTE_DATE_COLUMN_NAME" />
         <result property="groupByColumnName" column="ROLLUP_ATTRIBUTE_GROUP_BY_COLUMN_NAME" />
         <result property="isGroupByCustomField" column="ROLLUP_ATTRIBUTE_IS_GROUP_BY_CUSTOM_FIELD" />
+        <result property="siteName" column="ROLLUP_ATTRIBUTE_SITE_NAME" />
     </resultMap>
 
     <sql id="ROLLUP_ATTRIBUTE_COLS_FRAGMENT">
         rollup_attribute.ROLLUP_ATTRIBUTE_ID as ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID,
-        rollup_attribute.ROLLUP_SERIES_ID as ROLLUP_ATTRIBUTE_ROLLUP_SERIES_ID,
+        rollup_attribute.ATTRIBUTE_DESC as ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC,
         rollup_attribute.SUM_OR_COUNT as ROLLUP_ATTRIBUTE_SUM_OR_COUNT,
         rollup_attribute.TABLE_NAME as ROLLUP_ATTRIBUTE_TABLE_NAME,
         rollup_attribute.VALUE_COLUMN_NAME as ROLLUP_ATTRIBUTE_VALUE_COLUMN_NAME,
@@ -25,7 +26,8 @@
         rollup_attribute.CURRENCY_COLUMN_NAME as ROLLUP_ATTRIBUTE_CURRENCY_COLUMN_NAME,
         rollup_attribute.DATE_COLUMN_NAME as ROLLUP_ATTRIBUTE_DATE_COLUMN_NAME,
         rollup_attribute.GROUP_BY_COLUMN_NAME as ROLLUP_ATTRIBUTE_GROUP_BY_COLUMN_NAME,
-        rollup_attribute.IS_GROUP_BY_CUSTOM_FIELD as ROLLUP_ATTRIBUTE_IS_GROUP_BY_CUSTOM_FIELD    
+        rollup_attribute.IS_GROUP_BY_CUSTOM_FIELD as ROLLUP_ATTRIBUTE_IS_GROUP_BY_CUSTOM_FIELD,
+        rollup_attribute.SITE_NAME as ROLLUP_ATTRIBUTE_SITE_NAME    
     </sql>
 
     <sql id="SELECT_ROLLUP_ATTRIBUTE_FRAGMENT">
@@ -35,6 +37,10 @@
         where rollup_attribute.SITE_NAME = #siteName#
     </sql>
 
+    <select id="SELECT_ALL_ROLLUP_ATTRIBUTES" resultMap="ROLLUP_ATTRIBUTE_RESULT" parameterClass="map" >
+        <include refid="SELECT_ROLLUP_ATTRIBUTE_FRAGMENT"/>
+    </select>
+
     <select id="SELECT_ROLLUP_ATTRIBUTE_BY_ID" resultMap="ROLLUP_ATTRIBUTE_RESULT" parameterClass="map" >
         <include refid="SELECT_ROLLUP_ATTRIBUTE_FRAGMENT"/>
         and rollup_attribute.ROLLUP_ATTRIBUTE_ID = #id#
@@ -43,7 +49,7 @@
     <insert id="INSERT_ROLLUP_ATTRIBUTE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupAttribute">
         insert into ROLLUP_ATTRIBUTE (
         	ROLLUP_ATTRIBUTE_ID,
-        	ROLLUP_SERIES_ID,
+        	ATTRIBUTE_DESC,
         	SUM_OR_COUNT,
         	TABLE_NAME,
         	VALUE_COLUMN_NAME,
@@ -51,10 +57,11 @@
         	CURRENCY_COLUMN_NAME,
         	DATE_COLUMN_NAME,
         	GROUP_BY_COLUMN_NAME,
-        	IS_GROUP_BY_CUSTOM_FIELD        )
+        	IS_GROUP_BY_CUSTOM_FIELD,
+        	SITE_NAME        )
         values (
         	#id# ,
-        	#rollupSeriesId# ,
+        	#attributeDesc# ,
         	#sumOrCount# ,
         	#tableName# ,
         	#valueColumnName# ,
@@ -62,7 +69,8 @@
         	#currencyColumnName# ,
         	#dateColumnName# ,
         	#groupByColumnName# ,
-        	#isGroupByCustomField#         )
+        	#isGroupByCustomField# ,
+        	#siteName#         )
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
         </selectKey>
@@ -72,7 +80,7 @@
         update ROLLUP_ATTRIBUTE
         SET 
         	ROLLUP_ATTRIBUTE_ID = #id# ,
-        	ROLLUP_SERIES_ID = #rollupSeriesId# ,
+        	ATTRIBUTE_DESC = #attributeDesc# ,
         	SUM_OR_COUNT = #sumOrCount# ,
         	TABLE_NAME = #tableName# ,
         	VALUE_COLUMN_NAME = #valueColumnName# ,
@@ -80,7 +88,8 @@
         	CURRENCY_COLUMN_NAME = #currencyColumnName# ,
         	DATE_COLUMN_NAME = #dateColumnName# ,
         	GROUP_BY_COLUMN_NAME = #groupByColumnName# ,
-        	IS_GROUP_BY_CUSTOM_FIELD = #isGroupByCustomField#         
+        	IS_GROUP_BY_CUSTOM_FIELD = #isGroupByCustomField# ,
+        	SITE_NAME = #siteName#         
         where ROLLUP_ATTRIBUTE_ID = #id#
     </update>
 

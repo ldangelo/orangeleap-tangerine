@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -42,6 +43,13 @@ public class IBatisRollupAttributeDao extends AbstractIBatisDao implements Rollu
         Map<String, Object> params = setupParams();
         params.put("id", id);
         return (RollupAttribute)getSqlMapClientTemplate().queryForObject("SELECT_ROLLUP_ATTRIBUTE_BY_ID", params);
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<RollupAttribute> readAllRollupAttributes() {
+        Map<String, Object> params = setupParams();
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_ROLLUP_ATTRIBUTES", params);
     }
     
 }

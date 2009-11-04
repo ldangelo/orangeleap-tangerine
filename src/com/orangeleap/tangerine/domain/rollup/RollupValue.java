@@ -15,6 +15,7 @@ public class RollupValue implements GeneratedId, Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    private Long rollupSeriesId;
     private Long rollupAttributeId;
     private String groupByValue;
     private Date startDate;
@@ -31,6 +32,15 @@ public class RollupValue implements GeneratedId, Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    
+    public Long getRollupSeriesId() {
+        return rollupSeriesId;
+    }
+
+    public void setRollupSeriesId(Long rollupSeriesId) {
+        this.rollupSeriesId = rollupSeriesId;
     }
 
     
@@ -97,6 +107,7 @@ public class RollupValue implements GeneratedId, Serializable {
         EqualsBuilder eb = new EqualsBuilder();
         eb
         .append(id, a.getId())
+        .append(rollupSeriesId, a.getRollupSeriesId())
         .append(rollupAttributeId, a.getRollupAttributeId())
         .append(groupByValue, a.getGroupByValue())
         .append(startDate, a.getStartDate())
@@ -112,6 +123,7 @@ public class RollupValue implements GeneratedId, Serializable {
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb
         .append(""+id)
+        .append(""+rollupSeriesId)
         .append(""+rollupAttributeId)
         .append(""+groupByValue)
         .append(""+startDate)
@@ -127,6 +139,7 @@ public class RollupValue implements GeneratedId, Serializable {
         return new ToStringCreator(this)
         .append(super.toString())
         .append("id", ""+id)
+        .append("rollupSeriesId", ""+rollupSeriesId)
         .append("rollupAttributeId", ""+rollupAttributeId)
         .append("groupByValue", ""+groupByValue)
         .append("startDate", ""+startDate)

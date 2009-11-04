@@ -29,6 +29,10 @@
         where rollup_series.SITE_NAME = #siteName#
     </sql>
 
+    <select id="SELECT_ALL_ROLLUP_SERIES" resultMap="ROLLUP_SERIES_RESULT" parameterClass="map" >
+        <include refid="SELECT_ROLLUP_SERIES_FRAGMENT"/>
+    </select>
+
     <select id="SELECT_ROLLUP_SERIES_BY_ID" resultMap="ROLLUP_SERIES_RESULT" parameterClass="map" >
         <include refid="SELECT_ROLLUP_SERIES_FRAGMENT"/>
         and rollup_series.ROLLUP_SERIES_ID = #id#

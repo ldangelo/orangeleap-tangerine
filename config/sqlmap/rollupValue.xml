@@ -4,6 +4,7 @@
 
     <resultMap id="ROLLUP_VALUE_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupValue">
         <result property="id" column="ROLLUP_VALUE_ROLLUP_VALUE_ID" />
+        <result property="rollupSeriesId" column="ROLLUP_VALUE_ROLLUP_SERIES_ID" />
         <result property="rollupAttributeId" column="ROLLUP_VALUE_ROLLUP_ATTRIBUTE_ID" />
         <result property="groupByValue" column="ROLLUP_VALUE_GROUP_BY_VALUE" />
         <result property="startDate" column="ROLLUP_VALUE_START_DATE" />
@@ -14,6 +15,7 @@
 
     <sql id="ROLLUP_VALUE_COLS_FRAGMENT">
         rollup_value.ROLLUP_VALUE_ID as ROLLUP_VALUE_ROLLUP_VALUE_ID,
+        rollup_value.ROLLUP_SERIES_ID as ROLLUP_VALUE_ROLLUP_SERIES_ID,
         rollup_value.ROLLUP_ATTRIBUTE_ID as ROLLUP_VALUE_ROLLUP_ATTRIBUTE_ID,
         rollup_value.GROUP_BY_VALUE as ROLLUP_VALUE_GROUP_BY_VALUE,
         rollup_value.START_DATE as ROLLUP_VALUE_START_DATE,
@@ -37,6 +39,7 @@
     <insert id="INSERT_ROLLUP_VALUE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupValue">
         insert into ROLLUP_VALUE (
         	ROLLUP_VALUE_ID,
+        	ROLLUP_SERIES_ID,
         	ROLLUP_ATTRIBUTE_ID,
         	GROUP_BY_VALUE,
         	START_DATE,
@@ -45,6 +48,7 @@
         	TOTAL_VALUE        )
         values (
         	#id# ,
+        	#rollupSeriesId# ,
         	#rollupAttributeId# ,
         	#groupByValue# ,
         	#startDate# ,
@@ -60,6 +64,7 @@
         update ROLLUP_VALUE
         SET 
         	ROLLUP_VALUE_ID = #id# ,
+        	ROLLUP_SERIES_ID = #rollupSeriesId# ,
         	ROLLUP_ATTRIBUTE_ID = #rollupAttributeId# ,
         	GROUP_BY_VALUE = #groupByValue# ,
         	START_DATE = #startDate# ,

@@ -115,6 +115,17 @@ public class OrangeLeapWS {
         this.cs = cs;
     }
 
+    @PayloadRoot(localPart = "GetConstituentByIdRequest",namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public GetConstituentByIdResponse getConstituentById(GetConstituentByIdRequest request) {
+    	GetConstituentByIdResponse response = new GetConstituentByIdResponse();
+    	ObjectConverter converter = new ObjectConverter();
+    	com.orangeleap.tangerine.domain.Constituent co = cs.readConstituentById(request.getId());
+    	Constituent wsco = new Constituent();
+    	converter.ConvertToJAXB(co, wsco);
+    	response.setConstituent(wsco);
+    	return response;
+    }
+    
     @PayloadRoot(localPart = "CreateDefaultConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     /**
      * Describe <code>createDefaultConstituent</code> method here.

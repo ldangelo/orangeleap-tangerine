@@ -775,188 +775,26 @@
    <soapenv:Body>
       <ns:FindConstituentsRequest>
          <!--Optional:-->
-         <ns:firstName>?</ns:firstName>
-         <!--Optional:-->
-         <ns:lastName>?</ns:lastName>
-         <!--Optional:-->
-         <ns:primaryAddress>
-            <ns:customFieldMap>
-               <!--Zero or more repetitions:-->
-               <ns:entry>
-                  <ns:key>?</ns:key>
-                  <ns:value>
-                     <!--Optional:-->
-                     <ns:dataType>?</ns:dataType>
-                     <!--Optional:-->
-                     <ns:displayEndDate>?</ns:displayEndDate>
-                     <!--Optional:-->
-                     <ns:displayStartDate>?</ns:displayStartDate>
-                     <!--Optional:-->
-                     <ns:endDate>?</ns:endDate>
-                     <!--Optional:-->
-                     <ns:entityId>?</ns:entityId>
-                     <ns:entityType>?</ns:entityType>
-                     <ns:id>?</ns:id>
-                     <ns:name>?</ns:name>
-                     <ns:sequenceNumber>?</ns:sequenceNumber>
-                     <!--Optional:-->
-                     <ns:startDate>?</ns:startDate>
-                     <ns:value>?</ns:value>
-                  </ns:value>
-               </ns:entry>
-            </ns:customFieldMap>
-            <!--Optional:-->
-            <ns:activationStatus>?</ns:activationStatus>
-            <!--Optional:-->
-            <ns:comments>?</ns:comments>
-            <!--Optional:-->
-            <ns:effectiveDate>?</ns:effectiveDate>
-            <ns:inactive>?</ns:inactive>
-            <ns:constituentId>?</ns:constituentId>
-            <ns:primary>?</ns:primary>
-            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
-            <!--Optional:-->
-            <ns:seasonalEndDate>?</ns:seasonalEndDate>
-            <!--Optional:-->
-            <ns:seasonalStartDate>?</ns:seasonalStartDate>
-            <!--Optional:-->
-            <ns:temporaryEndDate>?</ns:temporaryEndDate>
-            <!--Optional:-->
-            <ns:temporaryStartDate>?</ns:temporaryStartDate>
-            <ns:undeliverable>?</ns:undeliverable>
-            <ns:userCreated>?</ns:userCreated>
-            <ns:addressLine1>?</ns:addressLine1>
-            <!--Optional:-->
-            <ns:addressLine2>?</ns:addressLine2>
-            <!--Optional:-->
-            <ns:addressLine3>?</ns:addressLine3>
-            <ns:city>?</ns:city>
-            <ns:country>?</ns:country>
-            <ns:postalCode>?</ns:postalCode>
-            <ns:stateProvince>?</ns:stateProvince>
-         </ns:primaryAddress>
-         <!--Optional:-->
-         <ns:primaryPhone>
-            <ns:customFieldMap>
-               <!--Zero or more repetitions:-->
-               <ns:entry>
-                  <ns:key>?</ns:key>
-                  <ns:value>
-                     <!--Optional:-->
-                     <ns:dataType>?</ns:dataType>
-                     <!--Optional:-->
-                     <ns:displayEndDate>?</ns:displayEndDate>
-                     <!--Optional:-->
-                     <ns:displayStartDate>?</ns:displayStartDate>
-                     <!--Optional:-->
-                     <ns:endDate>?</ns:endDate>
-                     <!--Optional:-->
-                     <ns:entityId>?</ns:entityId>
-                     <ns:entityType>?</ns:entityType>
-                     <ns:id>?</ns:id>
-                     <ns:name>?</ns:name>
-                     <ns:sequenceNumber>?</ns:sequenceNumber>
-                     <!--Optional:-->
-                     <ns:startDate>?</ns:startDate>
-                     <ns:value>?</ns:value>
-                  </ns:value>
-               </ns:entry>
-            </ns:customFieldMap>
-            <!--Optional:-->
-            <ns:activationStatus>?</ns:activationStatus>
-            <!--Optional:-->
-            <ns:comments>?</ns:comments>
-            <!--Optional:-->
-            <ns:effectiveDate>?</ns:effectiveDate>
-            <ns:inactive>?</ns:inactive>
-            <ns:constituentId>?</ns:constituentId>
-            <ns:primary>?</ns:primary>
-            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
-            <!--Optional:-->
-            <ns:seasonalEndDate>?</ns:seasonalEndDate>
-            <!--Optional:-->
-            <ns:seasonalStartDate>?</ns:seasonalStartDate>
-            <!--Optional:-->
-            <ns:temporaryEndDate>?</ns:temporaryEndDate>
-            <!--Optional:-->
-            <ns:temporaryStartDate>?</ns:temporaryStartDate>
-            <ns:undeliverable>?</ns:undeliverable>
-            <ns:userCreated>?</ns:userCreated>
-            <!--Optional:-->
-            <ns:number>?</ns:number>
-            <!--Optional:-->
-            <ns:provider>?</ns:provider>
-            <!--Optional:-->
-            <ns:sms>?</ns:sms>
-         </ns:primaryPhone>
-         <!--Optional:-->
-         <ns:primaryEmail>
-            <ns:customFieldMap>
-               <!--Zero or more repetitions:-->
-               <ns:entry>
-                  <ns:key>?</ns:key>
-                  <ns:value>
-                     <!--Optional:-->
-                     <ns:dataType>?</ns:dataType>
-                     <!--Optional:-->
-                     <ns:displayEndDate>?</ns:displayEndDate>
-                     <!--Optional:-->
-                     <ns:displayStartDate>?</ns:displayStartDate>
-                     <!--Optional:-->
-                     <ns:endDate>?</ns:endDate>
-                     <!--Optional:-->
-                     <ns:entityId>?</ns:entityId>
-                     <ns:entityType>?</ns:entityType>
-                     <ns:id>?</ns:id>
-                     <ns:name>?</ns:name>
-                     <ns:sequenceNumber>?</ns:sequenceNumber>
-                     <!--Optional:-->
-                     <ns:startDate>?</ns:startDate>
-                     <ns:value>?</ns:value>
-                  </ns:value>
-               </ns:entry>
-            </ns:customFieldMap>
-            <!--Optional:-->
-            <ns:activationStatus>?</ns:activationStatus>
-            <!--Optional:-->
-            <ns:comments>?</ns:comments>
-            <!--Optional:-->
-            <ns:effectiveDate>?</ns:effectiveDate>
-            <ns:inactive>?</ns:inactive>
-            <ns:constituentId>?</ns:constituentId>
-            <ns:primary>?</ns:primary>
-            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
-            <!--Optional:-->
-            <ns:seasonalEndDate>?</ns:seasonalEndDate>
-            <!--Optional:-->
-            <ns:seasonalStartDate>?</ns:seasonalStartDate>
-            <!--Optional:-->
-            <ns:temporaryEndDate>?</ns:temporaryEndDate>
-            <!--Optional:-->
-            <ns:temporaryStartDate>?</ns:temporaryStartDate>
-            <ns:undeliverable>?</ns:undeliverable>
-            <ns:userCreated>?</ns:userCreated>
-            <ns:emailAddress>?</ns:emailAddress>
-            <!--Optional:-->
-            <ns:emailDisplay>?</ns:emailDisplay>
-         </ns:primaryEmail>
+         <ns:firstName>Leo</ns:firstName>
+
+   
       </ns:FindConstituentsRequest>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/FindConstituentsRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetCommunicationHistory" bindingOperationName="GetCommunicationHistory" type="Request-Response" outputName="GetCommunicationHistoryResponse" inputName="GetCommunicationHistoryRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/FindConstituentsRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetCommunicationHistory" bindingOperationName="GetCommunicationHistory" type="Request-Response" outputName="GetCommunicationHistoryResponse" inputName="GetCommunicationHistoryRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:GetCommunicationHistoryRequest>
-         <ns:constituentId>?</ns:constituentId>
+         <ns:constituentId>1</ns:constituentId>
       </ns:GetCommunicationHistoryRequest>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/GetCommunicationHistoryRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetConstituentGift" bindingOperationName="GetConstituentGift" type="Request-Response" outputName="GetConstituentGiftResponse" inputName="GetConstituentGiftRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/GetCommunicationHistoryRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetConstituentGift" bindingOperationName="GetConstituentGift" type="Request-Response" outputName="GetConstituentGiftResponse" inputName="GetConstituentGiftRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:GetConstituentGiftRequest>
-         <ns:constituentId>?</ns:constituentId>
+         <ns:constituentId>1</ns:constituentId>
       </ns:GetConstituentGiftRequest>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/GetConstituentGiftRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetSegmentation" bindingOperationName="GetSegmentation" type="Request-Response" outputName="GetSegmentationResponse" inputName="GetSegmentationRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/GetConstituentGiftRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="GetSegmentation" bindingOperationName="GetSegmentation" type="Request-Response" outputName="GetSegmentationResponse" inputName="GetSegmentationRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:GetSegmentationRequest>
@@ -1780,171 +1618,27 @@
    <soapenv:Body>
       <ns:SearchConstituentsRequest>
          <!--Optional:-->
-         <ns:firstName>?</ns:firstName>
-         <!--Optional:-->
-         <ns:lastName>?</ns:lastName>
-         <!--Optional:-->
-         <ns:primaryAddress>
-            <ns:customFieldMap>
-               <!--Zero or more repetitions:-->
-               <ns:entry>
-                  <ns:key>?</ns:key>
-                  <ns:value>
-                     <!--Optional:-->
-                     <ns:dataType>?</ns:dataType>
-                     <!--Optional:-->
-                     <ns:displayEndDate>?</ns:displayEndDate>
-                     <!--Optional:-->
-                     <ns:displayStartDate>?</ns:displayStartDate>
-                     <!--Optional:-->
-                     <ns:endDate>?</ns:endDate>
-                     <!--Optional:-->
-                     <ns:entityId>?</ns:entityId>
-                     <ns:entityType>?</ns:entityType>
-                     <ns:id>?</ns:id>
-                     <ns:name>?</ns:name>
-                     <ns:sequenceNumber>?</ns:sequenceNumber>
-                     <!--Optional:-->
-                     <ns:startDate>?</ns:startDate>
-                     <ns:value>?</ns:value>
-                  </ns:value>
-               </ns:entry>
-            </ns:customFieldMap>
-            <!--Optional:-->
-            <ns:activationStatus>?</ns:activationStatus>
-            <!--Optional:-->
-            <ns:comments>?</ns:comments>
-            <!--Optional:-->
-            <ns:effectiveDate>?</ns:effectiveDate>
-            <ns:inactive>?</ns:inactive>
-            <ns:constituentId>?</ns:constituentId>
-            <ns:primary>?</ns:primary>
-            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
-            <!--Optional:-->
-            <ns:seasonalEndDate>?</ns:seasonalEndDate>
-            <!--Optional:-->
-            <ns:seasonalStartDate>?</ns:seasonalStartDate>
-            <!--Optional:-->
-            <ns:temporaryEndDate>?</ns:temporaryEndDate>
-            <!--Optional:-->
-            <ns:temporaryStartDate>?</ns:temporaryStartDate>
-            <ns:undeliverable>?</ns:undeliverable>
-            <ns:userCreated>?</ns:userCreated>
-            <ns:addressLine1>?</ns:addressLine1>
-            <!--Optional:-->
-            <ns:addressLine2>?</ns:addressLine2>
-            <!--Optional:-->
-            <ns:addressLine3>?</ns:addressLine3>
-            <ns:city>?</ns:city>
-            <ns:country>?</ns:country>
-            <ns:postalCode>?</ns:postalCode>
-            <ns:stateProvince>?</ns:stateProvince>
-         </ns:primaryAddress>
-         <!--Optional:-->
-         <ns:primaryPhone>
-            <ns:customFieldMap>
-               <!--Zero or more repetitions:-->
-               <ns:entry>
-                  <ns:key>?</ns:key>
-                  <ns:value>
-                     <!--Optional:-->
-                     <ns:dataType>?</ns:dataType>
-                     <!--Optional:-->
-                     <ns:displayEndDate>?</ns:displayEndDate>
-                     <!--Optional:-->
-                     <ns:displayStartDate>?</ns:displayStartDate>
-                     <!--Optional:-->
-                     <ns:endDate>?</ns:endDate>
-                     <!--Optional:-->
-                     <ns:entityId>?</ns:entityId>
-                     <ns:entityType>?</ns:entityType>
-                     <ns:id>?</ns:id>
-                     <ns:name>?</ns:name>
-                     <ns:sequenceNumber>?</ns:sequenceNumber>
-                     <!--Optional:-->
-                     <ns:startDate>?</ns:startDate>
-                     <ns:value>?</ns:value>
-                  </ns:value>
-               </ns:entry>
-            </ns:customFieldMap>
-            <!--Optional:-->
-            <ns:activationStatus>?</ns:activationStatus>
-            <!--Optional:-->
-            <ns:comments>?</ns:comments>
-            <!--Optional:-->
-            <ns:effectiveDate>?</ns:effectiveDate>
-            <ns:inactive>?</ns:inactive>
-            <ns:constituentId>?</ns:constituentId>
-            <ns:primary>?</ns:primary>
-            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
-            <!--Optional:-->
-            <ns:seasonalEndDate>?</ns:seasonalEndDate>
-            <!--Optional:-->
-            <ns:seasonalStartDate>?</ns:seasonalStartDate>
-            <!--Optional:-->
-            <ns:temporaryEndDate>?</ns:temporaryEndDate>
-            <!--Optional:-->
-            <ns:temporaryStartDate>?</ns:temporaryStartDate>
-            <ns:undeliverable>?</ns:undeliverable>
-            <ns:userCreated>?</ns:userCreated>
-            <!--Optional:-->
-            <ns:number>?</ns:number>
-            <!--Optional:-->
-            <ns:provider>?</ns:provider>
-            <!--Optional:-->
-            <ns:sms>?</ns:sms>
-         </ns:primaryPhone>
-         <!--Optional:-->
-         <ns:primaryEmail>
-            <ns:customFieldMap>
-               <!--Zero or more repetitions:-->
-               <ns:entry>
-                  <ns:key>?</ns:key>
-                  <ns:value>
-                     <!--Optional:-->
-                     <ns:dataType>?</ns:dataType>
-                     <!--Optional:-->
-                     <ns:displayEndDate>?</ns:displayEndDate>
-                     <!--Optional:-->
-                     <ns:displayStartDate>?</ns:displayStartDate>
-                     <!--Optional:-->
-                     <ns:endDate>?</ns:endDate>
-                     <!--Optional:-->
-                     <ns:entityId>?</ns:entityId>
-                     <ns:entityType>?</ns:entityType>
-                     <ns:id>?</ns:id>
-                     <ns:name>?</ns:name>
-                     <ns:sequenceNumber>?</ns:sequenceNumber>
-                     <!--Optional:-->
-                     <ns:startDate>?</ns:startDate>
-                     <ns:value>?</ns:value>
-                  </ns:value>
-               </ns:entry>
-            </ns:customFieldMap>
-            <!--Optional:-->
-            <ns:activationStatus>?</ns:activationStatus>
-            <!--Optional:-->
-            <ns:comments>?</ns:comments>
-            <!--Optional:-->
-            <ns:effectiveDate>?</ns:effectiveDate>
-            <ns:inactive>?</ns:inactive>
-            <ns:constituentId>?</ns:constituentId>
-            <ns:primary>?</ns:primary>
-            <ns:receiveCorrespondence>?</ns:receiveCorrespondence>
-            <!--Optional:-->
-            <ns:seasonalEndDate>?</ns:seasonalEndDate>
-            <!--Optional:-->
-            <ns:seasonalStartDate>?</ns:seasonalStartDate>
-            <!--Optional:-->
-            <ns:temporaryEndDate>?</ns:temporaryEndDate>
-            <!--Optional:-->
-            <ns:temporaryStartDate>?</ns:temporaryStartDate>
-            <ns:undeliverable>?</ns:undeliverable>
-            <ns:userCreated>?</ns:userCreated>
-            <ns:emailAddress>?</ns:emailAddress>
-            <!--Optional:-->
-            <ns:emailDisplay>?</ns:emailDisplay>
-         </ns:primaryEmail>
+         <ns:firstName>Leo</ns:firstName>
+   
       </ns:SearchConstituentsRequest>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/SearchConstituentsRequest"/></con:call></con:operation></con:interface><con:endpointStrategy xsi:type="con:DefaultEndpointStrategy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:endpoint mode="COMPLEMENT" username="nolan@company1" password="ryan" wssType="PasswordText">http://localhost:8080/orangeleap/services/1.0/</con:endpoint></con:endpointStrategy><con:properties/><con:wssContainer><con:outgoing><con:name>orangeleap</con:name><con:username>nolan@company1</con:username></con:outgoing></con:wssContainer></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/SearchConstituentsRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite name="TestSuite 1"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase 1" searchProperties="true" id="a4cd41d4-ffe6-43e2-865d-d6b4f1e07ddc"><con:settings/><con:testStep type="request" name="FindConstituents - Request 1"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>OrangeLeapBinding</con:interface><con:operation>FindConstituents</con:operation><con:request name="FindConstituents - Request 1" outgoingWss="" incomingWss="" wssPasswordType=""><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:FindConstituentsRequest>
+         <!--Optional:-->
+         <ns:firstName>Leo</ns:firstName>
+
+   
+      </ns:FindConstituentsRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response"/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/FindConstituentsRequest"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" name="SearchConstituents - Request 1"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>OrangeLeapBinding</con:interface><con:operation>SearchConstituents</con:operation><con:request name="SearchConstituents - Request 1" outgoingWss="" incomingWss="" wssPasswordType=""><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/orangeleap/services/1.0/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.orangeleap.com/orangeleap/services/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:SearchConstituentsRequest>
+         <!--Optional:-->
+         <ns:firstName>Leo</ns:firstName>
+   
+      </ns:SearchConstituentsRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response"/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.orangeleap.com/orangeleap/services/1.0/OrangeLeap/SearchConstituentsRequest"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:endpointStrategy xsi:type="con:DefaultEndpointStrategy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:endpoint mode="COMPLEMENT" username="nolan@company1" password="ryan" wssType="PasswordText">http://localhost:8080/orangeleap/services/1.0/</con:endpoint></con:endpointStrategy><con:properties/><con:wssContainer><con:outgoing><con:name>orangeleap</con:name><con:username>nolan@company1</con:username></con:outgoing></con:wssContainer></con:soapui-project>

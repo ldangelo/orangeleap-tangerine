@@ -54,6 +54,30 @@
 		</property>
 	</bean>
 
+	<bean id="jasperHost"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject"><ref local="sysProps" /></property>
+		<property name="targetMethod"><value>setProperty</value></property>
+		<property name="arguments">
+			<list>
+				<value>jasper.host</value>
+				<value>${jasper.host}</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="jasperPort"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject"><ref local="sysProps" /></property>
+		<property name="targetMethod"><value>setProperty</value></property>
+		<property name="arguments">
+			<list>
+				<value>jasper.port</value>
+				<value>${jasper.port}</value>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="contextPrefix"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject"><ref local="sysProps" /></property>

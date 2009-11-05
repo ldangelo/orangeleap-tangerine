@@ -386,7 +386,15 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:element name="SaveOrUpdateConstituentRequest">
+	<xs:element name="GetConstituentByIdRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:long" minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetConstituentByIdResponse">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="constituent" type="tns:constituent" />

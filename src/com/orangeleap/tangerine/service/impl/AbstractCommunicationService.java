@@ -29,7 +29,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.joda.time.DateMidnight;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,8 +39,10 @@ import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity
 import com.orangeleap.tangerine.domain.util.SeasonalDateSpan;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.CommunicationService;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.InactivateService;
 import com.orangeleap.tangerine.type.ActivationType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public abstract class AbstractCommunicationService<T extends AbstractCommunicationEntity> extends AbstractTangerineService implements CommunicationService<T>, InactivateService {
 
@@ -50,6 +51,9 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     
     @Resource(name = "auditService")
     private AuditService auditService;
+
+    @Resource(name = "constituentService")
+    private ConstituentService constituentService;
 
     protected abstract CommunicationDao<T> getDao();
     protected abstract T createEntity(Long constituentId);
@@ -93,6 +97,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         else {
             auditService.auditObject(entity, entity.getConstituentId());
         }
+        constituentService.updateFullTextSearchIndex(entity.getConstituentId());
+
         return entity;
     }
     

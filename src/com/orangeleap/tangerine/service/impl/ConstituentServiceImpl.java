@@ -546,6 +546,25 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         this.context = applicationContext;
 
     }
+    
+    private final static String UDPATE_FULL_TEXT = "updateFullText";
+    
+    @Override
+    public void updateFullTextSearchIndex(Long constituentId) {
+    	boolean updateFullText = RulesStack.push(UDPATE_FULL_TEXT);
+    	try {
+	    	if (!updateFullText) {
+		    	Constituent constituent = readConstituentById(constituentId);
+		    	try {
+		    		maintainConstituent(constituent);
+		    	} catch (Exception e) {
+		    		logger.error(e);
+		    	}
+	    	}
+    	} finally {
+    		RulesStack.pop(UDPATE_FULL_TEXT);
+    	}
+    }
 
     // Used by nightly rules processing
     @Override

@@ -18,10 +18,21 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
+
 import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.customization.PicklistItem;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
@@ -30,34 +41,9 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RulesService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.communication.MailService;
-import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.SortInfo;
-
-import org.apache.commons.logging.Log;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import javax.annotation.Resource;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
 
 @Service("rulesService")
 public class RulesServiceImpl extends AbstractTangerineService implements RulesService, ApplicationContextAware {
@@ -119,7 +105,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 						
 						// Force a fulltext reindex of constituent after rules processing if this site option is set.
 						if (reindexFullText) {
-							ps.maintainConstituent(ps.readConstituentById(p.getId()));
+							ps.updateFullTextSearchIndex(p.getId());
 						}
 						
 					}catch(Throwable t) {

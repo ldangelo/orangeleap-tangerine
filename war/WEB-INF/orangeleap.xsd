@@ -509,7 +509,7 @@
 	<xs:element name="GetSegmentationResponse">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="constituent" type="tns:constituent"
+				<xs:element name="entityId" type="xs:long"
 					minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>

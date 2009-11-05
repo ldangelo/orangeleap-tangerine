@@ -27,6 +27,8 @@ import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.ws.schema.*;
 import com.orangeleap.tangerine.ws.util.ObjectConverter;
+import com.orangeleap.theguru.client.GetSegmentationByNameRequest;
+import com.orangeleap.theguru.client.GetSegmentationByNameResponse;
 import com.orangeleap.theguru.client.GetSegmentationListResponse;
 import com.orangeleap.theguru.client.PWCallbackHandler;
 import com.orangeleap.theguru.client.Segmentation;
@@ -283,47 +285,28 @@ public class OrangeLeapWS {
     }
 
 
-    private GetSegmentationResponse getLapsedDonors() {
-        List<com.orangeleap.tangerine.domain.Constituent> constituents = cs.readAllConstituentsBySite();
-        GetSegmentationResponse response = new GetSegmentationResponse();
-        ObjectConverter converter = new ObjectConverter();
-
-        for (com.orangeleap.tangerine.domain.Constituent c : constituents) {
-            if (c.isLapsedDonor()) {
-                Constituent sc = new Constituent();
-
-                converter.ConvertToJAXB(c, sc);
-                response.getConstituent().add(sc);
-            }
-        }
-        return response;
-    }
-
-    private GetSegmentationResponse getMajorDonors() {
-        List<com.orangeleap.tangerine.domain.Constituent> constituents = cs.readAllConstituentsBySite();
-        GetSegmentationResponse response = new GetSegmentationResponse();
-        ObjectConverter converter = new ObjectConverter();
-
-        for (com.orangeleap.tangerine.domain.Constituent c : constituents) {
-            if (c.isMajorDonor()) {
-                Constituent sc = new Constituent();
-
-                converter.ConvertToJAXB(c, sc);
-                response.getConstituent().add(sc);
-            }
-        }
-        return response;
-    }
 
     @PayloadRoot(localPart = "GetSegmentationRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     public GetSegmentationResponse getSegmentation(GetSegmentationRequest req) {
+    	GetSegmentationResponse response = new GetSegmentationResponse();
+    	
+        WSClient wsClient = new WSClient();
+		Theguru guruPort = wsClient.getTheGuru();
+ 
+		com.orangeleap.theguru.client.ObjectFactory of = new com.orangeleap.theguru.client.ObjectFactory();
+		GetSegmentationByNameRequest getSegmentationListRequest = of.createGetSegmentationByNameRequest();
+		getSegmentationListRequest.setName(req.getSegmentation());
+        GetSegmentationByNameResponse thegururesponse = guruPort.getSegmentationByName(getSegmentationListRequest);
+        
+        Iterator<Long> it = thegururesponse.getConstituentid().iterator();
+        while (it.hasNext()) {
+        	Long id = it.next();
 
-        if (req.getSegmentation().equals("Lapsed Donor"))
-            return getLapsedDonors();
-        if (req.getSegmentation().equals("Major Donor"))
-            return getMajorDonors();
+        	response.getEntityId().add(id);
+        }
+    	
 
-        return null;
+        return response;
     }
 
     @PayloadRoot(localPart = "GetSegmentationListRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")

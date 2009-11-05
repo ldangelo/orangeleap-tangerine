@@ -30,51 +30,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetSegmentationByIdResponse }
-     * 
-     */
-    public GetSegmentationByIdResponse createGetSegmentationByIdResponse() {
-        return new GetSegmentationByIdResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetSegmentationByNameResponse }
-     * 
-     */
-    public GetSegmentationByNameResponse createGetSegmentationByNameResponse() {
-        return new GetSegmentationByNameResponse();
-    }
-
-    /**
-     * Create an instance of {@link Segmentation }
-     * 
-     */
-    public Segmentation createSegmentation() {
-        return new Segmentation();
-    }
-
-    /**
-     * Create an instance of {@link GetSegmentationByIdRequest }
-     * 
-     */
-    public GetSegmentationByIdRequest createGetSegmentationByIdRequest() {
-        return new GetSegmentationByIdRequest();
-    }
-
-    /**
      * Create an instance of {@link ExecuteSegmentationByNameRequest }
      * 
      */
     public ExecuteSegmentationByNameRequest createExecuteSegmentationByNameRequest() {
         return new ExecuteSegmentationByNameRequest();
-    }
-
-    /**
-     * Create an instance of {@link ExecuteSegmentationByIdRequest }
-     * 
-     */
-    public ExecuteSegmentationByIdRequest createExecuteSegmentationByIdRequest() {
-        return new ExecuteSegmentationByIdRequest();
     }
 
     /**
@@ -86,19 +46,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetSegmentationListRequest }
-     * 
-     */
-    public GetSegmentationListRequest createGetSegmentationListRequest() {
-        return new GetSegmentationListRequest();
-    }
-
-    /**
      * Create an instance of {@link GetSegmentationListByTypeResponse }
      * 
      */
     public GetSegmentationListByTypeResponse createGetSegmentationListByTypeResponse() {
         return new GetSegmentationListByTypeResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetSegmentationByIdResponse }
+     * 
+     */
+    public GetSegmentationByIdResponse createGetSegmentationByIdResponse() {
+        return new GetSegmentationByIdResponse();
+    }
+
+    /**
+     * Create an instance of {@link Segmentation }
+     * 
+     */
+    public Segmentation createSegmentation() {
+        return new Segmentation();
+    }
+
+    /**
+     * Create an instance of {@link GetSegmentationListRequest }
+     * 
+     */
+    public GetSegmentationListRequest createGetSegmentationListRequest() {
+        return new GetSegmentationListRequest();
     }
 
     /**
@@ -110,11 +86,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ExecuteSegmentationByIdResponse }
+     * Create an instance of {@link GetSegmentationByNameResponse }
      * 
      */
-    public ExecuteSegmentationByIdResponse createExecuteSegmentationByIdResponse() {
-        return new ExecuteSegmentationByIdResponse();
+    public GetSegmentationByNameResponse createGetSegmentationByNameResponse() {
+        return new GetSegmentationByNameResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetSegmentationByNameRequest }
+     * 
+     */
+    public GetSegmentationByNameRequest createGetSegmentationByNameRequest() {
+        return new GetSegmentationByNameRequest();
+    }
+
+    /**
+     * Create an instance of {@link ExecuteSegmentationByIdRequest }
+     * 
+     */
+    public ExecuteSegmentationByIdRequest createExecuteSegmentationByIdRequest() {
+        return new ExecuteSegmentationByIdRequest();
+    }
+
+    /**
+     * Create an instance of {@link GetSegmentationByIdRequest }
+     * 
+     */
+    public GetSegmentationByIdRequest createGetSegmentationByIdRequest() {
+        return new GetSegmentationByIdRequest();
     }
 
     /**
@@ -126,11 +126,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetSegmentationByNameRequest }
+     * Create an instance of {@link ExecuteSegmentationByIdResponse }
      * 
      */
-    public GetSegmentationByNameRequest createGetSegmentationByNameRequest() {
-        return new GetSegmentationByNameRequest();
+    public ExecuteSegmentationByIdResponse createExecuteSegmentationByIdResponse() {
+        return new ExecuteSegmentationByIdResponse();
     }
 
 }

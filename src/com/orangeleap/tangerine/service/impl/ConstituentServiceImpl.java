@@ -30,6 +30,7 @@ import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.integration.NewConstituent;
 import com.orangeleap.tangerine.service.AddressService;
@@ -134,8 +135,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     private CommunicationHistoryService communicationHistoryService;
 
     private ApplicationContext context;
-
-
+    
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ConstituentValidationException.class, BindException.class})
     public Constituent maintainConstituent(Constituent constituent) throws ConstituentValidationException, BindException {
@@ -145,10 +145,11 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (constituent.getSite() == null || !tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName())) {
             throw new ConstituentValidationException();
         }
+        
+        setOptInPrefs(constituent);
 
         if (constituent.getFieldLabelMap() != null && !constituent.isSuppressValidation()) {
 
-            setOptInPrefs(constituent);
             setPicklistDefaultsForRequiredFields(constituent, PageType.constituent, tangerineUserHelper.lookupUserRoles());
 
             BindingResult br = new BeanPropertyBindingResult(constituent, "constituent");
@@ -192,11 +193,14 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituent;
     }
 
+
     private void setOptInPrefs(Constituent constituent) {
         String communicationPreferences = constituent.getCustomFieldValue("communicationPreferences");
         String communicationOptInPreferences = constituent.getCustomFieldValue("communicationOptInPreferences");
         if ("Opt In".equals(communicationPreferences) && StringUtils.trimToNull(communicationOptInPreferences) == null) {
-            constituent.setCustomFieldValue("communicationOptInPreferences", "Unknown");
+    		Picklist picklist = picklistItemService.getPicklist("customFieldMap[communicationOptInPreferences]");
+    		String defaultValue = (picklist == null || picklist.getActivePicklistItems().size() == 0) ? "Unknown" : picklist.getActivePicklistItems().get(0).getItemName();
+            constituent.setCustomFieldValue("communicationOptInPreferences", defaultValue);
         }
     }
 

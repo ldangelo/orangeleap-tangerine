@@ -2,8 +2,9 @@
 <page:applyDecorator name="form">
 	<spring:message code='enterGift' var="titleText" scope="request" />
 	<spring:message code='submit' var="submitText" />
+    <spring:message code='adjust' var="adjustText" />
 	<c:if test="${requestScope.allowReprocess}">
-		<spring:message code='reprocess' var="clickText"  />
+		<spring:message code='reprocess' var="clickText" />
 	</c:if>
 
 	<c:set var="headerText" value="${titleText}" scope="request"/>
@@ -68,6 +69,10 @@
                                        { text: '<c:out value='${clickText}'/>', handler: function() { $("div.mainForm form").eq(0).append("<input type='hidden' name='doReprocess' id='doReprocess' value='true'/>").submit(); } },
                                     </c:if>
                                     { text: '<spring:message code='enterNew'/>', handler: function() { OrangeLeap.gotoUrl("gift.htm?constituentId=${requestScope.constituent.id}"); } }
+                                    <c:if test="${requestScope.showAdjustGiftButton}">
+                                        ,
+                                        { text: '<c:out value='${adjustText}'/>', handler: function() { OrangeLeap.gotoUrl("adjustedGift.htm?giftId=${requestScope.form.domainObject.id}&constituentId=${requestScope.constituent.id}"); } }
+                                    </c:if>
                                 ]
                             },
                             split: false,

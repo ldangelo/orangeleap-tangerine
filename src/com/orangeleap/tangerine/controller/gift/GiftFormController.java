@@ -26,14 +26,17 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.type.PaymentType;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +55,9 @@ public class GiftFormController extends AbstractMutableGridFormController {
     @Resource(name = "recurringGiftService")
     protected RecurringGiftService recurringGiftService;
 
+    @Resource(name = "adjustedGiftService")
+    private AdjustedGiftService adjustedGiftService;
+
 	@Resource(name = "picklistItemService")
 	protected PicklistItemService picklistItemService;
 
@@ -64,6 +70,9 @@ public class GiftFormController extends AbstractMutableGridFormController {
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         Gift gift = giftService.readGiftByIdCreateIfNull(getConstituent(request), request.getParameter(StringConstants.GIFT_ID));
+        if ( ! gift.isNew()) {
+            gift.setAdjustedGifts(adjustedGiftService.readAdjustedGiftsForOriginalGiftId(gift.getId()));
+        }
         clearPaymentSourceFields(gift);
         clearAddressFields(gift);
         clearPhoneFields(gift);
@@ -117,6 +126,12 @@ public class GiftFormController extends AbstractMutableGridFormController {
 	    Gift gift = (Gift) form.getDomainObject();
         if (canReprocessGift(gift)) {
         	refMap.put("allowReprocess", Boolean.TRUE);
+        }
+        if ( ! gift.isNew()) {
+            boolean allowAdjustment = Gift.STATUS_PAID.equals(gift.getGiftStatus()) && ! adjustedGiftService.isAdjustedAmountEqualGiftAmount(gift) &&
+                    (PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&
+                            ! StringUtils.hasText(gift.getPaymentStatus());
+            refMap.put(StringConstants.SHOW_ADJUST_GIFT_BUTTON, allowAdjustment);
         }
         return refMap;
     }

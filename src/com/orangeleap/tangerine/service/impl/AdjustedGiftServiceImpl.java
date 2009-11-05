@@ -215,7 +215,7 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
 
         BigDecimal originalAmount = gift.getAmount();
         BigDecimal adjustedAmount = findCurrentTotalAdjustedAmount(gift.getAdjustedGifts());
-        return originalAmount.add(adjustedAmount).floatValue() == 0;
+        return originalAmount != null && adjustedAmount != null && originalAmount.add(adjustedAmount).floatValue() == 0;
     }
 
     @Override

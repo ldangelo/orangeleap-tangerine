@@ -130,6 +130,7 @@ public final class StringConstants {
     public static final String ENTITY_NAME = "entityName";
     public static final String USD = "USD";
     public static final String HIDE_ADJUST_GIFT_BUTTON = "hideAdjustGiftButton";
+    public static final String SHOW_ADJUST_GIFT_BUTTON = "showAdjustGiftButton";
     public static final String ERROR_CLASS = "errorClass";
     
     public static final String CAS_COOKIE_NAME = "CASTGC";
@@ -143,7 +144,6 @@ public final class StringConstants {
     public static final String LAST_NAME = "lastName";
     public static final String ORGANIZATION_NAME = "organizationName";
     
-    public static final String FIELDS = "fields";
     public static final String BLANK_CUSTOM_FIELD_VALUE = "<blank>";
     public final static String FLD_VAL = "fldVal-";
     public final static String START_DT = "startDt-";
@@ -180,8 +180,26 @@ public final class StringConstants {
     public static final String ROWS = "rows";
     public static final String TOTAL_ROWS = "totalRows";
     public static final String SUCCESS = "success";
+    public static final String HEADER = "header";
 
     public static final String CONSTITUENT_SEGMENTATION = "Constituent Segmentation";
     public static final String GIFT_SEGMENTATION = "Gift Segmentation";
     public static final String GIFT_DISTRIBUTION_SEGMENTATION = "Gift Distribution Segmentation";
+
+    public static final String META_DATA = "metaData";
+    public static final String FIELDS = "fields";
+    public static final String ID_PROPERTY = "idProperty";
+    public static final String ROOT = "root";
+    public static final String TOTAL_PROPERTY = "totalProperty";
+    public static final String SUCCESS_PROPERTY = "successProperty";
+    public static final String SORT_INFO = "sortInfo";
+    public static final String FIELD = "field";
+    public static final String START = "start";
+    public static final String LIMIT = "limit";
+    public static final String MAPPING = "mapping";
+    public static final String TYPE = "type";
+    public static final String DATE = "date";
+    public static final String DATE_FORMAT = "dateFormat";
+    public static final String DIRECTION = "direction";
+
 }

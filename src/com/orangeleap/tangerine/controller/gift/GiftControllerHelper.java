@@ -20,8 +20,8 @@ package com.orangeleap.tangerine.controller.gift;
 
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.type.PaymentType;
+import com.orangeleap.tangerine.util.StringConstants;
 
 import javax.annotation.Resource;
 

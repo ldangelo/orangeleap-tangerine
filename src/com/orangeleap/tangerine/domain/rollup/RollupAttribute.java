@@ -14,7 +14,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
 
     private Long id;
     private String attributeDesc;
-    private boolean sumOrCount;
+    private String groupByType;
     private String tableName;
     private String valueColumnName;
     private boolean isValueCustomField;
@@ -45,12 +45,12 @@ public class RollupAttribute implements GeneratedId, Serializable {
     }
 
     
-    public boolean getSumOrCount() {
-        return sumOrCount;
+    public String getGroupByType() {
+        return groupByType;
     }
 
-    public void setSumOrCount(boolean sumOrCount) {
-        this.sumOrCount = sumOrCount;
+    public void setGroupByType(String groupByType) {
+        this.groupByType = groupByType;
     }
 
     
@@ -136,7 +136,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         eb
         .append(id, a.getId())
         .append(attributeDesc, a.getAttributeDesc())
-        .append(sumOrCount, a.getSumOrCount())
+        .append(groupByType, a.getGroupByType())
         .append(tableName, a.getTableName())
         .append(valueColumnName, a.getValueColumnName())
         .append(isValueCustomField, a.getIsValueCustomField())
@@ -155,7 +155,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         hcb
         .append(""+id)
         .append(""+attributeDesc)
-        .append(""+sumOrCount)
+        .append(""+groupByType)
         .append(""+tableName)
         .append(""+valueColumnName)
         .append(""+isValueCustomField)
@@ -174,7 +174,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append(super.toString())
         .append("id", ""+id)
         .append("attributeDesc", ""+attributeDesc)
-        .append("sumOrCount", ""+sumOrCount)
+        .append("groupByType", ""+groupByType)
         .append("tableName", ""+tableName)
         .append("valueColumnName", ""+valueColumnName)
         .append("isValueCustomField", ""+isValueCustomField)

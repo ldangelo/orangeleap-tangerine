@@ -5,7 +5,7 @@
     <resultMap id="ROLLUP_ATTRIBUTE_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupAttribute">
         <result property="id" column="ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID" />
         <result property="attributeDesc" column="ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC" />
-        <result property="sumOrCount" column="ROLLUP_ATTRIBUTE_SUM_OR_COUNT" />
+        <result property="groupByType" column="ROLLUP_ATTRIBUTE_GROUP_BY_TYPE" />
         <result property="tableName" column="ROLLUP_ATTRIBUTE_TABLE_NAME" />
         <result property="valueColumnName" column="ROLLUP_ATTRIBUTE_VALUE_COLUMN_NAME" />
         <result property="isValueCustomField" column="ROLLUP_ATTRIBUTE_IS_VALUE_CUSTOM_FIELD" />
@@ -19,7 +19,7 @@
     <sql id="ROLLUP_ATTRIBUTE_COLS_FRAGMENT">
         rollup_attribute.ROLLUP_ATTRIBUTE_ID as ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID,
         rollup_attribute.ATTRIBUTE_DESC as ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC,
-        rollup_attribute.SUM_OR_COUNT as ROLLUP_ATTRIBUTE_SUM_OR_COUNT,
+        rollup_attribute.GROUP_BY_TYPE as ROLLUP_ATTRIBUTE_GROUP_BY_TYPE,
         rollup_attribute.TABLE_NAME as ROLLUP_ATTRIBUTE_TABLE_NAME,
         rollup_attribute.VALUE_COLUMN_NAME as ROLLUP_ATTRIBUTE_VALUE_COLUMN_NAME,
         rollup_attribute.IS_VALUE_CUSTOM_FIELD as ROLLUP_ATTRIBUTE_IS_VALUE_CUSTOM_FIELD,
@@ -50,7 +50,7 @@
         insert into ROLLUP_ATTRIBUTE (
         	ROLLUP_ATTRIBUTE_ID,
         	ATTRIBUTE_DESC,
-        	SUM_OR_COUNT,
+        	GROUP_BY_TYPE,
         	TABLE_NAME,
         	VALUE_COLUMN_NAME,
         	IS_VALUE_CUSTOM_FIELD,
@@ -62,7 +62,7 @@
         values (
         	#id# ,
         	#attributeDesc# ,
-        	#sumOrCount# ,
+        	#groupByType# ,
         	#tableName# ,
         	#valueColumnName# ,
         	#isValueCustomField# ,
@@ -81,7 +81,7 @@
         SET 
         	ROLLUP_ATTRIBUTE_ID = #id# ,
         	ATTRIBUTE_DESC = #attributeDesc# ,
-        	SUM_OR_COUNT = #sumOrCount# ,
+        	GROUP_BY_TYPE = #groupByType# ,
         	TABLE_NAME = #tableName# ,
         	VALUE_COLUMN_NAME = #valueColumnName# ,
         	IS_VALUE_CUSTOM_FIELD = #isValueCustomField# ,

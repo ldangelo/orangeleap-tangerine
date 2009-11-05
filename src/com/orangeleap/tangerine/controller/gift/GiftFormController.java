@@ -159,7 +159,7 @@ public class GiftFormController extends AbstractMutableGridFormController {
         		gift = giftService.maintainGift(gift);
         	}
             else {
-                gift = giftService.editGift(gift);
+                gift = giftService.editGift(gift, true);
             }
         }
         catch (BindException domainErrors) {

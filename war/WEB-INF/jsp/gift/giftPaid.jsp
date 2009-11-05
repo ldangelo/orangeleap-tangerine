@@ -37,7 +37,7 @@
 			<page:param name="scripts">
 				<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
 				<script type="text/javascript">PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
-				<script type="text/javascript" src="js/gift/distributionReadOnly.js"></script>
+                <script type="text/javascript" src="js/gift/distribution.js"></script>
                 <script type="text/javascript">
                     $(function() {
                         $("#cancelButton").click(function() {

@@ -28,14 +28,16 @@ import org.springframework.validation.BindException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 public interface GiftService {
 
     public Gift maintainGift(Gift gift) throws BindException;
 
     public Gift editGift(Gift gift) throws BindException;
+
+    Gift editGift(Gift gift, boolean doValidateDistributionLines) throws BindException;
 
     public Gift readGiftById(Long giftId);
 

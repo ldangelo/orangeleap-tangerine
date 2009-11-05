@@ -20,7 +20,7 @@
         <property name="giftControllerHelper" ref="giftControllerHelper"/>
     </bean>
 
-	<bean id="giftPaidController" class="com.orangeleap.tangerine.controller.gift.GiftPaidController" parent="tangerineConstituentAttributesFormController">
+	<bean id="giftPaidController" class="com.orangeleap.tangerine.controller.gift.GiftPaidController" parent="abstractDistributionLineFormController">
 	    <property name="formView" value="gift/giftPaid"/>
 	    <property name="successView" value="redirect:/giftPaid.htm"/>
         <property name="bindAddress" value="true"/>

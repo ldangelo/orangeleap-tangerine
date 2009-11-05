@@ -195,13 +195,20 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift editGift(Gift gift) throws BindException {
+        return editGift(gift, false);
+    }
+
+    // Used for update only.
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Gift editGift(Gift gift, boolean doValidateDistributionLines) throws BindException {
         boolean reentrant = RulesStack.push(EDIT_METHOD);
         try {
             if (logger.isTraceEnabled()) {
                 logger.trace("editGift: giftId = " + gift.getId());
             }
 
-			validateGift(gift, false);
+			validateGift(gift, doValidateDistributionLines);
 
             gift = saveAuditGift(gift);
 
@@ -215,6 +222,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             RulesStack.pop(EDIT_METHOD);
         }
     }
+
 
     private final static String REPROCESS_METHOD = "GiftServiceImpl.reprocessGift";
 

@@ -1,13 +1,12 @@
 package com.orangeleap.tangerine.controller.gift;
 
+import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.controller.TangerineForm;
-import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class GiftPaidController extends TangerineConstituentAttributesFormController {
+public class GiftPaidController extends AbstractMutableGridFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -80,7 +79,7 @@ public class GiftPaidController extends TangerineConstituentAttributesFormContro
 
         ModelAndView mav;
 	    try {
-            gift = giftService.editGift(gift);
+            gift = giftService.editGift(gift, true);
             if (giftControllerHelper.showGiftPostedView(gift)) {
                 String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPostedUrl(), gift, getConstituentId(request));
                 mav = new ModelAndView(super.appendSaved(redirectUrl));

@@ -636,7 +636,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             resolvedType = StringConstants.GIFT_SEGMENTATION;
         }
         if (resolvedType != null) {
-            req.setType(batchType);
+            req.setType(resolvedType);
             GetSegmentationListByTypeResponse resp = theGuru.getSegmentationListByType(req);
             if (resp != null) {
                 List<com.orangeleap.theguru.client.Segmentation> wsSegmentations = resp.getSegmentation();

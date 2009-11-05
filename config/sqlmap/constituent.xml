@@ -162,6 +162,9 @@
             $sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
             limit $offset$,$limit$
         </isNotNull>
+        <isNull property="sortColumn">
+        	limit 200
+        </isNull>
     </select>
 
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Constituent">

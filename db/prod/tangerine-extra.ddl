@@ -2,7 +2,7 @@
 SET foreign_key_checks = 0;
 
 # Gift Rollup tables (FKs omitted)
-# SERIES_TYPE = YEAR, MONTH, WEEK, or DAY
+# SERIES_TYPE = ALLTIME, YEAR, MONTH, WEEK, or DAY
 
 DROP TABLE IF EXISTS `ROLLUP_SERIES`;
 CREATE TABLE `ROLLUP_SERIES` (

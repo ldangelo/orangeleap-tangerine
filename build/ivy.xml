@@ -35,7 +35,7 @@
     
     
     	<!-- Orange Leap -->
-        <dependency org="orangeleap" name="orangeleap-common-security" transitive="false" rev="1.1" >
+        <dependency org="orangeleap" name="orangeleap-common-security" transitive="false" rev="1.2" >
             <artifact name="orangeleap-common-security" type="jar"/>
         </dependency>
     

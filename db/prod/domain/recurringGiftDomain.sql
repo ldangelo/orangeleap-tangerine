@@ -54,6 +54,8 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('recurringGift.paymentSource.id', 'recurringGift', 'paymentSource', 'Payment Profile', 'recurringGiftPayment', 'PAYMENT_SOURCE_PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[additionalInfo]', 'recurringGift', 'customFieldMap[additionalInfo]', 'Additional Info', 'recurringGiftPayment', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[additionalInfoReadOnly]', 'recurringGift', 'customFieldMap[additionalInfo]', 'Additional Info', 'recurringGiftPayment', 'READ_ONLY_TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('recurringGift.address.id', 'recurringGift', 'address', 'Billing Address', 'address', 'ADDRESS_PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('recurringGift.address.customFieldMap[addressType]', 'recurringGift', 'address', 'Address Type', 'address,newAddress', 'MULTI_PICKLIST');

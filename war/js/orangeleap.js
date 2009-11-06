@@ -55,7 +55,10 @@ $(document).ready(function() {
 		waitImage: false,
 		fx: {
         	open:'fadeIn'
-		}
+		},
+        ajaxSettings: {
+            type: 'POST'
+        }
 	});
 	
 	$("span.secondary:has('a.active')").each(function(){

@@ -130,8 +130,9 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
         if (hasViewPage(customFieldRequest.getEntityType())) {
         	
+        	boolean isWritableViewPage = customFieldRequest.getEntityType().equals("communicationHistory");
             PageType viewPage = PageType.valueOf(sPageType + "View");
-            addSectionFieldsAndValidations(viewPage, customFieldRequest, readOnlyFieldDefinition, site);  // make readonly on view screen
+            addSectionFieldsAndValidations(viewPage, customFieldRequest, isWritableViewPage?fieldDefinition:readOnlyFieldDefinition, site);  
             
         }
         

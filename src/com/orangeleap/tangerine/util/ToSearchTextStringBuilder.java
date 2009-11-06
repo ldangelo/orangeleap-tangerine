@@ -20,7 +20,7 @@ public class ToSearchTextStringBuilder {
 		for (Method getter : methods) {
 			if ((getter.getModifiers() & Modifier.PUBLIC) > 0) {
 				String name = getter.getName();
-				if (name.startsWith("get") && !name.equals("getId")) {
+				if (name.startsWith("get") && !name.equals("getId") && !name.equals("getConstituentId")) {
 					// Stop at AbstractEntity
 					if (!AbstractEntity.class.isAssignableFrom(getter.getDeclaringClass())) continue;
 					for (Method setter: methods) {

@@ -18,17 +18,17 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import java.lang.reflect.Method;
-
-import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
 import org.apache.commons.validator.GenericValidator;
+
+import java.lang.reflect.Method;
 
 public class ExtendedValidationSupport {
 	
     protected final Log logger = OLLogger.getLog(getClass());
 
-	protected static Object validator = new GenericValidator();
+	protected final static GenericValidator validator = new GenericValidator();
 
 	/* 
 	 * Add ability to use for example in place of regex:  'extensions:isEmail'
@@ -38,19 +38,25 @@ public class ExtendedValidationSupport {
 	 * @param expression - isCreditCard/isEmail/isUrl
 	 */
 	public boolean validate(String value, String expression) {
-    	String methodname = expression;
-    	Method[] methods = validator.getClass().getDeclaredMethods();
-    	for (Method method: methods) {
-    		if (method.getName().equals(methodname)) {
-    			try {
-    			   return ((Boolean)method.invoke(validator, new Object[]{value})).booleanValue();
-    			} catch (Exception e) {
-    			   logger.error(e.getCause());
-    			   return false;
-    			}
-    		}
-    	}
-		return false;
+        boolean isValid = false;
+        if ("isDate".equals(expression)) {
+            isValid = GenericValidator.isDate(value, "EEE MMM dd HH:mm:ss z yyyy", false); // Thu Nov 06 00:00:00 CST 2009
+        }
+        else {
+            Method[] methods = validator.getClass().getDeclaredMethods();
+            for (Method method: methods) {
+                if (method.getName().equals(expression)) {
+                    try {
+                       isValid = (Boolean)method.invoke(validator, value);
+                    }
+                    catch (Exception e) {
+                       logger.error(e.getCause());
+                       isValid = false;
+                    }
+                }
+            }
+        }
+		return isValid;
 	}
 	
 }

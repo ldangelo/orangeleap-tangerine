@@ -57,6 +57,7 @@ var returnDashboard = function(resp) {
     	if (itemData.graphType === 'Rss' ) rss(itemData, elem);
     	if (itemData.graphType === 'Area' ) areaChart(itemData, elem);
     	if (itemData.graphType === 'IFrame' ) iframe(itemData, elem);
+    	if (itemData.graphType === 'Text' ) text(itemData, elem);
     	if (itemData.graphType === 'Guru' ) guru(itemData, elem);
 
     	if (j % 2 == 1) {
@@ -154,6 +155,20 @@ function iframe(itemData, elem) {
     	url = url.replace(/amp;/g, "");
         var div = document.createElement("iframe");
         $(div).attr("src",url);
+        $(div).attr("width","350");
+        $(div).attr("height","220");
+        $(div).attr("scrolling","no");
+        $(div).attr("frameborder","0");
+        elem.appendChild(div);
+    } catch (e) {
+    }
+}
+
+function text(itemData, elem) {
+    try {
+    	var url = ""+itemData.url;
+        var div = document.createElement("div");
+        $(div).html(Ext.util.Format.htmlDecode(url));
         $(div).attr("width","350");
         $(div).attr("height","220");
         $(div).attr("scrolling","no");

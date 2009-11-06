@@ -43,11 +43,12 @@ public class RecurringGift extends Commitment implements Schedulable {
 		this.nextRunDate = nextRunDate;
 	}
 
-	public RecurringGift(Long id, String recurringGiftStatus, Date startDate, Date endDate) {
+	public RecurringGift(Long id, String recurringGiftStatus, Date startDate, Date endDate, boolean activate) {
 		this.id = id;
 		this.recurringGiftStatus = recurringGiftStatus;
 		this.startDate = startDate;
 		this.endDate = endDate;
+        this.activate = activate;
 	}
 
 	public Date getNextRunDate() {

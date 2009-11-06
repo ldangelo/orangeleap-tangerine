@@ -250,7 +250,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         List<RecurringGift> notSelectedRecurringGifts = filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime());
         List<RecurringGift> selectedRecurringGifts = new ArrayList<RecurringGift>();
 
-        if (selectedRecurringGiftIdsSet.isEmpty() == false) {
+        if ( ! selectedRecurringGiftIdsSet.isEmpty()) {
             for (Iterator<RecurringGift> iter = notSelectedRecurringGifts.iterator(); iter.hasNext();) {
                 RecurringGift aRecurringGift = iter.next();
                 if (selectedRecurringGiftIdsSet.contains(aRecurringGift.getId().toString())) {
@@ -270,13 +270,17 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         DateMidnight now = new DateMidnight(nowDt);
         for (Iterator<RecurringGift> recIter = gifts.iterator(); recIter.hasNext();) {
             RecurringGift recurringGift = recIter.next();
-            if (Commitment.STATUS_EXPIRED.equals(recurringGift.getRecurringGiftStatus()) || Commitment.STATUS_CANCELLED.equals(recurringGift.getRecurringGiftStatus())) {
+            if (Commitment.STATUS_EXPIRED.equals(recurringGift.getRecurringGiftStatus()) ||
+                    Commitment.STATUS_CANCELLED.equals(recurringGift.getRecurringGiftStatus()) ||
+                    ! recurringGift.isActivate()) {
                 recIter.remove();
-            } else {
+            }
+            else {
                 DateMidnight startDt = new DateMidnight(recurringGift.getStartDate());
                 if (startDt.isAfter(now)) {
                     recIter.remove();
-                } else if (recurringGift.getEndDate() != null) {
+                }
+                else if (recurringGift.getEndDate() != null) {
                     if (new DateMidnight(recurringGift.getEndDate()).isBefore(now)) {
                         recIter.remove();
                     }
@@ -304,7 +308,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         List<RecurringGift> rGifts = new ArrayList<RecurringGift>(1);
         rGifts.add(recurringGift);
-        return recurringGift.getId() != null && recurringGift.getId() > 0 && filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime()).size() == 1;
+        return recurringGift.getId() != null && recurringGift.getId() > 0 && recurringGift.isActivate() && 
+                filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime()).size() == 1;
     }
     
     @Override

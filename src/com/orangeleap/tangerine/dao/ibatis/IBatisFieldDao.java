@@ -317,6 +317,8 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     		result =  "GETPICKLISTDISPLAYVALUE(''customFieldMap[" + fieldname + "]'',GETCUSTOMFIELD(" + reportFieldAlias + ", ''" + entityType + "'', ''" + fieldname + "''))";
     	} else if (fieldType.equals(FieldType.MULTI_PICKLIST)) {
         	result =  "GETCUSTOMFIELDDISPLAYVALUECONCATENATED("+reportFieldAlias+",''" + entityType + "'', ''" + fieldname + "'',''customFieldMap[" + fieldname + "]'')";
+    	} else if (fieldType.equals(FieldType.MULTI_QUERY_LOOKUP) || fieldType.equals(FieldType.QUERY_LOOKUP)) {
+        	result =  "GETCUSTOMRELATIONSHIPNAMESCONCATENATED("+reportFieldAlias+",''" + entityType + "'', ''" + fieldname + "'')";
     	} else {
     		result =  "GETCUSTOMFIELD(" + reportFieldAlias + ", ''" + entityType + "'', ''" + fieldname + "'')";
     	}

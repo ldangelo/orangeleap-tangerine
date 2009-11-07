@@ -43,9 +43,13 @@ public interface AdjustedGiftService {
 
 	AdjustedGift editAdjustedGift(AdjustedGift adjustedGift) throws BindException;
 
+    AdjustedGift editAdjustedGift(AdjustedGift adjustedGift, boolean doValidateDistributionLines) throws BindException;
+
     public BigDecimal findCurrentTotalAdjustedAmount(Long originalGiftId);
 
     public BigDecimal findCurrentTotalAdjustedAmount(List<AdjustedGift> adjustedGifts);
+
+    BigDecimal findCurrentTotalAdjustedAmount(Long originalGiftId, Long adjustedGiftIdToOmit);
 
     public boolean isAdjustedAmountEqualGiftAmount(Gift gift);
 

@@ -86,7 +86,13 @@ public class AdjustedDistributionLinesValidator extends DistributionLinesValidat
     }
 
     public void checkTotalAdjustedAmount(AdjustedGift adjustedGift, Errors errors) {
-        BigDecimal existingAmount = adjustedGiftService.findCurrentTotalAdjustedAmount(adjustedGift.getOriginalGiftId());
+        BigDecimal existingAmount;
+        if (adjustedGift.isNew()) {
+            existingAmount = adjustedGiftService.findCurrentTotalAdjustedAmount(adjustedGift.getOriginalGiftId());
+        }
+        else {
+            existingAmount = adjustedGiftService.findCurrentTotalAdjustedAmount(adjustedGift.getOriginalGiftId(), adjustedGift.getId());
+        }
         BigDecimal totalAmount = existingAmount.add(adjustedGift.getAdjustedAmount() == null ? BigDecimal.ZERO : adjustedGift.getAdjustedAmount());
         BigDecimal originalAmount = adjustedGift.getOriginalAmount();
 

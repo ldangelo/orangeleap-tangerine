@@ -52,8 +52,12 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        return adjustedGiftService.readAdjustedGiftByIdCreateIfNull(getConstituent(request),
+        AdjustedGift adjustedGift = adjustedGiftService.readAdjustedGiftByIdCreateIfNull(getConstituent(request),
                 request.getParameter(StringConstants.ADJUSTED_GIFT_ID), request.getParameter(StringConstants.GIFT_ID));
+        if ( ! adjustedGift.isNew()) {
+            request.setAttribute(StringConstants.HIDE_ADJUST_GIFT_BUTTON, adjustedGiftService.isAdjustedAmountEqualGiftAmount(adjustedGift));
+        }
+        return adjustedGift;
     }
 
     private boolean isPosted(AdjustedGift adjustedGift) {
@@ -82,7 +86,12 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
 
         ModelAndView mav;
 	    try {
-            anAdjustedGift = adjustedGiftService.maintainAdjustedGift(anAdjustedGift);
+            if (anAdjustedGift.isNew()) {
+                anAdjustedGift = adjustedGiftService.maintainAdjustedGift(anAdjustedGift);
+            }
+            else {
+                anAdjustedGift = adjustedGiftService.editAdjustedGift(anAdjustedGift, true);
+            }
             String view = isPosted(anAdjustedGift) ? adjustedGiftPostedUrl : getSuccessView();
             mav = new ModelAndView(appendSaved(getRedirectUrl(request, view, anAdjustedGift.getId())));
 	    }

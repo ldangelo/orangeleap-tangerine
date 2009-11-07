@@ -5,8 +5,8 @@ import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.AdjustedGiftDao;
 import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
@@ -29,9 +29,10 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 @Service("adjustedGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -141,14 +142,20 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
 	@Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
 	public AdjustedGift editAdjustedGift(AdjustedGift adjustedGift) throws BindException {
-	    if (logger.isTraceEnabled()) {
-	        logger.trace("editAdjustedGift: adjustedGiftId = " + adjustedGift.getId());
-	    }
-		validateAdjustedGift(adjustedGift, false);
-
-		adjustedGift = saveAuditAdjustedGift(adjustedGift);
-	    return adjustedGift;
+	    return editAdjustedGift(adjustedGift, false);
 	}
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public AdjustedGift editAdjustedGift(AdjustedGift adjustedGift, boolean doValidateDistributionLines) throws BindException {
+        if (logger.isTraceEnabled()) {
+            logger.trace("editAdjustedGift: adjustedGiftId = " + adjustedGift.getId() + " doValidateDistributionLines = " + doValidateDistributionLines);
+        }
+        validateAdjustedGift(adjustedGift, doValidateDistributionLines);
+
+        adjustedGift = saveAuditAdjustedGift(adjustedGift);
+        return adjustedGift;
+    }
 
     private PaymentHistory createPaymentHistoryForAdjustedGift(AdjustedGift adjustedGift) {
         PaymentHistory paymentHistory = new PaymentHistory();
@@ -181,6 +188,25 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
             logger.trace("readAdjustedGiftsForOriginalGiftId: originalGiftId = " + originalGiftId);
         }
         return adjustedGiftDao.readAdjustedGiftsForOriginalGiftId(originalGiftId);
+    }
+
+    @Override
+    public BigDecimal findCurrentTotalAdjustedAmount(Long originalGiftId, Long adjustedGiftIdToOmit) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findCurrentTotalAdjustedAmount: originalGiftId = " + originalGiftId + " adjustedGiftIdToOmit = " + adjustedGiftIdToOmit);
+        }
+        List<AdjustedGift> adjustedGifts = readAdjustedGiftsForOriginalGiftId(originalGiftId);
+
+        if (adjustedGiftIdToOmit != null) {
+            Iterator<AdjustedGift> iter = adjustedGifts.iterator();
+            while (iter.hasNext()) {
+                AdjustedGift adjustedGift = iter.next();
+                if (adjustedGift.getId().equals(adjustedGiftIdToOmit)) {
+                    iter.remove();
+                }
+            }
+        }
+        return findCurrentTotalAdjustedAmount(adjustedGifts);
     }
 
     @Override

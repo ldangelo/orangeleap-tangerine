@@ -89,19 +89,18 @@ public class GiftFormController extends AbstractMutableGridFormController {
         TangerineForm form = (TangerineForm) formBackingObject(request);
 		Gift gift = (Gift) form.getDomainObject();
 
+        String redirectUrl = null;
         if (giftControllerHelper.showGiftPaidView(gift)) {
-            String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPaidUrl(), gift, getConstituentId(request));
-            if (Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
-                redirectUrl = appendSaved(redirectUrl);
-            }
-        	mav = new ModelAndView(redirectUrl);
+            redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPaidUrl(), gift, getConstituentId(request));
         }
         else if (giftControllerHelper.showGiftPostedView(gift)) {
-            String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPostedUrl(), gift, getConstituentId(request));
+            redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPostedUrl(), gift, getConstituentId(request));
+        }
+        if (redirectUrl != null) {
             if (Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
                 redirectUrl = appendSaved(redirectUrl);
             }
-        	mav = new ModelAndView(redirectUrl);
+            mav = new ModelAndView(redirectUrl);
         }
 		return mav;
 	}

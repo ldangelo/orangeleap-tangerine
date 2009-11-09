@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.controller.gift.adjustment;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.gift.GiftControllerHelper;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -34,7 +35,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class GiftAdjustmentController extends TangerineConstituentAttributesFormController {
+public class AdjustedGiftPaidController extends TangerineConstituentAttributesFormController {
 
     /**
      * Logger for this class and subclasses
@@ -44,10 +45,10 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
 
-    private String adjustedGiftPostedUrl;
+    protected GiftControllerHelper giftControllerHelper;
 
-    public void setAdjustedGiftPostedUrl(String adjustedGiftPostedUrl) {
-        this.adjustedGiftPostedUrl = adjustedGiftPostedUrl;
+    public void setGiftControllerHelper(GiftControllerHelper giftControllerHelper) {
+        this.giftControllerHelper = giftControllerHelper;
     }
 
     @Override
@@ -60,21 +61,19 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
         return adjustedGift;
     }
 
-    private boolean isPosted(AdjustedGift adjustedGift) {
-        return adjustedGift != null && ! adjustedGift.isNew() && adjustedGift.isPosted();
-    }
-
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
         ModelAndView mav = super.showForm(request, response, errors);
         TangerineForm form = (TangerineForm) formBackingObject(request);
         AdjustedGift adjustedGift = (AdjustedGift) form.getDomainObject();
 
-        if (isPosted(adjustedGift)) {
-            mav = new ModelAndView(getRedirectUrl(request, adjustedGiftPostedUrl,
-                    new Long(request.getParameter(StringConstants.ADJUSTED_GIFT_ID))));
+        if (giftControllerHelper.showAdjustedGiftPostedView(adjustedGift)) {
+            String redirectUrl = giftControllerHelper.appendAdjustedGiftParameters(giftControllerHelper.getAdjustedGiftPostedUrl(), adjustedGift, getConstituentId(request));
+            if (Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
+                redirectUrl = appendSaved(redirectUrl);
+            }
+            mav = new ModelAndView(redirectUrl);
         }
-        
         return mav;
     }
 
@@ -92,19 +91,19 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
             else {
                 anAdjustedGift = adjustedGiftService.editAdjustedGift(anAdjustedGift, true);
             }
-            String view = isPosted(anAdjustedGift) ? adjustedGiftPostedUrl : getSuccessView();
-            mav = new ModelAndView(appendSaved(getRedirectUrl(request, view, anAdjustedGift.getId())));
+            if (giftControllerHelper.showAdjustedGiftPostedView(anAdjustedGift)) {
+                String redirectUrl = giftControllerHelper.appendAdjustedGiftParameters(giftControllerHelper.getAdjustedGiftPostedUrl(), anAdjustedGift, getConstituentId(request));
+                mav = new ModelAndView(super.appendSaved(redirectUrl));
+            }
+            else {
+                mav = new ModelAndView(super.appendSaved(giftControllerHelper.appendAdjustedGiftParameters(getSuccessView(), anAdjustedGift, getConstituentId(request))));
+            }
 	    }
 	    catch (BindException domainErrors) {
 		    bindDomainErrorsToForm(request, formErrors, domainErrors, form, anAdjustedGift);
             mav = showForm(request, formErrors, getFormView());
 	    }
 	    return mav;
-    }
-
-    private String getRedirectUrl(HttpServletRequest request, String view, Long adjustedGiftId) {
-        return new StringBuilder(view).append("?").append(StringConstants.ADJUSTED_GIFT_ID).append("=").append(adjustedGiftId).
-                append("&").append(StringConstants.CONSTITUENT_ID).append("=").append(super.getConstituentId(request)).toString();
     }
 
     public void validateAdjustedGiftStatusChange(AdjustedGift adjustedGift) {

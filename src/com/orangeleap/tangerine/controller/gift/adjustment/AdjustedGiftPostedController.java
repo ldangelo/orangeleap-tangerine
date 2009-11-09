@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.controller.gift.adjustment;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.gift.GiftControllerHelper;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
@@ -36,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class GiftAdjustmentViewController extends TangerineConstituentAttributesFormController {
+public class AdjustedGiftPostedController extends TangerineConstituentAttributesFormController {
 
     /**
      * Logger for this class and subclasses
@@ -45,6 +46,12 @@ public class GiftAdjustmentViewController extends TangerineConstituentAttributes
 
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
+
+    protected GiftControllerHelper giftControllerHelper;
+
+    public void setGiftControllerHelper(GiftControllerHelper giftControllerHelper) {
+        this.giftControllerHelper = giftControllerHelper;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -75,7 +82,7 @@ public class GiftAdjustmentViewController extends TangerineConstituentAttributes
         ModelAndView mav;
 		try {
 	        anAdjustedGift = adjustedGiftService.editAdjustedGift(anAdjustedGift);
-            mav = new ModelAndView(appendSaved(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+            mav = new ModelAndView(appendSaved(giftControllerHelper.appendAdjustedGiftParameters(getSuccessView(), anAdjustedGift, getConstituentId(request))));
 		}
 		catch (BindException domainErrors) {
 			bindDomainErrorsToForm(request, formErrors, domainErrors, form, anAdjustedGift);

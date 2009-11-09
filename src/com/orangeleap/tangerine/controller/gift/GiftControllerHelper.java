@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.controller.gift;
 
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.type.PaymentType;
@@ -33,6 +34,10 @@ public class GiftControllerHelper {
     protected String giftUrl;
     protected String giftPaidUrl;
     protected String giftPostedUrl;
+
+    protected String adjustedGiftUrl;
+    protected String adjustedGiftPaidUrl;
+    protected String adjustedGiftPostedUrl;
 
     public String getGiftUrl() {
         return giftUrl;
@@ -58,10 +63,42 @@ public class GiftControllerHelper {
         this.giftPostedUrl = giftPostedUrl;
     }
 
+    public String getAdjustedGiftUrl() {
+        return adjustedGiftUrl;
+    }
+
+    public void setAdjustedGiftUrl(String adjustedGiftUrl) {
+        this.adjustedGiftUrl = adjustedGiftUrl;
+    }
+
+    public String getAdjustedGiftPaidUrl() {
+        return adjustedGiftPaidUrl;
+    }
+
+    public void setAdjustedGiftPaidUrl(String adjustedGiftPaidUrl) {
+        this.adjustedGiftPaidUrl = adjustedGiftPaidUrl;
+    }
+
+    public String getAdjustedGiftPostedUrl() {
+        return adjustedGiftPostedUrl;
+    }
+
+    public void setAdjustedGiftPostedUrl(String adjustedGiftPostedUrl) {
+        this.adjustedGiftPostedUrl = adjustedGiftPostedUrl;
+    }
+
     public String appendGiftParameters(String viewName, Gift gift, Long constituentId) {
 		StringBuilder sb = new StringBuilder(viewName).append("?");
 		if (gift != null && gift.getId() != null && gift.getId() > 0) {
 			sb.append(StringConstants.GIFT_ID).append("=").append(gift.getId()).append("&");
+		}
+		return sb.append(StringConstants.CONSTITUENT_ID).append("=").append(constituentId).toString();
+	}
+
+    public String appendAdjustedGiftParameters(String viewName, AdjustedGift adjustedGift, Long constituentId) {
+		StringBuilder sb = new StringBuilder(viewName).append("?");
+		if (adjustedGift != null && adjustedGift.getId() != null && adjustedGift.getId() > 0) {
+			sb.append(StringConstants.ADJUSTED_GIFT_ID).append("=").append(adjustedGift.getId()).append("&");
 		}
 		return sb.append(StringConstants.CONSTITUENT_ID).append("=").append(constituentId).toString();
 	}
@@ -82,6 +119,18 @@ public class GiftControllerHelper {
     			((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) ||
                         PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) &&
                         Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
+    }
+
+    public boolean isEnteredAdjustedGift(AdjustedGift adjustedGift) {
+    	return adjustedGift != null && ! adjustedGift.isNew();
+    }
+
+    public boolean showAdjustedGiftPaidView(AdjustedGift adjustedGift) {
+    	return isEnteredAdjustedGift(adjustedGift) && Gift.STATUS_PAID.equals(adjustedGift.getAdjustedStatus());
+    }
+
+    public boolean showAdjustedGiftPostedView(AdjustedGift adjustedGift) {
+        return isEnteredAdjustedGift(adjustedGift) && adjustedGift.isPosted();
     }
 
     public void validateGiftStatusChange(Gift gift) {

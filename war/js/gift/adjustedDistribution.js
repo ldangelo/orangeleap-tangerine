@@ -3,6 +3,9 @@ $(document).ready(function() {
 		var $elem = $(this);
 		/* Done on load for previously entered distributionLines */
 		var val = $elem.val();
+        if (!val) {
+            val = $elem.text();
+        }
 		if (OrangeLeap.isNum(val)) {
 			AdjustedDistribution.enteredAmt = OrangeLeap.truncateFloat(parseFloat(val));
 			AdjustedDistribution.reInitDistribution();
@@ -12,6 +15,9 @@ $(document).ready(function() {
 	$("#adjustedAmount").bind("keyup change", function(event) {
 		var $elem = $(this);
 		var amtVal = $elem.val();
+        if (!amtVal) {
+            amtval = $(this).text();
+        }
 		if (OrangeLeap.isNum(amtVal)) {
 			amtVal = AdjustedDistribution.appendDash($elem);
 			AdjustedDistribution.enteredAmt = amtVal;
@@ -122,7 +128,7 @@ var AdjustedDistribution = {
 	
 	calculatePct: function($elem) {
 		var thisAmt = $elem.val();
-		if (!isNaN(parseFloat(thisAmt))) {
+		if ( ! isNaN(parseFloat(thisAmt))) {
 			var rowId = $elem.attr('id').replace('-amount', '');
 			var pctElemId = $elem.attr('id').replace('amount', 'percentage');
 			
@@ -153,8 +159,12 @@ var AdjustedDistribution = {
 	
 	displayError: function(subTotal) {
         var v = $('#adjustedAmount');
+        var val = v.val();
+        if (!val) {
+            val = v.text();
+        }
 
-        if (parseFloat(subTotal) === parseFloat(v.val())) {
+        if (parseFloat(subTotal) === parseFloat(val)) {
             $("#totalText").removeClass("warning");
 			$("#amountsErrorSpan").hide();
         } 

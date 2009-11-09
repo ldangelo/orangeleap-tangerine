@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <page:applyDecorator name="form">
-	<spring:message code='viewAdjustment' var="titleText" scope="request" />
+	<spring:message code='editAdjustment' var="titleText" scope="request" />
 	<spring:message code='submit' var="submitText" />
 
 	<c:set var="headerText" value="${titleText}" scope="request"/>
@@ -21,7 +21,7 @@
 				</c:set>
 
 				<%@ include file="/WEB-INF/jsp/includes/formHeader.jsp"%>
-				<tangerine:fields pageName="adjustedGiftView"/>
+				<tangerine:fields pageName="adjustedGiftPaid"/>
 
 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
@@ -31,10 +31,7 @@
 				</div>
 			</form:form>
 			<page:param name="scripts">
-				<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
-				<script type="text/javascript">PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
-				<script type="text/javascript" src="js/gift/distributionReadOnly.js"></script>
-				<script type="text/javascript" src="js/gift/adjustedDistributionReadOnly.js"></script>
+				<script type="text/javascript" src="js/gift/adjustedDistribution.js"></script>
                 <script type="text/javascript">
                     $(function() {
                         $("#cancelButton").click(function() {

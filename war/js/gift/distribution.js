@@ -129,7 +129,7 @@ var Distribution = {
 	
 	calculateAmt: function($elem) {
 		var thisPct = $elem.val();
-		if (isNaN(parseFloat(thisPct)) == false) {
+		if ( ! isNaN(parseFloat(thisPct))) {
 			var rowId = $elem.attr('id').replace('-percentage', '');
 			var amtElemId = $elem.attr('id').replace('percentage', 'amount');
 			
@@ -147,7 +147,7 @@ var Distribution = {
 	
 	calculatePct: function($elem) {
 		var thisAmt = $elem.val();
-		if (isNaN(parseFloat(thisAmt)) == false) {
+		if ( ! isNaN(parseFloat(thisAmt))) {
 			var rowId = $elem.attr('id').replace('-amount', '');
 			var pctElemId = $elem.attr('id').replace('amount', 'percentage');
 			

@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="constituentId" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="communicationHistory" type="{http://www.orangeleap.com/orangeleap/services/1.0}communicationHistory"/>
+ *         &lt;element name="pledge" type="{http://www.orangeleap.com/orangeleap/services/1.0}pledge"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,14 +38,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "constituentId",
-    "communicationHistory"
+    "pledge"
 })
-@XmlRootElement(name = "AddCommunicationHistoryRequest")
-public class AddCommunicationHistoryRequest {
+@XmlRootElement(name = "SaveOrUpdatePledgeRequest")
+public class SaveOrUpdatePledgeRequest {
 
     protected long constituentId;
     @XmlElement(required = true)
-    protected CommunicationHistory communicationHistory;
+    protected Pledge pledge;
 
     /**
      * Gets the value of the constituentId property.
@@ -64,27 +64,27 @@ public class AddCommunicationHistoryRequest {
     }
 
     /**
-     * Gets the value of the communicationHistory property.
+     * Gets the value of the pledge property.
      * 
      * @return
      *     possible object is
-     *     {@link CommunicationHistory }
+     *     {@link Pledge }
      *     
      */
-    public CommunicationHistory getCommunicationHistory() {
-        return communicationHistory;
+    public Pledge getPledge() {
+        return pledge;
     }
 
     /**
-     * Sets the value of the communicationHistory property.
+     * Sets the value of the pledge property.
      * 
      * @param value
      *     allowed object is
-     *     {@link CommunicationHistory }
+     *     {@link Pledge }
      *     
      */
-    public void setCommunicationHistory(CommunicationHistory value) {
-        this.communicationHistory = value;
+    public void setPledge(Pledge value) {
+        this.pledge = value;
     }
 
 }

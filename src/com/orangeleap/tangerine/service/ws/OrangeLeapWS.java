@@ -22,6 +22,7 @@ package com.orangeleap.tangerine.service.ws;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -74,7 +75,8 @@ public class OrangeLeapWS {
 
     private GiftService giftService;
 
-
+    private PledgeService pledgeService;
+    
     private ConstituentService cs;
 
     @Resource(name = "communicationHistoryService")
@@ -249,6 +251,24 @@ public class OrangeLeapWS {
         return cr;
     }
 
+    @PayloadRoot(localPart = "SaveOrUpdatePledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public void maintainPledge(SaveOrUpdatePledgeRequest request) 
+    {
+        com.orangeleap.tangerine.domain.Constituent c = cs.readConstituentById(request.getConstituentId());
+        com.orangeleap.tangerine.domain.paymentInfo.Pledge p = pledgeService.createDefaultPledge(c);
+
+
+        ObjectConverter converter = new ObjectConverter();
+
+        converter.ConvertFromJAXB(request.getPledge(), p);
+
+        try {
+            pledgeService.maintainPledge(p);
+        } catch (BindException e) {
+            logger.error(e.getMessage());
+        }
+    }
+    
     @PayloadRoot(localPart = "SaveOrUpdateGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     public void maintainGift(SaveOrUpdateGiftRequest request) {
         com.orangeleap.tangerine.domain.Constituent c = cs.readConstituentById(request.getConstituentId());
@@ -265,6 +285,23 @@ public class OrangeLeapWS {
             logger.error(e.getMessage());
         }
 
+    }
+
+    @PayloadRoot(localPart = "GetConstituentPledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public GetConstituentPledgeResponse getConstituentsPledges(GetConstituentPledgeRequest request) {
+        List<com.orangeleap.tangerine.domain.paymentInfo.Pledge> pledges = pledgeService.readPledgesForConstituent(request.getConstituentId());
+
+        GetConstituentPledgeResponse response = new GetConstituentPledgeResponse();
+        ObjectConverter converter = new ObjectConverter();
+
+        for (com.orangeleap.tangerine.domain.paymentInfo.Pledge p : pledges) {
+            Pledge sp = new Pledge();
+
+            converter.ConvertToJAXB(p, sp);
+            response.getPledge().add(sp);
+        }
+
+        return response;
     }
 
     @PayloadRoot(localPart = "GetConstituentGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")

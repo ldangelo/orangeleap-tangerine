@@ -331,7 +331,50 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	
+	  <xs:simpleType name="commitmentType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RECURRING_GIFT"/>
+      <xs:enumeration value="PLEDGE"/>
+      <xs:enumeration value="MEMBERSHIP"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="commitment" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractPaymentInfoEntity">
+        <xs:sequence>
+          <xs:element name="amountPaid" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="amountPerGift" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="amountRemaining" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="amountTotal" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="associatedGiftIds" type="xs:long" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="commitmentType" type="tns:commitmentType" minOccurs="0"/>
+          <xs:element name="endDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="frequency" type="xs:string" minOccurs="0"/>
+          <xs:element name="gifts" type="tns:gift" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="lastEntryDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="startDate" type="xs:dateTime" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
+ 	<xs:complexType name="pledge">
+    	<xs:complexContent>
+    	  	<xs:extension base="tns:commitment">
+        		<xs:sequence>
+          			<xs:element name="pledgeCancelDate" type="xs:dateTime" minOccurs="0"/>
+          			<xs:element name="pledgeCancelReason" type="xs:string" minOccurs="0"/>
+          			<xs:element name="pledgeDate" type="xs:dateTime" minOccurs="0"/>
+          			<xs:element name="pledgeStatus" type="xs:string" minOccurs="0"/>
+          			<xs:element name="projectedDate" type="xs:dateTime" minOccurs="0"/>
+          			<xs:element name="recurring" type="xs:boolean"/>
+        		</xs:sequence>
+      	</xs:extension>
+    	</xs:complexContent>
+  	</xs:complexType>
+  
 	<xs:complexType name="constituent">
 		<xs:complexContent>
 			<xs:extension base="tns:abstractCustomizableEntity">
@@ -477,6 +520,34 @@
 				<xs:element name="constituentId" type="xs:long" />
 				<xs:element name="gift" type="tns:gift" minOccurs="1"
 					maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="SaveOrUpdatePledgeRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituentId" type="xs:long" />
+				<xs:element name="pledge" type="tns:pledge" minOccurs="1"
+					maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="GetConstituentPledgeRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituentId" type="xs:long" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetConstituentPledgeResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="pledge" type="tns:pledge" minOccurs="0"
+					maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

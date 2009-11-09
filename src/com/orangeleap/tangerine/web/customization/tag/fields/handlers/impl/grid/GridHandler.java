@@ -21,6 +21,8 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.grid
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.LayoutType;
@@ -36,6 +38,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.jsp.PageContext;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -293,11 +296,35 @@ public class GridHandler implements ApplicationContextAware {
 		sb.append("</table>");
 	}
 
-	public void writeGridActions(LayoutType layoutType, StringBuilder sb) {
+    @SuppressWarnings("unchecked")
+	public void writeGridActions(LayoutType layoutType, TangerineForm form, StringBuilder sb) {
 		sb.append("<div class=\"gridActions\">");
 		sb.append("<div id=\"totalText\">");
 		sb.append(TangerineMessageAccessor.getMessage("total")).append("&nbsp;");
 		sb.append("<span class=\"warningText\" id=\"");
+
+        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject());
+        BigDecimal amount = BigDecimal.ZERO;
+        if (bw.isReadableProperty(StringConstants.DISTRIBUTION_LINES)) {
+            List<DistributionLine> lines = (List<DistributionLine>) bw.getPropertyValue(StringConstants.DISTRIBUTION_LINES);
+            if (lines != null) {
+                for (DistributionLine line : lines) {
+                    if (line != null && line.getAmount() != null) {
+                        amount = amount.add(line.getAmount());
+                    }
+                }
+            }
+        }
+        else if (bw.isReadableProperty(StringConstants.DETAILS)) {
+            List<GiftInKindDetail> details = (List<GiftInKindDetail>) bw.getPropertyValue(StringConstants.DETAILS);
+            if (details != null) {
+                for (GiftInKindDetail detail : details) {
+                    if (detail != null && detail.getDetailFairMarketValue() != null) {
+                        amount = amount.add(detail.getDetailFairMarketValue());
+                    }
+                }
+            }
+        }
 
 		String msg = StringConstants.EMPTY;
 		if (LayoutType.DISTRIBUTION_LINE_GRID.equals(layoutType) || LayoutType.ADJUSTED_DISTRIBUTION_LINE_GRID.equals(layoutType)) {
@@ -310,12 +337,12 @@ public class GridHandler implements ApplicationContextAware {
 		}
 		sb.append("\">").append(msg).append("</span>");
 		sb.append("</div>");
-		sb.append("<div class=\"value\" id=\"subTotal\">0</div>");
+		sb.append("<div class=\"value\" id=\"subTotal\">").append(amount).append("</div>");
 
 		if (LayoutType.DISTRIBUTION_LINE_GRID.equals(layoutType)) {
 			sb.append("<span id=\"totalContributionInfo\">");
 			sb.append("<div id=\"totalContributionText\">").append(TangerineMessageAccessor.getMessage("totalContribution")).append("</div>");
-			sb.append("<div class=\"value\" id=\"totalContribution\">0</div>");
+			sb.append("<div class=\"value\" id=\"totalContribution\">").append(amount).append("</div>");
 			sb.append("</span>");
 			sb.append("<script type=\"text/javascript\">Ext.fly('totalContributionInfo').hide();</script>");// TODO: why not just hide the element?
 		}

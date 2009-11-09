@@ -217,7 +217,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("mapping: '").append(escapedFieldName).append("', ");
                         String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
                         sb.append("type: '").append(extType).append("'");
-                        if ("date".equals(extType)) {
+                        if (StringConstants.DATE.equals(extType)) {
                             sb.append(", dateFormat: '");
                             if (FieldType.CC_EXPIRATION.equals(sectionFld.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(sectionFld.getFieldType())) {
                                 sb.append("m-d-Y");
@@ -819,7 +819,7 @@ public class SectionFieldTag extends AbstractTag {
 							getTangerineForm(), hasHiddenGridRow, false, showDeleteButton, sb); // this are the real rows
 
 					gridHandler.writeGridTableEnd(sb);
-					gridHandler.writeGridActions(sectionDef.getLayoutType(), sb);
+					gridHandler.writeGridActions(sectionDef.getLayoutType(), getTangerineForm(), sb);
 					gridHandler.writeGridEnd(sb);
 				}
 				else if (LayoutType.ADJUSTED_DISTRIBUTION_LINE_GRID.equals(sectionDef.getLayoutType())) {
@@ -849,7 +849,7 @@ public class SectionFieldTag extends AbstractTag {
 							getTangerineForm(), hasHiddenGridRow, false, false, sb); // this are the real rows
 
 					gridHandler.writeGridTableEnd(sb);
-					gridHandler.writeGridActions(sectionDef.getLayoutType(), sb);
+					gridHandler.writeGridActions(sectionDef.getLayoutType(), getTangerineForm(), sb);
 					gridHandler.writeGridEnd(sb);
 				}
 				else if (LayoutType.GIFT_IN_KIND_GRID.equals(sectionDef.getLayoutType())) {
@@ -883,7 +883,7 @@ public class SectionFieldTag extends AbstractTag {
 							getTangerineForm(), hasHiddenGridRow, false, true, sb); // this are the real rows
 
 					gridHandler.writeGridTableEnd(sb);
-					gridHandler.writeGridActions(sectionDef.getLayoutType(), sb);
+					gridHandler.writeGridActions(sectionDef.getLayoutType(), getTangerineForm(), sb);
 					gridHandler.writeGridEnd(sb);
 				}
 				println(sb);
@@ -987,7 +987,7 @@ public class SectionFieldTag extends AbstractTag {
 		}
 	}
 
-    private String getInitDirection(List<SectionField> fields) {
+    public static String getInitDirection(List<SectionField> fields) {
         return FieldType.DATE.equals(fields.get(0).getFieldType()) ||
                 FieldType.DATE_TIME.equals(fields.get(0).getFieldType()) ||
                 FieldType.DATE_DISPLAY.equals(fields.get(0).getFieldType()) ? "DESC" : "ASC";

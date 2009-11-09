@@ -25,6 +25,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
+import com.orangeleap.tangerine.domain.rollup.RollupValue;
 
 public interface RollupService {
 	
@@ -32,6 +33,7 @@ public interface RollupService {
 
     public List<RollupSeries> getAllRollupSeries();
     public List<RollupAttribute> getAllRollupAttributes();
+    public List<RollupAttribute> getAllConstituentRollupAttributes();
 
     public RollupSeries maintainRollupSeries(RollupSeries rollupSeries);
     public RollupAttribute maintainRollupAttribute(RollupAttribute rollupAttribute);
@@ -45,4 +47,6 @@ public interface RollupService {
     public void updateRollupsForGift(Gift gift);
     public void updateRollupsForConstituent(Constituent constituent);
     
+    public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId);
+
 }

@@ -52,4 +52,10 @@ public class IBatisRollupAttributeDao extends AbstractIBatisDao implements Rollu
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_ROLLUP_ATTRIBUTES", params);
     }
     
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<RollupAttribute> readAllConstituentRollupAttributes() {
+        Map<String, Object> params = setupParams();
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_CONSTITUENT_ROLLUP_ATTRIBUTES", params);
+    }
 }

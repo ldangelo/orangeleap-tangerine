@@ -9,5 +9,6 @@ public interface RollupAttributeDao {
     public RollupAttribute readRollupAttributeById(Long id);
     public RollupAttribute maintainRollupAttribute(RollupAttribute rollupAttribute);
     public List<RollupAttribute> readAllRollupAttributes();
+    public List<RollupAttribute> readAllConstituentRollupAttributes();
 
 }

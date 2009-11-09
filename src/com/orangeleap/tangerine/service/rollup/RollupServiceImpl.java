@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
+import com.orangeleap.tangerine.domain.rollup.RollupValue;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -63,7 +64,6 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     public void validateCubeSize(RollupSeries rollupSeries, RollupAttribute rollupAttribute) {
     	// TODO Determine if parameter combinations (such as daily x constituent) are invalid. 
 		// TODO Prob not do basic cardinality checks (will not work for large number of obsolete designation codes)
-		// TODO Add attribute x series join table to avoid redefining attributes for different series, need to add site to attribute
     }
     
 	@Override
@@ -74,6 +74,11 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	@Override
     public List<RollupAttribute> getAllRollupAttributes() {
 		return rollupAttributeDao.readAllRollupAttributes(); 
+	}
+
+	@Override
+    public List<RollupAttribute> getAllConstituentRollupAttributes() {
+		return rollupAttributeDao.readAllConstituentRollupAttributes(); 
 	}
 
 	@Override
@@ -114,5 +119,11 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     public void updateRollupsForConstituent(Constituent constituent) {
 		//TODO
 	}
+
+	@Override
+    public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId) {
+		return rollupValueDao.readRollupValuesByAttributeAndConstituentId(attributeId, constituentId);
+	}
+    
 
 }

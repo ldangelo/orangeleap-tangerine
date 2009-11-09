@@ -41,6 +41,11 @@
         <include refid="SELECT_ROLLUP_ATTRIBUTE_FRAGMENT"/>
     </select>
 
+    <select id="SELECT_ALL_CONSTITUENT_ROLLUP_ATTRIBUTES" resultMap="ROLLUP_ATTRIBUTE_RESULT" parameterClass="map" >
+        <include refid="SELECT_ROLLUP_ATTRIBUTE_FRAGMENT"/>
+        and rollup_attribute.GROUP_BY_COLUMN_NAME = 'CONSTITUENT_ID';
+    </select>
+
     <select id="SELECT_ROLLUP_ATTRIBUTE_BY_ID" resultMap="ROLLUP_ATTRIBUTE_RESULT" parameterClass="map" >
         <include refid="SELECT_ROLLUP_ATTRIBUTE_FRAGMENT"/>
         and rollup_attribute.ROLLUP_ATTRIBUTE_ID = #id#

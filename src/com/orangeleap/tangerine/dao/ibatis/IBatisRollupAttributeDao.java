@@ -36,6 +36,16 @@ public class IBatisRollupAttributeDao extends AbstractIBatisDao implements Rollu
     }
 
     @Override
+    public void deleteRollupAttributeById(Long id) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteByIdRollupAttribute: rollupAttributeId = " + id);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", id);
+        getSqlMapClientTemplate().delete("DELETE_ROLLUP_ATTRIBUTE_BY_ID", params);
+    }
+
+    @Override
     public RollupAttribute readRollupAttributeById(Long id) {
         if (logger.isTraceEnabled()) {
             logger.trace("readRollupAttributeById: id = " + id);
@@ -54,8 +64,9 @@ public class IBatisRollupAttributeDao extends AbstractIBatisDao implements Rollu
     
     @SuppressWarnings("unchecked")
 	@Override
-    public List<RollupAttribute> readAllConstituentRollupAttributes() {
+    public List<RollupAttribute> readAllRollupAttributesByType(String entityType) {
         Map<String, Object> params = setupParams();
-        return getSqlMapClientTemplate().queryForList("SELECT_ALL_CONSTITUENT_ROLLUP_ATTRIBUTES", params);
+        params.put("entityType", entityType);
+        return getSqlMapClientTemplate().queryForList("SELECT_ROLLUP_ATTRIBUTES_BY_TYPE", params);
     }
 }

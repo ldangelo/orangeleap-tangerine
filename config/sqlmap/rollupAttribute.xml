@@ -6,13 +6,9 @@
         <result property="id" column="ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID" />
         <result property="attributeDesc" column="ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC" />
         <result property="groupByType" column="ROLLUP_ATTRIBUTE_GROUP_BY_TYPE" />
-        <result property="tableName" column="ROLLUP_ATTRIBUTE_TABLE_NAME" />
-        <result property="valueColumnName" column="ROLLUP_ATTRIBUTE_VALUE_COLUMN_NAME" />
-        <result property="isValueCustomField" column="ROLLUP_ATTRIBUTE_IS_VALUE_CUSTOM_FIELD" />
-        <result property="currencyColumnName" column="ROLLUP_ATTRIBUTE_CURRENCY_COLUMN_NAME" />
-        <result property="dateColumnName" column="ROLLUP_ATTRIBUTE_DATE_COLUMN_NAME" />
-        <result property="groupByColumnName" column="ROLLUP_ATTRIBUTE_GROUP_BY_COLUMN_NAME" />
-        <result property="isGroupByCustomField" column="ROLLUP_ATTRIBUTE_IS_GROUP_BY_CUSTOM_FIELD" />
+        <result property="rollupEntityType" column="ROLLUP_ATTRIBUTE_ROLLUP_ENTITY_TYPE" />
+        <result property="rollupStatType" column="ROLLUP_ATTRIBUTE_ROLLUP_STAT_TYPE" />
+        <result property="customFieldName" column="ROLLUP_ATTRIBUTE_CUSTOM_FIELD_NAME" />
         <result property="siteName" column="ROLLUP_ATTRIBUTE_SITE_NAME" />
     </resultMap>
 
@@ -20,13 +16,9 @@
         rollup_attribute.ROLLUP_ATTRIBUTE_ID as ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID,
         rollup_attribute.ATTRIBUTE_DESC as ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC,
         rollup_attribute.GROUP_BY_TYPE as ROLLUP_ATTRIBUTE_GROUP_BY_TYPE,
-        rollup_attribute.TABLE_NAME as ROLLUP_ATTRIBUTE_TABLE_NAME,
-        rollup_attribute.VALUE_COLUMN_NAME as ROLLUP_ATTRIBUTE_VALUE_COLUMN_NAME,
-        rollup_attribute.IS_VALUE_CUSTOM_FIELD as ROLLUP_ATTRIBUTE_IS_VALUE_CUSTOM_FIELD,
-        rollup_attribute.CURRENCY_COLUMN_NAME as ROLLUP_ATTRIBUTE_CURRENCY_COLUMN_NAME,
-        rollup_attribute.DATE_COLUMN_NAME as ROLLUP_ATTRIBUTE_DATE_COLUMN_NAME,
-        rollup_attribute.GROUP_BY_COLUMN_NAME as ROLLUP_ATTRIBUTE_GROUP_BY_COLUMN_NAME,
-        rollup_attribute.IS_GROUP_BY_CUSTOM_FIELD as ROLLUP_ATTRIBUTE_IS_GROUP_BY_CUSTOM_FIELD,
+        rollup_attribute.ROLLUP_ENTITY_TYPE as ROLLUP_ATTRIBUTE_ROLLUP_ENTITY_TYPE,
+        rollup_attribute.ROLLUP_STAT_TYPE as ROLLUP_ATTRIBUTE_ROLLUP_STAT_TYPE,
+        rollup_attribute.CUSTOM_FIELD_NAME as ROLLUP_ATTRIBUTE_CUSTOM_FIELD_NAME,
         rollup_attribute.SITE_NAME as ROLLUP_ATTRIBUTE_SITE_NAME    
     </sql>
 
@@ -41,9 +33,9 @@
         <include refid="SELECT_ROLLUP_ATTRIBUTE_FRAGMENT"/>
     </select>
 
-    <select id="SELECT_ALL_CONSTITUENT_ROLLUP_ATTRIBUTES" resultMap="ROLLUP_ATTRIBUTE_RESULT" parameterClass="map" >
+    <select id="SELECT_ROLLUP_ATTRIBUTES_BY_TYPE" resultMap="ROLLUP_ATTRIBUTE_RESULT" parameterClass="map" >
         <include refid="SELECT_ROLLUP_ATTRIBUTE_FRAGMENT"/>
-        and rollup_attribute.GROUP_BY_COLUMN_NAME = 'CONSTITUENT_ID';
+        and rollup_attribute.ROLLUP_ENTITY_TYPE = #entityType#;
     </select>
 
     <select id="SELECT_ROLLUP_ATTRIBUTE_BY_ID" resultMap="ROLLUP_ATTRIBUTE_RESULT" parameterClass="map" >
@@ -51,30 +43,28 @@
         and rollup_attribute.ROLLUP_ATTRIBUTE_ID = #id#
     </select>
 
+    <delete id="DELETE_ROLLUP_ATTRIBUTE_BY_ID" parameterClass="map" >
+        delete from ROLLUP_ATTRIBUTE
+        where SITE_NAME = #siteName#
+        and ROLLUP_ATTRIBUTE_ID = #id#
+    </delete>
+
     <insert id="INSERT_ROLLUP_ATTRIBUTE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupAttribute">
         insert into ROLLUP_ATTRIBUTE (
         	ROLLUP_ATTRIBUTE_ID,
         	ATTRIBUTE_DESC,
         	GROUP_BY_TYPE,
-        	TABLE_NAME,
-        	VALUE_COLUMN_NAME,
-        	IS_VALUE_CUSTOM_FIELD,
-        	CURRENCY_COLUMN_NAME,
-        	DATE_COLUMN_NAME,
-        	GROUP_BY_COLUMN_NAME,
-        	IS_GROUP_BY_CUSTOM_FIELD,
+        	ROLLUP_ENTITY_TYPE,
+        	ROLLUP_STAT_TYPE,
+        	CUSTOM_FIELD_NAME,
         	SITE_NAME        )
         values (
         	#id# ,
         	#attributeDesc# ,
         	#groupByType# ,
-        	#tableName# ,
-        	#valueColumnName# ,
-        	#isValueCustomField# ,
-        	#currencyColumnName# ,
-        	#dateColumnName# ,
-        	#groupByColumnName# ,
-        	#isGroupByCustomField# ,
+        	#rollupEntityType# ,
+        	#rollupStatType# ,
+        	#customFieldName# ,
         	#siteName#         )
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
@@ -87,13 +77,9 @@
         	ROLLUP_ATTRIBUTE_ID = #id# ,
         	ATTRIBUTE_DESC = #attributeDesc# ,
         	GROUP_BY_TYPE = #groupByType# ,
-        	TABLE_NAME = #tableName# ,
-        	VALUE_COLUMN_NAME = #valueColumnName# ,
-        	IS_VALUE_CUSTOM_FIELD = #isValueCustomField# ,
-        	CURRENCY_COLUMN_NAME = #currencyColumnName# ,
-        	DATE_COLUMN_NAME = #dateColumnName# ,
-        	GROUP_BY_COLUMN_NAME = #groupByColumnName# ,
-        	IS_GROUP_BY_CUSTOM_FIELD = #isGroupByCustomField# ,
+        	ROLLUP_ENTITY_TYPE = #rollupEntityType# ,
+        	ROLLUP_STAT_TYPE = #rollupStatType# ,
+        	CUSTOM_FIELD_NAME = #customFieldName# ,
         	SITE_NAME = #siteName#         
         where ROLLUP_ATTRIBUTE_ID = #id#
     </update>

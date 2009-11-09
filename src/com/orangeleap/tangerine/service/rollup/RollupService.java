@@ -33,7 +33,7 @@ public interface RollupService {
 
     public List<RollupSeries> getAllRollupSeries();
     public List<RollupAttribute> getAllRollupAttributes();
-    public List<RollupAttribute> getAllConstituentRollupAttributes();
+    public List<RollupAttribute> readAllRollupAttributesByType(String entityType);
 
     public RollupSeries maintainRollupSeries(RollupSeries rollupSeries);
     public RollupAttribute maintainRollupAttribute(RollupAttribute rollupAttribute);

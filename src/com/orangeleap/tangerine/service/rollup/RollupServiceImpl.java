@@ -77,8 +77,8 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	}
 
 	@Override
-    public List<RollupAttribute> getAllConstituentRollupAttributes() {
-		return rollupAttributeDao.readAllConstituentRollupAttributes(); 
+    public List<RollupAttribute> readAllRollupAttributesByType(String entityType) {
+		return rollupAttributeDao.readAllRollupAttributesByType(entityType); 
 	}
 
 	@Override
@@ -92,11 +92,13 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	}
 
 	@Override
-    public void deleteRollupSeriesById(Long id) { // check site
+    public void deleteRollupSeriesById(Long id) { 
+		rollupSeriesDao.deleteRollupSeriesById(id);
 	}
 	
 	@Override
-    public void deleteRollupAttributeById(Long id) { // check site
+    public void deleteRollupAttributeById(Long id) { 
+		rollupAttributeDao.deleteRollupAttributeById(id);
 	}
 
 	@Override

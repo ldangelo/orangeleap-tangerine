@@ -15,13 +15,9 @@ public class RollupAttribute implements GeneratedId, Serializable {
     private Long id;
     private String attributeDesc;
     private String groupByType;
-    private String tableName;
-    private String valueColumnName;
-    private boolean isValueCustomField;
-    private String currencyColumnName;
-    private String dateColumnName;
-    private String groupByColumnName;
-    private boolean isGroupByCustomField;
+    private String rollupEntityType;
+    private String rollupStatType;
+    private String customFieldName;
     private String siteName;
 	
     public RollupAttribute() { }
@@ -34,7 +30,6 @@ public class RollupAttribute implements GeneratedId, Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
     
     public String getAttributeDesc() {
         return attributeDesc;
@@ -44,7 +39,6 @@ public class RollupAttribute implements GeneratedId, Serializable {
         this.attributeDesc = attributeDesc;
     }
 
-    
     public String getGroupByType() {
         return groupByType;
     }
@@ -53,70 +47,30 @@ public class RollupAttribute implements GeneratedId, Serializable {
         this.groupByType = groupByType;
     }
 
+    public String getRollupEntityType() {
+        return rollupEntityType;
+    }
+
+    public void setRollupEntityType(String rollupEntityType) {
+        this.rollupEntityType = rollupEntityType;
+    }
     
-    public String getTableName() {
-        return tableName;
+	public String getRollupStatType() {
+		return rollupStatType;
+	}
+
+	public void setRollupStatType(String rollupStatType) {
+		this.rollupStatType = rollupStatType;
+	}
+
+    public String getCustomFieldName() {
+        return customFieldName;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setCustomFieldName(String customFieldName) {
+        this.customFieldName = customFieldName;
     }
-
-    
-    public String getValueColumnName() {
-        return valueColumnName;
-    }
-
-    public void setValueColumnName(String valueColumnName) {
-        this.valueColumnName = valueColumnName;
-    }
-
-    
-    public boolean getIsValueCustomField() {
-        return isValueCustomField;
-    }
-
-    public void setIsValueCustomField(boolean isValueCustomField) {
-        this.isValueCustomField = isValueCustomField;
-    }
-
-    
-    public String getCurrencyColumnName() {
-        return currencyColumnName;
-    }
-
-    public void setCurrencyColumnName(String currencyColumnName) {
-        this.currencyColumnName = currencyColumnName;
-    }
-
-    
-    public String getDateColumnName() {
-        return dateColumnName;
-    }
-
-    public void setDateColumnName(String dateColumnName) {
-        this.dateColumnName = dateColumnName;
-    }
-
-    
-    public String getGroupByColumnName() {
-        return groupByColumnName;
-    }
-
-    public void setGroupByColumnName(String groupByColumnName) {
-        this.groupByColumnName = groupByColumnName;
-    }
-
-    
-    public boolean getIsGroupByCustomField() {
-        return isGroupByCustomField;
-    }
-
-    public void setIsGroupByCustomField(boolean isGroupByCustomField) {
-        this.isGroupByCustomField = isGroupByCustomField;
-    }
-
-    
+	
     public String getSiteName() {
         return siteName;
     }
@@ -137,13 +91,9 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append(id, a.getId())
         .append(attributeDesc, a.getAttributeDesc())
         .append(groupByType, a.getGroupByType())
-        .append(tableName, a.getTableName())
-        .append(valueColumnName, a.getValueColumnName())
-        .append(isValueCustomField, a.getIsValueCustomField())
-        .append(currencyColumnName, a.getCurrencyColumnName())
-        .append(dateColumnName, a.getDateColumnName())
-        .append(groupByColumnName, a.getGroupByColumnName())
-        .append(isGroupByCustomField, a.getIsGroupByCustomField())
+        .append(rollupEntityType, a.getRollupEntityType())
+        .append(rollupStatType, a.getRollupStatType())
+        .append(customFieldName, a.getCustomFieldName())
         .append(siteName, a.getSiteName())
 		;
         return eb.isEquals();
@@ -156,13 +106,9 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append(""+id)
         .append(""+attributeDesc)
         .append(""+groupByType)
-        .append(""+tableName)
-        .append(""+valueColumnName)
-        .append(""+isValueCustomField)
-        .append(""+currencyColumnName)
-        .append(""+dateColumnName)
-        .append(""+groupByColumnName)
-        .append(""+isGroupByCustomField)
+        .append(""+rollupEntityType)
+        .append(""+rollupStatType)
+        .append(""+customFieldName)
         .append(""+siteName)
 		;
         return hcb.hashCode();
@@ -175,15 +121,12 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append("id", ""+id)
         .append("attributeDesc", ""+attributeDesc)
         .append("groupByType", ""+groupByType)
-        .append("tableName", ""+tableName)
-        .append("valueColumnName", ""+valueColumnName)
-        .append("isValueCustomField", ""+isValueCustomField)
-        .append("currencyColumnName", ""+currencyColumnName)
-        .append("dateColumnName", ""+dateColumnName)
-        .append("groupByColumnName", ""+groupByColumnName)
-        .append("isGroupByCustomField", ""+isGroupByCustomField)
+        .append("rollupEntityType", ""+rollupEntityType)
+        .append("rollupStatType", ""+rollupStatType)
+        .append("customFieldName", ""+customFieldName)
         .append("siteName", ""+siteName)
         .toString();
     }
+
 
 }

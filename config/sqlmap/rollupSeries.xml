@@ -38,6 +38,12 @@
         and rollup_series.ROLLUP_SERIES_ID = #id#
     </select>
 
+    <delete id="DELETE_ROLLUP_SERIES_BY_ID" parameterClass="map" >
+		delete from ROLLUP_SERIES where
+        where SITE_NAME = #siteName#
+        and ROLLUP_SERIES_ID = #id#
+    </delete>
+
     <insert id="INSERT_ROLLUP_SERIES" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupSeries">
         insert into ROLLUP_SERIES (
         	ROLLUP_SERIES_ID,

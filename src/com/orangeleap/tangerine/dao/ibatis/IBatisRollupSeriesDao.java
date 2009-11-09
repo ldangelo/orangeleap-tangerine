@@ -37,6 +37,16 @@ public class IBatisRollupSeriesDao extends AbstractIBatisDao implements RollupSe
     }
 
     @Override
+    public void deleteRollupSeriesById(Long id) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteRollupSeriesById: id = " + id);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", id);
+        getSqlMapClientTemplate().delete("DELETE_ROLLUP_SERIES_BY_ID", params);
+    }
+    
+    @Override
     public RollupSeries readRollupSeriesById(Long id) {
         if (logger.isTraceEnabled()) {
             logger.trace("readRollupSeriesById: id = " + id);

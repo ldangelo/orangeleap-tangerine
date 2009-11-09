@@ -8,6 +8,7 @@ public interface RollupSeriesDao {
 
     public RollupSeries readRollupSeriesById(Long id);
     public RollupSeries maintainRollupSeries(RollupSeries rollupSeries);
+    public void deleteRollupSeriesById(Long id);
     public List<RollupSeries> readAllRollupSeries();
 
 }

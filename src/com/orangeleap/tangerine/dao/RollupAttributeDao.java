@@ -8,7 +8,8 @@ public interface RollupAttributeDao {
 
     public RollupAttribute readRollupAttributeById(Long id);
     public RollupAttribute maintainRollupAttribute(RollupAttribute rollupAttribute);
+    public void deleteRollupAttributeById(Long id);
     public List<RollupAttribute> readAllRollupAttributes();
-    public List<RollupAttribute> readAllConstituentRollupAttributes();
+    public List<RollupAttribute> readAllRollupAttributesByType(String entityType);
 
 }

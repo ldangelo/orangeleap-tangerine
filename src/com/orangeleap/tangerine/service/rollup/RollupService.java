@@ -29,7 +29,7 @@ import com.orangeleap.tangerine.domain.rollup.RollupValue;
 
 public interface RollupService {
 	
-    public void validateCubeSize(RollupSeries rollupSeries, RollupAttribute rollupAttribute);
+    public boolean validateCubeSize(RollupSeries rollupSeries, RollupAttribute rollupAttribute);
 
     public List<RollupSeries> getAllRollupSeries();
     public List<RollupAttribute> getAllRollupAttributes();

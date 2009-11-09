@@ -15,7 +15,7 @@ public class RollupSeries implements GeneratedId, Serializable {
 
     private Long id;
     private String seriesDesc;
-    private String seriesType;
+    private RollupSeriesType seriesType;
     private Date beginDate;
     private Long maintainPeriods;
     private boolean keepUnmaintained;
@@ -42,11 +42,11 @@ public class RollupSeries implements GeneratedId, Serializable {
     }
 
     
-    public String getSeriesType() {
+    public RollupSeriesType getSeriesType() {
         return seriesType;
     }
 
-    public void setSeriesType(String seriesType) {
+    public void setSeriesType(RollupSeriesType seriesType) {
         this.seriesType = seriesType;
     }
 

@@ -33,6 +33,7 @@ import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
+import com.orangeleap.tangerine.domain.rollup.RollupSeriesType;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
@@ -60,12 +61,22 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     private TangerineUserHelper tangerineUserHelper;
     
     
+	// Determine if certain parameter combinations (such as daily x constituent) are unsupported. 
+	// Cardinality checks will not work for large number of obsolete designation codes
 	@Override
-    public void validateCubeSize(RollupSeries rollupSeries, RollupAttribute rollupAttribute) {
-    	// TODO Determine if parameter combinations (such as daily x constituent) are invalid. 
-		// TODO Prob not do basic cardinality checks (will not work for large number of obsolete designation codes)
-    }
-    
+    public boolean validateCubeSize(RollupSeries rollupSeries, RollupAttribute rollupAttribute) {
+		
+		RollupSeriesType rollupSeriesType = rollupSeries.getSeriesType();
+		
+		if (rollupAttribute.getRollupEntityType().equals("constituent")) {
+			 if ( RollupSeriesType.DAY.equals(rollupSeriesType) || RollupSeriesType.WEEK.equals(rollupSeriesType) )
+			    return false;
+		}
+		
+		return true;
+		
+	}
+	
 	@Override
     public List<RollupSeries> getAllRollupSeries() { 
 		return rollupSeriesDao.readAllRollupSeries();

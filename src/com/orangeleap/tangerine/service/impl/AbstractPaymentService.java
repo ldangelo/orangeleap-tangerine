@@ -86,7 +86,9 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
 		        addressAware.setAddress(existingAddress);
 		    }
 		    else {
-                addressAware.setAddress(addressService.save(newAddress));
+                if (StringUtils.trimToNull(newAddress.getAddressLine1()) != null) {
+                	addressAware.setAddress(addressService.save(newAddress));
+                }
             }
 	    }
     }
@@ -101,7 +103,9 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
 		        phoneAware.setPhone(existingPhone);
 		    }
 		    else {
-                phoneAware.setPhone(phoneService.save(newPhone));
+		    	if (StringUtils.trimToNull(newPhone.getNumber()) != null) {
+		    		phoneAware.setPhone(phoneService.save(newPhone));
+		    	}
             }
 	    }
     }
@@ -116,7 +120,9 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
 		        emailAware.setEmail(existingEmail);
 		    }
 		    else {
-                emailAware.setEmail(emailService.save(newEmail));
+		    	if (StringUtils.trimToNull(newEmail.getEmailAddress()) != null) {
+		    		emailAware.setEmail(emailService.save(newEmail));
+		    	}
             }
 	    }
     }

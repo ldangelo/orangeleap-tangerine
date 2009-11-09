@@ -25,13 +25,11 @@ import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.ArrayList;
 
 public class DistributionLinesValidator implements Validator {
 
@@ -77,6 +75,7 @@ public class DistributionLinesValidator implements Validator {
             amount = recurringGift.getAmountPerGift();
             lines = recurringGift.getDistributionLines();
         }
+        checkAmountsNotNegative(amount, lines, errors);
         if (total == null || amount == null || total.compareTo(amount) != 0) {
             if (lines != null) {
                 for (int x = 0; x < lines.size(); x++) {
@@ -85,6 +84,21 @@ public class DistributionLinesValidator implements Validator {
             }
             else {
                 errors.reject("errorDistributionLineAmounts");                
+            }
+        }
+    }
+
+    public void checkAmountsNotNegative(BigDecimal amount, List<DistributionLine> lines, Errors errors) {
+        if (amount != null && amount.compareTo(BigDecimal.ZERO) == -1) {
+            errors.rejectValue("amount", "errorAmountNegative");
+        }
+        int x = 0;
+        for (DistributionLine aLine : lines) {
+            if (aLine != null) {
+                if (aLine.getAmount() != null && aLine.getAmount().compareTo(BigDecimal.ZERO) == -1) {
+                    errors.rejectValue("distributionLines[" + x + "].amount", "errorIndividualDistributionLineAmountNegative");
+                }
+                x++;
             }
         }
     }

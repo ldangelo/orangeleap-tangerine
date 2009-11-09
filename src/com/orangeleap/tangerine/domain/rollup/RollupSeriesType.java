@@ -2,7 +2,8 @@ package com.orangeleap.tangerine.domain.rollup;
 
 public enum RollupSeriesType {
 	ALLTIME, 
-	YEAR, 
+	FISCAL_YEAR, 
+	CALENDAR_YEAR, 
 	MONTH,
 	WEEK, 
 	DAY

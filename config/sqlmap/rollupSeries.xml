@@ -6,8 +6,8 @@
         <result property="id" column="ROLLUP_SERIES_ROLLUP_SERIES_ID" />
         <result property="seriesDesc" column="ROLLUP_SERIES_SERIES_DESC" />
         <result property="seriesType" column="ROLLUP_SERIES_SERIES_TYPE" />
-        <result property="beginDate" column="ROLLUP_SERIES_BEGIN_DATE" />
         <result property="maintainPeriods" column="ROLLUP_SERIES_MAINTAIN_PERIODS" />
+        <result property="futurePeriods" column="ROLLUP_SERIES_FUTURE_PERIODS" />
         <result property="keepUnmaintained" column="ROLLUP_SERIES_KEEP_UNMAINTAINED" />
         <result property="siteName" column="ROLLUP_SERIES_SITE_NAME" />
     </resultMap>
@@ -16,8 +16,8 @@
         rollup_series.ROLLUP_SERIES_ID as ROLLUP_SERIES_ROLLUP_SERIES_ID,
         rollup_series.SERIES_DESC as ROLLUP_SERIES_SERIES_DESC,
         rollup_series.SERIES_TYPE as ROLLUP_SERIES_SERIES_TYPE,
-        rollup_series.BEGIN_DATE as ROLLUP_SERIES_BEGIN_DATE,
         rollup_series.MAINTAIN_PERIODS as ROLLUP_SERIES_MAINTAIN_PERIODS,
+        rollup_series.FUTURE_PERIODS as ROLLUP_SERIES_FUTURE_PERIODS,
         rollup_series.KEEP_UNMAINTAINED as ROLLUP_SERIES_KEEP_UNMAINTAINED,
         rollup_series.SITE_NAME as ROLLUP_SERIES_SITE_NAME    
     </sql>
@@ -49,16 +49,16 @@
         	ROLLUP_SERIES_ID,
         	SERIES_DESC,
         	SERIES_TYPE,
-        	BEGIN_DATE,
         	MAINTAIN_PERIODS,
+        	FUTURE_PERIODS,
         	KEEP_UNMAINTAINED,
         	SITE_NAME        )
         values (
         	#id# ,
         	#seriesDesc# ,
         	#seriesType# ,
-        	#beginDate# ,
         	#maintainPeriods# ,
+        	#futurePeriods# ,
         	#keepUnmaintained# ,
         	#siteName#         )
         <selectKey keyProperty="id" resultClass="long">
@@ -72,8 +72,8 @@
         	ROLLUP_SERIES_ID = #id# ,
         	SERIES_DESC = #seriesDesc# ,
         	SERIES_TYPE = #seriesType# ,
-        	BEGIN_DATE = #beginDate# ,
         	MAINTAIN_PERIODS = #maintainPeriods# ,
+        	FUTURE_PERIODS = #futurePeriods# ,
         	KEEP_UNMAINTAINED = #keepUnmaintained# ,
         	SITE_NAME = #siteName#         
         where ROLLUP_SERIES_ID = #id#

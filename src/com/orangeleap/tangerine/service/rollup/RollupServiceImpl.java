@@ -18,6 +18,9 @@
 
 package com.orangeleap.tangerine.service.rollup;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -30,12 +33,13 @@ import com.orangeleap.tangerine.dao.RollupSeriesDao;
 import com.orangeleap.tangerine.dao.RollupSeriesXAttributeDao;
 import com.orangeleap.tangerine.dao.RollupValueDao;
 import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesType;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
+import com.orangeleap.tangerine.domain.rollup.RollupValueSource;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -121,10 +125,16 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	public void maintainRollupSeriesForAttribute(Long attributeId, List<RollupSeriesXAttribute> rollupSeriesXAttributes) {
 		rollupSeriesXAttributeDao.maintainRollupSeriesXAttribute(attributeId, rollupSeriesXAttributes);
 	}
-    
 
 	@Override
-    public void updateRollupsForGift(Gift gift) {
+    public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId) {
+		return rollupValueDao.readRollupValuesByAttributeAndConstituentId(attributeId, constituentId);
+	}
+    
+	// Rollup values updaters
+	
+	@Override
+    public void updateRollupsForRollupValueSource(RollupValueSource rvs) {
 		//TODO
 	}
 	
@@ -134,9 +144,71 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	}
 
 	@Override
-    public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId) {
-		return rollupValueDao.readRollupValuesByAttributeAndConstituentId(attributeId, constituentId);
+    public void updateAllRollupsForSite() {
+		
+	    List<RollupAttribute> ras = getAllRollupAttributes(); /// or byConstituent for constituent rollup only
+	    for (RollupAttribute ra : ras) {
+	    	List<RollupSeriesXAttribute> rsxas = selectRollupSeriesForAttribute(ra.getId());
+	    	for (RollupSeriesXAttribute rsxa : rsxas) {
+	    		RollupSeries rs = rollupSeriesDao.readRollupSeriesById(rsxa.getRollupSeriesId());
+	    		List<RollupValue> rvs = generateRollupValuesDateRanges(rs, ra);
+	    		for (RollupValue rv : rvs) {
+	    			Date startDate = rv.getStartDate();
+	    			Date endDate = rv.getEndDate();
+	    			
+	    		}
+	    	}
+	    }
+		
 	}
-    
+	
+	// Create date range templates for series types
+	@Override
+	public List<RollupValue> generateRollupValuesDateRanges(RollupSeries rs, RollupAttribute ra) {
+		List<RollupValue> result = new ArrayList<RollupValue>();
+		
+		// Determine start date, number and amount of increments based on series type.
+		// number of future periods (subtract from total #of periods) - would be 1 less than total for current and future only
+		Date beginDate = null;
+		int datefield = Calendar.YEAR;
+		int incrementAmount = 1;
+		RollupSeriesType rst = rs.getSeriesType();
+		if (rst.equals(RollupSeriesType.ALLTIME)) {
+			RollupValue rv = new RollupValue();
+			rv.setStartDate(CustomField.PAST_DATE);
+			rv.setEndDate(CustomField.FUTURE_DATE);
+			result.add(rv);
+			return result;
+		} else if (rst.equals(RollupSeriesType.CALENDAR_YEAR)) {
+			datefield = Calendar.YEAR;
+		} else if (rst.equals(RollupSeriesType.FISCAL_YEAR)) {
+			// TODO from beginDate = siteoptons
+			datefield = Calendar.YEAR;
+		} else if (rst.equals(RollupSeriesType.MONTH)) {
+			datefield = Calendar.MONTH;
+		} else if (rst.equals(RollupSeriesType.WEEK)) {
+			datefield = Calendar.DAY_OF_YEAR;
+			incrementAmount = 7;
+		} else if (rst.equals(RollupSeriesType.DAY)) {
+			datefield = Calendar.DATE;
+		} 
+		
+		// Generate date ranges
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(beginDate);
+		for (int i = 0; i < rs.getMaintainPeriods(); i++) {
+			RollupValue rv = new RollupValue();
+			rv.setStartDate(cal.getTime());
+			cal.add(datefield, incrementAmount);
+			Calendar cal2 = Calendar.getInstance();
+			cal2.setTime(cal.getTime());
+			cal2.add(Calendar.DATE, -1);
+			rv.setEndDate(cal2.getTime());
+			result.add(rv);
+		}
+		
+		return result;
+	}
+
 
 }

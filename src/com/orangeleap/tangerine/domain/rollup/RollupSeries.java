@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.domain.rollup;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -16,8 +15,8 @@ public class RollupSeries implements GeneratedId, Serializable {
     private Long id;
     private String seriesDesc;
     private RollupSeriesType seriesType;
-    private Date beginDate;
     private Long maintainPeriods;
+    private Long futurePeriods;
     private boolean keepUnmaintained;
     private String siteName;
 	
@@ -49,16 +48,6 @@ public class RollupSeries implements GeneratedId, Serializable {
     public void setSeriesType(RollupSeriesType seriesType) {
         this.seriesType = seriesType;
     }
-
-    
-    public Date getBeginDate() {
-        return beginDate;
-    }
-
-    public void setBeginDate(Date beginDate) {
-        this.beginDate = beginDate;
-    }
-
     
     public Long getMaintainPeriods() {
         return maintainPeriods;
@@ -68,6 +57,13 @@ public class RollupSeries implements GeneratedId, Serializable {
         this.maintainPeriods = maintainPeriods;
     }
 
+	public Long getFuturePeriods() {
+		return futurePeriods;
+	}
+
+	public void setFuturePeriods(Long futurePeriods) {
+		this.futurePeriods = futurePeriods;
+	}
     
     public boolean getKeepUnmaintained() {
         return keepUnmaintained;
@@ -98,8 +94,8 @@ public class RollupSeries implements GeneratedId, Serializable {
         .append(id, a.getId())
         .append(seriesDesc, a.getSeriesDesc())
         .append(seriesType, a.getSeriesType())
-        .append(beginDate, a.getBeginDate())
         .append(maintainPeriods, a.getMaintainPeriods())
+        .append(futurePeriods, a.getFuturePeriods())
         .append(keepUnmaintained, a.getKeepUnmaintained())
         .append(siteName, a.getSiteName())
 		;
@@ -113,8 +109,8 @@ public class RollupSeries implements GeneratedId, Serializable {
         .append(""+id)
         .append(""+seriesDesc)
         .append(""+seriesType)
-        .append(""+beginDate)
         .append(""+maintainPeriods)
+        .append(""+futurePeriods)
         .append(""+keepUnmaintained)
         .append(""+siteName)
 		;
@@ -128,11 +124,12 @@ public class RollupSeries implements GeneratedId, Serializable {
         .append("id", ""+id)
         .append("seriesDesc", ""+seriesDesc)
         .append("seriesType", ""+seriesType)
-        .append("beginDate", ""+beginDate)
         .append("maintainPeriods", ""+maintainPeriods)
+        .append("futurePeriods", ""+futurePeriods)
         .append("keepUnmaintained", ""+keepUnmaintained)
         .append("siteName", ""+siteName)
         .toString();
     }
+
 
 }

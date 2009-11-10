@@ -47,6 +47,9 @@ public final class StringConstants {
     public static final String PHONE_ID = "phoneId";
     public static final String PHONE_TYPE = "phoneType";
     public static final String SELECTED_PHONE = "selectedPhone";
+    
+    public static final String FY_START_MONTH_SITE_OPTION_KEY = "fiscal.year.starting.month";
+    public static final String FY_START_DATE_SITE_OPTION_KEY = "fiscal.year.starting.date";
 
     public static final String GIFT = "gift";
     public static final String GIFTS = "gifts";

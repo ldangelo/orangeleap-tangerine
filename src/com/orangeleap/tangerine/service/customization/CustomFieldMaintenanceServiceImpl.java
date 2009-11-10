@@ -146,12 +146,16 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         }
         
         if (hasAdjustmentPage(customFieldRequest.getEntityType())) {
+            String pageName = StringUtils.capitalize(sPageType);
 
-            PageType adjustedPage = PageType.valueOf("adjusted" + StringUtils.capitalize(sPageType));
-            addSectionFieldsAndValidations(adjustedPage, customFieldRequest, readOnlyFieldDefinition, site);
-            
-            PageType adjustedViewPage = PageType.valueOf("adjusted" + StringUtils.capitalize(sPageType) + "View");
-            addSectionFieldsAndValidations(adjustedViewPage, customFieldRequest, readOnlyFieldDefinition, site);
+            PageType adjustedPage = PageType.valueOf("adjusted" + pageName);
+            addSectionFieldsAndValidations(adjustedPage, customFieldRequest, fieldDefinition, site);
+
+            PageType adjustedPaidPage = PageType.valueOf("adjusted" + pageName + "Paid");
+            addSectionFieldsAndValidations(adjustedPaidPage, customFieldRequest, readOnlyFieldDefinition, site);
+
+            PageType adjustedPostedPage = PageType.valueOf("adjusted" + pageName + "Posted");
+            addSectionFieldsAndValidations(adjustedPostedPage, customFieldRequest, readOnlyFieldDefinition, site);
             
         }
         

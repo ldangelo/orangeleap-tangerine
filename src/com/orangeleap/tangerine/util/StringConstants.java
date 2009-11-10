@@ -202,5 +202,4 @@ public final class StringConstants {
     public static final String DATE = "date";
     public static final String DATE_FORMAT = "dateFormat";
     public static final String DIRECTION = "direction";
-
 }

@@ -8,6 +8,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -187,5 +188,12 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
                 assert adjustedGift.getDistributionLines().size() == 2;
             }
         }
+    }
+
+    @Test(groups = { "testReadAdjustedGift" })
+    public void testReadTotalAdjustedAmountByConstituentId() throws Exception {
+        BigDecimal amount = adjustedGiftDao.readTotalAdjustedAmountByConstituentId(200L);
+        Assert.assertNotNull(amount);
+        Assert.assertEquals(new BigDecimal("-181.00"), amount);
     }
 }

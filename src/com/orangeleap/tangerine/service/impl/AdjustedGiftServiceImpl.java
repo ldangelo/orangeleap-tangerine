@@ -288,4 +288,12 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         }
         return adjustedGiftDao.readCountByConstituentGiftId(constituentId, giftId);
     }
+
+    @Override
+    public BigDecimal readTotalAdjustedAmountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readTotalAdjustedAmountByConstituentId: constituentId = " + constituentId);
+        }
+        return adjustedGiftDao.readTotalAdjustedAmountByConstituentId(constituentId);
+    }
 }

@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public interface GiftService {
 
@@ -69,7 +70,11 @@ public interface GiftService {
 
     public void checkAssociatedRecurringGiftIds(Gift gift);
 
+    List<Gift> readGiftsBySegmentationReportIds(Set<Long> reportIds, SortInfo sort, Locale locale);
+
     Gift reprocessGift(Gift gift) throws BindException;
+
+    Map<String, Object> readNumGiftsTotalAmount(Long constituentId);
 
     List<Gift> readAllGiftsByConstituentId(Long constituentId, SortInfo sort, Locale locale);
 

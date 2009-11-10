@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @Repository("giftDAO")
 public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements GiftDao {
@@ -244,6 +245,21 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
                 getSqlMapClientTemplate().insert("INSERT_RECURRING_GIFT_GIFT", paramMap);
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Gift> readGiftsBySegmentationReportIds(Set<Long> reportIds, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsBySegmentationReportIds: reportIds = " + reportIds + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.GIFT, "GIFT.GIFT_LIST_RESULT",
+                sortPropertyName, direction, start, limit, locale);
+        params.put("reportIds", new ArrayList<Long>(reportIds));
+
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_SEGMENTATION_RESULT_ID", params);
     }
 
     @SuppressWarnings("unchecked")

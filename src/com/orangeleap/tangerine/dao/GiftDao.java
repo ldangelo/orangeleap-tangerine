@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Locale;
+import java.util.Set;
 
 public interface GiftDao {
 
@@ -47,6 +48,9 @@ public interface GiftDao {
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
     public List<Constituent> analyzeLapsedDonor(Date beginDate, Date currentDate);
+
+    List<Gift> readGiftsBySegmentationReportIds(Set<Long> reportIds, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
 
     public PaginatedResult readPaginatedGiftListByConstituentId(Long constituentId, SortInfo sortinfo);
 

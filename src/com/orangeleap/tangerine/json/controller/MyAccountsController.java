@@ -18,26 +18,23 @@
 
 package com.orangeleap.tangerine.json.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller used by the sidebar to get the accounts for
@@ -79,22 +76,13 @@ public class MyAccountsController {
 
                 Long acctId = Long.parseLong(account);
                 Constituent client = constituentService.readConstituentById(acctId);
+                Map<String, Object> map = giftService.readNumGiftsTotalAmount(client.getId());
 
-                BigDecimal totalGiving = new BigDecimal(0);
-
-                List<Gift> giftList = giftService.readMonetaryGifts(client.getId());
-                for (Gift gft : giftList) {
-                    totalGiving = totalGiving.add(gft.getAmount() == null ? BigDecimal.ZERO : gft.getAmount());
-                }
-
-
-                response.add(fromConstituent(client, totalGiving, giftList.size()));
+                response.add(fromConstituent(client, (BigDecimal) map.get(StringConstants.AMOUNT), (Integer) map.get("giftCount")));
             }
         }
 
-        ModelMap model = new ModelMap("data", response);
-
-        return model;
+        return new ModelMap("data", response);
     }
 
     @SuppressWarnings("unchecked")

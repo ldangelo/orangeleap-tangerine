@@ -9,9 +9,10 @@ import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 @Repository("adjustedGiftDAO")
 public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<AdjustedGift> implements AdjustedGiftDao {
@@ -104,5 +105,15 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
         params.put(StringConstants.GIFT_ID, giftId);
         return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_ADJUSTED_GIFTS_COUNT_BY_CONSTITUENT_GIFT_ID", params);
+    }
+
+    @Override
+    public BigDecimal readTotalAdjustedAmountByConstituentId(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readTotalAdjustedAmountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return (BigDecimal) getSqlMapClientTemplate().queryForObject("SELECT_SUM_ADJUSTED_GIFTS_AMOUNT_BY_CONSTITUENT_ID", params);
     }
 }

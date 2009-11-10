@@ -60,4 +60,6 @@ public interface AdjustedGiftService {
     List<AdjustedGift> readAllAdjustedGiftsByConstituentGiftId(Long constituentId, Long giftId, SortInfo sort, Locale locale);
 
     int readCountByConstituentGiftId(Long constituentId, Long giftId);
+
+    BigDecimal readTotalAdjustedAmountByConstituentId(Long constituentId);
 }

@@ -22,9 +22,11 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class IBatisGiftDaoTest extends AbstractIBatisTest {
 
@@ -477,6 +479,38 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     Assert.assertEquals("Id = " + constituent.getId(), true, false);
             }
         }
+    }
+
+    @Test(groups = { "testReadGiftsBySegmentationReportIds" })
+    public void testReadGiftsBySegmentationReportIds() {
+        Set<Long> reportIds = new HashSet<Long>();
+        reportIds.add(1L);
+        List<Gift> gifts = giftDao.readGiftsBySegmentationReportIds(reportIds, "transactionDate", "ASC", 0, 100, Locale.US);
+        Assert.assertNotNull(gifts);
+        Assert.assertEquals(4, gifts.size());
+        for (Gift gift : gifts) {
+            Assert.assertTrue(gift.getId() == 100L || gift.getId() == 200L || gift.getId() == 300L || gift.getId() == 400L);
+        }
+
+        reportIds = new HashSet<Long>();
+        reportIds.add(0L);
+        gifts = giftDao.readGiftsBySegmentationReportIds(reportIds, "transactionDate", "ASC", 0, 100, Locale.US);
+        Assert.assertNotNull(gifts);
+        Assert.assertTrue(gifts.isEmpty());
+        
+        reportIds = new HashSet<Long>();
+        reportIds.add(2L);
+        gifts = giftDao.readGiftsBySegmentationReportIds(reportIds, "transactionDate", "ASC", 0, 100, Locale.US);
+        Assert.assertNotNull(gifts);
+        Assert.assertEquals(1, gifts.size());
+        Assert.assertEquals(new Long(500L), gifts.get(0).getId());
+
+        reportIds = new HashSet<Long>();
+        reportIds.add(3L);
+        gifts = giftDao.readGiftsBySegmentationReportIds(reportIds, "transactionDate", "ASC", 0, 100, Locale.US);
+        Assert.assertNotNull(gifts);
+        Assert.assertEquals(1, gifts.size());
+        Assert.assertEquals(new Long(600L), gifts.get(0).getId());
     }
 
     @Test(groups = { "testSearchGifts" })

@@ -137,6 +137,14 @@
         and ag.GIFT_ID = #giftId#
     </select>
 
+    <select id="SELECT_SUM_ADJUSTED_GIFTS_AMOUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="decimal">
+        select sum(ag.ADJUSTED_AMOUNT)
+        from ADJUSTED_GIFT ag
+        inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and ag.CONSTITUENT_ID = #constituentId#
+    </select>
+
 	<select id="SELECT_POST_BATCH_REVIEW_SET_ITEMS_ADJUSTED_GIFT_PAGINATED" resultMap="ADJUSTED_GIFT_RESULT" parameterClass="map" >
 		select
 		<include refid="ADJUSTED_GIFT_COLS_FRAGMENT" />,

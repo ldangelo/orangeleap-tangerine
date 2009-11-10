@@ -28,6 +28,7 @@ import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.integration.NewGift;
+import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
@@ -58,6 +59,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -82,6 +84,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
+
+    @Resource(name = "adjustedGiftService")
+    private AdjustedGiftService adjustedGiftService;
 
 	@Resource(name = "fieldService")
 	private FieldService fieldService;
@@ -352,6 +357,33 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
+    public Map<String, Object> readNumGiftsTotalAmount(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readNumGiftsTotalAmount: constituentId = " + constituentId);
+        }
+        List<Gift> gifts = readMonetaryGifts(constituentId);
+        int giftCount = 0;
+        BigDecimal amount = BigDecimal.ZERO;
+        if (gifts != null) {
+            for (Gift gift : gifts) {
+                if (Gift.STATUS_PAID.equals(gift.getGiftStatus()) && gift.getAmount() != null) {
+                    giftCount++;
+                    amount = amount.add(gift.getAmount());
+                }
+            }
+        }
+        BigDecimal adjustedAmt = adjustedGiftService.readTotalAdjustedAmountByConstituentId(constituentId);
+        if (adjustedAmt != null) {
+            amount = amount.add(adjustedAmt);
+        }
+
+        Map<String, Object> returnMap = new HashMap<String, Object>(2);
+        returnMap.put("giftCount", giftCount);
+        returnMap.put(StringConstants.AMOUNT, amount);
+        return returnMap;
+    }
+
+    @Override
     public PaginatedResult readPaginatedGiftList(Long constituentId, SortInfo sortinfo) {
         if (logger.isTraceEnabled()) {
             logger.trace("readPaginatedMonetaryGifts: constituentId = " + constituentId);
@@ -588,6 +620,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                 }
             }
         }
+    }
+
+    @Override
+    public List<Gift> readGiftsBySegmentationReportIds(Set<Long> reportIds, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsBySegmentationReportIds: reportIds = " + reportIds + " sort = " + sort);
+        }
+        return giftDao.readGiftsBySegmentationReportIds(reportIds, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
     }
 
     @Override

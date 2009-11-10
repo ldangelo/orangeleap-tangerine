@@ -277,6 +277,29 @@
         limit $offset$,$limit$
 	</select>    
 
+    <select id="SELECT_GIFTS_BY_SEGMENTATION_RESULT_ID" resultMap="GIFT_LIST_RESULT" parameterClass="map">
+        select
+        <include refid="GIFT_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
+
+        from GIFT g
+        inner join THEGURU_SEGMENTATION_RESULT res on g.GIFT_ID = res.ENTITY_ID
+        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+
+        where p.SITE_NAME = #siteName#
+        and g.GIFT_TYPE != 'GIFT_IN_KIND'
+        and res.REPORT_ID in
+        <iterate property="reportIds" conjunction="," open="(" close=")">
+            #reportIds[]#
+        </iterate>
+        order by
+        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		insert into GIFT (GIFT_STATUS, GIFT_TYPE, AMOUNT, AUTH_CODE, AVS_MESSAGE, 
 		CHECK_NUMBER, COMMENTS,

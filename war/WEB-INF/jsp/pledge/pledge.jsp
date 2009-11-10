@@ -37,6 +37,7 @@
 			<page:param name="scripts">
 				<script type="text/javascript" src="js/gift/recurringGiftCalc.js"></script>
 				<script type="text/javascript" src="js/gift/distribution.js"></script>
+                <script type="text/javascript" src="js/pledge/pledge.js"></script>
                 <script type="text/javascript">
                     $(function() {
                         $("#cancelButton").click(function() {

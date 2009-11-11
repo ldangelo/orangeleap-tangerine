@@ -141,8 +141,8 @@
 	     	<transaction src="${basedir}/db/prod/picklists/tributePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/tributeOccasionPicklist.sql"/>
             <transaction src="${basedir}/db/prod/picklists/sourcePicklist.sql"/>
+            <transaction src="${basedir}/db/prod/picklists/batchGiftFieldsPicklist.sql"/>
 
-			
 	     </sql>
 	</target>
 

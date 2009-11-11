@@ -5,7 +5,6 @@
     <resultMap id="ROLLUP_ATTRIBUTE_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupAttribute">
         <result property="id" column="ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID" />
         <result property="attributeDesc" column="ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC" />
-        <result property="groupByType" column="ROLLUP_ATTRIBUTE_GROUP_BY_TYPE" />
         <result property="rollupEntityType" column="ROLLUP_ATTRIBUTE_ROLLUP_ENTITY_TYPE" />
         <result property="rollupStatType" column="ROLLUP_ATTRIBUTE_ROLLUP_STAT_TYPE" />
         <result property="customFieldName" column="ROLLUP_ATTRIBUTE_CUSTOM_FIELD_NAME" />
@@ -15,7 +14,6 @@
     <sql id="ROLLUP_ATTRIBUTE_COLS_FRAGMENT">
         rollup_attribute.ROLLUP_ATTRIBUTE_ID as ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID,
         rollup_attribute.ATTRIBUTE_DESC as ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC,
-        rollup_attribute.GROUP_BY_TYPE as ROLLUP_ATTRIBUTE_GROUP_BY_TYPE,
         rollup_attribute.ROLLUP_ENTITY_TYPE as ROLLUP_ATTRIBUTE_ROLLUP_ENTITY_TYPE,
         rollup_attribute.ROLLUP_STAT_TYPE as ROLLUP_ATTRIBUTE_ROLLUP_STAT_TYPE,
         rollup_attribute.CUSTOM_FIELD_NAME as ROLLUP_ATTRIBUTE_CUSTOM_FIELD_NAME,
@@ -53,7 +51,6 @@
         insert into ROLLUP_ATTRIBUTE (
         	ROLLUP_ATTRIBUTE_ID,
         	ATTRIBUTE_DESC,
-        	GROUP_BY_TYPE,
         	ROLLUP_ENTITY_TYPE,
         	ROLLUP_STAT_TYPE,
         	CUSTOM_FIELD_NAME,
@@ -61,7 +58,6 @@
         values (
         	#id# ,
         	#attributeDesc# ,
-        	#groupByType# ,
         	#rollupEntityType# ,
         	#rollupStatType# ,
         	#customFieldName# ,
@@ -76,7 +72,6 @@
         SET 
         	ROLLUP_ATTRIBUTE_ID = #id# ,
         	ATTRIBUTE_DESC = #attributeDesc# ,
-        	GROUP_BY_TYPE = #groupByType# ,
         	ROLLUP_ENTITY_TYPE = #rollupEntityType# ,
         	ROLLUP_STAT_TYPE = #rollupStatType# ,
         	CUSTOM_FIELD_NAME = #customFieldName# ,

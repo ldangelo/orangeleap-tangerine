@@ -14,7 +14,6 @@ public class RollupAttribute implements GeneratedId, Serializable {
 
     private Long id;
     private String attributeDesc;
-    private String groupByType;
     private String rollupEntityType;
     private String rollupStatType;
     private String customFieldName;
@@ -37,14 +36,6 @@ public class RollupAttribute implements GeneratedId, Serializable {
 
     public void setAttributeDesc(String attributeDesc) {
         this.attributeDesc = attributeDesc;
-    }
-
-    public String getGroupByType() {
-        return groupByType;
-    }
-
-    public void setGroupByType(String groupByType) {
-        this.groupByType = groupByType;
     }
 
     public String getRollupEntityType() {
@@ -90,7 +81,6 @@ public class RollupAttribute implements GeneratedId, Serializable {
         eb
         .append(id, a.getId())
         .append(attributeDesc, a.getAttributeDesc())
-        .append(groupByType, a.getGroupByType())
         .append(rollupEntityType, a.getRollupEntityType())
         .append(rollupStatType, a.getRollupStatType())
         .append(customFieldName, a.getCustomFieldName())
@@ -105,7 +95,6 @@ public class RollupAttribute implements GeneratedId, Serializable {
         hcb
         .append(""+id)
         .append(""+attributeDesc)
-        .append(""+groupByType)
         .append(""+rollupEntityType)
         .append(""+rollupStatType)
         .append(""+customFieldName)
@@ -120,7 +109,6 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append(super.toString())
         .append("id", ""+id)
         .append("attributeDesc", ""+attributeDesc)
-        .append("groupByType", ""+groupByType)
         .append("rollupEntityType", ""+rollupEntityType)
         .append("rollupStatType", ""+rollupStatType)
         .append("customFieldName", ""+customFieldName)

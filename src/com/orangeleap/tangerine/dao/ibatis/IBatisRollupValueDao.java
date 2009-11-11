@@ -83,6 +83,8 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
         params.put("rollupAttributeId", rs.getId());
         params.put("startDate", startDate);
         params.put("endDate", endDate);
+        params.put("fieldName", ra.getFieldName());
+        params.put("customFieldName", ra.getCustomFieldName());
         String sqlid = "ROLLUP_ " + ra.getRollupStatType();
         getSqlMapClientTemplate().insert(sqlid, params);
     }

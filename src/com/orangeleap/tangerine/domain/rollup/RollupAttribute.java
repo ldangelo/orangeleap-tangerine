@@ -16,6 +16,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
     private String attributeDesc;
     private String rollupEntityType;
     private String rollupStatType;
+    private String fieldName;
     private String customFieldName;
     private String siteName;
 	
@@ -54,6 +55,14 @@ public class RollupAttribute implements GeneratedId, Serializable {
 		this.rollupStatType = rollupStatType;
 	}
 
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+	
     public String getCustomFieldName() {
         return customFieldName;
     }
@@ -83,6 +92,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append(attributeDesc, a.getAttributeDesc())
         .append(rollupEntityType, a.getRollupEntityType())
         .append(rollupStatType, a.getRollupStatType())
+        .append(fieldName, a.getFieldName())
         .append(customFieldName, a.getCustomFieldName())
         .append(siteName, a.getSiteName())
 		;
@@ -97,6 +107,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append(""+attributeDesc)
         .append(""+rollupEntityType)
         .append(""+rollupStatType)
+        .append(""+fieldName)
         .append(""+customFieldName)
         .append(""+siteName)
 		;
@@ -111,6 +122,7 @@ public class RollupAttribute implements GeneratedId, Serializable {
         .append("attributeDesc", ""+attributeDesc)
         .append("rollupEntityType", ""+rollupEntityType)
         .append("rollupStatType", ""+rollupStatType)
+        .append("fieldName", ""+fieldName)
         .append("customFieldName", ""+customFieldName)
         .append("siteName", ""+siteName)
         .toString();

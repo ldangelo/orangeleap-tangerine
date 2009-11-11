@@ -7,6 +7,7 @@
         <result property="attributeDesc" column="ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC" />
         <result property="rollupEntityType" column="ROLLUP_ATTRIBUTE_ROLLUP_ENTITY_TYPE" />
         <result property="rollupStatType" column="ROLLUP_ATTRIBUTE_ROLLUP_STAT_TYPE" />
+        <result property="fieldName" column="ROLLUP_ATTRIBUTE_FIELD_NAME" />
         <result property="customFieldName" column="ROLLUP_ATTRIBUTE_CUSTOM_FIELD_NAME" />
         <result property="siteName" column="ROLLUP_ATTRIBUTE_SITE_NAME" />
     </resultMap>
@@ -16,6 +17,7 @@
         rollup_attribute.ATTRIBUTE_DESC as ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC,
         rollup_attribute.ROLLUP_ENTITY_TYPE as ROLLUP_ATTRIBUTE_ROLLUP_ENTITY_TYPE,
         rollup_attribute.ROLLUP_STAT_TYPE as ROLLUP_ATTRIBUTE_ROLLUP_STAT_TYPE,
+        rollup_attribute.FIELD_NAME as ROLLUP_ATTRIBUTE_FIELD_NAME,
         rollup_attribute.CUSTOM_FIELD_NAME as ROLLUP_ATTRIBUTE_CUSTOM_FIELD_NAME,
         rollup_attribute.SITE_NAME as ROLLUP_ATTRIBUTE_SITE_NAME    
     </sql>
@@ -53,6 +55,7 @@
         	ATTRIBUTE_DESC,
         	ROLLUP_ENTITY_TYPE,
         	ROLLUP_STAT_TYPE,
+        	FIELD_NAME,
         	CUSTOM_FIELD_NAME,
         	SITE_NAME        )
         values (
@@ -60,6 +63,7 @@
         	#attributeDesc# ,
         	#rollupEntityType# ,
         	#rollupStatType# ,
+        	#fieldName# ,
         	#customFieldName# ,
         	#siteName#         )
         <selectKey keyProperty="id" resultClass="long">
@@ -74,6 +78,7 @@
         	ATTRIBUTE_DESC = #attributeDesc# ,
         	ROLLUP_ENTITY_TYPE = #rollupEntityType# ,
         	ROLLUP_STAT_TYPE = #rollupStatType# ,
+        	FIELD_NAME = #fieldName# ,
         	CUSTOM_FIELD_NAME = #customFieldName# ,
         	SITE_NAME = #siteName#         
         where ROLLUP_ATTRIBUTE_ID = #id#

@@ -57,5 +57,6 @@
     <sqlMap resource="sqlmap/rollupAttribute.xml"/>
     <sqlMap resource="sqlmap/rollupSeriesXAttribute.xml"/>
     <sqlMap resource="sqlmap/rollupValue.xml"/>
+    <sqlMap resource="sqlmap/rollupStatType.xml"/>
 
 </sqlMapConfig>

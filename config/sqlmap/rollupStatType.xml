@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ROLLUP_STAT">
+
+    <sql id="SELECT_INTO_RV_FRAG">
+        insert into ROLLUP_VALUE (
+            ROLLUP_SERIES_ID,
+        	ROLLUP_ATTRIBUTE_ID,
+        	START_DATE,
+        	END_DATE,
+        	GROUP_BY_VALUE,
+        	CURRENCY_CODE,
+        	COUNT_VALUE,        
+        	SUM_VALUE        
+        )
+        select
+        	#rollupSeriesId#,
+        	#rollupAttributeId#,
+        	#startDate#,
+        	#endDate#,
+ 	</sql>
+
+	<delete id="ROLLUP_DELETE_ROLLUP_VALUES_FOR_ATTRIBUTE_SERIES">
+		delete from ROLLUP_VALUE 
+		where 
+		ROLLUP_SERIES_ID = #rollupSeriesId# 
+		and ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
+        and START_DATE &gt;= #startDate# 
+        and END_DATE &lt;= #endDate#
+	</delete>
+
+	<!-- 
+	The first column in the queries is the group-by dimension value (e.g. CONSTITUENT_ID) which corresponds to the rollup attribute entity type (e.g. 'constituent').
+	The iBatis query id corresponds to the RollupAttribute stat type.
+	-->
+	
+    <insert id="ROLLUP_CONSTITUENT_GIFT_AMOUNT" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupValue">
+        <include refid="SELECT_INTO_RV_FRAG"/>
+        		CONSTITUENT_ID,
+        		CURRENCY_CODE,
+            	COUNT(AMOUNT),
+            	SUM(AMOUNT),
+            from 
+            	GIFT	
+        	where
+        		DONATION_DATE &gt;= #startDate# and DONATION_DATE &lt;= #endDate#
+            group by 
+        		CONSTITUENT_ID,
+        		CURRENCY_CODE
+    </insert>
+
+    <insert id="ROLLUP_CONSTITUENT_ADJUSTED_GIFT_AMOUNT" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupValue">
+        <include refid="SELECT_INTO_RV_FRAG"/>
+        		g.CONSTITUENT_ID,
+        		g.CURRENCY_CODE,
+            	COUNT(ag.ADJUSTED_AMOUNT),
+            	SUM(ag.ADJUSTED_AMOUNT)
+            from 
+            	ADJUSTED_GIFT ag, GIFT g
+        	where
+        		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
+        		and g.GIFT_ID = ag.GIFT_ID
+            group by 
+        		g.CONSTITUENT_ID,
+        		g.CURRENCY_CODE
+    </insert>
+  
+    <insert id="ROLLUP_CONSTITUENT_SOFT_GIFT_AMOUNT" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupValue">
+        <include refid="SELECT_INTO_RV_FRAG"/>
+        		cf.FIELD_VALUE as CONSTITUENT_ID,
+        		g.CURRENCY_CODE,
+            	COUNT(dl.AMOUNT),
+            	SUM(dl.AMOUNT),
+            from 
+            	GIFT g, DISTRO_LINE dl, CUSTOM_FIELD cf
+        	where
+        		DONATION_DATE &gt;= #startDate# and DONATION_DATE &lt;= #endDate#
+        		and g.GIFT_ID = dl.GIFT_ID
+        		and cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.FIELD_NAME='onBehalfOf' and cf.entityType='distributionline'  
+            group by 
+        		cf.FIELD_VALUE,
+        		g.CURRENCY_CODE
+    </insert>
+   
+
+</sqlMap>
+

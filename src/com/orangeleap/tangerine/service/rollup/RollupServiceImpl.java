@@ -37,7 +37,6 @@ import com.orangeleap.tangerine.dao.RollupAttributeDao;
 import com.orangeleap.tangerine.dao.RollupSeriesDao;
 import com.orangeleap.tangerine.dao.RollupSeriesXAttributeDao;
 import com.orangeleap.tangerine.dao.RollupValueDao;
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
@@ -49,7 +48,6 @@ import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 @Service("rollupService")
 public class RollupServiceImpl extends AbstractTangerineService implements RollupService {
@@ -68,9 +66,6 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     @Resource(name = "rollupValueDAO")
     private RollupValueDao rollupValueDao;
 
-    @Resource(name = "tangerineUserHelper")
-    private TangerineUserHelper tangerineUserHelper;
-    
     @Resource(name = "siteService")
     private SiteService siteService;
     
@@ -83,7 +78,11 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 		RollupSeriesType rollupSeriesType = rollupSeries.getSeriesType();
 		
 		if (rollupAttribute.getRollupEntityType().equals("constituent")) {
-			 if ( RollupSeriesType.DAY.equals(rollupSeriesType) || RollupSeriesType.WEEK.equals(rollupSeriesType) )
+			 if ( 
+				 RollupSeriesType.DAY.equals(rollupSeriesType) 
+				 || RollupSeriesType.WEEK.equals(rollupSeriesType) 
+				 || RollupSeriesType.MONTH.equals(rollupSeriesType) 
+			 	)
 			    return false;
 		}
 		
@@ -147,34 +146,38 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     public void updateRollupsForRollupValueSource(RollupValueSource rvs) {
 		//TODO
 	}
-	
-	@Override
-    public void updateRollupsForConstituent(Constituent constituent) {
-		//TODO
-	}
 
 	@Override
     public void updateAllRollupsForSite() {
-		
-	    List<RollupAttribute> ras = getAllRollupAttributes(); /// or byConstituent for constituent rollup only
+	    List<RollupAttribute> ras = getAllRollupAttributes(); 
+	    updateRollups(ras);
+	}
+	
+	private void updateRollups(List<RollupAttribute> ras) {
 	    for (RollupAttribute ra : ras) {
 	    	List<RollupSeriesXAttribute> rsxas = selectRollupSeriesForAttribute(ra.getId());
 	    	for (RollupSeriesXAttribute rsxa : rsxas) {
 	    		RollupSeries rs = rollupSeriesDao.readRollupSeriesById(rsxa.getRollupSeriesId());
-	    		List<RollupValue> rvs = generateRollupValuesDateRanges(rs, ra);
+	    		List<RollupValue> rvs = generateRollupValuesDateRanges(ra, rs);
+	    		if (rvs.size()  > 0) {
+	    			Date deleteStartDate =  rvs.get(0).getStartDate();
+	    			Date deleteEndDate =  rvs.get(rvs.size()-1).getEndDate();
+	    			if (!rs.getKeepUnmaintained()) {
+	    				deleteStartDate = CustomField.PAST_DATE;
+	    				deleteEndDate = CustomField.FUTURE_DATE;
+	    			}
+	    			rollupValueDao.deleteRollupValuesForAttributeSeries(ra, rs, deleteStartDate, deleteEndDate);
+	    		}
 	    		for (RollupValue rv : rvs) {
-	    			Date startDate = rv.getStartDate();
-	    			Date endDate = rv.getEndDate();
-	    			//populateRollupValues(ra, startDate, endDate);
+	    			rollupValueDao.insertRollupDimensionValues(ra, rs, rv.getStartDate(), rv.getEndDate());
 	    		}
 	    	}
 	    }
-		
 	}
 	
 	// Create date range templates for series types
 	@Override
-	public List<RollupValue> generateRollupValuesDateRanges(RollupSeries rs, RollupAttribute ra) {
+	public List<RollupValue> generateRollupValuesDateRanges(RollupAttribute ra, RollupSeries rs) {
 		List<RollupValue> result = new ArrayList<RollupValue>();
 		
 		// Determine start date, number and amount of increments based on series type.
@@ -187,6 +190,8 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 		RollupSeriesType rst = rs.getSeriesType();
 		if (rst.equals(RollupSeriesType.ALLTIME)) {
 			RollupValue rv = new RollupValue();
+			rv.setRollupSeriesId(rs.getId());
+			rv.setRollupAttributeId(ra.getId());
 			rv.setStartDate(CustomField.PAST_DATE);
 			rv.setEndDate(CustomField.FUTURE_DATE);
 			result.add(rv);

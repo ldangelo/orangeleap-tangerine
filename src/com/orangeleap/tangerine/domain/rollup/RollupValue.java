@@ -21,7 +21,8 @@ public class RollupValue implements GeneratedId, Serializable {
     private Date startDate;
     private Date endDate;
     private String currencyCode;
-    private BigDecimal totalValue;
+    private BigDecimal countValue;
+    private BigDecimal sumValue;
 	
     public RollupValue() { }
 
@@ -89,12 +90,20 @@ public class RollupValue implements GeneratedId, Serializable {
     }
 
     
-    public BigDecimal getTotalValue() {
-        return totalValue;
+    public BigDecimal getCountValue() {
+        return countValue;
     }
 
-    public void setTotalValue(BigDecimal totalValue) {
-        this.totalValue = totalValue;
+    public void setCountValue(BigDecimal countValue) {
+        this.countValue = countValue;
+    }
+
+    public BigDecimal getSumValue() {
+        return sumValue;
+    }
+
+    public void setSumValue(BigDecimal sumValue) {
+        this.sumValue = sumValue;
     }
 
 	
@@ -113,7 +122,8 @@ public class RollupValue implements GeneratedId, Serializable {
         .append(startDate, a.getStartDate())
         .append(endDate, a.getEndDate())
         .append(currencyCode, a.getCurrencyCode())
-        .append(totalValue, a.getTotalValue())
+        .append(countValue, a.getCountValue())
+        .append(sumValue, a.getSumValue())
 		;
         return eb.isEquals();
     }
@@ -129,7 +139,8 @@ public class RollupValue implements GeneratedId, Serializable {
         .append(""+startDate)
         .append(""+endDate)
         .append(""+currencyCode)
-        .append(""+totalValue)
+        .append(""+countValue)
+        .append(""+sumValue)
 		;
         return hcb.hashCode();
     }
@@ -145,7 +156,8 @@ public class RollupValue implements GeneratedId, Serializable {
         .append("startDate", ""+startDate)
         .append("endDate", ""+endDate)
         .append("currencyCode", ""+currencyCode)
-        .append("totalValue", ""+totalValue)
+        .append("countValue", ""+countValue)
+        .append("sumValue", ""+sumValue)
         .toString();
     }
 

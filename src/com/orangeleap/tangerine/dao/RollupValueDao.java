@@ -1,7 +1,10 @@
 package com.orangeleap.tangerine.dao;
 
+import java.util.Date;
 import java.util.List;
 
+import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
+import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
 
 public interface RollupValueDao {
@@ -12,5 +15,8 @@ public interface RollupValueDao {
     
     public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId);
 
+    public void deleteRollupValuesForAttributeSeries(RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate);
+
+    public void insertRollupDimensionValues(RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate);
 
 }

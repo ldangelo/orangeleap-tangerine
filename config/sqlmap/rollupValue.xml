@@ -10,7 +10,8 @@
         <result property="startDate" column="ROLLUP_VALUE_START_DATE" />
         <result property="endDate" column="ROLLUP_VALUE_END_DATE" />
         <result property="currencyCode" column="ROLLUP_VALUE_CURRENCY_CODE" />
-        <result property="totalValue" column="ROLLUP_VALUE_TOTAL_VALUE" />
+        <result property="countValue" column="ROLLUP_VALUE_COUNT_VALUE" />
+        <result property="sumValue" column="ROLLUP_VALUE_SUM_VALUE" />
     </resultMap>
 
     <sql id="ROLLUP_VALUE_COLS_FRAGMENT">
@@ -21,7 +22,8 @@
         rollup_value.START_DATE as ROLLUP_VALUE_START_DATE,
         rollup_value.END_DATE as ROLLUP_VALUE_END_DATE,
         rollup_value.CURRENCY_CODE as ROLLUP_VALUE_CURRENCY_CODE,
-        rollup_value.TOTAL_VALUE as ROLLUP_VALUE_TOTAL_VALUE    
+        rollup_value.COUNT_VALUE as ROLLUP_VALUE_COUNT_VALUE,    
+        rollup_value.SUM_VALUE as ROLLUP_VALUE_SUM_VALUE    
     </sql>
 
     <sql id="SELECT_ROLLUP_VALUE_FRAGMENT">
@@ -51,7 +53,9 @@
         	START_DATE,
         	END_DATE,
         	CURRENCY_CODE,
-        	TOTAL_VALUE        )
+        	COUNT_VALUE,        
+        	SUM_VALUE        
+        	)
         values (
         	#id# ,
         	#rollupSeriesId# ,
@@ -60,7 +64,9 @@
         	#startDate# ,
         	#endDate# ,
         	#currencyCode# ,
-        	#totalValue#         )
+        	#countValue# ,      
+        	#sumValue#         
+        	)
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
         </selectKey>
@@ -76,7 +82,8 @@
         	START_DATE = #startDate# ,
         	END_DATE = #endDate# ,
         	CURRENCY_CODE = #currencyCode# ,
-        	TOTAL_VALUE = #totalValue#         
+        	COUNT_VALUE = #countValue# ,       
+        	SUM_VALUE = #sumValue#         
         where ROLLUP_VALUE_ID = #id#
     </update>
 

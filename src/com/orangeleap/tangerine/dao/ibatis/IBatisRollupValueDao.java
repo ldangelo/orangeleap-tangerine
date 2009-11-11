@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.RollupValueDao;
+import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
+import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
 import com.orangeleap.tangerine.util.OLLogger;
 
@@ -55,6 +58,33 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
         params.put("attributeId", attributeId);
         params.put("groupByValue", ""+constituentId);
         return getSqlMapClientTemplate().queryForList("SELECT_ROLLUP_VALUES_BY_ATTRIBUTE_AND_GROUPBYVALUE", params);
+    }
+    
+	@Override
+    public void deleteRollupValuesForAttributeSeries(RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteRollupValuesForAttributeSeries: attribute id = " + ra.getId() + " series id = "+rs.getId());
+        }
+        Map<String, Object> params = setupParams();
+        params.put("rollupSeriesId", ra.getId());
+        params.put("rollupAttributeId", rs.getId());
+        params.put("startDate", startDate);
+        params.put("endDate", endDate);
+        getSqlMapClientTemplate().delete("ROLLUP_DELETE_ROLLUP_VALUES_FOR_ATTRIBUTE_SERIES", params);
+    }
+
+	@Override
+    public void insertRollupDimensionValues(RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateRollupValue: attribute id = " + ra.getId() + " series id = "+rs.getId());
+        }
+        Map<String, Object> params = setupParams();
+        params.put("rollupSeriesId", ra.getId());
+        params.put("rollupAttributeId", rs.getId());
+        params.put("startDate", startDate);
+        params.put("endDate", endDate);
+        String sqlid = "ROLLUP_ " + ra.getRollupStatType();
+        getSqlMapClientTemplate().insert(sqlid, params);
     }
     
 }

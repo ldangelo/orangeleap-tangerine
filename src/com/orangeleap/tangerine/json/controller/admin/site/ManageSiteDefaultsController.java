@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import net.sf.json.JSONArray;
@@ -147,7 +148,7 @@ public class ManageSiteDefaultsController {
     @SuppressWarnings("unchecked")
     private void checkAccess(HttpServletRequest request) {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get("/siteSettings.htm") != AccessType.ALLOWED) {
+        if (pageAccess.get(PageType.siteDefaults.getPageName()) != AccessType.ALLOWED) {
             throw new RuntimeException("You are not authorized to access this page");
         }
     }

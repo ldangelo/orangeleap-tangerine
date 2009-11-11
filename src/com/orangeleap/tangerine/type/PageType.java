@@ -82,6 +82,7 @@ public enum PageType {
     siteAudit("/siteAudit.htm"),
     customField("/customField.htm"),
     siteSettings("/siteSettings.htm"),
+    siteDefaults("/siteDefaults.htm"),
     postbatch("/postbatch.htm"),
     logView("/logView.htm"),
     screenDefinition("/screenDefinition.htm"),

@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.controller.siteSettings;
 
 import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.type.PageType;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.util.WebUtils;
@@ -30,9 +31,10 @@ import java.util.Map;
 public class SiteDefaultsController extends ParameterizableViewController {
 
     @Override
+    @SuppressWarnings("unchecked")
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get("/siteSettings.htm") != AccessType.ALLOWED) {
+        if (pageAccess.get(PageType.siteDefaults.getPageName()) != AccessType.ALLOWED) {
             throw new RuntimeException("You are not authorized to access this page");
         }
         return super.handleRequestInternal(request, response);  

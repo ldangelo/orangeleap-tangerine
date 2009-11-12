@@ -32,6 +32,7 @@ public class IBatisRollupAttributeDao extends AbstractIBatisDao implements Rollu
         if (logger.isTraceEnabled()) {
             logger.trace("maintainRollupAttribute: rollupAttributeId = " + rollupAttribute.getId());
         }
+        rollupAttribute.setSiteName(this.getSiteName());
         return (RollupAttribute)insertOrUpdate(rollupAttribute, "ROLLUP_ATTRIBUTE");
     }
 

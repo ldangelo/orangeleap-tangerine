@@ -30,14 +30,16 @@ public class IBatisRollupSeriesXAttributeDao extends AbstractIBatisDao implement
 	@SuppressWarnings("unchecked")
 	@Override
     public List<RollupSeriesXAttribute> selectRollupSeriesForAttribute(Long attributeId) {
-		return getSqlMapClientTemplate().queryForList("SELECT_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID");
+        Map<String, Object> params = setupParams();
+        params.put("rollupAttributeId", attributeId);
+		return getSqlMapClientTemplate().queryForList("SELECT_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID", params);
 	}
     
 	@Override
     public void maintainRollupSeriesXAttribute(Long attributeId, List<RollupSeriesXAttribute> rollupSeriesXAttributes) {
 		
         Map<String, Object> params = setupParams();
-        params.put("attributeId", attributeId);
+        params.put("rollupAttributeId", attributeId);
         
         getSqlMapClientTemplate().delete("DELETE_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID", params);
         

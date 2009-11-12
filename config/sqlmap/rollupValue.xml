@@ -12,6 +12,7 @@
         <result property="currencyCode" column="ROLLUP_VALUE_CURRENCY_CODE" />
         <result property="countValue" column="ROLLUP_VALUE_COUNT_VALUE" />
         <result property="sumValue" column="ROLLUP_VALUE_SUM_VALUE" />
+        <result property="siteName" column="ROLLUP_VALUE_SITE_NAME" />
     </resultMap>
 
     <sql id="ROLLUP_VALUE_COLS_FRAGMENT">
@@ -23,7 +24,8 @@
         rollup_value.END_DATE as ROLLUP_VALUE_END_DATE,
         rollup_value.CURRENCY_CODE as ROLLUP_VALUE_CURRENCY_CODE,
         rollup_value.COUNT_VALUE as ROLLUP_VALUE_COUNT_VALUE,    
-        rollup_value.SUM_VALUE as ROLLUP_VALUE_SUM_VALUE    
+        rollup_value.SUM_VALUE as ROLLUP_VALUE_SUM_VALUE,   
+        rollup_value.SITE_NAME as ROLLUP_VALUE_SITE_NAME    
     </sql>
 
     <sql id="SELECT_ROLLUP_VALUE_FRAGMENT">
@@ -54,7 +56,8 @@
         	END_DATE,
         	CURRENCY_CODE,
         	COUNT_VALUE,        
-        	SUM_VALUE        
+        	SUM_VALUE,        
+        	SITE_NAME        
         	)
         values (
         	#id# ,
@@ -65,7 +68,8 @@
         	#endDate# ,
         	#currencyCode# ,
         	#countValue# ,      
-        	#sumValue#         
+        	#sumValue# ,        
+        	#siteName#         
         	)
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
@@ -83,7 +87,8 @@
         	END_DATE = #endDate# ,
         	CURRENCY_CODE = #currencyCode# ,
         	COUNT_VALUE = #countValue# ,       
-        	SUM_VALUE = #sumValue#         
+        	SUM_VALUE = #sumValue# ,     
+        	SITE_NAME = #siteName#         
         where ROLLUP_VALUE_ID = #id#
     </update>
 

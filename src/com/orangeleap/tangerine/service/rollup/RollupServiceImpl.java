@@ -198,25 +198,25 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 			return result;
 		} else if (rst.equals(RollupSeriesType.CALENDAR_YEAR)) {
 			datefield = Calendar.YEAR;
-			DateUtils.truncate(beginDate, Calendar.YEAR);
+			beginDate = DateUtils.truncate(beginDate, Calendar.YEAR);
 		} else if (rst.equals(RollupSeriesType.FISCAL_YEAR)) {
 			datefield = Calendar.YEAR;
 			Date fy = getFiscalYearStartDate();
 			if (fy == null) {
-				DateUtils.truncate(beginDate, Calendar.YEAR);
+				beginDate = DateUtils.truncate(beginDate, Calendar.YEAR);
 			} else {
 				beginDate = fy;
 			}
 		} else if (rst.equals(RollupSeriesType.MONTH)) {
 			datefield = Calendar.MONTH;
-			DateUtils.truncate(beginDate, Calendar.MONTH);
+			beginDate = DateUtils.truncate(beginDate, Calendar.MONTH);
 		} else if (rst.equals(RollupSeriesType.WEEK)) {
 			datefield = Calendar.DAY_OF_YEAR;
 			incrementAmount = 7;
-			DateUtils.truncate(beginDate, Calendar.WEEK_OF_YEAR);
+			beginDate = DateUtils.truncate(beginDate, Calendar.WEEK_OF_YEAR);
 		} else if (rst.equals(RollupSeriesType.DAY)) {
 			datefield = Calendar.DATE;
-			DateUtils.truncate(beginDate, Calendar.DATE);
+			beginDate = DateUtils.truncate(beginDate, Calendar.DATE);
 		} 
 		
 		// Set starting period start date
@@ -250,7 +250,7 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.MONTH, new Integer(month)-1);
 			cal.set(Calendar.DATE, new Integer(date));
-			DateUtils.truncate(cal, Calendar.DATE);
+			cal = DateUtils.truncate(cal, Calendar.DATE);
 			if (cal.after(DateUtils.truncate(Calendar.getInstance(), Calendar.DATE))) {
 				cal.add(Calendar.YEAR, -1);
 			}

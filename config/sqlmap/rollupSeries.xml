@@ -26,7 +26,7 @@
         select 
         <include refid="ROLLUP_SERIES_COLS_FRAGMENT"/>
         from ROLLUP_SERIES rollup_series 
-        where rollup_series.SITE_NAME = #siteName#
+        where rollup_series.SITE_NAME = #siteName# or rollup_series.SITE_NAME is null
     </sql>
 
     <select id="SELECT_ALL_ROLLUP_SERIES" resultMap="ROLLUP_SERIES_RESULT" parameterClass="map" >

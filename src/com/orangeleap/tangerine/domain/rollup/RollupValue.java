@@ -23,6 +23,7 @@ public class RollupValue implements GeneratedId, Serializable {
     private String currencyCode;
     private BigDecimal countValue;
     private BigDecimal sumValue;
+    private String siteName;
 	
     public RollupValue() { }
 
@@ -105,6 +106,15 @@ public class RollupValue implements GeneratedId, Serializable {
     public void setSumValue(BigDecimal sumValue) {
         this.sumValue = sumValue;
     }
+    
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
+	}
+
+	public String getSiteName() {
+		return siteName;
+	}
+
 
 	
     @Override
@@ -124,6 +134,7 @@ public class RollupValue implements GeneratedId, Serializable {
         .append(currencyCode, a.getCurrencyCode())
         .append(countValue, a.getCountValue())
         .append(sumValue, a.getSumValue())
+        .append(siteName, a.getSiteName())
 		;
         return eb.isEquals();
     }
@@ -141,6 +152,7 @@ public class RollupValue implements GeneratedId, Serializable {
         .append(""+currencyCode)
         .append(""+countValue)
         .append(""+sumValue)
+        .append(""+siteName)
 		;
         return hcb.hashCode();
     }
@@ -158,6 +170,7 @@ public class RollupValue implements GeneratedId, Serializable {
         .append("currencyCode", ""+currencyCode)
         .append("countValue", ""+countValue)
         .append("sumValue", ""+sumValue)
+        .append("siteName", ""+siteName)
         .toString();
     }
 

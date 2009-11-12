@@ -16,6 +16,7 @@ SET AUTOCOMMIT = 0;
 /* Schema versions now match release versions  */
 UPDATE VERSION SET SCHEMA_MAJOR_VERSION = 7 WHERE COMPONENT_ID = 'ORANGE' AND COMPONENT_DESC = 'Orange Leap';
 
+/* TODO  add rollupAttributesDomain.sql */
 
 /* TANGERINE-1042 */
 SET @Next_ID=(SELECT MAX(PICKLIST_ID)+1 FROM PICKLIST);

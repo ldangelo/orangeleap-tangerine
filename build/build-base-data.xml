@@ -36,6 +36,7 @@
 	     	<transaction src="${basedir}/db/prod/domain/communicationHistoryDomain.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/dashboardDomain.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/cacheGroupDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/rollupAttributesDomain.sql"/>
 
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>

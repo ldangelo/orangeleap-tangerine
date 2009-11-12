@@ -9,10 +9,12 @@
 		and ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
         and START_DATE &gt;= #startDate# 
         and END_DATE &lt;= #endDate#
+        and SITE_NAME = #siteName#
 	</delete>
 
     <sql id="SELECT_INTO_RV_FRAG">
         insert into ROLLUP_VALUE (
+            SITE_NAME,
             ROLLUP_SERIES_ID,
         	ROLLUP_ATTRIBUTE_ID,
         	START_DATE,
@@ -23,6 +25,7 @@
         	SUM_VALUE        
         )
         select
+            #siteName#,
         	#rollupSeriesId#,
         	#rollupAttributeId#,
         	#startDate#,

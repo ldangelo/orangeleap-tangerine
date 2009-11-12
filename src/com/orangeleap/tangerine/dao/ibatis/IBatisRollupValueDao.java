@@ -35,6 +35,7 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
         if (logger.isTraceEnabled()) {
             logger.trace("maintainRollupValue: rollupValueId = " + rollupValue.getId());
         }
+        rollupValue.setSiteName(getSiteName());
         return (RollupValue)insertOrUpdate(rollupValue, "ROLLUP_VALUE");
     }
 
@@ -85,8 +86,18 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
         params.put("endDate", endDate);
         params.put("fieldName", ra.getFieldName());
         params.put("customFieldName", ra.getCustomFieldName());
-        String sqlid = "ROLLUP_ " + ra.getRollupStatType();
-        getSqlMapClientTemplate().insert(sqlid, params);
+        String stat = ra.getRollupStatType();
+        if (!stat.startsWith("ROLLUP_")) {
+        	logger.error("Invalid stat type "+stat);
+        	return;
+        }
+        if (ra.getFieldName() != null) {
+        	oneWord(ra.getFieldName());
+        }
+        if (ra.getFieldName() != null) {
+        	oneWord(ra.getCustomFieldName());
+        }
+        getSqlMapClientTemplate().insert(stat, params);
     }
     
 }

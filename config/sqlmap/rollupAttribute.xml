@@ -26,7 +26,7 @@
         select 
         <include refid="ROLLUP_ATTRIBUTE_COLS_FRAGMENT"/>
         from ROLLUP_ATTRIBUTE rollup_attribute 
-        where rollup_attribute.SITE_NAME = #siteName#
+        where rollup_attribute.SITE_NAME = #siteName# or rollup_attribute.SITE_NAME is null
     </sql>
 
     <select id="SELECT_ALL_ROLLUP_ATTRIBUTES" resultMap="ROLLUP_ATTRIBUTE_RESULT" parameterClass="map" >

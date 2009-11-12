@@ -197,6 +197,7 @@ SELECT SECTION_DEFINITION_ID, 'gift.adjustedGiftsReadOnly', 5500 FROM SECTION_DE
 
 /* Tangerine-1118 */
 INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('communicationHistory', 'communicationHistory.recordDate', 'extensions:isDate');
+INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('communicationHistoryView', 'communicationHistory.recordDate', 'extensions:isDate');
 
 
 /* Tangerine-1423 */

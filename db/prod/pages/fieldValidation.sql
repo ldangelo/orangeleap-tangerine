@@ -32,9 +32,10 @@ INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGE
 INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('email.edit', 'email.emailAddress', 'extensions:isEmail');
 
 INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('communicationHistory', 'communicationHistory.recordDate', 'extensions:isDate');
+INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('communicationHistoryView', 'communicationHistory.recordDate', 'extensions:isDate');
 
 
--- Add credit card number validation 
+-- Add credit card number validation
 -- A test credit card number is Visa 4111111111111111
 INSERT INTO FIELD_VALIDATION (VALIDATION_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (1002000, null, 'gift.creditCard', 'gift.paymentSource.creditCardNumber', 'paymentSource.creditCardNumber', 'extensions:isCreditCard');
 INSERT INTO FIELD_CONDITION (CONDITION_ID, DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_VALUE, VALIDATION_ID) VALUES (1000001, 'gift.paymentType', 'Credit Card', 1002000);

@@ -40,7 +40,7 @@ public class ExtendedValidationSupport {
 	public boolean validate(String value, String expression) {
         boolean isValid = false;
         if ("isDate".equals(expression)) {
-            isValid = GenericValidator.isDate(value, "EEE MMM dd HH:mm:ss z yyyy", false); // Thu Nov 06 00:00:00 CST 2009
+            isValid = GenericValidator.isDate(value, "EEE MMM dd HH:mm:ss zzz yyyy", true); // Thu Nov 06 00:00:00 CST 2009
         }
         else {
             Method[] methods = validator.getClass().getDeclaredMethods();

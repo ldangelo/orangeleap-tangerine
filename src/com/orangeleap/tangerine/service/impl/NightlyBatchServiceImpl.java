@@ -39,6 +39,7 @@ import com.orangeleap.tangerine.service.NightlyBatchService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
+import com.orangeleap.tangerine.service.rollup.RollupService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TaskStack;
 
@@ -68,6 +69,9 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
     @Resource(name = "constituentService")
     private ConstituentService constituentService;
 
+    @Resource(name = "rollupService")
+    private RollupService rollupService;
+
     
     // Non-transactional method
     @Override
@@ -83,72 +87,98 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
         processPledges();
         processReminders();
         
+        // May move this to a separate quartz task
+        processRollups();
+        
     }
     
+    private void processRollups() {
+    	
+    	try {
+    		
+    		logger.info("Processing rollups for "+getSiteName());
+	    	long t = System.currentTimeMillis();
 
+	    	rollupService.updateAllRollupsForSite();
+	        
+	    	logger.info("Rollup processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
+	    	
+    	} catch (Exception e) {
+        	e.printStackTrace();
+        	logger.error("Error in processRollups()", e);
+        }
+    	
+    }
     	
     // Non-transactional method
     private void internalProcessRecurringGifts() {
     	
-        if (logger.isTraceEnabled()) {
-            logger.trace("processRecurringGifts:");
-        }
-
-        Calendar cal = getToday();
-        Date today = cal.getTime();
-
-        // Note: This loops thru Recurring gifts since previous data may not have schedules set up.
-        cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
-        cal.add(Calendar.DATE, -1); 
-        List<String> statusList = Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS });
+        try {
         
-        long count = recurringGiftDao.readRecurringGiftsCount(cal.getTime(), statusList);
-        int limit = 100;
+            if (logger.isTraceEnabled()) {
+                logger.trace("processRecurringGifts:");
+            }
 
-        logger.info("Processing "+count+" recurring gifts.");
-    	long t = System.currentTimeMillis();
-    	
-        for (long start = 0; start < count; start += limit) {
-        
-        	List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), statusList, start, limit);
-
-	        if (recurringGifts != null) {
-	        	
-	            for (RecurringGift recurringGift : recurringGifts) {
-	            	
-            		TaskStack.clear();
-            		
-	            	try {
-	            	
-		            	if (!recurringGift.isActivate()) continue;
-		
-		            	recurringGiftService.extendPaymentSchedule(recurringGift);
+	        Calendar cal = getToday();
+	        Date today = cal.getTime();
+	
+	        // Note: This loops thru Recurring gifts since previous data may not have schedules set up.
+	        cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
+	        cal.add(Calendar.DATE, -1); 
+	        List<String> statusList = Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS });
+	        
+	        long count = recurringGiftDao.readRecurringGiftsCount(cal.getTime(), statusList);
+	        int limit = 100;
+	
+	        logger.info("Processing "+count+" recurring gifts.");
+	    	long t = System.currentTimeMillis();
+	    	
+	        for (long start = 0; start < count; start += limit) {
+	        
+	        	List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), statusList, start, limit);
+	
+		        if (recurringGifts != null) {
+		        	
+		            for (RecurringGift recurringGift : recurringGifts) {
 		            	
-		            	ScheduledItem item = recurringGiftService.getNextPaymentToRun(recurringGift);
-		            	if (item == null || item.getActualScheduledDate().after(today)) continue;  
-		            	
-		            	logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", actualScheduledDate =" + item.getActualScheduledDate());
-		
-		            	recurringGiftService.processRecurringGift(recurringGift, item);
-		            	
-		                try {
-		                    TaskStack.execute();
-		                } catch (Exception e) {
-		                    logger.error(e.getMessage());
-		                }
-	                
-	            	} catch (Exception e) {
-	            		logger.error("Error processing recurring gift "+recurringGift.getId(), e);
 	            		TaskStack.clear();
-	            	}
-	                
-	            }
-	            
+	            		
+		            	try {
+		            	
+			            	if (!recurringGift.isActivate()) continue;
+			
+			            	recurringGiftService.extendPaymentSchedule(recurringGift);
+			            	
+			            	ScheduledItem item = recurringGiftService.getNextPaymentToRun(recurringGift);
+			            	if (item == null || item.getActualScheduledDate().after(today)) continue;  
+			            	
+			            	logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", actualScheduledDate =" + item.getActualScheduledDate());
+			
+			            	recurringGiftService.processRecurringGift(recurringGift, item);
+			            	
+			                try {
+			                    TaskStack.execute();
+			                } catch (Exception e) {
+			                    logger.error(e.getMessage());
+			                }
+		                
+		            	} catch (Exception e) {
+		            		logger.error("Error processing recurring gift "+recurringGift.getId(), e);
+		            		TaskStack.clear();
+		            	}
+		                
+		            }
+		            
+		        }
+	        
 	        }
+	        
+	        logger.info("Recurring gift processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
         
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	logger.error("Error in internalProcessRecurringGifts()", e);
         }
-        
-        logger.info("Recurring gift processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
         
     }
     
@@ -157,58 +187,65 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
     @Override
     public synchronized void processPledges() {
     	
-        if (logger.isTraceEnabled()) {
-            logger.trace("processPledges:");
-        }
-
-        Calendar cal = getToday();
-
-        // Note: This is looping thru pledges instead of just calling ScheduledItemService.getNextItemsReadyToProcess() due to legacy data not having schedules set up necessarily.
-        cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
-        cal.add(Calendar.DATE, -1); 
-        
-        List<String> statusList = Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS });
-        
-        long count = pledgeDao.readPledgesCount(cal.getTime(), statusList);
-        int limit = 100;
-
-    	logger.info("Processing "+count+" pledges.");
-    	long t = System.currentTimeMillis();
+    	try {
     	
-        for (long start = 0; start < count; start += limit) {
-        	
-	        List<Pledge> pledges = pledgeDao.readPledges(cal.getTime(), statusList, start, limit);
-	
-	        if (pledges != null) {
-	        	
-	        	
-	            for (Pledge pledge : pledges) {
-	            	
-            		TaskStack.clear();
-            		
-	            	try {
-	            	
-		            	pledgeService.extendPaymentSchedule(pledge);
-	                
-			            try {
-			                TaskStack.execute();
-			            } catch (Exception e) {
-			                logger.error(e.getMessage());
-			            }
-			            
-	            	} catch (Exception e) {
-	            		logger.error("Error processing pledge "+pledge.getId(), e);
-	            		TaskStack.clear();
-	            	}
-	                
-	            }
-	            
-	            
+	        if (logger.isTraceEnabled()) {
+	            logger.trace("processPledges:");
 	        }
+	
+	        Calendar cal = getToday();
+	
+	        // Note: This is looping thru pledges instead of just calling ScheduledItemService.getNextItemsReadyToProcess() due to legacy data not having schedules set up necessarily.
+	        cal.add(Calendar.MONTH, -1); // Process missed payments up to a month after end date.
+	        cal.add(Calendar.DATE, -1); 
+	        
+	        List<String> statusList = Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS });
+	        
+	        long count = pledgeDao.readPledgesCount(cal.getTime(), statusList);
+	        int limit = 100;
+	
+	    	logger.info("Processing "+count+" pledges.");
+	    	long t = System.currentTimeMillis();
+	    	
+	        for (long start = 0; start < count; start += limit) {
+	        	
+		        List<Pledge> pledges = pledgeDao.readPledges(cal.getTime(), statusList, start, limit);
+		
+		        if (pledges != null) {
+		        	
+		        	
+		            for (Pledge pledge : pledges) {
+		            	
+	            		TaskStack.clear();
+	            		
+		            	try {
+		            	
+			            	pledgeService.extendPaymentSchedule(pledge);
+		                
+				            try {
+				                TaskStack.execute();
+				            } catch (Exception e) {
+				                logger.error(e.getMessage());
+				            }
+				            
+		            	} catch (Exception e) {
+		            		logger.error("Error processing pledge "+pledge.getId(), e);
+		            		TaskStack.clear();
+		            	}
+		                
+		            }
+		            
+		            
+		        }
+	        
+	        }
+	        
+	        logger.info("Pledge processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
         
-        }
-        
-        logger.info("Pledge processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		logger.error("Error in processPledges()", e);
+    	}
         
     }
     
@@ -216,40 +253,47 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
     @Override
     public synchronized void processReminders() {
     	
-        if (logger.isTraceEnabled()) {
-            logger.trace("processReminders:");
-        }
-
-        Calendar cal = getToday();
-        Date today = cal.getTime();
-
-        List<ScheduledItem> reminders = reminderService.getRemindersToProcess(today);
-
-    	logger.info("Processing "+reminders.size()+" reminders.");        	
-    	long t = System.currentTimeMillis();
-
-    	for (ScheduledItem reminder : reminders) {
-        	
-    		TaskStack.clear();
-    		
-        	try {
+    	try {
+    	
+	        if (logger.isTraceEnabled()) {
+	            logger.trace("processReminders:");
+	        }
+	
+	        Calendar cal = getToday();
+	        Date today = cal.getTime();
+	
+	        List<ScheduledItem> reminders = reminderService.getRemindersToProcess(today);
+	
+	    	logger.info("Processing "+reminders.size()+" reminders.");        	
+	    	long t = System.currentTimeMillis();
+	
+	    	for (ScheduledItem reminder : reminders) {
 	        	
-        		reminderService.processReminder(reminder);
+	    		TaskStack.clear();
+	    		
+	        	try {
+		        	
+	        		reminderService.processReminder(reminder);
+		        	
+		            try {
+		                TaskStack.execute();
+		            } catch (Exception e) {
+		                logger.error(e.getMessage());
+		            }
+		            
+	        	} catch (Exception e) {
+	        		logger.error("Error processing reminder "+reminder.getId(), e);
+	        		TaskStack.clear();
+	        	}
 	        	
-	            try {
-	                TaskStack.execute();
-	            } catch (Exception e) {
-	                logger.error(e.getMessage());
-	            }
-	            
-        	} catch (Exception e) {
-        		logger.error("Error processing reminder "+reminder.getId(), e);
-        		TaskStack.clear();
-        	}
-        	
-        }        
-                
-        logger.info("Reminder processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
+	        }        
+	                
+	        logger.info("Reminder processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
+        
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		logger.error("Error in processReminders()", e);
+    	}
 
     }            
     

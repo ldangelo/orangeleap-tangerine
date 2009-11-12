@@ -45,11 +45,30 @@
             	GIFT g	
         	where
         		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
+        		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
             group by 
         		g.CONSTITUENT_ID,
         		g.CURRENCY_CODE
     </insert>
 
+	<!-- e.g. fieldName = ADJUSTED_AMOUNT  -->
+    <insert id="ROLLUP_ADJUSTED_GIFT_BY_CONSTITUENT" parameterClass="java.util.Map">
+        <include refid="SELECT_INTO_RV_FRAG"/>
+        		g.CONSTITUENT_ID,
+        		g.CURRENCY_CODE,
+            	COUNT(ag.$fieldName$),
+            	SUM(ag.$fieldName$)
+            from 
+            	ADJUSTED_GIFT ag, GIFT g
+        	where
+        		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
+        		and g.GIFT_ID = ag.GIFT_ID
+        		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
+            group by 
+        		g.CONSTITUENT_ID,
+        		g.CURRENCY_CODE
+    </insert>
+  
 	<!-- e.g. fieldName = FAIR_MARKET_VALUE  -->
     <insert id="ROLLUP_GIFT_IN_KIND_BY_CONSTITUENT" parameterClass="java.util.Map">
         <include refid="SELECT_INTO_RV_FRAG"/>
@@ -66,27 +85,10 @@
         		gik.CURRENCY_CODE
     </insert>
 
-	<!-- e.g. fieldName = ADJUSTED_AMOUNT  -->
-    <insert id="ROLLUP_ADJUSTED_GIFT_BY_CONSTITUENT" parameterClass="java.util.Map">
-        <include refid="SELECT_INTO_RV_FRAG"/>
-        		g.CONSTITUENT_ID,
-        		g.CURRENCY_CODE,
-            	COUNT(ag.$fieldName$),
-            	SUM(ag.$fieldName$)
-            from 
-            	ADJUSTED_GIFT ag, GIFT g
-        	where
-        		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
-        		and g.GIFT_ID = ag.GIFT_ID
-            group by 
-        		g.CONSTITUENT_ID,
-        		g.CURRENCY_CODE
-    </insert>
-  
 	<!-- 
 		e.g. For Soft Gifts: customFieldName = 'onBehalfOf' (the custom field value contains a constituent_id in this case)  
 	-->
-    <insert id="ROLLUP_DISTRO_LINE_AMOUNT_BY_CF_CONSTITUENT" parameterClass="java.util.Map">
+    <insert id="ROLLUP_GIFT_DISTRO_LINE_AMOUNT_BY_CF_CONSTITUENT" parameterClass="java.util.Map">
         <include refid="SELECT_INTO_RV_FRAG"/>
         		cf.FIELD_VALUE,
         		g.CURRENCY_CODE,
@@ -98,6 +100,7 @@
         		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
         		and g.GIFT_ID = dl.GIFT_ID
         		and cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.FIELD_NAME= #customFieldName# and cf.entityType='distributionline'  
+        		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
             group by 
         		cf.FIELD_VALUE,
         		g.CURRENCY_CODE
@@ -118,10 +121,27 @@
         	where
         		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
         		and g.GIFT_ID = dl.GIFT_ID
+        		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
             group by 
         		dl.$fieldName$,
         		g.CURRENCY_CODE
     </insert>
+    
+    
+    
+    <!-- 
+    
+    <insert id="ROLLUP_PLEDGE_COMPLETED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
+    </insert>
+    <insert id="ROLLUP_PLEDGE_SCHEDULED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
+    </insert>
+
+    <insert id="ROLLUP_RECURRING_GIFT_COMPLETED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
+    </insert>
+    <insert id="ROLLUP_RECURRING_GIFT_SCHEDULED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
+    </insert>
+     
+    -->
 
 </sqlMap>
 

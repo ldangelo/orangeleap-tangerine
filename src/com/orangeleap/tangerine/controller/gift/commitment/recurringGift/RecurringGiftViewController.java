@@ -65,7 +65,7 @@ public class RecurringGiftViewController extends AbstractMutableGridFormControll
         TangerineForm form = (TangerineForm) command;
         RecurringGift recurringGift = (RecurringGift) form.getDomainObject();
         refData.put(StringConstants.CAN_APPLY_PAYMENT, ! Commitment.STATUS_FULFILLED.equals(recurringGift.getRecurringGiftStatus()) &&
-                ! Commitment.STATUS_CANCELLED.equals(recurringGift.getRecurringGiftStatus()));
+                ! Commitment.STATUS_CANCELLED.equals(recurringGift.getRecurringGiftStatus()) && recurringGiftService.canApplyPayment(recurringGift));
         return refData;        
     }
 

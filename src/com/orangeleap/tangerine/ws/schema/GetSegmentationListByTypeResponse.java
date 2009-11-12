@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="communicationHistory" type="{http://www.orangeleap.com/orangeleap/services/1.0}communicationHistory" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="segmentation" type="{http://www.orangeleap.com/orangeleap/services/1.0}segmentation" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,40 +37,40 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "communicationHistory"
+    "segmentation"
 })
-@XmlRootElement(name = "GetCommunicationHistoryResponse")
-public class GetCommunicationHistoryResponse {
+@XmlRootElement(name = "GetSegmentationListByTypeResponse")
+public class GetSegmentationListByTypeResponse {
 
-    protected List<CommunicationHistory> communicationHistory;
+    protected List<Segmentation> segmentation;
 
     /**
-     * Gets the value of the communicationHistory property.
+     * Gets the value of the segmentation property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the communicationHistory property.
+     * This is why there is not a <CODE>set</CODE> method for the segmentation property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCommunicationHistory().add(newItem);
+     *    getSegmentation().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link CommunicationHistory }
+     * {@link Segmentation }
      * 
      * 
      */
-    public List<CommunicationHistory> getCommunicationHistory() {
-        if (communicationHistory == null) {
-            communicationHistory = new ArrayList<CommunicationHistory>();
+    public List<Segmentation> getSegmentation() {
+        if (segmentation == null) {
+            segmentation = new ArrayList<Segmentation>();
         }
-        return this.communicationHistory;
+        return this.segmentation;
     }
 
 }

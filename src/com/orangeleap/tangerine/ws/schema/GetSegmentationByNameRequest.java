@@ -8,10 +8,9 @@
 
 package com.orangeleap.tangerine.ws.schema;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -26,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="gift" type="{http://www.orangeleap.com/orangeleap/services/1.0}gift" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="segmentation" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,40 +36,36 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "gift"
+    "segmentation"
 })
-@XmlRootElement(name = "GetConstituentGiftResponse")
-public class GetConstituentGiftResponse {
+@XmlRootElement(name = "GetSegmentationByNameRequest")
+public class GetSegmentationByNameRequest {
 
-    protected List<Gift> gift;
+    @XmlElement(required = true)
+    protected String segmentation;
 
     /**
-     * Gets the value of the gift property.
+     * Gets the value of the segmentation property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the gift property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getGift().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Gift }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public List<Gift> getGift() {
-        if (gift == null) {
-            gift = new ArrayList<Gift>();
-        }
-        return this.gift;
+    public String getSegmentation() {
+        return segmentation;
+    }
+
+    /**
+     * Sets the value of the segmentation property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSegmentation(String value) {
+        this.segmentation = value;
     }
 
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -26,7 +27,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="communicationHistory" type="{http://www.orangeleap.com/orangeleap/services/1.0}communicationHistory" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="constituentId" type="{http://www.w3.org/2001/XMLSchema}long" maxOccurs="unbounded"/>
+ *         &lt;element name="communicationHistory" type="{http://www.orangeleap.com/orangeleap/services/1.0}communicationHistory"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,40 +39,68 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+    "constituentId",
     "communicationHistory"
 })
-@XmlRootElement(name = "GetCommunicationHistoryResponse")
-public class GetCommunicationHistoryResponse {
+@XmlRootElement(name = "BulkAddCommunicationHistoryRequest")
+public class BulkAddCommunicationHistoryRequest {
 
-    protected List<CommunicationHistory> communicationHistory;
+    @XmlElement(type = Long.class)
+    protected List<Long> constituentId;
+    @XmlElement(required = true)
+    protected CommunicationHistory communicationHistory;
 
     /**
-     * Gets the value of the communicationHistory property.
+     * Gets the value of the constituentId property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the communicationHistory property.
+     * This is why there is not a <CODE>set</CODE> method for the constituentId property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCommunicationHistory().add(newItem);
+     *    getConstituentId().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link CommunicationHistory }
+     * {@link Long }
      * 
      * 
      */
-    public List<CommunicationHistory> getCommunicationHistory() {
-        if (communicationHistory == null) {
-            communicationHistory = new ArrayList<CommunicationHistory>();
+    public List<Long> getConstituentId() {
+        if (constituentId == null) {
+            constituentId = new ArrayList<Long>();
         }
-        return this.communicationHistory;
+        return this.constituentId;
+    }
+
+    /**
+     * Gets the value of the communicationHistory property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link CommunicationHistory }
+     *     
+     */
+    public CommunicationHistory getCommunicationHistory() {
+        return communicationHistory;
+    }
+
+    /**
+     * Sets the value of the communicationHistory property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CommunicationHistory }
+     *     
+     */
+    public void setCommunicationHistory(CommunicationHistory value) {
+        this.communicationHistory = value;
     }
 
 }

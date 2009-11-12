@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="constituentid" type="{http://www.w3.org/2001/XMLSchema}long" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="entityid" type="{http://www.w3.org/2001/XMLSchema}long" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -31,27 +31,27 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "constituentid"
+    "entityid"
 })
 @XmlRootElement(name = "GetSegmentationByIdResponse")
 public class GetSegmentationByIdResponse {
 
     @XmlElement(type = Long.class)
-    protected List<Long> constituentid;
+    protected List<Long> entityid;
 
     /**
-     * Gets the value of the constituentid property.
+     * Gets the value of the entityid property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the constituentid property.
+     * This is why there is not a <CODE>set</CODE> method for the entityid property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getConstituentid().add(newItem);
+     *    getEntityid().add(newItem);
      * </pre>
      * 
      * 
@@ -61,11 +61,11 @@ public class GetSegmentationByIdResponse {
      * 
      * 
      */
-    public List<Long> getConstituentid() {
-        if (constituentid == null) {
-            constituentid = new ArrayList<Long>();
+    public List<Long> getEntityid() {
+        if (entityid == null) {
+            entityid = new ArrayList<Long>();
         }
-        return this.constituentid;
+        return this.entityid;
     }
 
 }

@@ -81,16 +81,19 @@ public class ObjectConverter {
                     List l = (List) readMethod.invoke(from);
                     if (l != null) {
                         for (Object o : l) {
-
-                            Class newClass = to.getClass();
-                            if (newClass.getName().startsWith("com.orangeleap.tangerine.domain")) {
-                                Object newObject = newClass.newInstance();
-                                ConvertFromJAXB(o, newObject);
-                                List newList = (List) pdTo.getReadMethod().invoke(to);
-                                newList.add(newObject);
-                                pdTo.getWriteMethod().invoke(to,newList);
+                            String className = o.getClass().getSimpleName();
+                            try {
+                            	Class newClass = Class.forName("com.orangeleap.tangerine.domain." + className);
+                            } catch (ClassNotFoundException e) {
+                            	logger.info(e.getMessage());
                             }
-
+                           	Class newClass = Class.forName("com.orangeleap.tangerine.domain.paymentInfo." + className);
+                            Object newObject = newClass.newInstance();
+                            ConvertFromJAXB(o, newObject);
+                            List newList = (List) pdTo.getReadMethod().invoke(to);
+                            newList.clear();
+                            newList.add(newObject);
+                            pdTo.getWriteMethod().invoke(to,newList);
                         }
                     }
 
@@ -127,7 +130,9 @@ public class ObjectConverter {
                 logger.info(e.getMessage());
             } catch (InstantiationException e) {
                 logger.info(e.getMessage());
-            }
+            } catch (ClassNotFoundException e) {
+            	logger.info(e.getMessage());
+			}
 
 
         }

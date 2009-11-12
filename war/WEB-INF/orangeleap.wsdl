@@ -1,537 +1,807 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:schema="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:schema="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0">
   <wsdl:types>
     <xs:schema xmlns:tns="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0">
-  
- <xs:complexType name="communicationHistory">
-    <xs:complexContent>
-      <xs:extension base="tns:abstractCustomizableEntity">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="addressType" type="xs:string"/>
-          <xs:element minOccurs="0" name="comments" type="xs:string"/>
 
-          <xs:element minOccurs="0" name="communicationHistoryType" type="xs:string"/>
-          <xs:element minOccurs="0" name="emailType" type="xs:string"/>
-          <xs:element minOccurs="0" name="entryType" type="xs:string"/>
-          <xs:element minOccurs="0" name="giftId" type="xs:long"/>
-          <xs:element minOccurs="0" name="constituent" type="tns:constituent"/>
-          <xs:element minOccurs="0" name="pledgeId" type="xs:long"/>
-          <xs:element minOccurs="0" name="recordDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="recurringGiftId" type="xs:long"/>
-          <xs:element minOccurs="0" name="selectedAddress" type="tns:address"/>
-
-          <xs:element minOccurs="0" name="selectedEmail" type="tns:email"/>
-          <xs:element minOccurs="0" name="selectedPhone" type="tns:phone"/>
-          <xs:element name="systemGenerated" type="xs:boolean"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="customField">
-
-    <xs:sequence>
-      <xs:element minOccurs="0" name="dataType" type="xs:long"/>
-      <xs:element minOccurs="0" name="displayEndDate" type="xs:string"/>
-      <xs:element minOccurs="0" name="displayStartDate" type="xs:string"/>
-      <xs:element minOccurs="0" name="endDate" type="xs:dateTime"/>
-      <xs:element minOccurs="0" name="entityId" type="xs:long"/>
-      <xs:element minOccurs="1" name="entityType" type="xs:string"/>
-      <xs:element minOccurs="1" name="id" type="xs:long"/>
-      <xs:element minOccurs="1" name="name" type="xs:string"/>
-
-      <xs:element minOccurs="1" name="sequenceNumber" type="xs:int"/>
-      <xs:element minOccurs="0" name="startDate" type="xs:dateTime"/>
-      <xs:element minOccurs="1" name="value" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType abstract="true" name="abstractCustomizableEntity">
-    <xs:sequence>
-        <xs:element maxOccurs="1" minOccurs="1" name="createDate" type="xs:dateTime"/>
-
-        <xs:element maxOccurs="1" minOccurs="1" name="updateDate" type="xs:dateTime"/>
-        <xs:element name="customFieldMap">
-	  <xs:complexType>
-	    <xs:sequence>
-	      <xs:element maxOccurs="unbounded" minOccurs="0" name="entry">
-              <xs:complexType>
-                  <xs:sequence>
-                      <xs:element maxOccurs="1" minOccurs="1" name="key" type="xs:string"/>
-                      <xs:element maxOccurs="1" minOccurs="1" name="value" type="tns:customField"/>
-
-                  </xs:sequence>
-              </xs:complexType>
-          </xs:element>
-        </xs:sequence>
-	  </xs:complexType>
-    </xs:element>
-      </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="address">
-    <xs:complexContent>
-      <xs:extension base="tns:abstractCommunicationEntity">
-	<xs:sequence>
-	  <xs:element maxOccurs="1" minOccurs="1" name="addressLine1" type="xs:string"/>
-	  <xs:element maxOccurs="1" minOccurs="0" name="addressLine2" type="xs:string"/>
-	  <xs:element maxOccurs="1" minOccurs="0" name="addressLine3" type="xs:string"/>
-	  <xs:element maxOccurs="1" minOccurs="1" name="city" type="xs:string"/>
-	  <xs:element maxOccurs="1" minOccurs="1" name="country" type="xs:string"/>
-
-	  <xs:element maxOccurs="1" minOccurs="1" name="postalCode" type="xs:string"/>
-	  <xs:element maxOccurs="1" minOccurs="1" name="stateProvince" type="xs:string"/>
-	</xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:simpleType name="activationType">
-    <xs:restriction base="xs:string">
-
-      <xs:enumeration value="permanent"/>
-      <xs:enumeration value="temporary"/>
-      <xs:enumeration value="seasonal"/>
-      <xs:enumeration value="unknown"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-    <xs:complexType abstract="true" name="abstractCommunicationEntity">
-    <xs:complexContent>
-
-      <xs:extension base="tns:abstractCustomizableEntity">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="activationStatus" type="tns:activationType"/>
-          <xs:element minOccurs="0" name="comments" type="xs:string"/>
-          <xs:element minOccurs="0" name="effectiveDate" type="xs:dateTime"/>
-          <xs:element name="inactive" type="xs:boolean"/>
-          <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
-          <xs:element name="primary" type="xs:boolean"/>
-          <xs:element name="receiveCorrespondence" type="xs:boolean"/>
-
-          <xs:element minOccurs="0" name="seasonalEndDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="seasonalStartDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="temporaryEndDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="temporaryStartDate" type="xs:dateTime"/>
-          <xs:element name="undeliverable" type="xs:boolean"/>
-          <xs:element name="userCreated" type="xs:boolean"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-
-  </xs:complexType>
+	<xs:complexType name="site">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="achCompanyName" type="xs:string"/>
+			<xs:element minOccurs="0" name="achMerchantId" type="xs:int"/>
+			<xs:element minOccurs="0" name="achRuleNumber" type="xs:int"/>
+			<xs:element minOccurs="0" name="achSiteNumber" type="xs:int"/>
+			<xs:element minOccurs="0" name="achTestMode" type="xs:int"/>
+			<xs:element name="active" type="xs:boolean"/>
+			<xs:element minOccurs="0" name="createDate" type="xs:dateTime"/>
+			<xs:element minOccurs="0" name="jasperPassword" type="xs:string"/>
+			<xs:element minOccurs="0" name="jasperUserId" type="xs:string"/>
+			<xs:element minOccurs="0" name="localeString" type="xs:string"/>
+			<xs:element minOccurs="0" name="majorDonorAccountManagerId" type="xs:int"/>
+			<xs:element minOccurs="0" name="merchantBin" type="xs:string"/>
+			<xs:element minOccurs="0" name="merchantNumber" type="xs:string"/>
+			<xs:element minOccurs="0" name="merchantTerminalId" type="xs:string"/>
+			<xs:element minOccurs="0" name="name" type="xs:string"/>
+			<xs:element minOccurs="0" name="smtpAccountName" type="xs:string"/>
+			<xs:element minOccurs="0" name="smtpFromAddress" type="xs:string"/>
+			<xs:element minOccurs="0" name="smtpPassword" type="xs:string"/>
+			<xs:element minOccurs="0" name="smtpServerName" type="xs:string"/>
+			<xs:element minOccurs="0" name="timeZoneString" type="xs:string"/>
+			<xs:element minOccurs="0" name="updateDate" type="xs:dateTime"/>
+		</xs:sequence>
+	</xs:complexType>
 
 
-  <xs:complexType name="email">
-    <xs:complexContent>
-      <xs:extension base="tns:abstractCommunicationEntity">
-        <xs:sequence>
-          <xs:element maxOccurs="1" minOccurs="1" name="emailAddress" type="xs:string"/>
-          <xs:element minOccurs="0" name="emailDisplay" type="xs:string"/>
-        </xs:sequence>
+	<xs:complexType name="communicationHistory">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractCustomizableEntity">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="comments" type="xs:string"/>
+					<xs:element minOccurs="1" name="communicationHistoryType" type="xs:string"/>
+					<xs:element minOccurs="1" name="entryType" type="xs:string"/>
+					<xs:element minOccurs="0" name="giftId" type="xs:long"/>
+					<xs:element minOccurs="1" name="constituentId" type="xs:long"/>
+					<xs:element minOccurs="0" name="pledgeId" type="xs:long"/>
+					<xs:element minOccurs="1" name="recordDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="recurringGiftId" type="xs:long"/>
+					<xs:element name="systemGenerated" type="xs:boolean"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
-  <xs:complexType name="distributionLine">
-    <xs:complexContent>
-      <xs:extension base="tns:abstractCustomizableEntity">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="adjustedGiftId" type="xs:long"/>
+	<xs:complexType name="customField">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="dataType" type="xs:long"/>
+			<xs:element minOccurs="0" name="displayEndDate" type="xs:string"/>
+			<xs:element minOccurs="0" name="displayStartDate" type="xs:string"/>
+			<xs:element minOccurs="0" name="endDate" type="xs:dateTime"/>
+			<xs:element minOccurs="0" name="entityId" type="xs:long"/>
+			<xs:element minOccurs="1" name="entityType" type="xs:string"/>
+			<xs:element minOccurs="1" name="id" type="xs:long"/>
+			<xs:element minOccurs="1" name="name" type="xs:string"/>
+			<xs:element minOccurs="1" name="sequenceNumber" type="xs:int"/>
+			<xs:element minOccurs="0" name="startDate" type="xs:dateTime"/>
+			<xs:element minOccurs="1" name="value" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
 
-          <xs:element minOccurs="0" name="amount" type="xs:decimal"/>
-          <xs:element minOccurs="0" name="giftId" type="xs:long"/>
-          <xs:element minOccurs="0" name="motivationCode" type="xs:string"/>
-          <xs:element minOccurs="0" name="other_motivationCode" type="xs:string"/>
-          <xs:element minOccurs="0" name="percentage" type="xs:decimal"/>
-          <xs:element minOccurs="0" name="constituentId" type="xs:long"/>
-          <xs:element minOccurs="0" name="pledgeId" type="xs:long"/>
-          <xs:element minOccurs="0" name="projectCode" type="xs:string"/>
-          <xs:element minOccurs="0" name="recurringGiftId" type="xs:long"/>
+	<xs:complexType abstract="true" name="abstractCustomizableEntity">
+		<xs:sequence>
+			<xs:element name="customFieldMap">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="entry">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element maxOccurs="1" minOccurs="1" name="key" type="xs:string"/>
+									<xs:element maxOccurs="1" minOccurs="1" name="value" type="tns:customField"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+	<xs:complexType name="address">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractCommunicationEntity">
+				<xs:sequence>
+					<xs:element maxOccurs="1" minOccurs="1" name="addressLine1" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="0" name="addressLine2" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="0" name="addressLine3" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="city" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="country" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="postalCode" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="stateProvince" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-  <xs:complexType name="paymentSource">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="achAccountNumber" type="xs:string"/>
-          <xs:element minOccurs="0" name="achAccountNumberDisplay" type="xs:string"/>
+	<xs:simpleType name="activationType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="permanent"/>
+			<xs:enumeration value="temporary"/>
+			<xs:enumeration value="seasonal"/>
+			<xs:enumeration value="unknown"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-          <xs:element minOccurs="0" name="achAccountNumberEncrypted" type="xs:string"/>
-          <xs:element minOccurs="0" name="achHolderName" type="xs:string"/>
-          <xs:element minOccurs="0" name="achRoutingNumber" type="xs:string"/>
-          <xs:element minOccurs="0" name="achRoutingNumberDisplay" type="xs:string"/>
-          <xs:element minOccurs="0" name="address" type="tns:address"/>
-          <xs:element minOccurs="0" name="creditCardExpiration" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="creditCardExpirationMonth" type="xs:int"/>
-          <xs:element minOccurs="0" name="creditCardExpirationYear" type="xs:int"/>
-          <xs:element minOccurs="0" name="creditCardHolderName" type="xs:string"/>
+	<xs:complexType abstract="true" name="abstractCommunicationEntity">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractCustomizableEntity">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="activationStatus" type="tns:activationType"/>
+					<xs:element minOccurs="0" name="comments" type="xs:string"/>
+					<xs:element minOccurs="0" name="effectiveDate" type="xs:dateTime"/>
+					<xs:element name="inactive" type="xs:boolean"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
+					<xs:element name="primary" type="xs:boolean"/>
+					<xs:element name="receiveCorrespondence" type="xs:boolean"/>
+					<xs:element minOccurs="0" name="seasonalEndDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="seasonalStartDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="temporaryEndDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="temporaryStartDate" type="xs:dateTime"/>
+					<xs:element name="undeliverable" type="xs:boolean"/>
+					<xs:element name="userCreated" type="xs:boolean"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-          <xs:element minOccurs="0" name="creditCardNumber" type="xs:string"/>
-          <xs:element minOccurs="0" name="creditCardNumberDisplay" type="xs:string"/>
-          <xs:element minOccurs="0" name="creditCardNumberEncrypted" type="xs:string"/>
-          <xs:element minOccurs="0" name="creditCardSecurityCode" type="xs:string"/>
-          <xs:element minOccurs="0" name="creditCardType" type="xs:string"/>
-          <xs:element name="inactive" type="xs:boolean"/>
-          <xs:element minOccurs="0" name="lastFourDigits" type="xs:string"/>
-          <xs:element minOccurs="0" name="paymentType" type="tns:PaymentType"/>
-          <xs:element minOccurs="0" name="constituentId" type="xs:long"/>
 
-          <xs:element minOccurs="0" name="phone" type="tns:phone"/>
-          <xs:element minOccurs="0" name="profile" type="xs:string"/>
-          <xs:element name="userCreated" type="xs:boolean"/>
-        </xs:sequence>
-  </xs:complexType>
-	  <xs:simpleType name="PaymentType">
-	    <xs:restriction base="xs:string">
-	      <xs:enumeration value="ACH"/>
-	      <xs:enumeration value="Credit Card"/>
+	<xs:complexType name="email">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractCommunicationEntity">
+				<xs:sequence>
+					<xs:element maxOccurs="1" minOccurs="1" name="emailAddress" type="xs:string"/>
+					<xs:element minOccurs="0" name="emailDisplay" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-	      <xs:enumeration value="Cash"/>
-	      <xs:enumeration value="Check"/>
-	    </xs:restriction>
-	  </xs:simpleType>
+	<xs:complexType name="distributionLine">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractCustomizableEntity">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="adjustedGiftId" type="xs:long"/>
+					<xs:element minOccurs="0" name="amount" type="xs:decimal"/>
+					<xs:element minOccurs="0" name="giftId" type="xs:long"/>
+					<xs:element minOccurs="0" name="motivationCode" type="xs:string"/>
+					<xs:element minOccurs="0" name="other_motivationCode" type="xs:string"/>
+					<xs:element minOccurs="0" name="percentage" type="xs:decimal"/>
+					<xs:element minOccurs="0" name="constituentId" type="xs:long"/>
+					<xs:element minOccurs="0" name="pledgeId" type="xs:long"/>
+					<xs:element minOccurs="0" name="projectCode" type="xs:string"/>
+					<xs:element minOccurs="0" name="recurringGiftId" type="xs:long"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-  <xs:complexType abstract="true" name="abstractPaymentInfoEntity">
-    <xs:complexContent>
-      <xs:extension base="tns:abstractCustomizableEntity">
-        <xs:sequence>
+	<xs:complexType name="paymentSource">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="achAccountNumber" type="xs:string"/>
+			<xs:element minOccurs="0" name="achAccountNumberDisplay" type="xs:string"/>
+			<xs:element minOccurs="0" name="achAccountNumberEncrypted" type="xs:string"/>
+			<xs:element minOccurs="0" name="achHolderName" type="xs:string"/>
+			<xs:element minOccurs="0" name="achRoutingNumber" type="xs:string"/>
+			<xs:element minOccurs="0" name="achRoutingNumberDisplay" type="xs:string"/>
+			<xs:element minOccurs="0" name="address" type="tns:address"/>
+			<xs:element minOccurs="0" name="creditCardExpiration" type="xs:dateTime"/>
+			<xs:element minOccurs="0" name="creditCardExpirationMonth" type="xs:int"/>
+			<xs:element minOccurs="0" name="creditCardExpirationYear" type="xs:int"/>
+			<xs:element minOccurs="0" name="creditCardHolderName" type="xs:string"/>
+			<xs:element minOccurs="0" name="creditCardNumber" type="xs:string"/>
+			<xs:element minOccurs="0" name="creditCardNumberDisplay" type="xs:string"/>
+			<xs:element minOccurs="0" name="creditCardNumberEncrypted" type="xs:string"/>
+			<xs:element minOccurs="0" name="creditCardSecurityCode" type="xs:string"/>
+			<xs:element minOccurs="0" name="creditCardType" type="xs:string"/>
+			<xs:element name="inactive" type="xs:boolean"/>
+			<xs:element minOccurs="0" name="lastFourDigits" type="xs:string"/>
+			<xs:element minOccurs="0" name="paymentType" type="tns:PaymentType"/>
+			<xs:element minOccurs="0" name="constituentId" type="xs:long"/>
+			<xs:element minOccurs="0" name="phone" type="tns:phone"/>
+			<xs:element minOccurs="0" name="profile" type="xs:string"/>
+			<xs:element name="userCreated" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="PaymentType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ACH"/>
+			<xs:enumeration value="Credit Card"/>
+			<xs:enumeration value="Cash"/>
+			<xs:enumeration value="Check"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-          <xs:element minOccurs="0" name="acknowledgmentDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="address" type="tns:address"/>
-          <xs:element minOccurs="0" name="checkNumber" type="xs:int"/>
-          <xs:element minOccurs="0" name="comments" type="xs:string"/>
-          <xs:element minOccurs="0" name="currencyCode" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="distributionLines" nillable="true" type="tns:distributionLine"/>
-          <xs:element minOccurs="0" name="email" type="tns:email"/>
-          <xs:element minOccurs="0" name="paymentSource" type="tns:paymentSource"/>
-          <xs:element minOccurs="0" name="paymentType" type="xs:string"/>
+	<xs:complexType abstract="true" name="abstractPaymentInfoEntity">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractCustomizableEntity">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="acknowledgmentDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="address" type="tns:address"/>
+					<xs:element minOccurs="0" name="checkNumber" type="xs:int"/>
+					<xs:element minOccurs="0" name="comments" type="xs:string"/>
+					<xs:element minOccurs="0" name="currencyCode" type="xs:string"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="distributionLines" nillable="true" type="tns:distributionLine"/>
+					<xs:element minOccurs="0" name="email" type="tns:email"/>
+					<xs:element minOccurs="0" name="paymentSource" type="tns:paymentSource"/>
+					<xs:element minOccurs="0" name="paymentType" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
+					<xs:element minOccurs="0" name="phone" type="tns:phone"/>
+					<xs:element name="sendAcknowledgment" type="xs:boolean"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-          <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
-          <xs:element minOccurs="0" name="phone" type="tns:phone"/>
-          <xs:element name="sendAcknowledgment" type="xs:boolean"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+	<xs:complexType name="phone">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractCommunicationEntity">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="number" type="xs:string"/>
+					<xs:element minOccurs="0" name="provider" type="xs:string"/>
+					<xs:element minOccurs="0" name="sms" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-  <xs:complexType name="phone">
+	<xs:complexType name="gift">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractPaymentInfoEntity">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="amount" type="xs:decimal"/>
+					<xs:element minOccurs="0" name="authCode" type="xs:string"/>
+					<xs:element name="deductible" type="xs:boolean"/>
+					<xs:element minOccurs="0" name="deductibleAmount" type="xs:decimal"/>
+					<xs:element minOccurs="0" name="donationDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="giftStatus" type="xs:string"/>
+					<xs:element minOccurs="0" name="paymentMessage" type="xs:string"/>
+					<xs:element minOccurs="0" name="paymentStatus" type="xs:string"/>
+					<xs:element minOccurs="0" name="postmarkDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="transactionDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="txRefNum" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="site" type="tns:site"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-    <xs:complexContent>
-      <xs:extension base="tns:abstractCommunicationEntity">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="number" type="xs:string"/>
-          <xs:element minOccurs="0" name="provider" type="xs:string"/>
-          <xs:element minOccurs="0" name="sms" type="xs:string"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
+	<xs:simpleType name="commitmentType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="RECURRING_GIFT"/>
+			<xs:enumeration value="PLEDGE"/>
+			<xs:enumeration value="MEMBERSHIP"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-  </xs:complexType>
+	<xs:complexType abstract="true" name="commitment">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractPaymentInfoEntity">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="amountPaid" type="xs:decimal"/>
+					<xs:element minOccurs="0" name="amountPerGift" type="xs:decimal"/>
+					<xs:element minOccurs="0" name="amountRemaining" type="xs:decimal"/>
+					<xs:element minOccurs="0" name="amountTotal" type="xs:decimal"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="associatedGiftIds" nillable="true" type="xs:long"/>
+					<xs:element minOccurs="0" name="commitmentType" type="tns:commitmentType"/>
+					<xs:element minOccurs="0" name="endDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="frequency" type="xs:string"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="gifts" nillable="true" type="tns:gift"/>
+					<xs:element minOccurs="0" name="lastEntryDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="startDate" type="xs:dateTime"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-  <xs:complexType name="gift">
-    <xs:complexContent>
-      <xs:extension base="tns:abstractPaymentInfoEntity">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="amount" type="xs:decimal"/>
-          <xs:element minOccurs="0" name="authCode" type="xs:string"/>
-          <xs:element name="deductible" type="xs:boolean"/>
+	<xs:complexType name="pledge">
+		<xs:complexContent>
+			<xs:extension base="tns:commitment">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="pledgeCancelDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="pledgeCancelReason" type="xs:string"/>
+					<xs:element minOccurs="0" name="pledgeDate" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="pledgeStatus" type="xs:string"/>
+					<xs:element minOccurs="0" name="projectedDate" type="xs:dateTime"/>
+					<xs:element name="recurring" type="xs:boolean"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-          <xs:element minOccurs="0" name="deductibleAmount" type="xs:decimal"/>
-          <xs:element minOccurs="0" name="donationDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="giftStatus" type="xs:string"/>
-          <xs:element minOccurs="0" name="paymentMessage" type="xs:string"/>
-          <xs:element minOccurs="0" name="paymentStatus" type="xs:string"/>
-          <xs:element minOccurs="0" name="postmarkDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="transactionDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="txRefNum" type="xs:string"/>
-        </xs:sequence>
+	<xs:complexType name="constituent">
+		<xs:complexContent>
+			<xs:extension base="tns:abstractCustomizableEntity">
+				<xs:sequence>
+					<xs:element maxOccurs="1" minOccurs="0" name="accountNumber" type="xs:long"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="firstName" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="lastName" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="0" name="title" type="xs:string"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="addresses" nillable="true" type="tns:address"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="emails" nillable="true" type="tns:email"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="phones" nillable="true" type="tns:phone"/>
+					<xs:element minOccurs="0" name="primaryAddress" type="tns:address"/>
+					<xs:element minOccurs="0" name="primaryEmail" type="tns:email"/>
+					<xs:element minOccurs="0" name="primaryPhone" type="tns:phone"/>
+					<xs:element minOccurs="0" name="organizationName" type="xs:string"/>
+					<xs:element minOccurs="0" name="constituentAttributes" type="xs:string"/>
+					<xs:element minOccurs="0" name="constituentIndividualRoles" type="xs:string"/>
+					<xs:element minOccurs="0" name="constituentOrganizationRoles" type="xs:string"/>
+					<xs:element minOccurs="0" name="constituentType" type="xs:string"/>
+					<xs:element minOccurs="0" name="preferredPhoneType" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="site" type="tns:site"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="constituent">
-      <xs:complexContent>
-      <xs:extension base="tns:abstractCustomizableEntity">
-	<xs:sequence>
-	  <xs:element maxOccurs="1" minOccurs="0" name="accountNumber" type="xs:long"/>
-
-	  <xs:element maxOccurs="1" minOccurs="1" name="firstName" type="xs:string"/>
-	  <xs:element maxOccurs="1" minOccurs="1" name="lastName" type="xs:string"/>
-	  <xs:element maxOccurs="1" minOccurs="0" name="title" type="xs:string"/>
-	  <xs:element maxOccurs="unbounded" minOccurs="0" name="addresses" nillable="true" type="tns:address"/>
-	  <xs:element maxOccurs="unbounded" minOccurs="0" name="emails" nillable="true" type="tns:email"/>
-	  <xs:element maxOccurs="unbounded" minOccurs="0" name="phones" nillable="true" type="tns:phone"/>
-	  <xs:element minOccurs="0" name="primaryAddress" type="tns:address"/>
-	  <xs:element minOccurs="0" name="primaryEmail" type="tns:email"/>
-	  <xs:element minOccurs="0" name="primaryPhone" type="tns:phone"/>
-
-	  <xs:element minOccurs="0" name="organizationName" type="xs:string"/>
-	  <xs:element minOccurs="0" name="constituentAttributes" type="xs:string"/>
-	  <xs:element minOccurs="0" name="constituentIndividualRoles" type="xs:string"/>
-	  <xs:element minOccurs="0" name="constituentOrganizationRoles" type="xs:string"/>
-	  <xs:element minOccurs="0" name="constituentType" type="xs:string"/>
-	  <xs:element minOccurs="0" name="preferredPhoneType" type="xs:string"/>
-	</xs:sequence>
-      </xs:extension>
-      </xs:complexContent>
-
-  </xs:complexType>
-
-  
- <xs:element name="SaveOrUpdateConstituentRequest">
-  <xs:complexType>
-  	<xs:sequence>
-  		<xs:element name="constituent" type="tns:constituent"/>
-  	</xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="CreateDefaultConstituentRequest">
-  <xs:complexType>
-  	<xs:sequence>
-  		<xs:element name="dummy" type="xs:string"/>
-  	</xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="CreateDefaultConstituentResponse">
-  <xs:complexType>
-  	<xs:sequence>
-
-  		<xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
-  	</xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="FindConstituentsRequest">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element maxOccurs="1" minOccurs="1" name="constituent" type="tns:constituent"/>
-    </xs:sequence>
-
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="FindConstituentsResponse">
-  <xs:complexType>
-  	<xs:sequence>
-  		<xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
-  	</xs:sequence>
-  </xs:complexType>
-</xs:element>
-    
-
-<xs:element name="SearchConstituentsRequest">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element maxOccurs="1" minOccurs="1" name="constituent" type="tns:constituent"/>
-    </xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="SearchConstituentsResponse">
-  <xs:complexType>
-  	<xs:sequence>
-
-  		<xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
-  	</xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="SaveOrUpdateGiftRequest">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element name="constituentId" type="xs:long"/>
-      <xs:element maxOccurs="1" minOccurs="1" name="gift" type="tns:gift"/>
-
-    </xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="GetConstituentGiftRequest">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element name="constituentId" type="xs:long"/>
-    </xs:sequence>
-  </xs:complexType>
-
-</xs:element>
-
-<xs:element name="GetConstituentGiftResponse">
-  <xs:complexType>
-  	<xs:sequence>
-  		<xs:element maxOccurs="unbounded" minOccurs="0" name="gift" type="tns:gift"/>
-  	</xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="GetSegmentationRequest">
-  <xs:complexType>
-
-    <xs:sequence>
-    <xs:element name="segmentation" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="GetSegmentationResponse">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
-
-    </xs:sequence>
-  </xs:complexType>
-</xs:element>
-
-<xs:element name="GetSegmentationListRequest">
-    <xs:complexType>
-        <xs:sequence>
-            <xs:element name="dummy" type="xs:string"/> 
-        </xs:sequence>
+   <xs:complexType name="segmentation">
+     <xs:sequence>
+     	<xs:element name="name" type="xs:string"/>
+     	<xs:element name="description" type="xs:string"/>
+     	<xs:element name="id" type="xs:long"/>
+     	<xs:element name="type" type="xs:string"/>
+     	<xs:element name="executionUser" type="xs:string"/>
+     	<xs:element name="executionCount" type="xs:long"/>
+     	<xs:element name="executionDate" type="xs:dateTime"/>
+     </xs:sequence>
     </xs:complexType>
-   
 
-</xs:element>
+	<xs:element name="GetConstituentByIdRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="id" type="xs:long"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-<xs:element name="GetSegmentationListResponse">
-    <xs:complexType>
-    <xs:sequence>
-        <xs:element name="segmentation" type="xs:string"/>
-    </xs:sequence>
-    </xs:complexType>
-</xs:element>
-    
-<xs:element name="AddCommunicationHistoryRequest">
-    <xs:complexType>
+	<xs:element name="GetConstituentByIdResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituent" type="tns:constituent"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-        <xs:sequence>
-            <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
-            <xs:element maxOccurs="1" minOccurs="1" name="communicationHistory" type="tns:communicationHistory"/>
-        </xs:sequence>
-    </xs:complexType>
-</xs:element>
+	<xs:element name="CreateDefaultConstituentRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="dummy" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-<xs:element name="GetCommunicationHistoryRequest">
-    <xs:complexType>
-        <xs:sequence>
+	<xs:element name="CreateDefaultConstituentResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-            <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
-        </xs:sequence>
-    </xs:complexType>
-</xs:element>
+	<xs:element name="FindConstituentsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="0" name="firstName" type="xs:string"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="lastName" type="xs:string"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="primaryAddress" type="tns:address"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="primaryPhone" type="tns:phone"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="primaryEmail" type="tns:email"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-<xs:element name="GetCommunicationHistoryResponse">
-    <xs:complexType>
-        <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="communicationHistory" type="tns:communicationHistory"/>
-        </xs:sequence>
+	<xs:element name="FindConstituentsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-    </xs:complexType>
-</xs:element>
+	<xs:element name="SearchConstituentsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="0" name="firstName" type="xs:string"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="lastName" type="xs:string"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="primaryAddress" type="tns:address"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="primaryPhone" type="tns:phone"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="primaryEmail" type="tns:email"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="SearchConstituentsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="1" name="constituent" type="tns:constituent"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="SaveOrUpdateGiftRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituentId" type="xs:long"/>
+				<xs:element maxOccurs="1" minOccurs="1" name="gift" type="tns:gift"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="SaveOrUpdateGiftResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="gift" type="tns:gift"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="SaveOrUpdateConstituentRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="constituent" type="tns:constituent"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="SaveOrUpdateConstituentResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="constituent" type="tns:constituent"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="SaveOrUpdatePledgeRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituentId" type="xs:long"/>
+				<xs:element maxOccurs="1" minOccurs="1" name="pledge" type="tns:pledge"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="SaveOrUpdatePledgeResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="pledge" type="tns:pledge"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+
+	<xs:element name="GetConstituentPledgeRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituentId" type="xs:long"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetConstituentPledgeResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="pledge" type="tns:pledge"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetConstituentGiftRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituentId" type="xs:long"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetConstituentGiftResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="gift" type="tns:gift"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GetSegmentationByIdRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:long"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetSegmentationByIdResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="entityid" type="xs:long"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetSegmentationListByTypeRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="type" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetSegmentationListByTypeResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="segmentation" type="tns:segmentation"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetSegmentationByNameRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="segmentation" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetSegmentationByNameResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="entityId" type="xs:long"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetSegmentationListRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="dummy" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+
+	</xs:element>
+
+	<xs:element name="GetSegmentationListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="segmentation" type="tns:segmentation"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="AddCommunicationHistoryRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
+				<xs:element maxOccurs="1" minOccurs="1" name="communicationHistory" type="tns:communicationHistory"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="BulkAddCommunicationHistoryRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="1" name="constituentId" type="xs:long"/>
+				<xs:element maxOccurs="1" minOccurs="1" name="communicationHistory" type="tns:communicationHistory"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetCommunicationHistoryRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetCommunicationHistoryResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="communicationHistory" type="tns:communicationHistory"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 </xs:schema>
   </wsdl:types>
   <wsdl:message name="GetCommunicationHistoryRequest">
-    <wsdl:part element="schema:GetCommunicationHistoryRequest" name="GetCommunicationHistoryRequest"/>
+    <wsdl:part element="schema:GetCommunicationHistoryRequest" name="GetCommunicationHistoryRequest">
+    </wsdl:part>
   </wsdl:message>
-  <wsdl:message name="AddCommunicationHistoryRequest">
-    <wsdl:part element="schema:AddCommunicationHistoryRequest" name="AddCommunicationHistoryRequest"/>
+  <wsdl:message name="GetConstituentByIdRequest">
+    <wsdl:part element="schema:GetConstituentByIdRequest" name="GetConstituentByIdRequest">
+    </wsdl:part>
   </wsdl:message>
-
-  <wsdl:message name="GetConstituentGiftResponse">
-    <wsdl:part element="schema:GetConstituentGiftResponse" name="GetConstituentGiftResponse"/>
+  <wsdl:message name="SaveOrUpdateGiftResponse">
+    <wsdl:part element="schema:SaveOrUpdateGiftResponse" name="SaveOrUpdateGiftResponse">
+    </wsdl:part>
   </wsdl:message>
-  <wsdl:message name="SaveOrUpdateConstituentRequest">
-    <wsdl:part element="schema:SaveOrUpdateConstituentRequest" name="SaveOrUpdateConstituentRequest"/>
-  </wsdl:message>
-  <wsdl:message name="SaveOrUpdateGiftRequest">
-    <wsdl:part element="schema:SaveOrUpdateGiftRequest" name="SaveOrUpdateGiftRequest"/>
-  </wsdl:message>
-
   <wsdl:message name="GetCommunicationHistoryResponse">
-    <wsdl:part element="schema:GetCommunicationHistoryResponse" name="GetCommunicationHistoryResponse"/>
+    <wsdl:part element="schema:GetCommunicationHistoryResponse" name="GetCommunicationHistoryResponse">
+    </wsdl:part>
   </wsdl:message>
-  <wsdl:message name="SearchConstituentsResponse">
-    <wsdl:part element="schema:SearchConstituentsResponse" name="SearchConstituentsResponse"/>
+  <wsdl:message name="GetConstituentPledgeResponse">
+    <wsdl:part element="schema:GetConstituentPledgeResponse" name="GetConstituentPledgeResponse">
+    </wsdl:part>
   </wsdl:message>
-  <wsdl:message name="GetSegmentationResponse">
-    <wsdl:part element="schema:GetSegmentationResponse" name="GetSegmentationResponse"/>
+  <wsdl:message name="GetSegmentationByIdResponse">
+    <wsdl:part element="schema:GetSegmentationByIdResponse" name="GetSegmentationByIdResponse">
+    </wsdl:part>
   </wsdl:message>
-
-  <wsdl:message name="CreateDefaultConstituentResponse">
-    <wsdl:part element="schema:CreateDefaultConstituentResponse" name="CreateDefaultConstituentResponse"/>
+  <wsdl:message name="GetSegmentationListByTypeResponse">
+    <wsdl:part element="schema:GetSegmentationListByTypeResponse" name="GetSegmentationListByTypeResponse">
+    </wsdl:part>
   </wsdl:message>
-  <wsdl:message name="GetSegmentationRequest">
-    <wsdl:part element="schema:GetSegmentationRequest" name="GetSegmentationRequest"/>
-  </wsdl:message>
-  <wsdl:message name="GetConstituentGiftRequest">
-    <wsdl:part element="schema:GetConstituentGiftRequest" name="GetConstituentGiftRequest"/>
-  </wsdl:message>
-
-  <wsdl:message name="GetSegmentationListRequest">
-    <wsdl:part element="schema:GetSegmentationListRequest" name="GetSegmentationListRequest"/>
-  </wsdl:message>
-  <wsdl:message name="FindConstituentsResponse">
-    <wsdl:part element="schema:FindConstituentsResponse" name="FindConstituentsResponse"/>
+  <wsdl:message name="GetSegmentationByNameRequest">
+    <wsdl:part element="schema:GetSegmentationByNameRequest" name="GetSegmentationByNameRequest">
+    </wsdl:part>
   </wsdl:message>
   <wsdl:message name="GetSegmentationListResponse">
-    <wsdl:part element="schema:GetSegmentationListResponse" name="GetSegmentationListResponse"/>
+    <wsdl:part element="schema:GetSegmentationListResponse" name="GetSegmentationListResponse">
+    </wsdl:part>
   </wsdl:message>
-
   <wsdl:message name="FindConstituentsRequest">
-    <wsdl:part element="schema:FindConstituentsRequest" name="FindConstituentsRequest"/>
+    <wsdl:part element="schema:FindConstituentsRequest" name="FindConstituentsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetConstituentPledgeRequest">
+    <wsdl:part element="schema:GetConstituentPledgeRequest" name="GetConstituentPledgeRequest">
+    </wsdl:part>
   </wsdl:message>
   <wsdl:message name="CreateDefaultConstituentRequest">
-    <wsdl:part element="schema:CreateDefaultConstituentRequest" name="CreateDefaultConstituentRequest"/>
+    <wsdl:part element="schema:CreateDefaultConstituentRequest" name="CreateDefaultConstituentRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SaveOrUpdateConstituentResponse">
+    <wsdl:part element="schema:SaveOrUpdateConstituentResponse" name="SaveOrUpdateConstituentResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSegmentationByNameResponse">
+    <wsdl:part element="schema:GetSegmentationByNameResponse" name="GetSegmentationByNameResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AddCommunicationHistoryRequest">
+    <wsdl:part element="schema:AddCommunicationHistoryRequest" name="AddCommunicationHistoryRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SaveOrUpdatePledgeResponse">
+    <wsdl:part element="schema:SaveOrUpdatePledgeResponse" name="SaveOrUpdatePledgeResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetConstituentGiftResponse">
+    <wsdl:part element="schema:GetConstituentGiftResponse" name="GetConstituentGiftResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SaveOrUpdateConstituentRequest">
+    <wsdl:part element="schema:SaveOrUpdateConstituentRequest" name="SaveOrUpdateConstituentRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetConstituentByIdResponse">
+    <wsdl:part element="schema:GetConstituentByIdResponse" name="GetConstituentByIdResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SaveOrUpdateGiftRequest">
+    <wsdl:part element="schema:SaveOrUpdateGiftRequest" name="SaveOrUpdateGiftRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SearchConstituentsResponse">
+    <wsdl:part element="schema:SearchConstituentsResponse" name="SearchConstituentsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CreateDefaultConstituentResponse">
+    <wsdl:part element="schema:CreateDefaultConstituentResponse" name="CreateDefaultConstituentResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSegmentationListByTypeRequest">
+    <wsdl:part element="schema:GetSegmentationListByTypeRequest" name="GetSegmentationListByTypeRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetConstituentGiftRequest">
+    <wsdl:part element="schema:GetConstituentGiftRequest" name="GetConstituentGiftRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSegmentationByIdRequest">
+    <wsdl:part element="schema:GetSegmentationByIdRequest" name="GetSegmentationByIdRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSegmentationListRequest">
+    <wsdl:part element="schema:GetSegmentationListRequest" name="GetSegmentationListRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="FindConstituentsResponse">
+    <wsdl:part element="schema:FindConstituentsResponse" name="FindConstituentsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SaveOrUpdatePledgeRequest">
+    <wsdl:part element="schema:SaveOrUpdatePledgeRequest" name="SaveOrUpdatePledgeRequest">
+    </wsdl:part>
   </wsdl:message>
   <wsdl:message name="SearchConstituentsRequest">
-    <wsdl:part element="schema:SearchConstituentsRequest" name="SearchConstituentsRequest"/>
+    <wsdl:part element="schema:SearchConstituentsRequest" name="SearchConstituentsRequest">
+    </wsdl:part>
   </wsdl:message>
-
+  <wsdl:message name="BulkAddCommunicationHistoryRequest">
+    <wsdl:part element="schema:BulkAddCommunicationHistoryRequest" name="BulkAddCommunicationHistoryRequest">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:portType name="OrangeLeap">
     <wsdl:operation name="GetCommunicationHistory">
-      <wsdl:input message="schema:GetCommunicationHistoryRequest" name="GetCommunicationHistoryRequest"/>
-      <wsdl:output message="schema:GetCommunicationHistoryResponse" name="GetCommunicationHistoryResponse"/>
+      <wsdl:input message="schema:GetCommunicationHistoryRequest" name="GetCommunicationHistoryRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:GetCommunicationHistoryResponse" name="GetCommunicationHistoryResponse">
+    </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="AddCommunicationHistory">
-      <wsdl:input message="schema:AddCommunicationHistoryRequest" name="AddCommunicationHistoryRequest"/>
+    <wsdl:operation name="GetConstituentById">
+      <wsdl:input message="schema:GetConstituentByIdRequest" name="GetConstituentByIdRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:GetConstituentByIdResponse" name="GetConstituentByIdResponse">
+    </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="SaveOrUpdateConstituent">
-
-      <wsdl:input message="schema:SaveOrUpdateConstituentRequest" name="SaveOrUpdateConstituentRequest"/>
-    </wsdl:operation>
-    <wsdl:operation name="SaveOrUpdateGift">
-      <wsdl:input message="schema:SaveOrUpdateGiftRequest" name="SaveOrUpdateGiftRequest"/>
-    </wsdl:operation>
-    <wsdl:operation name="GetSegmentation">
-      <wsdl:input message="schema:GetSegmentationRequest" name="GetSegmentationRequest"/>
-      <wsdl:output message="schema:GetSegmentationResponse" name="GetSegmentationResponse"/>
-    </wsdl:operation>
-
-    <wsdl:operation name="GetConstituentGift">
-      <wsdl:input message="schema:GetConstituentGiftRequest" name="GetConstituentGiftRequest"/>
-      <wsdl:output message="schema:GetConstituentGiftResponse" name="GetConstituentGiftResponse"/>
-    </wsdl:operation>
-    <wsdl:operation name="GetSegmentationList">
-      <wsdl:input message="schema:GetSegmentationListRequest" name="GetSegmentationListRequest"/>
-      <wsdl:output message="schema:GetSegmentationListResponse" name="GetSegmentationListResponse"/>
+    <wsdl:operation name="GetSegmentationByName">
+      <wsdl:input message="schema:GetSegmentationByNameRequest" name="GetSegmentationByNameRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:GetSegmentationByNameResponse" name="GetSegmentationByNameResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="FindConstituents">
-
-      <wsdl:input message="schema:FindConstituentsRequest" name="FindConstituentsRequest"/>
-      <wsdl:output message="schema:FindConstituentsResponse" name="FindConstituentsResponse"/>
+      <wsdl:input message="schema:FindConstituentsRequest" name="FindConstituentsRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:FindConstituentsResponse" name="FindConstituentsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetConstituentPledge">
+      <wsdl:input message="schema:GetConstituentPledgeRequest" name="GetConstituentPledgeRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:GetConstituentPledgeResponse" name="GetConstituentPledgeResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="CreateDefaultConstituent">
-      <wsdl:input message="schema:CreateDefaultConstituentRequest" name="CreateDefaultConstituentRequest"/>
-      <wsdl:output message="schema:CreateDefaultConstituentResponse" name="CreateDefaultConstituentResponse"/>
+      <wsdl:input message="schema:CreateDefaultConstituentRequest" name="CreateDefaultConstituentRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:CreateDefaultConstituentResponse" name="CreateDefaultConstituentResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddCommunicationHistory">
+      <wsdl:input message="schema:AddCommunicationHistoryRequest" name="AddCommunicationHistoryRequest">
+    </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdateConstituent">
+      <wsdl:input message="schema:SaveOrUpdateConstituentRequest" name="SaveOrUpdateConstituentRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:SaveOrUpdateConstituentResponse" name="SaveOrUpdateConstituentResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdateGift">
+      <wsdl:input message="schema:SaveOrUpdateGiftRequest" name="SaveOrUpdateGiftRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:SaveOrUpdateGiftResponse" name="SaveOrUpdateGiftResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentationListByType">
+      <wsdl:input message="schema:GetSegmentationListByTypeRequest" name="GetSegmentationListByTypeRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:GetSegmentationListByTypeResponse" name="GetSegmentationListByTypeResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetConstituentGift">
+      <wsdl:input message="schema:GetConstituentGiftRequest" name="GetConstituentGiftRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:GetConstituentGiftResponse" name="GetConstituentGiftResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentationById">
+      <wsdl:input message="schema:GetSegmentationByIdRequest" name="GetSegmentationByIdRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:GetSegmentationByIdResponse" name="GetSegmentationByIdResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentationList">
+      <wsdl:input message="schema:GetSegmentationListRequest" name="GetSegmentationListRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:GetSegmentationListResponse" name="GetSegmentationListResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdatePledge">
+      <wsdl:input message="schema:SaveOrUpdatePledgeRequest" name="SaveOrUpdatePledgeRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:SaveOrUpdatePledgeResponse" name="SaveOrUpdatePledgeResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SearchConstituents">
-      <wsdl:input message="schema:SearchConstituentsRequest" name="SearchConstituentsRequest"/>
-
-      <wsdl:output message="schema:SearchConstituentsResponse" name="SearchConstituentsResponse"/>
+      <wsdl:input message="schema:SearchConstituentsRequest" name="SearchConstituentsRequest">
+    </wsdl:input>
+      <wsdl:output message="schema:SearchConstituentsResponse" name="SearchConstituentsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BulkAddCommunicationHistory">
+      <wsdl:input message="schema:BulkAddCommunicationHistoryRequest" name="BulkAddCommunicationHistoryRequest">
+    </wsdl:input>
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="OrangeLeapBinding" type="schema:OrangeLeap">
@@ -540,59 +810,26 @@
       <soap:operation soapAction=""/>
       <wsdl:input name="GetCommunicationHistoryRequest">
         <soap:body use="literal"/>
-
       </wsdl:input>
       <wsdl:output name="GetCommunicationHistoryResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="AddCommunicationHistory">
+    <wsdl:operation name="GetConstituentById">
       <soap:operation soapAction=""/>
-      <wsdl:input name="AddCommunicationHistoryRequest">
-        <soap:body use="literal"/>
-
-      </wsdl:input>
-    </wsdl:operation>
-    <wsdl:operation name="SaveOrUpdateConstituent">
-      <soap:operation soapAction=""/>
-      <wsdl:input name="SaveOrUpdateConstituentRequest">
+      <wsdl:input name="GetConstituentByIdRequest">
         <soap:body use="literal"/>
       </wsdl:input>
-    </wsdl:operation>
-    <wsdl:operation name="SaveOrUpdateGift">
-
-      <soap:operation soapAction=""/>
-      <wsdl:input name="SaveOrUpdateGiftRequest">
-        <soap:body use="literal"/>
-      </wsdl:input>
-    </wsdl:operation>
-    <wsdl:operation name="GetSegmentation">
-      <soap:operation soapAction=""/>
-      <wsdl:input name="GetSegmentationRequest">
-        <soap:body use="literal"/>
-
-      </wsdl:input>
-      <wsdl:output name="GetSegmentationResponse">
+      <wsdl:output name="GetConstituentByIdResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetConstituentGift">
+    <wsdl:operation name="GetSegmentationByName">
       <soap:operation soapAction=""/>
-      <wsdl:input name="GetConstituentGiftRequest">
+      <wsdl:input name="GetSegmentationByNameRequest">
         <soap:body use="literal"/>
-
       </wsdl:input>
-      <wsdl:output name="GetConstituentGiftResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetSegmentationList">
-      <soap:operation soapAction=""/>
-      <wsdl:input name="GetSegmentationListRequest">
-        <soap:body use="literal"/>
-
-      </wsdl:input>
-      <wsdl:output name="GetSegmentationListResponse">
+      <wsdl:output name="GetSegmentationByNameResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -600,9 +837,17 @@
       <soap:operation soapAction=""/>
       <wsdl:input name="FindConstituentsRequest">
         <soap:body use="literal"/>
-
       </wsdl:input>
       <wsdl:output name="FindConstituentsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetConstituentPledge">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetConstituentPledgeRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetConstituentPledgeResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -610,9 +855,77 @@
       <soap:operation soapAction=""/>
       <wsdl:input name="CreateDefaultConstituentRequest">
         <soap:body use="literal"/>
-
       </wsdl:input>
       <wsdl:output name="CreateDefaultConstituentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddCommunicationHistory">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="AddCommunicationHistoryRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdateConstituent">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="SaveOrUpdateConstituentRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SaveOrUpdateConstituentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdateGift">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="SaveOrUpdateGiftRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SaveOrUpdateGiftResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentationListByType">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetSegmentationListByTypeRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetSegmentationListByTypeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetConstituentGift">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetConstituentGiftRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetConstituentGiftResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentationById">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetSegmentationByIdRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetSegmentationByIdResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSegmentationList">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="GetSegmentationListRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetSegmentationListResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOrUpdatePledge">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="SaveOrUpdatePledgeRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SaveOrUpdatePledgeResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -620,17 +933,21 @@
       <soap:operation soapAction=""/>
       <wsdl:input name="SearchConstituentsRequest">
         <soap:body use="literal"/>
-
       </wsdl:input>
       <wsdl:output name="SearchConstituentsResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="BulkAddCommunicationHistory">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="BulkAddCommunicationHistoryRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="OrangeLeapService">
     <wsdl:port binding="schema:OrangeLeapBinding" name="OrangeLeapPort">
       <soap:address location="http://localhost:8080/orangeleap/services/1.0/"/>
-
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

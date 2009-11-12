@@ -64,6 +64,7 @@
 
 	<bean id="tangerineAuthenticationHelper" class="com.orangeleap.tangerine.security.TangerineAuthenticationHelper">
       <property name="tangerineSessionInformationFilter" ref="tangerineFilter" />
+      <property name="sqlMapClient" ref="sqlMapClient"/>
     </bean>
     
     

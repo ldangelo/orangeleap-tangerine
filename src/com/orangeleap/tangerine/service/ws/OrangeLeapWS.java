@@ -42,6 +42,10 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.providers.ldap.LdapAuthenticationProvider;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -56,7 +60,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * Describe class <code>OrangeLeapWS</code> here.
@@ -67,6 +72,7 @@ import java.util.Map;
  * @version $Id: prj.el,v 1.4 2003/04/23 14:28:25 kobit Exp $
  */
 @Endpoint
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class OrangeLeapWS {
 
     private static final Log logger = LogFactory.getLog(LdapAuthenticationProvider.class);
@@ -79,6 +85,8 @@ public class OrangeLeapWS {
     
     private ConstituentService cs;
 
+    private PlatformTransactionManager txManager;
+    
     @Resource(name = "communicationHistoryService")
     private CommunicationHistoryService communicationHistory;
 
@@ -127,6 +135,7 @@ public class OrangeLeapWS {
     	Constituent wsco = new Constituent();
     	converter.ConvertToJAXB(co, wsco);
     	response.setConstituent(wsco);
+
     	return response;
     }
     
@@ -148,13 +157,19 @@ public class OrangeLeapWS {
     }
 
     @PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-    public void maintainConstituent(SaveOrUpdateConstituentRequest p) throws ConstituentValidationException, BindException {
+    public SaveOrUpdateConstituentResponse maintainConstituent(SaveOrUpdateConstituentRequest p) throws ConstituentValidationException, BindException {
         com.orangeleap.tangerine.domain.Constituent c = cs.createDefaultConstituent();
         ObjectConverter converter = new ObjectConverter();
 
         converter.ConvertFromJAXB(p.getConstituent(), c);
 
         cs.maintainConstituent(c);
+        
+        Constituent responseConstituent = new Constituent();
+        SaveOrUpdateConstituentResponse response = new SaveOrUpdateConstituentResponse();
+        converter.ConvertToJAXB(c, responseConstituent);
+        response.setConstituent(responseConstituent);
+        return response;
     }
 
 
@@ -252,7 +267,7 @@ public class OrangeLeapWS {
     }
 
     @PayloadRoot(localPart = "SaveOrUpdatePledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-    public void maintainPledge(SaveOrUpdatePledgeRequest request) 
+    public SaveOrUpdatePledgeResponse maintainPledge(SaveOrUpdatePledgeRequest request) 
     {
         com.orangeleap.tangerine.domain.Constituent c = cs.readConstituentById(request.getConstituentId());
         com.orangeleap.tangerine.domain.paymentInfo.Pledge p = pledgeService.createDefaultPledge(c);
@@ -267,10 +282,16 @@ public class OrangeLeapWS {
         } catch (BindException e) {
             logger.error(e.getMessage());
         }
+        
+        SaveOrUpdatePledgeResponse response = new SaveOrUpdatePledgeResponse();
+        Pledge responsePledge = new Pledge();
+        converter.ConvertToJAXB(p, responsePledge);
+        response.setPledge(responsePledge);
+        return response;
     }
     
     @PayloadRoot(localPart = "SaveOrUpdateGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-    public void maintainGift(SaveOrUpdateGiftRequest request) {
+    public SaveOrUpdateGiftResponse maintainGift(SaveOrUpdateGiftRequest request) {
         com.orangeleap.tangerine.domain.Constituent c = cs.readConstituentById(request.getConstituentId());
         com.orangeleap.tangerine.domain.paymentInfo.Gift g = giftService.createDefaultGift(c);
 
@@ -285,6 +306,11 @@ public class OrangeLeapWS {
             logger.error(e.getMessage());
         }
 
+        SaveOrUpdateGiftResponse response = new SaveOrUpdateGiftResponse();
+        Gift responseGift = new Gift();
+        converter.ConvertToJAXB(g, responseGift);
+        response.setGift(responseGift);
+        return response;
     }
 
     @PayloadRoot(localPart = "GetConstituentPledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
@@ -323,9 +349,9 @@ public class OrangeLeapWS {
 
 
 
-    @PayloadRoot(localPart = "GetSegmentationRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-    public GetSegmentationResponse getSegmentation(GetSegmentationRequest req) {
-    	GetSegmentationResponse response = new GetSegmentationResponse();
+    @PayloadRoot(localPart = "GetSegmentationByNameRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public com.orangeleap.tangerine.ws.schema.GetSegmentationByNameResponse getSegmentationByName(com.orangeleap.tangerine.ws.schema.GetSegmentationByNameRequest req) {
+    	com.orangeleap.tangerine.ws.schema.GetSegmentationByNameResponse response = new com.orangeleap.tangerine.ws.schema.GetSegmentationByNameResponse();
     	
         WSClient wsClient = new WSClient();
 		Theguru guruPort = wsClient.getTheGuru();
@@ -335,11 +361,34 @@ public class OrangeLeapWS {
 		getSegmentationListRequest.setName(req.getSegmentation());
         GetSegmentationByNameResponse thegururesponse = guruPort.getSegmentationByName(getSegmentationListRequest);
         
-        Iterator<Long> it = thegururesponse.getConstituentid().iterator();
+        Iterator<Long> it = thegururesponse.getEntityid().iterator();
         while (it.hasNext()) {
         	Long id = it.next();
 
         	response.getEntityId().add(id);
+        }
+    	
+
+        return response;
+    }
+    
+    @PayloadRoot(localPart = "GetSegmentationByIdRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public com.orangeleap.tangerine.ws.schema.GetSegmentationByIdResponse getSegmentationById(com.orangeleap.tangerine.ws.schema.GetSegmentationByIdRequest req) {
+    	com.orangeleap.tangerine.ws.schema.GetSegmentationByIdResponse response = new com.orangeleap.tangerine.ws.schema.GetSegmentationByIdResponse();
+    	
+        WSClient wsClient = new WSClient();
+		Theguru guruPort = wsClient.getTheGuru();
+ 
+		com.orangeleap.theguru.client.ObjectFactory of = new com.orangeleap.theguru.client.ObjectFactory();
+		com.orangeleap.theguru.client.GetSegmentationByIdRequest getSegmentationListRequest = of.createGetSegmentationByIdRequest();
+		getSegmentationListRequest.setId(req.getId());
+        com.orangeleap.theguru.client.GetSegmentationByIdResponse thegururesponse = guruPort.getSegmentationById(getSegmentationListRequest);
+        
+        Iterator<Long> it = thegururesponse.getEntityid().iterator();
+        while (it.hasNext()) {
+        	Long id = it.next();
+
+        	response.getEntityid().add(id);
         }
     	
 
@@ -365,12 +414,47 @@ public class OrangeLeapWS {
         	segmentation.setId(seg.getId());
         	segmentation.setName(seg.getName());
         	segmentation.setDescription(seg.getDescription());
+        	segmentation.setExecutionCount(seg.getExecutionCount());
+        	segmentation.setExecutionDate(seg.getExecutionDate());
+        	segmentation.setExecutionUser(seg.getExecutionUser());
         
         	response.getSegmentation().add(segmentation);
         }
 
         return response;
     }
+
+    @PayloadRoot(localPart = "GetSegmentationListByTypeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public com.orangeleap.tangerine.ws.schema.GetSegmentationListByTypeResponse getSegmentationListByType(com.orangeleap.tangerine.ws.schema.GetSegmentationListByTypeRequest req) throws MalformedURLException {
+        com.orangeleap.tangerine.ws.schema.GetSegmentationListByTypeResponse response = new com.orangeleap.tangerine.ws.schema.GetSegmentationListByTypeResponse();
+        WSClient wsClient = new WSClient();
+		Theguru guruPort = wsClient.getTheGuru();
+
+		com.orangeleap.theguru.client.ObjectFactory of = new com.orangeleap.theguru.client.ObjectFactory();
+		com.orangeleap.theguru.client.GetSegmentationListByTypeRequest getSegmentationListRequest = of.createGetSegmentationListByTypeRequest();
+		getSegmentationListRequest.setType(req.getType());
+        com.orangeleap.theguru.client.GetSegmentationListByTypeResponse thegururesponse = guruPort.getSegmentationListByType(getSegmentationListRequest);
+        
+        Iterator<Segmentation> it = thegururesponse.getSegmentation().iterator();
+        while (it.hasNext()) {
+        	Segmentation seg = it.next();
+        	com.orangeleap.tangerine.ws.schema.Segmentation segmentation = new com.orangeleap.tangerine.ws.schema.Segmentation();
+        	
+        	segmentation.setId(seg.getId());
+        	segmentation.setName(seg.getName());
+        	segmentation.setDescription(seg.getDescription());
+        	segmentation.setExecutionCount(seg.getExecutionCount());
+        	segmentation.setExecutionDate(seg.getExecutionDate());
+        	segmentation.setExecutionUser(seg.getExecutionUser());
+        
+        	response.getSegmentation().add(segmentation);
+        }
+
+        return response;
+    }
+
+
+
 
     @PayloadRoot(localPart = "AddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     public void addCommunicationHistory(AddCommunicationHistoryRequest req) {
@@ -387,6 +471,27 @@ public class OrangeLeapWS {
             logger.error(ex.getMessage());
         }
 
+    }
+
+    @PayloadRoot(localPart = "BulkAddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public void bulkAddCommunicationHistory(BulkAddCommunicationHistoryRequest req) {
+        ObjectConverter converter = new ObjectConverter();
+
+        com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
+
+        converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
+        
+        Iterator<Long> it = req.getConstituentId().iterator();
+        while (it.hasNext()) {
+        	Long Id = (Long)it.next(); 
+        	ch.setConstituent(cs.readConstituentById(Id));
+
+        try {
+            communicationHistory.maintainCommunicationHistory(ch);
+        } catch (BindException ex) {
+            logger.error(ex.getMessage());
+        }
+        }
     }
 
     @PayloadRoot(localPart = "GetCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
@@ -409,5 +514,13 @@ public class OrangeLeapWS {
         }
         return response;
     }
+
+	public PlatformTransactionManager getTxManager() {
+		return txManager;
+	}
+
+	public void setTxManager(PlatformTransactionManager txManager) {
+		this.txManager = txManager;
+	}
 
 }

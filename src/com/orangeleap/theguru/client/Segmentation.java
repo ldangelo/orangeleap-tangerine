@@ -25,7 +25,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="executionUser" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="executionCount" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="executionDate" type="{http://www.w3.org/2001/XMLSchema}date"/>
+ *         &lt;element name="executionDate" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -57,7 +57,7 @@ public class Segmentation {
     protected String executionUser;
     protected long executionCount;
     @XmlElement(required = true)
-    @XmlSchemaType(name = "date")
+    @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar executionDate;
 
     /**

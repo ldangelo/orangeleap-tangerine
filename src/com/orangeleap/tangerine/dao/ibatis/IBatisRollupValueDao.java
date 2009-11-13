@@ -67,8 +67,8 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
             logger.trace("deleteRollupValuesForAttributeSeries: attribute id = " + ra.getId() + " series id = "+rs.getId());
         }
         Map<String, Object> params = setupParams();
-        params.put("rollupSeriesId", ra.getId());
-        params.put("rollupAttributeId", rs.getId());
+        params.put("rollupSeriesId", rs.getId());
+        params.put("rollupAttributeId", ra.getId());
         params.put("startDate", startDate);
         params.put("endDate", endDate);
         getSqlMapClientTemplate().delete("ROLLUP_DELETE_ROLLUP_VALUES_FOR_ATTRIBUTE_SERIES", params);

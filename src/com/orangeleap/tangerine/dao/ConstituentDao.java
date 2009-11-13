@@ -45,6 +45,8 @@ public interface ConstituentDao {
     List<Constituent> searchConstituents(Map<String, Object> parameters);
     
     List<Constituent> searchConstituents(Map<String, Object> params, String sortPropertyName, String direction, int start, int limit, Locale locale);
+    
+    List<Constituent> searchConstituents(Map<String, Object> params, boolean parametersStartWith, String sortPropertyName, String direction, int start, int limit, Locale locale);
 
 	public List<Constituent> readAllConstituentsByAccountRange(Long fromId, Long toId);
 

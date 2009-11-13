@@ -378,6 +378,10 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     public List<Constituent> searchConstituents(Map<String, Object> params, SortInfo sort, Locale locale) {
+        return searchConstituents(params, false, sort, locale);    }
+
+    @Override
+    public List<Constituent> searchConstituents(Map<String, Object> params, boolean parametersStartWith, SortInfo sort, Locale locale) {
         if (logger.isTraceEnabled()) {
             logger.trace("searchConstituents: params = " + params + " sort = " + sort);
         }
@@ -385,10 +389,12 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (fullText != null) {
         	return constituentDao.fullTextSearchConstituents(fullText);
         } else {
-        	return constituentDao.searchConstituents(params, sort.getSort(), sort.getDir(), sort.getStart(),
+        	return constituentDao.searchConstituents(params, parametersStartWith, sort.getSort(), sort.getDir(), sort.getStart(),
                 sort.getLimit(), locale);
         }
     }
+
+
 
     @Override
     public List<Constituent> findConstituents(Map<String, Object> params, List<Long> ignoreIds) {

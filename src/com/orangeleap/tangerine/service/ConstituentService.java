@@ -45,6 +45,8 @@ public interface ConstituentService {
 
     public List<Constituent> searchConstituents(Map<String, Object> params, SortInfo sort, Locale locale);
 
+    public List<Constituent> searchConstituents(Map<String, Object> params, boolean parametersStartWith, SortInfo sort, Locale locale);
+
     public List<Constituent> findConstituents(Map<String, Object> params, List<Long> ignoreIds);
 
     public Constituent createDefaultConstituent();
@@ -68,8 +70,8 @@ public interface ConstituentService {
 
     public boolean hasReceivedCommunication(Long constituentId, String commType,
                                             int number, String timeUnits);
-    
-    public void updateFullTextSearchIndex(Long constituentId);
+
+        public void updateFullTextSearchIndex(Long constituentId);
     
 	public void processConstituent(String schedule, Date compareDate,
 			ConstituentService ps, GiftService gs, MailService ms,

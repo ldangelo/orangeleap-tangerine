@@ -38,13 +38,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/** 
+/**
  * Corresponds to the CONSTITUENT tables
  */
 @Repository("constituentDAO")
 public class IBatisConstituentDao extends AbstractIBatisDao implements ConstituentDao {
-	
-	
+
+
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
@@ -52,7 +52,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     public IBatisConstituentDao(SqlMapClient sqlMapClient) {
         super(sqlMapClient);
     }
-    
+
     @Override
     public Constituent maintainConstituent(Constituent constituent) {
         if (logger.isTraceEnabled()) {
@@ -72,7 +72,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         params.put("constituentIds", constituentIds);
         return (Constituent)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_IDS_SITE", params);
     }
-    
+
     @Override
     public Constituent readConstituentByAccountNumber(String accountNumber) {
         if (logger.isTraceEnabled()) {
@@ -82,7 +82,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         params.put("accountNumber", accountNumber);
         return (Constituent)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_ACCOUNT_NUMBER", params);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public List<Constituent> readConstituentsByIds(List<Long> ids) {
@@ -93,7 +93,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         params.put("constituentIds", ids);
         return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_IDS_SITE", params);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public List<Constituent> readAllConstituentsBySite() {
@@ -112,7 +112,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         Map<String,Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_RESULT", sortPropertyName, direction, start, limit, locale);
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_SITE", params);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
 	public List<Constituent> readAllConstituentsByAccountRange(Long fromId, Long toId) {
@@ -146,12 +146,18 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         params.put("loginId", loginId);
         return (Constituent)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_LOGIN_ID_SITE", params);
     }
-    
+
     @SuppressWarnings("unchecked")
 	@Override
     public List<Constituent> searchConstituents(Map<String, Object> parameters, String sortPropertyName, String direction, int start, int limit, Locale locale) {
+        return searchConstituents(parameters, false, sortPropertyName, direction, start, limit, locale);
+    }
+
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<Constituent> searchConstituents(Map<String, Object> parameters, boolean parametersStartWith, String sortPropertyName, String direction, int start, int limit, Locale locale) {
         Map<String, Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_SEARCH_RESULT", sortPropertyName, direction, start, limit, locale);
-        List<Map<String,Object>> searchColumnList = setupSearchParams(parameters, PropertyAccessorFactory.forBeanPropertyAccess(new Constituent()), "CONSTITUENT.CONSTITUENT_SEARCH_RESULT");
+        List<Map<String,Object>> searchColumnList = setupSearchParams(parameters, parametersStartWith, PropertyAccessorFactory.forBeanPropertyAccess(new Constituent()), "CONSTITUENT.CONSTITUENT_SEARCH_RESULT");
         params.put("searchTerms", searchColumnList);
         addAdditionalWhere(params, parameters);
     	return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
@@ -169,7 +175,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
 
     private void addAdditionalWhere(Map<String, Object> returnParameters, Map<String, Object> enteredParameters) {
         if (StringUtils.hasText((String) enteredParameters.get(QueryUtil.ADDITIONAL_WHERE))) {
-            returnParameters.put(QueryUtil.ADDITIONAL_WHERE, enteredParameters.get(QueryUtil.ADDITIONAL_WHERE));    
+            returnParameters.put(QueryUtil.ADDITIONAL_WHERE, enteredParameters.get(QueryUtil.ADDITIONAL_WHERE));
         }
     }
 
@@ -187,7 +193,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	List<Constituent> constituents = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_FIND_TERMS", params);
 		return constituents;
 	}
-    
+
     // Notes on mysql fulltext index:
     //
     // Words are broken up at non-alphanumeric chars (except underscore and apostrophe)
@@ -201,9 +207,9 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	Map<String, Object> params = setupParams();
         params.put("searchText", searchText);
         params.put("entityType", "constituent");
-        
+
     	List<EntitySearch> list = getSqlMapClientTemplate().queryForList("SELECT_ENTITY_SEARCH_BY_SEARCH_STRING", params);
-    	
+
     	List<Constituent> constituents = new ArrayList();
     	for (EntitySearch es: list) constituents.add(this.readConstituentById(es.getEntityId()));
     	return constituents;

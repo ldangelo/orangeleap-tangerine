@@ -116,6 +116,10 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     }
 
     protected List<Map<String,Object>> setupSearchParams(Map<String, Object> parameterPropertyNameValues, BeanWrapper beanWrapper, String resultMapName) {
+    	return setupSearchParams(parameterPropertyNameValues, false, beanWrapper, resultMapName);
+    }
+
+    protected List<Map<String,Object>> setupSearchParams(Map<String, Object> parameterPropertyNameValues, boolean parametersStartWith, BeanWrapper beanWrapper, String resultMapName) {
         List<Map<String,Object>> searchColumnList = new ArrayList<Map<String,Object>>();
         Map<String, String> beanPropertyColumnMap = findBeanPropertyColumnMap(resultMapName);
 
@@ -129,7 +133,10 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
                     searchColumnMap.put("columnName", beanPropertyColumnMap.get(propertyName));
                     boolean useLike = String.class.equals(beanWrapper.getPropertyType(propertyName));
                     searchColumnMap.put("columnClause", useLike ? "LIKE" : "=");
-                    searchColumnMap.put("columnValue", useLike ? "%" + entry.getValue() + "%" : entry.getValue());
+                    if (parametersStartWith)
+                    	searchColumnMap.put("columnValue", useLike ? entry.getValue() + "%" : entry.getValue());
+                    else
+                    	searchColumnMap.put("columnValue", useLike ? "%" + entry.getValue() + "%" : entry.getValue());
                     searchColumnList.add(searchColumnMap);
                 }
                 else if ( ! beanWrapper.isReadableProperty(propertyName) || beanPropertyColumnMap.get(propertyName) == null) {

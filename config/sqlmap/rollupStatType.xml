@@ -112,16 +112,46 @@
     </insert>
    
    
+    <insert id="ROLLUP_PLEDGE_SCHEDULED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
+         <include refid="SELECT_INTO_RV_FRAG"/>
+        		p.CONSTITUENT_ID,
+        		p.CURRENCY_CODE,
+            	COUNT(it.SCHEDULED_ITEM_AMOUNT),
+            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            from 
+            	PLEDGE p, SCHEDULED_ITEM it	
+        	where
+        		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
+        		and p.PLEDGE_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'pledge'
+        		and it.COMPLETION_DATE is null 
+            group by 
+        		p.CONSTITUENT_ID,
+        		p.CURRENCY_CODE
+    </insert>
+    
+    <insert id="ROLLUP_RECURRING_GIFT_SCHEDULED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
+         <include refid="SELECT_INTO_RV_FRAG"/>
+        		rg.CONSTITUENT_ID,
+        		rg.CURRENCY_CODE,
+            	COUNT(it.SCHEDULED_ITEM_AMOUNT),
+            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            from 
+            	RECURRING_GIFT rg, SCHEDULED_ITEM it	
+        	where
+        		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
+        		and rg.RECURRING_GIFT_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'recurringgift'
+        		and it.COMPLETION_DATE is null 
+            group by 
+        		rg.CONSTITUENT_ID,
+        		rg.CURRENCY_CODE
+    </insert>
+   
     <!-- 
     
     <insert id="ROLLUP_PLEDGE_COMPLETED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
     </insert>
-    <insert id="ROLLUP_PLEDGE_SCHEDULED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
-    </insert>
 
     <insert id="ROLLUP_RECURRING_GIFT_COMPLETED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
-    </insert>
-    <insert id="ROLLUP_RECURRING_GIFT_SCHEDULED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
     </insert>
      
     -->

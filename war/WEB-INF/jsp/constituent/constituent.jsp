@@ -44,7 +44,7 @@
 							var duplicateConstituentName = '<c:out value="${requestScope.duplicateConstituentName}"/>';
 							Ext.Msg.show({
 								title: "Save Duplicate Constituent '" + duplicateConstituentName + "'?",
-								msg: duplicateConstituentName + ' is a duplicate of another constituent.  Would you like to continue?',
+								msg: duplicateConstituentName + ' may be a duplicate of another constituent.  Would you like to continue?',
 								buttons: Ext.Msg.OKCANCEL,
 								icon: Ext.MessageBox.WARNING,
 								fn: function(btn, text) {

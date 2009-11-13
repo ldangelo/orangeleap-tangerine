@@ -212,9 +212,10 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         } else {
             gift.setGiftStatus(Gift.STATUS_NOT_PAID);
             gift.setPaymentStatus(Gift.PAY_STATUS_DECLINED);
-            gift.setPaymentMessage(response.getMessage());
+            gift.setPaymentMessage(response.getMessage() + " Paymentech response code: " + response.getResponseCode());
 //			gift.setComments(response.getMessage());
             gift.setAvsMessage(response.getAVSResponseCode());
+            logger.error("Paymentech response code " + response.getResponseCode());            
         }
         GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
@@ -356,7 +357,8 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         } else {
             gift.setGiftStatus(Gift.STATUS_NOT_PAID);
             gift.setPaymentStatus(Gift.PAY_STATUS_DECLINED);
-            gift.setPaymentMessage(response.getMessage());
+            gift.setPaymentMessage(response.getMessage() + "Paymentech response code: " + response.getResponseCode());
+            logger.error("Paymentech response code " + response.getResponseCode());
         }
 
         GiftService gs = (GiftService) applicationContext.getBean("giftService");
@@ -457,8 +459,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         } else {
             gift.setGiftStatus(Gift.STATUS_NOT_PAID);
             gift.setPaymentStatus(Gift.PAY_STATUS_DECLINED);
-            gift.setPaymentMessage(response.getMessage());
+            gift.setPaymentMessage(response.getMessage() + "Paymentech response code: " + response.getResponseCode());
             gift.setAvsMessage(response.getAVSResponseCode());
+            logger.error("Paymentech response code " + response.getResponseCode());
         }
         GiftService gs = (GiftService) applicationContext.getBean("giftService");
 

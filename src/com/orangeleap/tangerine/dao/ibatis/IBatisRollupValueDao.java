@@ -80,8 +80,8 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
             logger.trace("updateRollupValue: attribute id = " + ra.getId() + " series id = "+rs.getId());
         }
         Map<String, Object> params = setupParams();
-        params.put("rollupSeriesId", ra.getId());
-        params.put("rollupAttributeId", rs.getId());
+        params.put("rollupSeriesId", rs.getId());
+        params.put("rollupAttributeId", ra.getId());
         params.put("startDate", startDate);
         params.put("endDate", endDate);
         params.put("fieldName", ra.getFieldName());

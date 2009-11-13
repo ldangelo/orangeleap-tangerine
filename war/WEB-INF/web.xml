@@ -44,18 +44,21 @@
 		<filter-name>gzipFilter</filter-name>
 		<filter-class>net.sf.ehcache.constructs.web.filter.GzipFilter</filter-class>
 	</filter>
-	
+    <filter>
+        <filter-name>tangerineUserCheckFilter</filter-name>
+        <filter-class>com.orangeleap.tangerine.web.filters.TangerineUserCheckFilter</filter-class>
+    </filter>
 
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+
 	<filter-mapping>
 		<filter-name>saveRequestFilter</filter-name>
 		<url-pattern>/*</url-pattern>  
 	</filter-mapping>
-	
+
 	<filter-mapping>
 		<filter-name>openSpringTransactionInView</filter-name>
 		<url-pattern>/*</url-pattern>  
@@ -91,6 +94,12 @@
         <url-pattern>*.json</url-pattern>
 	</filter-mapping>
 
+    <!-- The tangerineUserCheckFilter !MUST! be last in the list of filters -->
+    <filter-mapping>
+        <filter-name>tangerineUserCheckFilter</filter-name>
+        <url-pattern>*.htm</url-pattern>
+    </filter-mapping>
+
 	<filter-mapping>
         <filter-name>sitemesh</filter-name>
         <url-pattern>/*</url-pattern>
@@ -112,7 +121,7 @@
         application context. -->
 	<servlet>
 		<servlet-name>orangeleap</servlet-name>
-		<servlet-class> org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-class> org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 		    <param-name>contextConfigLocation</param-name>
 		    <param-value>/WEB-INF/applicationContext-servlet.xml</param-value>

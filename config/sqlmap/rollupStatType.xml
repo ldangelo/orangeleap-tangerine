@@ -152,8 +152,6 @@
     <!-- Non-constituent entity types (rollup dimensions) -->
     
     
-    <!-- Distribution Line rollups -->
-    
 	<!-- 
 		e.g. fieldName = PROJECT_CODE rollup for all gifts in date range
 	-->

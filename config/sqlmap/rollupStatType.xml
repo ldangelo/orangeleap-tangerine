@@ -104,7 +104,7 @@
         	where
         		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
         		and g.GIFT_ID = dl.GIFT_ID
-        		and cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.FIELD_NAME= #customFieldName# and cf.ENTITY_TYPE='distributionline'  
+        		and cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.ENTITY_TYPE='distributionline' and cf.FIELD_NAME= #customFieldName#  
         		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
             group by 
         		cf.FIELD_VALUE,
@@ -146,23 +146,18 @@
         		rg.CURRENCY_CODE
     </insert>
    
-    <!-- 
+   
+   
     
-    <insert id="ROLLUP_PLEDGE_COMPLETED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
-    </insert>
-
-    <insert id="ROLLUP_RECURRING_GIFT_COMPLETED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
-    </insert>
-     
-    -->
-
-
-
+    <!-- Non-constituent entity types (rollup dimensions) -->
+    
+    
+    <!-- Distribution Line rollups -->
+    
 	<!-- 
 		e.g. fieldName = PROJECT_CODE rollup for all gifts in date range
 	-->
-	<!-- 
-    <insert id="ROLLUP_DISTRO_LINE_AMOUNT_BY_DISTRO_LINE_FIELD" parameterClass="java.util.Map">
+    <insert id="ROLLUP_GIFT_DISTRO_LINE_AMOUNT_BY_DISTRO_LINE_FIELD" parameterClass="java.util.Map">
         <include refid="SELECT_INTO_RV_FRAG"/>
         		dl.$fieldName$,
         		g.CURRENCY_CODE,
@@ -178,7 +173,47 @@
         		dl.$fieldName$,
         		g.CURRENCY_CODE
     </insert>
+    
+    <insert id="ROLLUP_PLEDGE_SCHEDULED_PAYMENTS_BY_ALL" parameterClass="java.util.Map">
+         <include refid="SELECT_INTO_RV_FRAG"/>
+        		'ALL',
+        		p.CURRENCY_CODE,
+            	COUNT(it.SCHEDULED_ITEM_AMOUNT),
+            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            from 
+            	PLEDGE p, SCHEDULED_ITEM it
+        	where
+        		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
+        		and p.PLEDGE_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'pledge'
+        		and it.COMPLETION_DATE is null 
+            group by 
+        		'ALL',
+        		p.CURRENCY_CODE
+    </insert>
+     
+    <!-- 
+    The issue with rolling up scheduled pledges by project code is that the scheduled amounts are totals for all distro lines on the pledges; they are not broken out.
+    So it would not work unless there was also a limit of 1 distro line per pledge.  The below might be an alternative - break out by pledge custom field 
     -->
+
+    <insert id="ROLLUP_PLEDGE_SCHEDULED_PAYMENTS_BY_PLEDGE_CF" parameterClass="java.util.Map">
+         <include refid="SELECT_INTO_RV_FRAG"/>
+        		cf.FIELD_VALUE,
+        		p.CURRENCY_CODE,
+            	COUNT(it.SCHEDULED_ITEM_AMOUNT),
+            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            from 
+            	PLEDGE p, SCHEDULED_ITEM it, CUSTOM_FIELD cf
+        	where
+        		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
+        		and p.PLEDGE_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'pledge'
+        		and it.COMPLETION_DATE is null 
+        		and cf.ENTITY_ID = p.PLEDGE_ID and cf.ENTITY_TYPE='pledge' and cf.FIELD_NAME= #customFieldName#   
+            group by 
+        		cf.FIELD_VALUE,
+        		p.CURRENCY_CODE
+    </insert>
+     
     
 
 </sqlMap>

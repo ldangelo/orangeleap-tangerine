@@ -226,7 +226,7 @@
 		</bean>
 -->
 		<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
-			<property name="configFile" value="/usr/local/paymentech/config/linehandler.properties"/>
+			<property name="configFile" value="${paymentech.location}/config/linehandler.properties"/>
 		</bean>
 
 		<bean id="checkService" class="com.orangeleap.tangerine.service.impl.CheckServiceImpl">

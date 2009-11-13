@@ -189,6 +189,23 @@
         		p.CURRENCY_CODE
     </insert>
      
+    <insert id="ROLLUP_RECURRING_GIFT_SCHEDULED_PAYMENTS_BY_ALL" parameterClass="java.util.Map">
+         <include refid="SELECT_INTO_RV_FRAG"/>
+        		'ALL',
+        		rg.CURRENCY_CODE,
+            	COUNT(it.SCHEDULED_ITEM_AMOUNT),
+            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            from 
+            	RECURRING_GIFT rg, SCHEDULED_ITEM it
+        	where
+        		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
+        		and rg.RECURRING_GIFT_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'recurringgift'
+        		and it.COMPLETION_DATE is null 
+            group by 
+        		'ALL',
+        		rg.CURRENCY_CODE
+    </insert>
+     
     <!-- 
     The issue with rolling up scheduled pledges by project code is that the scheduled amounts are totals for all distro lines on the pledges; they are not broken out.
     So it would not work unless there was also a limit of 1 distro line per pledge.  The below might be an alternative - break out by pledge custom field 

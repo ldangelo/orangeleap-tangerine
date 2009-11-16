@@ -23,6 +23,8 @@ public class RollupValue implements GeneratedId, Serializable {
     private String currencyCode;
     private BigDecimal countValue;
     private BigDecimal sumValue;
+    private BigDecimal minValue;
+    private BigDecimal maxValue;
     private String siteName;
 	
     public RollupValue() { }
@@ -105,6 +107,22 @@ public class RollupValue implements GeneratedId, Serializable {
 
     public void setSumValue(BigDecimal sumValue) {
         this.sumValue = sumValue;
+    }
+    
+    public BigDecimal getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(BigDecimal minValue) {
+        this.minValue = minValue;
+    }
+    
+    public BigDecimal getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(BigDecimal maxValue) {
+        this.maxValue = maxValue;
     }
     
 	public void setSiteName(String siteName) {

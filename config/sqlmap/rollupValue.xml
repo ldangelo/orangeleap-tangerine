@@ -12,6 +12,8 @@
         <result property="currencyCode" column="ROLLUP_VALUE_CURRENCY_CODE" />
         <result property="countValue" column="ROLLUP_VALUE_COUNT_VALUE" />
         <result property="sumValue" column="ROLLUP_VALUE_SUM_VALUE" />
+        <result property="minValue" column="ROLLUP_VALUE_MIN_VALUE" />
+        <result property="maxValue" column="ROLLUP_VALUE_MAX_VALUE" />
         <result property="siteName" column="ROLLUP_VALUE_SITE_NAME" />
     </resultMap>
 
@@ -25,6 +27,8 @@
         rollup_value.CURRENCY_CODE as ROLLUP_VALUE_CURRENCY_CODE,
         rollup_value.COUNT_VALUE as ROLLUP_VALUE_COUNT_VALUE,    
         rollup_value.SUM_VALUE as ROLLUP_VALUE_SUM_VALUE,   
+        rollup_value.MIN_VALUE as ROLLUP_VALUE_MIN_VALUE,   
+        rollup_value.MAX_VALUE as ROLLUP_VALUE_MAX_VALUE,   
         rollup_value.SITE_NAME as ROLLUP_VALUE_SITE_NAME    
     </sql>
 
@@ -59,6 +63,8 @@
         	CURRENCY_CODE,
         	COUNT_VALUE,        
         	SUM_VALUE,        
+        	MIN_VALUE,        
+        	MAX_VALUE,        
         	SITE_NAME        
         	)
         values (
@@ -71,6 +77,8 @@
         	#currencyCode# ,
         	#countValue# ,      
         	#sumValue# ,        
+        	#minValue# ,        
+        	#maxValue# ,        
         	#siteName#         
         	)
         <selectKey keyProperty="id" resultClass="long">
@@ -90,6 +98,8 @@
         	CURRENCY_CODE = #currencyCode# ,
         	COUNT_VALUE = #countValue# ,       
         	SUM_VALUE = #sumValue# ,     
+        	MIN_VALUE = #minValue# ,     
+        	MAX_VALUE = #maxValue# ,     
         	SITE_NAME = #siteName#         
         where ROLLUP_VALUE_ID = #id#
     </update>

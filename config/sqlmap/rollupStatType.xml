@@ -25,7 +25,9 @@
         	GROUP_BY_VALUE,
         	CURRENCY_CODE,
         	COUNT_VALUE,        
-        	SUM_VALUE        
+        	SUM_VALUE,        
+        	MIN_VALUE,       
+        	MAX_VALUE        
         )
         select
             #siteName#,
@@ -50,7 +52,9 @@
         		g.CONSTITUENT_ID,
         		g.CURRENCY_CODE,
             	COUNT(g.$fieldName$),
-            	SUM(g.$fieldName$)
+            	SUM(g.$fieldName$),
+            	MIN(g.$fieldName$),
+            	MAX(g.$fieldName$)
             from 
             	GIFT g	
         	where
@@ -70,7 +74,9 @@
         		g.CONSTITUENT_ID,
         		g.CURRENCY_CODE,
             	COUNT(ag.$fieldName$),
-            	SUM(ag.$fieldName$)
+            	SUM(ag.$fieldName$),
+            	MIN(ag.$fieldName$),
+            	MAX(ag.$fieldName$)
             from 
             	ADJUSTED_GIFT ag, GIFT g
         	where
@@ -91,7 +97,9 @@
         		gik.CONSTITUENT_ID,
         		gik.CURRENCY_CODE,
             	COUNT(gik.$fieldName$),
-            	SUM(gik.$fieldName$)
+            	SUM(gik.$fieldName$),
+            	MIN(gik.$fieldName$),
+            	MAX(gik.$fieldName$)
             from 
             	GIFT_IN_KIND gik	
         	where
@@ -112,7 +120,9 @@
         		cf.FIELD_VALUE,
         		g.CURRENCY_CODE,
             	COUNT(dl.AMOUNT),
-            	SUM(dl.AMOUNT)
+            	SUM(dl.AMOUNT),
+            	MIN(dl.AMOUNT),
+            	MAX(dl.AMOUNT)
             from 
             	GIFT g, DISTRO_LINE dl, CUSTOM_FIELD cf
         	where
@@ -134,7 +144,9 @@
         		p.CONSTITUENT_ID,
         		p.CURRENCY_CODE,
             	COUNT(it.SCHEDULED_ITEM_AMOUNT),
-            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            	SUM(it.SCHEDULED_ITEM_AMOUNT),
+            	MIN(it.SCHEDULED_ITEM_AMOUNT),
+            	MAX(it.SCHEDULED_ITEM_AMOUNT)
             from 
             	PLEDGE p, SCHEDULED_ITEM it	
         	where
@@ -154,7 +166,9 @@
         		rg.CONSTITUENT_ID,
         		rg.CURRENCY_CODE,
             	COUNT(it.SCHEDULED_ITEM_AMOUNT),
-            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            	SUM(it.SCHEDULED_ITEM_AMOUNT),
+            	MIN(it.SCHEDULED_ITEM_AMOUNT),
+            	MAX(it.SCHEDULED_ITEM_AMOUNT)
             from 
             	RECURRING_GIFT rg, SCHEDULED_ITEM it	
         	where
@@ -183,7 +197,9 @@
         		dl.$fieldName$,
         		g.CURRENCY_CODE,
             	COUNT(dl.AMOUNT),
-            	SUM(dl.AMOUNT)
+            	SUM(dl.AMOUNT),
+            	MIN(dl.AMOUNT),
+            	MAX(dl.AMOUNT)
             from 
             	GIFT g, DISTRO_LINE dl
         	where
@@ -200,7 +216,9 @@
         		'ALL',
         		p.CURRENCY_CODE,
             	COUNT(it.SCHEDULED_ITEM_AMOUNT),
-            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            	SUM(it.SCHEDULED_ITEM_AMOUNT),
+            	MIN(it.SCHEDULED_ITEM_AMOUNT),
+            	MAX(it.SCHEDULED_ITEM_AMOUNT)
             from 
             	PLEDGE p, SCHEDULED_ITEM it
         	where
@@ -217,7 +235,9 @@
         		'ALL',
         		rg.CURRENCY_CODE,
             	COUNT(it.SCHEDULED_ITEM_AMOUNT),
-            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            	SUM(it.SCHEDULED_ITEM_AMOUNT),
+            	MIN(it.SCHEDULED_ITEM_AMOUNT),
+            	MAX(it.SCHEDULED_ITEM_AMOUNT)
             from 
             	RECURRING_GIFT rg, SCHEDULED_ITEM it
         	where
@@ -239,7 +259,9 @@
         		cf.FIELD_VALUE,
         		p.CURRENCY_CODE,
             	COUNT(it.SCHEDULED_ITEM_AMOUNT),
-            	SUM(it.SCHEDULED_ITEM_AMOUNT)
+            	SUM(it.SCHEDULED_ITEM_AMOUNT),
+            	MIN(it.SCHEDULED_ITEM_AMOUNT),
+            	MAX(it.SCHEDULED_ITEM_AMOUNT)
             from 
             	PLEDGE p, SCHEDULED_ITEM it, CUSTOM_FIELD cf
         	where

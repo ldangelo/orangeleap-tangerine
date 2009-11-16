@@ -175,7 +175,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     }
 
     private boolean hasAdjustmentPage(String entityType) {
-        return "gift".equals(entityType) || "gift.distributionLine".equals(entityType);
+        return StringConstants.GIFT.equals(entityType) || "gift.distributionLine".equals(entityType);
     }
 
     private boolean hasCombinedDistroLinesPage(String entityType) {
@@ -183,7 +183,8 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     }
 
     private boolean hasViewPage(String entityType) {
-        return !("constituent".equals(entityType) || "giftInKind".equals(entityType) || StringConstants.GIFT.equals(entityType));
+        return ! (StringConstants.CONSTITUENT.equals(entityType) || StringConstants.GIFT_IN_KIND.equals(entityType) ||
+                StringConstants.GIFT.equals(entityType) || "gift.distributionLine".equals(entityType));
     }
 
     private boolean hasPaidPostedPage(String entityType) {
@@ -464,10 +465,12 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         }
         pageCustomizationService.maintainSectionField(sectionField);
 
-        FieldValidation fieldValidation = getFieldValidation(customFieldRequest, fieldDefinition, secondaryFieldDefinition, sectionDefinition);
+        if (PageType.giftCombinedDistributionLines != pageType) {
+            FieldValidation fieldValidation = getFieldValidation(customFieldRequest, fieldDefinition, secondaryFieldDefinition, sectionDefinition);
 
-        if ( StringUtils.trimToNull(fieldValidation.getRegex()) != null && !isReadOnly(fieldDefinition.getId()) ) {
-            pageCustomizationService.maintainFieldValidation(fieldValidation);
+            if ( StringUtils.trimToNull(fieldValidation.getRegex()) != null && !isReadOnly(fieldDefinition.getId()) ) {
+                pageCustomizationService.maintainFieldValidation(fieldValidation);
+            }
         }
 
         if (isReferenceType(customFieldRequest) && !isReadOnly(fieldDefinition.getId())) {

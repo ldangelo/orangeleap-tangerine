@@ -17,6 +17,7 @@
         <include refid="ROLLUP_SERIES_X_ATTRIBUTE_COLS_FRAGMENT"/>
         from ROLLUP_SERIES_X_ATTRIBUTE rollup_series_x_attribute 
         where rollup_series_x_attribute.ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
+        order by rollup_series_x_attribute.ROLLUP_SERIES_ID
     </select>
 
     <delete id="DELETE_ROLLUP_SERIES_X_ATTRIBUTE_BY_ATTRIBUTE_ID" parameterClass="map" >

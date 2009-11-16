@@ -40,10 +40,12 @@
         and rollup_value.ROLLUP_VALUE_ID = #id#
     </select>
 
-    <select id="SELECT_ROLLUP_VALUES_BY_ATTRIBUTE_AND_GROUPBYVALUE" resultMap="ROLLUP_VALUE_RESULT" parameterClass="map" >
+    <select id="SELECT_ROLLUP_VALUES_BY_ATTRIBUTE_SERIES_AND_GROUPBYVALUE" resultMap="ROLLUP_VALUE_RESULT" parameterClass="map" >
         <include refid="SELECT_ROLLUP_VALUE_FRAGMENT"/>
         and rollup_value.ROLLUP_ATTRIBUTE_ID = #attributeId#
+        and rollup_value.ROLLUP_SERIES_ID = #seriesId#
         and rollup_value.GROUP_BY_VALUE = #groupByValue#
+        order by rollup_value.START_DATE
     </select>
 
     <insert id="INSERT_ROLLUP_VALUE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupValue">

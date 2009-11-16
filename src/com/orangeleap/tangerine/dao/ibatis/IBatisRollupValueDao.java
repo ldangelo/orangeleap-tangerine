@@ -51,14 +51,15 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
     
     @SuppressWarnings("unchecked")
 	@Override
-    public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId) {
+    public List<RollupValue> readRollupValuesByAttributeSeriesAndConstituentId(Long attributeId, Long seriesId, Long constituentId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readRollupValuesByAttributeAndConstituentId: attributeId = " + attributeId + " constituentId="+constituentId);
+            logger.trace("readRollupValuesByAttributeSeriesAndConstituentId: attributeId = " + attributeId + " constituentId="+constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put("attributeId", attributeId);
+        params.put("seriesId", seriesId);
         params.put("groupByValue", ""+constituentId);
-        return getSqlMapClientTemplate().queryForList("SELECT_ROLLUP_VALUES_BY_ATTRIBUTE_AND_GROUPBYVALUE", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_ROLLUP_VALUES_BY_ATTRIBUTE_SERIES_AND_GROUPBYVALUE", params);
     }
     
 	@Override

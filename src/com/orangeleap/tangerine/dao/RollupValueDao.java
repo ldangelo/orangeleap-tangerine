@@ -13,7 +13,7 @@ public interface RollupValueDao {
 
     public RollupValue maintainRollupValue(RollupValue rollupValue);
     
-    public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId);
+    public List<RollupValue> readRollupValuesByAttributeSeriesAndConstituentId(Long attributeId, Long seriesId, Long constituentId);
 
     public void deleteRollupValuesForAttributeSeries(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate);
 

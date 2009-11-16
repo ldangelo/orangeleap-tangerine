@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.service.rollup;
 
 import java.util.List;
+import java.util.Map;
 
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
@@ -47,7 +48,8 @@ public interface RollupService {
     public void updateAllRollupsForSite();
     public void updateSummaryRollupsForSite();
 	public List<RollupValue> generateRollupValuesDateRanges(RollupAttribute ra, RollupSeries rs);
-    
-    public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId);
+
+    public List<RollupValue> readRollupValuesByAttributeSeriesAndConstituentId(Long attributeId, Long seriesId, Long constituentId);
+    public Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> readGiftViewRollupValuesByConstituentId(Long constituentId);
 
 }

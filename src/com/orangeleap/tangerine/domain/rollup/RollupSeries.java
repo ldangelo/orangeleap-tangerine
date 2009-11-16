@@ -8,7 +8,7 @@ import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.GeneratedId;
 
-public class RollupSeries implements GeneratedId, Serializable {
+public class RollupSeries implements GeneratedId, Serializable, Comparable {
     
     private static final long serialVersionUID = 1L;
 
@@ -130,6 +130,13 @@ public class RollupSeries implements GeneratedId, Serializable {
         .append("siteName", ""+siteName)
         .toString();
     }
+    
+	@Override
+	public int compareTo(Object o) {
+		return this.getSeriesDesc().compareTo(((RollupSeries)o).getSeriesDesc());
+	}
+
+
 
 
 }

@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Resource;
 
@@ -137,9 +138,26 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	}
 
 	@Override
-    public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId) {
-		return rollupValueDao.readRollupValuesByAttributeAndConstituentId(attributeId, constituentId);
+    public List<RollupValue> readRollupValuesByAttributeSeriesAndConstituentId(Long attributeId, Long seriesId, Long constituentId) {
+		return rollupValueDao.readRollupValuesByAttributeSeriesAndConstituentId(attributeId, seriesId, constituentId);
 	}
+	
+	@Override
+    public Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> readGiftViewRollupValuesByConstituentId(Long constituentId) {
+		Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> result = new TreeMap<RollupAttribute, Map<RollupSeries, List<RollupValue>>>();
+		List<RollupAttribute> ras = readAllRollupAttributesByType("constituent"); 
+		for (RollupAttribute ra: ras) {
+			List<RollupSeriesXAttribute> sxas = rollupSeriesXAttributeDao.selectRollupSeriesForAttribute(ra.getId());
+			for (RollupSeriesXAttribute sxa : sxas) {
+				RollupSeries rs = rollupSeriesDao.readRollupSeriesById(sxa.getRollupSeriesId());
+				Map<RollupSeries, List<RollupValue>> attributeresult = new TreeMap<RollupSeries, List<RollupValue>>();
+				result.put(ra, attributeresult);
+				List<RollupValue> rvs = readRollupValuesByAttributeSeriesAndConstituentId(ra.getId(), rs.getId(), constituentId); 
+				attributeresult.put(rs, rvs);
+			}
+		}
+		return result;
+	}	
     
 	// Rollup values updaters
 	

@@ -165,6 +165,12 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	    updateRollups(ras, null);
 	}
 	
+	@Override
+    public void updateSummaryRollupsForSite() {
+	    List<RollupAttribute> ras = readAllRollupAttributesByType("summary"); 
+	    updateRollups(ras, null);
+	}
+	
 	private void updateRollups(List<RollupAttribute> ras, Object groupByValue) {
 	    for (RollupAttribute ra : ras) {
 	    	List<RollupSeriesXAttribute> rsxas = selectRollupSeriesForAttribute(ra.getId());

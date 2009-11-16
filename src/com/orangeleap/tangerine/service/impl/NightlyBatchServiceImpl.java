@@ -99,7 +99,10 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
     		logger.info("Processing rollups for "+getSiteName());
 	    	long t = System.currentTimeMillis();
 
-	    	rollupService.updateAllRollupsForSite();
+	    	
+	    	rollupService.updateAllRollupsForSite();  // updating all stats for now until any legacy data is accounted for
+	    	//rollupService.updateSummaryRollupsForSite();  // This would only do the summary totals
+	    	
 	        
 	    	logger.info("Rollup processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
 	    	

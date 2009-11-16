@@ -45,6 +45,7 @@ public interface RollupService {
 
     public void updateRollupsForConstituentRollupValueSource(RollupValueSource rvs);
     public void updateAllRollupsForSite();
+    public void updateSummaryRollupsForSite();
 	public List<RollupValue> generateRollupValuesDateRanges(RollupAttribute ra, RollupSeries rs);
     
     public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId);

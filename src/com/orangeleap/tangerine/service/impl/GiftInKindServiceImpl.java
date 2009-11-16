@@ -28,6 +28,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.service.GiftInKindService;
+import com.orangeleap.tangerine.service.rollup.RollupService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -56,6 +57,9 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
+    
+	@Resource(name = "rollupService")
+	private RollupService rollupService;
     
     @Resource(name="giftInKindEntityValidator")
     protected EntityValidator entityValidator;
@@ -93,6 +97,7 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         giftInKind.setGiftId(gift.getId());
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
         auditService.auditObject(giftInKind, giftInKind.getConstituent());
+        rollupService.updateRollupsForConstituentRollupValueSource(giftInKind);
 
         return giftInKind;
     }

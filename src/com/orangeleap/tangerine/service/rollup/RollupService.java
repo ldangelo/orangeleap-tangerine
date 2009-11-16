@@ -43,7 +43,7 @@ public interface RollupService {
     public List<RollupSeriesXAttribute> selectRollupSeriesForAttribute(Long attributeId);
     public void maintainRollupSeriesForAttribute(Long attributeId, List<RollupSeriesXAttribute> rollupSeriesXAttributes);
 
-    public void updateRollupsForRollupValueSource(RollupValueSource rvs);
+    public void updateRollupsForConstituentRollupValueSource(RollupValueSource rvs);
     public void updateAllRollupsForSite();
 	public List<RollupValue> generateRollupValuesDateRanges(RollupAttribute ra, RollupSeries rs);
     

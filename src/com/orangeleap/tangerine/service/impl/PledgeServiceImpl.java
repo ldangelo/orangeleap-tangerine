@@ -58,6 +58,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.service.rollup.RollupService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -80,6 +81,9 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 
     @Resource(name="pledgeEntityValidator")
     protected EntityValidator entityValidator;
+    
+	@Resource(name = "rollupService")
+	private RollupService rollupService;
 
     @Resource(name="codeValidator")
     protected CodeValidator codeValidator;
@@ -170,6 +174,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         maintainEntityChildren(pledge, pledge.getConstituent());
         pledge = pledgeDao.maintainPledge(pledge);
         auditService.auditObject(pledge, pledge.getConstituent());
+        rollupService.updateRollupsForConstituentRollupValueSource(pledge);
+
         return pledge;
     }
 

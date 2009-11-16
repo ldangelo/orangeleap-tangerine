@@ -37,6 +37,7 @@ import com.orangeleap.tangerine.dao.RollupAttributeDao;
 import com.orangeleap.tangerine.dao.RollupSeriesDao;
 import com.orangeleap.tangerine.dao.RollupSeriesXAttributeDao;
 import com.orangeleap.tangerine.dao.RollupValueDao;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
@@ -143,17 +144,28 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	// Rollup values updaters
 	
 	@Override
-    public void updateRollupsForRollupValueSource(RollupValueSource rvs) {
-		//TODO
+    public void updateRollupsForConstituentRollupValueSource(RollupValueSource rvs) {
+		List<RollupAttribute> ras = readAllRollupAttributesByType("constituent"); 
+		
+		// Sometimes only the constituentId is populated rather than the object.
+		Long constituentId = null;
+		Constituent constituent = rvs.getConstituent();
+		if (constituent == null) {
+			constituentId = rvs.getConstituentId();
+		} else {
+			constituentId = constituent.getId();
+		}
+		
+		updateRollups(ras, constituentId);
 	}
 
 	@Override
     public void updateAllRollupsForSite() {
 	    List<RollupAttribute> ras = getAllRollupAttributes(); 
-	    updateRollups(ras);
+	    updateRollups(ras, null);
 	}
 	
-	private void updateRollups(List<RollupAttribute> ras) {
+	private void updateRollups(List<RollupAttribute> ras, Object groupByValue) {
 	    for (RollupAttribute ra : ras) {
 	    	List<RollupSeriesXAttribute> rsxas = selectRollupSeriesForAttribute(ra.getId());
 	    	for (RollupSeriesXAttribute rsxa : rsxas) {
@@ -166,10 +178,10 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	    				deleteStartDate = CustomField.PAST_DATE;
 	    				deleteEndDate = CustomField.FUTURE_DATE;
 	    			}
-	    			rollupValueDao.deleteRollupValuesForAttributeSeries(ra, rs, deleteStartDate, deleteEndDate);
+	    			rollupValueDao.deleteRollupValuesForAttributeSeries(groupByValue, ra, rs, deleteStartDate, deleteEndDate);
 	    		}
 	    		for (RollupValue rv : rvs) {
-	    			rollupValueDao.insertRollupDimensionValues(ra, rs, rv.getStartDate(), rv.getEndDate());
+	    			rollupValueDao.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate());
 	    		}
 	    	}
 	    }

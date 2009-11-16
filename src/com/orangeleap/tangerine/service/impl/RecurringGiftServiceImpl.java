@@ -35,6 +35,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
+import com.orangeleap.tangerine.service.rollup.RollupService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -84,6 +85,9 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     @Resource(name = "recurringGiftEntityValidator")
     protected EntityValidator entityValidator;
+    
+	@Resource(name = "rollupService")
+	private RollupService rollupService;
 
     @Resource(name = "codeValidator")
     protected CodeValidator codeValidator;
@@ -203,6 +207,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         maintainEntityChildren(recurringGift, recurringGift.getConstituent());
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
         auditService.auditObject(recurringGift, recurringGift.getConstituent());
+        rollupService.updateRollupsForConstituentRollupValueSource(recurringGift);
         return recurringGift;
     }
 

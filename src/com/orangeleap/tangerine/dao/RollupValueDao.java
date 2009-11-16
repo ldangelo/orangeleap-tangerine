@@ -15,8 +15,8 @@ public interface RollupValueDao {
     
     public List<RollupValue> readRollupValuesByAttributeAndConstituentId(Long attributeId, Long constituentId);
 
-    public void deleteRollupValuesForAttributeSeries(RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate);
+    public void deleteRollupValuesForAttributeSeries(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate);
 
-    public void insertRollupDimensionValues(RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate);
+    public void insertRollupDimensionValues(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate);
 
 }

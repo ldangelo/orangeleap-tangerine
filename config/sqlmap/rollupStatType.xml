@@ -10,6 +10,9 @@
         and START_DATE &gt;= #startDate# 
         and END_DATE &lt;= #endDate#
         and SITE_NAME = #siteName#
+		<isNotNull property="groupByValue"> 
+        and GROUP_BY_VALUE = #groupByValue#
+		</isNotNull> 
 	</delete>
 
     <sql id="SELECT_INTO_RV_FRAG">
@@ -32,6 +35,8 @@
         	#endDate#,
  	</sql>
 
+   
+
 	<!-- 
 	The iBatis query id corresponds to the RollupAttribute stat type.
 	The first column in the queries is the group-by dimension value (e.g. CONSTITUENT_ID) which relates to the rollup attribute entity type (e.g. 'constituent').
@@ -51,6 +56,9 @@
         	where
         		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
         		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
+			<isNotNull property="groupByValue"> 
+	        	and g.CONSTITUENT_ID = #groupByValue#
+			</isNotNull> 
             group by 
         		g.CONSTITUENT_ID,
         		g.CURRENCY_CODE
@@ -69,6 +77,9 @@
         		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
         		and g.GIFT_ID = ag.GIFT_ID
         		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
+			<isNotNull property="groupByValue"> 
+	        	and g.CONSTITUENT_ID = #groupByValue#
+			</isNotNull> 
             group by 
         		g.CONSTITUENT_ID,
         		g.CURRENCY_CODE
@@ -85,6 +96,9 @@
             	GIFT_IN_KIND gik	
         	where
         		gik.DONATION_DATE &gt;= #startDate# and gik.DONATION_DATE &lt;= #endDate#
+			<isNotNull property="groupByValue"> 
+	        	and gik.CONSTITUENT_ID = #groupByValue#
+			</isNotNull> 
             group by 
         		gik.CONSTITUENT_ID,
         		gik.CURRENCY_CODE
@@ -106,6 +120,9 @@
         		and g.GIFT_ID = dl.GIFT_ID
         		and cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.ENTITY_TYPE='distributionline' and cf.FIELD_NAME= #customFieldName#  
         		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
+			<isNotNull property="groupByValue"> 
+	        	and cf.FIELD_VALUE = #groupByValue#
+			</isNotNull> 
             group by 
         		cf.FIELD_VALUE,
         		g.CURRENCY_CODE
@@ -124,6 +141,9 @@
         		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
         		and p.PLEDGE_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'pledge'
         		and it.COMPLETION_DATE is null 
+			<isNotNull property="groupByValue"> 
+	        	and p.CONSTITUENT_ID = #groupByValue#
+			</isNotNull> 
             group by 
         		p.CONSTITUENT_ID,
         		p.CURRENCY_CODE
@@ -141,6 +161,9 @@
         		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
         		and rg.RECURRING_GIFT_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'recurringgift'
         		and it.COMPLETION_DATE is null 
+			<isNotNull property="groupByValue"> 
+	        	and rg.CONSTITUENT_ID = #groupByValue#
+			</isNotNull> 
             group by 
         		rg.CONSTITUENT_ID,
         		rg.CURRENCY_CODE

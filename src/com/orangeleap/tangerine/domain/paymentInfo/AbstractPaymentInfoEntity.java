@@ -18,6 +18,13 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlType;
+
+import org.springframework.core.style.ToStringCreator;
+
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.AddressAware;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -28,15 +35,10 @@ import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
-import org.springframework.core.style.ToStringCreator;
-
-import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.List;
+import com.orangeleap.tangerine.domain.rollup.RollupValueSource;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
-@SuppressWarnings({"unchecked"})
-public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, MutableGrid {
+public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, MutableGrid, RollupValueSource  {
     private static final long serialVersionUID = 1L;
 
     protected String comments;

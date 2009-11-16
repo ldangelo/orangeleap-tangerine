@@ -62,11 +62,12 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
     }
     
 	@Override
-    public void deleteRollupValuesForAttributeSeries(RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate) {
+    public void deleteRollupValuesForAttributeSeries(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate) {
         if (logger.isTraceEnabled()) {
             logger.trace("deleteRollupValuesForAttributeSeries: attribute id = " + ra.getId() + " series id = "+rs.getId());
         }
         Map<String, Object> params = setupParams();
+        params.put("groupByValue", groupByValue);
         params.put("rollupSeriesId", rs.getId());
         params.put("rollupAttributeId", ra.getId());
         params.put("startDate", startDate);
@@ -75,11 +76,12 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
     }
 
 	@Override
-    public void insertRollupDimensionValues(RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate) {
+    public void insertRollupDimensionValues(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date startDate, Date endDate) {
         if (logger.isTraceEnabled()) {
             logger.trace("updateRollupValue: attribute id = " + ra.getId() + " series id = "+rs.getId());
         }
         Map<String, Object> params = setupParams();
+        params.put("groupByValue", groupByValue);
         params.put("rollupSeriesId", rs.getId());
         params.put("rollupAttributeId", ra.getId());
         params.put("startDate", startDate);

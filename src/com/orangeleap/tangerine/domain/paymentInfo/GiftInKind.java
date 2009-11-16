@@ -18,22 +18,24 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.MutableGrid;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.util.StringConstants;
-import org.springframework.core.style.ToStringCreator;
-
-import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlType;
+
+import org.springframework.core.style.ToStringCreator;
+
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.MutableGrid;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.rollup.RollupValueSource;
+import com.orangeleap.tangerine.util.StringConstants;
+
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
-@SuppressWarnings("unchecked")
-public class GiftInKind extends AbstractCustomizableEntity implements MutableGrid {
+public class GiftInKind extends AbstractCustomizableEntity implements MutableGrid, RollupValueSource {
     private static final long serialVersionUID = 1L;
 
     private BigDecimal fairMarketValue;
@@ -73,6 +75,12 @@ public class GiftInKind extends AbstractCustomizableEntity implements MutableGri
         this.anonymous = anonymous;
         this.recognitionName = recognitionName;
     }
+    
+    public Long getConstituentId() {
+    	return constituent.getId();
+    }
+
+
 
     public BigDecimal getFairMarketValue() {
         return fairMarketValue;
@@ -153,7 +161,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements MutableGri
     public void setConstituent(Constituent constituent) {
         this.constituent = constituent;
     }
-
+    
     public List<GiftInKindDetail> getDetails() {
         return details;
     }

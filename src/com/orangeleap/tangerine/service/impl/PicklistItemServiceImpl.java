@@ -397,7 +397,9 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
                         apicklistItem.setId(origid);
                         apicklistItem.setCustomFieldMap(picklistItem.getCustomFieldMap());
                         updatedItem = apicklistItem;
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
+                        logger.error("Could not set bean properties for " + apicklistItem.getItemName(), e);
                     }
                     break;
                 }

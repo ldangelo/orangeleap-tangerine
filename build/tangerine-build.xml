@@ -48,7 +48,7 @@
 				</then>
 			</elseif>
 			<else>
-				<property name="debug.compile" value="false" />
+				<property name="debug.compile" value="true" />
 			</else>
 		</if>
 

@@ -46,7 +46,7 @@
 	
 	<!--  Constituent entity type stats -->
 	
-	<!-- e.g. fieldName = AMOUNT  -->
+	<!-- e.g. fieldName = ADJUSTED_AMOUNT  -->
     <insert id="ROLLUP_GIFT_BY_CONSTITUENT" parameterClass="java.util.Map">
         <include refid="SELECT_INTO_RV_FRAG"/>
         		g.CONSTITUENT_ID,
@@ -68,29 +68,6 @@
         		g.CURRENCY_CODE
     </insert>
 
-	<!-- e.g. fieldName = ADJUSTED_AMOUNT  -->
-    <insert id="ROLLUP_ADJUSTED_GIFT_BY_CONSTITUENT" parameterClass="java.util.Map">
-        <include refid="SELECT_INTO_RV_FRAG"/>
-        		g.CONSTITUENT_ID,
-        		g.CURRENCY_CODE,
-            	COUNT(ag.$fieldName$),
-            	SUM(ag.$fieldName$),
-            	MIN(ag.$fieldName$),
-            	MAX(ag.$fieldName$)
-            from 
-            	ADJUSTED_GIFT ag, GIFT g
-        	where
-        		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
-        		and g.GIFT_ID = ag.GIFT_ID
-        		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
-			<isNotNull property="groupByValue"> 
-	        	and g.CONSTITUENT_ID = #groupByValue#
-			</isNotNull> 
-            group by 
-        		g.CONSTITUENT_ID,
-        		g.CURRENCY_CODE
-    </insert>
-  
 	<!-- e.g. fieldName = FAIR_MARKET_VALUE  -->
     <insert id="ROLLUP_GIFT_IN_KIND_BY_CONSTITUENT" parameterClass="java.util.Map">
         <include refid="SELECT_INTO_RV_FRAG"/>

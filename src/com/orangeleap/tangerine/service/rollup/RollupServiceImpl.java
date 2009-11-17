@@ -282,8 +282,8 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 			Map<String, String> map = siteService.getSiteOptionsMap();
 			String month = map.get(StringConstants.FY_START_MONTH_SITE_OPTION_KEY);
 			String date = map.get(StringConstants.FY_START_DATE_SITE_OPTION_KEY);
-			if (month == null) return null;
-			if (date == null) date = "1";
+			if (month == null || month.trim().length() == 0) return null;
+			if (date == null || date.trim().length() == 0) date = "1";
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.MONTH, new Integer(month)-1);
 			cal.set(Calendar.DATE, new Integer(date));
@@ -293,7 +293,7 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 			}
 			return cal.getTime();
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error determining Fiscal Year start date for rollups - using calendar dates.",e);
 			return null;
 		}
 	}

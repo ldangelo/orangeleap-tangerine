@@ -16,5 +16,11 @@ SELECT SECTION_DEFINITION_ID, 'tca-gift.distributionLines.customFieldMap[campaig
 INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER, SITE_NAME)
 SELECT SECTION_DEFINITION_ID, 'tca-gift.distributionLines.customFieldMap[campaignReadOnly]', 14000, 'tca' FROM SECTION_DEFINITION WHERE SECTION_NAME='adjustedGift.extendedDistribution' AND PAGE_TYPE='adjustedGiftPaid';
 
+/* TANGERINE-1494 */
+UPDATE SECTION_FIELD SET SECONDARY_FIELD_DEFINITION_ID = 'tca-distributionLines.customFieldMap[campaign]'
+WHERE FIELD_DEFINITION_ID = 'tca-gift.distributionLines.customFieldMap[campaign]' AND SECONDARY_FIELD_DEFINITION_ID IS NULL;
+
+UPDATE SECTION_FIELD SET SECONDARY_FIELD_DEFINITION_ID = 'tca-distributionLines.customFieldMap[campaignReadOnly]'
+WHERE FIELD_DEFINITION_ID = 'tca-gift.distributionLines.customFieldMap[campaignReadOnly]' AND SECONDARY_FIELD_DEFINITION_ID IS NULL;
 
 COMMIT;

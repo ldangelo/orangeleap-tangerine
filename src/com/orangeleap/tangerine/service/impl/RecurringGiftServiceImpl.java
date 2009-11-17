@@ -18,6 +18,31 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.joda.time.DateMidnight;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
@@ -35,35 +60,12 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
-import com.orangeleap.tangerine.service.rollup.RollupService;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.joda.time.DateMidnight;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 @Service("recurringGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -86,8 +88,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Resource(name = "recurringGiftEntityValidator")
     protected EntityValidator entityValidator;
     
-	@Resource(name = "rollupService")
-	private RollupService rollupService;
+	@Resource(name = "rollupHelperService")
+	private RollupHelperService rollupHelperService;
 
     @Resource(name = "codeValidator")
     protected CodeValidator codeValidator;
@@ -207,7 +209,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         maintainEntityChildren(recurringGift, recurringGift.getConstituent());
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
         auditService.auditObject(recurringGift, recurringGift.getConstituent());
-        rollupService.updateRollupsForConstituentRollupValueSource(recurringGift);
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(recurringGift);
         return recurringGift;
     }
 

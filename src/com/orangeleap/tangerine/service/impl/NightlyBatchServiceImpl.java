@@ -40,7 +40,7 @@ import com.orangeleap.tangerine.service.NightlyBatchService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
-import com.orangeleap.tangerine.service.rollup.RollupService;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
@@ -73,8 +73,8 @@ public class NightlyBatchServiceImpl implements NightlyBatchService
     @Resource(name = "constituentService")
     private ConstituentService constituentService;
 
-    @Resource(name = "rollupService")
-    private RollupService rollupService;
+    @Resource(name = "rollupHelperService")
+    private RollupHelperService rollupHelperService;
 
     @Resource(name = "tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
@@ -117,8 +117,8 @@ public class NightlyBatchServiceImpl implements NightlyBatchService
 	    	long t = System.currentTimeMillis();
 
 	    	
-	    	rollupService.updateAllRollupsForSite();  // updating all stats for now until any legacy data is accounted for
-	    	//rollupService.updateSummaryRollupsForSite();  // This would only do the summary totals
+	    	rollupHelperService.updateAllRollupsForSite();  // updating all stats for now until any legacy data is accounted for
+	    	//rollupHelperService.updateSummaryRollupsForSite();  // This would only do the summary totals
 	    	
 	        
 	    	logger.info("Rollup processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");

@@ -62,7 +62,7 @@ import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.service.rollup.RollupService;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
@@ -94,8 +94,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	@Resource(name = "fieldService")
 	private FieldService fieldService;
 
-	@Resource(name = "rollupService")
-	private RollupService rollupService;
+	@Resource(name = "rollupHelperService")
+	private RollupHelperService rollupHelperService;
 
 	@Resource(name = "pageCustomizationService")
 	private PageCustomizationService pageCustomizationService;
@@ -191,7 +191,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         pledgeService.updatePledgeForGift(originalGift, gift);
         recurringGiftService.updateRecurringGiftForGift(originalGift, gift);
         auditService.auditObject(gift, gift.getConstituent());
-        rollupService.updateRollupsForConstituentRollupValueSource(gift);
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(gift);
         return gift;
     }
     

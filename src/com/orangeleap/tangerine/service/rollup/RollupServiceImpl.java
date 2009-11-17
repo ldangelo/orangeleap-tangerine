@@ -33,24 +33,25 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.RollupAttributeDao;
 import com.orangeleap.tangerine.dao.RollupSeriesDao;
 import com.orangeleap.tangerine.dao.RollupSeriesXAttributeDao;
 import com.orangeleap.tangerine.dao.RollupValueDao;
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesType;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
-import com.orangeleap.tangerine.domain.rollup.RollupValueSource;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 
+@Transactional(propagation = Propagation.REQUIRED)
 @Service("rollupService")
 public class RollupServiceImpl extends AbstractTangerineService implements RollupService {
 
@@ -160,57 +161,16 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 		return result;
 	}	
     
-	// Rollup values updaters
-	
-	@Override
-    public void updateRollupsForConstituentRollupValueSource(RollupValueSource rvs) {
-		List<RollupAttribute> ras = readAllRollupAttributesByType("constituent"); 
-		
-		// Sometimes only the constituentId is populated rather than the object.
-		Long constituentId = null;
-		Constituent constituent = rvs.getConstituent();
-		if (constituent == null) {
-			constituentId = rvs.getConstituentId();
-		} else {
-			constituentId = constituent.getId();
-		}
-		
-		updateRollups(ras, constituentId);
-	}
 
 	@Override
-    public void updateAllRollupsForSite() {
-	    List<RollupAttribute> ras = getAllRollupAttributes(); 
-	    updateRollups(ras, null);
-	}
+	public void deleteRollupValuesForAttributeSeries(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate) {
+		rollupValueDao.deleteRollupValuesForAttributeSeries(groupByValue, ra, rs, deleteStartDate, deleteEndDate);
+    }
 	
 	@Override
-    public void updateSummaryRollupsForSite() {
-	    List<RollupAttribute> ras = readAllRollupAttributesByType("summary"); 
-	    updateRollups(ras, null);
-	}
-	
-	private void updateRollups(List<RollupAttribute> ras, Object groupByValue) {
-	    for (RollupAttribute ra : ras) {
-	    	List<RollupSeriesXAttribute> rsxas = selectRollupSeriesForAttribute(ra.getId());
-	    	for (RollupSeriesXAttribute rsxa : rsxas) {
-	    		RollupSeries rs = rollupSeriesDao.readRollupSeriesById(rsxa.getRollupSeriesId());
-	    		List<RollupValue> rvs = generateRollupValuesDateRanges(ra, rs);
-	    		if (rvs.size()  > 0) {
-	    			Date deleteStartDate =  rvs.get(0).getStartDate();
-	    			Date deleteEndDate =  rvs.get(rvs.size()-1).getEndDate();
-	    			if (!rs.getKeepUnmaintained()) {
-	    				deleteStartDate = CustomField.PAST_DATE;
-	    				deleteEndDate = CustomField.FUTURE_DATE;
-	    			}
-	    			rollupValueDao.deleteRollupValuesForAttributeSeries(groupByValue, ra, rs, deleteStartDate, deleteEndDate);
-	    		}
-	    		for (RollupValue rv : rvs) {
-	    			rollupValueDao.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate());
-	    		}
-	    	}
-	    }
-	}
+	public void insertRollupDimensionValues(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate) {
+		rollupValueDao.insertRollupDimensionValues(groupByValue, ra, rs, deleteStartDate, deleteEndDate);
+    }
 	
 	// Create date range templates for series types
 	@Override

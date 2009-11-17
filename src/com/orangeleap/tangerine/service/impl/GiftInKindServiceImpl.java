@@ -18,6 +18,20 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator;
@@ -28,22 +42,10 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.service.GiftInKindService;
-import com.orangeleap.tangerine.service.rollup.RollupService;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
-import javax.annotation.Resource;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 
 @Service("giftInKindService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -58,8 +60,8 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
     
-	@Resource(name = "rollupService")
-	private RollupService rollupService;
+	@Resource(name = "rollupHelperService")
+	private RollupHelperService rollupHelperService;
     
     @Resource(name="giftInKindEntityValidator")
     protected EntityValidator entityValidator;
@@ -97,7 +99,7 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         giftInKind.setGiftId(gift.getId());
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
         auditService.auditObject(giftInKind, giftInKind.getConstituent());
-        rollupService.updateRollupsForConstituentRollupValueSource(giftInKind);
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(giftInKind);
 
         return giftInKind;
     }

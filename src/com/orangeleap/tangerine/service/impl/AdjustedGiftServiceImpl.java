@@ -32,7 +32,7 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.service.rollup.RollupService;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -63,8 +63,8 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
     
-	@Resource(name = "rollupService")
-	private RollupService rollupService;
+	@Resource(name = "rollupHelperService")
+	private RollupHelperService rollupHelperService;
 	
 	@Resource(name = "adjustedGiftEntityValidator")
 	protected EntityValidator entityValidator;
@@ -137,7 +137,7 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
 		
 		updateGiftAdjustedAmount(adjustedGift);
 		auditService.auditObject(adjustedGift, adjustedGift.getConstituent());
-        rollupService.updateRollupsForConstituentRollupValueSource(adjustedGift);
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(adjustedGift);
 		return adjustedGift;
 	}
 	

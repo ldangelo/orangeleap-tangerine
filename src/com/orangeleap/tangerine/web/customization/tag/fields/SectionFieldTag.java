@@ -312,7 +312,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("var cm = this.getColumnModel();\n");
                     sb.append("for (var i = 0; i < state.mc.length; i++) {\n");
                     sb.append("var colIndex = cm.findColumnIndex(state.mc[i].di);\n");
-                    sb.append("if (colIndex != -1)\n");
+                    sb.append("if (colIndex != -1) {\n");
                     sb.append("if (colIndex != i) {\n");
                     sb.append("cm.moveColumn(colIndex, i);\n");
                     sb.append("}\n");
@@ -320,7 +320,8 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("cm.setColumnWidth(i, state.mc[i].w);\n");
                     sb.append("}\n");
                     sb.append("}\n");
-                    sb.append("if (state.sf && state.sd) {\n");
+                    sb.append("}\n");
+                    sb.append("if (state.sf && state.sd && this.getColumnModel().findColumnIndex(state.sf) != -1) {\n");
                     sb.append("this.sortParams = { direction: state.sd, dataIndex: state.sf };\n");
                     sb.append("}\n");
                     sb.append("if (state.ss) {\n");

@@ -79,4 +79,7 @@ public interface GiftService {
     List<Gift> readAllGiftsByConstituentId(Long constituentId, SortInfo sort, Locale locale);
 
     int readCountByConstituentId(Long constituentId);
+    
+    void updateAdjustedAmount(Gift gift);
+
 }

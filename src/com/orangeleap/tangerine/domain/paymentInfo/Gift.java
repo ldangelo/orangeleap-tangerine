@@ -46,6 +46,7 @@ public class Gift extends AbstractPaymentInfoEntity {
 	private GiftType giftType;
 	private Long recurringGiftId;
 	private BigDecimal amount;
+	private BigDecimal adjustedAmount;
 	private BigDecimal deductibleAmount;
 	private Date donationDate = new Date();
 	private boolean posted;
@@ -109,6 +110,14 @@ public class Gift extends AbstractPaymentInfoEntity {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public BigDecimal getAdjustedAmount() {
+		return adjustedAmount;
+	}
+
+	public void setAdjustedAmount(BigDecimal adjustedAmount) {
+		this.adjustedAmount = adjustedAmount;
 	}
 
 	public BigDecimal getDeductibleAmount() {

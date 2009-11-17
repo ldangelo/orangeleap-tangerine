@@ -3,6 +3,10 @@ V7 Schema changes
 *********************************************************************
 */
 
+ALTER TABLE GIFT 
+    ADD COLUMN (`ADJUSTED_AMOUNT` decimal(19,2) default NULL);
+
+
 # Gift Rollup tables (FKs omitted)
 
 DROP TABLE IF EXISTS `ROLLUP_SERIES`;

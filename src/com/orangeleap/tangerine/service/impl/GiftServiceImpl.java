@@ -184,14 +184,27 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         Gift originalGift = null;
         if (!gift.isNew()) {
             originalGift = giftDao.readGiftById(gift.getId());
-        }
+        } 
         
         gift = giftDao.maintainGift(gift);
+        updateAdjustedAmount(gift);
         pledgeService.updatePledgeForGift(originalGift, gift);
         recurringGiftService.updateRecurringGiftForGift(originalGift, gift);
         auditService.auditObject(gift, gift.getConstituent());
         rollupService.updateRollupsForConstituentRollupValueSource(gift);
         return gift;
+    }
+    
+    @Override
+    public void updateAdjustedAmount(Gift gift) {
+    	BigDecimal giftamt = gift.getAmount();
+    	if (giftamt == null) giftamt = new BigDecimal("0.00");
+    	BigDecimal adjamt = adjustedGiftService.findCurrentTotalAdjustedAmount(gift.getId());
+    	
+    	BigDecimal total = giftamt.add(adjamt);
+    	
+    	gift.setAdjustedAmount(total);
+    	giftDao.maintainGift(gift);
     }
     
     private void setDefaultDates(Gift gift) {

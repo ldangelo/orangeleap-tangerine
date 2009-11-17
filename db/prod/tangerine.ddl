@@ -596,6 +596,7 @@ CREATE TABLE `GIFT` (
 `GIFT_STATUS` varchar(255) default NULL,
 `GIFT_TYPE` varchar(255) default NULL,
 `AMOUNT` decimal(19,2) default NULL,
+`ADJUSTED_AMOUNT` decimal(19,2) default NULL,
 `AUTH_CODE` varchar(255) default NULL,
 `AVS_MESSAGE` varchar(255) default NULL,
 `CHECK_NUMBER` varchar(255) default NULL,

@@ -1,5 +1,23 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
 import com.orangeleap.tangerine.controller.validator.AdjustedDistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
@@ -10,6 +28,7 @@ import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
@@ -18,22 +37,6 @@ import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @Service("adjustedGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -47,6 +50,9 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
+
+    @Resource(name = "giftService")
+    private GiftService giftService;
 
     @Resource(name = "paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
@@ -128,9 +134,18 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
 		    paymentHistoryService.addPaymentHistory(createPaymentHistoryForAdjustedGift(adjustedGift));
 		}
 
+		
+		updateGiftAdjustedAmount(adjustedGift);
 		auditService.auditObject(adjustedGift, adjustedGift.getConstituent());
         rollupService.updateRollupsForConstituentRollupValueSource(adjustedGift);
 		return adjustedGift;
+	}
+	
+	private void updateGiftAdjustedAmount(AdjustedGift adjustedGift) {
+		if (adjustedGift.getOriginalGiftId() == null) return;
+		Gift gift = giftDao.readGiftById(adjustedGift.getOriginalGiftId());
+		if (gift == null) return;
+		giftService.updateAdjustedAmount(gift);
 	}
 
     @Override

@@ -622,9 +622,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    public List<Segmentation> findSegmentations(String batchType) {
+    public List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount) {
         if (logger.isTraceEnabled()) {
-            logger.trace("findSegmentations: batchType = " + batchType);
+            logger.trace("findSegmentations: batchType = " + batchType + " sortField = " + sortField +
+                    " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
         }
         Theguru theGuru = new WSClient().getTheGuru();
         ObjectFactory objFactory = new ObjectFactory();
@@ -637,6 +638,16 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
         if (resolvedType != null) {
             req.setType(resolvedType);
+            req.setSortField(sortField);
+            req.setSortDirection(sortDirection);
+            req.setStartIndex(startIndex);
+            req.setResultCount(resultCount);
+
+//            Segmentation segmentation = new Segmentation(6L, "Gift Segmentation", "Constituents who donated to the general fund", 108, null, "oleap@company1");
+//            returnSegmentations.add(segmentation);
+//
+//            segmentation = new Segmentation(2L, "Gift Segmentation", "Constituents that donated last year", 12, null, "oleap@company1");
+//            returnSegmentations.add(segmentation);
             GetSegmentationListByTypeResponse resp = theGuru.getSegmentationListByType(req);
             if (resp != null) {
                 List<com.orangeleap.theguru.client.Segmentation> wsSegmentations = resp.getSegmentation();

@@ -36,6 +36,8 @@ OrangeLeap.msgBundle = {
     count: 'Count',
     lastExecDt: 'Last Execution Date',
     lastExecBy: 'Last Executed By',
+    checkSegmentations: '',
+    followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
     step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
     step2Title: '<span class="step"><span class="stepNum" id="step2Num">2</span><span class="stepTxt">Choose Segmentations</span>',
     step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">Confirm Choices</span>',
@@ -295,7 +297,24 @@ Ext.onReady(function() {
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
             var batchType = Ext.getCmp('batchType').getValue();
-            step2Store.load({ params: { batchType: batchType }});
+            step2Store.load({ params: { batchType: batchType, start: 0, limit: 100, sort: 'lastDt', dir: 'DESC' }});
+        }
+        else if (thisGrp.mainItem.id == 'step3Grp') {
+            var selIds = [];
+            if (step2Store.data && step2Store.data.items) {
+                var items = step2Store.data.items;
+                var len = items.length;
+                for (var x = 0; x < len; x++) {
+                    var thisItem = items[x];
+                    if (thisItem.get('picked')) {
+                        selIds[selIds.length] = thisItem.id;
+                    }
+                }
+            }
+            var batchType = Ext.getCmp('batchType').getValue();
+            step3Store.load({ params: { 'ids': selIds.toString(), 'batchType': batchType }});
+        }
+        else if (thisGrp.mainItem.id == 'step4Grp') {
         }
     }
 
@@ -475,7 +494,6 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         selModel: step2RowSelModel,
-//        style: 'margin: 0 3px;',
         viewConfig: { forceFit: true },
         plugins: [ checkColumn ],
         buttons: [
@@ -524,35 +542,50 @@ Ext.onReady(function() {
                 sortable: true,
                 dataIndex: 'name',
                 editable: false,
-                editor: new Ext.form.DisplayField()
+                editor: new Ext.form.DisplayField(),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.name + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }
             },
             {
                 header: msgs.description,
                 sortable: true,
                 dataIndex: 'desc',
                 editable: false,
-                editor: new Ext.form.DisplayField()
+                editor: new Ext.form.DisplayField(),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.description + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }                
             },
             {
                 header: msgs.count,
                 sortable: true,
                 dataIndex: 'count',
                 editable: false,
-                editor: new Ext.form.DisplayField()
+                editor: new Ext.form.DisplayField(),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.count + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }
             },
             {
                 header: msgs.lastExecDt,
                 sortable: true,
                 dataIndex: 'lastDt',
                 editable: false,
-                editor: new Ext.form.DisplayField()
+                editor: new Ext.form.DisplayField(),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.lastExecDt + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }
             },
             {
                 header: msgs.lastExecBy,
                 sortable: true,
                 dataIndex: 'lastUser',
                 editable: false,
-                editor: new Ext.form.DisplayField()
+                editor: new Ext.form.DisplayField(),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.lastExecBy + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }
             },
         ],
         getState: function() {
@@ -592,10 +625,359 @@ Ext.onReady(function() {
             if (state.ss) {
                 this.getView().prevScrollState = state.ss;
             }
-        }        
+        }
     });
 
     var step3Reader = new Ext.data.JsonReader();
+
+    var step3Store = new OrangeLeap.ListStore({
+        url: 'confirmChoices.json',
+        reader: step3Reader,
+        root: 'rows',
+        totalProperty: 'totalRows',
+        remoteSort: true,
+        sortInfo: {field: 'id', direction: 'ASC'},
+        fields: [
+            {name: 'id', mapping: 'id', type: 'int'}
+        ]
+    });
+
+    step3Store.on('metachange', function(store, meta) {
+        var cols = [];
+        var fields = meta.fields;
+        for (var x = 0; x < fields.length; x++) {
+            var name = fields[x].name;
+            if (name && name != 'constituentId' && name != 'id') {
+                cols[cols.length] = {
+                    header: fields[x].header, dataIndex: name, sortable: true,
+                    renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                        return '<span ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>'; 
+                    }
+                }
+            }
+        }
+        step3Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+    });
+
+    var step3Bar = new Ext.PagingToolbar({
+        pageSize: 50,
+        stateEvents: ['change'],
+        stateId: 'step3Bar',
+        stateful: true,
+        getState: function() {
+            var config = {};
+            config.start = this.cursor;
+            config.limit = this.pageSize;
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.start) {
+                this.cursor = state.start;
+            }
+            if (state.limit) {
+                this.pageSize = state.limit;
+            }
+        },
+        store: step3Store,
+        displayInfo: true,
+        displayMsg: msgs.displayMsg,
+        emptyMsg: msgs.emptyMsg
+    });
+
+    var step3RowSelect = new Ext.grid.RowSelectionModel();
+    step3RowSelect.on('beforerowselect', function(selModel, rowIndex, keepExisting, record) {
+        return false;
+    });
+
+    var step3Toolbar = new Ext.Toolbar({
+        items: [
+            msgs.followingBeModified
+        ]
+    });
+    step3Toolbar.on('afterlayout', function(tb){
+        tb.el.child('.x-toolbar-right').remove();
+        var t = tb.el.child('.x-toolbar-left');
+        t.removeClass('x-toolbar-left');
+        t = tb.el.child('.x-toolbar-ct');
+        t.setStyle('width', 'auto');
+        t.wrap({tag: 'center'});
+    }, null, {single: true});
+
+    var step3Form = new Ext.grid.GridPanel({
+        stateId: 'step3List',
+        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
+        stateful: true,
+        store: step3Store,
+        bbar: step3Bar,
+        width: 726,
+        height: 468,
+        loadMask: true,
+        header: false,
+        frame: false,
+        border: false,
+        selModel: step3RowSelect,
+        viewConfig: { forceFit: true },
+        columns: [
+            {
+                header: msgs.id,
+                sortable: false,
+                dataIndex: 'id',
+                editable: false,
+                editor: new Ext.form.DisplayField()
+            }
+        ],
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(1);
+                    var firstItem = panel.items.items[1];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
+                }
+            },
+            {
+                text: msgs.next,
+                cls: 'saveButton',
+                ref: '../nextButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(3);
+                    var firstItem = panel.items.items[3];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
+                    $('#step3Num').addClass('complete');
+                }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    batchWin.hide(this);
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        tbar: step3Toolbar
+    });
+
+    /*
+    var step4Reader = new Ext.data.JsonReader();
+
+    var step4Store = new OrangeLeap.BulkSaveStore({
+        url: 'findBatchUpdateFields.json',
+        reader: step4Reader,
+        root: 'rows',
+        totalProperty: 'totalRows',
+        remoteSort: true,
+        sortInfo: {field: 'id', direction: 'ASC'},
+        fields: [
+            {name: 'id', mapping: 'id', type: 'int'}
+        ],
+        listeners: {
+            load: {
+                fn: function(store, records, options){
+                    store.each(function(record) {
+                        source[record.get('key')] = record.get('value');
+                    });
+                    step4Grid.setSource(source);
+                }
+            }
+        }
+    });
+
+    var step4Grid = new Ext.grid.PropertyGrid({
+        width: 726,
+        height: 468,
+        loadMask: true,
+        header: false,
+        frame: false,
+        border: false,
+        viewConfig : { forceFit: true },
+        propertyNames: {
+//            tested: 'QA',
+//            borderWidth: 'Border Width'
+        },
+        source: {
+//            '(name)': 'Properties Grid',
+//            grouping: false,
+//            autoFitColumns: true,
+//            productionQuality: false,
+//            created: new Date(Date.parse('10/15/2006')),
+//            tested: false,
+//            version: 0.01,
+//            borderWidth: 1
+        },
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(2);
+                    var firstItem = panel.items.items[2];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
+                }
+            },
+            {
+                text: msgs.save,
+                cls: 'saveButton',
+                ref: '../saveButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    batchWin.hide(this);
+                }
+            }
+        ],
+        buttonAlign: 'center'
+    });
+    */
+
+    var step4Grid = new OrangeLeap.DynamicPropertyGrid({
+        width: 726,
+        height: 468,
+        loadMask: true,
+        header: false,
+        frame: false,
+        border: false,
+        propertyNames: {
+            postedDate: 'Posted Date (Creates Journal Entry)',
+            source: 'Source',
+            status: 'Status'
+        },
+        source: {
+            'postedDate': new Date()
+//            grouping: false,
+//            autoFitColumns: true,
+//            productionQuality: false,
+//            created: new Date(Date.parse('10/15/2006')),
+//            tested: false,
+//            version: 0.01,
+//            borderWidth: 1
+        },
+        viewConfig : {
+            forceFit: true
+        },
+        customEditors: {
+            'source': new Ext.grid.GridEditor(new Ext.form.ComboBox({
+                name: 'source',
+                allowBlank: false,
+                store: new Ext.data.ArrayStore({
+                     fields: [
+                         'itemName',
+                         'displayVal'
+                     ],
+                     data: [
+                         ['Call', 'Call'],
+                         ['Mail', 'Mail'],
+                         ['Online', 'Online']
+                     ]
+                }),
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                value: 'Call',
+                typeAhead: true,
+                mode: 'local',
+                triggerAction: 'all',
+                selectOnFocus: true,
+                forceSelection: true
+            })),
+            'status': new Ext.grid.GridEditor(new Ext.form.ComboBox({
+                name: 'status',
+                allowBlank: false,
+                store: new Ext.data.ArrayStore({
+                     fields: [
+                         'itemName',
+                         'displayVal'
+                     ],
+                     data: [
+                         ['Pending', 'Pending'],
+                         ['Paid', 'Paid'],
+                         ['Not Paid', 'Not Paid']
+                     ]
+                }),
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                value: 'Pending',
+                typeAhead: true,
+                mode: 'local',
+                triggerAction: 'all',
+                selectOnFocus: true,
+                forceSelection: true
+            }))
+        },
+        tbar: [
+            {
+                text: 'Add Criteria',
+                tooltip:'Add Criteria to Update Field Value',
+                iconCls:'add',
+                id: 'addButton',
+                ref: '../addButton',
+                handler: function() {
+                    var fourStore = step4Grid.getStore();
+                    var newRec = new fourStore.recordType({
+                        name: '',
+                        value: ''
+                    });
+                    step4Grid.stopEditing();
+                    var nextIndex = fourStore.getCount();
+                    fourStore.add(newRec);
+                    step4Grid.startEditing(nextIndex, 0);
+                }
+            }
+        ],
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(2);
+                    var firstItem = panel.items.items[2];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
+                }
+            },
+            {
+                text: msgs.save,
+                cls: 'saveButton',
+                ref: '../saveButton',
+                formBind: true,
+                disabled: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    batchWin.hide(this);
+                }
+            }
+        ],
+        buttonAlign: 'center'
+    });
 
     var batchWin = new Ext.Window({
         title: msgs.manageBatch,
@@ -665,7 +1047,7 @@ Ext.onReady(function() {
                          id: 'step3Grp',
                          title: msgs.step3Title,
                          tabTip: msgs.step3Tip,
-                         html: '<div>30</div>'
+                         items: [ step3Form ]
                      }]
                  },
                  {
@@ -673,7 +1055,7 @@ Ext.onReady(function() {
                          id: 'step4Grp',
                          title: msgs.step4Title,
                          tabTip: msgs.step4Tip,
-                         html: '<div>40</div>'
+                         items: [ step4Grid ]
                      }]
                  }
              ]
@@ -696,3 +1078,5 @@ Ext.onReady(function() {
 
     batchWin.show(); // TODO: remove
 });
+
+

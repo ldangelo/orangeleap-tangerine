@@ -43,5 +43,5 @@ public interface PostBatchService {
 
     List<PostBatch> readBatches(boolean batchUpdated, SortInfo sort, Locale locale);
 
-    List<Segmentation> findSegmentations(String batchType);
+    List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
 }

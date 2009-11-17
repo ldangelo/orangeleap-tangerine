@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.service.impl;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -41,10 +42,13 @@ import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
 import com.orangeleap.tangerine.service.rollup.RollupService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
 
+// Does not extend base class to avoid getting a transactional attribute
 @Service("nightlyBatchService")
-public class NightlyBatchServiceImpl extends AbstractCommitmentService<RecurringGift> implements NightlyBatchService {
+public class NightlyBatchServiceImpl implements NightlyBatchService 
+{
 
     /**
      * Logger for this class and subclasses
@@ -71,6 +75,19 @@ public class NightlyBatchServiceImpl extends AbstractCommitmentService<Recurring
 
     @Resource(name = "rollupService")
     private RollupService rollupService;
+
+    @Resource(name = "tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
+    
+    private String getSiteName() {
+    	return tangerineUserHelper.lookupUserSiteName();
+    }
+    
+    protected Calendar getToday() {
+        Calendar now = Calendar.getInstance();
+        return new GregorianCalendar(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+    }
+
 
     
     // Non-transactional method

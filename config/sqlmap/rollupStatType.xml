@@ -107,6 +107,7 @@
         		and g.GIFT_ID = dl.GIFT_ID
         		and cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.ENTITY_TYPE='distributionline' and cf.FIELD_NAME= #customFieldName#  
         		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
+        		and cf.FIELD_VALUE is not null
 			<isNotNull property="groupByValue"> 
 	        	and cf.FIELD_VALUE = #groupByValue#
 			</isNotNull> 

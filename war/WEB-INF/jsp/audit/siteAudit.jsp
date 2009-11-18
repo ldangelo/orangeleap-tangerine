@@ -12,6 +12,6 @@
         </body>
     </html>
     <page:param name="scripts">
-        <script type="text/javascript" src="js/lists/auditlist.js"></script>
+        <script type="text/javascript" src="js/lists/auditList.js"></script>
     </page:param>
 </page:applyDecorator>

@@ -849,6 +849,19 @@ Ext.onReady(function() {
         buttonAlign: 'center'
     });
     */
+    var step4UpdatableFieldsStore = new Ext.data.ArrayStore({
+         fields: [
+             'name',
+             'desc',
+             'type',
+             'selected'
+         ],
+         data: [
+             ['postedDate', 'Posted Date (Creates Journal Entry)', 'date', false],
+             ['source', 'Source', 'picklist', false],
+             ['status', 'Status', 'picklist', false]
+         ]
+    });
 
     var step4Grid = new OrangeLeap.DynamicPropertyGrid({
         width: 726,
@@ -875,7 +888,9 @@ Ext.onReady(function() {
         viewConfig : {
             forceFit: true
         },
+        updatableFieldsStore: step4UpdatableFieldsStore,
         customEditors: {
+            'postedDate': new Ext.grid.GridEditor(new Ext.form.DateField({ selectOnFocus: true })),
             'source': new Ext.grid.GridEditor(new Ext.form.ComboBox({
                 name: 'source',
                 allowBlank: false,

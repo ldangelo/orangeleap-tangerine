@@ -98,23 +98,29 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
         if (colIndex == 0) {
             var thisStore = this.store.store;
             var thisGrid = this.grid;
+            Ext.override(Ext.form.ComboBox, {
+                onViewClick : function(doFocus) {
+                    var index = this.view.getSelectedIndexes()[0];
+                    var r = this.store.getAt(index);
+                    var sel = thisStore.find('name', r.get('name'));
+                    if (sel > -1) {
+                        return;
+                    }
+                    r.set('selected', false);
+                    if (r) {
+                        this.onSelect(r, index);
+                    }
+                    if (doFocus !== false){
+                        this.el.focus();
+                    }
+                }
+            });
             var combo = new Ext.form.ComboBox({
                 name: 'category',
                 allowBlank: false,
-                store: new Ext.data.ArrayStore({
-                     fields: [
-                         'name',
-                         'desc'
-                     ],
-                     data: [
-                         ['postedDate', 'Posted Date (Creates Journal Entry)'],
-                         ['source', 'Source'],
-                         ['status', 'Status']
-                     ] 
-                }),
+                store: thisGrid.updatableFieldsStore,
                 displayField: 'desc',
                 valueField: 'name',
-                value: 'postedDate',
                 typeAhead: true,
                 mode: 'local',
                 triggerAction: 'all',
@@ -122,9 +128,27 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
                 forceSelection: true,
                 stateId: 'combo',
                 stateful: true,
-                stateEvents: ['select']
+                stateEvents: ['select'],
+                tpl: '<tpl for=".">' +
+                    '<div ext:qtip="{desc}" class="x-combo-list-item ' +
+                        '<tpl if="selected === true">' +
+                            'x-combo-list-item-unsel' +
+                        '</tpl>' +
+                    '">{desc}</div>' +
+                    '</tpl>'
+            });
+            combo.on('beforeselect', function(comboBox, record, index) {
+                var prevVal = comboBox.getValue();
+                if (prevVal) {
+                    var ind = this.store.find('name', prevVal);
+                    if (ind > -1) {
+                        var r = this.store.getAt(ind);
+                        r.set('selected', false); // reset the other previously selected record to not selected
+                    }
+                }
             });
             combo.on('select', function(comboBox, record, index) {
+                record.set('selected', true);
                 var rec = thisStore.getAt(rowIndex);
                 rec.set('value', ''); // clear out the old value and set focus on the value column to allow the user to pick a value
                 thisGrid.startEditing.defer(200, thisGrid, [rowIndex, 1]);
@@ -136,9 +160,6 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
             var name = rec.get('name');
             if (this.grid.customEditors[name]) {
                 return this.grid.customEditors[name];
-            }
-            else if ('postedDate' == name) {
-                return this.editors.date;
             }
             else {
                 return this.editors.string;
@@ -155,7 +176,8 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
     }
 });
 
-OrangeLeap.DynamicPropertyGrid = function(config){
+OrangeLeap.DynamicPropertyGrid = function(config) {
+    this.updatableFieldsStore = config.updatableFieldsStore;
  	OrangeLeap.DynamicPropertyGrid.superclass.constructor.call(this, config);
 };
 
@@ -193,6 +215,11 @@ Ext.extend(OrangeLeap.DynamicPropertyGrid, Ext.grid.EditorGridPanel, {
                 if (id) {
                     id = id.replace('delete-link-', '');
                     var rec = this.store.getById(id);
+                    var fldRecIndex = this.updatableFieldsStore.find('name', rec.get('name'));
+                    if (fldRecIndex > -1) {
+                        var fldRec = this.updatableFieldsStore.getAt(fldRecIndex);
+                        fldRec.set('selected', false);
+                    }
                     this.store.remove(rec);
                 }
             }

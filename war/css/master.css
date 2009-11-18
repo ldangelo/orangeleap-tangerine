@@ -160,4 +160,5 @@ div.wizard span.required { font-size: inherit; padding-right: 3px; }
 
 div#step2Grp div.x-panel-body, div#step3Grp div.x-panel-body, div#step4Grp div.x-panel-body { background-color: #CEDDEF; }
 div#step3Grp div.x-grid3-row { cursor: default; }
-div.x-combo-list-item-unsel { color: #A0A0A0; cursor: default; }
+div.x-combo-list-item-unsel { color: #A0A0A0; }
+.x-combo-list .x-combo-list-item-unsel.x-combo-selected { cursor: default; }

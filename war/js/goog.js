@@ -21,9 +21,9 @@ function checkDashboard() {
 	}
 }
 function callDashboard() {
-	
+
 	//alert("callDashboard");
-	
+
     Ext.Ajax.request({url: 'dashboardItemsData.json', success: returnDashboard});
 }
 
@@ -33,25 +33,25 @@ var returnDashboard = function(resp) {
 	//alert("returnDashboard");  // This doesn't always get called, even though the server returns without error - why?
 
     var itemsData = Ext.decode(resp.responseText).itemsData;
-    
+
     var dashboard = $('#dashboard');
     dashboard.empty();
- 
+
     var template = new Ext.XTemplate(
           '<div class="column googleWidget">',
       	  ' <h5>{title}&nbsp;&nbsp;</h5>',
       	  ' <div id="chart_div_{divnum}" />',
           '</div>'
             );
-    
+
     for (var j = 0; j < itemsData.length; j++) {
-    	
+
     	var itemData;
     	itemData = itemsData[j];
     	itemData.divnum = "" + j;
     	dashboard.append(template.apply(itemData));
     	var elem = document.getElementById('chart_div_'+itemData.divnum);
-    	
+
     	if (itemData.graphType === 'Pie' ) pieChart(itemData, elem);
     	if (itemData.graphType === 'Bar' ) barChart(itemData, elem);
     	if (itemData.graphType === 'Rss' ) rss(itemData, elem);
@@ -63,7 +63,7 @@ var returnDashboard = function(resp) {
     	if (j % 2 == 1) {
     		dashboard.append('<div class="clearColumns" />');
     	}
-    	
+
     }
 
 	$(".googleWidget").css("visibility","visible");
@@ -71,21 +71,21 @@ var returnDashboard = function(resp) {
 };
 
 function loadGoogleData(itemData) {
-	
+
 	var i,j;
 	var rowData, datapoint;
     var data = new google.visualization.DataTable();
-    
+
     for (i = 0; i < itemData.columnTitles.length; i++) {
     	data.addColumn(itemData.columnTypes[i], itemData.columnTitles[i]);
     }
 
     data.addRows(itemData.rowLabels.length+1);
-    
+
     for (i = 0; i < itemData.rowLabels.length; i++) {
-        data.setValue(i, 0, itemData.rowLabels[i]); 
+        data.setValue(i, 0, itemData.rowLabels[i]);
     }
-    
+
     for (i = 0; i < itemData.rowData.length; i++) {
     	rowData = itemData.rowData[i];
         for (j = 0; j < rowData.length; j++) {
@@ -93,9 +93,9 @@ function loadGoogleData(itemData) {
         	data.setValue(j, i+1, datapoint);
         }
     }
-    
+
 	return data;
-	
+
 }
 
 
@@ -192,7 +192,7 @@ function guru(itemData, elem) {
                 url: url,
                 data: "",
                 success: function(html){
-                
+
                     var i;
 
                     i = html.indexOf("<body");
@@ -200,15 +200,17 @@ function guru(itemData, elem) {
 
                     i = html.indexOf(">");
                     html = html.substring(i);
-                    
+
                     i = html.indexOf("</body>");
                     html = html.substring(0,i-1);
 
 
                     adiv.html(html);
                     var aele = adiv.find("a[name='JR_PAGE_ANCHOR_0_1']");
-                    var aimg = aele.parent().find("tbody tr:eq(2) td:eq(1) img");
-                    
+                    var aimg = aele.parent().find("tbody img[src*=img_0_0_0]");
+                    if (aimg == null)
+                    	aimg = aele.parent().find("tbody tr:eq(2) td:eq(1) img");
+
                     //alert("src = "+aimg.attr("src"));
 
                     elem.appendChild(aimg.get(0));

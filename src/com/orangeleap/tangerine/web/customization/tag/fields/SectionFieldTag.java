@@ -250,6 +250,9 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("var config = {};\n");
                         sb.append("config.start = this.cursor;\n");
                         sb.append("config.limit = this.pageSize;\n");
+                        sb.append("if (OrangeLeap.thisSiteName) {\n");
+                        sb.append("config.siteName = OrangeLeap.thisSiteName;\n");
+                        sb.append("}\n");
                         sb.append("var queryParams = OrangeLeap.getQueryParams();\n");
                         sb.append("if (queryParams) {\n");
                         sb.append("var thisConstituentId = queryParams['constituentId'];\n");
@@ -263,7 +266,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("var queryParams = OrangeLeap.getQueryParams();\n");
                         sb.append("if (queryParams) {\n");
                         sb.append("var thisConstituentId = queryParams['constituentId'];\n");
-                        sb.append("if (!thisConstituentId || (thisConstituentId && (state.constituentId == thisConstituentId))) {\n");
+                        sb.append("if (OrangeLeap.thisSiteName == state.siteName && (!thisConstituentId || (thisConstituentId && (state.constituentId == thisConstituentId)))) {\n");
                         sb.append("if (state.start) {\n");
                         sb.append("this.cursor = state.start;\n");
                         sb.append("}\n");

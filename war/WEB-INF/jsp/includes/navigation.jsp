@@ -23,6 +23,11 @@
 	</ol>
 </div>
 
+<script type="text/javascript">
+    Ext.ns('OrangeLeap');
+    OrangeLeap.thisSiteName = '<security:authentication property="details.site" />';
+</script>
+
 <div id="navmain">
 	<div class="navLeftCap"></div>
 	<div class="container">

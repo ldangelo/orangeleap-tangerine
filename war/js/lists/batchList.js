@@ -886,25 +886,51 @@ Ext.onReady(function() {
     step4UpdatableFieldsStore.on('load', function(store, records, options) {
         var len = records.length;
         var newPropertyNames = {};
-        var newSource = {};
         var newCustomEditors = {};
+        var initValues = {};
+        var newSource;
+
         for (var x = 0; x < len; x++) {
             var recName = records[x].get('name');
             newPropertyNames[recName] = records[x].get('desc');
 
             var recType = records[x].get('type');
             var recVal = records[x].get('value');
+
+            // Source is for existing data, not new data
+            if (! Ext.isEmpty(recVal)) {
+                if ( ! newSource) {
+                    newSource = {};
+                }
+                if (recType == 'date' || recType == 'date_time') {
+                    newSource[recName] = Ext.isDate(recVal) ? recVal : new Date(Date.parse(recVal));
+                }
+                else if (recType == 'checkbox') {
+                    newSource[recName] = Ext.isBoolean(recVal) ? recVal : (recVal.toString().toLowerCase() == 'true' ||
+                                                                           recVal.toString().toLowerCase() == 't' ||
+                                                                           recVal.toString().toLowerCase() == 'y' ||
+                                                                           recVal == '1');
+                }
+                else if (recType == 'number' || recType == 'percentage') {
+                    newSource[recName] = Ext.isNumber(recVal) ? recVal : (recVal.toString().indexOf(".") > -1 ? parseFloat(recVal) : parseInt(recVal, 10));
+                }
+                else {
+                    newSource[recName] = recVal;
+                }
+            }
+
+            // Custom editors determine what type of control will be displayed to the user 
             if (recType == 'date' || recType == 'date_time') {
-                newSource[recName] = Ext.isDate(recVal) ? new Date(Date.parse(recVal)) : new Date();
+                newCustomEditors[recName] = step4Grid.colModel.editors['date'];
+                initValues[recName] = new Date();
             }
             else if (recType == 'checkbox') {
-                newSource[recName] = Ext.isBoolean(recVal) ? recVal : true;
+                newCustomEditors[recName] = step4Grid.colModel.editors['boolean'];
+                initValues[recName] = true;
             }
-            else if ((recType == 'number' || recType == 'percentage') && Ext.isNumber(recVal)) {
-                newSource[recName] = recVal;
-            }
-            else if (recType == 'text' || recType == 'long_text') {
-                newSource[recName] = recVal;
+            else if (recType == 'number' || recType == 'percentage') {
+                newCustomEditors[recName] = step4Grid.colModel.editors['number'];
+                initValues[recName] = parseInt(0, 10);
             }
             else if (recType == 'picklist') {    // TODO: multi_picklist, code, code_other, query_lookup, query_lookup_other
                 var myPicklist = step4Picklists[recName + '-Data'];
@@ -915,7 +941,7 @@ Ext.onReady(function() {
                         data: myPicklist
                     });
                     var initVal = myPicklist.length > 0 ? myPicklist[0]['itemName'] : '';
-//                    newSource[recName] = initVal;
+                    initValues[recName] = initVal;
                     newCustomEditors[recName] = new Ext.grid.GridEditor(new Ext.form.ComboBox({
                         name: recName,
                         allowBlank: false,
@@ -931,6 +957,16 @@ Ext.onReady(function() {
                     }));
                 }
             }
+            else {
+                // every other type is a string editor type
+                initValues[recName] = '';
+            }
+        }
+        if ( ! newSource) {
+            // if there are no pre-existing values, we have to initialize to the first one in the records list with a default value
+            newSource = {};
+            var thisRecName = records[0].get('name');
+            newSource[thisRecName] = initValues[thisRecName];
         }
         step4Grid.propertyNames = newPropertyNames;
         step4Grid.customEditors = newCustomEditors;
@@ -944,21 +980,9 @@ Ext.onReady(function() {
         header: false,
         frame: false,
         border: false,
-        propertyNames: {
-        },
-        source: {
-//            'postedDate': new Date()
-//            grouping: false,
-//            autoFitColumns: true,
-//            productionQuality: false,
-//            created: new Date(Date.parse('10/15/2006')),
-//            tested: false,
-//            version: 0.01,
-//            borderWidth: 1
-        },
-        viewConfig : {
-            forceFit: true
-        },
+        propertyNames: { },
+        source: { },
+        viewConfig : { forceFit: true },
         updatableFieldsStore: step4UpdatableFieldsStore,
         customEditors: { },
         tbar: [

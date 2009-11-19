@@ -100,6 +100,7 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
             var thisGrid = this.grid;
             Ext.override(Ext.form.ComboBox, {
                 onViewClick : function(doFocus) {
+                    // Don't allow previously selected items in the combo box to be selected again (for another row)
                     var index = this.view.getSelectedIndexes()[0];
                     var r = this.store.getAt(index);
                     var sel = thisStore.find('name', r.get('name'));
@@ -203,6 +204,30 @@ Ext.extend(OrangeLeap.DynamicPropertyGrid, Ext.grid.EditorGridPanel, {
         );
         this.cm = cm;
         this.ds = store.store;
+        var thisGrid = this;
+        this.tbar = [{
+                text: 'Add Criteria',
+                tooltip: 'Add Criteria to Update Field Value',
+                iconCls: 'add',
+                id: 'addCriteriaButton',
+                ref: '../addCriteriaButton',
+                handler: function() {
+                    var thisStore = thisGrid.getStore();
+                    var newRec = new thisStore.recordType({
+                        name: '',
+                        value: ''
+                    });
+                    thisGrid.stopEditing();
+                    var nextIndex = thisStore.getCount();
+                    thisStore.add(newRec);
+                    thisGrid.startEditing(nextIndex, 0);
+                    if ((nextIndex + 1) == thisGrid.updatableFieldsStore.getCount()) {
+                        this.disable();
+                    }
+                }
+            }
+        ];
+
         OrangeLeap.DynamicPropertyGrid.superclass.initComponent.call(this);
 
         this.mon(this, 'click', function(event){
@@ -219,9 +244,17 @@ Ext.extend(OrangeLeap.DynamicPropertyGrid, Ext.grid.EditorGridPanel, {
                         fldRec.set('selected', false);
                     }
                     this.store.remove(rec);
+                    if (this.store.getCount() != this.updatableFieldsStore.getCount()) {
+                        this.addCriteriaButton.enable();
+                    }
                 }
             }
         }, this);
+        this.mon(this, 'keydown', function(event) {
+            if (e.getKey() == e.A && e.altKey) {
+                Ext.getCmp('addCriteriaButton').handler();
+            }
+        });
     },
     
     setProperty: function(property, value) {

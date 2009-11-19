@@ -40,12 +40,14 @@ OrangeLeap.msgBundle = {
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
     step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
     step2Title: '<span class="step"><span class="stepNum" id="step2Num">2</span><span class="stepTxt">Choose Segmentations</span>',
-    step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">Confirm Choices</span>',
+    step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">View Rows That Will Be Updated</span>',
     step4Title: '<span class="step"><span class="stepNum" id="step4Num">4</span><span class="stepTxt">Update Field Values</span>',
+    step5Title: '<span class="step"><span class="stepNum" id="step4Num">5</span><span class="stepTxt">Confirm Fields To Update</span>',
     step1Tip: 'Step 1',
     step2Tip: 'Step 2',
     step3Tip: 'Step 3',
-    step4Tip: 'Step 4'
+    step4Tip: 'Step 4',
+    step5Tip: 'Step 5'
 }
 
 Ext.onReady(function() {
@@ -317,6 +319,9 @@ Ext.onReady(function() {
         else if (thisGrp.mainItem.id == 'step4Grp') {
             var batchType = Ext.getCmp('batchType').getValue();
             step4UpdatableFieldsStore.load({ params: { 'batchType': batchType }});
+        }
+        else if (thisGrp.mainItem.id == 'step5Grp') {
+
         }
     }
 
@@ -902,6 +907,7 @@ Ext.onReady(function() {
                 if ( ! newSource) {
                     newSource = {};
                 }
+                records[x].set('selected', true);
                 if (recType == 'date' || recType == 'date_time') {
                     newSource[recName] = Ext.isDate(recVal) ? recVal : new Date(Date.parse(recVal));
                 }
@@ -966,6 +972,7 @@ Ext.onReady(function() {
             // if there are no pre-existing values, we have to initialize to the first one in the records list with a default value
             newSource = {};
             var thisRecName = records[0].get('name');
+            records[0].set('selected', true);
             newSource[thisRecName] = initValues[thisRecName];
         }
         step4Grid.propertyNames = newPropertyNames;
@@ -985,26 +992,6 @@ Ext.onReady(function() {
         viewConfig : { forceFit: true },
         updatableFieldsStore: step4UpdatableFieldsStore,
         customEditors: { },
-        tbar: [
-            {
-                text: 'Add Criteria',
-                tooltip:'Add Criteria to Update Field Value',
-                iconCls:'add',
-                id: 'addButton',
-                ref: '../addButton',
-                handler: function() {
-                    var fourStore = step4Grid.getStore();
-                    var newRec = new fourStore.recordType({
-                        name: '',
-                        value: ''
-                    });
-                    step4Grid.stopEditing();
-                    var nextIndex = fourStore.getCount();
-                    fourStore.add(newRec);
-                    step4Grid.startEditing(nextIndex, 0);
-                }
-            }
-        ],
         buttons: [
             {
                 text: msgs.previous,
@@ -1020,13 +1007,18 @@ Ext.onReady(function() {
                 }
             },
             {
-                text: msgs.save,
+                text: msgs.next,
                 cls: 'saveButton',
-                ref: '../saveButton',
+                ref: '../nextButton',
                 formBind: true,
-                disabled: true,
+//                disabled: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(4);
+                    var firstItem = panel.items.items[4];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
+                    $('#step4Num').addClass('complete');
                 }
             },
             {
@@ -1091,6 +1083,15 @@ Ext.onReady(function() {
                          title: msgs.step4Title,
                          tabTip: msgs.step4Tip,
                          items: [ step4Grid ]
+                     }]
+                 },
+                 {
+                     items: [{
+                         id: 'step5Grp',
+                         title: msgs.step5Title,
+                         tabTip: msgs.step5Tip,
+                         html: '50'
+//                         items: [ step4Grid ]
                      }]
                  }
              ]

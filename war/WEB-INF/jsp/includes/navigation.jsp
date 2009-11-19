@@ -67,6 +67,7 @@
                     <li><a href="paymentSourceList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.paymentMethodList"/></a></li>
                     <li><a href="paymentHistory.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.paymentHistory"/></a></li>
                     <li><a href="communicationHistoryList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.touchPoints"/></a></li>
+                    <li><a href="giftSummary.htm?constituentId=${constituent.id}"><spring:message code="giftSummary"/></a></li>
                 </c:if>
                 </ul>
             </li>

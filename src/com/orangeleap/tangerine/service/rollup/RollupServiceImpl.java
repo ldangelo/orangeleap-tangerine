@@ -148,11 +148,11 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 		Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> result = new TreeMap<RollupAttribute, Map<RollupSeries, List<RollupValue>>>();
 		List<RollupAttribute> ras = readAllRollupAttributesByType("constituent"); 
 		for (RollupAttribute ra: ras) {
+			Map<RollupSeries, List<RollupValue>> attributeresult = new TreeMap<RollupSeries, List<RollupValue>>();
+			result.put(ra, attributeresult);
 			List<RollupSeriesXAttribute> sxas = rollupSeriesXAttributeDao.selectRollupSeriesForAttribute(ra.getId());
 			for (RollupSeriesXAttribute sxa : sxas) {
 				RollupSeries rs = rollupSeriesDao.readRollupSeriesById(sxa.getRollupSeriesId());
-				Map<RollupSeries, List<RollupValue>> attributeresult = new TreeMap<RollupSeries, List<RollupValue>>();
-				result.put(ra, attributeresult);
 				List<RollupValue> rvs = readRollupValuesByAttributeSeriesAndConstituentId(ra.getId(), rs.getId(), constituentId); 
 				attributeresult.put(rs, rvs);
 			}

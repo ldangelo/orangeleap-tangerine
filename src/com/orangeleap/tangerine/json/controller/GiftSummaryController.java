@@ -36,6 +36,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
@@ -72,12 +73,13 @@ public class GiftSummaryController {
     private final static String AVG = "avg";
 
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.POST)
     @SuppressWarnings("unchecked")
     public ModelMap getGiftSummary(HttpServletRequest request) throws Exception {
     	
         ModelMap modelMap = new ModelMap();
-        Long constituentId = Long.valueOf(request.getParameter("constituentId"));
+        
+        Long constituentId = 1L;// Long.valueOf(request.getParameter("constituentId"));
         if (null == constituentService.readConstituentById(constituentId)) return null; // checks constituent id is in site.
 
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
@@ -90,10 +92,6 @@ public class GiftSummaryController {
 
     private void addViewData(Long constituentId, List<Map<String, Object>> returnList) {
 
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-
     	Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> data = rollupService.readGiftViewRollupValuesByConstituentId(constituentId);
     	
     	int i = 0;
@@ -105,14 +103,15 @@ public class GiftSummaryController {
         		List<RollupValue> rolluplist = me2.getValue();
             	for (RollupValue rv : rolluplist) {
 
+                    Map<String, Object> map = new HashMap<String, Object>();
                     map.put(ID, "" + i++);
                     map.put(CLASS, "string");
                     map.put(MAX_LEN, "255");
 
                     map.put(ATTRIBUTE, ra.getAttributeDesc());
                     map.put(SERIES, rs.getSeriesDesc());
-                    map.put(START_DATE, sdf.format(rv.getStartDate()));
-                    map.put(END_DATE, sdf.format(rv.getEndDate()));
+                    map.put(START_DATE, rv.getStartDate().equals(CustomField.PAST_DATE)?null:rv.getStartDate());
+                    map.put(END_DATE, rv.getEndDate().equals(CustomField.FUTURE_DATE)?null:rv.getEndDate());
                     map.put(CURRENCY_CODE, rv.getCurrencyCode());
                     map.put(COUNT, rv.getCountValue());
                     map.put(SUM, rv.getSumValue());

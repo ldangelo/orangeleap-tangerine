@@ -157,7 +157,6 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 				attributeresult.put(rs, rvs);
 			}
 		}
-		// TODO determine gift and adjusted gift attribute id, add adjusted totals into gift totals, for same series and date, leaving count the same.
 		return result;
 	}	
     

@@ -191,6 +191,7 @@ function guru(itemData, elem) {
                 type: "POST",
                 url: url,
                 data: "",
+                async: false,
                 success: function(html){
 
                     var i;

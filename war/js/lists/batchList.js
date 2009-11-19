@@ -861,33 +861,80 @@ Ext.onReady(function() {
             {name: 'name', type: 'string'},
             {name: 'desc', type: 'string'},
             {name: 'type', type: 'string'},
+            {name: 'value', type: 'string'},
             {name: 'selected', type: 'boolean'}
         ]
-//        fields: [
-//            'name',
-//            'desc',
-//            'type',
-//            'selected'
-//        ]//,
-//        data: [
-//            ['postedDate', 'Posted Date (Creates Journal Entry)', 'date', false],
-//            ['source', 'Source', 'picklist', false],
-//            ['status', 'Status', 'picklist', false]
-//        ]
+    });
+    var step4Picklists = {};
+    step4UpdatableFieldsStore.proxy.on('load', function(proxy, txn, options) {
+        if (txn.reader.jsonData && txn.reader.jsonData.rows) {
+            var rows = txn.reader.jsonData.rows;
+            var len = rows.length;
+
+            // Setup custom editors, if any
+            for (var x = 0; x < len; x++) {
+                if (rows[x].type == 'picklist') {
+                    var name = rows[x].name;
+                    var picklistNameKey = name + '-Data'; // get the JSON itemName/displayVal data for the picklist
+                    if (txn.reader.jsonData[picklistNameKey]) {
+                        step4Picklists[picklistNameKey] = txn.reader.jsonData[picklistNameKey];
+                    }
+                }
+            }
+        }
     });
     step4UpdatableFieldsStore.on('load', function(store, records, options) {
         var len = records.length;
         var newPropertyNames = {};
         var newSource = {};
+        var newCustomEditors = {};
         for (var x = 0; x < len; x++) {
-            newPropertyNames[records[x].get('name')] = records[x].get('desc');
-            if (records[x].get('type') == 'date') {
-                newSource[records[x].get('name')] = new Date();
+            var recName = records[x].get('name');
+            newPropertyNames[recName] = records[x].get('desc');
+
+            var recType = records[x].get('type');
+            var recVal = records[x].get('value');
+            if (recType == 'date' || recType == 'date_time') {
+                newSource[recName] = Ext.isDate(recVal) ? new Date(Date.parse(recVal)) : new Date();
+            }
+            else if (recType == 'checkbox') {
+                newSource[recName] = Ext.isBoolean(recVal) ? recVal : true;
+            }
+            else if ((recType == 'number' || recType == 'percentage') && Ext.isNumber(recVal)) {
+                newSource[recName] = recVal;
+            }
+            else if (recType == 'text' || recType == 'long_text') {
+                newSource[recName] = recVal;
+            }
+            else if (recType == 'picklist') {    // TODO: multi_picklist, code, code_other, query_lookup, query_lookup_other
+                var myPicklist = step4Picklists[recName + '-Data'];
+                if (myPicklist) {
+                    var myStore = new Ext.data.JsonStore({
+                        autoSave: false,
+                        fields: ['itemName', 'displayVal'],
+                        data: myPicklist
+                    });
+                    var initVal = myPicklist.length > 0 ? myPicklist[0]['itemName'] : '';
+//                    newSource[recName] = initVal;
+                    newCustomEditors[recName] = new Ext.grid.GridEditor(new Ext.form.ComboBox({
+                        name: recName,
+                        allowBlank: false,
+                        displayField: 'displayVal',
+                        valueField: 'itemName',
+                        typeAhead: true,
+                        mode: 'local',
+                        triggerAction: 'all',
+                        selectOnFocus: true,
+                        forceSelection: true,
+                        store: myStore,
+                        value: initVal
+                    }));
+                }
             }
         }
         step4Grid.propertyNames = newPropertyNames;
+        step4Grid.customEditors = newCustomEditors;
         step4Grid.setSource(newSource);
-//        step4Grid.getView().refresh();
     });
 
     var step4Grid = new OrangeLeap.DynamicPropertyGrid({
@@ -898,9 +945,6 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         propertyNames: {
-//            postedDate: 'Posted Date (Creates Journal Entry)',
-//            source: 'Source',
-//            status: 'Status'
         },
         source: {
 //            'postedDate': new Date()
@@ -916,55 +960,7 @@ Ext.onReady(function() {
             forceFit: true
         },
         updatableFieldsStore: step4UpdatableFieldsStore,
-        customEditors: {
-            'postedDate': new Ext.grid.GridEditor(new Ext.form.DateField({ selectOnFocus: true })),
-            'customFieldMap[source]': new Ext.grid.GridEditor(new Ext.form.ComboBox({
-                name: 'source',
-                allowBlank: false,
-                store: new Ext.data.ArrayStore({
-                     fields: [
-                         'itemName',
-                         'displayVal'
-                     ],
-                     data: [
-                         ['Call', 'Call'],
-                         ['Mail', 'Mail'],
-                         ['Online', 'Online']
-                     ]
-                }),
-                displayField: 'displayVal',
-                valueField: 'itemName',
-                value: 'Call',
-                typeAhead: true,
-                mode: 'local',
-                triggerAction: 'all',
-                selectOnFocus: true,
-                forceSelection: true
-            })),
-            'giftStatus': new Ext.grid.GridEditor(new Ext.form.ComboBox({
-                name: 'status',
-                allowBlank: false,
-                store: new Ext.data.ArrayStore({
-                     fields: [
-                         'itemName',
-                         'displayVal'
-                     ],
-                     data: [
-                         ['Pending', 'Pending'],
-                         ['Paid', 'Paid'],
-                         ['Not Paid', 'Not Paid']
-                     ]
-                }),
-                displayField: 'displayVal',
-                valueField: 'itemName',
-                value: 'Pending',
-                typeAhead: true,
-                mode: 'local',
-                triggerAction: 'all',
-                selectOnFocus: true,
-                forceSelection: true
-            }))
-        },
+        customEditors: { },
         tbar: [
             {
                 text: 'Add Criteria',
@@ -1031,33 +1027,6 @@ Ext.onReady(function() {
         modal: true,
         closable: false,
         closeAction: 'hide',
-//        buttons: [
-//            {   text: msgs.save,
-//                cls: 'disabledButton',
-//                ref: '../saveButton',
-//                disabled: true,
-//                handler: function(button, event) {
-////                    if (checkIfValid()) {
-////                        $("#optionsFieldsSavedMarker").hide();
-////                        optionsStore.saveAll();
-////                    }
-////                    else {
-////                        Ext.MessageBox.show({ title: 'Correct Errors', icon: Ext.MessageBox.WARNING,
-////                            buttons: Ext.MessageBox.OK,
-////                            msg: 'You must fix the highlighted errors first before saving.'});
-////                    }
-//                }
-//            },
-//            {   text: msgs.close,
-//                cls: 'button',
-//                ref: '../closeButton',
-//                handler: function(button, event) {
-//                    batchWin.hide(this);
-//                }
-//            }
-//        ],
-//        buttonAlign: 'center',
-
         items:[{
              xtype: 'grouptabpanel',
              tabWidth: 135,

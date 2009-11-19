@@ -147,10 +147,13 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
                     }
                 }
             });
-            combo.on('select', function(comboBox, record, index) {
-                record.set('selected', true);
-                var rec = thisStore.getAt(rowIndex);
-                rec.set('value', ''); // clear out the old value and set focus on the value column to allow the user to pick a value
+            combo.on('select', function(comboBox, comboBoxRecord, index) {
+                comboBoxRecord.set('selected', true);
+//                var newName = comboBoxRecord.get('name'); // this is the name of the field the user has just selected
+//                var newValue = thisGrid.getSource(newName);
+                
+                var oldRec = thisStore.getAt(rowIndex); // this is the field the user had selected before
+                oldRec.set('value', ''); // set the new value and set focus on the value column to allow the user to pick a value
                 thisGrid.startEditing.defer(200, thisGrid, [rowIndex, 1]);
             });
             return new Ext.grid.GridEditor(combo);
@@ -160,6 +163,16 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
             var name = rec.get('name');
             if (this.grid.customEditors[name]) {
                 return this.grid.customEditors[name];
+            }
+            var val = rec.get('value');
+            if (Ext.isDate(val)) {
+                return this.editors.date;
+            }
+            else if (Ext.isNumber(val)) {
+                return this.editors.number;
+            }
+            else if (Ext.isBoolean(val)) {
+                return this.editors['boolean'];
             }
             else {
                 return this.editors.string;

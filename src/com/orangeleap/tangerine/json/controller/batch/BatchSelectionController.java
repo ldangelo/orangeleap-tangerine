@@ -244,15 +244,15 @@ public class BatchSelectionController extends TangerineJsonListController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/findBatchUpdateFields.json")
-    public ModelMap findBatchUpdateFields(String batchType) {
+    public ModelMap findBatchUpdateFields(final String batchType) {
         if (logger.isTraceEnabled()) {
             logger.trace("findBatchUpdateFields: batchType = " + batchType);
         }
-        String picklistNameId = new StringBuilder(batchType).append(BATCH_FIELDS).toString();
-
-        Picklist picklist = picklistItemService.getPicklist(picklistNameId);
-
-        final List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>(); 
+        final String picklistNameId = new StringBuilder(batchType).append(BATCH_FIELDS).toString();
+        final Picklist picklist = picklistItemService.getPicklist(picklistNameId);
+        final ModelMap modelMap = new ModelMap();
+        final List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+        
         if (picklist != null) {
             for (PicklistItem item : picklist.getActivePicklistItems()) {
                 String fieldDefinitionId = new StringBuilder(batchType).append(".").append(item.getDefaultDisplayValue()).toString();
@@ -260,19 +260,29 @@ public class BatchSelectionController extends TangerineJsonListController {
                 if (fieldDef != null) {
                     FieldType fieldType = fieldDef.getFieldType();
                     if (fieldType.equals(FieldType.PICKLIST)) {
-                        
+                        final Picklist referencedPicklist = picklistItemService.getPicklist(item.getDefaultDisplayValue());
+                        if (referencedPicklist != null) {
+                            final List<Map<String, String>> referencedItemList = new ArrayList<Map<String, String>>();
+                            for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {
+                                final Map<String, String> referencedItemMap = new HashMap<String, String>();
+                                referencedItemMap.put("itemName", referencedItem.getItemName());
+                                referencedItemMap.put("displayVal", referencedItem.getDefaultDisplayValue());
+                                referencedItemList.add(referencedItemMap);
+                            }
+                            modelMap.put(new StringBuilder(item.getDefaultDisplayValue()).append("-Data").toString(), referencedItemList);
+                        }
                     }
                     final Map<String, Object> map = new HashMap<String, Object>();
                     map.put(StringConstants.NAME, item.getDefaultDisplayValue());
                     map.put(StringConstants.DESC, fieldDef.getDefaultLabel());
                     map.put(StringConstants.TYPE, fieldType.name().toLowerCase());
+                    map.put(StringConstants.VALUE, StringConstants.EMPTY); // TODO: re-enter value
                     map.put(StringConstants.SELECTED, Boolean.FALSE); // TODO: redisplay for existing
                     returnList.add(map);
                 }
             }
         }
 
-        ModelMap modelMap = new ModelMap();
         modelMap.put(StringConstants.ROWS, returnList);
         modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
         return modelMap;

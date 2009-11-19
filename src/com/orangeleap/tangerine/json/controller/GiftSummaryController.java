@@ -79,7 +79,7 @@ public class GiftSummaryController {
     	
         ModelMap modelMap = new ModelMap();
         
-        Long constituentId = 1L;// Long.valueOf(request.getParameter("constituentId"));
+        Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         if (null == constituentService.readConstituentById(constituentId)) return null; // checks constituent id is in site.
 
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();

@@ -4,9 +4,17 @@ Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
+    var objectType = /object=(\w+)/g.exec(document.location.search);
+    var objectId = /id=(\d+)/g.exec(document.location.search);
     var baseParams = {};
 
-    baseParams.id = $('#id').val();
+    if(objectType) {
+        baseParams.object = objectType[1];
+    }
+
+    if(objectId) {
+        baseParams.id = objectId[1];
+    }
 
     var header = 'Gift Summary List';
 

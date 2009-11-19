@@ -23,11 +23,16 @@ import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Segmentation;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.json.controller.list.TangerineJsonListController;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchService;
+import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -58,12 +63,19 @@ import java.util.Map;
 public class BatchSelectionController extends TangerineJsonListController {
 
     protected final Log logger = OLLogger.getLog(getClass());
-    
+    public static final String BATCH_FIELDS = "BatchFields";
+
     @Resource(name = "postBatchService")
     private PostBatchService postBatchService;
 
     @Resource(name = "giftService")
     private GiftService giftService;
+
+    @Resource(name = "picklistItemService")
+    private PicklistItemService picklistItemService;
+
+    @Resource(name = "fieldService")
+    private FieldService fieldService;
 
     @SuppressWarnings("unchecked")
     public void checkAccess(HttpServletRequest request) {
@@ -131,24 +143,14 @@ public class BatchSelectionController extends TangerineJsonListController {
     @SuppressWarnings("unchecked")
     @RequestMapping("/confirmChoices.json")
     public ModelMap findRowsForSegmentations(HttpServletRequest request, String ids, String batchType, SortInfo sort) {
-//    public ModelMap findRowsForSegmentations(HttpServletRequest request, String ids, String batchType,
-//                                             String sort, String sortDir, int limit, int start) {
         if (logger.isTraceEnabled()) {
-//            logger.trace("findRowsForSegmentations: ids = " + ids + " batchType = " + batchType +
-//                    " sort = " + sort + " sortDir = " + sortDir + " limit = " + limit + " start = " + start);
+            logger.trace("findRowsForSegmentations: ids = " + ids + " batchType = " + batchType + " sort = " + sort);
         }
         final ModelMap model = new ModelMap();
         if (StringConstants.GIFT.equals(batchType)) {
             appendModelForGift(request, ids, sort, model);
-//            appendModelForGift(request, ids, new SortInfo(sort, sortDir, limit, start), model);
         }
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
-        
-        // TODO: lookup rows for segmentation IDs
-//        final List<Segmentation> segmentations = postBatchService.findSegmentations(batchType);
-//        final List<Map<String, Object>> returnList = addSegmentationsToMap(segmentations);
-//        model.put(StringConstants.ROWS, returnList);
-//        model.put(StringConstants.TOTAL_ROWS, returnList.size());
         return model;
     }
 
@@ -238,5 +240,41 @@ public class BatchSelectionController extends TangerineJsonListController {
         gift.setConstituent(constituent);
         gift.setPaymentSource(new PaymentSource(constituent));
         return PropertyAccessorFactory.forBeanPropertyAccess(gift);
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/findBatchUpdateFields.json")
+    public ModelMap findBatchUpdateFields(String batchType) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findBatchUpdateFields: batchType = " + batchType);
+        }
+        String picklistNameId = new StringBuilder(batchType).append(BATCH_FIELDS).toString();
+
+        Picklist picklist = picklistItemService.getPicklist(picklistNameId);
+
+        final List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>(); 
+        if (picklist != null) {
+            for (PicklistItem item : picklist.getActivePicklistItems()) {
+                String fieldDefinitionId = new StringBuilder(batchType).append(".").append(item.getDefaultDisplayValue()).toString();
+                FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+                if (fieldDef != null) {
+                    FieldType fieldType = fieldDef.getFieldType();
+                    if (fieldType.equals(FieldType.PICKLIST)) {
+                        
+                    }
+                    final Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(StringConstants.NAME, item.getDefaultDisplayValue());
+                    map.put(StringConstants.DESC, fieldDef.getDefaultLabel());
+                    map.put(StringConstants.TYPE, fieldType.name().toLowerCase());
+                    map.put(StringConstants.SELECTED, Boolean.FALSE); // TODO: redisplay for existing
+                    returnList.add(map);
+                }
+            }
+        }
+
+        ModelMap modelMap = new ModelMap();
+        modelMap.put(StringConstants.ROWS, returnList);
+        modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
+        return modelMap;
     }
 }

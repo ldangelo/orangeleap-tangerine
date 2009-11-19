@@ -315,6 +315,8 @@ Ext.onReady(function() {
             step3Store.load({ params: { 'ids': selIds.toString(), 'batchType': batchType }});
         }
         else if (thisGrp.mainItem.id == 'step4Grp') {
+            var batchType = Ext.getCmp('batchType').getValue();
+            step4UpdatableFieldsStore.load({ params: { 'batchType': batchType }});
         }
     }
 
@@ -849,18 +851,43 @@ Ext.onReady(function() {
         buttonAlign: 'center'
     });
     */
-    var step4UpdatableFieldsStore = new Ext.data.ArrayStore({
-         fields: [
-             'name',
-             'desc',
-             'type',
-             'selected'
-         ],
-         data: [
-             ['postedDate', 'Posted Date (Creates Journal Entry)', 'date', false],
-             ['source', 'Source', 'picklist', false],
-             ['status', 'Status', 'picklist', false]
-         ]
+    var step4UpdatableFieldsStore = new Ext.data.JsonStore({
+        url: 'findBatchUpdateFields.json',
+        autoLoad: false,
+        autoSave: false,
+        totalProperty: 'totalRows',
+        root: 'rows',
+        fields: [
+            {name: 'name', type: 'string'},
+            {name: 'desc', type: 'string'},
+            {name: 'type', type: 'string'},
+            {name: 'selected', type: 'boolean'}
+        ]
+//        fields: [
+//            'name',
+//            'desc',
+//            'type',
+//            'selected'
+//        ]//,
+//        data: [
+//            ['postedDate', 'Posted Date (Creates Journal Entry)', 'date', false],
+//            ['source', 'Source', 'picklist', false],
+//            ['status', 'Status', 'picklist', false]
+//        ]
+    });
+    step4UpdatableFieldsStore.on('load', function(store, records, options) {
+        var len = records.length;
+        var newPropertyNames = {};
+        var newSource = {};
+        for (var x = 0; x < len; x++) {
+            newPropertyNames[records[x].get('name')] = records[x].get('desc');
+            if (records[x].get('type') == 'date') {
+                newSource[records[x].get('name')] = new Date();
+            }
+        }
+        step4Grid.propertyNames = newPropertyNames;
+        step4Grid.setSource(newSource);
+//        step4Grid.getView().refresh();
     });
 
     var step4Grid = new OrangeLeap.DynamicPropertyGrid({
@@ -871,12 +898,12 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         propertyNames: {
-            postedDate: 'Posted Date (Creates Journal Entry)',
-            source: 'Source',
-            status: 'Status'
+//            postedDate: 'Posted Date (Creates Journal Entry)',
+//            source: 'Source',
+//            status: 'Status'
         },
         source: {
-            'postedDate': new Date()
+//            'postedDate': new Date()
 //            grouping: false,
 //            autoFitColumns: true,
 //            productionQuality: false,
@@ -891,7 +918,7 @@ Ext.onReady(function() {
         updatableFieldsStore: step4UpdatableFieldsStore,
         customEditors: {
             'postedDate': new Ext.grid.GridEditor(new Ext.form.DateField({ selectOnFocus: true })),
-            'source': new Ext.grid.GridEditor(new Ext.form.ComboBox({
+            'customFieldMap[source]': new Ext.grid.GridEditor(new Ext.form.ComboBox({
                 name: 'source',
                 allowBlank: false,
                 store: new Ext.data.ArrayStore({
@@ -914,7 +941,7 @@ Ext.onReady(function() {
                 selectOnFocus: true,
                 forceSelection: true
             })),
-            'status': new Ext.grid.GridEditor(new Ext.form.ComboBox({
+            'giftStatus': new Ext.grid.GridEditor(new Ext.form.ComboBox({
                 name: 'status',
                 allowBlank: false,
                 store: new Ext.data.ArrayStore({

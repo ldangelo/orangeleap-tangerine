@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS `CUSTOM_FIELD`;
 CREATE TABLE `CUSTOM_FIELD` (
 `CUSTOM_FIELD_ID` bigint(20) NOT NULL auto_increment,
 `FIELD_NAME` varchar(255) NOT NULL,
-`FIELD_VALUE` text,
+`FIELD_VALUE` text NOT NULL,
 `FIELD_NUMERIC_VALUE` decimal(19,2) default NULL,
 `FIELD_DATE_VALUE` datetime default NULL,
 `DATA_TYPE` bigint(20) default 0,

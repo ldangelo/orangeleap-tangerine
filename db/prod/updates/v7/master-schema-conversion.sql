@@ -3,9 +3,11 @@ V7 Schema changes
 *********************************************************************
 */
 
+ALTER TABLE CUSTOM_FIELD 
+    MODIFY COLUMN (`FIELD_VALUE` text NOT NULL);
+
 ALTER TABLE GIFT 
     ADD COLUMN (`ADJUSTED_AMOUNT` decimal(19,2) default NULL);
-
 
 # Gift Rollup tables (FKs omitted)
 

@@ -102,7 +102,7 @@ public class ManageDashboardController {
     }
     	
     private boolean isAllowedType(String type) {
-    	return "Rss".equals(type) || "Guru".equals(type) || "IFrame".equals(type);
+    	return "Rss".equals(type) || "Guru".equals(type) || "IFrame".equals(type) || "Text".equals(type);
     }
 
     private void addItems(List<DashboardItem> items, List<Map<String, Object>> returnList) {

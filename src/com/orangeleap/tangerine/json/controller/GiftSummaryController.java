@@ -18,11 +18,10 @@
 
 package com.orangeleap.tangerine.json.controller;
 
-import static com.orangeleap.tangerine.util.StringConstants.GROUP;
 import static com.orangeleap.tangerine.util.StringConstants.ID;
-import static com.orangeleap.tangerine.util.StringConstants.LABEL;
-import static com.orangeleap.tangerine.util.StringConstants.VALUE;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +43,6 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.rollup.RollupService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 
 @Controller
 @RequestMapping("/giftSummary.json")
@@ -61,6 +59,17 @@ public class GiftSummaryController {
     
     private final static String CLASS = "class";
     private final static String MAX_LEN = "maxLen";
+    
+    private final static String ATTRIBUTE = "attribute";
+    private final static String SERIES = "series";
+    private final static String START_DATE = "startDate";
+    private final static String END_DATE = "endDate";
+    private final static String CURRENCY_CODE = "currencyCode";
+    private final static String COUNT = "count";
+    private final static String SUM = "sum";
+    private final static String MIN = "min";
+    private final static String MAX = "max";
+    private final static String AVG = "avg";
 
 
     @RequestMapping(method = RequestMethod.GET)
@@ -80,22 +89,43 @@ public class GiftSummaryController {
     }
 
     private void addViewData(Long constituentId, List<Map<String, Object>> returnList) {
-    	Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> m = rollupService.readGiftViewRollupValuesByConstituentId(constituentId);
-    	
-/*
-        String paymentProcessingMsg = TangerineMessageAccessor.getMessage("paymentProcessing");
+
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put(ID, "merchantNumber");
-        map.put(LABEL, TangerineMessageAccessor.getMessage("merchantNumber"));
-        map.put(VALUE, "");
-        map.put(GROUP, paymentProcessingMsg);
-        map.put(CLASS, "string");
-        map.put(MAX_LEN, "255");
-        returnList.add(map);
-*/
-        
 
-      
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+
+    	Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> data = rollupService.readGiftViewRollupValuesByConstituentId(constituentId);
+    	
+    	int i = 0;
+    	for (Map.Entry<RollupAttribute, Map<RollupSeries, List<RollupValue>>> me : data.entrySet()) {
+    		RollupAttribute ra = me.getKey();
+    		Map<RollupSeries, List<RollupValue>> seriesmap = me.getValue();
+        	for (Map.Entry<RollupSeries, List<RollupValue>> me2 : seriesmap.entrySet()) {
+        		RollupSeries rs = me2.getKey();
+        		List<RollupValue> rolluplist = me2.getValue();
+            	for (RollupValue rv : rolluplist) {
+
+                    map.put(ID, "" + i++);
+                    map.put(CLASS, "string");
+                    map.put(MAX_LEN, "255");
+
+                    map.put(ATTRIBUTE, ra.getAttributeDesc());
+                    map.put(SERIES, rs.getSeriesDesc());
+                    map.put(START_DATE, sdf.format(rv.getStartDate()));
+                    map.put(END_DATE, sdf.format(rv.getEndDate()));
+                    map.put(CURRENCY_CODE, rv.getCurrencyCode());
+                    map.put(COUNT, rv.getCountValue());
+                    map.put(SUM, rv.getSumValue());
+                    map.put(MIN, rv.getMinValue());
+                    map.put(MAX, rv.getMaxValue());
+                    BigDecimal avg = rv.getSumValue().movePointRight(2).divideToIntegralValue(rv.getCountValue()).movePointLeft(2);
+                    map.put(AVG, avg);
+                	returnList.add(map);
+            		
+            	}
+        	}    		
+    	}
+
     }
-
+    
 }

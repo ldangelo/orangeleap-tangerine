@@ -89,7 +89,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			int totalContituentCount = constituentService.getConstituentCountBySite();
 			for (int start = 0; start <= totalContituentCount; start += 100){
 				
-				logger.info("Processing rules for constituent "+start+" out of "+totalContituentCount);
+				logger.debug("Processing rules for constituent "+start+" out of "+totalContituentCount);
 				
 				SortInfo sortInfo = new SortInfo();
 				sortInfo.setSort("id"); // sort by id so that new inserts will not throw off pages.

@@ -18,19 +18,6 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +26,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.type.GiftType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Repository("giftDAO")
 public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements GiftDao {
@@ -286,4 +288,21 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
         return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_GIFTS_COUNT_BY_CONSTITUENT_ID", params);
     }
+
+	@Override
+	public Gift readFirstOrLastGiftByConstituent(Long constituentId, Date fromDate, Date toDate, GiftType giftType, String giftStatus, boolean first) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFirstOrLastGiftByConstituent: constituentId = " + constituentId + " fromDate = " + fromDate +
+                    " toDate = " + toDate + " first = "+first);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        params.put("giftType", giftType);
+        params.put("giftStatus", giftStatus);
+        if (first) params.put("first", first);
+        return (Gift)getSqlMapClientTemplate().queryForObject("SELECT_FIRST_OR_LAST_GIFT_BY_CONSTITUENT", params);
+	}
+
 }

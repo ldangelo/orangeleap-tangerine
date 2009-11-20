@@ -19,6 +19,12 @@
 
 // note: processing rollups over a midnite break is not recommended.
 
+
+/*
+ *  The reason for having a rollup table instead of dynamically calculating the numbers for the 
+ *  Gift Summary page is to allow rules to process quicker, and also support the guru for certain date range reports.
+ */
+
 package com.orangeleap.tangerine.service.rollup;
 
 import java.util.ArrayList;
@@ -36,11 +42,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.RollupAttributeDao;
 import com.orangeleap.tangerine.dao.RollupSeriesDao;
 import com.orangeleap.tangerine.dao.RollupSeriesXAttributeDao;
 import com.orangeleap.tangerine.dao.RollupValueDao;
 import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesType;
@@ -48,6 +56,7 @@ import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
+import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -68,6 +77,9 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 
     @Resource(name = "rollupValueDAO")
     private RollupValueDao rollupValueDao;
+
+    @Resource(name = "giftDAO")
+    private GiftDao giftDao;
 
     @Resource(name = "siteService")
     private SiteService siteService;
@@ -159,6 +171,11 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 		}
 		return result;
 	}	
+	
+	@Override
+    public Gift readGiftViewFirstOrLastByConstituentId(Long constituentId, GiftType giftType, String giftStatus, boolean first) {
+    	return giftDao.readFirstOrLastGiftByConstituent(constituentId, null, null, giftType, giftStatus, first);
+    }
     
 
 	@Override

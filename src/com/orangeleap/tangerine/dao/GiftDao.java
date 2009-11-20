@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.dao;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -44,6 +45,8 @@ public interface GiftDao {
     public List<Gift> readAllGiftsBySite();
 
     public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate);
+
+	public Gift readFirstOrLastGiftByConstituent(Long constituentId, Date fromDate, Date toDate, GiftType giftType, String giftStatus, boolean first);
 
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 

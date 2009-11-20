@@ -49,10 +49,10 @@ Ext.onReady(function() {
         columns: [
             {header: 'Statistic', width: 200, dataIndex: 'attribute', sortable: false},
             {header: 'Time Period', width: 100, dataIndex: 'series', sortable: false},
-            {header: 'Start Date', width: 60, dataIndex: 'startDate', sortable: false, renderer: Ext.util.Format.dateRenderer('m-d-y')},
-            {header: 'End Date', width: 60, dataIndex: 'endDate', sortable: false, renderer: Ext.util.Format.dateRenderer('m-d-y')},
+            {header: 'Start Date', width: 65, dataIndex: 'startDate', sortable: false, renderer: Ext.util.Format.dateRenderer('m-d-y')},
+            {header: 'End Date', width: 65, dataIndex: 'endDate', sortable: false, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Currency', width: 65, dataIndex: 'currencyCode', sortable: false},
-            {header: 'Count', width: 40, dataIndex: 'count', sortable: false},
+            {header: 'Count', width: 45, dataIndex: 'count', sortable: false},
             {header: 'Total', width: 65, dataIndex: 'sum', sortable: false, renderer: OrangeLeap.amountRenderer },
             {header: 'Average', width: 65, dataIndex: 'avg', sortable: false, renderer: OrangeLeap.amountRenderer },
             {header: 'Min', width: 65, dataIndex: 'min', sortable: false, renderer: OrangeLeap.amountRenderer },

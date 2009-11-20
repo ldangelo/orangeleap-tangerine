@@ -21,7 +21,6 @@ package com.orangeleap.tangerine.json.controller;
 import static com.orangeleap.tangerine.util.StringConstants.ID;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,11 +36,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.rollup.RollupService;
+import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -91,10 +92,17 @@ public class GiftSummaryController {
     }
 
     private void addViewData(Long constituentId, List<Map<String, Object>> returnList) {
+    
+    	int index = 0;
 
+    	// Add lines for first and last gifts
+    	Gift firstGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", true);
+    	putGift("First Gift", firstGift, returnList, index++);
+    	Gift lastGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", false);
+    	putGift("Last Gift", lastGift, returnList, index++);
+
+    	// Add stats
     	Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> data = rollupService.readGiftViewRollupValuesByConstituentId(constituentId);
-    	
-    	int i = 0;
     	for (Map.Entry<RollupAttribute, Map<RollupSeries, List<RollupValue>>> me : data.entrySet()) {
     		RollupAttribute ra = me.getKey();
     		Map<RollupSeries, List<RollupValue>> seriesmap = me.getValue();
@@ -104,7 +112,7 @@ public class GiftSummaryController {
             	for (RollupValue rv : rolluplist) {
 
                     Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(ID, "" + i++);
+                    map.put(ID, "" + index++);
                     map.put(CLASS, "string");
                     map.put(MAX_LEN, "255");
 
@@ -125,6 +133,26 @@ public class GiftSummaryController {
         	}    		
     	}
 
+    }
+    
+    private void putGift(String title, Gift gift, List<Map<String, Object>> returnList, int index) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(ID, "" + index);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "255");
+
+        map.put(ATTRIBUTE, title);
+        map.put(SERIES, "Lifetime");
+        map.put(START_DATE, gift.getDonationDate());
+        map.put(END_DATE, gift.getDonationDate());
+        map.put(CURRENCY_CODE, gift.getCurrencyCode());
+        map.put(COUNT, 1);
+        map.put(SUM, gift.getAdjustedAmount());
+        map.put(MIN, gift.getAdjustedAmount());
+        map.put(MAX, gift.getAdjustedAmount());
+        map.put(AVG, gift.getAdjustedAmount());
+    	
+    	returnList.add(map);
     }
     
 }

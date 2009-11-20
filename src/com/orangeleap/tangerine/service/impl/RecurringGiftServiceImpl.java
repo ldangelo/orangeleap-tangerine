@@ -156,6 +156,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 	    RecurringGift oldRecurringGift = getExisting(recurringGift);
         RecurringGift savedRecurringGift = save(recurringGift);
         maintainSchedules(oldRecurringGift, savedRecurringGift);
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(savedRecurringGift);
 
         return savedRecurringGift;
     }
@@ -201,6 +202,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 	    RecurringGift oldRecurringGift = getExisting(recurringGift);
         RecurringGift savedRecurringGift = save(recurringGift);
         maintainSchedules(oldRecurringGift, savedRecurringGift);
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(savedRecurringGift);
 
         return savedRecurringGift;
     }

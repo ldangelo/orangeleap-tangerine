@@ -115,6 +115,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 		setStartDateForReminders(oldPledge);
 		Pledge savedPledge = save(pledge);
 		maintainSchedules(oldPledge, savedPledge);
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(savedPledge);
 
 		return savedPledge;
     }
@@ -166,6 +167,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 		setStartDateForReminders(oldPledge);
 		Pledge savedPledge = save(pledge);
 		maintainSchedules(oldPledge, savedPledge);
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(savedPledge);
 
 		return savedPledge;
     }

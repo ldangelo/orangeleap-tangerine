@@ -1,3 +1,5 @@
+Ext.WindowMgr.zseed = 9015; // use zseed so that the msgBox will appear above the batchWin instead of underneath
+
 Ext.ns('OrangeLeap', 'OrangeLeap.msgBundle');
 OrangeLeap.ListStore = Ext.extend(Ext.data.JsonStore, {
     sort: function(fieldName, dir) {
@@ -36,19 +38,23 @@ OrangeLeap.msgBundle = {
     count: 'Count',
     lastExecDt: 'Last Execution Date',
     lastExecBy: 'Last Executed By',
-    checkSegmentations: '',
+    error: 'Error',
+    mustDoStep1: 'You must choose a Batch Type (Step 1) first.',
+    mustDoStep2: 'You must pick Segmentations (Step 2) first.',
+    loadingSegmentations: 'Loading Segmentations...',
+    loadingRows: 'Loading Rows...',
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
     step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
     step2Title: '<span class="step"><span class="stepNum" id="step2Num">2</span><span class="stepTxt">Choose Segmentations</span>',
     step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">View Rows That Will Be Updated</span>',
     step4Title: '<span class="step"><span class="stepNum" id="step4Num">4</span><span class="stepTxt">Update Field Values</span>',
-    step5Title: '<span class="step"><span class="stepNum" id="step4Num">5</span><span class="stepTxt">Confirm Fields To Update</span>',
+    step5Title: '<span class="step"><span class="stepNum" id="step4Num">5</span><span class="stepTxt">Confirm Changes</span>',
     step1Tip: 'Step 1',
     step2Tip: 'Step 2',
     step3Tip: 'Step 3',
     step4Tip: 'Step 4',
     step5Tip: 'Step 5'
-}
+};
 
 Ext.onReady(function() {
     Ext.QuickTips.init();
@@ -288,7 +294,62 @@ Ext.onReady(function() {
         $('#' + fld.getId()).parents('div.x-form-element').prev('label').removeClass('inFocus');
     }
 
-    function initFocus(groups, thisGrp) {
+    function checkConditions(groupTabPanel, groupToShow, activeGroup) {
+        function checkBatchType() {
+            var isValid = false;
+            var batchType = Ext.getCmp('batchType').getValue();
+            if ( ! batchType || Ext.isEmpty(batchType)) {
+                Ext.MessageBox.show.defer(1, Ext.MessageBox,
+                    [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.mustDoStep1}]); // use defer so that the msgBox will appear above the batchWin
+            }
+            else {
+                isValid = true;
+            }
+            return isValid;
+        }
+
+        function checkSegmentationsPicked() {
+            var isValid = false;
+            if ( ! hasPickedRows()) {
+                Ext.MessageBox.show.defer(1, Ext.MessageBox,
+                    [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.mustDoStep2}]); // use defer so that the msgBox will appear above the batchWin
+            }
+            else {
+                isValid = true;
+            }
+            return isValid;
+        }
+
+        if (groupToShow.mainItem.id == 'step2Grp') {
+            if ( ! checkBatchType()) {
+                return false;
+            }
+        }
+        else if (groupToShow.mainItem.id == 'step3Grp' || groupToShow.mainItem.id == 'step4Grp') {
+            if ( ! checkBatchType()) {
+                return false;
+            }
+            if ( ! checkSegmentationsPicked()) {
+                return false;
+            }
+        }
+        else if (groupToShow.mainItem.id == 'step5Grp') {
+            if ( ! checkBatchType()) {
+                return false;
+            }
+            if ( ! checkSegmentationsPicked()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function initFocus(groupTabPanel, thisGrp) {
         if (thisGrp.mainItem.id == 'step1Grp') {
             setTimeout(function() {
                 var elem = Ext.getCmp('batchDesc');
@@ -296,10 +357,13 @@ Ext.onReady(function() {
                     elem.el.focus();
                 }
             }, 900);
+            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
             var batchType = Ext.getCmp('batchType').getValue();
             step2Store.load({ params: { batchType: batchType, start: 0, limit: 100, sort: 'lastDt', dir: 'DESC' }});
+            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
+            $('#step1Num').addClass('complete');
         }
         else if (thisGrp.mainItem.id == 'step3Grp') {
             var selIds = [];
@@ -315,13 +379,18 @@ Ext.onReady(function() {
             }
             var batchType = Ext.getCmp('batchType').getValue();
             step3Store.load({ params: { 'ids': selIds.toString(), 'batchType': batchType }});
+            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
+            $('#step2Num').addClass('complete');
         }
         else if (thisGrp.mainItem.id == 'step4Grp') {
             var batchType = Ext.getCmp('batchType').getValue();
             step4UpdatableFieldsStore.load({ params: { 'batchType': batchType }});
+            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
+            $('#step3Num').addClass('complete');
         }
         else if (thisGrp.mainItem.id == 'step5Grp') {
-
+            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step5Tip);
+            $('#step4Num').addClass('complete');
         }
     }
 
@@ -344,10 +413,11 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(1);
-                    var firstItem = panel.items.items[1];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
-                    $('#step1Num').addClass('complete');
+                    if (panel.setActiveGroup(1)) {
+                        var firstItem = panel.items.items[1];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                        $('#step1Num').addClass('complete');
+                    }
                 }
             },
             {
@@ -413,9 +483,27 @@ Ext.onReady(function() {
             {name: 'desc', mapping: 'desc', type: 'string'},
             {name: 'count', mapping: 'count', type: 'int'},
             {name: 'lastDt', mapping: 'lastDt', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-            {name: 'lastUser', mapping: 'lastUser', type: 'string'}
-        ]
+            {name: 'lastUser', mapping: 'lastUser', type: 'string'},
+            {name: 'picked', mapping: 'picked', type: 'boolean'}
+        ],
+        listeners: {
+            'load': function(store, records, options) {
+                var len = records.length;
+                for (var x = 0; x < len; x++) {
+                    if (records[x].get('picked') === true) {
+                        step2Form.getSelectionModel().selectRow(x, true);
+                    }
+                }
+                if (hasPickedRows()) {
+                    step2Form.nextButton.enable();
+                }
+            }
+        }
     });
+
+    function hasPickedRows() {
+        return step2Store.find('picked', true) > -1;
+    }
 
     var step2Bar = new Ext.PagingToolbar({
         pageSize: 50,
@@ -452,37 +540,27 @@ Ext.onReady(function() {
             var index = step2Form.getView().findRowIndex(htmlEl);
             if (record.get('picked')) {
                 step2Form.getSelectionModel().selectRow(index, true);
-                pickedRows++;
-                if (pickedRows > 0) {
-                    step2Form.nextButton.enable();
-                }
+                step2Form.nextButton.enable();
             }
             else {
                 step2Form.getSelectionModel().deselectRow(index);
-                pickedRows--;
-                if (pickedRows == 0) {
+                if ( ! hasPickedRows()) {
                     step2Form.nextButton.disable();
                 }
             }
         }
     });
 
-    var pickedRows = 0;
-
     var step2RowSelModel = new Ext.grid.RowSelectionModel({singleSelect: false});
 
     step2RowSelModel.on({
         'rowselect': function(selModel, rowIndex, record) {
             record.set('picked', true);
-            pickedRows++;
-            if (pickedRows > 0) {
-                step2Form.nextButton.enable();
-            }
+            step2Form.nextButton.enable();
         },
         'rowdeselect': function(selModel, rowIndex, record) {
             record.set('picked', false);
-            pickedRows--;
-            if (pickedRows == 0) {
+            if ( ! hasPickedRows()) {
                 step2Form.nextButton.disable();
             }
         }
@@ -497,6 +575,7 @@ Ext.onReady(function() {
         width: 726,
         height: 468,
         loadMask: true,
+        forceLayout: true,
         header: false,
         frame: false,
         border: false,
@@ -526,10 +605,11 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(2);
-                    var firstItem = panel.items.items[2];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
-                    $('#step2Num').addClass('complete');
+                    if (panel.setActiveGroup(2)) { // check that all required fields entered and activeGroup is actually set to 2
+                        var firstItem = panel.items.items[2];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                        $('#step2Num').addClass('complete');
+                    }
                 }
             },
             {
@@ -660,7 +740,7 @@ Ext.onReady(function() {
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                         return '<span ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>'; 
                     }
-                }
+                };
             }
         }
         step3Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
@@ -692,8 +772,9 @@ Ext.onReady(function() {
     });
 
     var step3RowSelect = new Ext.grid.RowSelectionModel();
-    step3RowSelect.on('beforerowselect', function(selModel, rowIndex, keepExisting, record) {
-        return false;
+    step3RowSelect.on('rowselect', function(selModel, rowIndex, keepExisting, record) {
+        // TODO: open window to view gift record
+//        return false;
     });
 
     var step3Toolbar = new Ext.Toolbar({
@@ -718,6 +799,7 @@ Ext.onReady(function() {
         bbar: step3Bar,
         width: 726,
         height: 468,
+        forceLayout: true,
         loadMask: true,
         header: false,
         frame: false,
@@ -755,10 +837,11 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(3);
-                    var firstItem = panel.items.items[3];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
-                    $('#step3Num').addClass('complete');
+                    if (panel.setActiveGroup(3)) { // check that all required fields entered and activeGroup is actually set to 3
+                        var firstItem = panel.items.items[3];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                        $('#step3Num').addClass('complete');
+                    }
                 }
             },
             {
@@ -774,88 +857,6 @@ Ext.onReady(function() {
         tbar: step3Toolbar
     });
 
-    /*
-    var step4Reader = new Ext.data.JsonReader();
-
-    var step4Store = new OrangeLeap.BulkSaveStore({
-        url: 'findBatchUpdateFields.json',
-        reader: step4Reader,
-        root: 'rows',
-        totalProperty: 'totalRows',
-        remoteSort: true,
-        sortInfo: {field: 'id', direction: 'ASC'},
-        fields: [
-            {name: 'id', mapping: 'id', type: 'int'}
-        ],
-        listeners: {
-            load: {
-                fn: function(store, records, options){
-                    store.each(function(record) {
-                        source[record.get('key')] = record.get('value');
-                    });
-                    step4Grid.setSource(source);
-                }
-            }
-        }
-    });
-
-    var step4Grid = new Ext.grid.PropertyGrid({
-        width: 726,
-        height: 468,
-        loadMask: true,
-        header: false,
-        frame: false,
-        border: false,
-        viewConfig : { forceFit: true },
-        propertyNames: {
-//            tested: 'QA',
-//            borderWidth: 'Border Width'
-        },
-        source: {
-//            '(name)': 'Properties Grid',
-//            grouping: false,
-//            autoFitColumns: true,
-//            productionQuality: false,
-//            created: new Date(Date.parse('10/15/2006')),
-//            tested: false,
-//            version: 0.01,
-//            borderWidth: 1
-        },
-        buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(2);
-                    var firstItem = panel.items.items[2];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
-                }
-            },
-            {
-                text: msgs.save,
-                cls: 'saveButton',
-                ref: '../saveButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                }
-            },
-            {
-                text: msgs.close,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    batchWin.hide(this);
-                }
-            }
-        ],
-        buttonAlign: 'center'
-    });
-    */
     var step4UpdatableFieldsStore = new Ext.data.JsonStore({
         url: 'findBatchUpdateFields.json',
         autoLoad: false,
@@ -1015,10 +1016,11 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(4);
-                    var firstItem = panel.items.items[4];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
-                    $('#step4Num').addClass('complete');
+                    if (panel.setActiveGroup(4)) { // check that all required fields entered and activeGroup is actually set to 4
+                        var firstItem = panel.items.items[4];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                        $('#step4Num').addClass('complete');
+                    }
                 }
             },
             {
@@ -1031,6 +1033,140 @@ Ext.onReady(function() {
             }
         ],
         buttonAlign: 'center'
+    });
+
+    var step5Reader = new Ext.data.JsonReader();
+
+    var step5Store = new OrangeLeap.ListStore({
+        url: 'reviewUpdates.json',
+        reader: step5Reader,
+        root: 'rows',
+        totalProperty: 'totalRows',
+        remoteSort: true,
+        sortInfo: {field: 'id', direction: 'ASC'},
+        fields: [
+            {name: 'id', mapping: 'id', type: 'int'}
+        ]
+    });
+
+    step5Store.on('metachange', function(store, meta) {
+        var cols = [];
+        var fields = meta.fields;
+        for (var x = 0; x < fields.length; x++) {
+            var name = fields[x].name;
+            if (name && name != 'constituentId' && name != 'id') {
+                cols[cols.length] = {
+                    header: fields[x].header, dataIndex: name, sortable: true,
+                    renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                        return '<span ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                    }
+                };
+            }
+        }
+        step5Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+    });
+
+    var step5Bar = new Ext.PagingToolbar({
+        pageSize: 50,
+        stateEvents: ['change'],
+        stateId: 'step5Bar',
+        stateful: true,
+        getState: function() {
+            var config = {};
+            config.start = this.cursor;
+            config.limit = this.pageSize;
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.start) {
+                this.cursor = state.start;
+            }
+            if (state.limit) {
+                this.pageSize = state.limit;
+            }
+        },
+        store: step5Store,
+        displayInfo: true,
+        displayMsg: msgs.displayMsg,
+        emptyMsg: msgs.emptyMsg
+    });
+
+    var step5RowSelect = new Ext.grid.RowSelectionModel();
+    step5RowSelect.on('beforerowselect', function(selModel, rowIndex, keepExisting, record) {
+        return false;
+    });
+
+    var step5Toolbar = new Ext.Toolbar({
+        items: [
+            msgs.followingBeModified // TODO:
+        ]
+    });
+    step5Toolbar.on('afterlayout', function(tb){
+        tb.el.child('.x-toolbar-right').remove();
+        var t = tb.el.child('.x-toolbar-left');
+        t.removeClass('x-toolbar-left');
+        t = tb.el.child('.x-toolbar-ct');
+        t.setStyle('width', 'auto');
+        t.wrap({tag: 'center'});
+    }, null, {single: true});
+
+    var step5Form = new Ext.grid.GridPanel({
+        stateId: 'step5List',
+        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
+        stateful: true,
+        store: step5Store,
+        bbar: step5Bar,
+        width: 726,
+        height: 468,
+        loadMask: true,
+        header: false,
+        frame: false,
+        border: false,
+        selModel: step5RowSelect,
+        viewConfig: { forceFit: true },
+        columns: [
+            {
+                header: msgs.id,
+                sortable: false,
+                dataIndex: 'id',
+                editable: false,
+                editor: new Ext.form.DisplayField()
+            }
+        ],
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(3);
+                    var thisItem = panel.items.items[3];
+                    thisItem.setActiveTab(thisItem.items.items[0]);
+                }
+            },
+            {
+                text: msgs.save,
+                cls: 'saveButton',
+                ref: '../saveButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    batchWin.hide(this);
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        tbar: step5Toolbar
     });
 
     var batchWin = new Ext.Window({
@@ -1049,7 +1185,8 @@ Ext.onReady(function() {
              activeGroup: 0,
              ref: '../groupTabPanel',
              listeners: {
-                 'groupchange': initFocus
+                 'groupchange': initFocus,
+                 'beforegroupchange': checkConditions
              },
              items: [
                  {
@@ -1090,8 +1227,7 @@ Ext.onReady(function() {
                          id: 'step5Grp',
                          title: msgs.step5Title,
                          tabTip: msgs.step5Tip,
-                         html: '50'
-//                         items: [ step4Grid ]
+                         items: [ step5Form ]
                      }]
                  }
              ]

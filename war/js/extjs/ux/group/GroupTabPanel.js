@@ -233,11 +233,11 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
     setActiveGroup : function(group) {
         group = this.getComponent(group);
         if(!group || this.fireEvent('beforegroupchange', this, group, this.activeGroup) === false){
-            return;
+            return false;
         }
         if(!this.rendered){
             this.activeGroup = group;
-            return;
+            return true;
         }
         if(this.activeGroup != group){
             if(this.activeGroup){
@@ -260,6 +260,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
             group.fireEvent('activate', group);
             this.fireEvent('groupchange', this, group);
         }
+        return true;
     },
 
     onGroupBeforeTabChange: function(group, newTab, oldTab){
@@ -268,7 +269,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         }
 
         this.expandGroup(this.getGroupEl(group));
-        this.setActiveGroup(group);
+        return this.setActiveGroup(group);
     },
 
     getFrameHeight: function(){

@@ -133,7 +133,7 @@ public class BatchSelectionController extends TangerineJsonListController {
                 returnMap.put("count", segmentation.getCount());
                 returnMap.put("lastDt", segmentation.getLastRunDate() == null ? null : sdf.format(segmentation.getLastRunDate()));
                 returnMap.put("lastUser", segmentation.getLastRunByUser());
-                returnMap.put("picked", Boolean.TRUE);  // TODO: fix
+                returnMap.put("picked", Boolean.FALSE);  // TODO: fix to re-init picked to true if saved in DB
                 returnList.add(returnMap);
             }
         }
@@ -286,5 +286,14 @@ public class BatchSelectionController extends TangerineJsonListController {
         modelMap.put(StringConstants.ROWS, returnList);
         modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
         return modelMap;
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/reviewUpdates.json")
+    public ModelMap reviewUpdates(final String batchType) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("reviewUpdates: batchType = " + batchType);
+        }
+        return null;
     }
 }

@@ -24,6 +24,24 @@
 </div>
 
 <script type="text/javascript">
+    var thisSiteName = '<security:authentication property="details.site" />';
+    if (thisSiteName.length == 0) {
+    	var cp = "<%= System.getProperty("contextPrefix") %>";
+        document.cookie = "CASTGC=0; path=/"+cp+"cas;";
+        document.cookie = "JSESSIONID=0; path=/"+cp+"cas;";
+        document.cookie = "JSESSIONID=0; path=/"+cp+"jasperserver;";
+        document.cookie = "JSESSIONID=0; path=/"+cp+"clementine;";
+        var orangeleap = "orangeleap";
+        if (cp.length > 0) {
+            orangeleap = cp.substring(0,cp.length-1);
+        }
+        document.cookie = "JSESSIONID=0; path=/"+orangeleap+";";
+        
+        window.location.reload();
+    }
+</script>
+
+<script type="text/javascript">
     Ext.ns('OrangeLeap');
     OrangeLeap.thisSiteName = '<security:authentication property="details.site" />';
 </script>

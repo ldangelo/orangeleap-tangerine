@@ -106,6 +106,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             request.setFieldValue("BIN", gift.getSite().getMerchantBin());
             request.setFieldValue("TerminalID", gift.getSite().getMerchantTerminalId());
             request.setFieldValue("OrderID", gift.getId().toString());
+            request.setFieldValue("CustomerName", gift.getPaymentSource().getCreditCardHolderName());
             request.setFieldValue("AccountNum", gift.getPaymentSource()
                     .getCreditCardNumber());
 
@@ -268,6 +269,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             request.setFieldValue("BIN", gift.getSite().getMerchantBin());
             request.setFieldValue("TerminalID", gift.getSite().getMerchantTerminalId());
             request.setFieldValue("OrderID", gift.getId().toString());
+            request.setFieldValue("CustomerName", gift.getPaymentSource().getCreditCardHolderName());
             request.setFieldValue("AccountNum", gift.getPaymentSource()
                     .getCreditCardNumber());
 

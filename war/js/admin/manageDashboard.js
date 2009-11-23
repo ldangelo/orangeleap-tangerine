@@ -143,8 +143,7 @@ Ext.onReady(function() {
     });
     
 
-
-
+    
 
     var grid = new Ext.grid.EditorGridPanel({
         store: store,
@@ -176,7 +175,14 @@ Ext.onReady(function() {
                 dataIndex: 'type',
                 align: 'left',
                 editable: true,
-                editor: stringFld
+                editor: new Ext.form.ComboBox({
+                	typeAhead:true,
+                	triggerAction:'all',
+                	store:['Guru','Rss','Text','IFrame'],
+                	valueField: 'val',
+                	displayField: 'desc',
+                	lazyRenderer: true
+                })
             },
             {   header: 'Title',
                 width: 170,

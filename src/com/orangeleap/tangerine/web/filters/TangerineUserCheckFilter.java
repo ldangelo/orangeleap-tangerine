@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.web.filters;
 import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -42,8 +43,10 @@ public class TangerineUserCheckFilter extends OncePerRequestFilter {
         final TangerineUserHelper tangerineUserHelper = (TangerineUserHelper) context.getBean("tangerineUserHelper");
         final TangerineAuthenticationDetails details = tangerineUserHelper.getDetails();
         if (details != null) {
-            if (details.getSite() == null || details.getUserName() == null) {
-                logger.debug("doFilterInternal: Details site or userName is null");
+            if (StringUtils.isBlank(details.getSite()) || StringUtils.isBlank(details.getUserName())) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("doFilterInternal: Details site or userName is not valid");
+                }
                 response.sendRedirect("sessionTimedOut.jsp");
             }
         }

@@ -22,6 +22,7 @@ OrangeLeap.msgBundle = {
     adjustedGift: 'Adjusted Gift',
     showCurrentBatches: 'Show Current Batches',
     showExecutedBatches: 'Show Executed Batches',
+    id: 'ID',
     batchId: 'Batch ID',
     type: 'Type',
     size: 'Size',
@@ -316,7 +317,7 @@ Ext.onReady(function() {
     function checkConditions(groupTabPanel, groupToShow, activeGroup) {
         function checkBatchType() {
             var isValid = false;
-            var batchType = Ext.getCmp('batchType').getValue();
+            var batchType = getBatchTypeValue();
             if ( ! batchType || Ext.isEmpty(batchType)) {
                 Ext.MessageBox.show.defer(1, Ext.MessageBox,
                     [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
@@ -413,7 +414,7 @@ Ext.onReady(function() {
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
-            var batchType = Ext.getCmp('batchType').getValue();
+            var batchType = getBatchTypeValue();
             step2Store.load({ params: { batchType: batchType, start: 0, limit: 100, sort: 'lastDt', dir: 'DESC' }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
             $('#step1Num').addClass('complete');
@@ -430,13 +431,13 @@ Ext.onReady(function() {
                     }
                 }
             }
-            var batchType = Ext.getCmp('batchType').getValue();
+            var batchType = getBatchTypeValue();
             step3Store.load({ params: { 'ids': selIds.toString(), 'batchType': batchType }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
             $('#step2Num').addClass('complete');
         }
         else if (thisGrp.mainItem.id == 'step4Grp') {
-            var batchType = Ext.getCmp('batchType').getValue();
+            var batchType = getBatchTypeValue();
             step4UpdatableFieldsStore.load({ params: { 'batchType': batchType }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
             $('#step3Num').addClass('complete');
@@ -527,6 +528,10 @@ Ext.onReady(function() {
     function getBatchTypeDesc() {
         return Ext.getCmp('batchType').getRawValue();
     }
+
+    function getBatchTypeValue() {
+        return Ext.getCmp('batchType').getValue();
+    }
     
     var step2Store = new OrangeLeap.ListStore({
         url: 'findSegmentations.json',
@@ -544,6 +549,9 @@ Ext.onReady(function() {
             {name: 'picked', mapping: 'picked', type: 'boolean'}
         ],
         listeners: {
+            'beforeload': function(store, options) {
+//                Ext.get('step2Grp').mask(msgs.loadingSegmentations);
+            },
             'load': function(store, records, options) {
                 var len = records.length;
                 for (var x = 0; x < len; x++) {
@@ -554,6 +562,7 @@ Ext.onReady(function() {
                 if (hasPickedRows()) {
                     step2Form.nextButton.enable();
                 }
+//                Ext.get('step2Grp').unmask();
             }
         }
     });
@@ -790,6 +799,12 @@ Ext.onReady(function() {
         listeners: {
             'metachange': function(store, meta) {
                 var cols = [];
+                cols[0] =  { header: msgs.id,
+                    sortable: true,
+                    dataIndex: 'id',
+                    editable: false,
+                    editor: new Ext.form.DisplayField() };
+
                 var fields = meta.fields;
                 for (var x = 0; x < fields.length; x++) {
                     var name = fields[x].name;
@@ -841,10 +856,6 @@ Ext.onReady(function() {
     });
 
     var step3RowSelect = new Ext.grid.RowSelectionModel();
-    step3RowSelect.on('rowselect', function(selModel, rowIndex, keepExisting, record) {
-        // TODO: open window to view gift record
-//        return false;
-    });
 
     var step3Toolbar = new Ext.Toolbar({
         items: [
@@ -928,6 +939,16 @@ Ext.onReady(function() {
         ],
         buttonAlign: 'center',
         tbar: step3Toolbar
+    });
+    step3Form.on('rowdblclick', function(grid, rowIndex, event) {
+        var batchType = getBatchTypeValue();
+        var record = step3Store.getAt(rowIndex);
+        if (batchType && record) {
+            // open window to view record
+            var thisUrl = batchType + '.htm?' + batchType + 'Id=' + record.get('id') +
+                                  (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
+            window.open(thisUrl, batchType + 'Win');
+        }
     });
 
     var step4UpdatableFieldsStore = new Ext.data.JsonStore({
@@ -1271,12 +1292,14 @@ Ext.onReady(function() {
              tabWidth: 135,
              activeGroup: 0,
              ref: '../groupTabPanel',
+             layoutOnTabChange: true,
              listeners: {
                  'groupchange': initFocus,
                  'beforegroupchange': checkConditions
              },
              items: [
                  {
+                     layoutOnTabChange: true,
                      items: [{
                          id: 'step1Grp',
                          title: msgs.step1Title,
@@ -1286,6 +1309,7 @@ Ext.onReady(function() {
                      }]
                  },
                  {
+                     layoutOnTabChange: true,
                      items: [{
                          id: 'step2Grp',
                          title: msgs.step2Title,

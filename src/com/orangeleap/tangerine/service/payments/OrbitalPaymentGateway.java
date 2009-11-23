@@ -128,7 +128,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
                 month = "0" + month;
             }
             if (month != null && year != null) {
-                request.setFieldValue("Exp", month + year);
+                request.setFieldValue("Exp", year + month) ;
             }
 
             // AVS Information
@@ -291,7 +291,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             }
 
             if (month != null && year != null) {
-                request.setFieldValue("Exp", month + year);
+                request.setFieldValue("Exp", year + month);
             }
 
             // AVS Information

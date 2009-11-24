@@ -220,6 +220,10 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 			} else {
 				beginDate = fy;
 			}
+		} else if (rst.equals(RollupSeriesType.ROLLING_YEAR)) {
+			datefield = Calendar.YEAR;
+			beginDate = DateUtils.addYears(beginDate, -1);
+			beginDate = DateUtils.addDays(beginDate, 1);
 		} else if (rst.equals(RollupSeriesType.MONTH)) {
 			datefield = Calendar.MONTH;
 			beginDate = DateUtils.truncate(beginDate, Calendar.MONTH);

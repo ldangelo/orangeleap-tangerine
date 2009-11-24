@@ -160,6 +160,9 @@ div.wizard span.required { font-size: inherit; padding-right: 3px; }
 
 div#step2Grp div.x-panel-body, div#step3Grp div.x-panel-body, div#step4Grp div.x-panel-body, div#step5Grp div.x-panel-body { background-color: #CEDDEF; }
 div#step5Grp div.x-grid3-row { cursor: default; }
+div#step5Grp div.x-grid3-row:nth-child(n) { border: 0; }
+div#step5Grp div.x-grid3-row:nth-child(4n+3) { background-color: #F9F9F9; margin-top: 5px; border-top: 1px solid #EFEFEF; border-right: 1px solid #EFEFEF; }
+div#step5Grp div.x-grid3-row:nth-child(4n+4) { background-color: #F9F9F9; margin-bottom: 5px; border-bottom: 1px solid #EFEFEF;  border-right: 1px solid #EFEFEF; }
 div.x-combo-list-item-unsel { color: #A0A0A0; }
 .x-combo-list .x-combo-list-item-unsel.x-combo-selected { cursor: default; }
 div.x-grid-empty { text-align: center; }

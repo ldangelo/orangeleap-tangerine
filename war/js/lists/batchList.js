@@ -47,6 +47,7 @@ OrangeLeap.msgBundle = {
     loadingSegmentations: 'Loading Segmentations...',
     loadingRows: 'Loading Rows...',
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
+    
     noSegmentationsFound: 'No Segmentations were found for Type \'{0}\'.  Please choose a different Type (Step 1).',
     noRowsFound: 'No {0} rows were found for the Segmentations selected.  Please choose a different Segmentation (Step 2).',
     noFieldUpdates: 'You did not create any Field Update Criteria.  Please create Criteria first (Step 4).',
@@ -1180,7 +1181,7 @@ Ext.onReady(function() {
             var name = fields[x].name;
             if (name && name != 'constituentId' && name != 'id') {
                 cols[cols.length] = {
-                    header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
+                    header: fields[x].header, dataIndex: name, sortable: false,
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                         return '<span ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                     }
@@ -1240,6 +1241,7 @@ Ext.onReady(function() {
         stateful: true,
         store: step5Store,
         bbar: step5Bar,
+        stripeRows: false,
         width: 726,
         height: 468,
         loadMask: true,

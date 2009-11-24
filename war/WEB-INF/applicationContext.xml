@@ -13,7 +13,7 @@
            http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-           
+
 	<bean id="PropertyPlaceholderConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="order" value="1" />
@@ -41,7 +41,7 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="serviceUrl"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject"><ref local="sysProps" /></property>
@@ -101,7 +101,7 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<import resource="contexts/validator-context.xml"/>
 	<import resource="contexts/quartz-context.xml"/>
 
@@ -139,13 +139,13 @@
           />
 
 	<!--
-	- The message source for this context, loaded from localized message files in the classpath (first) and then the database 
+	- The message source for this context, loaded from localized message files in the classpath (first) and then the database
 	-->
     <bean id="messageSource" class="com.orangeleap.tangerine.controller.validator.TangerineMessageSource">
         <property name="messageService" ref="messageService"/>
         <property name="bundleMessageSource" ref="bundleMessageSource"/>
 	</bean>
-	
+
 	<bean id="bundleMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
  		<property name="basename" value="tangerine-messages" />
 		<property name="useCodeAsDefaultMessage" value="false" />
@@ -157,24 +157,24 @@
 			<ref local="bundleMessageSource"/>
 		</constructor-arg>
 	</bean>
-	
+
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource">
 			<ref local="dataSource"/>
 		</property>
 	</bean>
-	
+
 	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="configLocation" value="classpath:tangerine-sqlmap-config.xml"/>
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
-	
+
 	<bean id="dataSource" class="com.orangeleap.tangerine.util.TangerineDataSource">
 		<property name="dataSource" ref="dataSource-pooled" />
 		<property name="tangerineUserHelper" ref="tangerineUserHelper" />
 		<property name="splitDatabases" value="${mysql.splitDatabases}" />
 	</bean>
-	
+
 	<bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://${mysql.host}:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8"/>
@@ -188,8 +188,8 @@
 <!--		<property name="testOnBorrow"><value>true</value></property>-->
 <!--		<property name="validationQuery"><value>select 1</value></property>-->
 <!--		<property name="testWhileIdle"><value>true</value></property>-->
-	</bean> 
-	
+	</bean>
+
     <bean id="dataSource-pooled-jndi" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName">
 			<value>java:/comp/env/jdbc/MPowerOpen</value>
@@ -205,24 +205,24 @@
 		right now as an example of how to use Spring with JMS/MOM
 	-->
 
-<!-- 		<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"> 
-			<property name="brokerURL" value="tcp://localhost:61616" /> 
-		</bean> 
-		<bean	id="testDestination"	class="org.apache.activemq.command.ActiveMQQueue"> 
-			<constructor-arg index="0" value="test.orangeleap.queue" /> 
-		</bean> 
-		
-		<bean id="jmsTemplate"	class="org.springframework.jms.core.JmsTemplate"> 
-			<property	name="connectionFactory" ref="connectionFactory" /> 
-			<property	name="defaultDestination" ref="testDestination" /> 
-			<property	name="messageConverter" ref="giftConverter" /> 
-		</bean> 
+<!-- 		<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+			<property name="brokerURL" value="tcp://localhost:61616" />
+		</bean>
+		<bean	id="testDestination"	class="org.apache.activemq.command.ActiveMQQueue">
+			<constructor-arg index="0" value="test.orangeleap.queue" />
+		</bean>
 
-		<bean	id="giftConverter"	class="com.orangeleap.tangerine.service.jms.GiftMessageConverter"> 
-		</bean> 
+		<bean id="jmsTemplate"	class="org.springframework.jms.core.JmsTemplate">
+			<property	name="connectionFactory" ref="connectionFactory" />
+			<property	name="defaultDestination" ref="testDestination" />
+			<property	name="messageConverter" ref="giftConverter" />
+		</bean>
 
-		<bean	id="creditGateway"	class="com.orangeleap.tangerine.service.jms.TangerineCreditGatewayImpl"> 
-			<property	name="jmsTemplate" ref="jmsTemplate" /> 
+		<bean	id="giftConverter"	class="com.orangeleap.tangerine.service.jms.GiftMessageConverter">
+		</bean>
+
+		<bean	id="creditGateway"	class="com.orangeleap.tangerine.service.jms.TangerineCreditGatewayImpl">
+			<property	name="jmsTemplate" ref="jmsTemplate" />
 		</bean>
 -->
 		<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
@@ -242,12 +242,13 @@
 		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
 		<property name="repositoryUri" value="/services/repository"/>
 	</bean>
-	
+
 	<bean id="mailService" class="com.orangeleap.tangerine.service.communication.MailService">
 		<property name="communicationHistoryService" ref="communicationHistoryService"/>
+		<property name="constituentService" ref="constituentService"/>
 		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
 		<property name="repositoryUri" value="/services/repository"/>
 	</bean>
-	
+
 	<bean id="applicationContextProvider" class="com.orangeleap.tangerine.util.ApplicationContextProvider"/>
 </beans>

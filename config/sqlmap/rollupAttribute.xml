@@ -4,6 +4,7 @@
 
     <resultMap id="ROLLUP_ATTRIBUTE_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupAttribute">
         <result property="id" column="ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID" />
+        <result property="attributeNameId" column="ROLLUP_ATTRIBUTE_ATTRIBUTE_NAME_ID" />
         <result property="attributeDesc" column="ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC" />
         <result property="rollupEntityType" column="ROLLUP_ATTRIBUTE_ROLLUP_ENTITY_TYPE" />
         <result property="rollupStatType" column="ROLLUP_ATTRIBUTE_ROLLUP_STAT_TYPE" />
@@ -14,6 +15,7 @@
 
     <sql id="ROLLUP_ATTRIBUTE_COLS_FRAGMENT">
         rollup_attribute.ROLLUP_ATTRIBUTE_ID as ROLLUP_ATTRIBUTE_ROLLUP_ATTRIBUTE_ID,
+        rollup_attribute.ATTRIBUTE_NAME_ID as ROLLUP_ATTRIBUTE_ATTRIBUTE_NAME_ID,
         rollup_attribute.ATTRIBUTE_DESC as ROLLUP_ATTRIBUTE_ATTRIBUTE_DESC,
         rollup_attribute.ROLLUP_ENTITY_TYPE as ROLLUP_ATTRIBUTE_ROLLUP_ENTITY_TYPE,
         rollup_attribute.ROLLUP_STAT_TYPE as ROLLUP_ATTRIBUTE_ROLLUP_STAT_TYPE,
@@ -52,6 +54,7 @@
     <insert id="INSERT_ROLLUP_ATTRIBUTE" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupAttribute">
         insert into ROLLUP_ATTRIBUTE (
         	ROLLUP_ATTRIBUTE_ID,
+        	ATTRIBUTE_NAME_ID,
         	ATTRIBUTE_DESC,
         	ROLLUP_ENTITY_TYPE,
         	ROLLUP_STAT_TYPE,
@@ -60,6 +63,7 @@
         	SITE_NAME        )
         values (
         	#id# ,
+        	#attributeNameId# ,
         	#attributeDesc# ,
         	#rollupEntityType# ,
         	#rollupStatType# ,
@@ -75,6 +79,7 @@
         update ROLLUP_ATTRIBUTE
         SET 
         	ROLLUP_ATTRIBUTE_ID = #id# ,
+        	ATTRIBUTE_NAME_ID = #attributeNameId# ,
         	ATTRIBUTE_DESC = #attributeDesc# ,
         	ROLLUP_ENTITY_TYPE = #rollupEntityType# ,
         	ROLLUP_STAT_TYPE = #rollupStatType# ,

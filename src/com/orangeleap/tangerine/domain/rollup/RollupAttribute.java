@@ -13,6 +13,7 @@ public class RollupAttribute implements GeneratedId, Serializable, Comparable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    private String attributeNameId;
     private String attributeDesc;
     private String rollupEntityType;
     private String rollupStatType;
@@ -31,6 +32,14 @@ public class RollupAttribute implements GeneratedId, Serializable, Comparable {
         this.id = id;
     }
     
+    public String getAttributeNameId() {
+        return attributeNameId;
+    }
+
+    public void setAttributeNameId(String attributeNameId) {
+        this.attributeNameId = attributeNameId;
+    }
+
     public String getAttributeDesc() {
         return attributeDesc;
     }
@@ -89,6 +98,7 @@ public class RollupAttribute implements GeneratedId, Serializable, Comparable {
         EqualsBuilder eb = new EqualsBuilder();
         eb
         .append(id, a.getId())
+        .append(attributeNameId, a.getAttributeNameId())
         .append(attributeDesc, a.getAttributeDesc())
         .append(rollupEntityType, a.getRollupEntityType())
         .append(rollupStatType, a.getRollupStatType())
@@ -104,6 +114,7 @@ public class RollupAttribute implements GeneratedId, Serializable, Comparable {
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb
         .append(""+id)
+        .append(""+attributeNameId)
         .append(""+attributeDesc)
         .append(""+rollupEntityType)
         .append(""+rollupStatType)
@@ -119,6 +130,7 @@ public class RollupAttribute implements GeneratedId, Serializable, Comparable {
         return new ToStringCreator(this)
         .append(super.toString())
         .append("id", ""+id)
+        .append("attributeNameId", ""+attributeNameId)
         .append("attributeDesc", ""+attributeDesc)
         .append("rollupEntityType", ""+rollupEntityType)
         .append("rollupStatType", ""+rollupStatType)

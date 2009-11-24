@@ -13,6 +13,7 @@ public class RollupSeries implements GeneratedId, Serializable, Comparable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    private String seriesNameId;
     private String seriesDesc;
     private RollupSeriesType seriesType;
     private Long maintainPeriods;
@@ -32,6 +33,14 @@ public class RollupSeries implements GeneratedId, Serializable, Comparable {
     }
 
     
+    public String getSeriesNameId() {
+        return seriesNameId;
+    }
+
+    public void setSeriesNameId(String seriesNameId) {
+        this.seriesNameId = seriesNameId;
+    }
+
     public String getSeriesDesc() {
         return seriesDesc;
     }
@@ -92,6 +101,7 @@ public class RollupSeries implements GeneratedId, Serializable, Comparable {
         EqualsBuilder eb = new EqualsBuilder();
         eb
         .append(id, a.getId())
+        .append(seriesNameId, a.getSeriesNameId())
         .append(seriesDesc, a.getSeriesDesc())
         .append(seriesType, a.getSeriesType())
         .append(maintainPeriods, a.getMaintainPeriods())
@@ -107,6 +117,7 @@ public class RollupSeries implements GeneratedId, Serializable, Comparable {
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb
         .append(""+id)
+        .append(""+seriesNameId)
         .append(""+seriesDesc)
         .append(""+seriesType)
         .append(""+maintainPeriods)
@@ -122,6 +133,7 @@ public class RollupSeries implements GeneratedId, Serializable, Comparable {
         return new ToStringCreator(this)
         .append(super.toString())
         .append("id", ""+id)
+        .append("seriesNameId", ""+seriesNameId)
         .append("seriesDesc", ""+seriesDesc)
         .append("seriesType", ""+seriesType)
         .append("maintainPeriods", ""+maintainPeriods)

@@ -4,6 +4,7 @@
 
     <resultMap id="ROLLUP_SERIES_RESULT" class="com.orangeleap.tangerine.domain.rollup.RollupSeries">
         <result property="id" column="ROLLUP_SERIES_ROLLUP_SERIES_ID" />
+        <result property="seriesNameId" column="ROLLUP_SERIES_SERIES_NAME_ID" />
         <result property="seriesDesc" column="ROLLUP_SERIES_SERIES_DESC" />
         <result property="seriesType" column="ROLLUP_SERIES_SERIES_TYPE" />
         <result property="maintainPeriods" column="ROLLUP_SERIES_MAINTAIN_PERIODS" />
@@ -14,6 +15,7 @@
 
     <sql id="ROLLUP_SERIES_COLS_FRAGMENT">
         rollup_series.ROLLUP_SERIES_ID as ROLLUP_SERIES_ROLLUP_SERIES_ID,
+        rollup_series.SERIES_NAME_ID as ROLLUP_SERIES_SERIES_NAME_ID,
         rollup_series.SERIES_DESC as ROLLUP_SERIES_SERIES_DESC,
         rollup_series.SERIES_TYPE as ROLLUP_SERIES_SERIES_TYPE,
         rollup_series.MAINTAIN_PERIODS as ROLLUP_SERIES_MAINTAIN_PERIODS,
@@ -47,6 +49,7 @@
     <insert id="INSERT_ROLLUP_SERIES" parameterClass="com.orangeleap.tangerine.domain.rollup.RollupSeries">
         insert into ROLLUP_SERIES (
         	ROLLUP_SERIES_ID,
+        	SERIES_NAME_ID,
         	SERIES_DESC,
         	SERIES_TYPE,
         	MAINTAIN_PERIODS,
@@ -55,6 +58,7 @@
         	SITE_NAME        )
         values (
         	#id# ,
+        	#seriesNameId# ,
         	#seriesDesc# ,
         	#seriesType# ,
         	#maintainPeriods# ,
@@ -70,6 +74,7 @@
         update ROLLUP_SERIES
         SET 
         	ROLLUP_SERIES_ID = #id# ,
+        	SERIES_NAME_ID = #seriesNameId# ,
         	SERIES_DESC = #seriesDesc# ,
         	SERIES_TYPE = #seriesType# ,
         	MAINTAIN_PERIODS = #maintainPeriods# ,

@@ -47,7 +47,7 @@ OrangeLeap.msgBundle = {
     loadingSegmentations: 'Loading Segmentations...',
     loadingRows: 'Loading Rows...',
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
-    
+    followingChangesApplied: 'For your reference, the following changes will be applied.',
     noSegmentationsFound: 'No Segmentations were found for Type \'{0}\'.  Please choose a different Type (Step 1).',
     noRowsFound: 'No {0} rows were found for the Segmentations selected.  Please choose a different Segmentation (Step 2).',
     noFieldUpdates: 'You did not create any Field Update Criteria.  Please create Criteria first (Step 4).',
@@ -292,6 +292,20 @@ Ext.onReady(function() {
         }
     });
 
+    OrangeLeap.BatchToolbar = Ext.extend(Ext.PagingToolbar, { // custom toolbar that overrides refresh for batch
+        refresh: function() {
+            // copied from doLoad
+            var o = {
+                // extra params go here
+            }, pn = this.getParams();
+            o[pn.start] = this.cursor;
+            o[pn.limit] = this.pageSize;
+            if (this.fireEvent('beforechange', this, o) !== false) {
+                initFocus(batchWin.groupTabPanel, batchWin.groupTabPanel.activeGroup);
+            }
+        }
+    });
+
     /* Following is for the edit/add batch modal */
     function elementFocus(fld) {
         $('#' + fld.getId()).parents('div.x-form-element').prev('label').addClass('inFocus');
@@ -416,7 +430,7 @@ Ext.onReady(function() {
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
             var batchType = getBatchTypeValue();
-            step2Store.load({ params: { batchType: batchType, start: 0, limit: 100, sort: 'lastDt', dir: 'DESC' }});
+            step2Store.load({ params: { batchType: batchType, start: 0, limit: 50, sort: 'lastDt', dir: 'DESC' }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
             $('#step1Num').addClass('complete');
         }
@@ -588,7 +602,7 @@ Ext.onReady(function() {
         return step2Store.find('picked', true) > -1;
     }
 
-    var step2Bar = new Ext.PagingToolbar({
+    var step2Bar = new OrangeLeap.BatchToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'step2Bar',
@@ -847,7 +861,7 @@ Ext.onReady(function() {
         }
     });
 
-    var step3Bar = new Ext.PagingToolbar({
+    var step3Bar = new OrangeLeap.BatchToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'step3Bar',
@@ -1181,7 +1195,7 @@ Ext.onReady(function() {
             var name = fields[x].name;
             if (name && name != 'constituentId' && name != 'id') {
                 cols[cols.length] = {
-                    header: fields[x].header, dataIndex: name, sortable: false,
+                    header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                         return '<span ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                     }
@@ -1191,7 +1205,7 @@ Ext.onReady(function() {
         step5Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
     });
 
-    var step5Bar = new Ext.PagingToolbar({
+    var step5Bar = new OrangeLeap.BatchToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'step5Bar',
@@ -1223,7 +1237,7 @@ Ext.onReady(function() {
 
     var step5Toolbar = new Ext.Toolbar({
         items: [
-            msgs.followingBeModified // TODO:
+            msgs.followingChangesApplied
         ]
     });
     step5Toolbar.on('afterlayout', function(tb){

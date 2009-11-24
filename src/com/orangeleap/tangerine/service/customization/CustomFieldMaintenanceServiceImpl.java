@@ -188,7 +188,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     }
 
     private boolean hasPaidPostedPage(String entityType) {
-        return StringConstants.GIFT.equals(entityType);
+        return StringConstants.GIFT.equals(entityType) || "gift.distributionLine".equals(entityType);
     }
     
     private FieldDefinition getFieldDefinition(boolean readOnly, boolean distributionLine, CustomFieldRequest customFieldRequest, Site site) {

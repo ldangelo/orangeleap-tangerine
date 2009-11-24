@@ -292,16 +292,13 @@ Ext.onReady(function() {
         }
     });
 
-    OrangeLeap.BatchToolbar = Ext.extend(Ext.PagingToolbar, { // custom toolbar that overrides refresh for batch
-        refresh: function() {
-            // copied from doLoad
-            var o = {
-                // extra params go here
-            }, pn = this.getParams();
-            o[pn.start] = this.cursor;
+    OrangeLeap.BatchToolbar = Ext.extend(Ext.PagingToolbar, { // custom toolbar for batch to invoke initFocus
+        doLoad: function(start) {
+            var o = { }, pn = this.getParams();
+            o[pn.start] = start;
             o[pn.limit] = this.pageSize;
             if (this.fireEvent('beforechange', this, o) !== false) {
-                initFocus(batchWin.groupTabPanel, batchWin.groupTabPanel.activeGroup);
+                initFocus(batchWin.groupTabPanel, batchWin.groupTabPanel.activeGroup, start);
             }
         }
     });
@@ -418,7 +415,10 @@ Ext.onReady(function() {
         return true;
     }
 
-    function initFocus(groupTabPanel, thisGrp) {
+    function initFocus(groupTabPanel, thisGrp, startNum) {
+        if ( ! startNum) {
+            startNum = 0;
+        }
         if (thisGrp.mainItem.id == 'step1Grp') {
             setTimeout(function() {
                 var elem = Ext.getCmp('batchDesc');
@@ -430,7 +430,7 @@ Ext.onReady(function() {
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
             var batchType = getBatchTypeValue();
-            step2Store.load({ params: { batchType: batchType, start: 0, limit: 50, sort: 'lastDt', dir: 'DESC' }});
+            step2Store.load({ params: { batchType: batchType, start: startNum, limit: 50, sort: 'lastDt', dir: 'DESC' }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
             $('#step1Num').addClass('complete');
         }
@@ -447,7 +447,7 @@ Ext.onReady(function() {
                 }
             }
             var batchType = getBatchTypeValue();
-            step3Store.load({ params: { 'ids': selIds.toString(), 'batchType': batchType }});
+            step3Store.load({ params: { 'ids': selIds.toString(), 'batchType': batchType, start: startNum, limit: 50 }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
             $('#step2Num').addClass('complete');
         }
@@ -470,7 +470,7 @@ Ext.onReady(function() {
             }
             params['batchType'] = getBatchTypeValue();
             params['ids'] = step3Store.collect('id').toString();
-            params['start'] = 0;
+            params['start'] = startNum;
             params['limit'] = 20;
             params['sort'] = 'id';
             params['dir'] = 'ASC';

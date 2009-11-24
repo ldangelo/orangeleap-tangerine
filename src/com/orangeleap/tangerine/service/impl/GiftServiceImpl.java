@@ -263,7 +263,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
             if (!reentrant) {
                 routeGift(gift);
-                paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+                // paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));  This is already done in Payment Processing
             }
             return gift;
         }

@@ -258,7 +258,7 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
             }
             int guruReportFieldType = 1;
             if (customFieldRequest.getFieldType().equals("DATE")) guruReportFieldType = 4;
-            String reportfieldName = customFieldRequest.getLabel().toUpperCase().replace(" ", "").replace("\'", "");
+            String reportfieldName = customFieldRequest.getFieldName().toUpperCase();
             
             String functionText = getFunctionText(reportFieldAlias, entityType, fieldname, customFieldRequest.getFieldType());
 

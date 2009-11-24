@@ -98,9 +98,9 @@ public class GiftSummaryController {
 
     	// Add lines for first and last gifts
     	Gift firstGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", true);
-    	putGift("First Gift", firstGift, returnList, index++);
+    	if (firstGift != null) putGift("First Gift", firstGift, returnList, index++);
     	Gift lastGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", false);
-    	putGift("Last Gift", lastGift, returnList, index++);
+    	if (lastGift != null) putGift("Last Gift", lastGift, returnList, index++);
 
     	// Add stats
     	Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> data = rollupService.readGiftViewRollupValuesByConstituentId(constituentId);

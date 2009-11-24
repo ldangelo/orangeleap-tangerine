@@ -44,10 +44,11 @@ OrangeLeap.msgBundle = {
     mustDoStep2: 'You must pick Segmentations (Step 2) first.',
     mustDoStep3: 'There are no updatable rows based on the Segmentation you chose).  Choose a different segmentation (Step 2).',
     mustDoStep4: 'You must create Field Update Criteria (Step 4) first.',
+    loading: 'Loading...',
     loadingSegmentations: 'Loading Segmentations...',
     loadingRows: 'Loading Rows...',
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
-    followingChangesApplied: 'For your reference, the following changes will be applied.',
+    followingChangesApplied: 'The following changes will be applied when you click \'Save\'.',
     noSegmentationsFound: 'No Segmentations were found for Type \'{0}\'.  Please choose a different Type (Step 1).',
     noRowsFound: 'No {0} rows were found for the Segmentations selected.  Please choose a different Segmentation (Step 2).',
     noFieldUpdates: 'You did not create any Field Update Criteria.  Please create Criteria first (Step 4).',
@@ -581,7 +582,7 @@ Ext.onReady(function() {
         ],
         listeners: {
             'beforeload': function(store, options) {
-//                Ext.get('step2Grp').mask(msgs.loadingSegmentations);
+                Ext.get($('#step1Grp').parent('div').next().attr('id')).mask(msgs.loadingSegmentations);
             },
             'load': function(store, records, options) {
                 var len = records.length;
@@ -593,7 +594,7 @@ Ext.onReady(function() {
                 if (hasPickedRows()) {
                     step2Form.nextButton.enable();
                 }
-//                Ext.get('step2Grp').unmask();
+                Ext.get($('#step1Grp').parent('div').next().attr('id')).unmask();
             }
         }
     });
@@ -671,7 +672,6 @@ Ext.onReady(function() {
         bbar: step2Bar,
         width: 726,
         height: 468,
-        loadMask: true,
         forceLayout: true,
         header: false,
         frame: false,
@@ -850,6 +850,9 @@ Ext.onReady(function() {
                 }
                 step3Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
             },
+            'beforeload': function(store, options) {
+                Ext.get($('#step2Grp').parent('div').next().attr('id')).mask(msgs.loadingRows);
+            },
             'load': function(store, records, options) {
                 if (records.length > 0) {
                     step3Form.nextButton.enable();  // Only enable next if there are rows available to select
@@ -857,6 +860,7 @@ Ext.onReady(function() {
                 else {
                     step3Form.nextButton.disable();
                 }
+                Ext.get($('#step2Grp').parent('div').next().attr('id')).unmask();
             }
         }
     });
@@ -911,7 +915,6 @@ Ext.onReady(function() {
         width: 726,
         height: 468,
         forceLayout: true,
-        loadMask: true,
         header: false,
         frame: false,
         border: false,
@@ -1171,7 +1174,13 @@ Ext.onReady(function() {
     step4Form.store.addListener({
         'add': checkStep4EnableButton,
         'update': checkStep4EnableButton,
-        'remove': checkStep4EnableButton
+        'remove': checkStep4EnableButton,
+        'beforeload': function(store, options) {
+            Ext.get($('#step3Grp').parent('div').next().attr('id')).mask(msgs.loading);
+        },
+        'load': function(store, records, options) {
+            Ext.get($('#step3Grp').parent('div').next().attr('id')).unmask();
+        }
     });
 
     var step5Reader = new Ext.data.JsonReader();
@@ -1185,7 +1194,15 @@ Ext.onReady(function() {
         sortInfo: {field: 'id', direction: 'ASC'},
         fields: [
             {name: 'id', mapping: 'id', type: 'int'}
-        ]
+        ],
+        listeners: {
+            'beforeload': function(store, options) {
+                Ext.get($('#step4Grp').parent('div').next().attr('id')).mask(msgs.loadingRows);
+            },
+            'load': function(store, records, options) {
+                Ext.get($('#step4Grp').parent('div').next().attr('id')).unmask();
+            }
+        }
     });
 
     step5Store.on('metachange', function(store, meta) {

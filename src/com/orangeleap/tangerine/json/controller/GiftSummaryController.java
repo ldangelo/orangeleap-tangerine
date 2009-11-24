@@ -82,16 +82,17 @@ public class GiftSummaryController {
         
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         if (null == constituentService.readConstituentById(constituentId)) return null; // checks constituent id is in site.
+        String attributeList = request.getParameter("attributeList");
 
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
-        addViewData(constituentId, returnList);
+        addViewData(constituentId, attributeList, returnList);
         modelMap.put(StringConstants.ROWS, returnList);
         modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
         return modelMap;
         
     }
 
-    private void addViewData(Long constituentId, List<Map<String, Object>> returnList) {
+    private void addViewData(Long constituentId, String attributeList, List<Map<String, Object>> returnList) {
     
     	int index = 0;
 
@@ -105,6 +106,7 @@ public class GiftSummaryController {
     	Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> data = rollupService.readGiftViewRollupValuesByConstituentId(constituentId);
     	for (Map.Entry<RollupAttribute, Map<RollupSeries, List<RollupValue>>> me : data.entrySet()) {
     		RollupAttribute ra = me.getKey();
+    		if (attributeList != null && attributeList.trim().length() > 0 && !attributeList.contains("|"+ra.getAttributeNameId()+"|")) continue;
     		Map<RollupSeries, List<RollupValue>> seriesmap = me.getValue();
         	for (Map.Entry<RollupSeries, List<RollupValue>> me2 : seriesmap.entrySet()) {
         		RollupSeries rs = me2.getKey();

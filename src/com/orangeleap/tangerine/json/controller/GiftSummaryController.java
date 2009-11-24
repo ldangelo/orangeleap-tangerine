@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -82,7 +83,7 @@ public class GiftSummaryController {
         
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         if (null == constituentService.readConstituentById(constituentId)) return null; // checks constituent id is in site.
-        String attributeList = request.getParameter("attributeList");
+        String attributeList = StringUtils.trimToEmpty(request.getParameter("attributeList"));
 
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         addViewData(constituentId, attributeList, returnList);
@@ -91,22 +92,35 @@ public class GiftSummaryController {
         return modelMap;
         
     }
+    
+    // blank attributeList means retrieve all available
+    private boolean requestedAttribute(String attribute, String attributeList) {
+    	return attributeList.length() == 0 || attributeList.contains("|"+attribute+"|");
+    }
 
+    private static String FIRST_GIFT =  "First Gift";
+    private static String LAST_GIFT =  "Last Gift";
+    
     private void addViewData(Long constituentId, String attributeList, List<Map<String, Object>> returnList) {
     
     	int index = 0;
 
     	// Add lines for first and last gifts
-    	Gift firstGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", true);
-    	if (firstGift != null) putGift("First Gift", firstGift, returnList, index++);
-    	Gift lastGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", false);
-    	if (lastGift != null) putGift("Last Gift", lastGift, returnList, index++);
-
+    	if (requestedAttribute(FIRST_GIFT, attributeList)) {
+    		Gift firstGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", true);
+    		if (firstGift != null) putGift(FIRST_GIFT, firstGift, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LAST_GIFT, attributeList)) {
+	    	Gift lastGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", false);
+	    	if (lastGift != null) putGift(LAST_GIFT, lastGift, returnList, index++);
+    	}
+    	
     	// Add stats
     	Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> data = rollupService.readGiftViewRollupValuesByConstituentId(constituentId);
     	for (Map.Entry<RollupAttribute, Map<RollupSeries, List<RollupValue>>> me : data.entrySet()) {
     		RollupAttribute ra = me.getKey();
-    		if (attributeList != null && attributeList.trim().length() > 0 && !attributeList.contains("|"+ra.getAttributeNameId()+"|")) continue;
+    		if (!requestedAttribute(ra.getAttributeNameId(), attributeList)) continue;
     		Map<RollupSeries, List<RollupValue>> seriesmap = me.getValue();
         	for (Map.Entry<RollupSeries, List<RollupValue>> me2 : seriesmap.entrySet()) {
         		RollupSeries rs = me2.getKey();

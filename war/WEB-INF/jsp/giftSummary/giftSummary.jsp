@@ -6,6 +6,7 @@
             <title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
         </head>
         <body>
+             <div id="giftSummaryTab"></div>
              <div id="giftSummaryGrid"></div>
         </body>
         <page:param name="scripts">

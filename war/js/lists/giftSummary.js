@@ -11,7 +11,10 @@ Ext.onReady(function() {
         baseParams.constituentId = objectId[1];
     }
 
-    var header = 'Gift Summary List';
+    
+
+    
+    var header = '';
 
     GiftSummary.store = new Ext.data.JsonStore({
         url: 'giftSummary.json',
@@ -72,7 +75,52 @@ Ext.onReady(function() {
         renderTo: 'giftSummaryGrid'
     });
 
-    GiftSummary.store.load({params: {start: 0, limit: 1000, sort: 'id', dir: 'ASC'}});
+    
+    var tabs = new Ext.TabPanel({
+    	renderTo: 'giftSummaryTab',
+    	activeTab : 0,
+    	deferredRender: false,
+    	autoTabs : true,
+    	items : [
+    	         {
+    	            title:'Hard Gifts',
+    	            html : '',
+    	            attributeList : '|First Gift|Last Gift|Gift Amount|'
+    	         },
+    	         {
+      	            title:'Soft Gifts',
+    	            html : '',
+        	        attributeList : '|Soft Gift Amount|'
+      	         },
+    	         {
+      	            title:'Pledges',
+    	            html : '',
+            	    attributeList : '|Projected Pledge Amount|'
+      	         },
+    	         {
+      	            title:'Recurring Gifts',
+    	            html : '',
+            	    attributeList : '|Projected Recurring Gift Amount|'
+      	         },
+    	         {
+       	            title:'Gifts In Kind',
+    	            html : '',
+            	    attributeList : '|Gift In Kind Amount|'
+       	         },
+    	         {
+       	            title:'All',
+    	            html : '',
+        	        attributeList : ''
+       	         }
+    	         ]
+    	});
+    
+    tabs.addListener( 'tabchange', function (activePanel) {
+		GiftSummary.store.load({params: {start: 0, limit: 1000, sort: 'id', dir: 'ASC', attributeList: this.activeTab.attributeList }});
+    });
+
+    GiftSummary.store.load({params: {start: 0, limit: 1000, sort: 'id', dir: 'ASC', attributeList: '|First Gift|Last Gift|Gift Amount|' }});
+    
 
 });
 

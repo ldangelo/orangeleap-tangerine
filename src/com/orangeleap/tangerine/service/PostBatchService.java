@@ -44,4 +44,6 @@ public interface PostBatchService {
     List<PostBatch> readBatches(boolean batchUpdated, SortInfo sort, Locale locale);
 
     List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
+
+    Map<String, Object> findOldNewRowValues(final String batchType, final String ids, final Map<String, Object> newRowNameValues, SortInfo sortInfo, Locale locale);
 }

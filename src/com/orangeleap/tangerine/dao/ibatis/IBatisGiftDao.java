@@ -18,20 +18,6 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -41,6 +27,19 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Repository("giftDAO")
 public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements GiftDao {
@@ -95,6 +94,22 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
             loadCustomFields(gift.getPhone());
         }
         return gift;
+    }
+
+    /**
+     * @see com.orangeleap.tangerine.dao.GiftDao#readGiftsByAllIds(java.util.Set, String, String, int, int, java.util.Locale)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Gift> readGiftsByAllIds(Set<Long> ids, String sortPropertyName, String direction,
+                                        int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsByAllIds: ids = " + ids);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.GIFT, "GIFT.GIFT_RESULT_NO_DISTRO_LINES",
+                sortPropertyName, direction, start, limit, locale);
+        params.put("giftIds", new ArrayList<Long>(ids));
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFT_BY_ALL_IDS", params);
     }
 
     @SuppressWarnings("unchecked")

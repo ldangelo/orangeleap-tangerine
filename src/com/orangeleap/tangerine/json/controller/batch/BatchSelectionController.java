@@ -54,6 +54,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,6 +64,7 @@ import java.util.Map;
 public class BatchSelectionController extends TangerineJsonListController {
 
     protected final Log logger = OLLogger.getLog(getClass());
+    public static final String PARAM_PREFIX = "param-";
     public static final String BATCH_FIELDS = "BatchFields";
 
     @Resource(name = "postBatchService")
@@ -166,13 +168,12 @@ public class BatchSelectionController extends TangerineJsonListController {
         metaDataMap.put(StringConstants.LIMIT, sort.getLimit());
 
         final List<SectionField> allFields = findSectionFields("giftList");
-        final List<SectionField> fieldsExceptId = pageCustomizationService.getFieldsExceptId(allFields);
 
         final BeanWrapper bw = createDefaultGift();
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
 
         addIdConstituentIdFields(fieldList, bw);
-        for (SectionField sectionFld : fieldsExceptId) {
+        for (SectionField sectionFld : allFields) {
             final Map<String, Object> fieldMap = new HashMap<String, Object>();
             String escapedFieldName = TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName());
             fieldMap.put(StringConstants.NAME, escapedFieldName);
@@ -197,6 +198,7 @@ public class BatchSelectionController extends TangerineJsonListController {
 
         final Map<String, String> sortInfoMap = new HashMap<String, String>();
         if ( ! StringUtils.hasText(sort.getSort())) {
+            final List<SectionField> fieldsExceptId = pageCustomizationService.getFieldsExceptId(allFields);
             sort.setSort(TangerineForm.escapeFieldName(fieldsExceptId.get(0).getFieldPropertyName()));
             sort.setDir(SectionFieldTag.getInitDirection(fieldsExceptId));
         }
@@ -212,6 +214,7 @@ public class BatchSelectionController extends TangerineJsonListController {
 
         List<Map<String, Object>> rowList = new ArrayList<Map<String, Object>>();
         addListFieldsToMap(request, allFields, gifts, rowList, false); // this needs to be 'allFields' to include the 'id' property
+        addConstituentIdsToRows(rowList, gifts);
         modelMap.put(StringConstants.ROWS, rowList);
     }
 
@@ -230,6 +233,18 @@ public class BatchSelectionController extends TangerineJsonListController {
             constituentIdMap.put(StringConstants.TYPE, "string");
             constituentIdMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID));
             fieldList.add(constituentIdMap);
+        }
+    }
+
+    private void addConstituentIdsToRows(final List<Map<String, Object>> rowList, final List<Gift> gifts) {
+        for (Map<String, Object> objectMap : rowList) {
+            Long id = (Long) objectMap.get(StringConstants.ID);
+            for (Gift gift : gifts) {
+                if (gift.getId().equals(id)) {
+                    objectMap.put(StringConstants.CONSTITUENT_ID, (gift.getConstituent() == null || gift.getConstituent().getId() == null) ? gift.getConstituentId() : gift.getConstituent().getId());
+                    break;
+                }
+            }
         }
     }
 
@@ -290,10 +305,30 @@ public class BatchSelectionController extends TangerineJsonListController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/reviewUpdates.json")
-    public ModelMap reviewUpdates(final String batchType) {
+    public ModelMap reviewUpdates(HttpServletRequest request, final String batchType, final String ids, final SortInfo sort) {
         if (logger.isTraceEnabled()) {
-            logger.trace("reviewUpdates: batchType = " + batchType);
+            logger.trace("reviewUpdates: batchType = " + batchType + " ids = " + ids + " sortInfo = " + sort);
         }
-        return null;
+        final Map<String, Object> enteredParams = findEnteredParameters(request);
+        Map<String, Object> returnMap = postBatchService.findOldNewRowValues(batchType, ids, enteredParams, sort, request.getLocale());
+
+        final ModelMap modelMap = new ModelMap();
+        modelMap.addAllAttributes(returnMap);
+        return modelMap;
+    }
+
+    private Map<String, Object> findEnteredParameters(final HttpServletRequest request) {
+        final Enumeration paramNames = request.getParameterNames();
+        final Map<String, Object> paramMap = new HashMap<String, Object>();
+        while (paramNames.hasMoreElements()) {
+            String thisParamName = (String) paramNames.nextElement();
+            if (thisParamName.startsWith(PARAM_PREFIX)) {
+                String name = thisParamName.replaceFirst(PARAM_PREFIX, StringConstants.EMPTY);
+                if (StringUtils.hasText(name)) {
+                    paramMap.put(name, request.getParameter(thisParamName));
+                }
+            }
+        }
+        return paramMap;
     }
 }

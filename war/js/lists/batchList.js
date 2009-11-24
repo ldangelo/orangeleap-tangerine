@@ -444,6 +444,22 @@ Ext.onReady(function() {
         }
         else if (thisGrp.mainItem.id == 'step5Grp') {
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step5Tip);
+            var step4DataItems = step4Form.store.data.items;
+            var params = {};
+            for (var x = 0; x < step4DataItems.length; x++) {
+                var value = step4DataItems[x].data.value;
+                if (Ext.isDate(value)) {
+                    value = value.dateFormat('Y-m-d H:i:s');
+                }
+                params['param-' + step4DataItems[x].data.name] = value;
+            }
+            params['batchType'] = getBatchTypeValue();
+            params['ids'] = step3Store.collect('id').toString();
+            params['start'] = 0;
+            params['limit'] = 20;
+            params['sort'] = 'id';
+            params['dir'] = 'ASC';
+            step5Store.load({ 'params': params });
             $('#step4Num').addClass('complete');
         }
     }
@@ -1164,7 +1180,7 @@ Ext.onReady(function() {
             var name = fields[x].name;
             if (name && name != 'constituentId' && name != 'id') {
                 cols[cols.length] = {
-                    header: fields[x].header, dataIndex: name, sortable: true,
+                    header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                         return '<span ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                     }

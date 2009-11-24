@@ -82,4 +82,12 @@ public interface GiftService {
     
     void updateAdjustedAmount(Gift gift);
 
+    /**
+     * NOTE: unlike the method readGiftById, this method will not load the distribution lines, the custom fields for distro lines,
+     * the associated pledges / recurring gifts, the custom fields for the gift's constituent, address, or phone.
+     *
+     * Do * NOT * use this method if you need any of those!
+     * @return list of gifts
+     */
+    List<Gift> readGiftsByAllIds(Set<Long> giftIds, SortInfo sort, Locale locale);
 }

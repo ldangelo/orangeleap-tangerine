@@ -204,15 +204,17 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	gift.setAdjustedAmount(total);
     	
     	if (gift.getDistributionLines() != null && gift.getDistributionLines().size() > 0) {
-        	BigDecimal deductibleAmount = BigDecimal.ZERO;
+        	BigDecimal deductibleAmount = null;
 	    	for (DistributionLine dl : gift.getDistributionLines()) {
 	    		if (dl != null) {
-	    			if ("true".equals(dl.getCustomFieldValue("taxDeductible"))) {
+	    			String value = dl.getCustomFieldValue("taxDeductible"); // null if custom fields not loaded
+	    			if (value != null && "true".equals(value)) {
+	    				if (deductibleAmount == null) deductibleAmount = BigDecimal.ZERO;
 	    				deductibleAmount = deductibleAmount.add(dl.getAmount());
 	    			}
 	    		}
 	    	}
-    		gift.setDeductibleAmount(deductibleAmount);
+    		if (deductibleAmount != null) gift.setDeductibleAmount(deductibleAmount);
     	}
     	
     	giftDao.maintainGift(gift);

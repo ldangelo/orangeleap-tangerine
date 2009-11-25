@@ -96,7 +96,7 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 
             try {
 
-                logger.info("*** firing all rules");
+                logger.debug("*** firing all rules");
 
                 workingMemory.fireAllRules();
 

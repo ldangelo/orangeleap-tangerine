@@ -111,7 +111,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
 			try {
 
-				logger.info("*** firing all rules");
+				logger.debug("*** firing all rules");
 
 				workingMemory.fireAllRules();
 

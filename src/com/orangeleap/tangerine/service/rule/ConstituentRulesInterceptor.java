@@ -72,7 +72,7 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 			}
 
 			try {
-				logger.info("*** firing all rules");
+				logger.debug("*** firing all rules");
 
 				workingMemory.fireAllRules();
 

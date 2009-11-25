@@ -61,7 +61,12 @@ OrangeLeap.msgBundle = {
     step2Tip: 'Step 2',
     step3Tip: 'Step 3',
     step4Tip: 'Step 4',
-    step5Tip: 'Step 5'
+    step5Tip: 'Step 5',
+    errorStep1: 'Could not load Step 1 data.  Please Please try again or contact your administrator if this issue continues.',
+    errorStep2: 'Could not load Step 2 data.  Please Please try again or contact your administrator if this issue continues.',
+    errorStep3: 'Could not load Step 3 data.  Please Please try again or contact your administrator if this issue continues.',
+    errorStep4: 'Could not load Step 4 data.  Please Please try again or contact your administrator if this issue continues.',
+    errorStep5: 'Could not load Step 5 data.  Please Please try again or contact your administrator if this issue continues.'
 };
 
 Ext.onReady(function() {
@@ -428,6 +433,7 @@ Ext.onReady(function() {
                 }
             }, 900);
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
+            // TODO: load step1 store with data
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
             var batchType = getBatchTypeValue();
@@ -595,6 +601,12 @@ Ext.onReady(function() {
                     step2Form.nextButton.enable();
                 }
                 Ext.get($('#step1Grp').parent('div').next().attr('id')).unmask();
+            },
+            'exception': function(misc) {
+                Ext.get($('#step1Grp').parent('div').next().attr('id')).unmask();
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep2 });
             }
         }
     });
@@ -861,6 +873,12 @@ Ext.onReady(function() {
                     step3Form.nextButton.disable();
                 }
                 Ext.get($('#step2Grp').parent('div').next().attr('id')).unmask();
+            },
+            'exception': function(misc) {
+                Ext.get($('#step2Grp').parent('div').next().attr('id')).unmask();
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep3 });
             }
         }
     });
@@ -997,7 +1015,110 @@ Ext.onReady(function() {
             {name: 'type', type: 'string'},
             {name: 'value', type: 'string'},
             {name: 'selected', type: 'boolean'}
-        ]
+        ],
+        listeners: {
+            'load': function(store, records, options) {
+                var len = records.length;
+                var newPropertyNames = {};
+                var newCustomEditors = {};
+                var initValues = {};
+                var newSource;
+
+                for (var x = 0; x < len; x++) {
+                    var recName = records[x].get('name');
+                    newPropertyNames[recName] = records[x].get('desc');
+
+                    var recType = records[x].get('type');
+                    var recVal = records[x].get('value');
+
+                    // Source is for existing data, not new data
+                    if (! Ext.isEmpty(recVal)) {
+                        if ( ! newSource) {
+                            newSource = {};
+                        }
+                        records[x].set('selected', true);
+                        if (recType == 'date' || recType == 'date_time') {
+                            newSource[recName] = Ext.isDate(recVal) ? recVal : new Date(Date.parse(recVal));
+                        }
+                        else if (recType == 'checkbox') {
+                            newSource[recName] = Ext.isBoolean(recVal) ? recVal : (recVal.toString().toLowerCase() == 'true' ||
+                                                                                   recVal.toString().toLowerCase() == 't' ||
+                                                                                   recVal.toString().toLowerCase() == 'y' ||
+                                                                                   recVal == '1');
+                        }
+                        else if (recType == 'number' || recType == 'percentage') {
+                            newSource[recName] = Ext.isNumber(recVal) ? recVal : (recVal.toString().indexOf(".") > -1 ? parseFloat(recVal) : parseInt(recVal, 10));
+                        }
+                        else {
+                            newSource[recName] = recVal;
+                        }
+                    }
+
+                    // Custom editors determine what type of control will be displayed to the user
+                    if (recType == 'date' || recType == 'date_time') {
+                        newCustomEditors[recName] = step4Form.colModel.editors['date'];
+                        initValues[recName] = new Date();
+                    }
+                    else if (recType == 'checkbox') {
+                        newCustomEditors[recName] = step4Form.colModel.editors['boolean'];
+                        initValues[recName] = true;
+                    }
+                    else if (recType == 'number' || recType == 'percentage') {
+                        newCustomEditors[recName] = step4Form.colModel.editors['number'];
+                        initValues[recName] = parseInt(0, 10);
+                    }
+                    else if (recType == 'picklist') {    // TODO: multi_picklist, code, code_other, query_lookup, query_lookup_other
+                        var myPicklist = step4Picklists[recName + '-Data'];
+                        if (myPicklist) {
+                            var myStore = new Ext.data.JsonStore({
+                                autoSave: false,
+                                fields: ['itemName', 'displayVal'],
+                                data: myPicklist
+                            });
+                            var initVal = myPicklist.length > 0 ? myPicklist[0]['itemName'] : '';
+                            initValues[recName] = initVal;
+                            newCustomEditors[recName] = new Ext.grid.GridEditor(new Ext.form.ComboBox({
+                                name: recName,
+                                allowBlank: false,
+                                displayField: 'displayVal',
+                                valueField: 'itemName',
+                                typeAhead: true,
+                                mode: 'local',
+                                triggerAction: 'all',
+                                selectOnFocus: true,
+                                forceSelection: true,
+                                store: myStore,
+                                value: initVal
+                            }));
+                        }
+                    }
+                    else {
+                        // every other type is a string editor type
+                        initValues[recName] = '';
+                    }
+                }
+                if ( ! newSource) {
+                    // if there are no pre-existing values, we have to initialize to the first one in the records list with a default value
+                    newSource = {};
+                    var thisRecName = records[0].get('name');
+                    records[0].set('selected', true);
+                    newSource[thisRecName] = initValues[thisRecName];
+                }
+                step4Form.propertyNames = newPropertyNames;
+                step4Form.customEditors = newCustomEditors;
+                step4Form.setSource(newSource);
+                Ext.get($('#step3Grp').parent('div').next().attr('id')).unmask();
+            },
+            'beforeload': function(store, options) {
+                Ext.get($('#step3Grp').parent('div').next().attr('id')).mask(msgs.loading);
+            },
+            'exception': function(misc) {
+                Ext.get($('#step3Grp').parent('div').next().attr('id')).unmask();
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep4 });
+            }
+        }
     });
     var step4Picklists = {};
     step4UpdatableFieldsStore.proxy.on('load', function(proxy, txn, options) {
@@ -1016,97 +1137,6 @@ Ext.onReady(function() {
                 }
             }
         }
-    });
-    step4UpdatableFieldsStore.on('load', function(store, records, options) {
-        var len = records.length;
-        var newPropertyNames = {};
-        var newCustomEditors = {};
-        var initValues = {};
-        var newSource;
-
-        for (var x = 0; x < len; x++) {
-            var recName = records[x].get('name');
-            newPropertyNames[recName] = records[x].get('desc');
-
-            var recType = records[x].get('type');
-            var recVal = records[x].get('value');
-
-            // Source is for existing data, not new data
-            if (! Ext.isEmpty(recVal)) {
-                if ( ! newSource) {
-                    newSource = {};
-                }
-                records[x].set('selected', true);
-                if (recType == 'date' || recType == 'date_time') {
-                    newSource[recName] = Ext.isDate(recVal) ? recVal : new Date(Date.parse(recVal));
-                }
-                else if (recType == 'checkbox') {
-                    newSource[recName] = Ext.isBoolean(recVal) ? recVal : (recVal.toString().toLowerCase() == 'true' ||
-                                                                           recVal.toString().toLowerCase() == 't' ||
-                                                                           recVal.toString().toLowerCase() == 'y' ||
-                                                                           recVal == '1');
-                }
-                else if (recType == 'number' || recType == 'percentage') {
-                    newSource[recName] = Ext.isNumber(recVal) ? recVal : (recVal.toString().indexOf(".") > -1 ? parseFloat(recVal) : parseInt(recVal, 10));
-                }
-                else {
-                    newSource[recName] = recVal;
-                }
-            }
-
-            // Custom editors determine what type of control will be displayed to the user 
-            if (recType == 'date' || recType == 'date_time') {
-                newCustomEditors[recName] = step4Form.colModel.editors['date'];
-                initValues[recName] = new Date();
-            }
-            else if (recType == 'checkbox') {
-                newCustomEditors[recName] = step4Form.colModel.editors['boolean'];
-                initValues[recName] = true;
-            }
-            else if (recType == 'number' || recType == 'percentage') {
-                newCustomEditors[recName] = step4Form.colModel.editors['number'];
-                initValues[recName] = parseInt(0, 10);
-            }
-            else if (recType == 'picklist') {    // TODO: multi_picklist, code, code_other, query_lookup, query_lookup_other
-                var myPicklist = step4Picklists[recName + '-Data'];
-                if (myPicklist) {
-                    var myStore = new Ext.data.JsonStore({
-                        autoSave: false,
-                        fields: ['itemName', 'displayVal'],
-                        data: myPicklist
-                    });
-                    var initVal = myPicklist.length > 0 ? myPicklist[0]['itemName'] : '';
-                    initValues[recName] = initVal;
-                    newCustomEditors[recName] = new Ext.grid.GridEditor(new Ext.form.ComboBox({
-                        name: recName,
-                        allowBlank: false,
-                        displayField: 'displayVal',
-                        valueField: 'itemName',
-                        typeAhead: true,
-                        mode: 'local',
-                        triggerAction: 'all',
-                        selectOnFocus: true,
-                        forceSelection: true,
-                        store: myStore,
-                        value: initVal
-                    }));
-                }
-            }
-            else {
-                // every other type is a string editor type
-                initValues[recName] = '';
-            }
-        }
-        if ( ! newSource) {
-            // if there are no pre-existing values, we have to initialize to the first one in the records list with a default value
-            newSource = {};
-            var thisRecName = records[0].get('name');
-            records[0].set('selected', true);
-            newSource[thisRecName] = initValues[thisRecName];
-        }
-        step4Form.propertyNames = newPropertyNames;
-        step4Form.customEditors = newCustomEditors;
-        step4Form.setSource(newSource);
     });
 
     var step4Form = new OrangeLeap.DynamicPropertyGrid({
@@ -1170,17 +1200,11 @@ Ext.onReady(function() {
         else {
             step4Form.nextButton.enable();
         }
-    }
+    };
     step4Form.store.addListener({
         'add': checkStep4EnableButton,
         'update': checkStep4EnableButton,
-        'remove': checkStep4EnableButton,
-        'beforeload': function(store, options) {
-            Ext.get($('#step3Grp').parent('div').next().attr('id')).mask(msgs.loading);
-        },
-        'load': function(store, records, options) {
-            Ext.get($('#step3Grp').parent('div').next().attr('id')).unmask();
-        }
+        'remove': checkStep4EnableButton
     });
 
     var step5Reader = new Ext.data.JsonReader();
@@ -1201,6 +1225,12 @@ Ext.onReady(function() {
             },
             'load': function(store, records, options) {
                 Ext.get($('#step4Grp').parent('div').next().attr('id')).unmask();
+            },
+            'exception': function(misc) {
+                Ext.get($('#step4Grp').parent('div').next().attr('id')).unmask();
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep5 });
             }
         }
     });

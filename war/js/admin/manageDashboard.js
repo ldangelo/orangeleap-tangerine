@@ -79,6 +79,17 @@ Ext.onReady(function() {
         grid.saveButton.enable();
         grid.undoButton.enable();
     });
+    store.on('load', function(store, records, index) {
+        // unescape urls
+        if (store.data && store.data.items) {
+            var len = store.data.items.length;
+            for (var x = 0; x < len; x++) {
+                var eurl = store.data.items[x].get('url');
+                eurl = Ext.util.Format.htmlDecode(eurl);
+                store.data.items[x].set('url', eurl);
+            }
+        }
+    });
     
     var trapKeyDown = function(obj, fld, event, addButtonId) {
         if (event.getKey() == event.ENTER) {

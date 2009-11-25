@@ -122,7 +122,7 @@
                 <script>
                 
                 function update(a, action) {
-                   var data = $(a).closest("tr").find("input").serialize() + "&action=" + action;
+                   var data = $(a).closest("tr").find("input").serialize() + "&action=" + action + "&constituentId=" + ${requestScope.constituent.id};
                    $.ajax({
                 	   type: "POST",
                 	   url: "scheduleEdit.htm",

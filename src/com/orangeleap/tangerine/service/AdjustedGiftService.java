@@ -62,4 +62,8 @@ public interface AdjustedGiftService {
     int readCountByConstituentGiftId(Long constituentId, Long giftId);
 
     BigDecimal readTotalAdjustedAmountByConstituentId(Long constituentId);
+
+	BigDecimal findCurrentTotalPaidAdjustedAmount(List<AdjustedGift> adjustedGifts);
+
+	BigDecimal findCurrentTotalPaidAdjustedAmount(Long originalGiftId);
 }

@@ -197,7 +197,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     public void updateAdjustedAmount(Gift gift) {
     	BigDecimal giftamt = gift.getAmount();
     	if (giftamt == null) giftamt = new BigDecimal("0.00");
-    	BigDecimal adjamt = adjustedGiftService.findCurrentTotalAdjustedAmount(gift.getId());
+    	BigDecimal adjamt = adjustedGiftService.findCurrentTotalPaidAdjustedAmount(gift.getId());
     	
     	BigDecimal total = giftamt.add(adjamt);
     	

@@ -238,6 +238,14 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
     }
 
     @Override
+    public BigDecimal findCurrentTotalPaidAdjustedAmount(Long originalGiftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findCurrentTotalPaidAdjustedAmount: originalGiftId = " + originalGiftId);
+        }
+        return findCurrentTotalPaidAdjustedAmount(readAdjustedGiftsForOriginalGiftId(originalGiftId));
+    }
+
+    @Override
     public BigDecimal findCurrentTotalAdjustedAmount(List<AdjustedGift> adjustedGifts) {
         if (logger.isTraceEnabled()) {
             logger.trace("findCurrentTotalAdjustedAmount: ");
@@ -246,6 +254,22 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         if (adjustedGifts != null) {
             for (AdjustedGift aAdjGift : adjustedGifts) {
                 if (aAdjGift.getAdjustedAmount() != null) {
+                    existingAmount = existingAmount.add(aAdjGift.getAdjustedAmount());
+                }
+            }
+        }
+        return existingAmount;
+    }
+
+    @Override
+    public BigDecimal findCurrentTotalPaidAdjustedAmount(List<AdjustedGift> adjustedGifts) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findCurrentTotalAdjustedAmount: ");
+        }
+        BigDecimal existingAmount = BigDecimal.ZERO;
+        if (adjustedGifts != null) {
+            for (AdjustedGift aAdjGift : adjustedGifts) {
+                if (aAdjGift.getAdjustedAmount() != null && "Paid".equals(aAdjGift.getAdjustedStatus()) ) {
                     existingAmount = existingAmount.add(aAdjGift.getAdjustedAmount());
                 }
             }

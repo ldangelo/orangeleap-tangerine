@@ -79,6 +79,19 @@ Ext.onReady(function() {
         grid.saveButton.enable();
         grid.undoButton.enable();
     });
+    
+    var trapKeyDown = function(obj, fld, event, addButtonId) {
+        if (event.getKey() == event.ENTER) {
+            setTimeout(function() {
+                obj.saveButton.handler();
+            }, 100);
+        }
+        else if (event.getKey() == event.A && event.altKey) {
+            Ext.getCmp(addButtonId).handler();
+        }
+    }
+
+
 
     var stringFld = new Ext.form.TextField({
         allowBlank: true,
@@ -86,11 +99,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     stringFld.on('keydown', function(fld, event) {
-        if (event.getKey() == event.ENTER) {
-            setTimeout(function() {
-                grid.saveButton.handler();
-            }, 100);
-        }
+        trapKeyDown(grid, fld, event, 'addFldButton');
     });
     
     var numberFld = new Ext.form.NumberField({
@@ -102,7 +111,7 @@ Ext.onReady(function() {
         enableKeyEvents: true
     });
     numberFld.on('keydown', function(fld, event) {
-        trapKeyDown(grid, fld, event, 'addButton');
+        trapKeyDown(grid, fld, event, 'addFldButton');
     });
     numberFld.on('change', function(fld, newVal, oldVal) {
         var rec = null;

@@ -14,7 +14,7 @@ Ext.onReady(function() {
     
 
     
-    var header = '';
+    var header = 'Gift Summary';
 
     GiftSummary.store = new Ext.data.JsonStore({
         url: 'giftSummary.json',

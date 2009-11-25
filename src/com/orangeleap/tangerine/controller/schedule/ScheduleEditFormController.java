@@ -35,14 +35,17 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Schedulable;
 import com.orangeleap.tangerine.domain.ScheduledItem;
 import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.rollup.RollupValueSource;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ScheduledItemService;
 import com.orangeleap.tangerine.service.impl.ReminderServiceImpl;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -51,7 +54,8 @@ public class ScheduleEditFormController extends SimpleFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
     
-	
+	@Resource(name = "rollupHelperService")
+	private RollupHelperService rollupHelperService;
 
     @Resource(name="scheduledItemService")
     protected ScheduledItemService scheduledItemService;
@@ -155,6 +159,7 @@ public class ScheduleEditFormController extends SimpleFormController {
         boolean save = "save".equals(action);
         boolean add = "add".equals(action);
         boolean delete = "delete".equals(action);
+        final String constituentId = request.getParameter(StringConstants.CONSTITUENT_ID);
 
     	ScheduledItem newScheduledItem = getScheduledItem(request);
     	ScheduledItem originalScheduledItem = scheduledItemService.readScheduledItemById(newScheduledItem.getId());
@@ -178,12 +183,25 @@ public class ScheduleEditFormController extends SimpleFormController {
 	        	if (originalScheduledItem.getOriginalScheduledDate() == null) originalScheduledItem.setOriginalScheduledDate(originalScheduledItem.getActualScheduledDate());
 	        }
 	        
+	        
 	        scheduledItemService.maintainScheduledItem(originalScheduledItem);
+	 
+	        // Update recurring gift/pledge etc summary for constituent.
+	        rollupHelperService.updateRollupsForConstituentRollupValueSource(new RollupValueSource() {
+				@Override
+				public Constituent getConstituent() {
+					return null;
+				}
+				@Override
+				public Long getConstituentId() {
+					return new Long(constituentId);
+				}
+	        });
         
     	}
 
         return new ModelAndView("redirect:/scheduleEdit.htm?sourceEntity="+originalScheduledItem.getSourceEntity()+"&sourceEntityId"+originalScheduledItem.getSourceEntityId() +
-                "&constituentId=" + request.getParameter(StringConstants.CONSTITUENT_ID));
+                "&constituentId=" + constituentId);
     }
     
     private void copyUpdatableFields(ScheduledItem newScheduledItem, ScheduledItem originalScheduledItem) {

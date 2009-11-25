@@ -63,7 +63,7 @@ public class LogViewController {
 
     static {
         NAME_MAP.put("id", "ERROR_LOG_ID");
-        NAME_MAP.put("constituentid", "CONSTITUENT_ID");
+        NAME_MAP.put("context", "CONTEXT");
         NAME_MAP.put("message", "MESSAGE");
         NAME_MAP.put("createdate", "CREATE_DATE");
     }
@@ -118,7 +118,7 @@ public class LogViewController {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", errorLog.getId());
         map.put("createdate", formatter.format(errorLog.getCreateDate()) );
-        map.put("constituentid", errorLog.getConstituentId());
+        map.put("context", errorLog.getContext());
         String message = errorLog.getMessage();
         if (message.length() > MAX_MESSAGE_LENGTH) {
 			message = message.substring(0,MAX_MESSAGE_LENGTH);

@@ -22,7 +22,7 @@ Ext.onReady(function() {
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
             {name: 'createdate', mapping: 'createdate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-            {name: 'constituentid', mapping: 'constituentid', type: 'string'},
+            {name: 'context', mapping: 'context', type: 'string'},
             {name: 'message', mapping: 'message', type: 'string'},
         ],
         sortInfo:{field: 'id', direction: "DESC"},
@@ -44,7 +44,7 @@ Ext.onReady(function() {
         columns: [
             {header: 'Id', width: 30, dataIndex: 'id', sortable: true},
             {header: 'Date', width: 60, dataIndex: 'createdate', sortable: false, renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
-            {header: 'User', width: 40, dataIndex: 'constituentid', sortable: false},
+            {header: 'User', width: 40, dataIndex: 'context', sortable: false},
             {header: 'Message', width: 250,  dataIndex: 'message', sortable: false, renderer: LogView.descriptionRenderer}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),

@@ -426,14 +426,26 @@ Ext.onReady(function() {
             startNum = 0;
         }
         if (thisGrp.mainItem.id == 'step1Grp') {
-            setTimeout(function() {
-                var elem = Ext.getCmp('batchDesc');
-                if (elem && elem.el) {
-                    elem.el.focus();
-                }
-            }, 900);
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
-            // TODO: load step1 store with data
+            step1Form.getForm().load({
+                url: 'batchInfo.json',
+                params: {
+                    'batchId': 0 // TODO: fill in with real batchId (if any)
+                },
+                success: function(form, action) {
+                    setTimeout(function() {
+                        var elem = Ext.getCmp('batchDesc');
+                        if (elem && elem.el) {
+                            elem.el.focus();
+                        }
+                    }, 900);
+                },
+                failure: function(form, action) {
+                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.MessageBox.OK,
+                        msg: msgs.errorStep1 });
+                }
+            });
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
             var batchType = getBatchTypeValue();
@@ -543,7 +555,7 @@ Ext.onReady(function() {
                     ],
                     data: [['gift', msgs.gift] ]//, ['adjustedGift', msgs.adjustedGift]] TODO: put back adjustedGift when adjustedGift segmentations ready
                 }),
-                value: 'gift',
+//                value: 'gift',
                 displayField: 'desc',
                 valueField: 'value',
                 typeAhead: false,

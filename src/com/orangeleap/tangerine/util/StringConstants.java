@@ -207,4 +207,5 @@ public final class StringConstants {
     public static final String DIRECTION = "direction";
     public static final String DESC = "desc";
     public static final String SELECTED = "selected";
+    public static final String DATA = "data";
 }

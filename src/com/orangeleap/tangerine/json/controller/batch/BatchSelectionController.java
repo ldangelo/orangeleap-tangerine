@@ -106,7 +106,28 @@ public class BatchSelectionController extends TangerineJsonListController {
         }
         return resolvedName;
     }
-    
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/batchInfo.json")
+    public ModelMap findBatchInfo(final Long batchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findBatchInfo: batchId = " + batchId);
+        }
+        final ModelMap model = new ModelMap();
+        if (batchId != null && batchId > 0) {
+            // TODO: get batch info
+        }
+        else {
+            // This is a new Batch
+            model.put(StringConstants.SUCCESS, Boolean.TRUE);
+            final Map<String, String> dataMap = new HashMap<String, String>();
+            dataMap.put("batchDesc", StringConstants.EMPTY);
+            dataMap.put("batchType", StringConstants.GIFT);
+            model.put(StringConstants.DATA, dataMap);
+        }
+        return model;
+    }
+
     @SuppressWarnings("unchecked")
     @RequestMapping("/findSegmentations.json")
     public ModelMap findSegmentations(String batchType, SortInfo sort) {
@@ -156,6 +177,7 @@ public class BatchSelectionController extends TangerineJsonListController {
         return model;
     }
 
+    // TODO: push code into service
     @SuppressWarnings("unchecked")
     private void appendModelForGift(HttpServletRequest request, String ids, SortInfo sort, ModelMap modelMap) {
         /* MetaData */

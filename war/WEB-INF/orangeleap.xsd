@@ -89,7 +89,7 @@
 	<xs:complexType name="abstractCustomizableEntity"
 		abstract="true">
 		<xs:sequence>
-			<xs:element name="customFieldMap">
+			<xs:element name="customFieldMap" minOccurs="1" maxOccurs="1">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
@@ -236,8 +236,6 @@
 			<xs:element name="creditCardNumber" type="xs:string"
 				minOccurs="0" />
 			<xs:element name="creditCardNumberDisplay" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="creditCardNumberEncrypted" type="xs:string"
 				minOccurs="0" />
 			<xs:element name="creditCardSecurityCode" type="xs:string"
 				minOccurs="0" />

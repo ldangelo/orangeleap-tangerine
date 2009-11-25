@@ -51,6 +51,8 @@ public class ObjectConverter {
 
     public void ConvertFromJAXB(Object from, Object to) {
         Class propertyType = null;
+        if (from == null) return;
+        if (to == null) return;
         BeanWrapper bwFrom = new BeanWrapperImpl(from);
         BeanWrapper bwTo = new BeanWrapperImpl(to);
 
@@ -68,12 +70,15 @@ public class ObjectConverter {
 
                 propertyType = pdFrom[i].getPropertyType();
 
-                Class domainClass = pdTo.getClass();
+                Class domainClass = pdTo.getPropertyType();
 
                 if (domainClass.getName().startsWith("com.orangeleap.tangerine.domain")) {
-                    Object newObject = domainClass.newInstance();
-                    ConvertFromJAXB(readMethod.invoke(from),newObject);
-                    writeMethod.invoke(to, newObject);
+                    if (writeMethod != null) {
+                    	Object newObject = domainClass.newInstance();
+                    	ConvertFromJAXB(readMethod.invoke(from),newObject);
+                    
+                    	writeMethod.invoke(to, newObject);
+                    }
                 } else if (propertyType == List.class) {
                     //
                     // handle the list items seperately because JaxB does not
@@ -82,12 +87,15 @@ public class ObjectConverter {
                     if (l != null) {
                         for (Object o : l) {
                             String className = o.getClass().getSimpleName();
+                            Class newClass;
                             try {
-                            	Class newClass = Class.forName("com.orangeleap.tangerine.domain." + className);
+                            	newClass = Class.forName("com.orangeleap.tangerine.domain." + className);
                             } catch (ClassNotFoundException e) {
+
                             	logger.info(e.getMessage());
+                            	newClass = Class.forName("com.orangeleap.tangerine.domain.paymentInfo." + className);                            	
                             }
-                           	Class newClass = Class.forName("com.orangeleap.tangerine.domain.paymentInfo." + className);
+
                             Object newObject = newClass.newInstance();
                             ConvertFromJAXB(o, newObject);
                             List newList = (List) pdTo.getReadMethod().invoke(to);
@@ -98,6 +106,7 @@ public class ObjectConverter {
                     }
 
                 } else if (propertyType == XMLGregorianCalendar.class) {
+                	if (readMethod != null) {
                     //
                     // need to provide date conversions...
                     XMLGregorianCalendar xmlDate = (XMLGregorianCalendar) readMethod.invoke(from);
@@ -113,6 +122,7 @@ public class ObjectConverter {
 
                         writeMethod.invoke(to, cal.getTime());
                     }
+                	}
                 } else if (propertyType == com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity.CustomFieldMap.class) {
                     //
                     // handle custom field map
@@ -349,99 +359,5 @@ public class ObjectConverter {
         to.setCustomFieldMap(cMap);
     }
 
-//    static public Constituent Convert(Constituent c) {
-//        Constituent p = new Constituent();
-//
-//        BeanUtils.copyProperties(c,p);
-//
-//        return p;
-//    }
-//
-//    /**
-//     * Convert from a domain Constituent to a schema Constituent
-//     *
-//     * @param from domain Constituent
-//     * @param to schema Constituent
-//     */
-//    static public void Convert(Constituent from,Constituent to) {
-//        String ignoreProperties[] = {"customFieldMap","primaryAddress","primaryEmail","primaryPhone"};
-//
-//
-//        //
-//        // Because collections are handled differently between the classes
-//        // we will convert collections by hand...
-//        BeanUtils.copyProperties(from,to,ignoreProperties);
-//
-//
-//        //
-//        // convert the custom field map
-//        Convert((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from,(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
-//
-//        // now set primaryAddress
-//        com.orangeleap.tangerine.ws.schema.Address address = new com.orangeleap.tangerine.ws.schema.Address();
-//        Convert(from.getPrimaryAddress(),address);
-//        to.setPrimaryAddress(address);
-//
-//        // now set primaryEmail
-//        com.orangeleap.tangerine.ws.schema.Email email = new com.orangeleap.tangerine.ws.schema.Email();
-//        Convert(from.getPrimaryEmail(),email);
-//        to.setPrimaryEmail(email);
-//
-//        // now set primaryPhone
-//        com.orangeleap.tangerine.ws.schema.Phone phone = new com.orangeleap.tangerine.ws.schema.Phone();
-//        Convert(from.getPrimaryPhone(),phone);
-//        to.setPrimaryPhone(phone);
-//    }
-//
-//    /**
-//     * Convert from a domain Address to a schema Address
-//     *
-//     * @param from domain Address
-//     * @param to schema Address
-//     */
-//    static public void Convert(com.orangeleap.tangerine.domain.communication.Address from, com.orangeleap.tangerine.ws.schema.Address to)
-//    {
-//        String[] ignoreProperties = {"customFieldMap","activationStatus","temporaryStartDate","temporaryEndDate","seasonalStartDate","seasonalEndDate","effectiveDate" };
-//
-//        BeanUtils.copyProperties(from,to,ignoreProperties);
-//
-//        //
-//        // convert the custom field map
-//        Convert((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from,(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
-//    }
-//
-//    /**
-//     * Convert from a domain Email to a schema Email
-//     *
-//     * @param from domain Email
-//     * @param to schema Email
-//     */
-//    static public void Convert(com.orangeleap.tangerine.domain.communication.Email from, com.orangeleap.tangerine.ws.schema.Email to)
-//    {
-//        String[] ignoreProperties = {"customFieldMap","activationStatus","temporaryStartDate","temporaryEndDate","seasonalStartDate","seasonalEndDate","effectiveDate" };
-//
-//
-//        BeanUtils.copyProperties(from,to,ignoreProperties);
-//
-//        //
-//        // convert the custom field map
-//        Convert((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from,(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
-//    }
-//
-//    /**
-//     * Convert from a domain Phone to a schema Phone
-//     * @param from domain Phone
-//     * @param to schema Phone
-//     */
-//    static public void Convert(com.orangeleap.tangerine.domain.communication.Phone from, com.orangeleap.tangerine.ws.schema.Phone to)
-//    {
-//        String[] ignoreProperties = {"customFieldMap","activationStatus","temporaryStartDate","temporaryEndDate","seasonalStartDate","seasonalEndDate","effectiveDate" };
-//
-//
-//        BeanUtils.copyProperties(from,to,ignoreProperties);
-//
-//        //
-//        // convert the custom field map
-//        Convert((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from,(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
-//    }
+
 }

@@ -85,7 +85,6 @@ public class OrangeLeapWS {
     
     private ConstituentService cs;
 
-    private PlatformTransactionManager txManager;
     
     @Resource(name = "communicationHistoryService")
     private CommunicationHistoryService communicationHistory;
@@ -168,6 +167,7 @@ public class OrangeLeapWS {
         Constituent responseConstituent = new Constituent();
         SaveOrUpdateConstituentResponse response = new SaveOrUpdateConstituentResponse();
         converter.ConvertToJAXB(c, responseConstituent);
+        responseConstituent.setAccountNumber(c.getId());
         response.setConstituent(responseConstituent);
         return response;
     }
@@ -299,6 +299,7 @@ public class OrangeLeapWS {
         ObjectConverter converter = new ObjectConverter();
 
         converter.ConvertFromJAXB(request.getGift(), g);
+        g.setConstituent(c);
 
         try {
             giftService.maintainGift(g);
@@ -309,7 +310,10 @@ public class OrangeLeapWS {
         SaveOrUpdateGiftResponse response = new SaveOrUpdateGiftResponse();
         Gift responseGift = new Gift();
         converter.ConvertToJAXB(g, responseGift);
+        if (responseGift.getPaymentSource() != null)
+        	responseGift.getPaymentSource().setCreditCardNumber("");
         response.setGift(responseGift);
+     
         return response;
     }
 
@@ -341,6 +345,9 @@ public class OrangeLeapWS {
             Gift sg = new Gift();
 
             converter.ConvertToJAXB(g, sg);
+            
+            if (sg.getPaymentSource() != null) sg.getPaymentSource().setCreditCardNumber("");
+            
             response.getGift().add(sg);
         }
 
@@ -514,13 +521,5 @@ public class OrangeLeapWS {
         }
         return response;
     }
-
-	public PlatformTransactionManager getTxManager() {
-		return txManager;
-	}
-
-	public void setTxManager(PlatformTransactionManager txManager) {
-		this.txManager = txManager;
-	}
 
 }

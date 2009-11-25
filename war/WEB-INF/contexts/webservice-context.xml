@@ -33,7 +33,6 @@
         <constructor-arg ref="constituentService"/>
         <constructor-arg ref="giftService"/>
         <constructor-arg ref="communicationHistoryService"/>
-		<property name="txManager" ref="transactionManager"/>
     </bean>
 
     <security:global-method-security secured-annotations="enabled"/>

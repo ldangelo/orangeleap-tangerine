@@ -628,4 +628,7 @@ public class Constituent extends AbstractCommunicatorEntity implements FullTextS
         removeCustomField(ORGANIZATION_SALES_CONTACTS);
         removeCustomField(ORGANIZATION_PUBLIC_RELATIONS_CONTACTS);
     }
+    
+    public Long getConstituentId() { return this.getId(); }
+    public void setConstituentId(Long id) { this.setId(id); }
 }

@@ -69,6 +69,8 @@ public class ManageDashboardController {
             throw new RuntimeException("You are not authorized to access this page");
         }
     }
+    
+    private final static String ALL = "All";
 
     @RequestMapping(method = RequestMethod.GET)
     @SuppressWarnings("unchecked")
@@ -94,6 +96,10 @@ public class ManageDashboardController {
     		}
     	}
         
+    	List<String> availableRoles = siteService.getAvailableRoleList();
+    	availableRoles.add(0, ALL);
+    	for (DashboardItem item: items) item.setAvailableRoles(availableRoles);
+    	
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         addItems(items, returnList);
         modelMap.put(StringConstants.ROWS, returnList);
@@ -115,6 +121,9 @@ public class ManageDashboardController {
             map.put("title", item.getTitle());
             map.put("url", item.getUrl());
             map.put("order", item.getOrder());
+            String roles = item.getRoles();
+            if (roles == null) roles = ALL;
+            map.put("roles", roles);
             returnList.add(map);
         }
     }
@@ -132,48 +141,13 @@ public class ManageDashboardController {
         Iterator<DashboardItem> itemIterator = items.iterator();
         while (itemIterator.hasNext()) {
         	DashboardItem item = itemIterator.next();
-            boolean found = false;
-            while (beanIterator.hasNext()) {
-                DynaBean bean = beanIterator.next();
-                if (bean.getDynaClass().getDynaProperty("itemid") != null &&
-                        bean.get("itemid") != null && 
-                        item.getId().equals(bean.get("itemid"))) {
-                	
-                    if (bean.getDynaClass().getDynaProperty("type") != null && bean.get("type") != null) {
-                        item.setType((String) bean.get("type"));
-                    }
-                    
-                    if (bean.getDynaClass().getDynaProperty("title") != null && bean.get("title") != null) {
-                        item.setTitle((String) bean.get("title"));
-                    }
-                    
-                    if (bean.getDynaClass().getDynaProperty("url") != null && bean.get("url") != null) {
-                        item.setUrl((String) bean.get("url"));
-                    }
-
-                    if (bean.getDynaClass().getDynaProperty("order") != null && bean.get("order") != null) {
-                        item.setOrder( new Integer( (String)bean.get("order")));
-                    }
-
-                    found = true;
-                    beanIterator.remove();
-                }
-            }
-            if (found) {
-            	dashboardService.maintainDashboardItem(item);
-            } else {
-            	dashboardService.deleteDashboardItemById(item.getId());
-            	itemIterator.remove();
-            }
-            
+        	dashboardService.deleteDashboardItemById(item.getId());
+        	itemIterator.remove();
         }
 
-        // The following are new options
         beanIterator = beans.iterator();
         while (beanIterator.hasNext()) {
             DynaBean bean = beanIterator.next();
-            if (bean.getDynaClass().getDynaProperty("itemid") != null &&
-                    bean.get("itemid") != null) {
             	
             	DashboardItem item = new DashboardItem();
 
@@ -193,9 +167,14 @@ public class ManageDashboardController {
                     item.setOrder( new Integer( (String)bean.get("order")));
                 }
 
+                if (bean.getDynaClass().getDynaProperty("roles") != null && bean.get("roles") != null) {
+                    String roles = (String)bean.get("roles");
+                	if (ALL.equals(roles)) roles = null;
+                    item.setRoles(roles);
+                }
+
             	dashboardService.maintainDashboardItem(item);
                 items.add(item);
-            }
         }
 
         ModelMap map = new ModelMap();

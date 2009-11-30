@@ -55,7 +55,8 @@ Ext.onReady(function() {
                 {name: 'type', type: 'string'},
                 {name: 'title', type: 'string'},
                 {name: 'url', type: 'string'},
-                {name: 'order', type: 'string'}
+                {name: 'order', type: 'string'},
+                {name: 'roles', type: 'string'}
         ]
     });
     store.on('beforewrite', function(proxy, action, rs, options, args) {
@@ -190,8 +191,8 @@ Ext.onReady(function() {
                  }
              },            
              {  header: 'Type',
-                width: 100,
-                sortable: true,
+                width: 40,
+                sortable: false,
                 dataIndex: 'type',
                 align: 'left',
                 editable: true,
@@ -206,15 +207,30 @@ Ext.onReady(function() {
             },
             {   header: 'Title',
                 width: 170,
-                sortable: true,
+                sortable: false,
                 dataIndex: 'title',
                 align: 'left',
                 editable: true,
                 editor: stringFld
             },
+            {   header: 'Role',
+                width: 100,
+                sortable: false,
+                dataIndex: 'roles',
+                align: 'left',
+                editable: true,
+                editor: new Ext.form.ComboBox({
+                	typeAhead:true,
+                	triggerAction:'all',
+                	store:['All','ROLE_ADMIN','ROLE_SUPER_ADMIN'],  
+                	valueField: 'val',
+                	displayField: 'desc',
+                	lazyRenderer: true
+                })
+            },
             {   header: 'Url',
                 width: 170,
-                sortable: true,
+                sortable: false,
                 dataIndex: 'url',
                 align: 'left',
                 editable: true,

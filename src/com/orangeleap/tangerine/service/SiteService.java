@@ -133,4 +133,7 @@ public interface SiteService {
     void updateSite(Site site);
 
     void updateEntityDefault(EntityDefault entityDefault);
+    
+    List<String> getAvailableRoleList();
+
 }

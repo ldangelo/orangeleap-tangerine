@@ -18,8 +18,6 @@
 
 package com.orangeleap.tangerine.controller.screenDefinition;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -35,10 +33,9 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.SectionDao;
-import com.orangeleap.tangerine.domain.customization.Picklist;
-import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -56,6 +53,9 @@ public class SectionDefinitionRolesController extends SimpleFormController {
     
     @Resource(name = "sectionDAO")
     private SectionDao sectionDao;
+    
+    @Resource(name = "siteService")
+    private SiteService siteService;
     
     @Resource(name = "picklistItemService")
     private PicklistItemService picklistItemService;
@@ -87,7 +87,7 @@ public class SectionDefinitionRolesController extends SimpleFormController {
         SectionDefinition sectionDefinition = sectionDao.readSectionDefinition(id);
         
         ModelAndView mav = new ModelAndView(getSuccessView());
-        mav.addObject("availableRoleList", getAvailableRoleList());
+        mav.addObject("availableRoleList", siteService.getAvailableRoleList());
         mav.addObject("roles", getRoleList(sectionDefinition));
         mav.addObject("id", id);
         mav.addObject("pageType", pageType);
@@ -105,22 +105,6 @@ public class SectionDefinitionRolesController extends SimpleFormController {
         return sb.toString();
     }
     
-    private List<String> getAvailableRoleList() {
-    	List<String> result = new ArrayList<String>();
-    	
-    	Picklist list = picklistItemService.getPicklist("screenDefinitionRole");
-    	if (list != null) {
-	    	for (PicklistItem item:list.getActivePicklistItems()) {
-	    		String value = item.getDisplayValue().toUpperCase().replace(' ', '_');
-	    		if (!value.startsWith("ROLE_")) value = "ROLE_" + value;
-	    		if (!result.contains(value)) result.add(value);
-	    	}
-    	}
-    	
-    	return result;
-    }
-    
- 
     
     @Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {

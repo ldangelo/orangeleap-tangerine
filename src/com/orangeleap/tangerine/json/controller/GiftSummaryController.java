@@ -100,6 +100,7 @@ public class GiftSummaryController {
 
     private static String FIRST_GIFT =  "First Gift";
     private static String LAST_GIFT =  "Last Gift";
+    private static String LARGEST_GIFT =  "Largest Gift";
     
     private void addViewData(Long constituentId, String attributeList, List<Map<String, Object>> returnList) {
     
@@ -114,6 +115,11 @@ public class GiftSummaryController {
     	if (requestedAttribute(LAST_GIFT, attributeList)) {
 	    	Gift lastGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", false);
 	    	if (lastGift != null) putGift(LAST_GIFT, lastGift, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LARGEST_GIFT, attributeList)) {
+	    	Gift largestGift = rollupService.readGiftViewLargestByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid");
+	    	if (largestGift != null) putGift(LARGEST_GIFT, largestGift, returnList, index++);
     	}
     	
     	// Add stats

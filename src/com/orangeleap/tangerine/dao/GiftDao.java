@@ -48,6 +48,8 @@ public interface GiftDao {
 
 	public Gift readFirstOrLastGiftByConstituent(Long constituentId, Date fromDate, Date toDate, GiftType giftType, String giftStatus, boolean first);
 
+	public Gift readLargestGiftByConstituent(Long constituentId, Date fromDate, Date toDate, GiftType giftType, String giftStatus);
+
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
     public List<Constituent> analyzeLapsedDonor(Date beginDate, Date currentDate);

@@ -5,8 +5,8 @@
 	<delete id="ROLLUP_DELETE_ROLLUP_VALUES_FOR_ATTRIBUTE_SERIES">
 		delete from ROLLUP_VALUE 
 		where 
-		ROLLUP_SERIES_ID = #rollupSeriesId# 
-		and ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
+		ROLLUP_ATTRIBUTE_ID = #rollupAttributeId#
+		and ROLLUP_SERIES_ID = #rollupSeriesId# 
         and START_DATE &gt;= #startDate# 
         and END_DATE &lt;= #endDate#
         and SITE_NAME = #siteName#
@@ -252,7 +252,61 @@
         		p.CURRENCY_CODE
     </insert>
      
+    <!-- Second-level rollups based on other rollup values -->
     
+    <sql id="SELECT_SECOND_LEVEL_INTO_RV_FRAG">
+        insert into ROLLUP_VALUE (
+            SITE_NAME,
+            ROLLUP_SERIES_ID,
+        	ROLLUP_ATTRIBUTE_ID,
+        	START_DATE,
+        	END_DATE,
+        	GROUP_BY_VALUE,
+        	CURRENCY_CODE,
+        	COUNT_VALUE,        
+        	SUM_VALUE,        
+        	MIN_VALUE,       
+        	MAX_VALUE        
+        )
+        select
+            #siteName#,
+        	#rollupSeriesId#,
+        	#rollupAttributeId#,
+        	#startDate#,
+        	#endDate#,
+       		rv.GROUP_BY_VALUE,
+       		rv.CURRENCY_CODE,
+           	SUM(rv.COUNT_VALUE),
+           	SUM(rv.SUM_VALUE),
+           	MIN(rv.MIN_VALUE),
+           	MAX(rv.MAX_VALUE)
+        from 
+           	ROLLUP_VALUE rv,
+           	ROLLUP_ATTRIBUTE ra
+       	where
+       		ra.ROLLUP_ATTRIBUTE_ID = rv.ROLLUP_ATTRIBUTE_ID 
+       		and rv.ROLLUP_SERIES_ID = #rollupSeriesId#
+       		and rv.START_DATE = #startDate# and rv.END_DATE = #endDate#
+			<isNotNull property="groupByValue"> 
+	        and rv.GROUP_BY_VALUE = #groupByValue#
+			</isNotNull> 
+ 	</sql>
+    
+    <insert id="ROLLUP_ACTUALS_BY_CONSTITUENT" parameterClass="java.util.Map">
+        <include refid="SELECT_SECOND_LEVEL_INTO_RV_FRAG"/>
+        		and ra.ATTRIBUTE_NAME_ID in ('Gift Amount','Gift In Kind Amount','Soft Gift Amount')
+            group by 
+        		rv.GROUP_BY_VALUE,
+        		rv.CURRENCY_CODE
+    </insert>
+
+    <insert id="ROLLUP_PROJECTEDS_BY_CONSTITUENT" parameterClass="java.util.Map">
+        <include refid="SELECT_SECOND_LEVEL_INTO_RV_FRAG"/>
+        		and ra.ATTRIBUTE_NAME_ID in ('Projected Pledge Amount','Projected Recurring Gift Amount')
+            group by 
+        		rv.GROUP_BY_VALUE,
+        		rv.CURRENCY_CODE
+    </insert>
 
 </sqlMap>
 

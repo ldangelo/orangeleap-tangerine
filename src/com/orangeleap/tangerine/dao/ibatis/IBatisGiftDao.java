@@ -320,4 +320,19 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         return (Gift)getSqlMapClientTemplate().queryForObject("SELECT_FIRST_OR_LAST_GIFT_BY_CONSTITUENT", params);
 	}
 
+	@Override
+	public Gift readLargestGiftByConstituent(Long constituentId, Date fromDate, Date toDate, GiftType giftType, String giftStatus) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readLargestGiftByConstituent: constituentId = " + constituentId + " fromDate = " + fromDate +
+                    " toDate = " + toDate );
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        params.put("giftType", giftType);
+        params.put("giftStatus", giftStatus);
+        return (Gift)getSqlMapClientTemplate().queryForObject("SELECT_LARGEST_GIFT_BY_CONSTITUENT", params);
+	}
+
 }

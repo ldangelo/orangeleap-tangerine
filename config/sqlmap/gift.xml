@@ -170,6 +170,26 @@
 		limit 1
 	</select>
 	
+	<select id="SELECT_LARGEST_GIFT_BY_CONSTITUENT" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.CONSTITUENT_ID = #constituentId#
+		<isNotNull property="fromDate">
+		and g.DONATION_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and g.DONATION_DATE &lt;= #toDate#
+		</isNotNull>
+		<isNotNull property="giftStatus">
+		and g.GIFT_STATUS = #giftStatus# 
+		</isNotNull>
+		<isNotNull property="giftType">
+		and g.GIFT_TYPE = #giftType#
+		</isNotNull>
+		order by g.ADJUSTED_AMOUNT 
+		desc
+		limit 1
+	</select>
+	
 	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
 		and g.CONSTITUENT_ID = #constituentId#

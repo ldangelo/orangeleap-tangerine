@@ -69,7 +69,7 @@ public class IBatisRollupValueDao extends AbstractIBatisDao implements RollupVal
         }
         Map<String, Object> params = setupParams();
         params.put("groupByValue", groupByValue);
-        params.put("rollupSeriesId", rs.getId());
+        params.put("rollupSeriesId", rs.getId());  
         params.put("rollupAttributeId", ra.getId());
         params.put("startDate", startDate);
         params.put("endDate", endDate);

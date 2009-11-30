@@ -177,6 +177,11 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     	return giftDao.readFirstOrLastGiftByConstituent(constituentId, null, null, giftType, giftStatus, first);
     }
     
+	@Override
+    public Gift readGiftViewLargestByConstituentId(Long constituentId, GiftType giftType, String giftStatus) {
+    	return giftDao.readLargestGiftByConstituent(constituentId, null, null, giftType, giftStatus);
+    }
+    
 
 	@Override
 	public void deleteRollupValuesForAttributeSeries(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate) {
@@ -224,6 +229,7 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 			datefield = Calendar.YEAR;
 			beginDate = DateUtils.addYears(beginDate, -1);
 			beginDate = DateUtils.addDays(beginDate, 1);
+			beginDate = DateUtils.truncate(beginDate, Calendar.DATE);
 		} else if (rst.equals(RollupSeriesType.MONTH)) {
 			datefield = Calendar.MONTH;
 			beginDate = DateUtils.truncate(beginDate, Calendar.MONTH);

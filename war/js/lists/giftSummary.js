@@ -85,7 +85,7 @@ Ext.onReady(function() {
     	         {
     	            title:'Hard Gifts',
     	            html : '',
-    	            attributeList : '|First Gift|Last Gift|Gift Amount|'
+    	            attributeList : '|First Gift|Last Gift|Largest Gift|Gift Amount|'
     	         },
     	         {
       	            title:'Soft Gifts',
@@ -108,6 +108,11 @@ Ext.onReady(function() {
             	    attributeList : '|Gift In Kind Amount|'
        	         },
     	         {
+        	        title:'Overall',
+     	            html : '',
+             	    attributeList : '|All Actuals|All Projected|'
+        	     },
+       	         {
        	            title:'All',
     	            html : '',
         	        attributeList : ''

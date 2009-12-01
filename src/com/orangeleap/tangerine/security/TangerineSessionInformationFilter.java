@@ -193,7 +193,7 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
     		count = new Long(0);
     	}
     	counts.put(sitename, count + 1L);
-    	orangeleapJmxNotificationBean.publishNotification("login", "login by "+constituent.getLoginId());
+    	orangeleapJmxNotificationBean.publishNotification("login", "login by "+constituent.getLoginId() + "@" + sitename);
     }
     
     protected boolean checkSiteActive(String siteName) {

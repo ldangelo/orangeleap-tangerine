@@ -46,6 +46,7 @@ import org.springframework.web.util.WebUtils;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
 import com.orangeleap.tangerine.service.SessionService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
@@ -80,6 +81,9 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
 
     @Autowired
     private SiteService siteService;
+
+    @Autowired
+    private OrangeleapJmxNotificationBean orangeleapJmxNotificationBean;
 
     @Autowired
     private TangerineUserHelper tangerineUserHelper;
@@ -177,6 +181,19 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
         details.setConstituentId(constituent.getId());
         details.setLastName(constituent.getLastName());
         details.setFirstName(constituent.getFirstName());
+        
+        updateLoginCountForSite(constituent, sitename);
+    }
+    
+    
+    private synchronized void updateLoginCountForSite(Constituent constituent, String sitename) {
+    	Map<String, Long> counts = orangeleapJmxNotificationBean.getLoginCounts();
+    	Long count = counts.get(sitename);
+    	if (count == null) {
+    		count = new Long(0);
+    	}
+    	counts.put(sitename, count + 1L);
+    	orangeleapJmxNotificationBean.publishNotification("login", "login by "+constituent.getLoginId());
     }
     
     protected boolean checkSiteActive(String siteName) {

@@ -18,10 +18,16 @@
 
 package com.orangeleap.tangerine.service.payments;
 
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
+
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -34,10 +40,6 @@ import com.paymentech.orbital.sdk.request.FieldNotFoundException;
 import com.paymentech.orbital.sdk.request.Request;
 import com.paymentech.orbital.sdk.transactionProcessor.TransactionProcessor;
 import com.paymentech.orbital.sdk.util.exceptions.InitializationException;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.validation.BindException;
 
 //@Service("paymentGateway")
 public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
@@ -51,12 +53,16 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
     private TransactionProcessorIF tp = null;
 
     private ApplicationContext applicationContext;
+	private OrangeleapJmxNotificationBean orangeleapJmxNotificationBean;
+	
+	public final static String ORBITAL_PAYMENT_ERROR = "orbitalpaymenterror";
 
     public OrbitalPaymentGateway() {
     }
 
     void Initialize() {
         ErrorLogService errorLogServce = (ErrorLogService) applicationContext.getBean("errorLogService");
+        orangeleapJmxNotificationBean = (OrangeleapJmxNotificationBean) applicationContext.getBean("OrangeleapJmxNotificationBean");
 
         try {
             configurator = Configurator.getInstance(configFile);
@@ -73,6 +79,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             if (logger.isErrorEnabled()) {
                 logger.error(iex.getMessage());
                 errorLogServce.addErrorMessage(iex.getMessage(), "OrbitalPaymentGateway.initialize");
+            	orangeleapJmxNotificationBean.publishNotification(ORBITAL_PAYMENT_ERROR, ""+iex.getMessage());
             }
         }
     }
@@ -177,10 +184,16 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         try {
             response = tp.process(request);
         } catch (Exception text) {
-            gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
-            gift.setPaymentMessage(text.getMessage());
-            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+            
+            if (logger.isErrorEnabled()) {
+                logger.error("Request: " + text.getMessage());
+            	orangeleapJmxNotificationBean.publishNotification(ORBITAL_PAYMENT_ERROR, ""+text.getMessage());
+            }
 
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(text.getMessage());
+
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
             gift.setSuppressValidation(true);
             try {
                 gs.maintainGift(gift);
@@ -189,9 +202,6 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
                 logger.error(e);
             }
 
-            if (logger.isErrorEnabled()) {
-                logger.error("Request: " + text.getMessage());
-            }
             return;
         }
 
@@ -340,6 +350,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         } catch (Exception tex) {
             if (logger.isErrorEnabled()) {
                 logger.error(tex.getMessage());
+            	orangeleapJmxNotificationBean.publishNotification(ORBITAL_PAYMENT_ERROR, ""+tex.getMessage());
             }
             return;
         }
@@ -441,6 +452,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         } catch (Exception tex) {
             if (logger.isErrorEnabled()) {
                 logger.error(tex.getMessage());
+            	orangeleapJmxNotificationBean.publishNotification(ORBITAL_PAYMENT_ERROR, ""+tex.getMessage());
             }
             return;
         }

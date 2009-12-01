@@ -22,12 +22,12 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	
 	@Override
 	public void setNotificationPublisher(NotificationPublisher notificationPublisher) {
-        this.publisher = notificationPublisher;
+        publisher = notificationPublisher;
     }
 
 	@Override
 	public void publishNotification(String type, String message) {
-		this.publisher.sendNotification(new Notification(type, this, 0, System.currentTimeMillis(), message));
+		if (publisher != null) publisher.sendNotification(new Notification(type, this, 0, System.currentTimeMillis(), message));
 	}
 
 	@Override

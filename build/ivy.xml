@@ -70,19 +70,6 @@
             <artifact name="servlet-api" type="jar"/>
         </dependency>
 
-        <!-- Spring -->
-        <dependency org="org.springframework" name="spring" transitive="false" rev="2.5.6">
-            <artifact name="spring" type="jar"/>
-            <artifact name="spring" type="source" ext="jar" classifier="sources" conf="sources"/>
-        </dependency>
-        <dependency org="org.springframework" name="spring-webmvc" transitive="false" rev="2.5.6">
-            <artifact name="spring-webmvc" type="jar"/>
-            <artifact name="spring-webmvc" type="source" ext="jar" classifier="sources" conf="sources"/>
-        </dependency>
-        <dependency org="org.springframework" name="spring-test" transitive="false" rev="2.5.6" conf="test->default">
-            <artifact name="spring-test" type="jar" ext="jar"/>
-        </dependency>
-
         <!--  JUnit -->
         <dependency org="junit" name="junit" rev="4.5" transitive="false" conf="test->default">
             <artifact name="junit" type="jar" ext="jar"/>
@@ -100,8 +87,8 @@
         </dependency>
 
         <!-- Custom JsonView -->
-        <dependency org="com.mpower" name="JsonView" transitive="false" rev="1.1">
-            <artifact name="JsonView" type="jar"/>
+        <dependency org="com.orangeleap" name="jsonView" transitive="false" rev="1.3.0">
+            <artifact name="jsonView" type="jar"/>
         </dependency>
 
         <!-- Ant -->
@@ -268,6 +255,20 @@
         </dependency>
 
         <!-- Spring -->
+        <dependency org="org.springframework" name="spring" transitive="false" rev="2.5.6">
+            <artifact name="spring" type="jar"/>
+            <artifact name="spring" type="source" ext="jar" classifier="sources" conf="sources"/>
+        </dependency>
+
+        <dependency org="org.springframework" name="spring-webmvc" transitive="false" rev="2.5.6">
+            <artifact name="spring-webmvc" type="jar"/>
+            <artifact name="spring-webmvc" type="source" ext="jar" classifier="sources" conf="sources"/>
+        </dependency>
+
+        <dependency org="org.springframework" name="spring-test" transitive="false" rev="2.5.6" conf="test->default">
+            <artifact name="spring-test" type="jar" ext="jar"/>
+        </dependency>
+
         <dependency org="org.springframework.ldap" name="spring-ldap" transitive="false" rev="1.3.0.RELEASE"
                     classifier="all">
             <artifact name="spring-ldap" type="jar"/>
@@ -303,19 +304,6 @@
         <dependency org="org.springframework.security" name="spring-security-cas-client" transitive="false" rev="2.0.4">
             <artifact name="spring-security-cas-client" type="jar"/>
             <artifact name="spring-security-cas-client" type="source" ext="jar" classifier="sources" conf="sources"/>
-        </dependency>
-
-        <dependency org="org.jasig.cas" name="cas-client-core" transitive="false" rev="3.1.8">
-            <artifact name="cas-client-core" type="jar"/>
-        </dependency>
-
-        <dependency org="org.apache.axis2" name="axis2" transitive="false" rev="1.4.1">
-            <artifact name="axis2" type="jar"/>
-            <!--<artifact name="axis2" type="source" ext="jar" classifier="sources" conf="sources"/>  -->
-        </dependency>
-
-        <dependency org="org.apache.axis" name="axis-ant" transitive="false" rev="1.4">
-            <artifact name="axis-ant" type="jar"/>
         </dependency>
 
         <dependency org="org.springframework.integration" name="spring-integration-core" transitive="false"
@@ -383,11 +371,37 @@
             <artifact name="spring-xml" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
 
+        <dependency org="org.springframework.webflow" name="spring-binding" transitive="false" rev="2.0.8.RELEASE">
+            <artifact name="spring-binding" type="jar" ext="jar"/>
+            <artifact name="spring-binding" type="source" ext="jar" classifier="sources" conf="sources"/>
+        </dependency>
+
         <dependency org="org.springframework.webflow" name="spring-webflow" transitive="false" rev="2.0.8.RELEASE">
             <artifact name="spring-webflow" type="jar" ext="jar"/>
             <artifact name="spring-webflow" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
+
+        <dependency org="ognl" name="ognl" rev="2.6.9"/>
+
+        <dependency org="org.springframework.webflow" name="spring-js" transitive="false" rev="2.0.8.RELEASE">
+            <artifact name="spring-js" type="jar" ext="jar"/>
+            <artifact name="spring-js" type="source" ext="jar" classifier="sources" conf="sources"/>
+        </dependency>
         
+        <!-- CAS & Axis -->
+        <dependency org="org.jasig.cas" name="cas-client-core" transitive="false" rev="3.1.8">
+            <artifact name="cas-client-core" type="jar"/>
+        </dependency>
+
+        <dependency org="org.apache.axis2" name="axis2" transitive="false" rev="1.4.1">
+            <artifact name="axis2" type="jar"/>
+            <!--<artifact name="axis2" type="source" ext="jar" classifier="sources" conf="sources"/>  -->
+        </dependency>
+
+        <dependency org="org.apache.axis" name="axis-ant" transitive="false" rev="1.4">
+            <artifact name="axis-ant" type="jar"/>
+        </dependency>
+
         <!-- Sun -->
         <dependency org="com.sun.xml.wss" name="xws-security" transitive="false" rev="2.0" classifier="FCS">
             <artifact name="xws-security" type="jar"/>

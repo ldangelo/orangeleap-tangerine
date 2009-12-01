@@ -187,12 +187,7 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
     
     
     private synchronized void updateLoginCountForSite(Constituent constituent, String sitename) {
-    	Map<String, Long> counts = orangeleapJmxNotificationBean.getLoginCounts();
-    	Long count = counts.get(sitename);
-    	if (count == null) {
-    		count = new Long(0);
-    	}
-    	counts.put(sitename, count + 1L);
+    	orangeleapJmxNotificationBean.incrementStatCount(sitename, "logins");
     	orangeleapJmxNotificationBean.publishNotification("login", "login by "+constituent.getLoginId() + "@" + sitename);
     }
     

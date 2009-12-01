@@ -255,13 +255,13 @@
 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
     <property name="beans">
       <map>
-        <entry key="bean:name=orangeleapJmxNotificationBean" value-ref="OrangeleapJmxNotificationBean"/>
+        <entry key="bean:name=orangeleapJmxNotification" value-ref="OrangeleapJmxNotificationBean"/>
       </map>
     </property>
     <property name="assembler">
       <bean class="org.springframework.jmx.export.assembler.InterfaceBasedMBeanInfoAssembler">
         <property name="managedInterfaces">
-          <value>com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean</value>
+          <value>com.orangeleap.tangerine.service.OrangeleapJmxNotification</value>
         </property>
       </bean>
     </property>

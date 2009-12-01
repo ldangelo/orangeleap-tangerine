@@ -5,53 +5,43 @@
                           http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 
     <input name="batchId" type="long"/>
-    <input name="batchType"/>
-    <input name="ids"/>
-    <input name="sortInfo"/>
 
-    <view-state id="batchStep1">
+    <view-state id="batchFlow">
         <on-render>
-            <evaluate expression="batchSelectionAction.step1FindBatchInfo(batchId)" result="flowScope.batchInfo" />
+            <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, flowExecutionContext, requestParameters.batchId)" result="viewScope.batchInfo"/>
         </on-render>
 
-        <transition on="step2" to="batchStep2">
-            <evaluate expression="batchSelectionAction.step2FindSegmentations(batchType, sortInfo)" result="flowScope.segmentationInfo"/>
+        <transition on="step1">
+            <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, flowExecutionContext, requestParameters.batchId)" result="viewScope.batchInfo"/>
+            <render fragments="step1Fragment" />
+        </transition>
+
+        <transition on="step2">
+            <evaluate expression="batchSelectionAction.step2FindSegmentations(flowRequestContext, requestParameters.batchType, requestParameters.batchDesc, requestParameters.sort,
+                requestParameters.dir, requestParameters.limit, requestParameters.start)" result="viewScope.segmentationInfo"/>
+            <render fragments="step2Fragment" />
         </transition>        
-    </view-state>
 
-    <view-state id="batchStep2">
-        <transition on="step1" to="batchStep1"/>
-        <transition on="step3" to="batchStep3">
-            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(externalContext, ids, batchType, sortInfo)"
-                    result="flowScope.rowInfo"/>
+        <transition on="step3">
+            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext, externalContext,
+                requestParameters.sort, requestParameters.dir, requestParameters.limit, requestParameters.start)"
+                    result="viewScope.rowInfo"/>
+            <render fragments="step3Fragment" />
         </transition>
-    </view-state>
 
-    <view-state id="batchStep3">
-        <transition on="step1" to="batchStep1"/>
-        <transition on="step2" to="batchStep2"/>
-        <transition on="step4" to="batchStep4">
-            <evaluate expression="batchSelectionAction.step4FindBatchUpdateFields(batchType)" result="flowScope.updateFieldsInfo"/>
+        <transition on="step4">
+            <evaluate expression="batchSelectionAction.step4FindBatchUpdateFields(flowExecutionContext, batchType)"
+                      result="viewScope.updateFieldsInfo"/>
+            <render fragments="step4Fragment" />
         </transition>
-    </view-state>
 
-    <view-state id="batchStep4">
-        <transition on="step1" to="batchStep1"/>
-        <transition on="step2" to="batchStep2"/>
-        <transition on="step3" to="batchStep3"/>
-        <transition on="step5" to="batchStep5">
-            <evaluate expression="batchSelectionAction.step5ReviewUpdates(externalContext, batchType, ids, sortInfo)" result="flowScope.reviewInfo"/>
+        <transition on="step5">
+            <evaluate expression="batchSelectionAction.step5ReviewUpdates(flowExecutionContext, externalContext, batchType, ids, sortInfo)"
+                      result="viewScope.reviewInfo"/>
+            <render fragments="step5Fragment" />
         </transition>
-    </view-state>
 
-    <view-state id="batchStep5">
-        <transition on="step1" to="batchStep1"/>
-        <transition on="step2" to="batchStep2"/>
-        <transition on="step3" to="batchStep3"/>
-        <transition on="step4" to="batchStep4"/>
     </view-state>
-
-    <end-state id="batchCompleted"/>
 
 </flow>
         

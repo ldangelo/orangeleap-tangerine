@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:flow="http://www.springframework.org/schema/webflow-config"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/webflow-config
+    http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd">
+
+    <bean id="batchHandlerAdapter" class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+
+    <bean id="batchHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true" />
+        <property name="mappings">
+            <props>
+                <!--<prop key="/doBatch.htm">batchFlowController</prop>-->
+            </props>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+		<property name="order" value="0" />
+		<property name="flowRegistry" ref="flowRegistry" />
+	</bean>
+    
+    <!--<bean id="batchFlowController" class="org.springframework.webflow.mvc.servlet.FlowController" p:flowExecutor-ref="flowExecutor"/>-->
+
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter" p:flowExecutor-ref="flowExecutor"/>
+
+    <flow:flow-executor id="flowExecutor" flow-registry="flowRegistry">
+        <flow:flow-execution-attributes>
+            <flow:always-redirect-on-pause value="false"/>
+        </flow:flow-execution-attributes>
+    </flow:flow-executor>    
+
+    <flow:flow-registry id="flowRegistry" flow-builder-services="flowBuilderServices">
+        <flow:flow-location path="/WEB-INF/contexts/flows/batch-flow-config.xml" id="doBatch"/>
+    </flow:flow-registry>
+
+    <flow:flow-builder-services id="flowBuilderServices" view-factory-creator="viewFactoryCreator"/>
+
+    <bean id="viewFactoryCreator" class="com.orangeleap.json.views.factories.JsonWebFlowViewFactoryCreator">
+        <property name="encodeNullBeanProperties" value="false"/>
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+                <!--<ref bean="jsonViewResolver"/>-->
+            </list>
+        </property>
+    </bean>
+
+    <bean name="doBatch.htm" class="com.orangeleap.tangerine.web.flow.BatchFlowHandler" />	
+
+    <!--<bean name="viewNameTranslator"-->
+                <!--class="com.orangeleap.json.JsonRequestToViewNameTranslator"-->
+                <!--p:view="jsonView"/>-->
+
+    <!--<bean name="jsonView" class="com.orangeleap.json.views.JsonWebFlowView" p:encodeNullBeanProperties="false"/>-->
+    
+</beans>

@@ -72,6 +72,8 @@ public interface GiftService {
 
     List<Gift> readGiftsBySegmentationReportIds(Set<Long> reportIds, SortInfo sort, Locale locale);
 
+    int readCountGiftsBySegmentationReportIds(Set<Long> reportIds);
+
     Gift reprocessGift(Gift gift) throws BindException;
 
     Map<String, Object> readNumGiftsTotalAmount(Long constituentId);
@@ -81,13 +83,4 @@ public interface GiftService {
     int readCountByConstituentId(Long constituentId);
     
     void updateAdjustedAmount(Gift gift);
-
-    /**
-     * NOTE: unlike the method readGiftById, this method will not load the distribution lines, the custom fields for distro lines,
-     * the associated pledges / recurring gifts, the custom fields for the gift's constituent, address, or phone.
-     *
-     * Do * NOT * use this method if you need any of those!
-     * @return list of gifts
-     */
-    List<Gift> readGiftsByAllIds(Set<Long> giftIds, SortInfo sort, Locale locale);
 }

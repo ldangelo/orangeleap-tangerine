@@ -359,18 +359,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         return giftDao.readGiftById(giftId);
     }
 
-    /**
-     * @see com.orangeleap.tangerine.service.GiftService#readGiftsByAllIds(java.util.Set,
-     * com.orangeleap.tangerine.web.common.SortInfo, java.util.Locale)   
-     */
-    @Override
-    public List<Gift> readGiftsByAllIds(Set<Long> giftIds, SortInfo sort, Locale locale) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readGiftsByAllIds: giftIds = " + giftIds + " sort = " + sort);
-        }
-        return giftDao.readGiftsByAllIds(giftIds, sort.getSort(), sort.getDir(), sort.getStart(), sort.getLimit(), locale);
-    }
-
     @Override
     public Gift readGiftByIdCreateIfNull(Constituent constituent, String giftId) {
         if (logger.isTraceEnabled()) {
@@ -674,6 +662,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         return giftDao.readGiftsBySegmentationReportIds(reportIds, sort.getSort(), sort.getDir(), sort.getStart(),
                 sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountGiftsBySegmentationReportIds(Set<Long> reportIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountGiftsBySegmentationReportIds: reportIds = " + reportIds);
+        }
+        return giftDao.readCountGiftsBySegmentationReportIds(reportIds);
     }
 
     @Override

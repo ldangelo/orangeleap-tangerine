@@ -309,6 +309,9 @@ Ext.onReady(function() {
         }
     });
 
+    var flowExecutionKey = null;
+    var batchID = null; // TODO: fill in with real batchId (if any)
+
     /* Following is for the edit/add batch modal */
     function elementFocus(fld) {
         $('#' + fld.getId()).parents('div.x-form-element').prev('label').addClass('inFocus');
@@ -428,11 +431,15 @@ Ext.onReady(function() {
         if (thisGrp.mainItem.id == 'step1Grp') {
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
             step1Form.getForm().load({
-                url: 'batchInfo.json',
+//                url: 'batchInfo.json',
+                url: 'doBatch.htm',
                 params: {
-                    'batchId': 0 // TODO: fill in with real batchId (if any)
+                    'batchId': batchID,
+                    '_eventId_step1': 'step1',
+                    'execution': getFlowExecutionKey()
                 },
                 success: function(form, action) {
+                    flowExecutionKey = action.result.flowExecutionKey;
                     setTimeout(function() {
                         var elem = Ext.getCmp('batchDesc');
                         if (elem && elem.el) {
@@ -448,8 +455,11 @@ Ext.onReady(function() {
             });
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
-            var batchType = getBatchTypeValue();
-            step2Store.load({ params: { batchType: batchType, start: startNum, limit: 50, sort: 'lastDt', dir: 'DESC' }});
+            // Submit step 1's data to step 2
+            step2Store.load({ params: { 'batchType': getBatchTypeValue(),
+                'batchDesc': Ext.getCmp('batchDesc').getValue(),
+                'start': startNum, 'limit': 50, '_eventId_step2': 'step2',
+                'execution': getFlowExecutionKey(), 'sort': 'lastDt', 'dir': 'DESC' }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
             $('#step1Num').addClass('complete');
         }
@@ -461,23 +471,26 @@ Ext.onReady(function() {
                 for (var x = 0; x < len; x++) {
                     var thisItem = items[x];
                     if (thisItem.get('picked')) {
-                        selIds[selIds.length] = thisItem.id;
+                        selIds[selIds.length] = thisItem.id;  // TODO: how to get IDs over a few pages
                     }
                 }
             }
-            var batchType = getBatchTypeValue();
-            step3Store.load({ params: { 'ids': selIds.toString(), 'batchType': batchType, start: startNum, limit: 50 }});
+            // Submit step 2's data to step 3
+            step3Store.load({ params: { 'ids': selIds.toString(), '_eventId_step3': 'step3',
+                'execution': getFlowExecutionKey(), start: startNum, limit: 50 }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
             $('#step2Num').addClass('complete');
         }
         else if (thisGrp.mainItem.id == 'step4Grp') {
-            var batchType = getBatchTypeValue();
-            step4UpdatableFieldsStore.load({ params: { 'batchType': batchType }});
+            // No data for step 3 (just reference data) to submit to step 4
+            step4UpdatableFieldsStore.load({ params: { '_eventId_step4': 'step4',
+                'execution': getFlowExecutionKey() }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
             $('#step3Num').addClass('complete');
         }
         else if (thisGrp.mainItem.id == 'step5Grp') {
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step5Tip);
+            // Submit step 4's data to step 5
             var step4DataItems = step4Form.store.data.items;
             var params = {};
             for (var x = 0; x < step4DataItems.length; x++) {
@@ -487,12 +500,13 @@ Ext.onReady(function() {
                 }
                 params['param-' + step4DataItems[x].data.name] = value;
             }
-            params['batchType'] = getBatchTypeValue();
-            params['ids'] = step3Store.collect('id').toString();
+//            params['ids'] = step3Store.collect('id').toString();
             params['start'] = startNum;
             params['limit'] = 20;
             params['sort'] = 'id';
             params['dir'] = 'ASC';
+            params['_eventId_step5'] = 'step5';
+            params['execution'] = getFlowExecutionKey();
             step5Store.load({ 'params': params });
             $('#step4Num').addClass('complete');
         }
@@ -582,9 +596,14 @@ Ext.onReady(function() {
     function getBatchTypeValue() {
         return Ext.getCmp('batchType').getValue();
     }
+
+    function getFlowExecutionKey() {
+        return flowExecutionKey;
+    }
     
     var step2Store = new OrangeLeap.ListStore({
-        url: 'findSegmentations.json',
+        url: 'doBatch.htm',
+//        url: 'findSegmentations.json',
         totalProperty: 'totalRows',
         root: 'rows',
         remoteSort: true,
@@ -621,6 +640,9 @@ Ext.onReady(function() {
                     msg: msgs.errorStep2 });
             }
         }
+    });
+    step2Store.proxy.on('load', function(proxy, txn, options) {
+        flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
 
     function hasPickedRows() {
@@ -797,7 +819,7 @@ Ext.onReady(function() {
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     return '<span ext:qtitle="' + msgs.lastExecBy + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                 }
-            },
+            }
         ],
         getState: function() {
             var config = {};
@@ -842,7 +864,8 @@ Ext.onReady(function() {
     var step3Reader = new Ext.data.JsonReader();
 
     var step3Store = new OrangeLeap.ListStore({
-        url: 'confirmChoices.json',
+        url: 'doBatch.htm',
+//        url: 'confirmChoices.json',
         reader: step3Reader,
         root: 'rows',
         totalProperty: 'totalRows',
@@ -893,6 +916,9 @@ Ext.onReady(function() {
                     msg: msgs.errorStep3 });
             }
         }
+    });
+    step3Store.proxy.on('load', function(proxy, txn, options) {
+        flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
 
     var step3Bar = new OrangeLeap.BatchToolbar({
@@ -1016,7 +1042,8 @@ Ext.onReady(function() {
     });
 
     var step4UpdatableFieldsStore = new Ext.data.JsonStore({
-        url: 'findBatchUpdateFields.json',
+        url: 'doBatch.htm',
+//        url: 'findBatchUpdateFields.json',
         autoLoad: false,
         autoSave: false,
         totalProperty: 'totalRows',
@@ -1050,7 +1077,7 @@ Ext.onReady(function() {
                         }
                         records[x].set('selected', true);
                         if (recType == 'date' || recType == 'date_time') {
-                            newSource[recName] = Ext.isDate(recVal) ? recVal : new Date(Date.parse(recVal));
+                            newSource[recName] = Ext.isDate(recVal) ? recVal : Date.parseDate(recVal, 'Y-m-d H:i:s');
                         }
                         else if (recType == 'checkbox') {
                             newSource[recName] = Ext.isBoolean(recVal) ? recVal : (recVal.toString().toLowerCase() == 'true' ||
@@ -1134,6 +1161,7 @@ Ext.onReady(function() {
     });
     var step4Picklists = {};
     step4UpdatableFieldsStore.proxy.on('load', function(proxy, txn, options) {
+        flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
         if (txn.reader.jsonData && txn.reader.jsonData.rows) {
             var rows = txn.reader.jsonData.rows;
             var len = rows.length;
@@ -1222,7 +1250,8 @@ Ext.onReady(function() {
     var step5Reader = new Ext.data.JsonReader();
 
     var step5Store = new OrangeLeap.ListStore({
-        url: 'reviewUpdates.json',
+        url: 'doBatch.htm',
+//        url: 'reviewUpdates.json',
         reader: step5Reader,
         root: 'rows',
         totalProperty: 'totalRows',
@@ -1262,6 +1291,9 @@ Ext.onReady(function() {
             }
         }
         step5Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+    });
+    step5Store.proxy.on('load', function(proxy, txn, options) {
+        flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
 
     var step5Bar = new OrangeLeap.BatchToolbar({

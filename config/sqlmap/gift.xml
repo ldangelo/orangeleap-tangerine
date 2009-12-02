@@ -94,49 +94,6 @@
 		and g.GIFT_ID = #id#
 	</select>
 
-    <select id="SELECT_GIFT_BY_ALL_IDS" resultMap="GIFT_RESULT_NO_DISTRO_LINES" parameterClass="map">
-        select
-        <include refid="GIFT_COLS_FRAGMENT" />,
-        <include refid="CONSTITUENT_COLS_FRAGMENT" />,
-        <include refid="ADDRESS_COLS_FRAGMENT" />,
-        <include refid="PHONE_COLS_FRAGMENT" />,
-        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
-                
-        <dynamic prepend=",">
-            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
-                custFld.FIELD_VALUE
-            </isEqual>
-        </dynamic>
-
-        from GIFT g
-        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
-        left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
-        left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
-        left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
-
-        <isNotNull property="entityType">
-            <isNotNull property="fieldName">
-                <isNotNull property="asOfDate">
-                    left outer join CUSTOM_FIELD custFld on g.GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
-                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
-                        and custFld.FIELD_NAME = #fieldName#
-                </isNotNull>
-            </isNotNull>
-        </isNotNull>
-
-        where p.SITE_NAME = #siteName#
-        and g.GIFT_ID in
-        <iterate property="giftIds" conjunction="," open="(" close=")">
-            #giftIds[]#
-        </iterate>
-        and g.GIFT_TYPE != 'GIFT_IN_KIND'
-
-        order by
-        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
-		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
-        limit $offset$,$limit$
-    </select>
-
 	<select id="SELECT_ALL_GIFTS_BY_SITE" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
 	</select>
@@ -363,16 +320,32 @@
         limit $offset$,$limit$
 	</select>    
 
-    <select id="SELECT_GIFTS_BY_SEGMENTATION_RESULT_ID" resultMap="GIFT_LIST_RESULT" parameterClass="map">
+    <select id="SELECT_GIFTS_BY_SEGMENTATION_REPORT_ID" resultMap="GIFT_LIST_RESULT" parameterClass="map">
         select
         <include refid="GIFT_COLS_FRAGMENT" />,
         <include refid="CONSTITUENT_COLS_FRAGMENT" />,
         <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
 
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
         from GIFT g
         inner join THEGURU_SEGMENTATION_RESULT res on g.GIFT_ID = res.ENTITY_ID
         inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
         left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on g.GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
 
         where p.SITE_NAME = #siteName#
         and g.GIFT_TYPE != 'GIFT_IN_KIND'
@@ -385,7 +358,23 @@
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
         limit $offset$,$limit$
     </select>
-    
+
+
+    <select id="COUNT_GIFTS_BY_SEGMENTATION_REPORT_ID" resultClass="int" parameterClass="map">
+        select count(g.GIFT_ID)
+        
+        from GIFT g
+        inner join THEGURU_SEGMENTATION_RESULT res on g.GIFT_ID = res.ENTITY_ID
+        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+
+        where p.SITE_NAME = #siteName#
+        and g.GIFT_TYPE != 'GIFT_IN_KIND'
+        and res.REPORT_ID in
+        <iterate property="reportIds" conjunction="," open="(" close=")">
+            #reportIds[]#
+        </iterate>
+    </select>
+
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		insert into GIFT (GIFT_STATUS, GIFT_TYPE, AMOUNT, ADJUSTED_AMOUNT, AUTH_CODE, AVS_MESSAGE, 
 		CHECK_NUMBER, COMMENTS,

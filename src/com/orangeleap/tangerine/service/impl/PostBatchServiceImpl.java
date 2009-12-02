@@ -18,19 +18,13 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.dao.JournalDao;
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Journal;
-import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
 import com.orangeleap.tangerine.domain.Segmentation;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.customization.CustomField;
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
@@ -43,25 +37,21 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.FieldService;
+import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeRequest;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
 import com.orangeleap.theguru.client.ObjectFactory;
 import com.orangeleap.theguru.client.Theguru;
 import com.orangeleap.theguru.client.WSClient;
 import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 
 import javax.annotation.Resource;
@@ -71,11 +61,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 @Service("postBatchService")
@@ -83,7 +71,6 @@ import java.util.TreeMap;
 public class PostBatchServiceImpl extends AbstractTangerineService implements PostBatchService {
 
     public final static String DATE_FORMAT = "MM/dd/yyyy";
-
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -105,13 +92,15 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Resource(name = "picklistItemService")
     private PicklistItemService picklistItemService;
+    
+    @Resource(name = "pageCustomizationService")
+    protected PageCustomizationService pageCustomizationService;
 
     @Resource(name = "fieldService")
     private FieldService fieldService;
 
     @Resource(name="tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
-
 
     public final static String ACCOUNT_STRING_1 = "AccountString1";
     public final static String ACCOUNT_STRING_2 = "AccountString2";
@@ -131,10 +120,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public final static String SOURCE = "source";
     public final static String STATUS = "status";
     public final static String IDS = "ids";
-
-    public final static String DISPLAYED_ID = "displayedId";
-
-
 
     @Override
     public Map<String, String> readAllowedGiftSelectFields() {
@@ -641,6 +626,55 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
+    public PostBatch readBatchCreateIfNull(final Long batchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readBatchCreateIfNull: batchId = " + batchId);
+        }
+
+        PostBatch batch;
+        if (batchId != null && batchId > 0) {
+            batch = postBatchDao.readPostBatch(batchId);
+        }
+        else {
+            batch = new PostBatch();
+        }
+        return batch;
+    }
+
+    @Override
+    public List<Map<String, Object>> findSegmentationsForBatchType(String batchType, String sortField, String sortDirection, int startIndex, int resultCount) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findSegmentationsForBatchType: batchType = " + batchType + " sortField = " + sortField +
+                    " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
+        }
+        final List<Segmentation> segmentations = findSegmentations(batchType, sortField, sortDirection, startIndex, resultCount);
+        List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+        if (segmentations != null) {
+            final SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.EXT_DATE_FORMAT);
+            for (Segmentation segmentation : segmentations) {
+                Map<String, Object> returnMap = new HashMap<String, Object>();
+                returnMap.put(StringConstants.ID, segmentation.getId());
+                returnMap.put(StringConstants.NAME, segmentation.getName());
+                returnMap.put("desc", segmentation.getDescription());
+                returnMap.put("count", segmentation.getCount());
+                returnMap.put("lastDt", segmentation.getLastRunDate() == null ? null : sdf.format(segmentation.getLastRunDate()));
+                returnMap.put("lastUser", segmentation.getLastRunByUser());
+                returnMap.put("picked", Boolean.FALSE);  // TODO: fix to re-init picked to true if saved in DB
+                returnList.add(returnMap);
+            }
+        }
+        return returnList;
+    }
+
+    @Override
+    public int findTotalSegmentations(String batchType) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findTotalSegmentations: batchType = " + batchType);
+        }
+        return 2;// TODO: fix
+    }
+
+    @Override
     public List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount) {
         if (logger.isTraceEnabled()) {
             logger.trace("findSegmentations: batchType = " + batchType + " sortField = " + sortField +
@@ -684,123 +718,5 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             }
         }
         return returnSegmentations;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<String, Object> findOldNewRowValues(final String batchType, final String ids, final Map<String, Object> newRowNameValues,
-                                                      SortInfo sortInfo, Locale locale) {
-        final Map<String, Object> returnMap = new HashMap<String, Object>();
-        final Set<Long> idLongs = StringUtils.commaDelimitedListToSet(ids);
-        final List<Map<String, Object>> rowValues = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> metaDataMap = new LinkedHashMap<String, Object>();
-        metaDataMap.put(StringConstants.ID_PROPERTY, StringConstants.ID);
-        metaDataMap.put(StringConstants.ROOT, StringConstants.ROWS);
-        metaDataMap.put(StringConstants.TOTAL_PROPERTY, StringConstants.TOTAL_ROWS);
-        metaDataMap.put(StringConstants.SUCCESS_PROPERTY, StringConstants.SUCCESS);
-        metaDataMap.put(StringConstants.START, sortInfo.getStart());
-        metaDataMap.put(StringConstants.LIMIT, (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
-
-        final Map<String, String> sortInfoMap = new HashMap<String, String>();
-        sortInfoMap.put(StringConstants.FIELD, sortInfo.getSort());
-        sortInfoMap.put(StringConstants.DIRECTION, sortInfo.getDir());
-        metaDataMap.put(StringConstants.SORT_INFO, sortInfoMap);
-        returnMap.put(StringConstants.META_DATA, metaDataMap);
-
-        final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
-        Map<String, Object> fieldMap = new HashMap<String, Object>();
-        fieldMap.put(StringConstants.NAME, StringConstants.TYPE);
-        fieldMap.put(StringConstants.MAPPING, StringConstants.TYPE);
-        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.TYPE));
-        fieldList.add(fieldMap);
-
-        fieldMap = new HashMap<String, Object>();
-        fieldMap.put(StringConstants.NAME, "displayedId");
-        fieldMap.put(StringConstants.MAPPING, "displayedId");
-        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
-        fieldList.add(fieldMap);
-
-        BeanWrapper bean = null;
-        if (StringConstants.GIFT.equals(batchType)) {
-            bean = createDefaultGift();
-        }
-        if (bean != null) {
-            for (String thisKey : newRowNameValues.keySet()) {
-                String fieldDefinitionId = new StringBuilder(batchType).append(".").append(thisKey).toString();
-                FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-                if (fieldDef != null && bean.isReadableProperty(thisKey)) {
-                    fieldMap = new HashMap<String, Object>();
-                    String escapedKey = TangerineForm.escapeFieldName(thisKey);
-                    fieldMap.put(StringConstants.NAME, escapedKey);
-                    fieldMap.put(StringConstants.MAPPING, escapedKey);
-                    if (bean.getPropertyValue(thisKey) instanceof CustomField) {
-                        thisKey += StringConstants.DOT_VALUE;
-                    }
-                    String extType = ExtTypeHandler.findExtType(bean.getPropertyType(thisKey));
-                    fieldMap.put(StringConstants.TYPE, extType);
-                    fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
-
-                    if (ExtTypeHandler.EXT_DATE.equals(extType)) {
-                        String format;
-//                        if (FieldType.CC_EXPIRATION.equals(fieldDef.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(fieldDef.getFieldType())) {
-//                            format = "Y-m-d"; // TODO: put back CC?
-//                        }
-//                        else {
-                            format = "Y-m-d H:i:s";
-//                        }
-                        fieldMap.put(StringConstants.DATE_FORMAT, format);
-                    }
-                    fieldList.add(fieldMap);
-                }
-            }
-        }
-        metaDataMap.put(StringConstants.FIELDS, fieldList);
-
-        if (StringConstants.GIFT.equals(batchType)) {
-            final List<Gift> gifts = giftService.readGiftsByAllIds(idLongs, sortInfo, locale);
-            for (Gift gift : gifts) {
-                final Map<String, Object> oldRowMap = new HashMap<String, Object>();
-                final Map<String, Object> newRowMap = new HashMap<String, Object>();
-
-                BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(gift);
-                oldRowMap.put(StringConstants.TYPE, TangerineMessageAccessor.getMessage("before"));
-                newRowMap.put(StringConstants.TYPE, TangerineMessageAccessor.getMessage("after"));
-                oldRowMap.put(StringConstants.ID, "old-" + bw.getPropertyValue(StringConstants.ID));
-                newRowMap.put(StringConstants.ID, "new-" + bw.getPropertyValue(StringConstants.ID));
-
-                oldRowMap.put(DISPLAYED_ID, bw.getPropertyValue(StringConstants.ID));
-                newRowMap.put(DISPLAYED_ID, bw.getPropertyValue(StringConstants.ID));
-
-                for (Map.Entry<String, Object> paramEntry : newRowNameValues.entrySet()) {
-                    String key = paramEntry.getKey();
-                    if (bw.isWritableProperty(key)) {
-                        String evalKey = key;
-                        if (bw.getPropertyValue(key) instanceof CustomField) {
-                            evalKey += StringConstants.DOT_VALUE;
-                        }
-                        String escapedKey = TangerineForm.escapeFieldName(key);
-                        oldRowMap.put(escapedKey, bw.getPropertyValue(evalKey));
-                        newRowMap.put(escapedKey, paramEntry.getValue());
-                    }
-                }
-                rowValues.add(oldRowMap); // 1 row for the old value
-                rowValues.add(newRowMap); // 1 row for the new value
-            }
-        }
-        
-        returnMap.put(StringConstants.ROWS, rowValues);
-        returnMap.put(StringConstants.TOTAL_ROWS, rowValues.size());
-        return returnMap;
-    }
-
-    private BeanWrapper createDefaultGift() {
-        // Mock objects for introspection
-        Gift gift = new Gift();
-        Constituent constituent = new Constituent(0L, new Site());
-        gift.setConstituent(constituent);
-        gift.setPaymentSource(new PaymentSource(constituent));
-        return PropertyAccessorFactory.forBeanPropertyAccess(gift);
     }
 }

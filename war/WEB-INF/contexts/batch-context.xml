@@ -4,7 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-   
+
     <bean id="postbatch" class="com.orangeleap.tangerine.controller.postbatch.PostBatchFormController">
         <property name="formView" value="postbatch/postbatch" />
         <property name="successView" value="postbatch/postbatch" />
@@ -22,7 +22,7 @@
     <bean id="postbatchUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-                <prop key="/postbatchs.htm">postbatchs</prop>   
+                <prop key="/postbatchs.htm">postbatchs</prop>
                 <prop key="/postBatchGrid.htm">postBatchesGridController</prop>
                 <prop key="/postbatch.htm">postbatch</prop>
 			</props>

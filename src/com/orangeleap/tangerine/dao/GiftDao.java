@@ -57,20 +57,12 @@ public interface GiftDao {
     List<Gift> readGiftsBySegmentationReportIds(Set<Long> reportIds, String sortPropertyName, String direction,
                                                          int start, int limit, Locale locale);
 
+    int readCountGiftsBySegmentationReportIds(Set<Long> reportIds);
+
     public PaginatedResult readPaginatedGiftListByConstituentId(Long constituentId, SortInfo sortinfo);
 
     List<Gift> readAllGiftsByConstituentId(Long constituentId, String sortPropertyName, String direction,
                                                          int start, int limit, Locale locale);
 
     int readCountByConstituentId(Long constituentId);
-
-    /**
-     * NOTE: unlike the method readGiftById, this method will not load the distribution lines, the custom fields for distro lines,
-     * the associated pledges / recurring gifts, the custom fields for the gift's constituent, address, or phone.
-     *
-     * Do * NOT * use this method if you need any of those!
-     * @param ids list of giftIds to retrieve
-     * @return list of gifts
-     */
-    List<Gift> readGiftsByAllIds(Set<Long> ids, String sortPropertyName, String direction, int start, int limit, Locale locale);
 }

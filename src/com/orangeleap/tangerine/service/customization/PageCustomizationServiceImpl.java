@@ -109,6 +109,15 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     }
 
     @Override
+    public List<SectionField> readSectionFieldsByPageTypeRoles(PageType pageType, List<String> roles) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSectionFieldsByPageTypeRoles: pageType = " + pageType + " roles = " + roles);
+        }
+        List<SectionDefinition> sectionDefinitions = readSectionDefinitionsByPageTypeRoles(pageType, roles);
+        return readSectionFieldsBySection(sectionDefinitions.get(0));
+    }
+
+    @Override
     public List<SectionDefinition> readSectionDefinitionsByPageType(PageType pageType) {
         if (logger.isTraceEnabled()) {
             logger.trace("readSectionDefinitionsByPageType: pageType = " + pageType );

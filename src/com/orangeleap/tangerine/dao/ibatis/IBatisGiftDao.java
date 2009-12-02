@@ -96,22 +96,6 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         return gift;
     }
 
-    /**
-     * @see com.orangeleap.tangerine.dao.GiftDao#readGiftsByAllIds(java.util.Set, String, String, int, int, java.util.Locale)
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Gift> readGiftsByAllIds(Set<Long> ids, String sortPropertyName, String direction,
-                                        int start, int limit, Locale locale) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readGiftsByAllIds: ids = " + ids);
-        }
-        Map<String, Object> params = setupSortParams(StringConstants.GIFT, "GIFT.GIFT_RESULT_NO_DISTRO_LINES",
-                sortPropertyName, direction, start, limit, locale);
-        params.put("giftIds", new ArrayList<Long>(ids));
-        return getSqlMapClientTemplate().queryForList("SELECT_GIFT_BY_ALL_IDS", params);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId) {
@@ -276,7 +260,17 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
                 sortPropertyName, direction, start, limit, locale);
         params.put("reportIds", new ArrayList<Long>(reportIds));
 
-        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_SEGMENTATION_RESULT_ID", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
+    }
+
+    @Override
+    public int readCountGiftsBySegmentationReportIds(Set<Long> reportIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountGiftsBySegmentationReportIds: reportIds = " + reportIds);
+        }
+        Map<String,Object> params = setupParams();
+        params.put("reportIds", new ArrayList<Long>(reportIds));
+        return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
     }
 
     @SuppressWarnings("unchecked")

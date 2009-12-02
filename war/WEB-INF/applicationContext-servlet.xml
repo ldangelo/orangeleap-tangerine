@@ -33,11 +33,14 @@
 	<import resource="contexts/customField-context.xml"/>
     <import resource="contexts/siteSettings-context.xml"/>
     <import resource="contexts/manageDashboard-context.xml"/>
-    <import resource="contexts/postbatch-context.xml"/>
+    <import resource="contexts/batch-context.xml"/>
     <import resource="contexts/logView-context.xml"/>
     <import resource="contexts/schedule-context.xml"/>
     <import resource="contexts/screenDefinition-context.xml"/>
     <import resource="contexts/giftSummary-context.xml"/>
+
+    <import resource="contexts/flows/batch-servlet-context.xml"/>
+
 
     <context:component-scan base-package="com.orangeleap.tangerine.controller"/>
 
@@ -89,9 +92,9 @@
    	</bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
-        <property name="prefix" value="/WEB-INF/jsp/"></property>
-       	<property name="suffix" value=".jsp"></property>
+    	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+       	<property name="suffix" value=".jsp"/>
     </bean>
 
 	<bean id="exceptionResolver" class="com.orangeleap.tangerine.web.common.TangerineMappingExceptionResolver">
@@ -101,6 +104,9 @@
 				<prop key="java.lang.Exception">
 					errors/error
 				</prop>
+                <prop key="java.lang.RuntimeException">
+                    errors/error
+                </prop>
 			</props>
 		</property>
 	</bean>

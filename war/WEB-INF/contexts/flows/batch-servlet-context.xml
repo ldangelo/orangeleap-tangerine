@@ -27,8 +27,6 @@
 		<property name="flowRegistry" ref="flowRegistry" />
 	</bean>
     
-    <!--<bean id="batchFlowController" class="org.springframework.webflow.mvc.servlet.FlowController" p:flowExecutor-ref="flowExecutor"/>-->
-
     <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter" p:flowExecutor-ref="flowExecutor"/>
 
     <flow:flow-executor id="flowExecutor" flow-registry="flowRegistry">
@@ -48,17 +46,8 @@
         <property name="viewResolvers">
             <list>
                 <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
-                <!--<ref bean="jsonViewResolver"/>-->
             </list>
         </property>
     </bean>
-
-    <bean name="doBatch.htm" class="com.orangeleap.tangerine.web.flow.BatchFlowHandler" />	
-
-    <!--<bean name="viewNameTranslator"-->
-                <!--class="com.orangeleap.json.JsonRequestToViewNameTranslator"-->
-                <!--p:view="jsonView"/>-->
-
-    <!--<bean name="jsonView" class="com.orangeleap.json.views.JsonWebFlowView" p:encodeNullBeanProperties="false"/>-->
     
 </beans>

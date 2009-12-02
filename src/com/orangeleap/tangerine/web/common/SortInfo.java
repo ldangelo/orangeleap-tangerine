@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.web.common;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.dao.ibatis.AbstractIBatisDao;
+import org.apache.commons.lang.math.NumberUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,17 @@ public class SortInfo {
     private int start = 0;
 
     public SortInfo() { }
+
+    public SortInfo(String sort, String sortDir, String limit, String start) {
+        this.sort = sort;
+        this.sortDir = sortDir;
+        if (NumberUtils.isDigits(limit)) {
+            this.limit = Integer.parseInt(limit);
+        }
+        if (NumberUtils.isDigits(start)) {
+            this.start = Integer.parseInt(start);
+        }
+    }
 
     public SortInfo(String sort, String sortDir, int limit, int start) {
         this.sort = sort;
@@ -75,9 +87,9 @@ public class SortInfo {
     }
 
     public void setLimit(int limit) {
-        if (limit >= MIN_ROWS) {
+//        if (limit >= MIN_ROWS) {
             this.limit = limit;
-        }
+//        }
     }
 
     public int getStart() {

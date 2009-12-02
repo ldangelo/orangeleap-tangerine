@@ -18,17 +18,16 @@
 
 package com.orangeleap.tangerine.domain;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.xml.bind.annotation.XmlType;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.springframework.core.style.ToStringCreator;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class PostBatch extends AbstractCustomizableEntity  {
@@ -37,6 +36,10 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     private Long id;
     private String postBatchDesc;
+    private String postBatchType;
+    /** A comma delimited string of Segmentation report IDs */
+    private String segmentationReportIds;
+
     private String entity;
     private boolean reviewSetGenerated;
     private Long reviewSetGeneratedById;
@@ -56,9 +59,7 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private Map<String, String> updateFields = new TreeMap<String, String>();
     private List<String> updateErrors = new ArrayList<String>();
 
-
     public PostBatch() { }
-
 
     public Long getId() {
         return id;
@@ -68,7 +69,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.id = id;
     }
 
-
     public String getPostBatchDesc() {
         return postBatchDesc;
     }
@@ -77,6 +77,21 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.postBatchDesc = postBatchDesc;
     }
 
+    public String getPostBatchType() {
+        return postBatchType;
+    }
+
+    public void setPostBatchType(String postBatchType) {
+        this.postBatchType = postBatchType;
+    }
+
+    public String getSegmentationReportIds() {
+        return segmentationReportIds;
+    }
+
+    public void setSegmentationReportIds(String segmentationReportIds) {
+        this.segmentationReportIds = segmentationReportIds;
+    }
 
     public String getEntity() {
         return entity;
@@ -85,7 +100,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
     public void setEntity(String entity) {
         this.entity = entity;
     }
-
 
     public boolean getReviewSetGenerated() {
         return reviewSetGenerated;
@@ -219,7 +233,17 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.updateFields = updateFields;
     }
 
+    public void clearUpdateFields() {
+        this.updateFields.clear();
+    }
 
+    public void addUpdateField(String key, String value) {
+        this.updateFields.put(key, value);
+    }
+
+    public String getUpdateFieldValue(String key) {
+        return this.updateFields.get(key);
+    }
 
 
     @Override

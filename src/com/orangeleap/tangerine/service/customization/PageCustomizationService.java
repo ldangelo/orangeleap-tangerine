@@ -18,9 +18,6 @@
 
 package com.orangeleap.tangerine.service.customization;
 
-import java.util.List;
-import java.util.Map;
-
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
@@ -32,6 +29,9 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 
+import java.util.List;
+import java.util.Map;
+
 public interface PageCustomizationService {
 
     /**
@@ -42,6 +42,8 @@ public interface PageCustomizationService {
      * @return
      */
     public List<SectionDefinition> readSectionDefinitionsByPageTypeRoles(PageType pageType, List<String> roles);
+
+    List<SectionField> readSectionFieldsByPageTypeRoles(PageType pageType, List<String> roles);
     
     public List<SectionDefinition> readSectionDefinitionsByPageType(PageType pageType);
 

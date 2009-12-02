@@ -18,12 +18,13 @@ public class AESEncrypt {
 			try {
 	
 				if (args.length < 2) {
-					System.out.println("Parameters: <keyfile> <datafile> ");
+					System.out.println("Parameters: <keyfile> <datafile> [decrypt]");
 					System.exit(1);
 				}
 					
 				String keyfile = args[0];
 				String datafile = args[1];
+				boolean decrypt = args.length > 2 && "decrypt".equals(args[2]);
 				String outfile = datafile+".cpt";
 				
 				System.setProperty("key.file.path", keyfile);
@@ -41,7 +42,7 @@ public class AESEncrypt {
 				while ((line = in.readLine()) != null) {
 					String[] fields = line.trim().split(",");
 					if (fields.length == 2) {
-						out.write(fields[0]+","+AES.encrypt(fields[1])+"\r\n");
+						out.write(fields[0]+","+(decrypt?AES.decrypt(fields[1]):AES.encrypt(fields[1]))+"\r\n");
 					}
 				}
 				out.flush();

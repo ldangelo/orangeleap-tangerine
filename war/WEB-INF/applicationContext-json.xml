@@ -14,13 +14,13 @@
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
     <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
 
-    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+    <bean id="jsonViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
     <bean name="viewNameTranslator"
-                class="org.json.spring.JsonRequestToViewNameTranslator"
+                class="com.orangeleap.json.JsonRequestToViewNameTranslator"
                 p:view="jsonView"/>
 
-    <bean name="jsonView" class="org.json.spring.JsonView" p:encodeNullBeanProperties="false"/>
+    <bean name="jsonView" class="com.orangeleap.json.views.JsonMVCView" p:encodeNullBeanProperties="false"/>
 
 
 </beans>

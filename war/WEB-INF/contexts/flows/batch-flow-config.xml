@@ -23,20 +23,21 @@
         </transition>        
 
         <transition on="step3">
-            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext, externalContext,
+            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext, externalContext, requestParameters.ids, 
                 requestParameters.sort, requestParameters.dir, requestParameters.limit, requestParameters.start)"
                     result="viewScope.rowInfo"/>
             <render fragments="step3Fragment" />
         </transition>
 
         <transition on="step4">
-            <evaluate expression="batchSelectionAction.step4FindBatchUpdateFields(flowExecutionContext, batchType)"
+            <evaluate expression="batchSelectionAction.step4FindBatchUpdateFields(flowRequestContext)"
                       result="viewScope.updateFieldsInfo"/>
             <render fragments="step4Fragment" />
         </transition>
 
         <transition on="step5">
-            <evaluate expression="batchSelectionAction.step5ReviewUpdates(flowExecutionContext, externalContext, batchType, ids, sortInfo)"
+            <evaluate expression="batchSelectionAction.step5ReviewUpdates(flowRequestContext, externalContext, requestParameters.sort,
+                    requestParameters.dir, requestParameters.limit, requestParameters.start)"
                       result="viewScope.reviewInfo"/>
             <render fragments="step5Fragment" />
         </transition>

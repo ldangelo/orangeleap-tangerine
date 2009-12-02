@@ -6,44 +6,59 @@
 
     <input name="batchId" type="long"/>
 
-    <view-state id="batchFlow">
-        <on-render>
-            <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, flowExecutionContext, requestParameters.batchId)" result="viewScope.batchInfo"/>
-        </on-render>
+    <on-start>
+        <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, flowExecutionContext, requestParameters.batchId)" result="flowScope.model"/>
+    </on-start>
 
-        <transition on="step1">
-            <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, flowExecutionContext, requestParameters.batchId)" result="viewScope.batchInfo"/>
-            <render fragments="step1Fragment" />
-        </transition>
-
-        <transition on="step2">
-            <evaluate expression="batchSelectionAction.step2FindSegmentations(flowRequestContext, requestParameters.batchType, requestParameters.batchDesc, requestParameters.sort,
-                requestParameters.dir, requestParameters.limit, requestParameters.start)" result="viewScope.segmentationInfo"/>
-            <render fragments="step2Fragment" />
-        </transition>        
-
-        <transition on="step3">
-            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext, externalContext, requestParameters.ids, 
-                requestParameters.sort, requestParameters.dir, requestParameters.limit, requestParameters.start)"
-                    result="viewScope.rowInfo"/>
-            <render fragments="step3Fragment" />
-        </transition>
-
-        <transition on="step4">
-            <evaluate expression="batchSelectionAction.step4FindBatchUpdateFields(flowRequestContext)"
-                      result="viewScope.updateFieldsInfo"/>
-            <render fragments="step4Fragment" />
-        </transition>
-
-        <transition on="step5">
-            <evaluate expression="batchSelectionAction.step5ReviewUpdates(flowRequestContext, externalContext, requestParameters.sort,
-                    requestParameters.dir, requestParameters.limit, requestParameters.start)"
-                      result="viewScope.reviewInfo"/>
-            <render fragments="step5Fragment" />
-        </transition>
-
+    <view-state id="batchStep1">
+        <transition on="step2" to="batchStep2"/>
     </view-state>
 
+    <view-state id="batchStep2">
+        <on-entry>
+            <evaluate expression="batchSelectionAction.step2FindSegmentations(flowRequestContext, requestParameters.batchType, requestParameters.batchDesc, requestParameters.sort,
+                requestParameters.dir, requestParameters.limit, requestParameters.start)"
+                      result="flowScope.model"/>
+        </on-entry>
+        <transition on="step1" to="batchStep1"/>
+        <transition on="step3" to="batchStep3"/>
+    </view-state>
+
+    <view-state id="batchStep3">
+        <on-entry>
+            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext, externalContext, requestParameters.ids,
+                requestParameters.sort, requestParameters.dir, requestParameters.limit, requestParameters.start)"
+                    result="flowScope.model"/>
+        </on-entry>
+        <transition on="step1" to="batchStep1"/>
+        <transition on="step2" to="batchStep2"/>
+        <transition on="step4" to="batchStep4"/>
+    </view-state>
+
+    <view-state id="batchStep4">
+        <on-entry>
+            <evaluate expression="batchSelectionAction.step4FindBatchUpdateFields(flowRequestContext)"
+                      result="flowScope.model"/>
+        </on-entry>
+        <transition on="step1" to="batchStep1"/>
+        <transition on="step2" to="batchStep2"/>
+        <transition on="step3" to="batchStep3"/>
+        <transition on="step5" to="batchStep5"/>
+    </view-state>
+
+    <view-state id="batchStep5">
+        <on-entry>
+            <evaluate expression="batchSelectionAction.step5ReviewUpdates(flowRequestContext, externalContext, requestParameters.sort,
+                    requestParameters.dir, requestParameters.limit, requestParameters.start)"
+                      result="flowScope.model"/>
+        </on-entry>
+        <transition on="step1" to="batchStep1"/>
+        <transition on="step2" to="batchStep2"/>
+        <transition on="step3" to="batchStep3"/>
+        <transition on="step4" to="batchStep4"/>
+    </view-state>
+
+    <end-state id="batchFinished"/>
 </flow>
         
         <!-- If not specified, the start state is the first state specified. -->

@@ -40,6 +40,7 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 		Long count = map.get(statname);
 		if (count == null) count = new Long(0);
 		map.put(statname, count + 1L);
+		if (!TOTAL.equals(sitename)) incrementStatCount(TOTAL, statname);
 	}
 	
 
@@ -51,6 +52,32 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	@Override
 	public Map<String, Map<String, Long>> getAllSiteCounts() {
  		return counts;
+	}
+
+	@Override
+	public Long getTotalLoginCount() {
+		return getTotalCount(LOGINS);
+	}
+	
+	@Override
+	public Long getTotalAuthorizeCount() {
+		return getTotalCount(AUTHORIZE);
+	}
+	
+	@Override
+	public Long getTotalCaptureCount() {
+		return getTotalCount(CAPTURE);
+	}
+	
+	@Override
+	public Long getTotalAuthorizeAndCaptureCount() {
+		return getTotalCount(AUTHORIZE_AND_CAPTURE);
+	}
+	
+	private Long getTotalCount(String stat) {
+		Map<String, Long> map = counts.get(TOTAL);
+		if (map == null) return 0L;
+		return map.get(stat);
 	}
 
 }

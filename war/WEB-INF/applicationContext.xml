@@ -255,7 +255,7 @@
 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
     <property name="beans">
       <map>
-        <entry key="bean:name=orangeleapJmxNotification" value-ref="OrangeleapJmxNotificationBean"/>
+        <entry key="OrangeLeap:name=OrangeLeapJmxNotification" value-ref="OrangeleapJmxNotificationBean"/>
       </map>
     </property>
     <property name="assembler">

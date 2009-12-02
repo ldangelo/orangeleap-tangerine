@@ -205,7 +205,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             return;
         }
         
-        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), "AuthorizeAndCapture");
+        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.AUTHORIZE_AND_CAPTURE);
 
         if (logger.isInfoEnabled()) {
             logger.info(response.toXmlString());
@@ -357,7 +357,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             return;
         }
 
-        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), "Authorize");
+        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.AUTHORIZE);
        
         if (logger.isInfoEnabled()) {
             logger.info(response.toXmlString());
@@ -461,7 +461,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             return;
         }
         
-        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), "Capture");
+        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.CAPTURE);
 
         if (logger.isInfoEnabled()) {
             logger.info(response.toXmlString());

@@ -164,7 +164,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
 
         constituent = constituentDao.maintainConstituent(constituent);
-        constituent = constituentDao.readConstituentById(constituent.getId()); // read generated acct no
+        constituent.setAccountNumber(constituentDao.readConstituentById(constituent.getId()).getAccountNumber()); // read generated acct no
         maintainCorrespondence(constituent);
 
         Address address = constituent.getPrimaryAddress();

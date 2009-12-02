@@ -6,11 +6,10 @@
 
     <input name="batchId" type="long"/>
 
-    <on-start>
-        <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, flowExecutionContext, requestParameters.batchId)" result="flowScope.model"/>
-    </on-start>
-
     <view-state id="batchStep1">
+        <on-entry>
+            <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, flowExecutionContext, requestParameters.batchId)" result="flowScope.model"/>
+        </on-entry>
         <transition on="step2" to="batchStep2"/>
     </view-state>
 

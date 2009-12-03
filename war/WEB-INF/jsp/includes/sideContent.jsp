@@ -49,6 +49,9 @@
 				            <c:if test="${pageAccess['/giftInKindList.htm']!='DENIED'}">
 								<a class="${((requestScope.thisUrl eq '/giftInKind.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/giftInKindList.htm') ? 'active' : ''}" href="giftInKindList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="giftsInKind"/></a>
 				            </c:if>
+				            <c:if test="${pageAccess['/giftSummary.htm']!='DENIED'}">
+								<a class="${((requestScope.thisUrl eq '/giftSummary.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/giftSummary.htm') ? 'active' : ''}" href="giftSummary.htm?constituentId=${requestScope.constituent.id}"><spring:message code="giftSummary"/></a>
+				            </c:if>
 			            </span>
 		            </div>
 					<div class="navGroup">

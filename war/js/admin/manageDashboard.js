@@ -36,7 +36,9 @@ Ext.onReady(function() {
     proxy.on('exception', function(proxy, type, action, options, response, args) {
         saveError();
     });
-
+    
+    var availableRolesStore = ['All','ROLE_ADMIN','ROLE_SUPER_ADMIN'];
+    
     var writer = new Ext.data.JsonWriter({ listful: true, writeAllFields: true });
 
     var store = new OrangeLeap.BulkSaveStore({
@@ -81,6 +83,13 @@ Ext.onReady(function() {
         grid.undoButton.enable();
     });
     store.on('load', function(store, records, index) {
+
+    	// First returned row just has the template values
+//    	if (store.data && store.data.items && store.data.items.length > 0) {
+//        	availableRolesStore = store.data.items[0].roles.split[','];
+//            store.data.items.splice(0,1); // remove first template row
+//        }
+        
         // unescape urls
         if (store.data && store.data.items) {
             var len = store.data.items.length;
@@ -90,6 +99,7 @@ Ext.onReady(function() {
                 store.data.items[x].set('url', eurl);
             }
         }
+        
     });
     
     var trapKeyDown = function(obj, fld, event, addButtonId) {
@@ -222,7 +232,7 @@ Ext.onReady(function() {
                 editor: new Ext.form.ComboBox({
                 	typeAhead:true,
                 	triggerAction:'all',
-                	store:['All','ROLE_ADMIN','ROLE_SUPER_ADMIN'],  
+                	store: availableRolesStore,  
                 	valueField: 'val',
                 	displayField: 'desc',
                 	lazyRenderer: true

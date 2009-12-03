@@ -96,15 +96,27 @@ public class ManageDashboardController {
     		}
     	}
         
-    	List<String> availableRoles = siteService.getAvailableRoleList();
-    	availableRoles.add(0, ALL);
-    	for (DashboardItem item: items) item.setAvailableRoles(availableRoles);
+    	// First returned item is a template row for available roles
+//    	DashboardItem availableRolesTemplate = new DashboardItem();
+//    	availableRolesTemplate.setRoles(getAvailableRoles());
+//    	items.add(0,availableRolesTemplate);
     	
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         addItems(items, returnList);
         modelMap.put(StringConstants.ROWS, returnList);
         modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
         return modelMap;
+    }
+    
+    private String getAvailableRoles() {
+    	List<String> availableRoles = siteService.getAvailableRoleList();
+    	availableRoles.add(0, ALL);
+    	StringBuilder availableRolesString = new StringBuilder();
+    	for (int i = 0; i < availableRoles.size(); i++) {
+    		if (i > 0) availableRolesString.append(",");
+    		availableRolesString.append(availableRoles.get(i));
+    	}
+    	return availableRolesString.toString();
     }
     	
     private boolean isAllowedType(String type) {

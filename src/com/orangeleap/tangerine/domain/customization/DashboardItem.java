@@ -35,7 +35,6 @@ public class DashboardItem implements GeneratedId, Serializable {
     private String roles;
     private String siteName;
     private List<DashboardItemDataset> datasets;
-    private List<String> availableRoles;
 
     public void setId(Long id) {
         this.id = id;
@@ -101,13 +100,6 @@ public class DashboardItem implements GeneratedId, Serializable {
         return datasets;
     }
 
-	public void setAvailableRoles(List<String> availableRoles) {
-		this.availableRoles = availableRoles;
-	}
-
-	public List<String> getAvailableRoles() {
-		return availableRoles;
-	}
-
+	
 
 }

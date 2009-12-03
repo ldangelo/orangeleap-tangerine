@@ -18,6 +18,22 @@
 
 package com.orangeleap.tangerine.controller.postbatch;
 
+import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.service.PostBatchService;
+import com.orangeleap.tangerine.service.impl.PostBatchServiceImpl;
+import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.springframework.validation.BindException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.util.WebUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,24 +41,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.util.WebUtils;
-
-import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
-import com.orangeleap.tangerine.service.PostBatchService;
-import com.orangeleap.tangerine.service.impl.PostBatchServiceImpl;
-import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.util.OLLogger;
 
 public class PostBatchFormController extends SimpleFormController {
 
@@ -70,7 +68,7 @@ public class PostBatchFormController extends SimpleFormController {
 
         List<AbstractPaymentInfoEntity> gifts = new ArrayList<AbstractPaymentInfoEntity>();
         PostBatch postbatch = getPostBatch(request);
-        if (!postbatch.getEntity().equals("gift")) {
+        if (!postbatch.getBatchType().equals("gift")) {
         	gifts = postBatchService.getBatchSelectionList(postbatch);
         }
 
@@ -84,20 +82,20 @@ public class PostBatchFormController extends SimpleFormController {
 
     private PostBatch getNewPostBatch() {
         PostBatch postbatch = new PostBatch();
-        postbatch.setEntity("gift");
+        postbatch.setBatchType("gift");
         DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
         String sdate = formatter.format(new java.util.Date());
-        postbatch.setPostBatchDesc("Batch for " + sdate);
+        postbatch.setBatchDesc("PostBatch for " + sdate);
         checkDefaults(postbatch);
         return postbatch;
     }
     
     // Add some default field settings...
     private void checkDefaults(PostBatch postbatch) {
-        if (postbatch.getWhereConditions().size() == 0) { 
-        	postbatch.getWhereConditions().put(PostBatchServiceImpl.POSTED, "false");
-        	if (postbatch.getEntity().equals("gift")) postbatch.getWhereConditions().put(PostBatchServiceImpl.STATUS, "Paid");
-        }
+//        if (postbatch.getWhereConditions().size() == 0) {
+//        	postbatch.getWhereConditions().put(PostBatchServiceImpl.POSTED, "false");
+//        	if (postbatch.getEntity().equals("gift")) postbatch.getWhereConditions().put(PostBatchServiceImpl.STATUS, "Paid");
+//        }
         if (postbatch.getUpdateFields().size() == 0) {
 	        DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
 	        String sdate = formatter.format(new java.util.Date());
@@ -134,19 +132,19 @@ public class PostBatchFormController extends SimpleFormController {
         Long batchId = requestPostbatch.getId();
         PostBatch postbatch = postBatchService.readBatch(batchId);
         if (postbatch == null) postbatch = getNewPostBatch();
-        if (postbatch.isBatchUpdated()) return null; // selection criteria and record set editing not allowed once updated.
+        if (postbatch.isExecuted()) return null; // selection criteria and record set editing not allowed once updated.
 
-        boolean isGift = PostBatchServiceImpl.GIFT.equals(postbatch.getEntity());
+        boolean isGift = PostBatchServiceImpl.GIFT.equals(postbatch.getBatchType());
         String errormessage = "";
         List<AbstractPaymentInfoEntity> gifts = new ArrayList<AbstractPaymentInfoEntity>();
 
         try {
 
             // User can only edit the description/type and the list of select/update fields - the rest of the fields are read-only
-            postbatch.setPostBatchDesc(requestPostbatch.getPostBatchDesc());
-            postbatch.setEntity(requestPostbatch.getEntity());
+            postbatch.setBatchDesc(requestPostbatch.getBatchDesc());
+//            postbatch.setEntity(requestPostbatch.getBatch());
 
-            readFields(request, postbatch.getWhereConditions(), "sf");
+//            readFields(request, postbatch.getWhereConditions(), "sf");
             readFields(request, postbatch.getUpdateFields(), "uf");
             validateFields(postbatch);
             checkDefaults(postbatch); // make sure they didnt delete all selection criteria or update fields.
@@ -175,14 +173,14 @@ public class PostBatchFormController extends SimpleFormController {
     private void validateFields(PostBatch postbatch) {
         Map<String, String> select = postBatchService.readAllowedGiftSelectFields();
         Map<String, String> update = postBatchService.readAllowedGiftUpdateFields();
-        for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
-            if (select.get(me.getKey()) == null)
-                throw new RuntimeException("Invalid request."); // this would require a hacked form field.
-        }
-        for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-            if (update.get(me.getKey()) == null)
-                throw new RuntimeException("Invalid request."); // this would require a hacked form field.
-        }
+//        for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
+//            if (select.get(me.getKey()) == null)
+//                throw new RuntimeException("Invalid request."); // this would require a hacked form field.
+//        }
+//        for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
+//            if (update.get(me.getKey()) == null)
+//                throw new RuntimeException("Invalid request."); // this would require a hacked form field.
+//        }
     }
 
   	private void readFields(HttpServletRequest request, Map<String, String> conditions, String type) {

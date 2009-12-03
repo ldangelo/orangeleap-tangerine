@@ -18,25 +18,23 @@
 
 package com.orangeleap.tangerine.json.controller.list;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This controller handles JSON requests for populating
@@ -84,7 +82,7 @@ public class PostbatchGiftListController {
 	        }
 	        long postbatchId = Long.valueOf(sid);
 	    	PostBatch postbatch = postBatchService.readBatch(postbatchId);
-	    	Map namemap = postbatch.getEntity().equals("gift")?GIFT_NAME_MAP:ADJUSTED_GIFT_NAME_MAP;
+	    	Map namemap = postbatch.getBatchType().equals("gift")?GIFT_NAME_MAP:ADJUSTED_GIFT_NAME_MAP;
 	    	
 	
 	        // if we're not getting back a valid column name, possible SQL injection,

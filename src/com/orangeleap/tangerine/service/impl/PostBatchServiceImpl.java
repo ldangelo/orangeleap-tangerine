@@ -23,7 +23,7 @@ import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Journal;
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
+import com.orangeleap.tangerine.domain.PostBatchSegmentation;
 import com.orangeleap.tangerine.domain.Segmentation;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
@@ -235,7 +235,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     
     @Override
     public List<PostBatch> listBatchs() {
-        return postBatchDao.listBatchs();
+        return postBatchDao.listBatches();
     }
 
     @Override
@@ -251,7 +251,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public PostBatch readBatch(Long batchId) {
         logger.debug("readBatch: id = "+batchId);
         if (batchId == null) return null;
-        return postBatchDao.readPostBatch(batchId);
+        return postBatchDao.readPostBatchById(batchId);
     }
 
     @Override
@@ -263,23 +263,23 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     @Override
     public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch) {
 
-        boolean isGift = GIFT.equals(postbatch.getEntity());
+        boolean isGift = GIFT.equals(postbatch.getBatchType());
 
         postBatchDao.deletePostBatchItems(postbatch.getId());
         
-        Map<String, Object> searchmap = createSearchMap(postbatch.getWhereConditions());
+//        Map<String, Object> searchmap = createSearchMap(postbatch.getWhereConditions());
 
-        if (isGift) {
-            postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap); 
-        } else {
-            postBatchDao.insertIntoPostBatchFromAdjustedGiftSelect(postbatch, searchmap);
-        }
+//        if (isGift) {
+//            postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap);
+//        } else {
+//            postBatchDao.insertIntoPostBatchFromAdjustedGiftSelect(postbatch, searchmap);
+//        }
 
 
-        postbatch.setReviewSetGenerated(true);
-        postbatch.setReviewSetGeneratedDate(new java.util.Date());
-        postbatch.setReviewSetGeneratedById(tangerineUserHelper.lookupUserId());
-        postbatch.setReviewSetSize(postBatchDao.getReviewSetSize(postbatch.getId()));
+//        postbatch.setReviewSetGenerated(true);
+//        postbatch.setBatchCreatedDate(new java.util.Date());
+//        postbatch.setBatchCreatedById(tangerineUserHelper.lookupUserId());
+//        postbatch.setReviewSetSize(postBatchDao.getReviewSetSize(postbatch.getId()));
         postBatchDao.maintainPostBatch(postbatch);
 
         // Gift list uses json to display a paginated list.
@@ -301,14 +301,14 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     // Reads previous list of matched gifts. Does not re-evaluate any criteria.
     @Override
     public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
-         List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
+         List<PostBatchSegmentation> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
          List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
-         boolean isGift = GIFT.equals(postbatch.getEntity());
-         for (PostBatchReviewSetItem item : list) {
+         boolean isGift = GIFT.equals(postbatch.getBatchType());
+         for (PostBatchSegmentation item : list) {
              if (isGift) {
-                 result.add(giftService.readGiftById(item.getEntityId()));
+                 result.add(giftService.readGiftById(item.getSegmentationId()));
              } else {
-                 result.add(adjustedGiftService.readAdjustedGiftById(item.getEntityId()));
+                 result.add(adjustedGiftService.readAdjustedGiftById(item.getSegmentationId()));
              }
          }
          return result;
@@ -321,7 +321,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Override
     public void deleteBatch(PostBatch postbatch) {
-       if (postbatch.isBatchUpdated()) throw new RuntimeException("Cannot delete a batch that has already been updated.");
+       if (postbatch.isExecuted()) throw new RuntimeException("Cannot delete a batch that has already been updated.");
        postBatchDao.deletePostBatchItems(postbatch.getId());
        postBatchDao.deletePostBatch(postbatch.getId());
     }
@@ -355,10 +355,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         // Get list to update
         // TODO process in single transactions and support partial batch updates.
-        List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
-        if (list.size() > 2000) throw new RuntimeException("Batch size limit exceeded.");   // TODO remove size limit when suporting patial updates
+        List<PostBatchSegmentation> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
+        if (list.size() > 2000) throw new RuntimeException("PostBatch size limit exceeded.");   // TODO remove size limit when suporting patial updates
 
-        for (PostBatchReviewSetItem item: list) {
+        for (PostBatchSegmentation item: list) {
             
             try {
 
@@ -366,7 +366,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
             } catch (Exception e) {
                 e.printStackTrace();
-                String msg = item.getEntityId() + ": " + e.getMessage();
+                String msg = item.getSegmentationId() + ": " + e.getMessage();
                 logger.error(msg);
                 postbatch.getUpdateErrors().add(msg);
             }
@@ -384,9 +384,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             postbatch.setPostedById(tangerineUserHelper.lookupUserId());
         } 
         
-        postbatch.setBatchUpdated(true);
-        postbatch.setBatchUpdatedDate(new java.util.Date());
-        postbatch.setBatchUpdatedById(tangerineUserHelper.lookupUserId());
+        postbatch.setExecuted(true);
+        postbatch.setExecutedDate(new java.util.Date());
+        postbatch.setExecutedById(tangerineUserHelper.lookupUserId());
         
         
         // Update
@@ -433,17 +433,17 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
     }
 
-    private void processUpdateItem(PostBatchReviewSetItem item, PostBatch postbatch, boolean post, Map<String, String> codemap, Map<String, String> bankmap) throws Exception {
+    private void processUpdateItem(PostBatchSegmentation item, PostBatch postbatch, boolean post, Map<String, String> codemap, Map<String, String> bankmap) throws Exception {
 
-        boolean isGift = GIFT.equals(postbatch.getEntity());
+        boolean isGift = GIFT.equals(postbatch.getBatchType());
         AbstractPaymentInfoEntity apie;
 
         boolean wasPreviouslyPosted;
         if (isGift) {
-            apie = giftService.readGiftById(item.getEntityId());
+            apie = giftService.readGiftById(item.getSegmentationId());
             wasPreviouslyPosted = ((Gift)apie).isPosted();
         } else {
-            apie = adjustedGiftService.readAdjustedGiftById(item.getEntityId());
+            apie = adjustedGiftService.readAdjustedGiftById(item.getSegmentationId());
             wasPreviouslyPosted = ((AdjustedGift)apie).isPosted();
         }
 
@@ -633,7 +633,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         PostBatch batch;
         if (batchId != null && batchId > 0) {
-            batch = postBatchDao.readPostBatch(batchId);
+            batch = postBatchDao.readPostBatchById(batchId);
         }
         else {
             batch = new PostBatch();
@@ -642,7 +642,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    public List<Map<String, Object>> findSegmentationsForBatchType(String batchType, String sortField, String sortDirection, int startIndex, int resultCount) {
+    public List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, String batchType, String sortField,
+                                                                   String sortDirection, int startIndex, int resultCount) {
         if (logger.isTraceEnabled()) {
             logger.trace("findSegmentationsForBatchType: batchType = " + batchType + " sortField = " + sortField +
                     " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
@@ -659,7 +660,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 returnMap.put("count", segmentation.getCount());
                 returnMap.put("lastDt", segmentation.getLastRunDate() == null ? null : sdf.format(segmentation.getLastRunDate()));
                 returnMap.put("lastUser", segmentation.getLastRunByUser());
-                returnMap.put("picked", Boolean.FALSE);  // TODO: fix to re-init picked to true if saved in DB
+                returnMap.put("picked", batch.containsSegmentationId(segmentation.getId()));
                 returnList.add(returnMap);
             }
         }
@@ -696,11 +697,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             req.setStartIndex(startIndex);
             req.setResultCount(resultCount);
 
-//            Segmentation segmentation = new Segmentation(6L, "Gift Segmentation", "Constituents who donated to the general fund", 108, null, "oleap@company1");
-//            returnSegmentations.add(segmentation);
-//
-//            segmentation = new Segmentation(2L, "Gift Segmentation", "Constituents that donated last year", 12, null, "oleap@company1");
-//            returnSegmentations.add(segmentation);
             GetSegmentationListByTypeResponse resp = theGuru.getSegmentationListByType(req);
             if (resp != null) {
                 List<com.orangeleap.theguru.client.Segmentation> wsSegmentations = resp.getSegmentation();

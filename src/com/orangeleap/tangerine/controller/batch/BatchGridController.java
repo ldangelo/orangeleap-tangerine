@@ -1,21 +1,22 @@
-package com.orangeleap.tangerine.controller.postbatch;
+package com.orangeleap.tangerine.controller.batch;
 
 import com.orangeleap.tangerine.controller.TangerineGridController;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.type.AccessType;
-import org.springframework.web.util.WebUtils;
+import com.orangeleap.tangerine.type.PageType;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class PostBatchesGridController extends TangerineGridController {
+public class BatchGridController extends TangerineGridController {
 
     @SuppressWarnings("unchecked")
     public void checkAccess(HttpServletRequest request) {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get("/postbatch.htm") != AccessType.ALLOWED) {
+        if (pageAccess.get(PageType.batch.getPageName()) != AccessType.ALLOWED) {
             throw new RuntimeException("You are not authorized to access this page"); // TODO: use invalid access exception and move to filter
         }
     }

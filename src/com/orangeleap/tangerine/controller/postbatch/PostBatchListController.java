@@ -18,25 +18,23 @@
 
 package com.orangeleap.tangerine.controller.postbatch;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.PostBatchService;
+import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
-import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.PostBatchService;
-import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.util.OLLogger;
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 public class PostBatchListController extends SimpleFormController {
 
@@ -65,8 +63,8 @@ public class PostBatchListController extends SimpleFormController {
 
         ModelAndView mav = super.showForm(request, response, errors, controlModel);
 
-        List<PostBatch> postbatchs = getPostBatchs(request);
-        mav.addObject("postbatchs", postbatchs);
+        List<PostBatch> postbatches = getPostBatchs(request);
+        mav.addObject("postbatches", postbatches);
         return mav;
 
     }
@@ -80,7 +78,7 @@ public class PostBatchListController extends SimpleFormController {
     private List<PostBatch> getPostBatchs(HttpServletRequest request) {
     	List<PostBatch> list = postBatchService.listBatchs();
     	for (PostBatch b : list) {
-    		Long id = b.getBatchUpdatedById();
+    		Long id = b.getExecutedById();
     		if (id != null) {
     			String loginid = constituentService.readConstituentById(id).getLoginId();
     			b.setCustomFieldValue("loginid", loginid); // set just for the ui to use, not saved
@@ -105,14 +103,14 @@ public class PostBatchListController extends SimpleFormController {
         if (update) {
         	try {
         		postBatchService.updateBatch(postbatch);
-            	mav.addObject("errormessage", "Batch successfully updated.");
+            	mav.addObject("errormessage", "PostBatch successfully updated.");
         	} catch (Exception e) {
             	mav.addObject("errormessage", e.getMessage());
         	}
         } else if (delete) {
         	try {
         		postBatchService.deleteBatch(postbatch);
-            	mav.addObject("errormessage", "Batch successfully deleted.");
+            	mav.addObject("errormessage", "PostBatch successfully deleted.");
         	} catch (Exception e) {
             	mav.addObject("errormessage", e.getMessage());
         	}
@@ -120,8 +118,8 @@ public class PostBatchListController extends SimpleFormController {
         	mav = new ModelAndView("redirect:/postbatch.htm?id=" + batchId);
         }
         
-        List<PostBatch> postbatchs = getPostBatchs(request);
-        mav.addObject("postbatchs", postbatchs);
+        List<PostBatch> postbatches = getPostBatchs(request);
+        mav.addObject("postbatches", postbatches);
         return mav;
         	
     }

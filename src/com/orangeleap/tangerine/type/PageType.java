@@ -83,7 +83,8 @@ public enum PageType {
     customField("/customField.htm"),
     siteSettings("/siteSettings.htm"),
     siteDefaults("/siteDefaults.htm"),
-    postbatch("/postbatch.htm"),
+    batch("/batch.htm"),
+    postbatch("/postbatch.htm"), // TODO: remove
     logView("/logView.htm"),
     screenDefinition("/screenDefinition.htm"),
     manageDashboard("/manageDashboard.htm");

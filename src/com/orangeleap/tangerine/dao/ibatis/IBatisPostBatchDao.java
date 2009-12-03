@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.orangeleap.tangerine.dao.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
+import com.orangeleap.tangerine.domain.PostBatchSegmentation;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
@@ -46,17 +46,6 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 	}
 
     @SuppressWarnings("unchecked")
-	@Override
-    public List<PostBatch> listBatchs() {
-        if (logger.isTraceEnabled()) {
-            logger.trace("listPostBatchs");
-        }
-        Map<String, Object> params = setupParams();
-        List<PostBatch> result = (List<PostBatch>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCHS", params);
-        return result;
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
     public List<PostBatch> readBatches(boolean showRanBatches, String sortPropertyName, String direction, int start, int limit, Locale locale) {
         if (logger.isTraceEnabled()) {
@@ -69,39 +58,96 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_POST_BATCHES", params);
     }
 
+    /**
+     * Retrieves the PostBatch for the specified postBatchId, including the PostBatchSegmentations
+     * @param postBatchId the specified postBatchId
+     * @return PostBatch object
+     */
     @Override
-    public PostBatch readPostBatch(Long postBatchId) {
+    public PostBatch readPostBatchById(Long postBatchId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readPostBatch: postBatchId = " + postBatchId);
+            logger.trace("readPostBatchById: postBatchId = " + postBatchId);
         }
         Map<String, Object> params = setupParams();
-        params.put("id", postBatchId);
-        PostBatch postbatch = (PostBatch)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_BY_ID", params);
-        readCustomFields(postbatch);
-        return postbatch;
+        params.put(StringConstants.ID, postBatchId);
+        PostBatch batch = (PostBatch)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_BY_ID", params);
+        readCustomFields(batch);
+        return batch;
+    }
+
+	@Override
+	public PostBatch maintainPostBatch(PostBatch batch) {
+		if (logger.isTraceEnabled()) {
+			logger.trace("maintainPostBatch: postBatchId = " + batch.getId());
+		}
+        setCustomFields(batch);
+		batch = (PostBatch) insertOrUpdate(batch, "POST_BATCH");
+        maintainPostBatchSegmentations(batch);
+        return batch;
+	}
+
+    /**
+     * Delete the existing PostBatchSegmentations if any, and insert again
+     * @param batch batch that contains the segmentations
+     */
+    private void maintainPostBatchSegmentations(PostBatch batch) {
+        /* Delete PostBatchSegmentations first if the batch is being edited */
+        if ( ! batch.isNew()) {
+            getSqlMapClientTemplate().delete("DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID", batch.getId());
+        }
+        if (batch.getPostBatchSegmentations() != null) {
+            for (PostBatchSegmentation segmentation : batch.getPostBatchSegmentations()) {
+                segmentation.setId(null); // a new ID will be generated during the insert
+                segmentation.setPostBatchId(batch.getId());
+                insertOrUpdate(segmentation, "POST_BATCH_SEGMENTATION");
+            }
+        }
+    }
+
+    private void setCustomFields(PostBatch batch) {
+        if (batch != null) {
+            batch.clearCustomFieldMap();
+            for (Map.Entry<String, String> entry : batch.getUpdateFields().entrySet()) {
+                batch.setCustomFieldValue(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private void readCustomFields(PostBatch batch) {
+        if (batch != null) {
+            batch.clearUpdateFields();
+            for (Map.Entry<String, CustomField> entry : batch.getCustomFieldMap().entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue().getValue();
+                batch.addUpdateField(key, value);
+            }
+        }
+    }
+
+    @Override
+    public void deletePostBatch(Long postBatchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deletePostBatch: postBatchId = " + postBatchId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.ID, postBatchId);
+        getSqlMapClientTemplate().delete("DELETE_POST_BATCH", params);
     }
 
 
-	@Override
-	public PostBatch maintainPostBatch(PostBatch postBatch) {
-		if (logger.isTraceEnabled()) {
-			logger.trace("maintainPostBatch: postbatchId = " + postBatch.getId());
-		}
-        setCustomFields(postBatch);
-		PostBatch aPostBatch = (PostBatch) insertOrUpdate(postBatch, "POST_BATCH");
-        readCustomFields(aPostBatch);
-        return aPostBatch;
-	}
 
+
+
+    /********************************** below can be removed ******************************/
     @SuppressWarnings("unchecked")
 	@Override
-    public List<PostBatchReviewSetItem> readPostBatchReviewSetItems(Long postBatchId) {
+    public List<PostBatchSegmentation> readPostBatchReviewSetItems(Long postBatchId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readPostBatch: postBatchId = " + postBatchId);
+            logger.trace("readPostBatchById: postBatchId = " + postBatchId);
         }
         Map<String, Object> params = setupParams();
         params.put("postBatchId", postBatchId);
-        List<PostBatchReviewSetItem> result = (List<PostBatchReviewSetItem>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS", params);
+        List<PostBatchSegmentation> result = (List<PostBatchSegmentation>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS", params);
         return result;
     }
     
@@ -117,10 +163,10 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 		params.put("postBatchId", postBatchId);
 
         Long count = (Long)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_REVIEW_SET_SIZE", params);
-        PostBatch postbatch = readPostBatch(postBatchId);
+        PostBatch postbatch = readPostBatchById(postBatchId);
         if (postbatch == null) return null;
         List rows;
-        if ("gift".equals(postbatch.getEntity())) {
+        if (StringConstants.GIFT.equals(postbatch.getBatchType())) {
            rows = getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS_GIFT_PAGINATED", params);
         } else {
            rows = getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS_ADJUSTED_GIFT_PAGINATED", params);
@@ -133,22 +179,12 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
     }
 
     @Override
-    public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem) {
+    public PostBatchSegmentation maintainPostBatchReviewSetItem(PostBatchSegmentation postBatchSegmentation) {
         if (logger.isTraceEnabled()) {
-            logger.trace("maintainPostBatchReviewSetItem: maintainPostBatchReviewSetItemId = " + postBatchReviewSetItem.getId());
+            logger.trace("maintainPostBatchReviewSetItem: maintainPostBatchReviewSetItemId = " + postBatchSegmentation.getId());
         }
-        PostBatchReviewSetItem aPostBatchReviewSetItem = (PostBatchReviewSetItem) insertOrUpdate(postBatchReviewSetItem, "POST_BATCH_REVIEW_SET_ITEM");
-        return aPostBatchReviewSetItem;
-    }
-
-    @Override
-    public void deletePostBatch(Long postBatchId) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("deletePostBatch: postBatchId = " + postBatchId);
-        }
-        Map<String, Object> params = setupParams();
-        params.put("id", postBatchId);
-        getSqlMapClientTemplate().delete("DELETE_POST_BATCH", params);
+        PostBatchSegmentation aPostBatchSegmentation = (PostBatchSegmentation) insertOrUpdate(postBatchSegmentation, "POST_BATCH_REVIEW_SET_ITEM");
+        return aPostBatchSegmentation;
     }
 
     @Override
@@ -180,39 +216,14 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         params.put("postBatchId", postBatchId);
         return (Long)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_REVIEW_SET_SIZE", params);
     }
-    
 
-
-    private static final String WHERE = "where";
-    private static final String UPDATE = "update";
-
-    private void setCustomFields(PostBatch postbatch) {
-        if (postbatch == null) return;
-        postbatch.getCustomFieldMap().clear();
-        for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
-            postbatch.setCustomFieldValue(WHERE + "." + me.getKey(), me.getValue());
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<PostBatch> listBatches() {
+        if (logger.isTraceEnabled()) {
+            logger.trace("listBatches:");
         }
-        for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-            postbatch.setCustomFieldValue(UPDATE + "." + me.getKey(), me.getValue());
-        }
+        Map<String, Object> params = setupParams();
+        return (List<PostBatch>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCHES", params);
     }
-
-    private void readCustomFields(PostBatch postbatch) {
-        if (postbatch == null) return;
-        postbatch.getWhereConditions().clear();
-        postbatch.getUpdateFields().clear();
-        for (Map.Entry<String, CustomField> me : postbatch.getCustomFieldMap().entrySet()) {
-            String key = me.getKey();
-            String value = me.getValue().getValue();
-            int i = key.indexOf('.');
-            if (i > -1) {
-                String prefix = key.substring(0,i);
-                key = key.substring(i+1);
-                if (prefix.equals(WHERE)) postbatch.getWhereConditions().put(key, value);
-                if (prefix.equals(UPDATE)) postbatch.getUpdateFields().put(key, value);
-            }
-        }
-    }
-
-
 }

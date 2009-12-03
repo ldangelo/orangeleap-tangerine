@@ -22,12 +22,13 @@ import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.WebUtils;
-import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +50,7 @@ public class BatchListController extends TangerineJsonListController {
     @SuppressWarnings("unchecked")
     public void checkAccess(HttpServletRequest request) {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get("/postbatch.htm") != AccessType.ALLOWED) {
+        if (pageAccess.get(PageType.batch.getPageName()) != AccessType.ALLOWED) {
             throw new RuntimeException("You are not authorized to access this page"); // TODO: use invalid access exception and move to filter
         }
     }
@@ -71,14 +72,13 @@ public class BatchListController extends TangerineJsonListController {
             Map<String, Object> map = new HashMap<String, Object>();
 
             map.put(StringConstants.ID, batch.getId());
-            map.put("entity", batch.getEntity());
-            map.put("reviewSetSize", batch.getReviewSetSize());
-            map.put("postBatchDesc", batch.getPostBatchDesc());
-            map.put("batchUpdated", batch.isBatchUpdated());
-            map.put("batchUpdatedDate", batch.getBatchUpdatedDate());
+            map.put("batchType", batch.getBatchType());
+            map.put("batchDesc", batch.getBatchDesc());
+            map.put("executed", batch.isExecuted());
+            map.put("executedDate", batch.getExecutedDate());
             map.put("createDate", batch.getCreateDate());
 
-    		Long updaterId = batch.getBatchUpdatedById();
+    		Long updaterId = batch.getExecutedById();
     		if (updaterId != null) {
     			String loginId = constituentService.readConstituentById(updaterId).getLoginId();
                 map.put("loginId", loginId);

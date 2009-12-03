@@ -315,8 +315,9 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("var cm = this.getColumnModel();\n");
                     sb.append("for (var i = 0; i < state.mc.length; i++) {\n");
                     sb.append("var colIndex = cm.findColumnIndex(state.mc[i].di);\n");
+                    sb.append("var colCt = cm.getColumnCount();\n");
                     sb.append("if (colIndex != -1) {\n");
-                    sb.append("if (colIndex != i) {\n");
+                    sb.append("if (colIndex != i && i < colCt) {\n");
                     sb.append("cm.moveColumn(colIndex, i);\n");
                     sb.append("}\n");
                     sb.append("cm.setHidden(i, state.mc[i].h);\n");
@@ -628,10 +629,11 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("applyState: function(state, config) {\n");
                     sb.append("if (state.mc != null) {\n");
                     sb.append("var cm = this.getColumnModel();\n");
+                    sb.append("var colCt = cm.getColumnCount();\n");
                     sb.append("for (var i = 0; i < state.mc.length; i++) {\n");
                     sb.append("var colIndex = cm.findColumnIndex(state.mc[i].di);\n");
                     sb.append("if (colIndex != -1)\n");
-                    sb.append("if (colIndex != i) {\n");
+                    sb.append("if (colIndex != i && i < colCt) {\n");
                     sb.append("cm.moveColumn(colIndex, i);\n");
                     sb.append("}\n");
                     sb.append("cm.setHidden(i, state.mc[i].h);\n");

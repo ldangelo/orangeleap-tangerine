@@ -15,37 +15,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.orangeleap.tangerine.domain;
 
-import java.util.Date;
-import java.math.BigDecimal;
-import java.io.Serializable;
-
-
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.util.Date;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.springframework.core.style.ToStringCreator;
-import org.springframework.util.StringUtils;
-
-import com.orangeleap.tangerine.type.ActivationType;
-import com.orangeleap.tangerine.util.StringConstants;
-
+/**
+ * A mapping of the segmentation IDs associated with a batch
+ */
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class PostBatchReviewSetItem implements GeneratedId, Serializable {
+public class PostBatchSegmentation implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
     private Long postBatchId;
-    private Long entityId;
+    private Long segmentationId;
     private Date createDate;
     private Date updateDate;
 
-    public PostBatchReviewSetItem() { }
+    public PostBatchSegmentation() { }
 
+    public PostBatchSegmentation(Long segmentationId) {
+        this.segmentationId = segmentationId;
+    }
 
     public Long getId() {
         return id;
@@ -55,7 +49,6 @@ public class PostBatchReviewSetItem implements GeneratedId, Serializable {
         this.id = id;
     }
 
-
     public Long getPostBatchId() {
         return postBatchId;
     }
@@ -64,15 +57,13 @@ public class PostBatchReviewSetItem implements GeneratedId, Serializable {
         this.postBatchId = postBatchId;
     }
 
-
-    public Long getEntityId() {
-        return entityId;
+    public Long getSegmentationId() {
+        return segmentationId;
     }
 
-    public void setEntityId(Long entityId) {
-        this.entityId = entityId;
+    public void setSegmentationId(Long segmentationId) {
+        this.segmentationId = segmentationId;
     }
-
 
     public Date getCreateDate() {
         return createDate;
@@ -82,7 +73,6 @@ public class PostBatchReviewSetItem implements GeneratedId, Serializable {
         this.createDate = createDate;
     }
 
-
     public Date getUpdateDate() {
         return updateDate;
     }
@@ -90,42 +80,4 @@ public class PostBatchReviewSetItem implements GeneratedId, Serializable {
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof PostBatchReviewSetItem)) {
-            return false;
-        }
-        PostBatchReviewSetItem a = (PostBatchReviewSetItem) obj;
-        EqualsBuilder eb = new EqualsBuilder();
-        eb
-        .append(id, a.getId())
-        .append(postBatchId, a.getPostBatchId())
-        .append(entityId, a.getEntityId())
-		;
-        return eb.isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb
-        .append(""+id)
-        .append(""+postBatchId)
-        .append(""+entityId)
-		;
-        return hcb.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringCreator(this)
-        .append(super.toString())
-        .append("id", ""+id)
-        .append("postBatchId", ""+postBatchId)
-        .append("entityId", ""+entityId)
-        .toString();
-    }
-
 }

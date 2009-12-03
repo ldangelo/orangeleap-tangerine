@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.orangeleap.tangerine.web.flow;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
@@ -36,6 +35,7 @@ import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -53,7 +53,6 @@ import org.springframework.web.util.WebUtils;
 import org.springframework.webflow.context.ExternalContext;
 import org.springframework.webflow.context.servlet.ServletExternalContext;
 import org.springframework.webflow.core.collection.MutableAttributeMap;
-import org.springframework.webflow.execution.FlowExecutionContext;
 import org.springframework.webflow.execution.RequestContext;
 
 import javax.annotation.Resource;
@@ -94,7 +93,7 @@ public class BatchSelectionAction {
     @SuppressWarnings("unchecked")
     public void checkAccess(HttpServletRequest request) {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get("/postbatch.htm") != AccessType.ALLOWED) {
+        if (pageAccess.get(PageType.batch.getPageName()) != AccessType.ALLOWED) {
             throw new RuntimeException("You are not authorized to access this page"); // TODO: use invalid access exception and move to filter
         }
     }
@@ -134,7 +133,7 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
-    public ModelMap step1FindBatchInfo(final RequestContext flowRequestContext, final FlowExecutionContext flowExecutionContext, final Long batchId) {
+    public ModelMap step1FindBatchInfo(final RequestContext flowRequestContext, final Long batchId) {
         if (logger.isTraceEnabled()) {
             logger.trace("step1FindBatchInfo: batchId = " + batchId);
         }
@@ -150,15 +149,15 @@ public class BatchSelectionAction {
             batch = postBatchService.readBatchCreateIfNull(batchId);
             
             if (batch.isNew()) {
-                batch.setPostBatchDesc(StringConstants.EMPTY);
-                batch.setPostBatchType(StringConstants.GIFT); // default is gift
+                batch.setBatchDesc(StringConstants.EMPTY);
+                batch.setBatchType(StringConstants.GIFT); // default is gift
             }
 
-            // add only the Batch to the view scope and remove from the returnMap
+            // add only the PostBatch to the view scope and remove from the returnMap
             setFlowScopeAttribute(flowRequestContext, batch, StringConstants.BATCH);
         }
-        dataMap.put(StringConstants.BATCH_DESC, batch.getPostBatchDesc());
-        dataMap.put(StringConstants.BATCH_TYPE, batch.getPostBatchType());
+        dataMap.put(StringConstants.BATCH_DESC, batch.getBatchDesc());
+        dataMap.put(StringConstants.BATCH_TYPE, batch.getBatchType());
 
         return model;
     }
@@ -174,10 +173,21 @@ public class BatchSelectionAction {
         final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
         
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        batch.setPostBatchDesc(batchDesc);
-        batch.setPostBatchType(batchType);
+        batch.setBatchDesc(batchDesc);
 
-        model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batchType, resolveSegmentationFieldName(sortInfo.getSort()), sortInfo.getDir(),
+        /**
+         * Check if the batchType is different from what was previously entered during the flow - if so, reset the previously selected segmentation IDs and
+         * the updated fields
+         */
+        if (batch.getBatchType() != null && StringUtils.hasText(batch.getBatchType()) &&
+                StringUtils.hasText(batchType) && ! batchType.equals(batch.getBatchType())) {
+            batch.clearPostBatchSegmentations();
+            batch.clearUpdateFields();
+        }
+        batch.setBatchType(batchType);
+
+        model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, batchType,
+                resolveSegmentationFieldName(sortInfo.getSort()), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit()));
         model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batchType));
 
@@ -196,8 +206,10 @@ public class BatchSelectionAction {
         final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
 
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        batch.setSegmentationReportIds(ids);
-        if (StringConstants.GIFT.equals(batch.getPostBatchType())) {
+
+        // TODO: what to do if the list of IDs is paginated?
+        batch.clearAddAllPostBatchSegmentations(ids);
+        if (StringConstants.GIFT.equals(batch.getBatchType())) {
             appendModelForGift(request, ids, sortInfo, model);
         }
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
@@ -319,14 +331,14 @@ public class BatchSelectionAction {
             logger.trace("step4FindBatchUpdateFields:");
         }
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        final String picklistNameId = new StringBuilder(batch.getPostBatchType()).append(BATCH_FIELDS).toString();
+        final String picklistNameId = new StringBuilder(batch.getBatchType()).append(BATCH_FIELDS).toString();
         final Picklist picklist = picklistItemService.getPicklist(picklistNameId);
         final ModelMap model = new ModelMap();
         final List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
 
         if (picklist != null) {
             for (PicklistItem item : picklist.getActivePicklistItems()) {
-                String fieldDefinitionId = new StringBuilder(batch.getPostBatchType()).append(".").append(item.getDefaultDisplayValue()).toString();
+                String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(item.getDefaultDisplayValue()).toString();
                 FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
                 if (fieldDef != null) {
                     FieldType fieldType = fieldDef.getFieldType();
@@ -375,7 +387,7 @@ public class BatchSelectionAction {
 
         final ModelMap model = new ModelMap();
 
-        final Set<Long> segmentationReportIds = StringUtils.commaDelimitedListToSet(batch.getSegmentationReportIds());
+        final Set<Long> segmentationReportIds = batch.getSegmentationIds();
         final List<Map<String, Object>> rowValues = new ArrayList<Map<String, Object>>();
 
         final Map<String, Object> metaDataMap = initMetaData(sortInfo.getStart(),
@@ -403,13 +415,13 @@ public class BatchSelectionAction {
         fieldList.add(fieldMap);
 
         BeanWrapper bean = null;
-        if (StringConstants.GIFT.equals(batch.getPostBatchType())) {
+        if (StringConstants.GIFT.equals(batch.getBatchType())) {
             bean = createDefaultGift();
         }
         if (bean != null) {
             batch.clearUpdateFields();
             for (String thisKey : enteredParams.keySet()) {
-                String fieldDefinitionId = new StringBuilder(batch.getPostBatchType()).append(".").append(thisKey).toString();
+                String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
                 FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
                 if (fieldDef != null && bean.isReadableProperty(thisKey)) {
                     fieldMap = new HashMap<String, Object>();
@@ -442,7 +454,7 @@ public class BatchSelectionAction {
         }
         metaDataMap.put(StringConstants.FIELDS, fieldList);
 
-        if (StringConstants.GIFT.equals(batch.getPostBatchType())) {
+        if (StringConstants.GIFT.equals(batch.getBatchType())) {
             final List<Gift> gifts = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
             for (Gift gift : gifts) {
                 final Map<String, Object> oldRowMap = new HashMap<String, Object>();
@@ -478,6 +490,14 @@ public class BatchSelectionAction {
         model.put(StringConstants.TOTAL_ROWS, rowValues.size());
 
         return model;
+    }
+
+    public void saveBatch(final RequestContext flowRequestContext) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("saveBatch:");
+        }
+        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        postBatchService.maintainBatch(batch);
     }
 
     private Map<String, Object> findEnteredParameters(final HttpServletRequest request) {

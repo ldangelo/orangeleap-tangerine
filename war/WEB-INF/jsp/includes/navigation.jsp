@@ -131,8 +131,8 @@
 						</c:if>
 					</li>
                     <li>
-                        <c:if test="${pageAccess['/postbatch.htm']=='ALLOWED'}">
-                           <a href="postbatchs.htm"><spring:message code="postbatch"/></a>
+                        <c:if test="${pageAccess['/batch.htm']=='ALLOWED'}">
+                           <a href="batch.htm"><spring:message code="batches"/></a>
                         </c:if>
                     </li>
                     <li>

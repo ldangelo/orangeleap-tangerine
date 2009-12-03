@@ -8,10 +8,11 @@
 
     <view-state id="batchStep1">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, flowExecutionContext, requestParameters.batchId)" result="flowScope.model"/>
+            <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext, requestParameters.batchId)" result="flowScope.model"/>
         </on-entry>
         <transition on="step1" to="batchStep1"/> <!-- if reloading the current page -->
         <transition on="step2" to="batchStep2"/>
+        <transition on="cancel" to="batchCancelled"/>
     </view-state>
 
     <view-state id="batchStep2">
@@ -23,6 +24,7 @@
         <transition on="step1" to="batchStep1"/>
         <transition on="step2" to="batchStep2"/> <!-- if reloading the current page -->
         <transition on="step3" to="batchStep3"/>
+        <transition on="cancel" to="batchCancelled"/>
     </view-state>
 
     <view-state id="batchStep3">
@@ -35,6 +37,7 @@
         <transition on="step2" to="batchStep2"/>
         <transition on="step3" to="batchStep3"/> <!-- if reloading the current page -->
         <transition on="step4" to="batchStep4"/>
+        <transition on="cancel" to="batchCancelled"/>
     </view-state>
 
     <view-state id="batchStep4">
@@ -47,6 +50,7 @@
         <transition on="step3" to="batchStep3"/>
         <transition on="step4" to="batchStep4"/> <!-- if reloading the current page -->
         <transition on="step5" to="batchStep5"/>
+        <transition on="cancel" to="batchCancelled"/>
     </view-state>
 
     <view-state id="batchStep5">
@@ -60,9 +64,18 @@
         <transition on="step3" to="batchStep3"/>
         <transition on="step4" to="batchStep4"/>
         <transition on="step5" to="batchStep5"/> <!-- if reloading the current page -->
+        <transition on="save" to="batchFinished"/>
+        <transition on="cancel" to="batchCancelled"/>
     </view-state>
 
-    <end-state id="batchFinished"/>
+    <end-state id="batchFinished">
+        <on-entry>
+            <evaluate expression="batchSelectionAction.saveBatch(flowRequestContext)"/>
+        </on-entry>
+    </end-state>
+    
+    <end-state id="batchCancelled"/>
+
 </flow>
         
         <!-- If not specified, the start state is the first state specified. -->

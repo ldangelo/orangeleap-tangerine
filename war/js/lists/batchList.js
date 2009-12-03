@@ -16,11 +16,12 @@ OrangeLeap.msgBundle = {
     next: 'Next',
     previous: 'Previous',
     save: 'Save',
+    cancel: 'Cancel',
     close: 'Close',
     gift: 'Gift',
     name: 'Name',
     adjustedGift: 'Adjusted Gift',
-    showCurrentBatches: 'Show Current Batches',
+    showOpenBatches: 'Show Open Batches',
     showExecutedBatches: 'Show Executed Batches',
     id: 'ID',
     batchId: 'Batch ID',
@@ -49,8 +50,8 @@ OrangeLeap.msgBundle = {
     loadingRows: 'Loading Rows...',
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
     followingChangesApplied: 'The following changes will be applied when you click \'Save\'.',
-    noSegmentationsFound: 'No Segmentations were found for Type \'{0}\'.  Please choose a different Type (Step 1).',
-    noRowsFound: 'No {0} rows were found for the Segmentations selected.  Please choose a different Segmentation (Step 2).',
+    noSegmentationsFound: 'No Segmentations were found for the Type selected.  Please choose a different Type (Step 1).',
+    noRowsFound: 'No rows were found for the Segmentations selected.  Please choose a different Segmentation (Step 2).',
     noFieldUpdates: 'You did not create any Field Update Criteria.  Please create Criteria first (Step 4).',
     step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
     step2Title: '<span class="step"><span class="stepNum" id="step2Num">2</span><span class="stepTxt">Choose Segmentations</span>',
@@ -82,36 +83,28 @@ Ext.onReady(function() {
         sortInfo: {field: 'createDate', direction: 'DESC'},
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
-            {name: 'entity', mapping: 'entity', type: 'string'},
-            {name: 'reviewSetSize', mapping: 'reviewSetSize', type: 'int'},
-            {name: 'postBatchDesc', mapping: 'postBatchDesc', type: 'string'},
-            {name: 'batchUpdated', mapping: 'batchUpdated', type: 'boolean'},
-            {name: 'batchUpdatedDate', mapping: 'batchUpdatedDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'batchType', mapping: 'batchType', type: 'string'},
+            {name: 'batchDesc', mapping: 'batchDesc', type: 'string'},
+            {name: 'executed', mapping: 'executed', type: 'boolean'},
+            {name: 'executedDate', mapping: 'executedDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'createDate', mapping: 'createDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'loginId', mapping: 'loginId', type: 'string'}
         ]
     });
     store.on('load', function(store, recs, options) {
-        var batchIdCol = 0;
-        var executeDtCol = 4;
-        var createDtCol = 5;
-        var loginIdCol = 6;
-        var actionsCol = 7;
         if (combo.getValue() == 'true') {
-            // for executed batches, hide batchId, actions & createDt column
-            grid.colModel.setHidden(batchIdCol, true);
-            grid.colModel.setHidden(createDtCol, true);
-            grid.colModel.setHidden(actionsCol, true);
-            grid.colModel.setHidden(executeDtCol, false);
-            grid.colModel.setHidden(loginIdCol, false);
+            // for executed batches, hide actions & createDt column
+            grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), true);
+            grid.colModel.setHidden(grid.colModel.getIndexById('actions'), true);
+            grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), false);
+            grid.colModel.setHidden(grid.colModel.getIndexById('loginId'), false);
         }
         else {
-           // for not executed batches, hide batchId, executeDt & loginId column
-            grid.colModel.setHidden(batchIdCol, true);
-            grid.colModel.setHidden(executeDtCol, true);
-            grid.colModel.setHidden(loginIdCol, true);
-            grid.colModel.setHidden(actionsCol, false);
-            grid.colModel.setHidden(createDtCol, false);
+           // for not executed batches, hide executeDt & loginId column
+            grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), true);
+            grid.colModel.setHidden(grid.colModel.getIndexById('loginId'), true);
+            grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), false);
+            grid.colModel.setHidden(grid.colModel.getIndexById('actions'), false);
         }
     });
 
@@ -146,7 +139,7 @@ Ext.onReady(function() {
                 'showRanBatches',
                 'desc'
             ],
-            data: [['false', msgs.showCurrentBatches], ['true', msgs.showExecutedBatches]] 
+            data: [['false', msgs.showOpenBatches], ['true', msgs.showExecutedBatches]] 
         }),
         displayField: 'desc',
         valueField: 'showRanBatches',
@@ -163,9 +156,15 @@ Ext.onReady(function() {
     });
     combo.on('select', function(comboBox, record, index) {
         var showRanBatchesVal = comboBox.getValue();
+        if (showRanBatchesVal == 'true') {
+            grid.addButton.disable();
+        }
+        else {
+            grid.addButton.enable();
+        }
         var state = store.getSortState();
         if (state) {
-            state.field = showRanBatchesVal == 'true' ? 'batchUpdatedDate' : 'createDate';
+            state.field = showRanBatchesVal == 'true' ? 'executedDate' : 'createDate';
             state.direction = 'DESC';
         }
         store.load( { params: { showRanBatches: showRanBatchesVal, start: 0, limit: 100, sort: state.field, dir: state.direction } });
@@ -196,14 +195,16 @@ Ext.onReady(function() {
         applyState: function(state, config) {
             if (state.mc != null) {
                 var cm = this.getColumnModel();
+                var colCt = cm.getColumnCount();
                 for (var i = 0; i < state.mc.length; i++) {
                     var colIndex = cm.findColumnIndex(state.mc[i].di);
-                    if (colIndex != -1)
-                    if (colIndex != i) {
-                        cm.moveColumn(colIndex, i);
+                    if (colIndex != -1 && i < colCt) {
+                        if (colIndex != i) {
+                            cm.moveColumn(colIndex, i);
+                        }
+                        cm.setHidden(i, state.mc[i].h);
+                        cm.setColumnWidth(i, state.mc[i].w);
                     }
-                    cm.setHidden(i, state.mc[i].h);
-                    cm.setColumnWidth(i, state.mc[i].w);
                 }
             }
             if (state.sf && state.sd) {
@@ -217,17 +218,16 @@ Ext.onReady(function() {
         addClass: 'pointer',
         columns: [
             { header: msgs.batchId, dataIndex: 'id', width: 50, sortable: true, hidden: true },
-            { header: msgs.type, dataIndex: 'entity', width: 150, sortable: true },
-            { header: msgs.size, dataIndex: 'reviewSetSize', width: 100, sortable: true },
-            { header: msgs.description, dataIndex: 'postBatchDesc', sortable: true,
+            { header: msgs.type, dataIndex: 'batchType', width: 150, sortable: true },
+            { header: msgs.description, dataIndex: 'batchDesc', sortable: true,
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     return '<span ext:qtitle="' + msgs.description + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                 }
             },
-            { header: msgs.executeDate, dataIndex: 'batchUpdatedDate', sortable: true, id: 'executeDt' },
+            { header: msgs.executeDate, dataIndex: 'executedDate', sortable: true, id: 'executedDt' },
             { header: msgs.creationDate, dataIndex: 'createDate', sortable: true, id: 'createDt' },
-            { header: msgs.userId, dataIndex: 'loginId', sortable: true },
-            { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;',
+            { header: msgs.userId, dataIndex: 'loginId', sortable: true, id: 'loginId' },
+            { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;', id: 'actions', 
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     if ( ! record.get('batchUpdated')) {
                         var html = '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id + '" title="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
@@ -431,7 +431,6 @@ Ext.onReady(function() {
         if (thisGrp.mainItem.id == 'step1Grp') {
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
             step1Form.getForm().load({
-//                url: 'batchInfo.json',
                 url: 'doBatch.htm',
                 params: {
                     'batchId': batchID,
@@ -500,7 +499,6 @@ Ext.onReady(function() {
                 }
                 params['param-' + step4DataItems[x].data.name] = value;
             }
-//            params['ids'] = step3Store.collect('id').toString();
             params['start'] = startNum;
             params['limit'] = 20;
             params['sort'] = 'id';
@@ -529,6 +527,7 @@ Ext.onReady(function() {
                 ref: '../nextButton',
                 formBind: true,
                 disabledClass: 'disabledButton',
+                disabled: true,
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
                     if (panel.setActiveGroup(1)) {
@@ -539,7 +538,7 @@ Ext.onReady(function() {
                 }
             },
             {
-                text: msgs.close,
+                text: msgs.cancel,
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
@@ -569,7 +568,6 @@ Ext.onReady(function() {
                     ],
                     data: [['gift', msgs.gift] ]//, ['adjustedGift', msgs.adjustedGift]] TODO: put back adjustedGift when adjustedGift segmentations ready
                 }),
-//                value: 'gift',
                 displayField: 'desc',
                 valueField: 'value',
                 typeAhead: false,
@@ -583,15 +581,19 @@ Ext.onReady(function() {
                 listeners: {
                     'focus': elementFocus,
                     'blur': elementBlur,
+                    'change': function(field, newVal, oldVal) {
+                        if (Ext.isEmpty(newVal)) {
+                            step1Form.nextButton.disable();
+                        }
+                        else {
+                            step1Form.nextButton.enable();
+                        }
+                    },
                     scope: this
                 }
             }
         ]
     });
-
-    function getBatchTypeDesc() {
-        return Ext.getCmp('batchType').getRawValue();
-    }
 
     function getBatchTypeValue() {
         return Ext.getCmp('batchType').getValue();
@@ -603,7 +605,6 @@ Ext.onReady(function() {
     
     var step2Store = new OrangeLeap.ListStore({
         url: 'doBatch.htm',
-//        url: 'findSegmentations.json',
         totalProperty: 'totalRows',
         root: 'rows',
         remoteSort: true,
@@ -725,7 +726,7 @@ Ext.onReady(function() {
         selModel: step2RowSelModel,
         viewConfig: {
             forceFit: true,
-            emptyText: String.format(msgs.noSegmentationsFound, getBatchTypeDesc())
+            emptyText: msgs.noSegmentationsFound
         },
         plugins: [ checkColumn ],
         buttons: [
@@ -759,7 +760,7 @@ Ext.onReady(function() {
                 }
             },
             {
-                text: msgs.close,
+                text: msgs.cancel,
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
@@ -842,14 +843,16 @@ Ext.onReady(function() {
         applyState: function(state, config) {
             if (state.mc != null) {
                 var cm = this.getColumnModel();
+                var colCt = cm.getColumnCount();
                 for (var i = 0; i < state.mc.length; i++) {
                     var colIndex = cm.findColumnIndex(state.mc[i].di);
-                    if (colIndex != -1)
-                    if (colIndex != i) {
-                        cm.moveColumn(colIndex, i);
+                    if (colIndex != -1 && i < colCt) {
+                        if (colIndex != i) {
+                            cm.moveColumn(colIndex, i);
+                        }
+                        cm.setHidden(i, state.mc[i].h);
+                        cm.setColumnWidth(i, state.mc[i].w);
                     }
-                    cm.setHidden(i, state.mc[i].h);
-                    cm.setColumnWidth(i, state.mc[i].w);
                 }
             }
             if (state.sf && state.sd) {
@@ -865,7 +868,6 @@ Ext.onReady(function() {
 
     var step3Store = new OrangeLeap.ListStore({
         url: 'doBatch.htm',
-//        url: 'confirmChoices.json',
         reader: step3Reader,
         root: 'rows',
         totalProperty: 'totalRows',
@@ -977,7 +979,7 @@ Ext.onReady(function() {
         selModel: step3RowSelect,
         viewConfig: {
             forceFit: true,
-            emptyText: String.format(msgs.noRowsFound, getBatchTypeDesc())
+            emptyText: msgs.noRowsFound
         },
         columns: [
             {
@@ -1019,7 +1021,7 @@ Ext.onReady(function() {
                 }
             },
             {
-                text: msgs.close,
+                text: msgs.cancel,
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
@@ -1043,7 +1045,6 @@ Ext.onReady(function() {
 
     var step4UpdatableFieldsStore = new Ext.data.JsonStore({
         url: 'doBatch.htm',
-//        url: 'findBatchUpdateFields.json',
         autoLoad: false,
         autoSave: false,
         totalProperty: 'totalRows',
@@ -1222,7 +1223,7 @@ Ext.onReady(function() {
                 }
             },
             {
-                text: msgs.close,
+                text: msgs.cancel,
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
@@ -1251,7 +1252,6 @@ Ext.onReady(function() {
 
     var step5Store = new OrangeLeap.ListStore({
         url: 'doBatch.htm',
-//        url: 'reviewUpdates.json',
         reader: step5Reader,
         root: 'rows',
         totalProperty: 'totalRows',
@@ -1385,10 +1385,11 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
+                    // TODO: invoke save
                 }
             },
             {
-                text: msgs.close,
+                text: msgs.cancel,
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
@@ -1482,7 +1483,7 @@ Ext.onReady(function() {
         $(window).unbind('keydown', hideOnEscape);
     });
 
-    batchWin.show(); // TODO: remove
+    //batchWin.show(); // TODO: remove
 });
 
 

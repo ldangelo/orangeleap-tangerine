@@ -11,16 +11,16 @@
     http://www.springframework.org/schema/webflow-config
     http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd">
 
-    <bean id="batchHandlerAdapter" class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+    <!--<bean id="batchHandlerAdapter" class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>-->
 
-    <bean id="batchHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="alwaysUseFullPath" value="true" />
-        <property name="mappings">
-            <props>
+    <!--<bean id="batchHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">-->
+        <!--<property name="alwaysUseFullPath" value="true" />-->
+        <!--<property name="mappings">-->
+            <!--<props>-->
                 <!--<prop key="/doBatch.htm">batchFlowController</prop>-->
-            </props>
-        </property>
-    </bean>
+            <!--</props>-->
+        <!--</property>-->
+    <!--</bean>-->
 
     <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
 		<property name="order" value="0" />
@@ -36,7 +36,7 @@
     </flow:flow-executor>    
 
     <flow:flow-registry id="flowRegistry" flow-builder-services="flowBuilderServices">
-        <flow:flow-location path="/WEB-INF/contexts/flows/batch-flow-config.xml" id="doBatch"/>
+        <flow:flow-location path="/WEB-INF/contexts/flows/batch-flow-config.xml" id="doBatch"/>  <!-- 'doBatch' will match the URL 'doBatch.htm' -->
     </flow:flow-registry>
 
     <flow:flow-builder-services id="flowBuilderServices" view-factory-creator="viewFactoryCreator"/>

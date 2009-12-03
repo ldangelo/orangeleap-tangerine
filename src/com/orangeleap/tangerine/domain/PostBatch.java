@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.orangeleap.tangerine.domain;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.springframework.core.style.ToStringCreator;
+import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.util.StringUtils;
 
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class PostBatch extends AbstractCustomizableEntity  {
@@ -35,19 +35,14 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private String postBatchDesc;
-    private String postBatchType;
-    /** A comma delimited string of Segmentation report IDs */
-    private String segmentationReportIds;
-
-    private String entity;
-    private boolean reviewSetGenerated;
-    private Long reviewSetGeneratedById;
-    private Date reviewSetGeneratedDate;
-    private Long reviewSetSize;
-    private boolean batchUpdated;
-    private Long batchUpdatedById;
-    private Date batchUpdatedDate;
+    private String batchDesc;
+    /** batchType maps to 'entity' */
+    private String batchType;
+    private Long batchCreatedById;
+    private Date batchCreatedDate;
+    private boolean executed;
+    private Long executedById;
+    private Date executedDate;
     private boolean posted;
     private Long postedById;
     private Date postedDate;
@@ -55,7 +50,7 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private Date createDate;
     private Date updateDate;
 
-    private Map<String, String> whereConditions = new TreeMap<String, String>();
+    private List<PostBatchSegmentation> postBatchSegmentations = new ArrayList<PostBatchSegmentation>();
     private Map<String, String> updateFields = new TreeMap<String, String>();
     private List<String> updateErrors = new ArrayList<String>();
 
@@ -69,105 +64,69 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.id = id;
     }
 
-    public String getPostBatchDesc() {
-        return postBatchDesc;
+    public String getBatchDesc() {
+        return batchDesc;
     }
 
-    public void setPostBatchDesc(String postBatchDesc) {
-        this.postBatchDesc = postBatchDesc;
+    public void setBatchDesc(String batchDesc) {
+        this.batchDesc = batchDesc;
     }
 
-    public String getPostBatchType() {
-        return postBatchType;
+    public String getBatchType() {
+        return batchType;
     }
 
-    public void setPostBatchType(String postBatchType) {
-        this.postBatchType = postBatchType;
+    public void setBatchType(String batchType) {
+        this.batchType = batchType;
     }
 
-    public String getSegmentationReportIds() {
-        return segmentationReportIds;
+    public Long getBatchCreatedById() {
+        return batchCreatedById;
     }
 
-    public void setSegmentationReportIds(String segmentationReportIds) {
-        this.segmentationReportIds = segmentationReportIds;
+    public void setBatchCreatedById(Long batchCreatedById) {
+        this.batchCreatedById = batchCreatedById;
     }
 
-    public String getEntity() {
-        return entity;
+    public Date getBatchCreatedDate() {
+        return batchCreatedDate;
     }
 
-    public void setEntity(String entity) {
-        this.entity = entity;
+    public void setBatchCreatedDate(Date batchCreatedDate) {
+        this.batchCreatedDate = batchCreatedDate;
     }
 
-    public boolean getReviewSetGenerated() {
-        return reviewSetGenerated;
+    public boolean isExecuted() {
+        return executed;
     }
 
-    public void setReviewSetGenerated(boolean reviewSetGenerated) {
-        this.reviewSetGenerated = reviewSetGenerated;
+    public void setExecuted(boolean executed) {
+        this.executed = executed;
     }
 
-
-    public Long getReviewSetGeneratedById() {
-        return reviewSetGeneratedById;
+    public Long getExecutedById() {
+        return executedById;
     }
 
-    public void setReviewSetGeneratedById(Long reviewSetGeneratedById) {
-        this.reviewSetGeneratedById = reviewSetGeneratedById;
+    public void setExecutedById(Long executedById) {
+        this.executedById = executedById;
     }
 
-
-    public Date getReviewSetGeneratedDate() {
-        return reviewSetGeneratedDate;
+    public Date getExecutedDate() {
+        return executedDate;
     }
 
-    public void setReviewSetGeneratedDate(Date reviewSetGeneratedDate) {
-        this.reviewSetGeneratedDate = reviewSetGeneratedDate;
+    public void setExecutedDate(Date executedDate) {
+        this.executedDate = executedDate;
     }
 
-
-    public Long getReviewSetSize() {
-        return reviewSetSize;
-    }
-
-    public void setReviewSetSize(Long reviewSetSize) {
-        this.reviewSetSize = reviewSetSize;
-    }
-
-    public boolean isBatchUpdated() {
-        return batchUpdated;
-    }
-
-    public void setBatchUpdated(boolean batchUpdated) {
-        this.batchUpdated = batchUpdated;
-    }
-
-    public Long getBatchUpdatedById() {
-        return batchUpdatedById;
-    }
-
-    public void setBatchUpdatedById(Long batchUpdatedById) {
-        this.batchUpdatedById = batchUpdatedById;
-    }
-
-    public Date getBatchUpdatedDate() {
-        return batchUpdatedDate;
-    }
-
-    public void setBatchUpdatedDate(Date batchUpdatedDate) {
-        this.batchUpdatedDate = batchUpdatedDate;
-    }
-
-    public boolean getPosted() {
+    public boolean isPosted() {
         return posted;
     }
 
     public void setPosted(boolean posted) {
         this.posted = posted;
     }
-
 
     public Long getPostedById() {
         return postedById;
@@ -177,7 +136,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.postedById = postedById;
     }
 
-
     public Date getPostedDate() {
         return postedDate;
     }
@@ -185,7 +143,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
     public void setPostedDate(Date postedDate) {
         this.postedDate = postedDate;
     }
-
 
     public String getSiteName() {
         return siteName;
@@ -195,7 +152,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.siteName = siteName;
     }
 
-
     public Date getCreateDate() {
         return createDate;
     }
@@ -203,7 +159,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
-
 
     public Date getUpdateDate() {
         return updateDate;
@@ -213,16 +168,59 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.updateDate = updateDate;
     }
 
-
-
-
-
-    public Map<String, String> getWhereConditions() {
-        return whereConditions;
+    public List<PostBatchSegmentation> getPostBatchSegmentations() {
+        return postBatchSegmentations;
     }
 
-    public void setWhereConditions(Map<String, String> whereConditions) {
-        this.whereConditions = whereConditions;
+    public void setPostBatchSegmentations(List<PostBatchSegmentation> postBatchSegmentations) {
+        this.postBatchSegmentations = postBatchSegmentations;
+    }
+
+    public void clearPostBatchSegmentations() {
+        if (postBatchSegmentations != null) {
+            postBatchSegmentations.clear();
+        }
+    }
+
+    public void addPostBatchSegmentation(PostBatchSegmentation postBatchSegmentation) {
+        if (postBatchSegmentations == null) {
+            postBatchSegmentations = new ArrayList<PostBatchSegmentation>();
+        }
+        postBatchSegmentations.add(postBatchSegmentation);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void clearAddAllPostBatchSegmentations(String idsString) {
+        clearPostBatchSegmentations();
+        Set<String> segmentationIds = (Set<String>) StringUtils.commaDelimitedListToSet(idsString);
+        for (String thisSegmentationId : segmentationIds) {
+            if (NumberUtils.isDigits(thisSegmentationId)) {
+                addPostBatchSegmentation(new PostBatchSegmentation(new Long(thisSegmentationId)));
+            }
+        }
+    }
+
+    public Set<Long> getSegmentationIds() {
+        Set<Long> ids = new TreeSet<Long>();
+        if (postBatchSegmentations != null) {
+            for (PostBatchSegmentation thisSeg : postBatchSegmentations) {
+                ids.add(thisSeg.getSegmentationId());
+            }
+        }
+        return ids;
+    }
+
+    public boolean containsSegmentationId(Long segmentationId) {
+        boolean hasId = false;
+        if (segmentationId != null && postBatchSegmentations != null) {
+            for (PostBatchSegmentation thisSeg : postBatchSegmentations) {
+                if (segmentationId.equals(thisSeg.getSegmentationId())) {
+                    hasId = true;
+                    break;
+                }
+            }
+        }
+        return hasId;
     }
 
     public Map<String, String> getUpdateFields() {
@@ -234,85 +232,20 @@ public class PostBatch extends AbstractCustomizableEntity  {
     }
 
     public void clearUpdateFields() {
-        this.updateFields.clear();
+        if (updateFields != null) {
+            updateFields.clear();
+        }
     }
 
     public void addUpdateField(String key, String value) {
-        this.updateFields.put(key, value);
+        if (updateFields == null) {
+            updateFields = new TreeMap<String, String>();
+        }
+        updateFields.put(key, value);
     }
 
     public String getUpdateFieldValue(String key) {
         return this.updateFields.get(key);
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof PostBatch)) {
-            return false;
-        }
-        PostBatch a = (PostBatch) obj;
-        EqualsBuilder eb = new EqualsBuilder();
-        eb
-        .append(id, a.getId())
-        .append(postBatchDesc, a.getPostBatchDesc())
-        .append(entity, a.getEntity())
-        .append(reviewSetGenerated, a.getReviewSetGenerated())
-        .append(reviewSetGeneratedById, a.getReviewSetGeneratedById())
-        .append(reviewSetGeneratedDate, a.getReviewSetGeneratedDate())
-        .append(reviewSetSize, a.getReviewSetSize())
-        .append(batchUpdated, a.isBatchUpdated())
-        .append(batchUpdatedById, a.getBatchUpdatedById())
-        .append(batchUpdatedDate, a.getBatchUpdatedDate())
-        .append(posted, a.getPosted())
-        .append(postedById, a.getPostedById())
-        .append(postedDate, a.getPostedDate())
-        .append(siteName, a.getSiteName())
-		;
-        return eb.isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb
-        .append(""+id)
-        .append(""+postBatchDesc)
-        .append(""+entity)
-        .append(""+reviewSetGenerated)
-        .append(""+reviewSetGeneratedById)
-        .append(""+reviewSetGeneratedDate)
-        .append(""+reviewSetSize)
-        .append(""+batchUpdated)
-        .append(""+batchUpdatedById)
-        .append(""+batchUpdatedDate)
-        .append(""+posted)
-        .append(""+postedById)
-        .append(""+postedDate)
-        .append(""+siteName)
-		;
-        return hcb.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringCreator(this)
-        .append(super.toString())
-        .append("id", ""+id)
-        .append("postBatchDesc", ""+postBatchDesc)
-        .append("entity", ""+entity)
-        .append("reviewSetGenerated", ""+reviewSetGenerated)
-        .append("reviewSetGeneratedById", ""+reviewSetGeneratedById)
-        .append("reviewSetGeneratedDate", ""+reviewSetGeneratedDate)
-        .append("reviewSetSize", ""+reviewSetSize)
-        .append("batchUpdated", ""+batchUpdated)
-        .append("batchUpdatedById", ""+batchUpdatedById)
-        .append("batchUpdatedDate", ""+batchUpdatedDate)
-        .append("posted", ""+posted)
-        .append("postedById", ""+postedById)
-        .append("postedDate", ""+postedDate)
-        .append("siteName", ""+siteName)
-        .toString();
     }
 
     public List<String> getUpdateErrors() {
@@ -322,5 +255,4 @@ public class PostBatch extends AbstractCustomizableEntity  {
     public void setUpdateErrors(List<String> updateErrors) {
         this.updateErrors = updateErrors;
     }
-
 }

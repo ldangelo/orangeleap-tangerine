@@ -18,29 +18,29 @@
 
 package com.orangeleap.tangerine.dao;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Locale;
-
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
+import com.orangeleap.tangerine.domain.PostBatchSegmentation;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 public interface PostBatchDao {
 
-    public List<PostBatch> listBatchs();
+    public List<PostBatch> listBatches();
 
-    public PostBatch readPostBatch(Long postBatchId);
+    public PostBatch readPostBatchById(Long postBatchId);
 
-    public PostBatch maintainPostBatch(PostBatch postBatch);
+    public PostBatch maintainPostBatch(PostBatch batch);
 
-    public List<PostBatchReviewSetItem> readPostBatchReviewSetItems(Long postBatchId);
+    public List<PostBatchSegmentation> readPostBatchReviewSetItems(Long postBatchId);
 
     public PaginatedResult readPostBatchReviewSetItems(Long postBatchId, SortInfo sortInfo);
 
-    public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem);
+    public PostBatchSegmentation maintainPostBatchReviewSetItem(PostBatchSegmentation postBatchSegmentation);
 
     public void deletePostBatch(Long postBatchId);
 

@@ -2,17 +2,15 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="POST_BATCH">
 
-    <resultMap id="POST_BATCH_RESULT" class="com.orangeleap.tangerine.domain.PostBatch">
+    <resultMap id="POST_BATCH_RESULT_NO_SEGMENTATIONS" class="com.orangeleap.tangerine.domain.PostBatch" groupBy="id">
         <result property="id" column="POST_BATCH_POST_BATCH_ID" />
-        <result property="postBatchDesc" column="POST_BATCH_POST_BATCH_DESC" />
-        <result property="entity" column="POST_BATCH_ENTITY" />
-        <result property="reviewSetGenerated" column="POST_BATCH_REVIEW_SET_GENERATED" />
-        <result property="reviewSetGeneratedById" column="POST_BATCH_REVIEW_SET_GENERATED_BY_ID" />
-        <result property="reviewSetGeneratedDate" column="POST_BATCH_REVIEW_SET_GENERATED_DATE" />
-        <result property="reviewSetSize" column="POST_BATCH_REVIEW_SET_SIZE" />
-        <result property="batchUpdated" column="POST_BATCH_BATCH_UPDATED" />
-        <result property="batchUpdatedById" column="POST_BATCH_BATCH_UPDATED_BY_ID" />
-        <result property="batchUpdatedDate" column="POST_BATCH_BATCH_UPDATED_DATE" />
+        <result property="batchDesc" column="POST_BATCH_POST_BATCH_DESC" />
+        <result property="batchType" column="POST_BATCH_ENTITY" />
+        <result property="batchCreatedById" column="POST_BATCH_CREATED_BY_ID" />
+        <result property="batchCreatedDate" column="POST_BATCH_CREATED_DATE" />
+        <result property="executed" column="POST_BATCH_EXECUTED" />
+        <result property="executedById" column="POST_BATCH_EXECUTED_BY_ID" />
+        <result property="executedDate" column="POST_BATCH_EXECUTED_DATE" />
         <result property="posted" column="POST_BATCH_POSTED" />
         <result property="postedById" column="POST_BATCH_POSTED_BY_ID" />
         <result property="postedDate" column="POST_BATCH_POSTED_DATE" />
@@ -21,17 +19,19 @@
         <result property="updateDate" column="POST_BATCH_UPDATE_DATE" />
     </resultMap>
 
+    <resultMap id="POST_BATCH_RESULT" class="com.orangeleap.tangerine.domain.PostBatch" groupBy="id" extends="POST_BATCH_RESULT_NO_SEGMENTATIONS">
+        <result property="postBatchSegmentations" resultMap="POST_BATCH_SEGMENTATION.POST_BATCH_SEGMENTATION_RESULT" />
+    </resultMap>
+    
     <sql id="POST_BATCH_COLS_FRAGMENT">
         post_batch.POST_BATCH_ID as POST_BATCH_POST_BATCH_ID,
         post_batch.POST_BATCH_DESC as POST_BATCH_POST_BATCH_DESC,
         post_batch.ENTITY as POST_BATCH_ENTITY,
-        post_batch.REVIEW_SET_GENERATED as POST_BATCH_REVIEW_SET_GENERATED,
-        post_batch.REVIEW_SET_GENERATED_BY_ID as POST_BATCH_REVIEW_SET_GENERATED_BY_ID,
-        post_batch.REVIEW_SET_GENERATED_DATE as POST_BATCH_REVIEW_SET_GENERATED_DATE,
-        post_batch.REVIEW_SET_SIZE as POST_BATCH_REVIEW_SET_SIZE,
-        post_batch.BATCH_UPDATED as POST_BATCH_BATCH_UPDATED,
-        post_batch.BATCH_UPDATED_BY_ID as POST_BATCH_BATCH_UPDATED_BY_ID,
-        post_batch.BATCH_UPDATED_DATE as POST_BATCH_BATCH_UPDATED_DATE,
+        post_batch.BATCH_CREATED_BY_ID as POST_BATCH_CREATED_BY_ID,
+        post_batch.BATCH_CREATED_DATE as POST_BATCH_CREATED_DATE,
+        post_batch.EXECUTED as POST_BATCH_EXECUTED,
+        post_batch.EXECUTED_BY_ID as POST_BATCH_EXECUTED_BY_ID,
+        post_batch.EXECUTED_DATE as POST_BATCH_EXECUTED_DATE,
         post_batch.POSTED as POST_BATCH_POSTED,
         post_batch.POSTED_BY_ID as POST_BATCH_POSTED_BY_ID,
         post_batch.POSTED_DATE as POST_BATCH_POSTED_DATE,
@@ -47,30 +47,35 @@
         where post_batch.SITE_NAME = #siteName#
     </sql>
 
-
-    <select id="SELECT_POST_BATCHS" resultMap="POST_BATCH_RESULT" parameterClass="map" >
+    <select id="SELECT_POST_BATCHES" resultMap="POST_BATCH_RESULT_NO_SEGMENTATIONS" parameterClass="map">
         <include refid="SELECT_POST_BATCH_FRAGMENT"/>
         order by post_batch.CREATE_DATE desc;
     </select>
 
-    <select id="SELECT_POST_BATCH_BY_ID" resultMap="POST_BATCH_RESULT" parameterClass="map" >
-        <include refid="SELECT_POST_BATCH_FRAGMENT"/>
+    <select id="SELECT_POST_BATCH_BY_ID" resultMap="POST_BATCH_RESULT" parameterClass="map">
+        select
+        <include refid="POST_BATCH_COLS_FRAGMENT"/>,
+        <include refid="POST_BATCH_SEGMENTATION_COLS_FRAGMENT" />
+
+        from POST_BATCH post_batch
+        left outer join POST_BATCH_SEGMENTATION pbs on pbs.POST_BATCH_ID = post_batch.POST_BATCH_ID
+
+        where post_batch.SITE_NAME = #siteName#
         and post_batch.POST_BATCH_ID = #id#
     </select>
 
-    <select id="SELECT_LIMITED_POST_BATCHES" resultMap="POST_BATCH_RESULT" parameterClass="map">
+    <select id="SELECT_LIMITED_POST_BATCHES" resultMap="POST_BATCH_RESULT_NO_SEGMENTATIONS" parameterClass="map">
         <include refid="SELECT_POST_BATCH_FRAGMENT"/>
-        and post_batch.BATCH_UPDATED = #showRanBatches#
+        and post_batch.EXECUTED = #showRanBatches#
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
         limit $offset$, $limit$
     </select>
 
-    <delete id="DELETE_POST_BATCH" parameterClass="map" >
+    <delete id="DELETE_POST_BATCH" parameterClass="map">
         delete from POST_BATCH 
-        where 
-        SITE_NAME = #siteName#
+        where SITE_NAME = #siteName#
         and POST_BATCH_ID = #id#
     </delete>
 
@@ -79,30 +84,26 @@
         	POST_BATCH_ID,
         	POST_BATCH_DESC,
         	ENTITY,
-        	REVIEW_SET_GENERATED,
-        	REVIEW_SET_GENERATED_BY_ID,
-        	REVIEW_SET_GENERATED_DATE,
-        	REVIEW_SET_SIZE,
-            BATCH_UPDATED,
-            BATCH_UPDATED_BY_ID,
-            BATCH_UPDATED_DATE,
+        	BATCH_CREATED_BY_ID,
+        	BATCH_CREATED_DATE,
+            EXECUTED,
+            EXECUTED_BY_ID,
+            EXECUTED_DATE,
         	POSTED,
         	POSTED_BY_ID,
         	POSTED_DATE,
         	SITE_NAME,
         	CREATE_DATE,
-        	UPDATE_DATE        )
+        	UPDATE_DATE )
         values (
         	#id# ,
-        	#postBatchDesc# ,
-        	#entity# ,
-        	#reviewSetGenerated# ,
-        	#reviewSetGeneratedById# ,
-        	#reviewSetGeneratedDate# ,
-        	#reviewSetSize# ,
-            #batchUpdated# ,
-            #batchUpdatedById# ,
-            #batchUpdatedDate# ,
+        	#batchDesc# ,
+        	#batchType# ,
+        	#batchCreatedById# ,
+        	#batchCreatedDate# ,
+            #executed# ,
+            #executedById# ,
+            #executedDate# ,
         	#posted# ,
         	#postedById# ,
         	#postedDate# ,
@@ -118,15 +119,13 @@
         update POST_BATCH
         SET
         	POST_BATCH_ID = #id# ,
-        	POST_BATCH_DESC = #postBatchDesc# ,
-        	ENTITY = #entity# ,
-        	REVIEW_SET_GENERATED = #reviewSetGenerated# ,
-        	REVIEW_SET_GENERATED_BY_ID = #reviewSetGeneratedById# ,
-        	REVIEW_SET_GENERATED_DATE = #reviewSetGeneratedDate# ,
-        	REVIEW_SET_SIZE = #reviewSetSize# ,
-            BATCH_UPDATED = #batchUpdated# ,
-            BATCH_UPDATED_BY_ID = #batchUpdatedById# ,
-            BATCH_UPDATED_DATE = #batchUpdatedDate# ,
+        	POST_BATCH_DESC = #batchDesc# ,
+        	ENTITY = #batchType# ,
+        	BATCH_CREATED_BY_ID = #batchCreatedById# ,
+        	BATCH_CREATED_DATE = #batchCreatedDate# ,
+            EXECUTED = #executed# ,
+            EXECUTED_BY_ID = #executedById# ,
+            EXECUTED_DATE = #executedDate# ,
         	POSTED = #posted# ,
         	POSTED_BY_ID = #postedById# ,
         	POSTED_DATE = #postedDate# ,

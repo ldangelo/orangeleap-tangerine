@@ -45,7 +45,7 @@ public interface PostBatchService {
 
     PostBatch readBatchCreateIfNull(final Long batchId);
 
-    List<Map<String, Object>> findSegmentationsForBatchType(String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
+    List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
     
     List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
 

@@ -52,14 +52,14 @@ public class DistroLineListController extends TangerineJsonListController {
 
     	Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         String constituentReferenceCustomField = request.getParameter("constituentReferenceCustomField"); // e.g. null for hard gifts, or "onBehalfOf" for soft gifts, or other reference-type custom field on the distro line 
-        String pageName = request.getParameter("pageName"); // pagename, e.g. "softGiftList" 
+        String pageName = request.getParameter("pageName"); // pagename, e.g. "softGift" 
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         long giftId = getNodeId(request);
         String unresolvedSortField = sort.getSort();
         int count = 0;
         if (giftId == 0) {
-            List<SectionField> sectionFields = findSectionFields(pageName);
+            List<SectionField> sectionFields = findSectionFields(pageName+"List");
             resolveSortFieldName(sectionFields, sort);
             // Returns gifts with only one matching distro line of interest; may return multiple gifts with the same id but with different distro lines
             //List<Gift> gifts = giftService.readGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, sort, request.getLocale()); 
@@ -70,7 +70,7 @@ public class DistroLineListController extends TangerineJsonListController {
            // count = giftService.readGiftDistroLinesCountByConstituentId(constituentId, constituentReferenceCustomField);
         }
         else {
-            List<SectionField> sectionFields = findSectionFields("adjustedGiftList");
+            List<SectionField> sectionFields = findSectionFields(pageName+"AdjustmentList");
             resolveSortFieldName(sectionFields, sort);
             //List<AdjustedGift> adjustedGifts = adjustedGiftService.readAdjustedGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, giftId, sort, request.getLocale());
             //addListFieldsToMap(request, sectionFields, adjustedGifts, list, true);

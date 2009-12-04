@@ -33,13 +33,18 @@ public interface PostBatchService {
 //    public List<PostBatch> listBatchs();
 //    public PostBatch readBatch(Long batchId);
     public PostBatch maintainBatch(PostBatch postbatch);
+
 	public PostBatch updateBatch(PostBatch postbatch);
+
 	public void deleteBatch(PostBatch postbatch);
+
 //    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
 //    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
 //	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
 
     List<PostBatch> readBatches(boolean batchUpdated, SortInfo sort, Locale locale);
+
+    PostBatch readBatch(Long batchId);
 
     PostBatch readBatchCreateIfNull(final Long batchId);
 

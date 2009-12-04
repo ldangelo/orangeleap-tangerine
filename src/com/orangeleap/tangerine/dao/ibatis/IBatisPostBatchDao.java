@@ -80,6 +80,10 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 		if (logger.isTraceEnabled()) {
 			logger.trace("maintainPostBatch: postBatchId = " + batch.getId());
 		}
+        /* Delete PostBatchSegmentations first if the batch is being edited */
+        if ( ! batch.isNew()) {
+            getSqlMapClientTemplate().delete("DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID", batch);
+        }
         setCustomFields(batch);
 		batch = (PostBatch) insertOrUpdate(batch, "POST_BATCH");
         maintainPostBatchSegmentations(batch);
@@ -91,10 +95,6 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
      * @param batch batch that contains the segmentations
      */
     private void maintainPostBatchSegmentations(PostBatch batch) {
-        /* Delete PostBatchSegmentations first if the batch is being edited */
-        if ( ! batch.isNew()) {
-            getSqlMapClientTemplate().delete("DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID", batch.getId());
-        }
         if (batch.getPostBatchSegmentations() != null) {
             for (PostBatchSegmentation segmentation : batch.getPostBatchSegmentations()) {
                 segmentation.setId(null); // a new ID will be generated during the insert

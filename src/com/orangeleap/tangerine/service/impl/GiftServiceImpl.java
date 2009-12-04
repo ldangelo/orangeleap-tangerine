@@ -18,6 +18,32 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
@@ -31,6 +57,7 @@ import com.orangeleap.tangerine.integration.NewGift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
@@ -43,30 +70,6 @@ import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -116,6 +119,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Resource(name = "distributionLinesValidator")
     protected DistributionLinesValidator distributionLinesValidator;
 
+    @Resource(name = "OrangeleapJmxNotificationBean")
+    protected OrangeleapJmxNotificationBean orangeleapJmxNotificationBean;
+
     private ApplicationContext context;
 
     public void setApplicationContext(ApplicationContext applicationContext)
@@ -129,6 +135,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public Gift maintainGift(Gift gift) throws BindException {
+    	
         boolean reentrant = RulesStack.push(MAINTAIN_METHOD);
         try {
             if (logger.isTraceEnabled()) {
@@ -136,6 +143,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             }
 
 			validateGift(gift, true);
+
+            long t0 = System.currentTimeMillis(); // start counting after validated
 
             setDefaultDates(gift);
             gift = saveAuditGift(gift);
@@ -147,6 +156,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                 routeGift(gift);
                 paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
             }
+
+            long t1 = System.currentTimeMillis();
+            orangeleapJmxNotificationBean.incrementStat(this.getSiteName(), "maintainGiftTime", (t1-t0));
+            orangeleapJmxNotificationBean.incrementStatCount(this.getSiteName(), "maintainGiftCount");
+        	
             return gift;
         }
         finally {

@@ -32,6 +32,11 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	
 	@Override
 	public synchronized void incrementStatCount(String sitename, String statname) {
+		incrementStat(sitename, statname, 1L);
+	}
+	
+	@Override
+	public synchronized void incrementStat(String sitename, String statname, Long amount) {
 		Map<String, Long> map = counts.get(sitename);
 		if (map == null) {
 			map = Collections.synchronizedMap(new TreeMap<String, Long>());
@@ -39,7 +44,7 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 		}
 		Long count = map.get(statname);
 		if (count == null) count = new Long(0);
-		map.put(statname, count + 1L);
+		map.put(statname, count + amount);
 		if (!TOTAL.equals(sitename)) incrementStatCount(TOTAL, statname);
 	}
 	

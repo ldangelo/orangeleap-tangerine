@@ -45,7 +45,7 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 		Long count = map.get(statname);
 		if (count == null) count = new Long(0);
 		map.put(statname, count + amount);
-		if (!TOTAL.equals(sitename)) incrementStatCount(TOTAL, statname);
+		if (!TOTAL.equals(sitename)) incrementStat(TOTAL, statname, amount);
 	}
 	
 

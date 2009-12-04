@@ -149,18 +149,20 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             setDefaultDates(gift);
             gift = saveAuditGift(gift);
 
-            //
+            
             // this needs to go last because we need the gift in the database
             // in order for rules to work properly.
             if (!reentrant) {
-                routeGift(gift);
+                
+            	routeGift(gift);
                 paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+
+                long t1 = System.currentTimeMillis();
+                orangeleapJmxNotificationBean.incrementStat(this.getSiteName(), "maintainGiftTime", (t1-t0));
+                orangeleapJmxNotificationBean.incrementStatCount(this.getSiteName(), "maintainGiftCount");
+            	
             }
 
-            long t1 = System.currentTimeMillis();
-            orangeleapJmxNotificationBean.incrementStat(this.getSiteName(), "maintainGiftTime", (t1-t0));
-            orangeleapJmxNotificationBean.incrementStatCount(this.getSiteName(), "maintainGiftCount");
-        	
             return gift;
         }
         finally {

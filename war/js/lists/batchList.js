@@ -469,13 +469,27 @@ Ext.onReady(function() {
         return true;
     }
 
+    function maskStep1Form() {
+        var step1GrpDivId = $('#step1Grp').parent('div').attr('id');
+        if (step1GrpDivId) {
+            Ext.get(step1GrpDivId).mask(msgs.loading);
+        }
+    }
+
+    function unmaskStep1Form() {
+        var step1GrpDivId = $('#step1Grp').parent('div').attr('id');
+        if (step1GrpDivId) {
+            Ext.get(step1GrpDivId).unmask();
+        }
+    }
+
     function initFocus(groupTabPanel, thisGrp, startNum) {
         if ( ! startNum) {
             startNum = 0;
         }
         if (thisGrp.mainItem.id == 'step1Grp') {
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
-//            Ext.get($('#step1Grp').parent('div').attr('id')).mask(msgs.loading);
+            maskStep1Form();
             step1Form.getForm().load({
                 url: 'doBatch.htm',
                 params: {
@@ -485,7 +499,7 @@ Ext.onReady(function() {
                 },
                 success: function(form, action) {
                     flowExecutionKey = action.result.flowExecutionKey;
-//                    Ext.get($('#step1Grp').parent('div').attr('id')).unmask();
+                    unmaskStep1Form();
                     setTimeout(function() {
                         var elem = Ext.getCmp('batchDesc');
                         if (elem && elem.el) {
@@ -494,7 +508,7 @@ Ext.onReady(function() {
                     }, 900);
                 },
                 failure: function(form, action) {
-//                    Ext.get($('#step1Grp').parent('div').attr('id')).unmask();
+                    unmaskStep1Form();
                     Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                         buttons: Ext.MessageBox.OK,
                         msg: msgs.errorStep1 });
@@ -608,7 +622,7 @@ Ext.onReady(function() {
             },
             // Combobox for type is second
             {
-                fieldLabel: '<span class="required">*</span>' + msgs.type, name: 'batchType', id: 'batchType', xtype: 'combo',
+                fieldLabel: '<span class="required">*</span>' + msgs.type, name: 'batchType', id: 'batchType', xtype: 'combo', 
                 store: new Ext.data.ArrayStore({
                     fields: [
                         'value',
@@ -1517,7 +1531,10 @@ Ext.onReady(function() {
                          tabTip: msgs.step1Tip,
                          style: 'padding: 20px 40px;',
                          items: [ step1Form ]
-                     }]
+                     }],
+                     listeners: {
+                         'afterrender': maskStep1Form
+                     }
                  },
                  {
                      layoutOnTabChange: true,
@@ -1582,6 +1599,8 @@ Ext.onReady(function() {
         $('#step3Num').removeClass('complete');
         $('#step4Num').removeClass('complete');
         $('#step5Num').removeClass('complete');
+        Ext.getCmp('batchDesc').setRawValue(''); // reset the batchDesc to empty string; use 'setRawValue()' to bypass form validation
+        Ext.getCmp('batchType').setRawValue('gift'); // reset the batchDesc to 'gift'; use 'setRawValue()' to bypass form validation
         step2Store.removeAll();
         step3Store.removeAll();
         step4UpdatableFieldsStore.removeAll();

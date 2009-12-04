@@ -35,9 +35,9 @@
         where pbs.POST_BATCH_ID = #postBatchId#
     </select>
  
-    <delete id="DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID" parameterClass="long">
+    <delete id="DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID" parameterClass="com.orangeleap.tangerine.domain.PostBatch">
         delete from POST_BATCH_SEGMENTATION
-        where POST_BATCH_ID = #postBatchId#
+        where POST_BATCH_ID = #id#
     </delete>
 
     <insert id="INSERT_POST_BATCH_SEGMENTATION" parameterClass="com.orangeleap.tangerine.domain.PostBatchSegmentation">

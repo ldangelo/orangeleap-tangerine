@@ -23,6 +23,12 @@ OrangeLeap.msgBundle = {
     adjustedGift: 'Adjusted Gift',
     showOpenBatches: 'Show Open Batches',
     showExecutedBatches: 'Show Executed Batches',
+    askExecuteBatch: 'Execute Batch?',
+    askDeleteBatch: 'Delete Batch?',
+    areYouSureDeleteBatch: 'Are you sure you want to delete batch ID <strong>{0}</strong>?',
+    areYouSureExecuteBatch: 'Are you sure you want to execute batch ID <strong>{0}</strong>?',
+    cannotDeleteExecutedBatch: 'You cannot delete an executed batch.',
+    cannotExecuteExecutedBatch: 'You cannot execute an already executed batch.',
     id: 'ID',
     batchId: 'Batch ID',
     type: 'Type',
@@ -48,6 +54,8 @@ OrangeLeap.msgBundle = {
     loading: 'Loading...',
     loadingSegmentations: 'Loading Segmentations...',
     loadingRows: 'Loading Rows...',
+    deletingBatch: 'Deleting Batch...',
+    executingBatch: 'Executing Batch...',
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
     followingChangesApplied: 'The following changes will be applied when you click \'Save\'.',
     noSegmentationsFound: 'No Segmentations were found for the Type selected.  Please choose a different Type (Step 1).',
@@ -69,7 +77,9 @@ OrangeLeap.msgBundle = {
     errorStep4: 'Could not load Step 4 data.  Please try again or contact your administrator if this issue continues.',
     errorStep5: 'Could not load Step 5 data.  Please try again or contact your administrator if this issue continues.',
     errorSave: 'The batch could not be saved due to an error.  Please try again or contact your administrator if this issue continues.',
-    errorAjax: 'The request could not be processed due to an error.  Please try again or contact your administrator if this issue continues.'
+    errorAjax: 'The request could not be processed due to an error.  Please try again or contact your administrator if this issue continues.',
+    errorBatchDelete: 'The batch could not be deleted due to an error.  Please try again or contact your administrator if this issue continues.',
+    errorBatchExecute: 'The batch could not be executed due to an error.  Please try again or contact your administrator if this issue continues.'
 };
 
 Ext.onReady(function() {
@@ -77,10 +87,36 @@ Ext.onReady(function() {
 
     var msgs = OrangeLeap.msgBundle;
 
+    Ext.Ajax.on('requestexception', function(conn, response, options) {
+        Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+            buttons: Ext.MessageBox.OK,
+            msg: msgs.errorAjax });
+    });
+    
+//    var batchProxy = new Ext.data.HttpProxy({
+//        api: {
+//            read: {url: 'batchList.json', method: 'POST'},
+//            load: {url: 'batchList.json', method: 'POST'},
+//            destroy: {url: 'deleteBatch.json', method: 'POST'}
+//        },
+//        listeners: {
+//            'exception': function() {
+//                Ext.get('batchList').unmask();
+//                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+//                    buttons: Ext.MessageBox.OK,
+//                    msg: msgs.errorAjax});
+//            },
+//            'write': function() {
+//                Ext.get('batchList').unmask();
+//            }
+//        }
+//    });
+
     var store = new OrangeLeap.ListStore({
-        url: 'batchList.json',
         totalProperty: 'totalRows',
         root: 'rows',
+        url: 'batchList.json',
+        autoSave: true,
         remoteSort: true,
         sortInfo: {field: 'createDate', direction: 'DESC'},
         fields: [
@@ -190,7 +226,7 @@ Ext.onReady(function() {
     });
 
     var grid = new Ext.grid.GridPanel({
-        stateId: 'batchList',
+        id: 'batchList',
         stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
         stateful: true,
         getState: function() {
@@ -265,8 +301,10 @@ Ext.onReady(function() {
             { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;', id: 'actions', 
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     if ( ! record.get('batchUpdated')) {
-                        var html = '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id + '" title="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
-                        html += '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id + '" title="' + msgs.removeBatch + '">' + msgs.removeBatch + '</a>';
+                        var html = '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id +
+                                   '" ext:qwidth="150" ext:qtip="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
+                        html += '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id +
+                                '" ext:qwidth="150" ext:qtip="' + msgs.removeBatch + '">' + msgs.removeBatch + '</a>';
                         return html;
                     }
                 }
@@ -284,6 +322,20 @@ Ext.onReady(function() {
             rowdblclick: function(grid, row, evt) {
                 var rec = grid.getSelectionModel().getSelected();
                 showBatchWin(rec.get('id'));
+            },
+            click: function(event) {
+                var deleteTarget = event.getTarget('a.deleteLink');
+                if (deleteTarget) {
+                    event.stopPropagation();
+                    deleteBatch(deleteTarget);
+                }
+                else {
+                    var executeTarget = event.getTarget('a.executeLink');
+                    if (executeTarget) {
+                        event.stopPropagation();
+                        executeBatch(executeTarget);
+                    }
+                }
             }
         },
         tbar: [
@@ -329,6 +381,77 @@ Ext.onReady(function() {
             }
         }
     });
+
+    function executeBatch(target) {
+        var batchId = target.id;
+        if (batchId) {
+            batchId = batchId.replace('execute-link-', '');
+            var rec = store.getById(batchId);
+            // Disallow executes of already executed batches
+            if (rec.get('executed')) {
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.cannotExecuteExecutedBatch });
+            }
+            else {
+                Ext.Msg.show({
+                    title: msgs.askExecuteBatch,
+                    msg: String.format(msgs.areYouSureExecuteBatch, batchId),
+                    buttons: Ext.Msg.OKCANCEL,
+                    icon: Ext.MessageBox.WARNING,
+                    fn: function(btn, text) {
+                        if (btn == "ok") {
+                            var recToExecute = store.getById(batchId);
+                            if (recToExecute) {
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function deleteBatch(target) {
+        var batchId = target.id;
+        if (batchId) {
+            batchId = batchId.replace('delete-link-', '');
+            var rec = store.getById(batchId);
+            // Disallow deletes of executed batches
+            if (rec.get('executed')) {
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.cannotDeleteExecutedBatch });
+            }
+            else {
+                Ext.Msg.show({
+                    title: msgs.askDeleteBatch,
+                    msg: String.format(msgs.areYouSureDeleteBatch, batchId),
+                    buttons: Ext.Msg.OKCANCEL,
+                    icon: Ext.MessageBox.WARNING,
+                    fn: function(btn, text) {
+                        if (btn == "ok") {
+                            Ext.get('batchList').mask(msgs.deletingBatch);
+                            Ext.Ajax.request({
+                                url: 'deleteBatch.json',
+                                method: 'POST',
+                                params: { 'batchId': batchId },
+                                success: function(response, options) {
+                                    store.remove(rec);
+                                    Ext.get('batchList').unmask();
+                                },
+                                failure: function(response, options) {
+                                    Ext.get('batchList').unmask();
+                                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                                        buttons: Ext.MessageBox.OK,
+                                        msg: msgs.errorBatchDelete });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    }
 
     function showBatchWin(thisBatchId) {
         batchID = thisBatchId;
@@ -1465,11 +1588,6 @@ Ext.onReady(function() {
     });
 
     function saveBatch() {
-        Ext.Ajax.on('requestexception', function(conn, response, options) {
-            Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                buttons: Ext.MessageBox.OK,
-                msg: msgs.errorAjax });
-        });
         Ext.Ajax.request({
             url: 'doBatch.htm',
             method: 'POST',
@@ -1480,7 +1598,7 @@ Ext.onReady(function() {
                     // to see the new batch, we have to reload the 'Open Batches' with CreateDate in desc order
                     params: { showRanBatches: false, start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
                     callback: function() {
-                        // highlight the saved row
+                        // TODO: highlight the saved row & add success icon
                     }
                 });
                 batchWin.hide(batchWin);

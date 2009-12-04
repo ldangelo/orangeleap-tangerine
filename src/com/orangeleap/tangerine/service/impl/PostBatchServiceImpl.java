@@ -120,6 +120,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public final static String IDS = "ids";
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public PostBatch maintainBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainBatch: batchId = " + batch.getId());
@@ -127,6 +128,18 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         batch.setBatchCreatedById(tangerineUserHelper.lookupUserId());
         batch.setBatchCreatedDate(new Date());
         return postBatchDao.maintainPostBatch(batch);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void deleteBatch(PostBatch batch) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteBatch: batchId = " + batch.getId());
+        }
+        if (batch.isExecuted()) {
+           throw new RuntimeException("Cannot delete a batch that has already been executed.");
+        }
+        postBatchDao.deletePostBatch(batch);
     }
 
     @Override
@@ -139,6 +152,14 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
+    public PostBatch readBatch(Long batchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readBatch: batchId = " + batchId);
+        }
+        return postBatchDao.readPostBatchById(batchId);
+    }
+
+    @Override
     public PostBatch readBatchCreateIfNull(final Long batchId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readBatchCreateIfNull: batchId = " + batchId);
@@ -146,7 +167,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         PostBatch batch;
         if (batchId != null && batchId > 0) {
-            batch = postBatchDao.readPostBatchById(batchId);
+            batch = readBatch(batchId);
         }
         else {
             batch = new PostBatch();
@@ -414,13 +435,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 //	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo) {
 //        return postBatchDao.readPostBatchReviewSetItems(postbatchId, sortInfo);
 //	}
-
-    @Override
-    public void deleteBatch(PostBatch postbatch) {
-       if (postbatch.isExecuted()) throw new RuntimeException("Cannot delete a batch that has already been updated.");
-       postBatchDao.deletePostBatchItems(postbatch.getId());
-       postBatchDao.deletePostBatch(postbatch.getId());
-    }
 
     // THis is really execute
     // Sets fields on gifts/adjusted gifts in reviewed batch list

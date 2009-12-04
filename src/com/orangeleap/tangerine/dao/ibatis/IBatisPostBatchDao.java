@@ -125,20 +125,19 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
     }
 
     @Override
-    public void deletePostBatch(Long postBatchId) {
+    public void deletePostBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {
-            logger.trace("deletePostBatch: postBatchId = " + postBatchId);
+            logger.trace("deletePostBatch: batchId = " + batch.getId());
         }
         Map<String, Object> params = setupParams();
-        params.put(StringConstants.ID, postBatchId);
+        params.put("postBatch", batch);
+        
+        // First, delete the segmentations, then the batch itself
+        getSqlMapClientTemplate().delete("DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID", batch);
         getSqlMapClientTemplate().delete("DELETE_POST_BATCH", params);
     }
 
-
-
-
-
-    /********************************** below can be removed ******************************/
+    /********************************** below will be removed ******************************/
     @SuppressWarnings("unchecked")
 	@Override
     public List<PostBatchSegmentation> readPostBatchReviewSetItems(Long postBatchId) {
@@ -185,16 +184,6 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         }
         PostBatchSegmentation aPostBatchSegmentation = (PostBatchSegmentation) insertOrUpdate(postBatchSegmentation, "POST_BATCH_REVIEW_SET_ITEM");
         return aPostBatchSegmentation;
-    }
-
-    @Override
-    public void deletePostBatchItems(Long postBatchId) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("deletePostBatchItems: postBatchId = " + postBatchId);
-        }
-        Map<String, Object> params = setupParams();
-        params.put("postBatchId", postBatchId);
-        getSqlMapClientTemplate().delete("DELETE_POST_BATCH_REVIEW_SET_ITEMS", params);
     }
 
     public void insertIntoPostBatchFromGiftSelect(PostBatch postbatch, Map<String, Object> searchmap) {

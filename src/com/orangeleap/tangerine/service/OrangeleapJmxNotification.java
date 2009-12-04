@@ -5,6 +5,8 @@ import java.util.Map;
 // JMX interface
 public interface OrangeleapJmxNotification    {
 	
+	public void resetStats();
+
 	public Long getTotalLoginCount();
 	public Long getTotalAuthorizeCount();
 	public Long getTotalCaptureCount();

@@ -19,7 +19,7 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	
 	private NotificationPublisher publisher;
 	private Map<String, Map<String, Long>> counts = Collections.synchronizedMap(new TreeMap<String, Map<String, Long>>());
-	
+
 	@Override
 	public void setNotificationPublisher(NotificationPublisher notificationPublisher) {
         publisher = notificationPublisher;
@@ -49,6 +49,11 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	}
 	
 
+	@Override
+	public synchronized void resetStats() {
+		counts = Collections.synchronizedMap(new TreeMap<String, Map<String, Long>>());
+	}
+	
 	@Override
 	public Map<String, Long> getSiteCounts(String sitename) {
 		return counts.get(sitename);

@@ -210,7 +210,7 @@ public class BatchSelectionAction {
         // TODO: what to do if the list of IDs is paginated?
         batch.clearAddAllPostBatchSegmentations(ids);
         if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            appendModelForGift(request, ids, sortInfo, model);
+            appendModelForGift(request, batch, model, sortInfo);
         }
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
         
@@ -229,7 +229,7 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
-    private void appendModelForGift(HttpServletRequest request, String ids, SortInfo sort, Map model) {
+    private void appendModelForGift(HttpServletRequest request, PostBatch batch, Map model, SortInfo sort) {
         /* MetaData */
         final Map<String, Object> metaDataMap = initMetaData(sort.getStart(), sort.getLimit());
         metaDataMap.put(StringConstants.LIMIT, sort.getLimit());
@@ -276,7 +276,7 @@ public class BatchSelectionAction {
 
         model.put(StringConstants.META_DATA, metaDataMap);
 
-        Set<Long> reportIds = StringUtils.commaDelimitedListToSet(ids);
+        Set<Long> reportIds = batch.getSegmentationIds();
         model.put(StringConstants.TOTAL_ROWS, giftService.readCountGiftsBySegmentationReportIds(reportIds));
         final List<Gift> gifts = giftService.readGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
 
@@ -408,8 +408,8 @@ public class BatchSelectionAction {
         fieldList.add(fieldMap);
 
         fieldMap = new HashMap<String, Object>();
-        fieldMap.put(StringConstants.NAME, "displayedId");
-        fieldMap.put(StringConstants.MAPPING, "displayedId");
+        fieldMap.put(StringConstants.NAME, StringConstants.DISPLAYED_ID);
+        fieldMap.put(StringConstants.MAPPING, StringConstants.DISPLAYED_ID);
         fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
         fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
         fieldList.add(fieldMap);
@@ -492,12 +492,28 @@ public class BatchSelectionAction {
         return model;
     }
 
-    public void saveBatch(final RequestContext flowRequestContext) {
+    @SuppressWarnings("unchecked")
+    public ModelMap saveBatch(final RequestContext flowRequestContext) {
         if (logger.isTraceEnabled()) {
             logger.trace("saveBatch:");
         }
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        postBatchService.maintainBatch(batch);
+        final PostBatch savedBatch = postBatchService.maintainBatch(batch);
+
+        final ModelMap map = new ModelMap();
+        map.put(StringConstants.BATCH_ID, savedBatch.getId());
+        map.put(StringConstants.SUCCESS, Boolean.TRUE);
+        return map;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ModelMap cancelBatch(final RequestContext flowRequestContext) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("cancelBatch:");
+        }
+        final ModelMap map = new ModelMap();
+        map.put(StringConstants.SUCCESS, Boolean.TRUE);
+        return map;
     }
 
     private Map<String, Object> findEnteredParameters(final HttpServletRequest request) {

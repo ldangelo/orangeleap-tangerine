@@ -63,11 +63,13 @@ OrangeLeap.msgBundle = {
     step3Tip: 'Step 3',
     step4Tip: 'Step 4',
     step5Tip: 'Step 5',
-    errorStep1: 'Could not load Step 1 data.  Please Please try again or contact your administrator if this issue continues.',
-    errorStep2: 'Could not load Step 2 data.  Please Please try again or contact your administrator if this issue continues.',
-    errorStep3: 'Could not load Step 3 data.  Please Please try again or contact your administrator if this issue continues.',
-    errorStep4: 'Could not load Step 4 data.  Please Please try again or contact your administrator if this issue continues.',
-    errorStep5: 'Could not load Step 5 data.  Please Please try again or contact your administrator if this issue continues.'
+    errorStep1: 'Could not load Step 1 data.  Please try again or contact your administrator if this issue continues.',
+    errorStep2: 'Could not load Step 2 data.  Please try again or contact your administrator if this issue continues.',
+    errorStep3: 'Could not load Step 3 data.  Please try again or contact your administrator if this issue continues.',
+    errorStep4: 'Could not load Step 4 data.  Please try again or contact your administrator if this issue continues.',
+    errorStep5: 'Could not load Step 5 data.  Please try again or contact your administrator if this issue continues.',
+    errorSave: 'The batch could not be saved due to an error.  Please try again or contact your administrator if this issue continues.',
+    errorAjax: 'The request could not be processed due to an error.  Please try again or contact your administrator if this issue continues.'
 };
 
 Ext.onReady(function() {
@@ -108,7 +110,24 @@ Ext.onReady(function() {
         }
     });
 
-    var bar = new Ext.PagingToolbar({
+    // custom toolbar for batch GRID to  - this effectively overrides what the 'refresh' button action is on the GRID toolbar
+    OrangeLeap.BatchGridToolbar = Ext.extend(Ext.PagingToolbar, {
+        doLoad: function(start) {
+            var o = { }, pn = this.getParams();
+            o[pn.start] = start;
+            o[pn.limit] = this.pageSize;
+
+            var state = this.store.getSortState();
+            o['sort'] = state.field;
+            o['dir'] = state.direction;
+            o['showRanBatches'] = combo.getValue();
+
+            if (this.fireEvent('beforechange', this, o) !== false) {
+                this.store.load( {params: o} );
+            }
+        }
+    });
+    var bar = new OrangeLeap.BatchGridToolbar({
         pageSize: 100,
         stateEvents: ['change'],
         stateId: 'pageBar',
@@ -217,16 +236,32 @@ Ext.onReady(function() {
         store: store,
         addClass: 'pointer',
         columns: [
-            { header: msgs.batchId, dataIndex: 'id', width: 50, sortable: true, hidden: true },
-            { header: msgs.type, dataIndex: 'batchType', width: 150, sortable: true },
+            { header: msgs.batchId, dataIndex: 'id', width: 40, sortable: true },
+            { header: msgs.type, dataIndex: 'batchType', width: 150, sortable: true,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.type + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }
+            },
             { header: msgs.description, dataIndex: 'batchDesc', sortable: true,
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     return '<span ext:qtitle="' + msgs.description + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                 }
             },
-            { header: msgs.executeDate, dataIndex: 'executedDate', sortable: true, id: 'executedDt' },
-            { header: msgs.creationDate, dataIndex: 'createDate', sortable: true, id: 'createDt' },
-            { header: msgs.userId, dataIndex: 'loginId', sortable: true, id: 'loginId' },
+            { header: msgs.executeDate, dataIndex: 'executedDate', sortable: true, id: 'executedDt',
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.executeDate + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }
+            },
+            { header: msgs.creationDate, dataIndex: 'createDate', sortable: true, id: 'createDt',
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.creationDate + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }
+            },
+            { header: msgs.userId, dataIndex: 'loginId', sortable: true, id: 'loginId',
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    return '<span ext:qtitle="' + msgs.userId + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                }
+            },
             { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;', id: 'actions', 
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     if ( ! record.get('batchUpdated')) {
@@ -238,7 +273,7 @@ Ext.onReady(function() {
             }
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
-        viewConfig: { forceFit: true },
+//        viewConfig: { forceFit: true },
         height: 600,
         width: 780,
         frame: true,
@@ -248,10 +283,9 @@ Ext.onReady(function() {
         listeners: {
             rowdblclick: function(grid, row, evt) {
                 var rec = grid.getSelectionModel().getSelected();
-                batchWin.show();
-                // TODO: modal
-//                Ext.get(document.body).mask('Loading Record');
-//                window.location.href = "constituent.htm?constituentId=" + rec.data.id;
+                batchID = rec.get('id');
+//                showStep1Tab();
+                batchWin.show(batchWin);
             }
         },
         tbar: [
@@ -259,7 +293,9 @@ Ext.onReady(function() {
             {
                 text: msgs.addNew, tooltip: msgs.addNewBatch, iconCls:'add', id: 'addButton', ref: '../addButton',
                 handler: function() {
-                    batchWin.show();
+                    batchID = null;
+//                    showStep1Tab();
+                    batchWin.show(batchWin);
                 }
             }
         ],
@@ -298,7 +334,8 @@ Ext.onReady(function() {
         }
     });
 
-    OrangeLeap.BatchToolbar = Ext.extend(Ext.PagingToolbar, { // custom toolbar for batch to invoke initFocus
+    // custom toolbar for batch window to invoke initFocus - this effectively overrides what the 'refresh' button action is on the toolbar
+    OrangeLeap.BatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
         doLoad: function(start) {
             var o = { }, pn = this.getParams();
             o[pn.start] = start;
@@ -430,6 +467,7 @@ Ext.onReady(function() {
         }
         if (thisGrp.mainItem.id == 'step1Grp') {
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
+//            Ext.get($('#step1Grp').parent('div').attr('id')).mask(msgs.loading);
             step1Form.getForm().load({
                 url: 'doBatch.htm',
                 params: {
@@ -439,6 +477,7 @@ Ext.onReady(function() {
                 },
                 success: function(form, action) {
                     flowExecutionKey = action.result.flowExecutionKey;
+//                    Ext.get($('#step1Grp').parent('div').attr('id')).unmask();
                     setTimeout(function() {
                         var elem = Ext.getCmp('batchDesc');
                         if (elem && elem.el) {
@@ -447,6 +486,7 @@ Ext.onReady(function() {
                     }, 900);
                 },
                 failure: function(form, action) {
+//                    Ext.get($('#step1Grp').parent('div').attr('id')).unmask();
                     Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                         buttons: Ext.MessageBox.OK,
                         msg: msgs.errorStep1 });
@@ -510,6 +550,13 @@ Ext.onReady(function() {
         }
     }
 
+    function showStep1Tab() {
+        var panel = batchWin.groupTabPanel;
+        panel.setActiveGroup(1);
+        var firstItem = panel.items.items[0];
+        firstItem.setActiveTab(firstItem.items.items[0]);
+    }
+
     var step1Form = new Ext.form.FormPanel({
         baseCls: 'x-plain',
         labelAlign: 'right',
@@ -542,7 +589,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    batchWin.hide(this);
+                    cancelBatch();
                 }
             }
         ],
@@ -650,7 +697,7 @@ Ext.onReady(function() {
         return step2Store.find('picked', true) > -1;
     }
 
-    var step2Bar = new OrangeLeap.BatchToolbar({
+    var step2Bar = new OrangeLeap.BatchWinToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'step2Bar',
@@ -737,10 +784,7 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(1);
-                    var firstItem = panel.items.items[0];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
+                    showStep1Tab();
                 }
             },
             {
@@ -764,7 +808,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    batchWin.hide(this);
+                    cancelBatch();
                 }
             }
         ],
@@ -923,7 +967,7 @@ Ext.onReady(function() {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
 
-    var step3Bar = new OrangeLeap.BatchToolbar({
+    var step3Bar = new OrangeLeap.BatchWinToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'step3Bar',
@@ -1025,7 +1069,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    batchWin.hide(this);
+                    cancelBatch();
                 }
             }
         ],
@@ -1227,7 +1271,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    batchWin.hide(this);
+                    cancelBatch();
                 }
             }
         ],
@@ -1296,7 +1340,7 @@ Ext.onReady(function() {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
 
-    var step5Bar = new OrangeLeap.BatchToolbar({
+    var step5Bar = new OrangeLeap.BatchWinToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'step5Bar',
@@ -1385,7 +1429,7 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    // TODO: invoke save
+                    saveBatch();
                 }
             },
             {
@@ -1393,13 +1437,51 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    batchWin.hide(this);
+                    cancelBatch();
                 }
             }
         ],
         buttonAlign: 'center',
         tbar: step5Toolbar
     });
+
+    function saveBatch() {
+        Ext.Ajax.on('requestexception', function(conn, response, options) {
+            Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                buttons: Ext.MessageBox.OK,
+                msg: msgs.errorAjax });
+        });
+        Ext.Ajax.request({
+            url: 'doBatch.htm',
+            method: 'POST',
+            params: { '_eventId_save': 'save', 'execution': getFlowExecutionKey() },
+            success: function(response, options) {
+                // reload the main batch window to see the new batch
+                store.reload({
+                    // to see the new batch, we have to reload the 'Open Batches' with CreateDate in desc order
+                    params: { showRanBatches: false, start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
+                    callback: function() {
+                        // highlight the saved row
+                    }
+                });
+                batchWin.hide(batchWin);
+            },
+            failure: function(response, options) {
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorSave });
+            }
+        });
+    }
+
+    function cancelBatch() {
+        Ext.Ajax.request({
+            url: 'doBatch.htm',
+            method: 'POST',
+            params: { '_eventId_cancel': 'cancel', 'execution': getFlowExecutionKey() } 
+        });
+        batchWin.hide(batchWin);
+    }
 
     var batchWin = new Ext.Window({
         title: msgs.manageBatch,
@@ -1473,7 +1555,7 @@ Ext.onReady(function() {
         if (e.keyCode == 27) {
             batchWin.hide();
         }
-    }
+    };
     batchWin.on('beforeshow', function() {
         $(window).bind('keydown', function(e) {
             hideOnEscape(e);
@@ -1482,8 +1564,6 @@ Ext.onReady(function() {
     batchWin.on('beforehide', function() {
         $(window).unbind('keydown', hideOnEscape);
     });
-
-    //batchWin.show(); // TODO: remove
 });
 
 

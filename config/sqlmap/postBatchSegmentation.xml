@@ -35,7 +35,7 @@
         where pbs.POST_BATCH_ID = #postBatchId#
     </select>
  
-    <delete id="DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID" parameterClass="map">
+    <delete id="DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID" parameterClass="long">
         delete from POST_BATCH_SEGMENTATION
         where POST_BATCH_ID = #postBatchId#
     </delete>

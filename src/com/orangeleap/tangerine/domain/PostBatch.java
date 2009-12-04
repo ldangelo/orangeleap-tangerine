@@ -34,7 +34,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
     private String batchDesc;
     /** batchType maps to 'entity' */
     private String batchType;
@@ -55,14 +54,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private List<String> updateErrors = new ArrayList<String>();
 
     public PostBatch() { }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getBatchDesc() {
         return batchDesc;
@@ -253,6 +244,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
     }
 
     public void setUpdateErrors(List<String> updateErrors) {
-        this.updateErrors = updateErrors;
+        this.updateErrors = updateErrors;                                                                                          
     }
 }

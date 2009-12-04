@@ -70,11 +70,15 @@
 
     <end-state id="batchFinished">
         <on-entry>
-            <evaluate expression="batchSelectionAction.saveBatch(flowRequestContext)"/>
+            <evaluate expression="batchSelectionAction.saveBatch(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
     </end-state>
     
-    <end-state id="batchCancelled"/>
+    <end-state id="batchCancelled">
+        <on-entry>
+            <evaluate expression="batchSelectionAction.cancelBatch(flowRequestContext)" result="flowScope.model"/>
+        </on-entry>
+    </end-state>
 
 </flow>
         

@@ -122,6 +122,118 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public final static String IDS = "ids";
 
     @Override
+    public PostBatch maintainBatch(PostBatch batch) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainBatch: batchId = " + batch.getId());
+        }
+        batch.setBatchCreatedById(tangerineUserHelper.lookupUserId());
+        batch.setBatchCreatedDate(new Date());
+        return postBatchDao.maintainPostBatch(batch);
+    }
+
+    @Override
+    public List<PostBatch> readBatches(boolean showRanBatches, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readBatches: showRanBatches = " + showRanBatches + " sort = " + sort);
+        }
+        return postBatchDao.readBatches(showRanBatches, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public PostBatch readBatchCreateIfNull(final Long batchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readBatchCreateIfNull: batchId = " + batchId);
+        }
+
+        PostBatch batch;
+        if (batchId != null && batchId > 0) {
+            batch = postBatchDao.readPostBatchById(batchId);
+        }
+        else {
+            batch = new PostBatch();
+        }
+        return batch;
+    }
+
+    @Override
+    public List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, String batchType, String sortField,
+                                                                   String sortDirection, int startIndex, int resultCount) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findSegmentationsForBatchType: batchType = " + batchType + " sortField = " + sortField +
+                    " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
+        }
+        final List<Segmentation> segmentations = findSegmentations(batchType, sortField, sortDirection, startIndex, resultCount);
+        List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+        if (segmentations != null) {
+            final SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.EXT_DATE_FORMAT);
+            for (Segmentation segmentation : segmentations) {
+                Map<String, Object> returnMap = new HashMap<String, Object>();
+                returnMap.put(StringConstants.ID, segmentation.getId());
+                returnMap.put(StringConstants.NAME, segmentation.getName());
+                returnMap.put("desc", segmentation.getDescription());
+                returnMap.put("count", segmentation.getCount());
+                returnMap.put("lastDt", segmentation.getLastRunDate() == null ? null : sdf.format(segmentation.getLastRunDate()));
+                returnMap.put("lastUser", segmentation.getLastRunByUser());
+                returnMap.put("picked", batch.containsSegmentationId(segmentation.getId()));
+                returnList.add(returnMap);
+            }
+        }
+        return returnList;
+    }
+
+    @Override
+    public int findTotalSegmentations(String batchType) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findTotalSegmentations: batchType = " + batchType);
+        }
+        return 2;// TODO: fix
+    }
+
+    @Override
+    public List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findSegmentations: batchType = " + batchType + " sortField = " + sortField +
+                    " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
+        }
+        Theguru theGuru = new WSClient().getTheGuru();
+        ObjectFactory objFactory = new ObjectFactory();
+        GetSegmentationListByTypeRequest req = objFactory.createGetSegmentationListByTypeRequest();
+
+        List<Segmentation> returnSegmentations = new ArrayList<Segmentation>();
+        String resolvedType = null;
+        if (StringConstants.GIFT.equals(batchType)) {
+            resolvedType = StringConstants.GIFT_SEGMENTATION;
+        }
+        if (resolvedType != null) {
+            req.setType(resolvedType);
+            req.setSortField(sortField);
+            req.setSortDirection(sortDirection);
+            req.setStartIndex(startIndex);
+            req.setResultCount(resultCount);
+
+            GetSegmentationListByTypeResponse resp = theGuru.getSegmentationListByType(req);
+            if (resp != null) {
+                List<com.orangeleap.theguru.client.Segmentation> wsSegmentations = resp.getSegmentation();
+                if (wsSegmentations != null) {
+                    for (com.orangeleap.theguru.client.Segmentation wsSegmentation : wsSegmentations) {
+                        if (wsSegmentation != null) {
+                            Segmentation segmentation = new Segmentation(wsSegmentation.getId(), wsSegmentation.getName(),
+                                    wsSegmentation.getDescription(), wsSegmentation.getExecutionCount(),
+                                    wsSegmentation.getExecutionDate() == null ? null : wsSegmentation.getExecutionDate().toGregorianCalendar().getTime(),
+                                    wsSegmentation.getExecutionUser());
+                            returnSegmentations.add(segmentation);
+                        }
+                    }
+                }
+            }
+        }
+        return returnSegmentations;
+    }
+
+
+    /** ************** the following will be removed ****************/
+    @Override
     public Map<String, String> readAllowedGiftSelectFields() {
     	
     	Map<String, String> map = new TreeMap<String, String>();
@@ -239,24 +351,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    public List<PostBatch> readBatches(boolean showRanBatches, SortInfo sort, Locale locale) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readBatches: showRanBatches = " + showRanBatches + " sort = " + sort);
-        }
-        return postBatchDao.readBatches(showRanBatches, sort.getSort(), sort.getDir(), sort.getStart(),
-                sort.getLimit(), locale);
-    }
-
-    @Override
     public PostBatch readBatch(Long batchId) {
         logger.debug("readBatch: id = "+batchId);
         if (batchId == null) return null;
         return postBatchDao.readPostBatchById(batchId);
-    }
-
-    @Override
-    public PostBatch maintainBatch(PostBatch postbatch) {
-        return postBatchDao.maintainPostBatch(postbatch);
     }
 
     // Evaluates criteria to create list of matching gifts (snapshot at this moment in time).
@@ -623,96 +721,5 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     private String getKey(String s1, String s2) {
         return s1 + " : " + s2;
-    }
-
-    @Override
-    public PostBatch readBatchCreateIfNull(final Long batchId) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readBatchCreateIfNull: batchId = " + batchId);
-        }
-
-        PostBatch batch;
-        if (batchId != null && batchId > 0) {
-            batch = postBatchDao.readPostBatchById(batchId);
-        }
-        else {
-            batch = new PostBatch();
-        }
-        return batch;
-    }
-
-    @Override
-    public List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, String batchType, String sortField,
-                                                                   String sortDirection, int startIndex, int resultCount) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("findSegmentationsForBatchType: batchType = " + batchType + " sortField = " + sortField +
-                    " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
-        }
-        final List<Segmentation> segmentations = findSegmentations(batchType, sortField, sortDirection, startIndex, resultCount);
-        List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
-        if (segmentations != null) {
-            final SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.EXT_DATE_FORMAT);
-            for (Segmentation segmentation : segmentations) {
-                Map<String, Object> returnMap = new HashMap<String, Object>();
-                returnMap.put(StringConstants.ID, segmentation.getId());
-                returnMap.put(StringConstants.NAME, segmentation.getName());
-                returnMap.put("desc", segmentation.getDescription());
-                returnMap.put("count", segmentation.getCount());
-                returnMap.put("lastDt", segmentation.getLastRunDate() == null ? null : sdf.format(segmentation.getLastRunDate()));
-                returnMap.put("lastUser", segmentation.getLastRunByUser());
-                returnMap.put("picked", batch.containsSegmentationId(segmentation.getId()));
-                returnList.add(returnMap);
-            }
-        }
-        return returnList;
-    }
-
-    @Override
-    public int findTotalSegmentations(String batchType) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("findTotalSegmentations: batchType = " + batchType);
-        }
-        return 2;// TODO: fix
-    }
-
-    @Override
-    public List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("findSegmentations: batchType = " + batchType + " sortField = " + sortField +
-                    " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
-        }
-        Theguru theGuru = new WSClient().getTheGuru();
-        ObjectFactory objFactory = new ObjectFactory();
-        GetSegmentationListByTypeRequest req = objFactory.createGetSegmentationListByTypeRequest();
-
-        List<Segmentation> returnSegmentations = new ArrayList<Segmentation>();
-        String resolvedType = null;
-        if (StringConstants.GIFT.equals(batchType)) {
-            resolvedType = StringConstants.GIFT_SEGMENTATION;
-        }
-        if (resolvedType != null) {
-            req.setType(resolvedType);
-            req.setSortField(sortField);
-            req.setSortDirection(sortDirection);
-            req.setStartIndex(startIndex);
-            req.setResultCount(resultCount);
-
-            GetSegmentationListByTypeResponse resp = theGuru.getSegmentationListByType(req);
-            if (resp != null) {
-                List<com.orangeleap.theguru.client.Segmentation> wsSegmentations = resp.getSegmentation();
-                if (wsSegmentations != null) {
-                    for (com.orangeleap.theguru.client.Segmentation wsSegmentation : wsSegmentations) {
-                        if (wsSegmentation != null) {
-                            Segmentation segmentation = new Segmentation(wsSegmentation.getId(), wsSegmentation.getName(),
-                                    wsSegmentation.getDescription(), wsSegmentation.getExecutionCount(),
-                                    wsSegmentation.getExecutionDate() == null ? null : wsSegmentation.getExecutionDate().toGregorianCalendar().getTime(),
-                                    wsSegmentation.getExecutionUser());
-                            returnSegmentations.add(segmentation);
-                        }
-                    }
-                }
-            }
-        }
-        return returnSegmentations;
     }
 }

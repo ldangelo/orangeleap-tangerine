@@ -12,6 +12,7 @@ public interface OrangeleapJmxNotification    {
 	public Long getTotalCaptureCount();
 	public Long getTotalAuthorizeAndCaptureCount();
 	public Long getTotalOrbitalStatus();
+	public Long getTotalEchexStatus();
     
 
     public Map<String, Map<String, Long>> getAllSiteCounts();

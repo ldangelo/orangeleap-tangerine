@@ -73,13 +73,13 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 
         try {
             tp = new TransactionProcessor();
-        	orangeleapJmxNotificationBean.setStat(OrangeleapJmxNotificationBean.GLOBAL, OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, 0L);
+        	orangeleapJmxNotificationBean.setStat(OrangeleapJmxNotificationBean.GLOBAL, OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.OK);
         } catch (InitializationException iex) {
             if (logger.isErrorEnabled()) {
                 logger.error(iex.getMessage());
                 errorLogServce.addErrorMessage(iex.getMessage(), "OrbitalPaymentGateway.initialize");
             	orangeleapJmxNotificationBean.publishNotification(OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_ERROR, ""+iex.getMessage());
-            	orangeleapJmxNotificationBean.setStat(OrangeleapJmxNotificationBean.GLOBAL, OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, 1L);
+            	orangeleapJmxNotificationBean.setStat(OrangeleapJmxNotificationBean.GLOBAL, OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
             }
         }
 
@@ -183,13 +183,18 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         // Process the transaction
         ResponseIF response = null;
         try {
-            response = tp.process(request);
+            
+        	response = tp.process(request);
+
+            orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.AUTHORIZE_AND_CAPTURE);
+        	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.OK);
+
         } catch (Exception text) {
             
             if (logger.isErrorEnabled()) {
                 logger.error("Request: " + text.getMessage());
             	orangeleapJmxNotificationBean.publishNotification(OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_ERROR, ""+text.getMessage());
-            	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, 1L);
+            	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
             }
 
         	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
@@ -207,9 +212,6 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             return;
         }
         
-        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.AUTHORIZE_AND_CAPTURE);
-    	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, 0L);
-
         if (logger.isInfoEnabled()) {
             logger.info(response.toXmlString());
         }
@@ -351,18 +353,20 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         // Process the transaction
         ResponseIF response = null;
         try {
-            response = tp.process(request);
+
+        	response = tp.process(request);
+            
+        	orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.AUTHORIZE);
+        	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.OK);
+
         } catch (Exception tex) {
             if (logger.isErrorEnabled()) {
                 logger.error(tex.getMessage());
             	orangeleapJmxNotificationBean.publishNotification(OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_ERROR, ""+tex.getMessage());
-            	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, 1L);
+            	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
             }
             return;
         }
-
-        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.AUTHORIZE);
-    	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, 0L);
 
         if (logger.isInfoEnabled()) {
             logger.info(response.toXmlString());
@@ -457,19 +461,21 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         // Process the transaction
         ResponseIF response = null;
         try {
-            response = tp.process(request);
+
+        	response = tp.process(request);
+            
+        	orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.CAPTURE);
+        	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.OK);
+
         } catch (Exception tex) {
             if (logger.isErrorEnabled()) {
                 logger.error(tex.getMessage());
             	orangeleapJmxNotificationBean.publishNotification(OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_ERROR, ""+tex.getMessage());
-            	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, 1L);
+            	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
             }
             return;
         }
         
-        orangeleapJmxNotificationBean.incrementStatCount(gift.getSite().getName(), OrangeleapJmxNotificationBean.CAPTURE);
-    	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, 0L);
-
         if (logger.isInfoEnabled()) {
             logger.info(response.toXmlString());
         }

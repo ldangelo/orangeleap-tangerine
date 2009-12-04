@@ -21,11 +21,9 @@ package com.orangeleap.tangerine.service.payments;
 
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
-
 
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.checkservice.Batch;
@@ -35,13 +33,17 @@ import com.orangeleap.tangerine.domain.checkservice.Response;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.CheckService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.util.OLLogger;
 
 
 public class EchexPaymentGateway implements ACHPaymentGateway {
     private CheckService checkService = null;
 	private static final Log logger = OLLogger.getLog(EchexPaymentGateway.class);
 	private ApplicationContext applicationContext;
+	private OrangeleapJmxNotificationBean orangeleapJmxNotificationBean;
+
 	
     public void setCheckService(CheckService s)
     {
@@ -106,11 +108,19 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 //	    			g.setComments(response.getMessage());	    			
 	            }
 	            
+	            orangeleapJmxNotificationBean.incrementStatCount(g.getSite().getName(), OrangeleapJmxNotificationBean.ACH);
+	        	orangeleapJmxNotificationBean.setStat(g.getSite().getName(), OrangeleapJmxNotificationBean.ECHEX_PAYMENT_STATUS, OrangeleapJmxNotificationBean.OK);
+
 	        } catch(PaymentProcessorException exception) {
 	        	logger.error(exception.getMessage());
 	        	g.setPaymentStatus("Error");
 	        	g.setPaymentMessage(exception.getMessage());
+
+            	orangeleapJmxNotificationBean.publishNotification(OrangeleapJmxNotificationBean.ECHEX_PAYMENT_ERROR, ""+exception.getMessage());
+            	orangeleapJmxNotificationBean.setStat(g.getSite().getName(), OrangeleapJmxNotificationBean.ECHEX_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
 	        }
+	        
+	        
 	        GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
 	        g.setSuppressValidation(true);
@@ -133,7 +143,7 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;
-		
+        orangeleapJmxNotificationBean = (OrangeleapJmxNotificationBean) applicationContext.getBean("OrangeleapJmxNotificationBean");
 	}
 
 }

@@ -101,6 +101,11 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 		return getTotalCount(ORBITAL_PAYMENT_STATUS);
 	}
 	
+	@Override
+	public Long getTotalEchexStatus() {
+		return getTotalCount(ECHEX_PAYMENT_STATUS);
+	}
+	
 	private Long getTotalCount(String stat) {
 		Map<String, Long> map = counts.get(TOTAL);
 		if (map == null) return 0L;

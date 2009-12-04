@@ -41,6 +41,7 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private Date batchCreatedDate;
     private boolean executed;
     private Long executedById;
+    private String executedByUser;
     private Date executedDate;
     private boolean posted;
     private Long postedById;
@@ -101,6 +102,14 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     public void setExecutedById(Long executedById) {
         this.executedById = executedById;
+    }
+
+    public String getExecutedByUser() {
+        return executedByUser;
+    }
+
+    public void setExecutedByUser(String executedByUser) {
+        this.executedByUser = executedByUser;
     }
 
     public Date getExecutedDate() {

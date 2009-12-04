@@ -18,23 +18,7 @@
 
 package com.orangeleap.tangerine.json.controller.list;
 
-import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.service.PostBatchService;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This controller handles JSON requests for populating
@@ -48,78 +32,78 @@ public class PostbatchGiftListController {
     /**
      * Logger for this class and subclasses
      */
-    protected final Log logger = OLLogger.getLog(getClass());
-
-    private final static Map<String, Object> GIFT_NAME_MAP = new HashMap<String, Object>();
-    private final static Map<String, Object> ADJUSTED_GIFT_NAME_MAP = new HashMap<String, Object>();
-
-    static {
-    	GIFT_NAME_MAP.put("id", "g.GIFT_ID");
-    	GIFT_NAME_MAP.put("createdate", "g.CREATE_DATE");
-    	GIFT_NAME_MAP.put("donationdate", "g.DONATION_DATE");
-    	GIFT_NAME_MAP.put("amount", "g.AMOUNT");
-    	GIFT_NAME_MAP.put("currencycode", "g.CURRENCY_CODE");
-    	GIFT_NAME_MAP.put("paymenttype", "g.PAYMENT_TYPE");
-    	GIFT_NAME_MAP.put("status", "g.GIFT_STATUS");
-    }
-
-    @Resource(name = "postBatchService")
-    private PostBatchService postBatchService;
-
-    @SuppressWarnings("unchecked")
-    @RequestMapping("/postbatchGiftList.json")
-    public ModelMap getPostbatchGiftList(HttpServletRequest request, SortInfo sortInfo) {
-    	
-    	List<Map> rows = new ArrayList<Map>();
-        ModelMap map = new ModelMap("rows", rows);
-        map.put("totalRows", 0);
-    	
-    	try {
-
-	        String sid = request.getParameter("id");
-	        if (sid == null || sid.trim().length() == 0) {
-	        	return map;
-	        }
-	        long postbatchId = Long.valueOf(sid);
-	    	PostBatch postbatch = postBatchService.readBatch(postbatchId);
-	    	Map namemap = postbatch.getBatchType().equals("gift")?GIFT_NAME_MAP:ADJUSTED_GIFT_NAME_MAP;
-	    	
-	
-	        // if we're not getting back a valid column name, possible SQL injection,
-	        // so send back an empty list.
-	        if (!sortInfo.validateSortField(namemap.keySet())) {
-	            return map;
-	        }
-	
-	        // set the sort to the valid column name, based on the map
-	        sortInfo.setSort((String) namemap.get(sortInfo.getSort()));
-	
-	        PaginatedResult result = postBatchService.getBatchSelectionList(postbatchId, sortInfo);
-	        List<Gift> giftrows = result.getRows();
-	        for (Gift g : giftrows) rows.add(mapGift(g));
-	        map = new ModelMap("rows", rows);
-	        map.put("totalRows", result.getRowCount());
-	        return map;
-        
-    	} catch (Exception e) {
-    		logger.error(e);
-    		return map;
-    	}
-    }
-    
-    @SuppressWarnings("unchecked")
-	private Map mapGift(Gift g) {
-    	Map map = new HashMap();
-    	map.put("id", g.getId());
-    	map.put("constituentid", g.getConstituentId());
-    	map.put("createdate", g.getCreateDate());
-    	map.put("amount", g.getAmount());
-    	map.put("donationdate", g.getDonationDate());
-    	map.put("currencycode", g.getCurrencyCode());
-    	map.put("paymenttype", g.getPaymentType());
-    	map.put("status", g.getGiftStatus());
-    	
-    	return map;
-    }
+//    protected final Log logger = OLLogger.getLog(getClass());
+//
+//    private final static Map<String, Object> GIFT_NAME_MAP = new HashMap<String, Object>();
+//    private final static Map<String, Object> ADJUSTED_GIFT_NAME_MAP = new HashMap<String, Object>();
+//
+//    static {
+//    	GIFT_NAME_MAP.put("id", "g.GIFT_ID");
+//    	GIFT_NAME_MAP.put("createdate", "g.CREATE_DATE");
+//    	GIFT_NAME_MAP.put("donationdate", "g.DONATION_DATE");
+//    	GIFT_NAME_MAP.put("amount", "g.AMOUNT");
+//    	GIFT_NAME_MAP.put("currencycode", "g.CURRENCY_CODE");
+//    	GIFT_NAME_MAP.put("paymenttype", "g.PAYMENT_TYPE");
+//    	GIFT_NAME_MAP.put("status", "g.GIFT_STATUS");
+//    }
+//
+//    @Resource(name = "postBatchService")
+//    private PostBatchService postBatchService;
+//
+//    @SuppressWarnings("unchecked")
+//    @RequestMapping("/postbatchGiftList.json")
+//    public ModelMap getPostbatchGiftList(HttpServletRequest request, SortInfo sortInfo) {
+//
+//    	List<Map> rows = new ArrayList<Map>();
+//        ModelMap map = new ModelMap("rows", rows);
+//        map.put("totalRows", 0);
+//
+//    	try {
+//
+//	        String sid = request.getParameter("id");
+//	        if (sid == null || sid.trim().length() == 0) {
+//	        	return map;
+//	        }
+//	        long postbatchId = Long.valueOf(sid);
+//	    	PostBatch postbatch = postBatchService.readBatch(postbatchId);
+//	    	Map namemap = postbatch.getBatchType().equals("gift")?GIFT_NAME_MAP:ADJUSTED_GIFT_NAME_MAP;
+//
+//
+//	        // if we're not getting back a valid column name, possible SQL injection,
+//	        // so send back an empty list.
+//	        if (!sortInfo.validateSortField(namemap.keySet())) {
+//	            return map;
+//	        }
+//
+//	        // set the sort to the valid column name, based on the map
+//	        sortInfo.setSort((String) namemap.get(sortInfo.getSort()));
+//
+//	        PaginatedResult result = postBatchService.getBatchSelectionList(postbatchId, sortInfo);
+//	        List<Gift> giftrows = result.getRows();
+//	        for (Gift g : giftrows) rows.add(mapGift(g));
+//	        map = new ModelMap("rows", rows);
+//	        map.put("totalRows", result.getRowCount());
+//	        return map;
+//
+//    	} catch (Exception e) {
+//    		logger.error(e);
+//    		return map;
+//    	}
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//	private Map mapGift(Gift g) {
+//    	Map map = new HashMap();
+//    	map.put("id", g.getId());
+//    	map.put("constituentid", g.getConstituentId());
+//    	map.put("createdate", g.getCreateDate());
+//    	map.put("amount", g.getAmount());
+//    	map.put("donationdate", g.getDonationDate());
+//    	map.put("currencycode", g.getCurrencyCode());
+//    	map.put("paymenttype", g.getPaymentType());
+//    	map.put("status", g.getGiftStatus());
+//
+//    	return map;
+//    }
     
 }

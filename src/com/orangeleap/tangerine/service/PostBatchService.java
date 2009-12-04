@@ -20,8 +20,6 @@ package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.Segmentation;
-import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 import java.util.List;
@@ -30,16 +28,16 @@ import java.util.Map;
 
 public interface PostBatchService {
 
-    public Map<String, String> readAllowedGiftSelectFields();
-    public Map<String, String> readAllowedGiftUpdateFields();
-    public List<PostBatch> listBatchs();
-    public PostBatch readBatch(Long batchId);
+//    public Map<String, String> readAllowedGiftSelectFields();
+//    public Map<String, String> readAllowedGiftUpdateFields();
+//    public List<PostBatch> listBatchs();
+//    public PostBatch readBatch(Long batchId);
     public PostBatch maintainBatch(PostBatch postbatch);
 	public PostBatch updateBatch(PostBatch postbatch);
 	public void deleteBatch(PostBatch postbatch);
-    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
-    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
-	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
+//    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
+//    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
+//	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
 
     List<PostBatch> readBatches(boolean batchUpdated, SortInfo sort, Locale locale);
 

@@ -41,7 +41,6 @@ import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeRequest;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
@@ -64,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -233,158 +231,158 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
 
     /** ************** the following will be removed ****************/
-    @Override
-    public Map<String, String> readAllowedGiftSelectFields() {
-    	
-    	Map<String, String> map = new TreeMap<String, String>();
-        map.put(IDS, "Gift Ref Numbers");
-        map.put("amountLessThan", "Amount Less Than");
-        map.put("amountGreaterThan", "Amount Greater Than");
-        map.put("currencyCode", "Currency Code");
-        map.put("createdDateBefore", "Created Date Before");
-        map.put("createdDateAfter", "Created Date After");
-        map.put("constituentId", "Constituent Id");
-        map.put(STATUS, "Gift Status");
-        map.put("paymentType", "Payment Type");
-        map.put("donationDate", "Donation Date");
-        map.put("postmarkDate", "Postmark Date");
-        map.put(SOURCE, "Source");
-        map.put("designationCode", "Designation Code");
-        map.put("motivationCode", "Motivation Code");
-        map.put(POSTED, "Posted");
+//    @Override
+//    public Map<String, String> readAllowedGiftSelectFields() {
+//
+//    	Map<String, String> map = new TreeMap<String, String>();
+//        map.put(IDS, "Gift Ref Numbers");
+//        map.put("amountLessThan", "Amount Less Than");
+//        map.put("amountGreaterThan", "Amount Greater Than");
+//        map.put("currencyCode", "Currency Code");
+//        map.put("createdDateBefore", "Created Date Before");
+//        map.put("createdDateAfter", "Created Date After");
+//        map.put("constituentId", "Constituent Id");
+//        map.put(STATUS, "Gift Status");
+//        map.put("paymentType", "Payment Type");
+//        map.put("donationDate", "Donation Date");
+//        map.put("postmarkDate", "Postmark Date");
+//        map.put(SOURCE, "Source");
+//        map.put("designationCode", "Designation Code");
+//        map.put("motivationCode", "Motivation Code");
+//        map.put(POSTED, "Posted");
+//
+//        return map;
+//    }
 
-        return map;
-    }
-
-    private Map<String, Object> createSearchMap(Map<String, String> map) {
-    	
-    	Map<String, Object> result = new HashMap<String, Object>();
-        for (Map.Entry<String, String> me : map.entrySet()) {
-        	
-    		String key = me.getKey();
-            String value = me.getValue();
-            if (value == null || value.trim().length() == 0) continue;
-            
-            if (key.equals(POSTED)) {
-            	boolean posted = false;
-            	value = value.toLowerCase();
-            	if (value.equals("true") || value.equals("t") || value.equals("y") || value.equals("yes") || value.equals("1")) {
-            		posted = true;
-            	}
-            	result.put(key, posted);
-            } else if (key.equals(IDS)) {
-            	result.put(key, value.split(","));
-            } else if (key.toLowerCase().contains("date")) {
-                if (value.length() != PostBatchServiceImpl.DATE_FORMAT.length()) throw new RuntimeException("Invalid Date.");
-            	DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
-            	try {
-            		Date adate = formatter.parse(value);
-            		result.put(key, adate);
-            	} catch (Exception e) {
-            		throw new RuntimeException("Invalid Date.");
-            	}
-            } else if (key.toLowerCase().startsWith("amount")) {
-            	BigDecimal bd = new BigDecimal(value);
-        		result.put(key, bd);
-            } else {
-                result.put(key, value);
-            }
-            
-        }
-        
-        return result;
-    }
-    
-    @Override
-    public Map<String, String> readAllowedGiftUpdateFields() {
-       Map<String, String> map = new TreeMap<String, String>();
-       map.put(POSTED_DATE, "Posted Date (Creates Journal Entry)");  // Updating this triggers a post (creates journal entry)
-       map.put(STATUS, "Status");
-       map.put(SOURCE, "Source");
-       return map;
-    }
-    
-    private void setField(boolean isGift, AbstractPaymentInfoEntity apie, String key, String value) {
-       if (key.equals(POSTED_DATE)) {
-           DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-           Date postedDate;
-           try {
-        	   postedDate = dateFormat.parse(value);
-           } catch (Exception e) {
-        	   throw new RuntimeException("Invalid post date: "+value);
-           }
-           if (isGift) {
-               ((Gift)apie).setPostedDate(postedDate);
-           } else {
-               ((AdjustedGift)apie).setPostedDate(postedDate);
-           }
-       } else if (key.equals(SOURCE)) {
-    	   apie.setCustomFieldValue(SOURCE, value);
-       } else {
-    	   if (isGift) {
-    		    setGiftField((Gift)apie, key, value);
-    	   } else {
-   		    	setAdjustedGiftField((AdjustedGift)apie, key, value);
-    	   }
-       }
-    }
-    
-    private void setGiftField(Gift gift, String key, String value) {
-       if (key.equals(STATUS)) {
-    	   gift.setGiftStatus(value);
-       } else {
-    	   throw new RuntimeException("Invalid field "+key);
-       }
-    }
-
-    private void setAdjustedGiftField(AdjustedGift ag, String key, String value) {
-        if (key.equals(STATUS)) {
-     	   ag.setAdjustedStatus(value);
-        } else {
-     	   throw new RuntimeException("Invalid field "+key);
-        }
-    }
-    
-    @Override
-    public List<PostBatch> listBatchs() {
-        return postBatchDao.listBatches();
-    }
-
-    @Override
-    public PostBatch readBatch(Long batchId) {
-        logger.debug("readBatch: id = "+batchId);
-        if (batchId == null) return null;
-        return postBatchDao.readPostBatchById(batchId);
-    }
-
-    // Evaluates criteria to create list of matching gifts (snapshot at this moment in time).
-    @Override
-    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch) {
-
-        boolean isGift = GIFT.equals(postbatch.getBatchType());
-
-        postBatchDao.deletePostBatchItems(postbatch.getId());
-        
-//        Map<String, Object> searchmap = createSearchMap(postbatch.getWhereConditions());
-
-//        if (isGift) {
-//            postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap);
-//        } else {
-//            postBatchDao.insertIntoPostBatchFromAdjustedGiftSelect(postbatch, searchmap);
+//    private Map<String, Object> createSearchMap(Map<String, String> map) {
+//
+//    	Map<String, Object> result = new HashMap<String, Object>();
+//        for (Map.Entry<String, String> me : map.entrySet()) {
+//
+//    		String key = me.getKey();
+//            String value = me.getValue();
+//            if (value == null || value.trim().length() == 0) continue;
+//
+//            if (key.equals(POSTED)) {
+//            	boolean posted = false;
+//            	value = value.toLowerCase();
+//            	if (value.equals("true") || value.equals("t") || value.equals("y") || value.equals("yes") || value.equals("1")) {
+//            		posted = true;
+//            	}
+//            	result.put(key, posted);
+//            } else if (key.equals(IDS)) {
+//            	result.put(key, value.split(","));
+//            } else if (key.toLowerCase().contains("date")) {
+//                if (value.length() != PostBatchServiceImpl.DATE_FORMAT.length()) throw new RuntimeException("Invalid Date.");
+//            	DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
+//            	try {
+//            		Date adate = formatter.parse(value);
+//            		result.put(key, adate);
+//            	} catch (Exception e) {
+//            		throw new RuntimeException("Invalid Date.");
+//            	}
+//            } else if (key.toLowerCase().startsWith("amount")) {
+//            	BigDecimal bd = new BigDecimal(value);
+//        		result.put(key, bd);
+//            } else {
+//                result.put(key, value);
+//            }
+//
 //        }
+//
+//        return result;
+//    }
+    
+//    @Override
+//    public Map<String, String> readAllowedGiftUpdateFields() {
+//       Map<String, String> map = new TreeMap<String, String>();
+//       map.put(POSTED_DATE, "Posted Date (Creates Journal Entry)");  // Updating this triggers a post (creates journal entry)
+//       map.put(STATUS, "Status");
+//       map.put(SOURCE, "Source");
+//       return map;
+//    }
+    
+//    private void setField(boolean isGift, AbstractPaymentInfoEntity apie, String key, String value) {
+//       if (key.equals(POSTED_DATE)) {
+//           DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+//           Date postedDate;
+//           try {
+//        	   postedDate = dateFormat.parse(value);
+//           } catch (Exception e) {
+//        	   throw new RuntimeException("Invalid post date: "+value);
+//           }
+//           if (isGift) {
+//               ((Gift)apie).setPostedDate(postedDate);
+//           } else {
+//               ((AdjustedGift)apie).setPostedDate(postedDate);
+//           }
+//       } else if (key.equals(SOURCE)) {
+//    	   apie.setCustomFieldValue(SOURCE, value);
+//       } else {
+//    	   if (isGift) {
+//    		    setGiftField((Gift)apie, key, value);
+//    	   } else {
+//   		    	setAdjustedGiftField((AdjustedGift)apie, key, value);
+//    	   }
+//       }
+//    }
+//
+//    private void setGiftField(Gift gift, String key, String value) {
+//       if (key.equals(STATUS)) {
+//    	   gift.setGiftStatus(value);
+//       } else {
+//    	   throw new RuntimeException("Invalid field "+key);
+//       }
+//    }
+//
+//    private void setAdjustedGiftField(AdjustedGift ag, String key, String value) {
+//        if (key.equals(STATUS)) {
+//     	   ag.setAdjustedStatus(value);
+//        } else {
+//     	   throw new RuntimeException("Invalid field "+key);
+//        }
+//    }
+//
+//    @Override
+//    public List<PostBatch> listBatchs() {
+//        return postBatchDao.listBatches();
+//    }
 
+//    @Override
+//    public PostBatch readBatch(Long batchId) {
+//        logger.debug("readBatch: id = "+batchId);
+//        if (batchId == null) return null;
+//        return postBatchDao.readPostBatchById(batchId);
+//    }
 
-//        postbatch.setReviewSetGenerated(true);
-//        postbatch.setBatchCreatedDate(new java.util.Date());
-//        postbatch.setBatchCreatedById(tangerineUserHelper.lookupUserId());
-//        postbatch.setReviewSetSize(postBatchDao.getReviewSetSize(postbatch.getId()));
-        postBatchDao.maintainPostBatch(postbatch);
-
-        // Gift list uses json to display a paginated list.
-        if (isGift) return new ArrayList<AbstractPaymentInfoEntity>();
-        
-        return getBatchSelectionList(postbatch);
-    }
+//    // Evaluates criteria to create list of matching gifts (snapshot at this moment in time).
+//    @Override
+//    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch) {
+//
+//        boolean isGift = GIFT.equals(postbatch.getBatchType());
+//
+//        postBatchDao.deletePostBatchItems(postbatch.getId());
+//
+////        Map<String, Object> searchmap = createSearchMap(postbatch.getWhereConditions());
+//
+////        if (isGift) {
+////            postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap);
+////        } else {
+////            postBatchDao.insertIntoPostBatchFromAdjustedGiftSelect(postbatch, searchmap);
+////        }
+//
+//
+////        postbatch.setReviewSetGenerated(true);
+////        postbatch.setBatchCreatedDate(new java.util.Date());
+////        postbatch.setBatchCreatedById(tangerineUserHelper.lookupUserId());
+////        postbatch.setReviewSetSize(postBatchDao.getReviewSetSize(postbatch.getId()));
+//        postBatchDao.maintainPostBatch(postbatch);
+//
+//        // Gift list uses json to display a paginated list.
+//        if (isGift) return new ArrayList<AbstractPaymentInfoEntity>();
+//
+//        return getBatchSelectionList(postbatch);
+//    }
     
     private void saveGift(Gift gift) throws BindException {
     	gift.setSuppressValidation(true);
@@ -396,26 +394,26 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         adjustedGiftService.maintainAdjustedGift(adjustedGift);
     }
 
-    // Reads previous list of matched gifts. Does not re-evaluate any criteria.
-    @Override
-    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
-         List<PostBatchSegmentation> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
-         List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
-         boolean isGift = GIFT.equals(postbatch.getBatchType());
-         for (PostBatchSegmentation item : list) {
-             if (isGift) {
-                 result.add(giftService.readGiftById(item.getSegmentationId()));
-             } else {
-                 result.add(adjustedGiftService.readAdjustedGiftById(item.getSegmentationId()));
-             }
-         }
-         return result;
-    }
+//    // Reads previous list of matched gifts. Does not re-evaluate any criteria.
+//    @Override
+//    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
+//         List<PostBatchSegmentation> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
+//         List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
+//         boolean isGift = GIFT.equals(postbatch.getBatchType());
+//         for (PostBatchSegmentation item : list) {
+//             if (isGift) {
+//                 result.add(giftService.readGiftById(item.getSegmentationId()));
+//             } else {
+//                 result.add(adjustedGiftService.readAdjustedGiftById(item.getSegmentationId()));
+//             }
+//         }
+//         return result;
+//    }
 
-    @Override
-	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo) {
-        return postBatchDao.readPostBatchReviewSetItems(postbatchId, sortInfo);
-	}
+//    @Override
+//	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo) {
+//        return postBatchDao.readPostBatchReviewSetItems(postbatchId, sortInfo);
+//	}
 
     @Override
     public void deleteBatch(PostBatch postbatch) {
@@ -424,6 +422,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
        postBatchDao.deletePostBatch(postbatch.getId());
     }
 
+    // THis is really execute
     // Sets fields on gifts/adjusted gifts in reviewed batch list
     @Override
     public PostBatch updateBatch(PostBatch postbatch) {
@@ -566,7 +565,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         // Set update values.  
         for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-        	setField(isGift, apie, me.getKey(), me.getValue());
+//        	setField(isGift, apie, me.getKey(), me.getValue());
         }
         
         // Update record.

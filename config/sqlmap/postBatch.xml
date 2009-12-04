@@ -10,6 +10,7 @@
         <result property="batchCreatedDate" column="POST_BATCH_CREATED_DATE" />
         <result property="executed" column="POST_BATCH_EXECUTED" />
         <result property="executedById" column="POST_BATCH_EXECUTED_BY_ID" />
+        <result property="executedByUser" column="POST_BATCH_EXECUTED_BY_USER" />
         <result property="executedDate" column="POST_BATCH_EXECUTED_DATE" />
         <result property="posted" column="POST_BATCH_POSTED" />
         <result property="postedById" column="POST_BATCH_POSTED_BY_ID" />
@@ -37,13 +38,15 @@
         post_batch.POSTED_DATE as POST_BATCH_POSTED_DATE,
         post_batch.SITE_NAME as POST_BATCH_SITE_NAME,
         post_batch.CREATE_DATE as POST_BATCH_CREATE_DATE,
-        post_batch.UPDATE_DATE as POST_BATCH_UPDATE_DATE
+        post_batch.UPDATE_DATE as POST_BATCH_UPDATE_DATE,
+        constituent.LOGIN_ID as POST_BATCH_EXECUTED_BY_USER
     </sql>
 
     <sql id="SELECT_POST_BATCH_FRAGMENT">
         select
         <include refid="POST_BATCH_COLS_FRAGMENT"/>
         from POST_BATCH post_batch
+        left outer join CONSTITUENT constituent on post_batch.EXECUTED_BY_ID = constituent.CONSTITUENT_ID
         where post_batch.SITE_NAME = #siteName#
     </sql>
 
@@ -58,6 +61,7 @@
         <include refid="POST_BATCH_SEGMENTATION_COLS_FRAGMENT" />
 
         from POST_BATCH post_batch
+        left outer join CONSTITUENT constituent on post_batch.EXECUTED_BY_ID = constituent.CONSTITUENT_ID
         left outer join POST_BATCH_SEGMENTATION pbs on pbs.POST_BATCH_ID = post_batch.POST_BATCH_ID
 
         where post_batch.SITE_NAME = #siteName#

@@ -283,9 +283,7 @@ Ext.onReady(function() {
         listeners: {
             rowdblclick: function(grid, row, evt) {
                 var rec = grid.getSelectionModel().getSelected();
-                batchID = rec.get('id');
-//                showStep1Tab();
-                batchWin.show(batchWin);
+                showBatchWin(rec.get('id'));
             }
         },
         tbar: [
@@ -293,9 +291,7 @@ Ext.onReady(function() {
             {
                 text: msgs.addNew, tooltip: msgs.addNewBatch, iconCls:'add', id: 'addButton', ref: '../addButton',
                 handler: function() {
-                    batchID = null;
-//                    showStep1Tab();
-                    batchWin.show(batchWin);
+                    showBatchWin(null);
                 }
             }
         ],
@@ -333,6 +329,18 @@ Ext.onReady(function() {
             }
         }
     });
+
+    function showBatchWin(thisBatchId) {
+        batchID = thisBatchId;
+        if (batchWin.rendered) {
+            // If batchWin has already been rendered, make sure step1 is the first one shown
+            var panel = batchWin.groupTabPanel;
+            panel.setActiveGroup(0);
+            var firstItem = panel.items.items[0];
+            firstItem.setActiveTab(firstItem.items.items[0]);
+        }
+        batchWin.show(batchWin);
+    }
 
     // custom toolbar for batch window to invoke initFocus - this effectively overrides what the 'refresh' button action is on the toolbar
     OrangeLeap.BatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
@@ -550,13 +558,6 @@ Ext.onReady(function() {
         }
     }
 
-    function showStep1Tab() {
-        var panel = batchWin.groupTabPanel;
-        panel.setActiveGroup(1);
-        var firstItem = panel.items.items[0];
-        firstItem.setActiveTab(firstItem.items.items[0]);
-    }
-
     var step1Form = new Ext.form.FormPanel({
         baseCls: 'x-plain',
         labelAlign: 'right',
@@ -697,6 +698,7 @@ Ext.onReady(function() {
         return step2Store.find('picked', true) > -1;
     }
 
+    // TODO: on page movement, save the checked boxes to the back end
     var step2Bar = new OrangeLeap.BatchWinToolbar({
         pageSize: 50,
         stateEvents: ['change'],
@@ -784,7 +786,10 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    showStep1Tab();
+                    var panel = batchWin.groupTabPanel;
+                    panel.setActiveGroup(1);
+                    var firstItem = panel.items.items[0];
+                    firstItem.setActiveTab(firstItem.items.items[0]);
                 }
             },
             {
@@ -1562,8 +1567,27 @@ Ext.onReady(function() {
         });
     });
     batchWin.on('beforehide', function() {
+        resetBatchWin();
         $(window).unbind('keydown', hideOnEscape);
     });
+
+    function resetBatchWin() {
+        // When the batchWin is hidden, clear out all set store objects, reset CSS classes, etc, for re-use for another batch
+        flowExecutionKey = null; // on hide, clear out the flow execution key in order to start a new flow next time
+        batchWin.groupTabPanel.items.items[0].activeTab = null;
+        batchWin.groupTabPanel.strip.select('li.x-grouptabs-strip-active', true).removeClass('x-grouptabs-strip-active');
+        batchWin.groupTabPanel.activeGroup = null;
+        $('#step1Num').removeClass('complete');
+        $('#step2Num').removeClass('complete');
+        $('#step3Num').removeClass('complete');
+        $('#step4Num').removeClass('complete');
+        $('#step5Num').removeClass('complete');
+        step2Store.removeAll();
+        step3Store.removeAll();
+        step4UpdatableFieldsStore.removeAll();
+        step4Form.store.removeAll();
+        step5Store.removeAll();
+    }
 });
 
 

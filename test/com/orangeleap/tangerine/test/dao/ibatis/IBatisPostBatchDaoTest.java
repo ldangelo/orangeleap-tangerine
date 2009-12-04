@@ -134,7 +134,9 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertEquals(new Long(3L), batch.getId());
         Assert.assertEquals("Batch 3", batch.getBatchDesc());
         Assert.assertEquals("constituent", batch.getBatchType());
-        Assert.assertFalse(batch.isExecuted());
+        Assert.assertTrue(batch.isExecuted());
+        Assert.assertEquals(new Long(200L), batch.getExecutedById());
+        Assert.assertEquals("pablo@company1.com", batch.getExecutedByUser());
         Assert.assertEquals(new Long(100L), batch.getBatchCreatedById());
         Assert.assertNotNull(batch.getBatchCreatedDate());
         Assert.assertNotNull(batch.getPostBatchSegmentations());

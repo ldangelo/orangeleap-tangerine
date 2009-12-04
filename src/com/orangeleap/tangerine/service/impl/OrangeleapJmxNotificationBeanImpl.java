@@ -37,6 +37,15 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	
 	@Override
 	public synchronized void incrementStat(String sitename, String statname, Long amount) {
+		adjustStat(sitename, statname, amount, false);
+	}
+	
+	@Override
+	public void setStat(String sitename, String statname, Long amount) {
+		adjustStat(sitename, statname, amount, true);
+	}
+
+	private synchronized void adjustStat(String sitename, String statname, Long amount, boolean set) {
 		Map<String, Long> map = counts.get(sitename);
 		if (map == null) {
 			map = Collections.synchronizedMap(new TreeMap<String, Long>());
@@ -44,10 +53,13 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 		}
 		Long count = map.get(statname);
 		if (count == null) count = new Long(0);
-		map.put(statname, count + amount);
-		if (!TOTAL.equals(sitename)) incrementStat(TOTAL, statname, amount);
+		if (set) {
+			map.put(statname, amount); 
+		} else {
+			map.put(statname, count + amount);
+		}
+		if (!TOTAL.equals(sitename)) adjustStat(TOTAL, statname, amount, set);
 	}
-	
 
 	@Override
 	public synchronized void resetStats() {
@@ -82,6 +94,11 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	@Override
 	public Long getTotalAuthorizeAndCaptureCount() {
 		return getTotalCount(AUTHORIZE_AND_CAPTURE);
+	}
+	
+	@Override
+	public Long getTotalOrbitalStatus() {
+		return getTotalCount(ORBITAL_PAYMENT_STATUS);
 	}
 	
 	private Long getTotalCount(String stat) {

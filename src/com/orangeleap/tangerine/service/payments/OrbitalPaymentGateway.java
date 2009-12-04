@@ -73,13 +73,13 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 
         try {
             tp = new TransactionProcessor();
-        	orangeleapJmxNotificationBean.setStat(OrangeleapJmxNotificationBean.GLOBAL, OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.OK);
+        	orangeleapJmxNotificationBean.setStat(OrangeleapJmxNotificationBean.INIT, OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.OK);
         } catch (InitializationException iex) {
             if (logger.isErrorEnabled()) {
                 logger.error(iex.getMessage());
                 errorLogServce.addErrorMessage(iex.getMessage(), "OrbitalPaymentGateway.initialize");
             	orangeleapJmxNotificationBean.publishNotification(OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_ERROR, ""+iex.getMessage());
-            	orangeleapJmxNotificationBean.setStat(OrangeleapJmxNotificationBean.GLOBAL, OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
+            	orangeleapJmxNotificationBean.setStat(OrangeleapJmxNotificationBean.INIT, OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
             }
         }
 

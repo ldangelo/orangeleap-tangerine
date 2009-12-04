@@ -6,7 +6,7 @@ public interface OrangeleapJmxNotificationBean extends OrangeleapJmxNotification
 	public final static Long OK = 0L;
 	public final static Long ERROR = 1L;
 
-	public final static String GLOBAL = "global";
+	public final static String INIT = "init";
 	public final static String TOTAL = "total";
 	public final static String LOGINS = "logins";
 	public final static String AUTHORIZE = "Authorize";

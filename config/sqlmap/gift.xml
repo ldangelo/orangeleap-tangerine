@@ -228,7 +228,10 @@
         select
         <include refid="GIFT_COLS_FRAGMENT" />,
         <include refid="CONSTITUENT_COLS_FRAGMENT" />,
-        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
 
         <dynamic prepend=",">
             <isEqual property="sortColumn" compareValue="FIELD_VALUE">
@@ -237,19 +240,23 @@
         </dynamic>
 
         from GIFT g
-        <isNotNull property="constituentReferenceCustomField" >
-        , CUSTOM_FIELD cf
-        </isNotNull>
-        <isNull property="constituentReferenceCustomField" >
-        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
-        </isNull>
-        inner join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
+        left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
         left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+        inner join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
+        <isNotNull property="constituentReferenceCustomField" >
+        inner join CUSTOM_FIELD cf on
+          cf.ENTITY_ID = dl.DISTRO_LINE_ID
+          and cf.ENTITY_TYPE = 'distributionline' 
+          and cf.FIELD_NAME = #constituentReferenceCustomField#
+          and cf.FIELD_VALUE = #constituentId#
+        </isNotNull>
 
         <isNotNull property="entityType">
             <isNotNull property="fieldName">
                 <isNotNull property="asOfDate">
-                    left outer join CUSTOM_FIELD custFld on dl.GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                    left outer join CUSTOM_FIELD custFld on g.GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
                         and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
                         and custFld.FIELD_NAME = #fieldName#
                 </isNotNull>
@@ -261,12 +268,6 @@
         <isNull property="constituentReferenceCustomField" >
         and g.CONSTITUENT_ID = #constituentId#
         </isNull>
-        <isNotNull property="constituentReferenceCustomField" >
-        and cf.ENTITY_ID = dl.DISTRO_LINE_ID
-        and cf.ENTITY_TYPE = 'distributionline' 
-        and cf.FIELD_NAME = #constituentReferenceCustomField#
-        and cf.FIELD_VALUE = p.CONSTITUENT_ID
-        </isNotNull>
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
@@ -329,24 +330,20 @@
     <select id="SELECT_GIFT_DISTRO_LINES_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
         select count(g.GIFT_ID)
         from GIFT g
-        <isNotNull property="constituentReferenceCustomField" >
-        , CUSTOM_FIELD cf
-        </isNotNull>
-        <isNull property="constituentReferenceCustomField" >
         inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
-        </isNull>
         inner join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
+        <isNotNull property="constituentReferenceCustomField" >
+        inner join CUSTOM_FIELD cf on
+          cf.ENTITY_ID = dl.DISTRO_LINE_ID
+          and cf.ENTITY_TYPE = 'distributionline' 
+          and cf.FIELD_NAME = #constituentReferenceCustomField#
+          and cf.FIELD_VALUE = #constituentId#
+        </isNotNull>
         where p.SITE_NAME = #siteName#
         and g.GIFT_TYPE != 'GIFT_IN_KIND'
         <isNull property="constituentReferenceCustomField" >
         and g.CONSTITUENT_ID = #constituentId#
         </isNull>
-        <isNotNull property="constituentReferenceCustomField" >
-        and cf.ENTITY_ID = dl.DISTRO_LINE_ID
-        and cf.ENTITY_TYPE = 'distributionline' 
-        and cf.FIELD_NAME = #constituentReferenceCustomField#
-        and cf.FIELD_VALUE = p.CONSTITUENT_ID
-        </isNotNull>
     </select>
 
 	<select id="GIFTS_BY_CONSTITUENT_ID_ROWCOUNT" resultClass="long" parameterClass="map" >

@@ -340,7 +340,7 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         }
         Map<String, Object> params = setupSortParams(StringConstants.DISTRIBUTION_LINES, "GIFT.GIFT_RESULT",
                 sort, dir, start, limit, locale);
-        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        params.put(StringConstants.CONSTITUENT_ID, ""+constituentId);
         params.put("constituentReferenceCustomField", constituentReferenceCustomField);
 
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_GIFT_DISTRO_LINES_BY_CONSTITUENT_ID", params);
@@ -352,7 +352,7 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
             logger.trace("readCountByConstituentId: constituentId = " + constituentId);
         }
         Map<String,Object> params = setupParams();
-        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        params.put(StringConstants.CONSTITUENT_ID, ""+constituentId);
         params.put("constituentReferenceCustomField", constituentReferenceCustomField);
         return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_GIFT_DISTRO_LINES_COUNT_BY_CONSTITUENT_ID", params);
 	}

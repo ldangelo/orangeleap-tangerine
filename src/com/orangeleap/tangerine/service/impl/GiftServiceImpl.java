@@ -698,10 +698,28 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
+    public List<Gift> readGiftDistroLinesByConstituentId(Long constituentId, String constituentReferenceCustomField, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftDistroLinesByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return giftDao.readGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
     public int readCountByConstituentId(Long constituentId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readCountByConstituentId: constituentId = " + constituentId);
         }
         return giftDao.readCountByConstituentId(constituentId);
     }
+
+    @Override
+    public int readGiftDistroLinesCountByConstituentId(Long constituentId, String constituentReferenceCustomField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftDistroLinesCountByConstituentId: constituentId = " + constituentId);
+        }
+        return giftDao.readGiftDistroLinesCountByConstituentId(constituentId, constituentReferenceCustomField);
+    }
+
 }

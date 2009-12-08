@@ -65,4 +65,11 @@ public interface GiftDao {
                                                          int start, int limit, Locale locale);
 
     int readCountByConstituentId(Long constituentId);
+
+	public List<Gift> readGiftDistroLinesByConstituentId(Long constituentId, String constituentReferenceCustomField, String sort, String dir,
+			int start, int limit, Locale locale);
+
+	int readGiftDistroLinesCountByConstituentId(Long constituentId,
+			String constituentReferenceCustomField);
+
 }

@@ -329,4 +329,32 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         return (Gift)getSqlMapClientTemplate().queryForObject("SELECT_LARGEST_GIFT_BY_CONSTITUENT", params);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Gift> readGiftDistroLinesByConstituentId(Long constituentId,
+			String constituentReferenceCustomField, String sort, String dir,
+			int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsByConstituentId: constituentId = " + constituentId + " sortPropertyName = " + sort +
+                    " direction = " + dir + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.DISTRIBUTION_LINES, "GIFT.GIFT_RESULT",
+                sort, dir, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        params.put("constituentReferenceCustomField", constituentReferenceCustomField);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_GIFT_DISTRO_LINES_BY_CONSTITUENT_ID", params);
+	}
+
+	@Override
+	public int readGiftDistroLinesCountByConstituentId(Long constituentId, String constituentReferenceCustomField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        params.put("constituentReferenceCustomField", constituentReferenceCustomField);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_GIFT_DISTRO_LINES_COUNT_BY_CONSTITUENT_ID", params);
+	}
+
 }

@@ -48,6 +48,10 @@
 	    <property name="viewName" value="gift/giftList"/>
 	</bean>
 
+	<bean id="softGiftGridController" class="com.orangeleap.tangerine.controller.gift.SoftGiftGridController">
+	    <property name="viewName" value="softGift/softGiftList"/>
+	</bean>
+
 	<bean id="giftPledgeRecurringGiftLinesController" class="com.orangeleap.tangerine.controller.gift.GiftPledgeRecurringGiftLinesController"
 			 parent="abstractDistributionLineFormController">
 	    <property name="formView" value="gift/giftCombinedDistributionLines"/>
@@ -92,6 +96,7 @@
 			    <prop key="/giftCombinedDistributionLines.htm">giftPledgeRecurringGiftLinesController</prop>
 			    <prop key="/giftSearch.htm">giftSearchController</prop>
 			    <prop key="/giftList.htm">giftGridController</prop>
+			    <prop key="/softGiftList.htm">softGiftGridController</prop>
 			</props>
 		</property>
 	</bean>

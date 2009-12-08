@@ -28,6 +28,7 @@ public enum PageType {
     constituentSearchResults("/constituentSearchResults.htm"),
     gift("/gift.htm"),
     giftList("/giftList.htm"),
+    softGiftList("/softGiftList.htm"),
     giftSearch("/giftSearch.htm"),
     giftSearchResults("/giftSearchResults.htm"),
 	giftCombinedDistributionLines("/giftCombinedDistributionLines.htm"),

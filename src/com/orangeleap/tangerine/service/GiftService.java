@@ -83,4 +83,9 @@ public interface GiftService {
     int readCountByConstituentId(Long constituentId);
     
     void updateAdjustedAmount(Gift gift);
+
+	List<Gift> readGiftDistroLinesByConstituentId(Long constituentId, String constituentReferenceCustomField, SortInfo sort, Locale locale);
+
+	int readGiftDistroLinesCountByConstituentId(Long constituentId, String constituentReferenceCustomField);
+	
 }

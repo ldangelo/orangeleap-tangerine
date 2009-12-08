@@ -10,6 +10,6 @@
         </body>
     </html>
     <page:param name="scripts">
-        <tangerine:fields pageName="softGiftList"/>
+        <tangerine:fields pageName="softGiftList" gridName="softGift" />
     </page:param>
 </page:applyDecorator>

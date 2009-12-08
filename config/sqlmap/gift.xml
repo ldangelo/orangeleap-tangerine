@@ -2,7 +2,8 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="GIFT">
 
-	<resultMap id="MIN_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id">
+	<!-- Note: NO groupBy in base map -->
+	<resultMap id="MIN_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" >
 		<result property="id" column="GIFT_ID" jdbcType="BIGINT" />
 		<result property="giftStatus" column="GIFT_STATUS" jdbcType="VARCHAR" />
 		<result property="giftType" column="GIFT_TYPE" jdbcType="VARCHAR" />
@@ -49,7 +50,10 @@
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 
-	<resultMap id="GIFT_DISTRO_LINES_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" extends="GIFT_RESULT_NO_DISTRO_LINES">
+	<resultMap id="GIFT_DISTRO_LINES_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
+        <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+        <result property="phone" resultMap="PHONE.PHONE_RESULT" />
+        <result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 

@@ -79,6 +79,7 @@
                     <li><a href="emailList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.emailList"/></a></li>
                     <li><a href="relationships.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.relationships"/></a></li>
                     <li><a href="giftList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.gifts"/></a></li>
+                    <li><a href="softGiftList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.softGifts"/></a></li>
                     <li><a href="recurringGiftList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.recurringGifts"/></a></li>
                     <li><a href="pledgeList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.pledges"/></a></li>
                     <li><a href="giftInKindList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.giftsInKind"/></a></li>

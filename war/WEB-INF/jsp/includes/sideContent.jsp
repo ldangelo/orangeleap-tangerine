@@ -31,6 +31,9 @@
 							<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 			            		<a class="${((requestScope.thisUrl eq '/gift.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/giftList.htm' || requestScope.thisUrl eq '/giftPaid.htm' || requestScope.thisUrl eq '/giftPosted.htm' || requestScope.thisUrl eq '/adjustedGift.htm' || requestScope.thisUrl eq '/adjustedGiftPaid.htm' || requestScope.thisUrl eq '/adjustedGiftPosted.htm') ? 'active' : ''}" href="giftList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="gifts"/></a>
 							</c:if>
+							<c:if test="${pageAccess['/softGiftList.htm']!='DENIED'}">
+			            		<a class="${((requestScope.thisUrl eq '/softGiftList.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/softGiftList.htm') ? 'active' : ''}" href="softGiftList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="softGifts"/></a>
+							</c:if>
 							<a class="${(requestScope.thisUrl eq '/recurringGift.htm' && requestScope.form.domainObject.new) ? 'active' : ''}" href="recurringGift.htm?constituentId=${requestScope.constituent.id}"><spring:message code="newRecurringGift"/></a>
 				            <c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
 								<a class="${((requestScope.thisUrl eq '/recurringGift.htm' && !requestScope.form.domainObject.new) || requestScope.thisUrl eq '/recurringGiftList.htm' || requestScope.thisUrl eq '/recurringGiftView.htm' || (requestScope.thisUrl eq '/scheduleEdit.htm' && (param.sourceEntity eq 'recurringgift' || param.originalSourceEntity eq 'recurringgift')) ) ? 'active' : ''}" href="recurringGiftList.htm?constituentId=${requestScope.constituent.id}"><spring:message code="recurringGifts"/></a>

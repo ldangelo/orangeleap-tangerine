@@ -57,14 +57,19 @@ public class SectionFieldTag extends AbstractTag {
 	private MessageService messageService;
 	private FieldService fieldService;
 	private String pageName;
+    private String gridName;
 	private FieldHandlerHelper fieldHandlerHelper;
 	private GridHandler gridHandler;
 
 	public void setPageName(String pageName) {
 	    this.pageName = pageName;
 	}
-	
-	@Override
+
+    public void setGridName(String gridName) {
+        this.gridName = gridName;
+    }
+
+    @Override
 	protected int doStartTagInternal() throws Exception {
 		ApplicationContext appContext = WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext());
 		pageCustomizationService = (PageCustomizationService) appContext.getBean("pageCustomizationService");
@@ -155,11 +160,15 @@ public class SectionFieldTag extends AbstractTag {
                     Object entity = getTangerineForm().getDomainObject();
                     BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
                     String entityType = StringUtils.uncapitalize(entity.getClass().getSimpleName());
+
+                    if ( ! StringUtils.hasText(gridName)) {
+                        gridName = entityType;
+                    }
                     boolean isListGrid = LayoutType.GRID.equals(sectionDef.getLayoutType());
                     String searchTypeValue = (String) pageContext.getRequest().getAttribute(StringConstants.SEARCH_TYPE);
 
                     sb.append("<script type='text/javascript'>");
-                    sb.append("Ext.namespace('OrangeLeap.").append(entityType).append("');\n");
+                    sb.append("Ext.namespace('OrangeLeap.").append(gridName).append("');\n");
 
                     if (!isListGrid) {
                         sb.append("OrangeLeap.SearchStore = Ext.extend(Ext.data.JsonStore, {\n");
@@ -182,10 +191,10 @@ public class SectionFieldTag extends AbstractTag {
                     }
                     sb.append("Ext.onReady(function() {\n");
                     sb.append("Ext.QuickTips.init();\n");
-                    sb.append("OrangeLeap.").append(entityType).append(".store = new ").append(isListGrid ? "OrangeLeap.ListStore" : "OrangeLeap.SearchStore").append("({\n");
+                    sb.append("OrangeLeap.").append(gridName).append(".store = new ").append(isListGrid ? "OrangeLeap.ListStore" : "OrangeLeap.SearchStore").append("({\n");
 
                     String gridType = isListGrid ? "List" : (StringConstants.FULLTEXT.equals(searchTypeValue) ? "FullTextSearch" : "Search");
-                    sb.append("url: '").append(entityType).append(gridType).append(".json");
+                    sb.append("url: '").append(gridName).append(gridType).append(".json");
                     if (isListGrid && (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID))) {
                         sb.append("?constituentId=");
                         if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
@@ -239,17 +248,17 @@ public class SectionFieldTag extends AbstractTag {
                     String direction = getInitDirection(fields);
                     sb.append("});\n");
 
-                    sb.append("OrangeLeap.").append(entityType).append(".bar = ");
+                    sb.append("OrangeLeap.").append(gridName).append(".bar = ");
                     if (isListGrid) {
                         sb.append("new Ext.PagingToolbar({\n");
                         sb.append("pageSize: 100,\n");
                         sb.append("stateEvents: ['change'],\n");
-                        sb.append("stateId: '").append(entityType).append("PageBar',\n");
+                        sb.append("stateId: '").append(gridName).append("PageBar',\n");
                         sb.append("stateful: true,\n");
                         sb.append("getState: function() {\n");
                         sb.append("var config = {};\n");
                         sb.append("config.start = this.cursor;\n");
-                        sb.append("config.limit = this.pageSize;\n");
+//                        sb.append("config.limit = this.pageSize;\n");
                         sb.append("if (OrangeLeap.thisSiteName) {\n");
                         sb.append("config.siteName = OrangeLeap.thisSiteName;\n");
                         sb.append("}\n");
@@ -270,13 +279,13 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("if (state.start) {\n");
                         sb.append("this.cursor = state.start;\n");
                         sb.append("}\n");
-                        sb.append("if (state.limit) {\n");
-                        sb.append("this.pageSize = state.limit;\n");
-                        sb.append("}\n");
+//                        sb.append("if (state.limit) {\n");
+//                        sb.append("this.pageSize = state.limit;\n");
+//                        sb.append("}\n");
                         sb.append("}\n");
                         sb.append("}\n");
                         sb.append("},\n");
-                        sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
+                        sb.append("store: OrangeLeap.").append(gridName).append(".store,\n");
                         sb.append("displayInfo: true,\n");
                         sb.append("displayMsg: '").append(TangerineMessageAccessor.getMessage("displayMsg")).append("',\n");
                         sb.append("emptyMsg: '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("'\n");
@@ -288,8 +297,8 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("]);\n");
                     }
 
-                    sb.append("OrangeLeap.").append(entityType).append(".grid = new Ext.grid.GridPanel({\n");
-                    sb.append("stateId: '").append(entityType).append(gridType).append("',\n");
+                    sb.append("OrangeLeap.").append(gridName).append(".grid = new Ext.grid.GridPanel({\n");
+                    sb.append("stateId: '").append(gridName).append(gridType).append("',\n");
                     sb.append("stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],\n");
                     sb.append("stateful: true,\n");
                     sb.append("getState: function() {\n");
@@ -332,7 +341,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("this.getView().prevScrollState = state.ss;\n");
                     sb.append("}\n");
                     sb.append("},\n");
-                    sb.append("store: OrangeLeap.").append(entityType).append(".store,\n");
+                    sb.append("store: OrangeLeap.").append(gridName).append(".store,\n");
                     sb.append("addClass: 'pointer',\n");
                     sb.append("columns: [\n");
 
@@ -384,7 +393,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("width: 780,\n");
                     sb.append("frame: true,\n");
                     sb.append("header: true,\n");
-                    sb.append("title: '").append(TangerineMessageAccessor.getMessage(entityType)).append(" ");
+                    sb.append("title: '").append(TangerineMessageAccessor.getMessage(gridName)).append(" ");
                     sb.append(isListGrid ? TangerineMessageAccessor.getMessage("list") : TangerineMessageAccessor.getMessage("searchResults")).append("',\n");
                     sb.append("loadMask: true,\n");
                     sb.append("listeners: {\n");
@@ -421,32 +430,29 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append(";\n");
                     sb.append("}\n");
                     sb.append("},\n");
-                    sb.append("bbar: OrangeLeap.").append(entityType).append(".bar,\n");
-                    sb.append("renderTo: '").append(entityType).append("Grid'\n");
+                    sb.append("bbar: OrangeLeap.").append(gridName).append(".bar,\n");
+                    sb.append("renderTo: '").append(gridName).append("Grid'\n");
                     sb.append("});\n");
                     if (isListGrid) {
                         sb.append("var sortDir = '").append(direction).append("';\n");
                         sb.append("var sortProp = '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("';\n");
                         sb.append("var pageStart = 0;\n");
                         sb.append("var pageLimit = 100;\n");
-                        sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams) {\n");
-                        sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams.direction) {\n");
-                        sb.append("sortDir = OrangeLeap.").append(entityType).append(".grid.sortParams.direction;\n");
+                        sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams) {\n");
+                        sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams.direction) {\n");
+                        sb.append("sortDir = OrangeLeap.").append(gridName).append(".grid.sortParams.direction;\n");
                         sb.append("}\n");
-                        sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams.dataIndex) {\n");
-                        sb.append("sortProp = OrangeLeap.").append(entityType).append(".grid.sortParams.dataIndex;\n");
+                        sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams.dataIndex) {\n");
+                        sb.append("sortProp = OrangeLeap.").append(gridName).append(".grid.sortParams.dataIndex;\n");
                         sb.append("}\n");
                         sb.append("}\n");
-                        sb.append("if (OrangeLeap.").append(entityType).append(".bar.cursor) {\n");
-                        sb.append("pageStart = OrangeLeap.").append(entityType).append(".bar.cursor;\n");
+                        sb.append("if (OrangeLeap.").append(gridName).append(".bar.cursor) {\n");
+                        sb.append("pageStart = OrangeLeap.").append(gridName).append(".bar.cursor;\n");
                         sb.append("}\n");
-                        sb.append("if (OrangeLeap.").append(entityType).append(".bar.pageSize) {\n");
-                        sb.append("pageLimit = OrangeLeap.").append(entityType).append(".bar.pageSize;\n");
-                        sb.append("}\n");
-                        sb.append("OrangeLeap.").append(entityType).append(".store.sortToggle[sortProp] = sortDir;\n");
-                        sb.append("OrangeLeap.").append(entityType).append(".store.sortInfo = { field: sortProp, direction: sortDir };\n");
-                        sb.append("OrangeLeap.").append(entityType).append(".store.load({params: {start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir}, callback: function(rec, options, success) {\n");
-                        sb.append("var thisView = OrangeLeap.").append(entityType).append(".grid.getView();\n");
+                        sb.append("OrangeLeap.").append(gridName).append(".store.sortToggle[sortProp] = sortDir;\n");
+                        sb.append("OrangeLeap.").append(gridName).append(".store.sortInfo = { field: sortProp, direction: sortDir };\n");
+                        sb.append("OrangeLeap.").append(gridName).append(".store.load({params: {start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir}, callback: function(rec, options, success) {\n");
+                        sb.append("var thisView = OrangeLeap.").append(gridName).append(".grid.getView();\n");
                         sb.append("if (thisView.prevScrollState) {\n");
                         sb.append("thisView.restoreScroll(thisView.prevScrollState);\n");
                         sb.append("}\n");
@@ -458,19 +464,19 @@ public class SectionFieldTag extends AbstractTag {
 
                             sb.append("var sortDir = '").append(direction).append("';\n");
                             sb.append("var sortProp = '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("';\n");
-                            sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams) {\n");
-                            sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams.direction) {\n");
-                            sb.append("sortDir = OrangeLeap.").append(entityType).append(".grid.sortParams.direction;\n");
+                            sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams) {\n");
+                            sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams.direction) {\n");
+                            sb.append("sortDir = OrangeLeap.").append(gridName).append(".grid.sortParams.direction;\n");
                             sb.append("}\n");
-                            sb.append("if (OrangeLeap.").append(entityType).append(".grid.sortParams.dataIndex) {\n");
-                            sb.append("sortProp = OrangeLeap.").append(entityType).append(".grid.sortParams.dataIndex;\n");
+                            sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams.dataIndex) {\n");
+                            sb.append("sortProp = OrangeLeap.").append(gridName).append(".grid.sortParams.dataIndex;\n");
                             sb.append("}\n");
                             sb.append("}\n");
 
-                            sb.append("OrangeLeap.").append(entityType).append(".store.sortToggle[sortProp] = (sortDir == 'ASC' ? 'DESC' : 'ASC');\n");
-                            sb.append("OrangeLeap.").append(entityType).append(".store.sortInfo = { field: sortProp, direction: sortDir };\n");
-                            sb.append("OrangeLeap.").append(entityType).append(".store.load({");
-                            sb.append("callback: OrangeLeap.").append(entityType).append(".searchCallback, ");
+                            sb.append("OrangeLeap.").append(gridName).append(".store.sortToggle[sortProp] = (sortDir == 'ASC' ? 'DESC' : 'ASC');\n");
+                            sb.append("OrangeLeap.").append(gridName).append(".store.sortInfo = { field: sortProp, direction: sortDir };\n");
+                            sb.append("OrangeLeap.").append(gridName).append(".store.load({");
+                            sb.append("callback: OrangeLeap.").append(gridName).append(".searchCallback, ");
                             sb.append("params: {start: 0, limit: 200, autoLoad: true, sort: sortProp, dir: sortDir ");
 
                             String searchFieldValue = pageContext.getRequest().getParameter(StringConstants.SEARCH_FIELD);
@@ -488,9 +494,9 @@ public class SectionFieldTag extends AbstractTag {
                             sb.append("}});\n");
                         }
                         if ( ! StringConstants.FULLTEXT.equals(searchTypeValue)) {
-                            sb.append("$(\"#").append(entityType).append("SearchButton\").click(function() {\n");
-                            sb.append("OrangeLeap.").append(entityType).append(".store.load({");
-                            sb.append("callback: OrangeLeap.").append(entityType).append(".updateBar, ");
+                            sb.append("$(\"#").append(gridName).append("SearchButton\").click(function() {\n");
+                            sb.append("OrangeLeap.").append(gridName).append(".store.load({");
+                            sb.append("callback: OrangeLeap.").append(gridName).append(".updateBar, ");
                             sb.append("params: {start: 0, limit: 200, autoLoad: false, sort: '");
                             sb.append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("', dir: '").append(direction).append("', ");
 
@@ -504,16 +510,16 @@ public class SectionFieldTag extends AbstractTag {
                             }
                             sb.append("}});\n");
                             sb.append("});\n");
-                            sb.append("$(\"#").append(entityType).append("SearchForm\").submit(function() {\n");
+                            sb.append("$(\"#").append(gridName).append("SearchForm\").submit(function() {\n");
                             sb.append("return false;\n");
                             sb.append("});\n");
                         }
                     }
                     sb.append("});\n");
                     if (!isListGrid) {
-                        sb.append("OrangeLeap.").append(entityType).append(".searchCallback = function(r, options, success) {\n");
+                        sb.append("OrangeLeap.").append(gridName).append(".searchCallback = function(r, options, success) {\n");
                         sb.append("if (success) {\n");
-                        sb.append("var thisView = OrangeLeap.").append(entityType).append(".grid.getView();\n");
+                        sb.append("var thisView = OrangeLeap.").append(gridName).append(".grid.getView();\n");
                         sb.append("if (thisView.prevScrollState) {\n");
                         sb.append("thisView.restoreScroll(thisView.prevScrollState);\n");
                         sb.append("}\n");
@@ -544,10 +550,13 @@ public class SectionFieldTag extends AbstractTag {
                     Object entity = getTangerineForm().getDomainObject();
                     BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
                     String entityType = StringUtils.uncapitalize(entity.getClass().getSimpleName());
+                    if ( ! StringUtils.hasText(gridName)) {
+                        gridName = entityType;
+                    }
 
                     sb.append("<script type='text/javascript'>");
-                    sb.append("Ext.namespace('OrangeLeap.").append(entityType).append("');\n");
-                    sb.append("OrangeLeap.").append(entityType).append(".controller = function() {\n");
+                    sb.append("Ext.namespace('OrangeLeap.").append(gridName).append("');\n");
+                    sb.append("OrangeLeap.").append(gridName).append(".controller = function() {\n");
                     sb.append("function createGrid() {\n");
                     sb.append("var record = Ext.data.Record.create([\n");
                     
@@ -586,7 +595,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("var store = new Ext.ux.maximgb.tg.AdjacencyListStore({\n");
                     sb.append("remoteSort: true,\n");
                     sb.append("sortInfo: { field: 'a0', direction: '").append(getInitDirection(fields)).append("' },\n");
-                    sb.append("url: '").append(entityType).append("List.json");
+                    sb.append("url: '").append(gridName).append("List.json");
                     if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
                         sb.append("?constituentId=");
                         if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
@@ -605,7 +614,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("}, record)\n");
                     sb.append("});\n");
                     sb.append("var grid = new Ext.ux.maximgb.tg.GridPanel({\n");
-                    sb.append("stateId: '").append(entityType).append("Grid',\n");
+                    sb.append("stateId: '").append(gridName).append("Grid',\n");
                     sb.append("stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],\n");
                     sb.append("stateful: true,\n");
                     sb.append("getState: function() {\n");
@@ -697,12 +706,12 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("store: store,\n");
                     sb.append("pageSize: 100,\n");
                     sb.append("stateEvents: ['change'],\n");
-                    sb.append("stateId: '").append(entityType).append("PageBar',\n");
+                    sb.append("stateId: '").append(gridName).append("PageBar',\n");
                     sb.append("stateful: true,\n");
                     sb.append("getState: function() {\n");
                     sb.append("var config = {};\n");
                     sb.append("config.start = this.cursor;\n");
-                    sb.append("config.limit = this.pageSize;\n");
+//                    sb.append("config.limit = this.pageSize;\n");
                     sb.append("var queryParams = OrangeLeap.getQueryParams();\n");
                     sb.append("if (queryParams) {\n");
                     sb.append("var thisConstituentId = queryParams['constituentId'];\n");
@@ -720,9 +729,9 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("if (state.start) {\n");
                     sb.append("this.cursor = state.start;\n");
                     sb.append("}\n");
-                    sb.append("if (state.limit) {\n");
-                    sb.append("this.pageSize = state.limit;\n");
-                    sb.append("}\n");
+//                    sb.append("if (state.limit) {\n");
+//                    sb.append("this.pageSize = state.limit;\n");
+//                    sb.append("}\n");
                     sb.append("}\n");
                     sb.append("}\n");
                     sb.append("},\n");
@@ -736,7 +745,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("width: 760,\n");
                     sb.append("frame: true,\n");
                     sb.append("header: true,\n");
-                    sb.append("title: '").append(TangerineMessageAccessor.getMessage(entityType)).append(" ").append(TangerineMessageAccessor.getMessage("list")).append("',\n");
+                    sb.append("title: '").append(TangerineMessageAccessor.getMessage(gridName)).append(" ").append(TangerineMessageAccessor.getMessage("list")).append("',\n");
                     sb.append("loadMask: true,\n");
                     sb.append("listeners: {\n");
                     sb.append("rowdblclick: function(grid, row, evt) {\n");
@@ -767,7 +776,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("}\n");
                     sb.append("}\n");
                     sb.append("},\n");
-                    sb.append("renderTo: '").append(entityType).append("Grid'\n");
+                    sb.append("renderTo: '").append(gridName).append("Grid'\n");
                     sb.append("});\n");
                     sb.append("function doCallback(rec, options, success) {\n");
                     sb.append("var thisView = grid.getView();\n");
@@ -785,7 +794,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("}();\n");
                     sb.append("Ext.onReady(function() {\n");
                     sb.append("Ext.QuickTips.init();\n");
-                    sb.append("OrangeLeap.").append(entityType).append(".controller.init();\n");
+                    sb.append("OrangeLeap.").append(gridName).append(".controller.init();\n");
                     sb.append("});\n");
                     sb.append("</script>");
                 }

@@ -18,6 +18,13 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+
+        <attribute>
+           <name>gridName</name>
+           <description>Use this to alias an entity (for example, 'softGift' for 'gift') </description>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+       </attribute>
     </tag>
 
 </taglib>

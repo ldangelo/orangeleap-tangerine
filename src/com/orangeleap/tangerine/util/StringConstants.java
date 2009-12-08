@@ -188,6 +188,7 @@ public final class StringConstants {
 
     public static final String CONSTITUENT_SEGMENTATION = "Constituent Segmentation";
     public static final String GIFT_SEGMENTATION = "Gift Segmentation";
+    public static final String ADJUSTED_GIFT_SEGMENTATION = "Adjusted Gift Segmentation";
     public static final String GIFT_DISTRIBUTION_SEGMENTATION = "Gift Distribution Segmentation";
 
     public static final String META_DATA = "metaData";

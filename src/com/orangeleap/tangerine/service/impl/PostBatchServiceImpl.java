@@ -217,6 +217,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         if (StringConstants.GIFT.equals(batchType)) {
             resolvedType = StringConstants.GIFT_SEGMENTATION;
         }
+        else if (StringConstants.ADJUSTED_GIFT.equals(batchType)) {
+            resolvedType = StringConstants.ADJUSTED_GIFT_SEGMENTATION;
+        }
         if (resolvedType != null) {
             req.setType(resolvedType);
             req.setSortField(sortField);

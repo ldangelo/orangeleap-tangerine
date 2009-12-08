@@ -77,7 +77,7 @@ public class BatchListController extends TangerineJsonListController {
             map.put("executed", batch.isExecuted());
             map.put("executedDate", batch.getExecutedDate());
             map.put("createDate", batch.getCreateDate());
-            map.put("loginId", batch.getExecutedByUser());
+            map.put("executedByUser", batch.getExecutedByUser());
             returnList.add(map);
     	}
     	return returnList;

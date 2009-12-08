@@ -71,6 +71,7 @@ OrangeLeap.msgBundle = {
     step3Tip: 'Step 3',
     step4Tip: 'Step 4',
     step5Tip: 'Step 5',
+    valueRequired: 'A value is required',
     errorStep1: 'Could not load Step 1 data.  Please try again or contact your administrator if this issue continues.',
     errorStep2: 'Could not load Step 2 data.  Please try again or contact your administrator if this issue continues.',
     errorStep3: 'Could not load Step 3 data.  Please try again or contact your administrator if this issue continues.',
@@ -107,7 +108,7 @@ Ext.onReady(function() {
             {name: 'executed', mapping: 'executed', type: 'boolean'},
             {name: 'executedDate', mapping: 'executedDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'createDate', mapping: 'createDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-            {name: 'loginId', mapping: 'loginId', type: 'string'}
+            {name: 'executedByUser', mapping: 'executedByUser', type: 'string'}
         ]
     });
     store.on('load', function(store, recs, options) {
@@ -116,12 +117,12 @@ Ext.onReady(function() {
             grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), true);
             grid.colModel.setHidden(grid.colModel.getIndexById('actions'), true);
             grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), false);
-            grid.colModel.setHidden(grid.colModel.getIndexById('loginId'), false);
+            grid.colModel.setHidden(grid.colModel.getIndexById('executedByUser'), false);
         }
         else {
-           // for not executed batches, hide executeDt & loginId column
+           // for not executed batches, hide executeDt & executedByUser column
             grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), true);
-            grid.colModel.setHidden(grid.colModel.getIndexById('loginId'), true);
+            grid.colModel.setHidden(grid.colModel.getIndexById('executedByUser'), true);
             grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), false);
             grid.colModel.setHidden(grid.colModel.getIndexById('actions'), false);
         }
@@ -270,7 +271,7 @@ Ext.onReady(function() {
                     return '<span ext:qtitle="' + msgs.creationDate + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                 }
             },
-            { header: msgs.userId, dataIndex: 'loginId', sortable: true, id: 'loginId',
+            { header: msgs.userId, dataIndex: 'executedByUser', sortable: true, id: 'executedByUser',
                 renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                     return '<span ext:qtitle="' + msgs.userId + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                 }
@@ -742,7 +743,7 @@ Ext.onReady(function() {
                         'value',
                         'desc'
                     ],
-                    data: [['gift', msgs.gift] ]//, ['adjustedGift', msgs.adjustedGift]] TODO: put back adjustedGift when adjustedGift segmentations ready
+                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]] //TODO: put back adjustedGift when adjustedGift segmentations ready
                 }),
                 displayField: 'desc',
                 valueField: 'value',
@@ -762,6 +763,10 @@ Ext.onReady(function() {
                             step1Form.nextButton.disable();
                         }
                         else {
+                            // If the new batch type is different from the old batch type, they have to repeat steps 2-5 again
+                            if (newVal != oldVal) {
+                                resetSteps2Thru5();
+                            }
                             step1Form.nextButton.enable();
                         }
                     },
@@ -1470,16 +1475,12 @@ Ext.onReady(function() {
         getState: function() {
             var config = {};
             config.start = this.cursor;
-//            config.limit = this.pageSize;
             return config;
         },
         applyState: function(state, config) {
             if (state.start) {
                 this.cursor = state.start;
             }
-//            if (state.limit) {
-//                this.pageSize = state.limit;
-//            }
         },
         store: step5Store,
         displayInfo: true,
@@ -1693,12 +1694,17 @@ Ext.onReady(function() {
         batchWin.groupTabPanel.strip.select('li.x-grouptabs-strip-active', true).removeClass('x-grouptabs-strip-active');
         batchWin.groupTabPanel.activeGroup = null;
         $('#step1Num').removeClass('complete');
+        Ext.getCmp('batchDesc').setRawValue(''); // reset the batchDesc to empty string; use 'setRawValue()' to bypass form validation
+        Ext.getCmp('batchType').setRawValue('gift'); // reset the batchDesc to 'gift'; use 'setRawValue()' to bypass form validation
+        resetSteps2Thru5();
+    }
+
+    function resetSteps2Thru5() {
+        pickedSegmentationsCount = 0;
         $('#step2Num').removeClass('complete');
         $('#step3Num').removeClass('complete');
         $('#step4Num').removeClass('complete');
         $('#step5Num').removeClass('complete');
-        Ext.getCmp('batchDesc').setRawValue(''); // reset the batchDesc to empty string; use 'setRawValue()' to bypass form validation
-        Ext.getCmp('batchType').setRawValue('gift'); // reset the batchDesc to 'gift'; use 'setRawValue()' to bypass form validation
         step2Store.removeAll();
         step3Store.removeAll();
         step4UpdatableFieldsStore.removeAll();

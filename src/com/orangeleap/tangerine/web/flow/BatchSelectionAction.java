@@ -235,6 +235,7 @@ public class BatchSelectionAction {
                 StringUtils.hasText(batchType) && ! batchType.equals(batch.getBatchType())) {
             batch.clearPostBatchEntries();
             batch.clearUpdateFields();
+            pickedSegmentationIds.clear();
         }
         batch.setBatchType(batchType);
 

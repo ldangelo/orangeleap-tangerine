@@ -92,25 +92,6 @@ Ext.onReady(function() {
             buttons: Ext.MessageBox.OK,
             msg: msgs.errorAjax });
     });
-    
-//    var batchProxy = new Ext.data.HttpProxy({
-//        api: {
-//            read: {url: 'batchList.json', method: 'POST'},
-//            load: {url: 'batchList.json', method: 'POST'},
-//            destroy: {url: 'deleteBatch.json', method: 'POST'}
-//        },
-//        listeners: {
-//            'exception': function() {
-//                Ext.get('batchList').unmask();
-//                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
-//                    buttons: Ext.MessageBox.OK,
-//                    msg: msgs.errorAjax});
-//            },
-//            'write': function() {
-//                Ext.get('batchList').unmask();
-//            }
-//        }
-//    });
 
     var store = new OrangeLeap.ListStore({
         totalProperty: 'totalRows',
@@ -171,15 +152,11 @@ Ext.onReady(function() {
         getState: function() {
             var config = {};
             config.start = this.cursor;
-            config.limit = this.pageSize;
             return config;
         },
         applyState: function(state, config) {
             if (state.start) {
                 this.cursor = state.start;
-            }
-            if (state.limit) {
-                this.pageSize = state.limit;
             }
         },
         store: store,
@@ -478,7 +455,7 @@ Ext.onReady(function() {
     });
 
     var flowExecutionKey = null;
-    var batchID = null; // TODO: fill in with real batchId (if any)
+    var batchID = null;
 
     /* Following is for the edit/add batch modal */
     function elementFocus(fld) {
@@ -606,6 +583,28 @@ Ext.onReady(function() {
         }
     }
 
+    var step2PageSize = 20;
+
+    function findPickedSegmentations() {
+         // this will find the picked and not picked segmentations on this page only
+        var pickedIds = [];
+        var notPickedIds = [];
+        if (step2Store.data && step2Store.data.items) {
+            var items = step2Store.data.items;
+            var len = items.length;
+            for (var x = 0; x < len; x++) {
+                var thisItem = items[x];
+                if (thisItem.get('picked')) {
+                    pickedIds[pickedIds.length] = thisItem.id;
+                }
+                else {
+                    notPickedIds[notPickedIds.length] = thisItem.id;
+                }
+            }
+        }
+        return { 'pickedIds': pickedIds, 'notPickedIds': notPickedIds };
+    }
+
     function initFocus(groupTabPanel, thisGrp, startNum) {
         if ( ! startNum) {
             startNum = 0;
@@ -639,29 +638,21 @@ Ext.onReady(function() {
             });
         }
         else if (thisGrp.mainItem.id == 'step2Grp') {
-            // Submit step 1's data to step 2
-            step2Store.load({ params: { 'batchType': getBatchTypeValue(),
+            // Submit step 1's data to step 2 - submit saved IDs to back end
+            var theseSegs = findPickedSegmentations();
+            step2Store.load({ params: { 'batchType': getBatchTypeValue(), 'pickedIds': theseSegs.pickedIds.toString(),
+                'notPickedIds': theseSegs.notPickedIds.toString(),
                 'batchDesc': Ext.getCmp('batchDesc').getValue(),
-                'start': startNum, 'limit': 50, '_eventId_step2': 'step2',
+                'start': startNum, 'limit': step2PageSize, '_eventId_step2': 'step2',
                 'execution': getFlowExecutionKey(), 'sort': 'lastDt', 'dir': 'DESC' }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
             $('#step1Num').addClass('complete');
         }
         else if (thisGrp.mainItem.id == 'step3Grp') {
-            var selIds = [];
-            if (step2Store.data && step2Store.data.items) {
-                var items = step2Store.data.items;
-                var len = items.length;
-                for (var x = 0; x < len; x++) {
-                    var thisItem = items[x];
-                    if (thisItem.get('picked')) {
-                        selIds[selIds.length] = thisItem.id;  // TODO: how to get IDs over a few pages
-                    }
-                }
-            }
             // Submit step 2's data to step 3
-            step3Store.load({ params: { 'ids': selIds.toString(), '_eventId_step3': 'step3',
-                'execution': getFlowExecutionKey(), start: startNum, limit: 50 }});
+            var theseSegs = findPickedSegmentations();
+            step3Store.load({ params: { 'pickedIds': theseSegs.pickedIds.toString(), 'notPickedIds': theseSegs.notPickedIds.toString(),
+                '_eventId_step3': 'step3', 'execution': getFlowExecutionKey(), start: startNum, limit: 50 }});
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
             $('#step2Num').addClass('complete');
         }
@@ -787,7 +778,8 @@ Ext.onReady(function() {
     function getFlowExecutionKey() {
         return flowExecutionKey;
     }
-    
+
+    var pickedSegmentationsCount = 0;
     var step2Store = new OrangeLeap.ListStore({
         url: 'doBatch.htm',
         totalProperty: 'totalRows',
@@ -811,7 +803,7 @@ Ext.onReady(function() {
                 var len = records.length;
                 for (var x = 0; x < len; x++) {
                     if (records[x].get('picked') === true) {
-                        step2Form.getSelectionModel().selectRow(x, true);
+                        step2Form.getView().onRowSelect(x);
                     }
                 }
                 if (hasPickedRows()) {
@@ -829,30 +821,26 @@ Ext.onReady(function() {
     });
     step2Store.proxy.on('load', function(proxy, txn, options) {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+        pickedSegmentationsCount = txn.reader.jsonData.pickedSegmentationsCount;
     });
 
     function hasPickedRows() {
-        return step2Store.find('picked', true) > -1;
+        return pickedSegmentationsCount > 0;
     }
 
-    // TODO: on page movement, save the checked boxes to the back end
     var step2Bar = new OrangeLeap.BatchWinToolbar({
-        pageSize: 50,
+        pageSize: step2PageSize,
         stateEvents: ['change'],
         stateId: 'step2Bar',
         stateful: true,
         getState: function() {
             var config = {};
             config.start = this.cursor;
-            config.limit = this.pageSize;
             return config;
         },
         applyState: function(state, config) {
             if (state.start) {
                 this.cursor = state.start;
-            }
-            if (state.limit) {
-                this.pageSize = state.limit;
             }
         },
         store: step2Store,
@@ -870,11 +858,13 @@ Ext.onReady(function() {
         if (htmlEl) {
             var index = step2Form.getView().findRowIndex(htmlEl);
             if (record.get('picked')) {
-                step2Form.getSelectionModel().selectRow(index, true);
+                pickedSegmentationsCount++;
+                step2Form.getView().onRowSelect(index);
                 step2Form.nextButton.enable();
             }
             else {
-                step2Form.getSelectionModel().deselectRow(index);
+                pickedSegmentationsCount--;
+                step2Form.getView().onRowDeselect(index);
                 if ( ! hasPickedRows()) {
                     step2Form.nextButton.disable();
                 }
@@ -882,17 +872,11 @@ Ext.onReady(function() {
         }
     });
 
-    var step2RowSelModel = new Ext.grid.RowSelectionModel({singleSelect: false});
-
-    step2RowSelModel.on({
-        'rowselect': function(selModel, rowIndex, record) {
-            record.set('picked', true);
-            step2Form.nextButton.enable();
-        },
-        'rowdeselect': function(selModel, rowIndex, record) {
-            record.set('picked', false);
-            if ( ! hasPickedRows()) {
-                step2Form.nextButton.disable();
+    var step2RowSelModel = new Ext.grid.RowSelectionModel({
+        singleSelect: false,
+        listeners: {
+            'beforerowselect': function() {
+                return false; // disallow individual row selects; users must use the checkbox
             }
         }
     });
@@ -911,7 +895,7 @@ Ext.onReady(function() {
         border: false,
         selModel: step2RowSelModel,
         viewConfig: {
-            forceFit: true,
+//            forceFit: true,
             emptyText: msgs.noSegmentationsFound
         },
         plugins: [ checkColumn ],
@@ -1117,15 +1101,11 @@ Ext.onReady(function() {
         getState: function() {
             var config = {};
             config.start = this.cursor;
-            config.limit = this.pageSize;
             return config;
         },
         applyState: function(state, config) {
             if (state.start) {
                 this.cursor = state.start;
-            }
-            if (state.limit) {
-                this.pageSize = state.limit;
             }
         },
         store: step3Store,
@@ -1490,16 +1470,16 @@ Ext.onReady(function() {
         getState: function() {
             var config = {};
             config.start = this.cursor;
-            config.limit = this.pageSize;
+//            config.limit = this.pageSize;
             return config;
         },
         applyState: function(state, config) {
             if (state.start) {
                 this.cursor = state.start;
             }
-            if (state.limit) {
-                this.pageSize = state.limit;
-            }
+//            if (state.limit) {
+//                this.pageSize = state.limit;
+//            }
         },
         store: step5Store,
         displayInfo: true,

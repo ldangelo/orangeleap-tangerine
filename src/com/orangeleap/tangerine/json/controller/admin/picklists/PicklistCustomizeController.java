@@ -51,14 +51,10 @@ public class PicklistCustomizeController extends AbstractPicklistController {
     protected final Log logger = OLLogger.getLog(getClass());
 
 	public static final String BLANK = "<blank>";
-	public static final String ITEM_TEMPLATE = "item-template-";
-	public static final String GL_ACCOUNT_CODE = "GLAccountCode";
+	public static final String ITEM_TEMPLATE = "item-template-"; // TODO: add this in the code, not make the user type it
 	public static final String PARENT_LIST = "parentList";
 	public static final String PARENT_VALUE = "parentValue";
     public static final String KEY = "key";
-    public static final String VALUE = "value";
-    public final static String ACCOUNT_STRING_1 = "AccountString1";
-    public final static String ACCOUNT_STRING_2 = "AccountString2";
 
     @Resource(name="picklistItemService")
     protected PicklistItemService picklistItemService;
@@ -87,7 +83,7 @@ public class PicklistCustomizeController extends AbstractPicklistController {
                 customFieldNameValueMap.put(ITEM_TEMPLATE + PARENT_VALUE, StringConstants.EMPTY);
             }
             if (isGLCoded(picklist)) {
-                customFieldNameValueMap.put(ITEM_TEMPLATE + GL_ACCOUNT_CODE, StringConstants.EMPTY);
+                customFieldNameValueMap.put(ITEM_TEMPLATE + StringConstants.GL_ACCOUNT_CODE, StringConstants.EMPTY);
                 customFieldNameValueMap.put(ITEM_TEMPLATE + "01-GLPART1", StringConstants.EMPTY);
                 customFieldNameValueMap.put(ITEM_TEMPLATE + "02-GLPART2", StringConstants.EMPTY);
                 customFieldNameValueMap.put(ITEM_TEMPLATE + "03-GLPART3", StringConstants.EMPTY);
@@ -114,7 +110,7 @@ public class PicklistCustomizeController extends AbstractPicklistController {
             Map<String, String> fldMap = new HashMap<String, String>();
             fldMap.put(StringConstants.ID, entry.getKey()); 
             fldMap.put(KEY, entry.getKey());
-            fldMap.put(VALUE, entry.getValue());
+            fldMap.put(StringConstants.VALUE, entry.getValue());
             returnList.add(fldMap);
         }
         map.put("rows", returnList);
@@ -195,11 +191,11 @@ public class PicklistCustomizeController extends AbstractPicklistController {
             if (isGLCoded(picklist)) {
                 String accountString = getAccountString(customFieldMap, false);
                 if (StringUtils.hasText(accountString)) {
-                    customFieldMap.put(ACCOUNT_STRING_1, accountString);
+                    customFieldMap.put(StringConstants.ACCOUNT_STRING_1, accountString);
                 }
                 accountString = getAccountString(customFieldMap, true);
                 if (StringUtils.hasText(accountString)) {
-                    customFieldMap.put(ACCOUNT_STRING_2, accountString);
+                    customFieldMap.put(StringConstants.ACCOUNT_STRING_2, accountString);
                 }
             }
             updateCustomFieldMap(customFieldMap, item);
@@ -227,9 +223,9 @@ public class PicklistCustomizeController extends AbstractPicklistController {
                 fieldName = bean.get(StringConstants.ID).toString();
             }
             String fieldValue = null;
-            if (bean.getDynaClass().getDynaProperty(VALUE) != null && bean.get(VALUE) != null &&
-                    StringUtils.hasText(bean.get(VALUE).toString())) {
-                fieldValue = bean.get(VALUE).toString();
+            if (bean.getDynaClass().getDynaProperty(StringConstants.VALUE) != null && bean.get(StringConstants.VALUE) != null &&
+                    StringUtils.hasText(bean.get(StringConstants.VALUE).toString())) {
+                fieldValue = bean.get(StringConstants.VALUE).toString();
             }
             if ( ! StringUtils.hasText(fieldValue)) {
                 fieldValue = BLANK;

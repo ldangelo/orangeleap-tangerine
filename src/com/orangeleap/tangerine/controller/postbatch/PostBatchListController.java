@@ -86,7 +86,7 @@ public class PostBatchListController extends SimpleFormController {
 //        ModelAndView mav = super.onSubmit(request, response, command, errors);
 //        if (update) {
 //        	try {
-//        		postBatchService.updateBatch(postbatch);
+//        		postBatchService.executeBatch(postbatch);
 //            	mav.addObject("errormessage", "PostBatch successfully updated.");
 //        	} catch (Exception e) {
 //            	mav.addObject("errormessage", e.getMessage());

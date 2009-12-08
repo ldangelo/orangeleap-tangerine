@@ -22,22 +22,24 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * A mapping of the segmentation IDs associated with a batch
+ * A mapping of the segmentation/gift/pledge IDs associated with a batch
  */
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class PostBatchSegmentation implements GeneratedId, Serializable {
+public class PostBatchEntry implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
     private Long postBatchId;
     private Long segmentationId;
+    private Long giftId;
+    private Long pledgeId;
     private Date createDate;
     private Date updateDate;
 
-    public PostBatchSegmentation() { }
+    public PostBatchEntry() { }
 
-    public PostBatchSegmentation(Long segmentationId) {
+    public PostBatchEntry(Long segmentationId) {
         this.segmentationId = segmentationId;
     }
 
@@ -63,6 +65,22 @@ public class PostBatchSegmentation implements GeneratedId, Serializable {
 
     public void setSegmentationId(Long segmentationId) {
         this.segmentationId = segmentationId;
+    }
+
+    public Long getGiftId() {
+        return giftId;
+    }
+
+    public void setGiftId(Long giftId) {
+        this.giftId = giftId;
+    }
+
+    public Long getPledgeId() {
+        return pledgeId;
+    }
+
+    public void setPledgeId(Long pledgeId) {
+        this.pledgeId = pledgeId;
     }
 
     public Date getCreateDate() {

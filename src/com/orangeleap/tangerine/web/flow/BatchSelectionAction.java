@@ -43,6 +43,8 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.common.TangerineListHelper;
 import com.orangeleap.tangerine.web.customization.tag.fields.SectionFieldTag;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -58,12 +60,15 @@ import org.springframework.webflow.execution.RequestContext;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Component("batchSelectionAction")
 public class BatchSelectionAction {
@@ -71,6 +76,7 @@ public class BatchSelectionAction {
     protected final Log logger = OLLogger.getLog(getClass());
     public static final String PARAM_PREFIX = "param-";
     public static final String BATCH_FIELDS = "BatchFields";
+    public static final String PICKED_SEGMENTATION_IDS = "pickedSegmentationIds";
 
     @Resource(name = "postBatchService")
     private PostBatchService postBatchService;
@@ -163,11 +169,55 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
-    public ModelMap step2FindSegmentations(final RequestContext flowRequestContext, final String batchType, final String batchDesc, 
-                                           final String sort, final String dir, final String limit, final String start) {
+    private Set<Long> syncPickedSegmentationIds(final RequestContext flowRequestContext, final PostBatch batch, final String pickedIdsStr, final String notPickedIdsStr) {
+
+        /**
+         * Because users can pick/unpick IDs across multiple grid pages in the step 2 grid, we need to keep a running tab of which segmentation
+         * IDs the users selected
+         */
+        Set<Long> pickedSegmentationIds = (Set<Long>) getFlowScopeAttribute(flowRequestContext, PICKED_SEGMENTATION_IDS);
+        if (pickedSegmentationIds == null) {
+            pickedSegmentationIds = batch.getEntrySegmentationIds(); // Initialize with all the segmentation IDs for this batch
+        }
+        Set<String> pickedIds = StringUtils.commaDelimitedListToSet(pickedIdsStr);
+        Set<String> notPickedIds = StringUtils.commaDelimitedListToSet(notPickedIdsStr);
+
+        Collection<String> commonIds = CollectionUtils.intersection(pickedIds, notPickedIds); // there should not be any IDs BOTH picked and not-picked, but check just in case
+        if (commonIds != null && ! commonIds.isEmpty()) {
+            // If there are Picked and Not Picked Ids, just assume they are picked
+            notPickedIds = new TreeSet<String>(CollectionUtils.subtract(notPickedIds, commonIds));
+        }
+
+        /* Add any new 'pickedIds' */
+        for (String thisPickedId : pickedIds) {
+            if (NumberUtils.isDigits(thisPickedId)) {
+                if ( ! pickedSegmentationIds.contains(new Long(thisPickedId))) {
+                    pickedSegmentationIds.add(new Long(thisPickedId));
+                }
+            }
+        }
+
+        Iterator<Long> pickedSegIter = pickedSegmentationIds.iterator();
+
+        /* Remove any 'not picked' segmentations */
+        if ( ! notPickedIds.isEmpty()) {
+            while (pickedSegIter.hasNext()) {
+                Long segmentationId =  pickedSegIter.next();
+                if (notPickedIds.contains(segmentationId.toString())) {
+                    pickedSegIter.remove();
+                }
+            }
+        }
+        setFlowScopeAttribute(flowRequestContext, pickedSegmentationIds, PICKED_SEGMENTATION_IDS);
+        return pickedSegmentationIds;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ModelMap step2FindSegmentations(final RequestContext flowRequestContext, final String batchType, final String pickedIds, final String notPickedIds,
+                                           final String batchDesc, final String sort, final String dir, final String limit, final String start) {
         if (logger.isTraceEnabled()) {
-            logger.trace("step2FindSegmentations: batchType = " + batchType + " batchDesc = " + batchDesc + " sort = " + sort + " dir = " + dir +
-                    " limit = " + limit + " start = " + start);
+            logger.trace("step2FindSegmentations: batchType = " + batchType + " pickedIds = " + pickedIds + " notPickedIds = " +
+                    notPickedIds + " batchDesc = " + batchDesc + " sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
         }
         final ModelMap model = new ModelMap();
         final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
@@ -175,18 +225,21 @@ public class BatchSelectionAction {
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         batch.setBatchDesc(batchDesc);
 
+        Set<Long> pickedSegmentationIds = syncPickedSegmentationIds(flowRequestContext, batch, pickedIds, notPickedIds);
+
         /**
          * Check if the batchType is different from what was previously entered during the flow - if so, reset the previously selected segmentation IDs and
          * the updated fields
          */
         if (batch.getBatchType() != null && StringUtils.hasText(batch.getBatchType()) &&
                 StringUtils.hasText(batchType) && ! batchType.equals(batch.getBatchType())) {
-            batch.clearPostBatchSegmentations();
+            batch.clearPostBatchEntries();
             batch.clearUpdateFields();
         }
         batch.setBatchType(batchType);
 
-        model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, batchType,
+        model.put("pickedSegmentationsCount", pickedSegmentationIds.size());
+        model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, pickedSegmentationIds, batchType,
                 resolveSegmentationFieldName(sortInfo.getSort()), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit()));
         model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batchType));
@@ -195,10 +248,11 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
-    public ModelMap step3FindRowsForSegmentations(final RequestContext flowRequestContext, final ExternalContext externalContext, final String ids, 
-                                                  final String sort, final String dir, final String limit, final String start) {
+    public ModelMap step3FindRowsForSegmentations(final RequestContext flowRequestContext, final ExternalContext externalContext, final String pickedIds,
+                                                  final String notPickedIds, final String sort, final String dir, final String limit, final String start) {
         if (logger.isTraceEnabled()) {
-            logger.trace("step3FindRowsForSegmentations: ids = " + ids + " sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
+            logger.trace("step3FindRowsForSegmentations: pickedIds = " + pickedIds + " notPickedIds = " + notPickedIds +
+                    " sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
         }
         final ModelMap model = new ModelMap();
 
@@ -207,8 +261,11 @@ public class BatchSelectionAction {
 
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
 
-        // TODO: what to do if the list of IDs is paginated?
-        batch.clearAddAllPostBatchSegmentations(ids);
+        /* First sync the segmentation Ids */
+        Set<Long> pickedSegmentationIds = syncPickedSegmentationIds(flowRequestContext, batch, pickedIds, notPickedIds);
+
+        /* Then clear out and add all segmentations */
+        batch.clearAddAllPostBatchEntriesForSegmentations(pickedSegmentationIds);
         if (StringConstants.GIFT.equals(batch.getBatchType())) {
             appendModelForGift(request, batch, model, sortInfo);
         }
@@ -276,7 +333,7 @@ public class BatchSelectionAction {
 
         model.put(StringConstants.META_DATA, metaDataMap);
 
-        Set<Long> reportIds = batch.getSegmentationIds();
+        Set<Long> reportIds = batch.getEntrySegmentationIds();
         model.put(StringConstants.TOTAL_ROWS, giftService.readCountGiftsBySegmentationReportIds(reportIds));
         final List<Gift> gifts = giftService.readGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
 
@@ -387,7 +444,7 @@ public class BatchSelectionAction {
 
         final ModelMap model = new ModelMap();
 
-        final Set<Long> segmentationReportIds = batch.getSegmentationIds();
+        final Set<Long> segmentationReportIds = batch.getEntrySegmentationIds();
         final List<Map<String, Object>> rowValues = new ArrayList<Map<String, Object>>();
 
         final Map<String, Object> metaDataMap = initMetaData(sortInfo.getStart(),

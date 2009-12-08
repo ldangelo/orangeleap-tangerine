@@ -20,7 +20,7 @@ package com.orangeleap.tangerine.dao.ibatis;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchSegmentation;
+import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -59,7 +59,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
     }
 
     /**
-     * Retrieves the PostBatch for the specified postBatchId, including the PostBatchSegmentations
+     * Retrieves the PostBatch for the specified postBatchId, including the PostBatchEntries
      * @param postBatchId the specified postBatchId
      * @return PostBatch object
      */
@@ -80,26 +80,26 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 		if (logger.isTraceEnabled()) {
 			logger.trace("maintainPostBatch: postBatchId = " + batch.getId());
 		}
-        /* Delete PostBatchSegmentations first if the batch is being edited */
+        /* Delete PostBatchEntries first if the batch is being edited */
         if ( ! batch.isNew()) {
-            getSqlMapClientTemplate().delete("DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID", batch);
+            getSqlMapClientTemplate().delete("DELETE_POST_BATCH_ENTRIES_BY_POST_BATCH_ID", batch);
         }
         setCustomFields(batch);
 		batch = (PostBatch) insertOrUpdate(batch, "POST_BATCH");
-        maintainPostBatchSegmentations(batch);
+        maintainPostBatchEntries(batch);
         return batch;
 	}
 
     /**
-     * Delete the existing PostBatchSegmentations if any, and insert again
-     * @param batch batch that contains the segmentations
+     * Delete the existing PostBatchEntries if any, and insert again
+     * @param batch batch that contains the entries
      */
-    private void maintainPostBatchSegmentations(PostBatch batch) {
-        if (batch.getPostBatchSegmentations() != null) {
-            for (PostBatchSegmentation segmentation : batch.getPostBatchSegmentations()) {
-                segmentation.setId(null); // a new ID will be generated during the insert
-                segmentation.setPostBatchId(batch.getId());
-                insertOrUpdate(segmentation, "POST_BATCH_SEGMENTATION");
+    private void maintainPostBatchEntries(PostBatch batch) {
+        if (batch.getPostBatchEntries() != null) {
+            for (PostBatchEntry entry : batch.getPostBatchEntries()) {
+                entry.setId(null); // a new ID will be generated during the insert
+                entry.setPostBatchId(batch.getId());
+                insertOrUpdate(entry, "POST_BATCH_ENTRY");
             }
         }
     }
@@ -133,20 +133,20 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         params.put("postBatch", batch);
         
         // First, delete the segmentations, then the batch itself
-        getSqlMapClientTemplate().delete("DELETE_POST_BATCH_SEGMENTATIONS_BY_POST_BATCH_ID", batch);
+        getSqlMapClientTemplate().delete("DELETE_POST_BATCH_ENTRIES_BY_POST_BATCH_ID", batch);
         getSqlMapClientTemplate().delete("DELETE_POST_BATCH", params);
     }
 
     /********************************** below will be removed ******************************/
     @SuppressWarnings("unchecked")
 	@Override
-    public List<PostBatchSegmentation> readPostBatchReviewSetItems(Long postBatchId) {
+    public List<PostBatchEntry> readPostBatchReviewSetItems(Long postBatchId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readPostBatchById: postBatchId = " + postBatchId);
         }
         Map<String, Object> params = setupParams();
         params.put("postBatchId", postBatchId);
-        List<PostBatchSegmentation> result = (List<PostBatchSegmentation>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS", params);
+        List<PostBatchEntry> result = (List<PostBatchEntry>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS", params);
         return result;
     }
     
@@ -178,12 +178,12 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
     }
 
     @Override
-    public PostBatchSegmentation maintainPostBatchReviewSetItem(PostBatchSegmentation postBatchSegmentation) {
+    public PostBatchEntry maintainPostBatchReviewSetItem(PostBatchEntry postBatchEntry) {
         if (logger.isTraceEnabled()) {
-            logger.trace("maintainPostBatchReviewSetItem: maintainPostBatchReviewSetItemId = " + postBatchSegmentation.getId());
+            logger.trace("maintainPostBatchReviewSetItem: maintainPostBatchReviewSetItemId = " + postBatchEntry.getId());
         }
-        PostBatchSegmentation aPostBatchSegmentation = (PostBatchSegmentation) insertOrUpdate(postBatchSegmentation, "POST_BATCH_REVIEW_SET_ITEM");
-        return aPostBatchSegmentation;
+        PostBatchEntry aPostBatchEntry = (PostBatchEntry) insertOrUpdate(postBatchEntry, "POST_BATCH_REVIEW_SET_ITEM");
+        return aPostBatchEntry;
     }
 
     public void insertIntoPostBatchFromGiftSelect(PostBatch postbatch, Map<String, Object> searchmap) {

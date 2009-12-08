@@ -46,7 +46,7 @@
 	<sqlMap resource="sqlmap/errorLog.xml"/>
 	<sqlMap resource="sqlmap/entitySearch.xml"/>
 
-    <sqlMap resource="sqlmap/postBatchSegmentation.xml"/>
+    <sqlMap resource="sqlmap/postBatchEntry.xml"/>
     <sqlMap resource="sqlmap/postBatch.xml"/>
     <sqlMap resource="sqlmap/journal.xml"/>
 

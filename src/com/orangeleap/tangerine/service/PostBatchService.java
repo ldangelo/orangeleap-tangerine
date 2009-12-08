@@ -25,6 +25,7 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public interface PostBatchService {
 
@@ -34,7 +35,7 @@ public interface PostBatchService {
 //    public PostBatch readBatch(Long batchId);
     public PostBatch maintainBatch(PostBatch postbatch);
 
-	public PostBatch updateBatch(PostBatch postbatch);
+	public PostBatch executeBatch(PostBatch postbatch);
 
 	public void deleteBatch(PostBatch postbatch);
 
@@ -48,7 +49,7 @@ public interface PostBatchService {
 
     PostBatch readBatchCreateIfNull(final Long batchId);
 
-    List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
+    List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, Set<Long> pickedSegmentationIds, String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
     
     List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
 

@@ -335,7 +335,12 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 			fieldVals = new Object[0];
 		}
 		else if (fieldValue instanceof String) {
-			fieldVals = ((String) fieldValue).split(StringConstants.CUSTOM_FIELD_SEPARATOR);
+            if ( ! StringUtils.hasText((String) fieldValue)) {
+                fieldVals = new Object[0];
+            }
+            else {
+			    fieldVals = ((String) fieldValue).split(StringConstants.CUSTOM_FIELD_SEPARATOR);
+            }
 		}
 		else {
 			fieldVals = new Object[] { fieldValue };

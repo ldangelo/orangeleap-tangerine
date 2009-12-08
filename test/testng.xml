@@ -8,9 +8,9 @@
         	<package name="com.orangeleap.tangerine.test.dao.jdbc"></package>
         	<package name="com.orangeleap.tangerine.test.service.impl"></package>
         	<package name="com.orangeleap.tangerine.test.service.payments"></package>
-        	<package name="com.orangeleap.tangerine.test.web.customization.handler"></package>
         	<package name="com.orangeleap.tangerine.test.util"></package>
         	<package name="com.orangeleap.tangerine.test.web.customization"></package>
+            <package name="com.orangeleap.tangerine.test.web.flow"></package>
             <package name="com.orangeleap.tangerine.test.integration"></package>
         </packages>
     </test>

@@ -17,9 +17,6 @@
  */
 package com.orangeleap.tangerine.domain;
 
-import org.apache.commons.lang.math.NumberUtils;
-import org.springframework.util.StringUtils;
-
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +47,7 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private Date createDate;
     private Date updateDate;
 
-    private List<PostBatchSegmentation> postBatchSegmentations = new ArrayList<PostBatchSegmentation>();
+    private List<PostBatchEntry> postBatchEntries = new ArrayList<PostBatchEntry>();
     private Map<String, String> updateFields = new TreeMap<String, String>();
     private List<String> updateErrors = new ArrayList<String>();
 
@@ -168,59 +165,43 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.updateDate = updateDate;
     }
 
-    public List<PostBatchSegmentation> getPostBatchSegmentations() {
-        return postBatchSegmentations;
+    public List<PostBatchEntry> getPostBatchEntries() {
+        return postBatchEntries;
     }
 
-    public void setPostBatchSegmentations(List<PostBatchSegmentation> postBatchSegmentations) {
-        this.postBatchSegmentations = postBatchSegmentations;
+    public void setPostBatchEntries(List<PostBatchEntry> postBatchEntries) {
+        this.postBatchEntries = postBatchEntries;
     }
 
-    public void clearPostBatchSegmentations() {
-        if (postBatchSegmentations != null) {
-            postBatchSegmentations.clear();
+    public void clearPostBatchEntries() {
+        if (postBatchEntries != null) {
+            postBatchEntries.clear();
         }
     }
 
-    public void addPostBatchSegmentation(PostBatchSegmentation postBatchSegmentation) {
-        if (postBatchSegmentations == null) {
-            postBatchSegmentations = new ArrayList<PostBatchSegmentation>();
+    public void addPostBatchEntry(PostBatchEntry postBatchEntry) {
+        if (postBatchEntries == null) {
+            postBatchEntries = new ArrayList<PostBatchEntry>();
         }
-        postBatchSegmentations.add(postBatchSegmentation);
+        postBatchEntries.add(postBatchEntry);
     }
 
     @SuppressWarnings("unchecked")
-    public void clearAddAllPostBatchSegmentations(String idsString) {
-        clearPostBatchSegmentations();
-        Set<String> segmentationIds = (Set<String>) StringUtils.commaDelimitedListToSet(idsString);
-        for (String thisSegmentationId : segmentationIds) {
-            if (NumberUtils.isDigits(thisSegmentationId)) {
-                addPostBatchSegmentation(new PostBatchSegmentation(new Long(thisSegmentationId)));
-            }
+    public void clearAddAllPostBatchEntriesForSegmentations(Set<Long> pickedSegmentationIds) {
+        clearPostBatchEntries();
+        for (Long thisSegmentationId : pickedSegmentationIds) {
+            addPostBatchEntry(new PostBatchEntry(thisSegmentationId));
         }
     }
 
-    public Set<Long> getSegmentationIds() {
+    public Set<Long> getEntrySegmentationIds() {
         Set<Long> ids = new TreeSet<Long>();
-        if (postBatchSegmentations != null) {
-            for (PostBatchSegmentation thisSeg : postBatchSegmentations) {
+        if (postBatchEntries != null) {
+            for (PostBatchEntry thisSeg : postBatchEntries) {
                 ids.add(thisSeg.getSegmentationId());
             }
         }
         return ids;
-    }
-
-    public boolean containsSegmentationId(Long segmentationId) {
-        boolean hasId = false;
-        if (segmentationId != null && postBatchSegmentations != null) {
-            for (PostBatchSegmentation thisSeg : postBatchSegmentations) {
-                if (segmentationId.equals(thisSeg.getSegmentationId())) {
-                    hasId = true;
-                    break;
-                }
-            }
-        }
-        return hasId;
     }
 
     public Map<String, String> getUpdateFields() {
@@ -244,6 +225,12 @@ public class PostBatch extends AbstractCustomizableEntity  {
         updateFields.put(key, value);
     }
 
+    public void removeUpdateField(String key) {
+        if (updateFields != null) {
+            updateFields.remove(key);
+        }
+    }
+
     public String getUpdateFieldValue(String key) {
         return this.updateFields.get(key);
     }
@@ -254,5 +241,18 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     public void setUpdateErrors(List<String> updateErrors) {
         this.updateErrors = updateErrors;                                                                                          
+    }
+
+    public void clearUpdateErrors() {
+        if (updateErrors != null) {
+            updateErrors.clear();
+        }
+    }
+
+    public void addUpdateError(String error) {
+        if (updateErrors == null) {
+            updateErrors = new ArrayList<String>();
+        }
+        updateErrors.add(error);
     }
 }

@@ -18,6 +18,14 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import com.orangeleap.tangerine.domain.Postable;
+import com.orangeleap.tangerine.type.GiftEntryType;
+import com.orangeleap.tangerine.type.GiftType;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -25,16 +33,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.xml.bind.annotation.XmlType;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.core.style.ToStringCreator;
-
-import com.orangeleap.tangerine.type.GiftEntryType;
-import com.orangeleap.tangerine.type.GiftType;
-import com.orangeleap.tangerine.util.StringConstants;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class Gift extends AbstractPaymentInfoEntity {
+public class Gift extends AbstractPaymentInfoEntity implements Postable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String STATUS_PAID = "Paid";
@@ -144,18 +144,22 @@ public class Gift extends AbstractPaymentInfoEntity {
 		this.donationDate = donationDate;
 	}
 
+    @Override
 	public boolean isPosted() {
 		return posted;
 	}
 
+    @Override
 	public void setPosted(boolean posted) {
 		this.posted = posted;
 	}
 
+    @Override
 	public Date getPostedDate() {
 		return postedDate;
 	}
 
+    @Override
 	public void setPostedDate(Date postedDate) {
 		this.postedDate = postedDate;
 	}

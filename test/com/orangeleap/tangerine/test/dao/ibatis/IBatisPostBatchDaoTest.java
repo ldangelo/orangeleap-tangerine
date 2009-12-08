@@ -2,7 +2,7 @@ package com.orangeleap.tangerine.test.dao.ibatis;
 
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchSegmentation;
+import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.util.OLLogger;
 import junit.framework.Assert;
 import org.apache.commons.logging.Log;
@@ -33,13 +33,13 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         batch.setBatchDesc("This is my gift batch");
         batch.setSiteName("company1");
 
-        PostBatchSegmentation segmentation = new PostBatchSegmentation();
-        segmentation.setSegmentationId(550L);
-        batch.addPostBatchSegmentation(segmentation);
+        PostBatchEntry entry = new PostBatchEntry();
+        entry.setSegmentationId(550L);
+        batch.addPostBatchEntry(entry);
 
-        segmentation = new PostBatchSegmentation();
-        segmentation.setSegmentationId(650L);
-        batch.addPostBatchSegmentation(segmentation);
+        entry = new PostBatchEntry();
+        entry.setSegmentationId(650L);
+        batch.addPostBatchEntry(entry);
 
         batch.addUpdateField("postedDate", "12/10/2010 00:00:00");
         batch.addUpdateField("giftStatus", "Not Paid");
@@ -64,11 +64,11 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertNull(readBatch.getPostedDate());
         Assert.assertNotNull(readBatch.getCreateDate());
         Assert.assertNotNull(readBatch.getUpdateDate());
-        Assert.assertNotNull(readBatch.getPostBatchSegmentations());
-        Assert.assertEquals(2, readBatch.getPostBatchSegmentations().size());
-        for (PostBatchSegmentation thisSeg : readBatch.getPostBatchSegmentations()) {
-            Assert.assertEquals(batch.getId(), thisSeg.getPostBatchId());
-            Assert.assertTrue(thisSeg.getSegmentationId() == 550L || thisSeg.getSegmentationId() == 650L);
+        Assert.assertNotNull(readBatch.getPostBatchEntries());
+        Assert.assertEquals(2, readBatch.getPostBatchEntries().size());
+        for (PostBatchEntry thisEntry : readBatch.getPostBatchEntries()) {
+            Assert.assertEquals(batch.getId(), thisEntry.getPostBatchId());
+            Assert.assertTrue(thisEntry.getSegmentationId() == 550L || thisEntry.getSegmentationId() == 650L);
         }
 
         Assert.assertNotNull(readBatch.getUpdateFields());
@@ -99,11 +99,11 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertEquals("company1", batch.getSiteName());
         Assert.assertNotNull(batch.getCreateDate());
         Assert.assertNotNull(batch.getUpdateDate());
-        Assert.assertNotNull(batch.getPostBatchSegmentations());
-        Assert.assertEquals(3, batch.getPostBatchSegmentations().size());
-        for (PostBatchSegmentation segmentation : batch.getPostBatchSegmentations()) {
-            Assert.assertEquals(new Long(1L), segmentation.getPostBatchId());
-            Assert.assertTrue(segmentation.getSegmentationId() == 100L || segmentation.getSegmentationId() == 200L || segmentation.getSegmentationId() == 300L);
+        Assert.assertNotNull(batch.getPostBatchEntries());
+        Assert.assertEquals(3, batch.getPostBatchEntries().size());
+        for (PostBatchEntry entry : batch.getPostBatchEntries()) {
+            Assert.assertEquals(new Long(1L), entry.getPostBatchId());
+            Assert.assertTrue(entry.getSegmentationId() == 100L || entry.getSegmentationId() == 200L || entry.getSegmentationId() == 300L);
         }
 
         batch = postBatchDao.readPostBatchById(2L);
@@ -122,11 +122,11 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertEquals("company1", batch.getSiteName());
         Assert.assertNotNull(batch.getCreateDate());
         Assert.assertNotNull(batch.getUpdateDate());
-        Assert.assertNotNull(batch.getPostBatchSegmentations());
-        Assert.assertEquals(1, batch.getPostBatchSegmentations().size());
-        for (PostBatchSegmentation segmentation : batch.getPostBatchSegmentations()) {
-            Assert.assertEquals(new Long(2L), segmentation.getPostBatchId());
-            Assert.assertTrue(segmentation.getSegmentationId() == 9000L);
+        Assert.assertNotNull(batch.getPostBatchEntries());
+        Assert.assertEquals(1, batch.getPostBatchEntries().size());
+        for (PostBatchEntry entry : batch.getPostBatchEntries()) {
+            Assert.assertEquals(new Long(2L), entry.getPostBatchId());
+            Assert.assertTrue(entry.getSegmentationId() == 9000L);
         }
 
         batch = postBatchDao.readPostBatchById(3L);
@@ -139,7 +139,7 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertEquals("pablo@company1.com", batch.getExecutedByUser());
         Assert.assertEquals(new Long(100L), batch.getBatchCreatedById());
         Assert.assertNotNull(batch.getBatchCreatedDate());
-        Assert.assertNotNull(batch.getPostBatchSegmentations());
-        Assert.assertTrue(batch.getPostBatchSegmentations().isEmpty());
+        Assert.assertNotNull(batch.getPostBatchEntries());
+        Assert.assertTrue(batch.getPostBatchEntries().isEmpty());
     }
 }

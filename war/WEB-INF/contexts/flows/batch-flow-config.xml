@@ -17,8 +17,9 @@
 
     <view-state id="batchStep2">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step2FindSegmentations(flowRequestContext, requestParameters.batchType, requestParameters.batchDesc, requestParameters.sort,
-                requestParameters.dir, requestParameters.limit, requestParameters.start)"
+            <evaluate expression="batchSelectionAction.step2FindSegmentations(flowRequestContext, requestParameters.batchType,
+                requestParameters.pickedIds, requestParameters.notPickedIds, requestParameters.batchDesc,
+                requestParameters.sort, requestParameters.dir, requestParameters.limit, requestParameters.start)"
                       result="flowScope.model"/>
         </on-entry>
         <transition on="step1" to="batchStep1"/>
@@ -29,8 +30,9 @@
 
     <view-state id="batchStep3">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext, externalContext, requestParameters.ids,
-                requestParameters.sort, requestParameters.dir, requestParameters.limit, requestParameters.start)"
+            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext, externalContext,
+                requestParameters.pickedIds, requestParameters.notPickedIds, requestParameters.sort,
+                requestParameters.dir, requestParameters.limit, requestParameters.start)"
                     result="flowScope.model"/>
         </on-entry>
         <transition on="step1" to="batchStep1"/>

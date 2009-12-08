@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="POST_BATCH_ENTRY">
+
+    <resultMap id="POST_BATCH_ENTRY_RESULT" class="com.orangeleap.tangerine.domain.PostBatchEntry">
+        <result property="id" column="POST_BATCH_ENTRY_ID" />
+        <result property="postBatchId" column="POST_BATCH_ENTRY_POST_BATCH_ID" />
+        <result property="segmentationId" column="POST_BATCH_ENTRY_SEGMENTATION_ID" />
+        <result property="giftId" column="POST_BATCH_ENTRY_GIFT_ID" />
+        <result property="pledgeId" column="POST_BATCH_ENTRY_PLEDGE_ID" />
+        <result property="createDate" column="POST_BATCH_ENTRY_CREATE_DATE" />
+        <result property="updateDate" column="POST_BATCH_ENTRY_UPDATE_DATE" />
+    </resultMap>
+
+    <sql id="POST_BATCH_ENTRY_COLS_FRAGMENT">
+        pbs.POST_BATCH_ENTRY_ID as POST_BATCH_ENTRY_ID,
+        pbs.POST_BATCH_ID as POST_BATCH_ENTRY_POST_BATCH_ID,
+        pbs.SEGMENTATION_ID as POST_BATCH_ENTRY_SEGMENTATION_ID,
+        pbs.GIFT_ID as POST_BATCH_ENTRY_GIFT_ID,
+        pbs.PLEDGE_ID as POST_BATCH_ENTRY_PLEDGE_ID,
+        pbs.CREATE_DATE as POST_BATCH_ENTRY_CREATE_DATE,
+        pbs.UPDATE_DATE as POST_BATCH_ENTRY_UPDATE_DATE
+    </sql>
+
+    <sql id="SELECT_POST_BATCH_ENTRY_FRAGMENT">
+        select
+        <include refid="POST_BATCH_ENTRY_COLS_FRAGMENT"/>
+        from POST_BATCH_ENTRY pbs
+    </sql>
+
+    <select id="SELECT_POST_BATCH_ENTRIES" resultMap="POST_BATCH_ENTRY_RESULT" parameterClass="map">
+        <include refid="SELECT_POST_BATCH_ENTRY_FRAGMENT"/>
+        where pbs.POST_BATCH_ID = #postBatchId#
+    </select>
+
+    <select id="SELECT_POST_BATCH_REVIEW_SET_SIZE" resultClass="java.lang.Long" parameterClass="map">
+        select count(*) CNT
+        from POST_BATCH_ENTRY pbs
+        where pbs.POST_BATCH_ID = #postBatchId#
+    </select>
+ 
+    <delete id="DELETE_POST_BATCH_ENTRIES_BY_POST_BATCH_ID" parameterClass="com.orangeleap.tangerine.domain.PostBatch">
+        delete from POST_BATCH_ENTRY
+        where POST_BATCH_ID = #id#
+    </delete>
+
+    <insert id="INSERT_POST_BATCH_ENTRY" parameterClass="com.orangeleap.tangerine.domain.PostBatchEntry">
+        insert into POST_BATCH_ENTRY (POST_BATCH_ID,
+        	SEGMENTATION_ID,
+            GIFT_ID,
+            PLEDGE_ID,
+        	CREATE_DATE,
+        	UPDATE_DATE)
+        values (#postBatchId#,
+        	#segmentationId#,
+            #giftId#,
+            #pledgeId#,
+        	now(),
+        	now())
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_POST_BATCH_ENTRY" parameterClass="com.orangeleap.tangerine.domain.PostBatchEntry">
+        update POST_BATCH_ENTRY
+        SET POST_BATCH_ID = #postBatchId# ,
+        	SEGMENTATION_ID = #segmentationId#,
+            GIFT_ID = #giftId#,
+            PLEDGE_ID = #pledgeId#,
+        	UPDATE_DATE = now()
+        where POST_BATCH_ENTRY_ID = #id#
+    </update>
+
+</sqlMap>
+

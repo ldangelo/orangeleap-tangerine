@@ -213,4 +213,11 @@ public final class StringConstants {
     public static final String BATCH_ID = "batchId";
     public static final String BATCH_DESC = "batchDesc";
     public static final String BATCH_TYPE = "batchType";
+
+    public static final String POSTED_DATE = "postedDate";
+    public static final String POSTED = "posted";
+
+    public static final String ACCOUNT_STRING_1 = "AccountString1";
+    public static final String ACCOUNT_STRING_2 = "AccountString2";
+    public static final String GL_ACCOUNT_CODE = "GLAccountCode";
 }

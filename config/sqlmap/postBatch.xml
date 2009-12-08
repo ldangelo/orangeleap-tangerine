@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="POST_BATCH">
 
-    <resultMap id="POST_BATCH_RESULT_NO_SEGMENTATIONS" class="com.orangeleap.tangerine.domain.PostBatch" groupBy="id">
+    <resultMap id="POST_BATCH_RESULT_NO_ENTRIES" class="com.orangeleap.tangerine.domain.PostBatch" groupBy="id">
         <result property="id" column="POST_BATCH_POST_BATCH_ID" />
         <result property="batchDesc" column="POST_BATCH_POST_BATCH_DESC" />
         <result property="batchType" column="POST_BATCH_ENTITY" />
@@ -20,8 +20,8 @@
         <result property="updateDate" column="POST_BATCH_UPDATE_DATE" />
     </resultMap>
 
-    <resultMap id="POST_BATCH_RESULT" class="com.orangeleap.tangerine.domain.PostBatch" groupBy="id" extends="POST_BATCH_RESULT_NO_SEGMENTATIONS">
-        <result property="postBatchSegmentations" resultMap="POST_BATCH_SEGMENTATION.POST_BATCH_SEGMENTATION_RESULT" />
+    <resultMap id="POST_BATCH_RESULT" class="com.orangeleap.tangerine.domain.PostBatch" groupBy="id" extends="POST_BATCH_RESULT_NO_ENTRIES">
+        <result property="postBatchEntries" resultMap="POST_BATCH_ENTRY.POST_BATCH_ENTRY_RESULT" />
     </resultMap>
     
     <sql id="POST_BATCH_COLS_FRAGMENT">
@@ -50,7 +50,7 @@
         where post_batch.SITE_NAME = #siteName#
     </sql>
 
-    <select id="SELECT_POST_BATCHES" resultMap="POST_BATCH_RESULT_NO_SEGMENTATIONS" parameterClass="map">
+    <select id="SELECT_POST_BATCHES" resultMap="POST_BATCH_RESULT_NO_ENTRIES" parameterClass="map">
         <include refid="SELECT_POST_BATCH_FRAGMENT"/>
         order by post_batch.CREATE_DATE desc;
     </select>
@@ -58,17 +58,17 @@
     <select id="SELECT_POST_BATCH_BY_ID" resultMap="POST_BATCH_RESULT" parameterClass="map">
         select
         <include refid="POST_BATCH_COLS_FRAGMENT"/>,
-        <include refid="POST_BATCH_SEGMENTATION_COLS_FRAGMENT" />
+        <include refid="POST_BATCH_ENTRY_COLS_FRAGMENT" />
 
         from POST_BATCH post_batch
         left outer join CONSTITUENT constituent on post_batch.EXECUTED_BY_ID = constituent.CONSTITUENT_ID
-        left outer join POST_BATCH_SEGMENTATION pbs on pbs.POST_BATCH_ID = post_batch.POST_BATCH_ID
+        left outer join POST_BATCH_ENTRY pbs on pbs.POST_BATCH_ID = post_batch.POST_BATCH_ID
 
         where post_batch.SITE_NAME = #siteName#
         and post_batch.POST_BATCH_ID = #id#
     </select>
 
-    <select id="SELECT_LIMITED_POST_BATCHES" resultMap="POST_BATCH_RESULT_NO_SEGMENTATIONS" parameterClass="map">
+    <select id="SELECT_LIMITED_POST_BATCHES" resultMap="POST_BATCH_RESULT_NO_ENTRIES" parameterClass="map">
         <include refid="SELECT_POST_BATCH_FRAGMENT"/>
         and post_batch.EXECUTED = #showRanBatches#
         order by

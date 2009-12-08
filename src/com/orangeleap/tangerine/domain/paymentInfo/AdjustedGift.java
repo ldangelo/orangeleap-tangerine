@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import com.orangeleap.tangerine.domain.Postable;
 import com.orangeleap.tangerine.util.StringConstants;
 
 import javax.xml.bind.annotation.XmlType;
@@ -27,9 +28,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
-public class AdjustedGift extends AbstractPaymentInfoEntity {
+public class AdjustedGift extends AbstractPaymentInfoEntity implements Postable {
 
     private BigDecimal originalAmount;
     private BigDecimal currentTotalAdjustedAmount; 
@@ -199,18 +201,22 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
         this.paymentMessage = paymentMessage;
     }
 
+    @Override
 	public boolean isPosted() {
 		return posted;
 	}
 
+    @Override
 	public void setPosted(boolean posted) {
 		this.posted = posted;
 	}
 
+    @Override
 	public Date getPostedDate() {
 		return postedDate;
 	}
 
+    @Override
 	public void setPostedDate(Date postedDate) {
 		this.postedDate = postedDate;
 	}

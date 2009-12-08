@@ -19,7 +19,7 @@
 package com.orangeleap.tangerine.dao;
 
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchSegmentation;
+import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -36,11 +36,11 @@ public interface PostBatchDao {
 
     public PostBatch maintainPostBatch(PostBatch batch);
 
-    public List<PostBatchSegmentation> readPostBatchReviewSetItems(Long postBatchId);
+    public List<PostBatchEntry> readPostBatchReviewSetItems(Long postBatchId);
 
     public PaginatedResult readPostBatchReviewSetItems(Long postBatchId, SortInfo sortInfo);
 
-    public PostBatchSegmentation maintainPostBatchReviewSetItem(PostBatchSegmentation postBatchSegmentation);
+    public PostBatchEntry maintainPostBatchReviewSetItem(PostBatchEntry postBatchEntry);
 
     public void deletePostBatch(PostBatch batch);
 

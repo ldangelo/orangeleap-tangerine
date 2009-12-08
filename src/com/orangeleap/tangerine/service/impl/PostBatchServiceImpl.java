@@ -23,7 +23,8 @@ import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Journal;
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchSegmentation;
+import com.orangeleap.tangerine.domain.PostBatchEntry;
+import com.orangeleap.tangerine.domain.Postable;
 import com.orangeleap.tangerine.domain.Segmentation;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
@@ -63,14 +64,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class PostBatchServiceImpl extends AbstractTangerineService implements PostBatchService {
 
-    public final static String DATE_FORMAT = "MM/dd/yyyy";
-
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "postBatchDAO")
@@ -90,31 +92,23 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Resource(name = "picklistItemService")
     private PicklistItemService picklistItemService;
-    
+
     @Resource(name = "pageCustomizationService")
     protected PageCustomizationService pageCustomizationService;
 
     @Resource(name = "fieldService")
     private FieldService fieldService;
 
-    @Resource(name="tangerineUserHelper")
+    @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
-
-    public final static String ACCOUNT_STRING_1 = "AccountString1";
-    public final static String ACCOUNT_STRING_2 = "AccountString2";
-    public final static String GL_ACCOUNT_CODE = "GLAccountCode";
 
     public final static String DEBIT = "debit";
     public final static String CREDIT = "credit";
     public final static String BANK = "bank";
-    public final static String GIFT = "gift";
     public final static String ADJUSTED_GIFT = "adjustedgift";
     public final static String DISTRO_LINE = "distributionline";
     public final static String DEFAULT = "_default";
-    
-    public final static String POSTED_DATE = "postedDate";
-    public final static String POSTED = "posted";
-    public final static String NONE = "none";
+
     public final static String SOURCE = "source";
     public final static String STATUS = "status";
     public final static String IDS = "ids";
@@ -137,7 +131,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             logger.trace("deleteBatch: batchId = " + batch.getId());
         }
         if (batch.isExecuted()) {
-           throw new RuntimeException("Cannot delete a batch that has already been executed.");
+            throw new RuntimeException("Cannot delete a batch that has already been executed.");
         }
         postBatchDao.deletePostBatch(batch);
     }
@@ -168,15 +162,14 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         PostBatch batch;
         if (batchId != null && batchId > 0) {
             batch = readBatch(batchId);
-        }
-        else {
+        } else {
             batch = new PostBatch();
         }
         return batch;
     }
 
     @Override
-    public List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, String batchType, String sortField,
+    public List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, Set<Long> pickedSegmentationIds, String batchType, String sortField,
                                                                    String sortDirection, int startIndex, int resultCount) {
         if (logger.isTraceEnabled()) {
             logger.trace("findSegmentationsForBatchType: batchType = " + batchType + " sortField = " + sortField +
@@ -194,7 +187,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 returnMap.put("count", segmentation.getCount());
                 returnMap.put("lastDt", segmentation.getLastRunDate() == null ? null : sdf.format(segmentation.getLastRunDate()));
                 returnMap.put("lastUser", segmentation.getLastRunByUser());
-                returnMap.put("picked", batch.containsSegmentationId(segmentation.getId()));
+                returnMap.put("picked", pickedSegmentationIds.contains(segmentation.getId()));
                 returnList.add(returnMap);
             }
         }
@@ -251,7 +244,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
 
-    /** ************** the following will be removed ****************/
+    /**
+     * ************* the following will be removed ***************
+     */
 //    @Override
 //    public Map<String, String> readAllowedGiftSelectFields() {
 //
@@ -313,7 +308,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 //
 //        return result;
 //    }
-    
+
 //    @Override
 //    public Map<String, String> readAllowedGiftUpdateFields() {
 //       Map<String, String> map = new TreeMap<String, String>();
@@ -322,7 +317,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 //       map.put(SOURCE, "Source");
 //       return map;
 //    }
-    
+
 //    private void setField(boolean isGift, AbstractPaymentInfoEntity apie, String key, String value) {
 //       if (key.equals(POSTED_DATE)) {
 //           DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -404,24 +399,23 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 //
 //        return getBatchSelectionList(postbatch);
 //    }
-    
     private void saveGift(Gift gift) throws BindException {
-    	gift.setSuppressValidation(true);
+        gift.setSuppressValidation(true);
         giftService.editGift(gift);
     }
 
     private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
-    	adjustedGift.setSuppressValidation(true);
+        adjustedGift.setSuppressValidation(true);
         adjustedGiftService.maintainAdjustedGift(adjustedGift);
     }
 
 //    // Reads previous list of matched gifts. Does not re-evaluate any criteria.
 //    @Override
 //    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
-//         List<PostBatchSegmentation> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
+//         List<PostBatchEntry> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
 //         List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
 //         boolean isGift = GIFT.equals(postbatch.getBatchType());
-//         for (PostBatchSegmentation item : list) {
+//         for (PostBatchEntry item : list) {
 //             if (isGift) {
 //                 result.add(giftService.readGiftById(item.getSegmentationId()));
 //             } else {
@@ -438,199 +432,207 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     // THis is really execute
     // Sets fields on gifts/adjusted gifts in reviewed batch list
+
     @Override
-    public PostBatch updateBatch(PostBatch postbatch) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public PostBatch executeBatch(PostBatch batch) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("executeBatch: batchId = " + batch.getId());
+        }
+        batch.clearUpdateErrors();
+        if (StringConstants.GIFT.equals(batch.getBatchType()) || StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+            return executePostableBatches(batch);
+        }
+        else {
+            return null; //TODO
+        }
+    }
 
-        postbatch.getUpdateErrors().clear();
-
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-
-        boolean post = postbatch.getUpdateFields().get(POSTED_DATE) != null;
+    public PostBatch executePostableBatches(PostBatch batch) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("executePostableBatches: batchId = " + batch.getId());
+        }
+        final DateFormat dateFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
+        final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
+        final boolean doPost = postedDateString != null;
 
         Date postedDate = null;
-        Map<String, String> bankmap = new HashMap<String, String>();
-        Map<String, String> codemap = new HashMap<String, String>();
+        final Map<String, String> bankMap = new HashMap<String, String>();
+        final Map<String, String> codeMap = new HashMap<String, String>();
 
-        if (post) {
+        if (doPost) {
             try {
-                postedDate = dateFormat.parse(postbatch.getUpdateFields().get(POSTED_DATE));
-            } catch (Exception e) {
+                postedDate = dateFormat.parse(postedDateString);
+            }
+            catch (Exception e) {
                 throw new RuntimeException("Invalid posted date.");
             }
-            createMaps(bankmap, codemap);
-        } else {
-           // Can't update these fields if not posting.
-           postbatch.getUpdateFields().remove(POSTED_DATE);
+            createMaps(bankMap, codeMap);
         }
-        
+        else {
+            // Can't update these fields if not posting.
+            batch.removeUpdateField(StringConstants.POSTED_DATE);
+        }
 
         // Get list to update
         // TODO process in single transactions and support partial batch updates.
-        List<PostBatchSegmentation> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
-        if (list.size() > 2000) throw new RuntimeException("PostBatch size limit exceeded.");   // TODO remove size limit when suporting patial updates
+        Set<Long> segmentationIds = batch.getEntrySegmentationIds();
+        int total = giftService.readCountGiftsBySegmentationReportIds(segmentationIds);
+//        final List<Gift> gifts = giftService.readGiftsBySegmentationReportIds(segmentationIds);
 
-        for (PostBatchSegmentation item: list) {
-            
+        List<PostBatchEntry> list = postBatchDao.readPostBatchReviewSetItems(batch.getId()); // TODO: grab gifts/adjusted gifts based on segmentations
+        if (list.size() > 2000) {
+            throw new RuntimeException("PostBatch size limit exceeded.");   // TODO remove size limit when supporting partial updates
+        }
+        for (PostBatchEntry entry : list) {
             try {
-
-                processUpdateItem(item, postbatch, post, codemap, bankmap);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                String msg = item.getSegmentationId() + ": " + e.getMessage();
-                logger.error(msg);
-                postbatch.getUpdateErrors().add(msg);
+                processUpdateItem(entry, batch, doPost, codeMap, bankMap);
             }
-
+            catch (Exception e) {
+                String msg = new StringBuilder(entry.getSegmentationId().toString()).append(": ").append(e.getMessage()).toString();
+                logger.error(msg, e);
+                batch.addUpdateError(msg);
+            }
         }
 
-        if (postbatch.getUpdateErrors().size() > 0) {
+        if ( ! batch.getUpdateErrors().isEmpty()) {
             // rollback entire batch for now.  otherwise we have to support reprocess partial
-            throw new PostBatchUpdateException(postbatch.getUpdateErrors());   
+            throw new PostBatchUpdateException(batch.getUpdateErrors());
         }
 
-        if (post) {
-            postbatch.setPosted(true);
-            postbatch.setPostedDate(postedDate);
-            postbatch.setPostedById(tangerineUserHelper.lookupUserId());
-        } 
-        
-        postbatch.setExecuted(true);
-        postbatch.setExecutedDate(new java.util.Date());
-        postbatch.setExecutedById(tangerineUserHelper.lookupUserId());
-        
-        
-        // Update
-        postbatch = postBatchDao.maintainPostBatch(postbatch);
-        
-        return postbatch;
-        
-    }
-    
-    private void createMaps(Map<String, String> bankmap, Map<String, String> codemap) {
+        if (doPost) {
+            batch.setPosted(true);
+            batch.setPostedDate(postedDate);
+            batch.setPostedById(tangerineUserHelper.lookupUserId());
+        }
 
+        batch.setExecuted(true);
+        batch.setExecutedDate(new java.util.Date());
+        batch.setExecutedById(tangerineUserHelper.lookupUserId());
+
+        // Update
+        batch = postBatchDao.maintainPostBatch(batch);
+        return batch;
+    }
+
+    private void createMaps(final Map<String, String> bankMap, final Map<String, String> codeMap) {
         Picklist bankCodes = picklistItemService.getPicklist("customFieldMap[bank]");
-        addItemsToMap(bankCodes, bankmap);
-        if (bankmap.isEmpty())  {
+        addItemsToMap(bankCodes, bankMap);
+        if (bankMap.isEmpty()) {
             throw new RuntimeException("Posting bank GL account codes not defined.  Go to Manage Picklist Items and set up Bank and Designation Code customizations for GL Accounts.");
         }
 
         Picklist projectCodes = picklistItemService.getPicklist("projectCode");
-        addItemsToMap(projectCodes, codemap);
-        if (codemap.isEmpty()) {
+        addItemsToMap(projectCodes, codeMap);
+        if (codeMap.isEmpty()) {
             throw new RuntimeException("No active designation GL codes defined.");
         }
     }
 
     private void addItemsToMap(Picklist picklist, Map<String, String> map) {
         for (PicklistItem item : picklist.getActivePicklistItems()) {
-            if (
-            	item.getCustomFieldValue(ACCOUNT_STRING_1) == null
-                || item.getCustomFieldValue(ACCOUNT_STRING_2) == null
-                || item.getCustomFieldValue(GL_ACCOUNT_CODE) == null
-            ) {
-            	continue;
+            if (item.getCustomFieldValue(StringConstants.ACCOUNT_STRING_1) == null ||
+                    item.getCustomFieldValue(StringConstants.ACCOUNT_STRING_2) == null ||
+                    item.getCustomFieldValue(StringConstants.GL_ACCOUNT_CODE) == null) {
+                continue;
             }
-            map.put(getKey(item.getItemName(), ACCOUNT_STRING_1), item.getCustomFieldValue(ACCOUNT_STRING_1));
-            map.put(getKey(item.getItemName(), ACCOUNT_STRING_2), item.getCustomFieldValue(ACCOUNT_STRING_2));
-            map.put(getKey(item.getItemName(), GL_ACCOUNT_CODE), item.getCustomFieldValue(GL_ACCOUNT_CODE));
+            map.put(getKey(item.getItemName(), StringConstants.ACCOUNT_STRING_1), item.getCustomFieldValue(StringConstants.ACCOUNT_STRING_1));
+            map.put(getKey(item.getItemName(), StringConstants.ACCOUNT_STRING_2), item.getCustomFieldValue(StringConstants.ACCOUNT_STRING_2));
+            map.put(getKey(item.getItemName(), StringConstants.GL_ACCOUNT_CODE), item.getCustomFieldValue(StringConstants.GL_ACCOUNT_CODE));
         }
         if ( ! picklist.getActivePicklistItems().isEmpty()) {
             PicklistItem defaultItem = picklist.getActivePicklistItems().get(0);
-            map.put(getKey("", ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(ACCOUNT_STRING_1));
-            map.put(getKey("", ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(ACCOUNT_STRING_2));
-            map.put(getKey("", GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(GL_ACCOUNT_CODE));
+            map.put(getKey(StringConstants.EMPTY, StringConstants.ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(StringConstants.ACCOUNT_STRING_1));
+            map.put(getKey(StringConstants.EMPTY, StringConstants.ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(StringConstants.ACCOUNT_STRING_2));
+            map.put(getKey(StringConstants.EMPTY, StringConstants.GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(StringConstants.GL_ACCOUNT_CODE));
             map.put(DEFAULT, defaultItem.getItemName());
         }
     }
 
-    private void processUpdateItem(PostBatchSegmentation item, PostBatch postbatch, boolean post, Map<String, String> codemap, Map<String, String> bankmap) throws Exception {
-
-        boolean isGift = GIFT.equals(postbatch.getBatchType());
-        AbstractPaymentInfoEntity apie;
+    private void processUpdateItem(PostBatchEntry entry, PostBatch batch, boolean doPost,
+                                   Map<String, String> codeMap, Map<String, String> bankMap) throws Exception {
+        boolean isGift = StringConstants.GIFT.equals(batch.getBatchType());
+        AbstractPaymentInfoEntity entity;
 
         boolean wasPreviouslyPosted;
         if (isGift) {
-            apie = giftService.readGiftById(item.getSegmentationId());
-            wasPreviouslyPosted = ((Gift)apie).isPosted();
-        } else {
-            apie = adjustedGiftService.readAdjustedGiftById(item.getSegmentationId());
-            wasPreviouslyPosted = ((AdjustedGift)apie).isPosted();
+            entity = giftService.readGiftById(entry.getSegmentationId());
+            wasPreviouslyPosted = ((Gift) entity).isPosted();
+        }
+        else {
+            entity = adjustedGiftService.readAdjustedGiftById(entry.getSegmentationId());
+            wasPreviouslyPosted = ((AdjustedGift) entity).isPosted();
         }
 
         // Record previous values for audit trail
-        siteService.populateDefaultEntityEditorMaps(apie);
+        siteService.populateDefaultEntityEditorMaps(entity);
 
-        if (post) {
-
+        if (doPost) {
             // Don't allow double posting.
             if (wasPreviouslyPosted) {
-                String msg = "Item "+apie.getId()+" previously posted - cannot re-post.";
+                String msg = "Item " + entity.getId() + " previously posted - cannot re-doPost.";
                 throw new RuntimeException(msg);
             }
-
-            if (isGift) {
-                ((Gift)apie).setPosted(true);
-            } else {
-                ((AdjustedGift)apie).setPosted(true);
-            }
-
+            ((Postable) entity).setPosted(true);
         }
 
         // Set update values.  
-        for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-//        	setField(isGift, apie, me.getKey(), me.getValue());
-        }
-        
-        // Update record.
-        if (isGift) {
-            Gift gift = (Gift)apie;
-            saveGift(gift);
-            if (post) createJournalEntries(gift, null, postbatch, codemap, bankmap);
-        } else {
-            AdjustedGift ag = (AdjustedGift)apie;
-            saveAdjustedGift(ag);
-            Gift gift = giftService.readGiftById(ag.getOriginalGiftId());
-            if (post) createJournalEntries(gift, ag, postbatch, codemap, bankmap);
+        for (Map.Entry<String, String> me : batch.getUpdateFields().entrySet()) {
+            // TODO: use a BeanWrapper here instead
+//        	setField(isGift, entity, me.getKey(), me.getValue());
         }
 
+        // Update record.
+        if (isGift) {
+            Gift gift = (Gift) entity;
+            saveGift(gift);
+            if (doPost) {
+                createJournalEntries(gift, null, batch, codeMap, bankMap);
+            }
+        }
+        else {
+            AdjustedGift adjustedGift = (AdjustedGift) entity;
+            saveAdjustedGift(adjustedGift);
+            Gift gift = giftService.readGiftById(adjustedGift.getOriginalGiftId());
+            if (doPost) {
+                createJournalEntries(gift, adjustedGift, batch, codeMap, bankMap);
+            }
+        }
     }
 
     public final static class PostBatchUpdateException extends RuntimeException {
-
-		private static final long serialVersionUID = 1L;
-		private List<String> errors;
+        private static final long serialVersionUID = 1L;
+        private List<String> errors;
 
         public PostBatchUpdateException(List<String> errors) {
             super("Errors exist in batch: " + errors.get(0));
             this.errors = errors;
         }
-        
+
         public List<String> getErrors() {
             return errors;
         }
-
     }
 
-    private void createJournalEntries(Gift gift, AdjustedGift ag, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
-        createJournalEntry(gift, ag, null, postbatch, codemap, bankmap);
-        List<DistributionLine> dls = ag == null ? gift.getDistributionLines() : ag.getDistributionLines();
-        for (DistributionLine dl : dls) {
-            createJournalEntry(gift, ag, dl, postbatch, codemap, bankmap);
+    private void createJournalEntries(Gift gift, AdjustedGift adjustedGift, PostBatch batch,
+                                      Map<String, String> codeMap, Map<String, String> bankMap) {
+        createJournalEntry(gift, adjustedGift, null, batch, codeMap, bankMap);
+        List<DistributionLine> distributionLines = adjustedGift == null ? gift.getDistributionLines() : adjustedGift.getDistributionLines();
+        for (DistributionLine line : distributionLines) {
+            createJournalEntry(gift, adjustedGift, line, batch, codeMap, bankMap);
         }
     }
 
-
-    private void createJournalEntry(Gift gift, AdjustedGift ag, DistributionLine dl, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
-
+    private void createJournalEntry(Gift gift, AdjustedGift adjustedGift, DistributionLine distributionLine,
+                                    PostBatch batch, Map<String, String> codeMap, Map<String, String> bankMap) {
         boolean isDebit = gift.getAmount().compareTo(new BigDecimal("0")) >= 0;
-        boolean isHeader = dl == null;
-        boolean isGift = ag == null;
+        boolean isHeader = distributionLine == null;
+        boolean isGift = adjustedGift == null;
 
         Journal journal = new Journal();
         journal.setSiteName(getSiteName());
         journal.setPostedDate(new java.util.Date());
-        journal.setPostBatchId(postbatch.getId());
+        journal.setPostBatchId(batch.getId());
 
         journal.setDonationDate(gift.getDonationDate());
         journal.setPaymentMethod(gift.getPaymentType());
@@ -639,100 +641,103 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
 
         if (isHeader) {
-            
             // Gift or Adjusted Gift
-
             if (isGift) {
                 journal.setJeType(isDebit ? DEBIT : CREDIT);
-
-                journal.setEntity(GIFT);
+                journal.setEntity(StringConstants.GIFT);
                 journal.setEntityId(gift.getId());
                 journal.setAmount(gift.getAmount());
-                journal.setCode(getBank(gift, bankmap));
-                journal.setDescription("Gift from " + gift.getConstituent().getRecognitionName());   
-            } else {
-                journal.setJeType(isDebit ? CREDIT : DEBIT);
-
-                journal.setEntity(ADJUSTED_GIFT);
-                journal.setEntityId(ag.getId());
-                journal.setOrigEntity(GIFT);
-                journal.setOrigEntityId(gift.getId());
-                journal.setAmount(ag.getAdjustedAmount());
-                journal.setCode(getBank(ag, bankmap));
-                journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
-                journal.setDescription("Adjustment associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
+                journal.setCode(getBank(gift, bankMap));
+                journal.setDescription("Gift from " + gift.getConstituent().getRecognitionName()); // TODO: message bundle?
             }
-
-            updateJournalCodes(journal, bankmap, journal.getCode(), postbatch);
-
-        } else {
-
+            else {
+                journal.setJeType(isDebit ? CREDIT : DEBIT);
+                journal.setEntity(ADJUSTED_GIFT);
+                journal.setEntityId(adjustedGift.getId());
+                journal.setOrigEntity(StringConstants.GIFT);
+                journal.setOrigEntityId(gift.getId());
+                journal.setAmount(adjustedGift.getAdjustedAmount());
+                journal.setCode(getBank(adjustedGift, bankMap));
+                journal.setAdjustmentDate(adjustedGift.getAdjustedTransactionDate());
+                journal.setDescription("Adjustment associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName()); // TODO: message bundle?
+            }
+            updateJournalCodes(journal, bankMap, journal.getCode(), batch);
+        }
+        else {
             // Distribution lines
-
             journal.setEntity(DISTRO_LINE);
-            journal.setEntityId(dl.getId());
+            journal.setEntityId(distributionLine.getId());
 
-            journal.setMasterEntity(isGift ? GIFT : ADJUSTED_GIFT);
-            journal.setMasterEntityId(isGift ? gift.getId() : ag.getId());
+            journal.setMasterEntity(isGift ? StringConstants.GIFT : ADJUSTED_GIFT);
+            journal.setMasterEntityId(isGift ? gift.getId() : adjustedGift.getId());
 
-            journal.setAmount(dl.getAmount());
-            journal.setCode(getProjectCode(dl, codemap));
+            journal.setAmount(distributionLine.getAmount());
+            journal.setCode(getProjectCode(distributionLine, codeMap));
 
             if (isGift) {
                 journal.setJeType(isDebit ? CREDIT : DEBIT);
-
                 journal.setDescription("Associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
-            } else {
+            }
+            else {
                 journal.setJeType(isDebit ? DEBIT : CREDIT);
-
-                journal.setDescription("Adjusted gift ID " + ag.getId() + ", associated with original gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
-                journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
-                journal.setOrigEntity(GIFT);
+                journal.setDescription("Adjusted gift ID " + adjustedGift.getId() + ", associated with original gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
+                journal.setAdjustmentDate(adjustedGift.getAdjustedTransactionDate());
+                journal.setOrigEntity(StringConstants.GIFT);
                 journal.setOrigEntityId(gift.getId());
             }
-            
-            updateJournalCodes(journal, codemap, journal.getCode(), postbatch);
 
+            updateJournalCodes(journal, codeMap, journal.getCode(), batch);
         }
-
         journalDao.maintainJournal(journal);
     }
 
-    private String getBank(AbstractCustomizableEntity e, Map<String, String> bankmap) {
-        String defaultbank = bankmap.get(DEFAULT);
-        String bank = e.getCustomFieldValue(BANK);
-        if (bank == null) bank = defaultbank;
+    private String getBank(AbstractCustomizableEntity entity, Map<String, String> bankMap) {
+        String defaultbank = bankMap.get(DEFAULT);
+        String bank = entity.getCustomFieldValue(BANK);
+        if (bank == null) {
+            bank = defaultbank;
+        }
         bank = (bank == null ? "" : bank.trim());
-        if (bank.equalsIgnoreCase(NONE)) bank = "";
+        if (bank.equalsIgnoreCase(StringConstants.NONE)) {
+            bank = StringConstants.EMPTY;
+        }
         return bank;
     }
 
-    private String getProjectCode(DistributionLine dl, Map<String, String> codemap) {
-        String defaultcode = codemap.get(DEFAULT);
-        String pc = dl.getProjectCode();
-        if (pc == null) pc = defaultcode;
-        pc = (pc == null ? "" : pc.trim());
-        if (pc.equalsIgnoreCase(NONE)) pc = "";
-        return pc;
+    private String getProjectCode(DistributionLine distributionLine, Map<String, String> codeMap) {
+        String defaultcode = codeMap.get(DEFAULT);
+        String projectCode = distributionLine.getProjectCode();
+        if (projectCode == null) {
+            projectCode = defaultcode;
+        }
+        projectCode = (projectCode == null ? "" : projectCode.trim());
+        if (projectCode.equalsIgnoreCase(StringConstants.NONE)) {
+            projectCode = "";
+        }
+        return projectCode;
     }
 
-    private void updateJournalCodes(Journal journal, Map<String, String> map, String code, PostBatch postbatch) {
-
-        String glAccount1 = map.get(getKey(code,ACCOUNT_STRING_1));
-        if (glAccount1 == null) postbatch.getUpdateErrors().add("Invalid AccountString1 for "+code);
+    private void updateJournalCodes(Journal journal, Map<String, String> map, String code, PostBatch batch) {
+        String glAccount1 = map.get(getKey(code, StringConstants.ACCOUNT_STRING_1));
+        if (glAccount1 == null) {
+            batch.getUpdateErrors().add("Invalid AccountString1 for " + code);
+        }
         journal.setGlAccount1(glAccount1);
 
-        String glAccount2 = map.get(getKey(code,ACCOUNT_STRING_2));
-        if (glAccount2 == null) postbatch.getUpdateErrors().add("Invalid AccountString2 for "+code);
+        String glAccount2 = map.get(getKey(code, StringConstants.ACCOUNT_STRING_2));
+        if (glAccount2 == null) {
+            batch.getUpdateErrors().add("Invalid AccountString2 for " + code);
+        }
         journal.setGlAccount2(glAccount2);
 
-        String glCode = map.get(getKey(code,GL_ACCOUNT_CODE));
-        if (glCode == null) postbatch.getUpdateErrors().add("Invalid GL Code for "+code);
+        String glCode = map.get(getKey(code, StringConstants.GL_ACCOUNT_CODE));
+        if (glCode == null) {
+            batch.getUpdateErrors().add("Invalid GL Code for " + code);
+        }
         journal.setGlCode(glCode);
-        
     }
 
     private String getKey(String s1, String s2) {
-        return s1 + " : " + s2;
+        return new StringBuilder(s1).append(" : ").append(s2).toString();
     }
 }

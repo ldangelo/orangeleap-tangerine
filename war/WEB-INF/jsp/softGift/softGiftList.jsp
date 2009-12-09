@@ -10,6 +10,9 @@
         </body>
     </html>
     <page:param name="scripts">
-        <tangerine:fields pageName="softGiftList" gridName="softGift" />
+        <tangerine:fields pageName="softGiftList" gridName="softGift" 
+            entityUrl="gift.htm" entityIdKey="giftId" entitySecFldName="distributionLIne.gift.id"
+            leafEntityUrl="adjustedGift.htm" leafEntityIdKey="adjustedGiftId" leafEntitySecFldName="distributionLine.adjustedGift.id"
+        />
     </page:param>
 </page:applyDecorator>

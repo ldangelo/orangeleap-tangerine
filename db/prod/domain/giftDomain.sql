@@ -94,8 +94,6 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.phone.customFieldMap[phoneTypeReadOnly]', 'gift', 'phone', 'Phone Type', 'phone', 'MULTI_PICKLIST_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.phone.numberReadOnly', 'gift', 'phone', 'Phone Number', 'phone', 'READ_ONLY_TEXT');
 
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.firstDistributionLine.amount', 'gift', 'firstDistributionLine.amount', 'Amount', 'NUMBER');
-
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.distributionLines.amount', 'gift', 'distributionLines', 'Amt', 'NUMBER');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.distributionLines.percentage', 'gift', 'distributionLines', 'Pct', 'PERCENTAGE');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.distributionLines.projectCode', 'gift', 'distributionLines', 'Designation', 'CODE');
@@ -141,3 +139,13 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.distributionLines.customFieldMap[taxDeductibleReadOnly]', 'gift', 'distributionLines', 'Tax Ded', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]', 'gift', 'pledge', 'distributionLines', 'Associated Pledge', 'pledge', 'ASSOCIATION_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.distributionLines.customFieldMap[associatedRecurringGiftIdReadOnly]', 'gift', 'recurringGift', 'distributionLines', 'Associated Recurring Gift', 'recurringGift', 'ASSOCIATION_DISPLAY');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('distributionLine.gift.id', 'distributionLine', 'gift.id', 'Reference Number', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('distributionLine.amount', 'distributionLine', 'amount', 'Amount', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('distributionLine.gift.currencyCode', 'distributionLine', 'gift.currencyCode', 'Currency Code', 'CODE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('distributionLine.gift.donationDate', 'distributionLine', 'gift.donationDate', 'Date of Donation', 'DATE');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('distributionLine.gift.paymentType', 'distributionLine', 'gift.paymentType', 'Payment Method', 'giftPayment', 'PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('distributionLine.gift.paymentStatusReadOnly', 'distributionLine', 'gift.paymentStatus', 'Payment Status', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('distributionLine.gift.txRefNumReadOnly', 'distributionLine', 'gift.txRefNum', 'Reference Number', 'wrappable', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('distributionLine.gift.authCodeReadOnly', 'distributionLine', 'gift.authCode', 'Auth Code', 'wrappable', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('distributionLine.gift.comments', 'distributionLine', 'gift.comments', 'Comments', 'TEXT');

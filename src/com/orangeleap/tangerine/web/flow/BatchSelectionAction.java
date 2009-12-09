@@ -435,7 +435,7 @@ public class BatchSelectionAction {
                 if (fieldDef != null) {
                     FieldType fieldType = fieldDef.getFieldType();
                     if (fieldType.equals(FieldType.PICKLIST)) {
-                        final Picklist referencedPicklist = picklistItemService.getPicklist(item.getDefaultDisplayValue());
+                        final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
                         if (referencedPicklist != null) {
                             final List<Map<String, String>> referencedItemList = new ArrayList<Map<String, String>>();
                             for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {

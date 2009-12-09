@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="orangeleap" basedir=".." default="load.base.data">
+<project name="build-base-data-tangerine" basedir=".." default="load.base.data">
 	<property file="${basedir}/build/build.properties" />
     <property file="${commonBuild.dir}/commonBuild.properties"/>
 	<import file="${commonBuild.dir}/ivyBuild.xml"/>
@@ -143,6 +143,7 @@
 	     	<transaction src="${basedir}/db/prod/picklists/tributeOccasionPicklist.sql"/>
             <transaction src="${basedir}/db/prod/picklists/sourcePicklist.sql"/>
             <transaction src="${basedir}/db/prod/picklists/batchGiftFieldsPicklist.sql"/>
+            <transaction src="${basedir}/db/prod/picklists/batchAdjustedGiftFieldsPicklist.sql"/>
 
 	     </sql>
 	</target>

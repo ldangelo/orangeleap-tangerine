@@ -240,7 +240,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("remoteSort: true,\n");
                     sb.append("fields: [\n");
 
-                    sb.append("{name: 'id', mapping: 'id', type: 'int'},\n");
+                    addIds(bw, sb);
                     if (isListGrid && (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID))) {
                         sb.append("{name: 'constituentId', mapping: 'constituentId', type: 'string'},\n");
                     }
@@ -586,24 +586,16 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("OrangeLeap.").append(gridName).append(".controller = function() {\n");
                     sb.append("function createGrid() {\n");
                     sb.append("var record = Ext.data.Record.create([\n");
-                    
-                    sb.append("{name: 'id', mapping: 'id', type: 'int'},\n");
-                    sb.append("{name: '_parent', type: 'auto'},\n");
-                    sb.append("{name: '_is_leaf', type: 'bool'},\n");
+
+                    addIds(bw, sb);
                     if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
                         sb.append("{name: 'constituentId', mapping: 'constituentId', type: 'string'},\n");
                     }
+                    sb.append("{name: '_parent', type: 'auto'},\n");
+                    sb.append("{name: '_is_leaf', type: 'bool'},\n");
 
                     int z = 0;
-                    String parentEntitySecFldAlias = null;
-                    String childEntitySecFldAlias = null;
                     for (SectionField sectionFld : fields) {
-                        if (StringUtils.hasText(entitySecFldName) && sectionFld.getFieldPropertyName().equals(entitySecFldName)) {
-                            parentEntitySecFldAlias = new StringBuilder("a").append(z).toString();
-                        }
-                        if (StringUtils.hasText(leafEntitySecFldName) && sectionFld.getFieldPropertyName().equals(leafEntitySecFldName)) {
-                            childEntitySecFldAlias = new StringBuilder("a").append(z).toString();
-                        }
                         sb.append("{name: 'a").append(z).append("', ");
                         sb.append("mapping: 'a").append(z).append("', ");
                         String extType = findExtType(bw, sectionFld);
@@ -783,17 +775,17 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("var rec = grid.getSelectionModel().getSelected();\n");
                     sb.append("if (rec) {\n");
                     sb.append("Ext.get(document.body).mask('").append(TangerineMessageAccessor.getMessage("loadingRecord")).append("');\n");
-                    sb.append("if (rec.get('_is_leaf')) {\n");
-                    if (StringUtils.hasText(leafEntityUrl) && StringUtils.hasText(leafEntityIdKey) && childEntitySecFldAlias != null) {
-                        writeSpecifiedTreeLink(bw, leafEntityUrl, leafEntityIdKey, childEntitySecFldAlias, sb);
+                    sb.append("if (Ext.isEmpty(rec.get('_parent'))) {\n");
+                    if (StringUtils.hasText(entityUrl) && StringUtils.hasText(entityIdKey) && StringUtils.hasText(entitySecFldName)) {
+                        writeSpecifiedTreeLink(bw, entityUrl, entityIdKey, entitySecFldName, sb);
                     }
                     else {
                         writeDefaultTreeLink(bw, sb);
                     }
                     sb.append("}\n");
                     sb.append("else {\n");
-                    if (StringUtils.hasText(entityUrl) && StringUtils.hasText(entityIdKey) && parentEntitySecFldAlias != null) {
-                        writeSpecifiedTreeLink(bw, entityUrl, entityIdKey, parentEntitySecFldAlias, sb);
+                    if (StringUtils.hasText(leafEntityUrl) && StringUtils.hasText(leafEntityIdKey) && StringUtils.hasText(leafEntitySecFldName)) {
+                        writeSpecifiedTreeLink(bw, leafEntityUrl, leafEntityIdKey, leafEntitySecFldName, sb);
                     }
                     else {
                         writeDefaultTreeLink(bw, sb);
@@ -1070,6 +1062,13 @@ public class SectionFieldTag extends AbstractTag {
             logger.warn("findExtType: no Class able to be resolved for field = " + sectionFld.getFieldPropertyName());
         }
         return ExtTypeHandler.findExtType(clazz);
+    }
+
+    private void addIds(BeanWrapper bw, StringBuilder sb) {
+        sb.append("{name: 'id', mapping: 'id', type: 'int'},\n");
+        if (bw.isReadableProperty(StringConstants.ALIAS_ID)) {
+            sb.append("{name: 'aliasId', mapping: 'aliasId', type: 'int'},\n");
+        }
     }
 
 	private TangerineForm getTangerineForm() {

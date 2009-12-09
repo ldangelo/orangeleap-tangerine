@@ -12,8 +12,8 @@
     <page:param name="scripts">
         <tangerine:fields pageName="softGiftList" gridName="softGift" 
             entityUrl="gift.htm" entityIdKey="giftId" 
-            entitySecFldName="aliasGiftId"
-            leafEntityUrl="adjustedGift.htm" leafEntityIdKey="adjustedGiftId" leafEntitySecFldName="adjustedGift.id"
+            entitySecFldName="aliasId"
+            leafEntityUrl="adjustedGift.htm" leafEntityIdKey="adjustedGiftId" leafEntitySecFldName="aliasId"
         />
     </page:param>
 </page:applyDecorator>

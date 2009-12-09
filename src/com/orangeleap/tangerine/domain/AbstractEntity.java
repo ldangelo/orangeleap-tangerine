@@ -18,16 +18,14 @@
 
 package com.orangeleap.tangerine.domain;
 
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.util.ToSearchTextStringBuilder;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlType;
-
-import org.springframework.core.style.ToStringCreator;
-
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.util.ToSearchTextStringBuilder;
 
 /**
  * Base class for all Entities. It provides base functionality
@@ -40,6 +38,9 @@ import com.orangeleap.tangerine.util.ToSearchTextStringBuilder;
 public abstract class AbstractEntity implements Entity {
 
     protected Long id = null;
+
+    /** Generally, an alias of the ID field, when unique IDs are expected (for ExtJS grids); see DistroLineListController - makeUniqueIds() */ 
+    protected Long aliasId;
     protected Map<String, String> fieldLabelMap = null;
     protected Map<String, Object> fieldValueMap = null;
     protected Map<String, FieldDefinition> fieldTypeMap = null;
@@ -75,7 +76,15 @@ public abstract class AbstractEntity implements Entity {
         this.id = null;
     }
 
-	public boolean isNew() {
+    public Long getAliasId() {
+        return aliasId;
+    }
+
+    public void setAliasId(Long aliasId) {
+        this.aliasId = aliasId;
+    }
+
+    public boolean isNew() {
 		return id == null || id == 0;
 	}
 

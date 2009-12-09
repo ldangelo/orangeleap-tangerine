@@ -1,3 +1,5 @@
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.aliasId', 'adjustedGift', 'aliasId', 'ID', 'READ_ONLY_TEXT');
+
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.id', 'adjustedGift', 'id', 'Reference Number', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.currentTotalAdjustedAmount', 'adjustedGift', 'currentTotalAdjustedAmount', 'Current Total Adjustment Amount', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.adjustedAmount', 'adjustedGift', 'adjustedAmount', 'This Adjustment Amount', 'NUMBER');

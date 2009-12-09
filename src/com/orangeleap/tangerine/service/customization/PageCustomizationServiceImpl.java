@@ -345,12 +345,17 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         }
     }
 
+    /**
+     * Gets all section fields except id, constituentId, constituent.id, and aliasId 
+     * @param fields - all fields
+     * @return all fields except the ID related ones
+     */
     @Override
     public List<SectionField> getFieldsExceptId(List<SectionField> fields) {
         List<SectionField> filteredFields = new ArrayList<SectionField>();
         for (SectionField thisField : fields) {
-            if (!StringConstants.ID.equals(thisField.getFieldPropertyName()) && !StringConstants.CONSTITUENT_ID.equals(thisField.getFieldPropertyName()) &&
-                    !StringConstants.CONSTITUENT_DOT_ID.equals(thisField.getFieldPropertyName())) {
+            if ( ! StringConstants.ID.equals(thisField.getFieldPropertyName()) && ! StringConstants.CONSTITUENT_ID.equals(thisField.getFieldPropertyName()) &&
+                    ! StringConstants.CONSTITUENT_DOT_ID.equals(thisField.getFieldPropertyName()) && ! StringConstants.ALIAS_ID.equals(thisField.getFieldPropertyName())) {
                 filteredFields.add(thisField);
             }
         }

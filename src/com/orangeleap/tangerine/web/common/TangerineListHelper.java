@@ -71,7 +71,7 @@ public class TangerineListHelper {
                         if (fieldValue instanceof CustomField) {
                             fieldValue = ((CustomField) fieldValue).getValue();
                         }
-                        if (field.getFieldPropertyName().equals(StringConstants.ID)) {
+                        if (field.getFieldPropertyName().equals(StringConstants.ID) || field.getFieldPropertyName().equals(StringConstants.ALIAS_ID)) {
                             displayValue = fieldValue;
                         }
                         else {
@@ -89,7 +89,8 @@ public class TangerineListHelper {
                             displayValue = "true";
                         }
                     }
-                    String key = useAliasName && ! StringConstants.ID.equals(fieldPropertyName) ? new StringBuilder(SORT_KEY_PREFIX).append(x++).toString() : TangerineForm.escapeFieldName(fieldPropertyName);
+                    String key = useAliasName && ! StringConstants.ID.equals(fieldPropertyName) && ! StringConstants.ALIAS_ID.equals(fieldPropertyName)
+                            ? new StringBuilder(SORT_KEY_PREFIX).append(x++).toString() : TangerineForm.escapeFieldName(fieldPropertyName);
                     paramMap.put(key, displayValue);
                 }
             }

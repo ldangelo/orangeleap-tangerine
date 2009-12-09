@@ -130,6 +130,7 @@ public final class StringConstants {
     public final static String BOTH = "both";
     
     public static final String ID = "id";
+    public static final String ALIAS_ID = "aliasId";
     public static final String ENTITY_NAME = "entityName";
     public static final String USD = "USD";
     public static final String HIDE_ADJUST_GIFT_BUTTON = "hideAdjustGiftButton";

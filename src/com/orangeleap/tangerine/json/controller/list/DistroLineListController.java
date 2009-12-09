@@ -18,24 +18,22 @@
 
 package com.orangeleap.tangerine.json.controller.list;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class DistroLineListController extends TangerineJsonListController {
@@ -102,7 +100,7 @@ public class DistroLineListController extends TangerineJsonListController {
     private void makeUniqueIds(List<Gift> gifts) {
     	Long i = 0L;
     	for (Gift g: gifts) {
-    		g.setAliasGiftId(g.getId());
+    		g.setAliasId(g.getId());
     		g.setId(i++);
     	}
     }

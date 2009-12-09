@@ -53,9 +53,19 @@ public class TangerineListHelper {
 
     public static final String SORT_KEY_PREFIX = "a";
 
-    public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities, List<Map<String, Object>> paramMapList, boolean useAliasName) {
+    public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities,
+                                   List<Map<String, Object>> paramMapList, boolean useAliasName, boolean useAliasId) {
+        int sequence = 0;
         for (Object thisEntity : entities) {
             BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(thisEntity);
+
+            /**
+             * If useAliasId == true, set the aliasId to the ID and reset to ID to the next sequence number
+             */
+            if (useAliasId && beanWrapper.isWritableProperty(StringConstants.ALIAS_ID) && beanWrapper.isReadableProperty(StringConstants.ID)) {
+                beanWrapper.setPropertyValue(StringConstants.ALIAS_ID, beanWrapper.getPropertyValue(StringConstants.ID));
+                beanWrapper.setPropertyValue(StringConstants.ID, sequence++);
+            }
 
             Map<String, Object> paramMap = new HashMap<String, Object>();
 

@@ -47,7 +47,7 @@ public class AddressListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<Address> addresses = addressService.readAllAddressesByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("addressList");
-        addListFieldsToMap(request, sectionFields, addresses, list, false);
+        addListFieldsToMap(request, sectionFields, addresses, list, false, false);
 
         int count = addressService.readCountByConstituentId(constituentId);
 

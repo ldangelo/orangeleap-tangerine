@@ -46,7 +46,7 @@ public class GiftInKindListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<GiftInKind> giftsInKind = giftInKindService.readAllGiftsInKindByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("giftInKindList");
-        addListFieldsToMap(request, sectionFields, giftsInKind, list, false);
+        addListFieldsToMap(request, sectionFields, giftsInKind, list, false, false);
 
         int count = giftInKindService.readCountByConstituentId(constituentId);
 

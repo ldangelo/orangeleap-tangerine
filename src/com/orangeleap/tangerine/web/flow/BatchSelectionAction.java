@@ -339,7 +339,7 @@ public class BatchSelectionAction {
         final List<Gift> gifts = giftService.readGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
 
         List<Map<String, Object>> rowList = new ArrayList<Map<String, Object>>();
-        tangerineListHelper.addListFieldsToMap(request, allFields, gifts, rowList, false); // this needs to be 'allFields' to include the 'id' property
+        tangerineListHelper.addListFieldsToMap(request, allFields, gifts, rowList, false, false); // this needs to be 'allFields' to include the 'id' property
         addConstituentIdsToRows(rowList, gifts);
         model.put(StringConstants.ROWS, rowList);
     }

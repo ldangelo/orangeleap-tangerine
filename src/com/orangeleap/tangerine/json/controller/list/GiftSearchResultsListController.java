@@ -54,7 +54,7 @@ public class GiftSearchResultsListController extends TangerineJsonSearchResultsC
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(new Gift());
         List<Gift> gifts = giftService.searchGifts(findSearchParameters(request, bw), sort, request.getLocale());
 
-        addListFieldsToMap(request, sectionFields, gifts, list, false);
+        addListFieldsToMap(request, sectionFields, gifts, list, false, false);
 
         ModelMap map = new ModelMap("rows", list);
         map.put("totalRows", gifts == null ? 0 : gifts.size());

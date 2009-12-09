@@ -46,7 +46,7 @@ public class PaymentSourceListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<PaymentSource> sources = paymentSourceService.readAllPaymentSourcesByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("paymentSourceList");
-        addListFieldsToMap(request, sectionFields, sources, list, false);
+        addListFieldsToMap(request, sectionFields, sources, list, false, false);
 
         int count = paymentSourceService.readCountByConstituentId(constituentId);
 

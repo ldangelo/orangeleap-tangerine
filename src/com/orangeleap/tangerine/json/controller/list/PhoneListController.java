@@ -47,7 +47,7 @@ public class PhoneListController extends TangerineJsonListController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         List<Phone> phones = phoneService.readAllPhonesByConstituentId(constituentId, sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("phoneList");
-        addListFieldsToMap(request, sectionFields, phones, list, false);
+        addListFieldsToMap(request, sectionFields, phones, list, false, false);
 
         int count = phoneService.readCountByConstituentId(constituentId);
 

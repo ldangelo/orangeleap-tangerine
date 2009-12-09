@@ -42,8 +42,9 @@ public abstract class TangerineJsonListController {
     private static final String PARENT_NODE = "_parent";
     private static final String LEAF_NODE = "_is_leaf";
 
-    public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities, List<Map<String, Object>> paramMapList, boolean useAliasName) {
-        tangerineListHelper.addListFieldsToMap(request, sectionFields, entities, paramMapList, useAliasName);
+    public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities,
+                                   List<Map<String, Object>> paramMapList, boolean useAliasName, boolean useAliasId) {
+        tangerineListHelper.addListFieldsToMap(request, sectionFields, entities, paramMapList, useAliasName, useAliasId);
     }
 
     public List<SectionField> findSectionFields(String listPageName) {

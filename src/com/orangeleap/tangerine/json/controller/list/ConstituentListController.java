@@ -45,7 +45,7 @@ public class ConstituentListController extends TangerineJsonListController {
 
         List<Constituent> constituents = constituentService.readAllConstituentsBySite(sort, request.getLocale());
         List<SectionField> sectionFields = findSectionFields("constituentList");
-        addListFieldsToMap(request, sectionFields, constituents, list, false);
+        addListFieldsToMap(request, sectionFields, constituents, list, false, false);
 
         int count = constituentService.getConstituentCountBySite();
 

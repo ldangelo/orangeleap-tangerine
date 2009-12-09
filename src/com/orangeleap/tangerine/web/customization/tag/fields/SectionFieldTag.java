@@ -433,10 +433,12 @@ public class SectionFieldTag extends AbstractTag {
                         entityUrl = new StringBuilder(entityType).append(".htm").toString();
                     }
                     if ( ! StringUtils.hasText(entityIdKey)) {
-                        entityIdKey = StringConstants.ID;
+                        entityIdKey = new StringBuilder(entityType).append("Id").toString();
                     }
-                    sb.append(entityUrl).append("?");
-                    sb.append(entityType).append("Id=\" + rec.get('").append(entityIdKey).append("')");
+                    if ( ! StringUtils.hasText(entitySecFldName)) {
+                        entitySecFldName = StringConstants.ID;
+                    }
+                    sb.append(entityUrl).append("?").append(entityIdKey).append("=\" + rec.get('").append(entitySecFldName).append("')");
                     if ((bw.isReadableProperty(StringConstants.CONSTITUENT) && bw.getPropertyValue(StringConstants.CONSTITUENT) != null &&
                             ((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
                             (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null)) {

@@ -54,7 +54,7 @@ public class ConstituentSearchResultsListController extends TangerineJsonSearchR
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(new Constituent());
         List<Constituent> constituents = constituentService.searchConstituents(findSearchParameters(request, bw), sort, request.getLocale());
 
-        addListFieldsToMap(request, sectionFields, constituents, list, false);
+        addListFieldsToMap(request, sectionFields, constituents, list, false, false);
 
         ModelMap map = new ModelMap("rows", list);
         map.put("totalRows", constituents == null ? 0 : constituents.size());

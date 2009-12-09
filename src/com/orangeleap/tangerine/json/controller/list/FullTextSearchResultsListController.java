@@ -56,7 +56,7 @@ public class FullTextSearchResultsListController extends TangerineJsonSearchResu
         parameters.put(StringConstants.FULLTEXT, fullText);
         List<Constituent> constituents = constituentService.searchConstituents(parameters, sort, request.getLocale());
 
-        addListFieldsToMap(request, sectionFields, constituents, list, false);
+        addListFieldsToMap(request, sectionFields, constituents, list, false, false);
 
         ModelMap map = new ModelMap("rows", list);
         map.put("totalRows", constituents == null ? 0 : constituents.size());

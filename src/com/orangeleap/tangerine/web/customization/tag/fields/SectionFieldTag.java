@@ -599,10 +599,10 @@ public class SectionFieldTag extends AbstractTag {
                     String childEntitySecFldAlias = null;
                     for (SectionField sectionFld : fields) {
                         if (StringUtils.hasText(entitySecFldName) && sectionFld.getFieldPropertyName().equals(entitySecFldName)) {
-                            parentEntitySecFldAlias = sectionFld.getFieldPropertyName();
+                            parentEntitySecFldAlias = new StringBuilder("a").append(z).toString();
                         }
                         if (StringUtils.hasText(leafEntitySecFldName) && sectionFld.getFieldPropertyName().equals(leafEntitySecFldName)) {
-                            childEntitySecFldAlias = sectionFld.getFieldPropertyName();
+                            childEntitySecFldAlias = new StringBuilder("a").append(z).toString();
                         }
                         sb.append("{name: 'a").append(z).append("', ");
                         sb.append("mapping: 'a").append(z).append("', ");

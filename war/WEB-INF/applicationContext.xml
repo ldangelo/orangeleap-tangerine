@@ -237,6 +237,11 @@
 		  <property name="checkService" ref="checkService"/>
 		</bean>
 
+	<bean id="segmentationService" class="com.orangeleap.tangerine.service.segmentation.SegmentationService">
+		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
+		<property name="repositoryUri" value="/services/repository"/>
+	</bean>
+
 	<bean id="emailSendingService" class="com.orangeleap.tangerine.service.communication.EmailService">
 		<property name="communicationHistoryService" ref="communicationHistoryService"/>
 		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
@@ -246,9 +251,11 @@
 	<bean id="mailService" class="com.orangeleap.tangerine.service.communication.MailService">
 		<property name="communicationHistoryService" ref="communicationHistoryService"/>
 		<property name="constituentService" ref="constituentService"/>
+		<property name="segmentationService" ref="segmentationService"/>
 		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
 		<property name="repositoryUri" value="/services/repository"/>
 	</bean>
+
 
 	<bean id="applicationContextProvider" class="com.orangeleap.tangerine.util.ApplicationContextProvider"/>
 	

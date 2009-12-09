@@ -27,6 +27,9 @@ INSERT INTO SITE_OPTION (SITE_NAME, OPTION_NAME, OPTION_NAME_READ_ONLY, OPTION_D
 INSERT INTO SITE_OPTION (SITE_NAME, OPTION_NAME, OPTION_NAME_READ_ONLY, OPTION_DESC, OPTION_VALUE, OPTION_VALUE_READ_ONLY, MODIFIED_BY, CREATE_DATE, UPDATE_DATE) VALUES (DATABASE(), 'large.donation.subject', 1, 'Subject line for large donation email. (This goes to the constituent.)','Large donation made.', 0, 1, NOW(), null);
 INSERT INTO SITE_OPTION (SITE_NAME, OPTION_NAME, OPTION_NAME_READ_ONLY, OPTION_DESC, OPTION_VALUE, OPTION_VALUE_READ_ONLY, MODIFIED_BY, CREATE_DATE, UPDATE_DATE) VALUES (DATABASE(), 'large.donation.template', 1, 'Template in the guru to use for large donation email.','thankYou', 0, 1, NOW(), null);
 INSERT INTO SITE_OPTION (SITE_NAME, OPTION_NAME, OPTION_NAME_READ_ONLY, OPTION_DESC, OPTION_VALUE, OPTION_VALUE_READ_ONLY, MODIFIED_BY, CREATE_DATE, UPDATE_DATE) VALUES (DATABASE(), 'duplicate.detect.criteria', 1, 'String contain criteria to match on.','firstName:5,lastName:10', 0, 1, NOW(), null);
+INSERT INTO SITE_OPTION (SITE_NAME, OPTION_NAME, OPTION_NAME_READ_ONLY, OPTION_DESC, OPTION_VALUE, OPTION_VALUE_READ_ONLY, MODIFIED_BY, CREATE_DATE, UPDATE_DATE) VALUES (DATABASE(), 'mail.segment.name', 1, 'Name of the segment you want to generate mail for.','mailsegment', 0, 1, NOW(), null);
+INSERT INTO SITE_OPTION (SITE_NAME, OPTION_NAME, OPTION_NAME_READ_ONLY, OPTION_DESC, OPTION_VALUE, OPTION_VALUE_READ_ONLY, MODIFIED_BY, CREATE_DATE, UPDATE_DATE) VALUES (DATABASE(), 'mail.label.template', 1, 'Name of the mailing label template you want to use for mail.','Mail_Label', 0, 1, NOW(), null);
+INSERT INTO SITE_OPTION (SITE_NAME, OPTION_NAME, OPTION_NAME_READ_ONLY, OPTION_DESC, OPTION_VALUE, OPTION_VALUE_READ_ONLY, MODIFIED_BY, CREATE_DATE, UPDATE_DATE) VALUES (DATABASE(), 'mail.report.template', 1, 'Name of the mailing template you want to use for mail.','ThankYou', 0, 1, NOW(), null);
 
 
 -- Add a default project (designation) code

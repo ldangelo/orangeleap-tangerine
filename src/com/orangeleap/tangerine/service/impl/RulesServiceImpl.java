@@ -27,12 +27,19 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
+import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
@@ -41,8 +48,10 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RulesService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.communication.MailService;
+import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("rulesService")
@@ -56,13 +65,11 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	@Resource(name = "constituentService")
 	private ConstituentService constituentService;
 
-
-
 	private ApplicationContext applicationContext;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
-	throws BeansException {
+			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
@@ -87,14 +94,13 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			boolean reindexFullText = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(REINDEX_FULLTEXT));
 
 			int totalContituentCount = constituentService.getConstituentCountBySite();
-			for (int start = 0; start <= totalContituentCount; start += 100){
-				
+			for (int start = 0; start <= totalContituentCount; start += 100) {
+
 				logger.debug("Processing rules for constituent "+start+" out of "+totalContituentCount);
-				
+
 				SortInfo sortInfo = new SortInfo();
 				sortInfo.setSort("id"); // sort by id so that new inserts will not throw off pages.
 				sortInfo.setStart(start);
-
 
 				List<Constituent> peopleList = constituentService.readAllConstituentsBySite(sortInfo, Locale.getDefault());
 
@@ -102,19 +108,19 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 					try {
 						constituentService.processConstituent(schedule, compareDate, ps, gs, ms,
 								ss, uh, p, plis);
-						
+
 						// Force a fulltext reindex of constituent after rules processing if this site option is set.
 						if (reindexFullText) {
 							ps.updateFullTextSearchIndex(p.getId());
 						}
-						
-					}catch(Throwable t) {
+
+					} catch (Throwable t) {
 						t.printStackTrace();
 						logger.error(t);
 					}
 				}
 			}
-		}catch (Throwable t) {
+		} catch (Throwable t) {
 			logger.error(t);
 			t.printStackTrace();
 		}
@@ -122,21 +128,96 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		logger.info("Rules Processing Took: " + (time2 - time) + " ms.  Complete on " + new java.util.Date());
 	}
 
+	private void executeMailRules(String schedule) {
+		// TODO Auto-generated method stub
+		long time = System.currentTimeMillis();
+		try {
 
+			logger.info("Executing rules for " + schedule +
+					".  Started on " + new java.util.Date());
+
+			MailService ms = (MailService) applicationContext
+					.getBean("mailService");
+			ConstituentService ps = (ConstituentService) applicationContext
+					.getBean("constituentService");
+			GiftService gs = (GiftService) applicationContext
+					.getBean("giftService");
+			SiteService ss = (SiteService) applicationContext
+					.getBean("siteService");
+			PicklistItemService plis = (PicklistItemService) applicationContext
+					.getBean("picklistItemService");
+			TangerineUserHelper uh = (TangerineUserHelper) applicationContext
+					.getBean("tangerineUserHelper");
+			EmailService es = (EmailService) applicationContext
+					.getBean("emailService");
+			ErrorLogService errorLogService = (ErrorLogService) applicationContext
+					.getBean("errorLogService");
+
+			boolean reindexFullText = "true".equalsIgnoreCase(siteService
+					.getSiteOptionsMap().get(REINDEX_FULLTEXT));
+
+			try {
+				TaskStack.clear();
+
+				RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
+						.getBean("DroolsRuleAgent")).getRuleAgent(
+						uh.lookupUserSiteName()).getRuleBase();
+
+				StatefulSession workingMemory = ruleBase.newStatefulSession();
+				try {
+					if (logger.isInfoEnabled()) {
+						workingMemory
+								.addEventListener(new DebugAgendaEventListener());
+						workingMemory
+								.addEventListener(new DebugWorkingMemoryEventListener());
+					}
+
+					workingMemory.setFocus(getSiteName() + schedule);
+					workingMemory.setGlobal("applicationContext",
+							applicationContext);
+					workingMemory.setGlobal("constituentService", ps);
+					workingMemory.setGlobal("giftService", gs);
+					workingMemory.setGlobal("picklistItemService", plis);
+					workingMemory.setGlobal("userHelper", uh);
+
+					Site s = ss.readSite(uh.lookupUserSiteName());
+					workingMemory.insert(s);
+
+					workingMemory.fireAllRules();
+
+					TaskStack.execute();
+					TaskStack.clear();
+
+				} finally {
+					if (workingMemory != null)
+						workingMemory.dispose();
+				}
+
+			} catch (Throwable t) {
+				t.printStackTrace();
+				logger.error(t);
+			}
+		} catch (Throwable t) {
+			logger.error(t);
+			t.printStackTrace();
+		}
+		long time2 = System.currentTimeMillis();
+		logger.info("Rules Processing for " + schedule + "Took: " + (time2 - time)
+				+ " ms.  Complete on " + new java.util.Date());
+	}
 
 	private boolean taskValidForSite(String filter) {
-        String filtervalue = System.getProperty(filter);
+		String filtervalue = System.getProperty(filter);
         if (filtervalue == null) return true;
-        Pattern pattern = Pattern.compile(filtervalue);
-        return pattern.matcher(getSiteName()).matches();
+		Pattern pattern = Pattern.compile(filtervalue);
+		return pattern.matcher(getSiteName()).matches();
 	}
 
 	// If set, only process rules for sites that match these regexes.
-	// For example, to only execute monthly rules for schema1, schema2, and schema3:   tangerine.rules.monthly.filter=^(schema1|schema2|schema3)$
+	// For example, to only execute monthly rules for schema1, schema2, and schema3: tangerine.rules.monthly.filter=^(schema1|schema2|schema3)$
 	private static final String DAILY_RULES_FILTER_PROPERTY = "tangerine.rules.daily.filter";
 	private static final String WEEKLY_RULES_FILTER_PROPERTY = "tangerine.rules.weekly.filter";
 	private static final String MONTHLY_RULES_FILTER_PROPERTY = "tangerine.rules.monthly.filter";
-
 
 	@Override
 	public void executeDailyJobRules() {
@@ -148,6 +229,10 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		Date yesterday = new java.sql.Date(today.getTimeInMillis());
 
 		executeRules("scheduledaily", yesterday);
+
+		// execute the scheduled mail (The mail is generated from a segment not by a constituent
+		//or gift being inserted into working memory.)
+		executeMailRules("mailscheduledaily");
 	}
 
 	@Override
@@ -160,6 +245,11 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		Date lastweek = new java.sql.Date(today.getTimeInMillis());
 
 		executeRules("scheduleweekly", lastweek);
+
+		// execute the scheduled mail (The mail is generated from a segment not by a constituent
+		//or gift being inserted into working memory.)
+		executeMailRules("mailscheduledaily");
+
 	}
 
 	@Override
@@ -172,6 +262,11 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		Date lastmonth = new java.sql.Date(today.getTimeInMillis());
 
 		executeRules("schedulemonthly", lastmonth);
+
+		// execute the scheduled mail (The mail is generated from a segment not by a constituent
+		//or gift being inserted into working memory.)
+		executeMailRules("mailscheduledaily");
+
 	}
 
 }

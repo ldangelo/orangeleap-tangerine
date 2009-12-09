@@ -45,18 +45,18 @@ import com.jaspersoft.jasperserver.irplugin.JServer;
 import com.jaspersoft.jasperserver.irplugin.RepositoryReportUnit;
 import com.jaspersoft.jasperserver.irplugin.wsclient.RequestAttachment;
 import com.orangeleap.common.security.CasUtil;
-import com.orangeleap.common.security.OrangeLeapAuthentication;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.segmentation.SegmentationService;
 import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.theguru.client.ExecuteSegmentationByNameRequest;
-import com.orangeleap.theguru.client.ExecuteSegmentationByNameResponse;
-import com.orangeleap.theguru.client.ObjectFactory;
-import com.orangeleap.theguru.client.Theguru;
-import com.orangeleap.theguru.client.WSClient;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.ws.schema.Gift;
+import com.orangeleap.theguru.client.ExecuteSegmentationByIdResponse;
+import com.orangeleap.theguru.client.GetSegmentationByIdResponse;
 
 //@Service("emailSendingService")
 public class MailService {
@@ -70,8 +70,10 @@ public class MailService {
 
 //	@Autowired
 	private ConstituentService constituentService;
-
 	private CommunicationHistoryService communicationHistoryService;
+	private SegmentationService segmentationService;
+
+
 	private java.util.Map map = new HashMap();
 	private java.util.Map labelMap = new HashMap();
 	private Site site;
@@ -157,42 +159,44 @@ public class MailService {
 		}
 		Constituent p = list.get(0);
 		Site s = p.getSite();
-		generateMail(ids, s, lableTemplateName, mailingTemplateName);
-
+		generateMail(ids, s, lableTemplateName, mailingTemplateName, null);
 
 	}
 
-	public void generateMail(String segmentationName, String lableTemplateName, String mailingTemplateName) {
+
+	public void generateMail(Long segmentationId, String lableTemplateName, String mailingTemplateName) {
 		//ArrayList<Long> ids = new ArrayList<Long>();
 
+
+		//TODO: take into account the different types of segments ie gift
+		//need modify generatemail to be able to get the constituent based on the
+		//segment type  overload generatemail to take a segmenttype and if it is not a segment
+		//then just always pass constituent
+
+
 		//Execute the segmentation and get the results
-        Theguru theGuru = new WSClient().getTheGuru();
-        ObjectFactory objFactory = new ObjectFactory();
+		ExecuteSegmentationByIdResponse execResp = segmentationService.executeSegmentationById(segmentationId);
 
-        ExecuteSegmentationByNameRequest req = objFactory.createExecuteSegmentationByNameRequest();
-        req.setName(segmentationName);
-        ExecuteSegmentationByNameResponse resp = theGuru.executeSegmentationByName(req);
+		Site s = null;
+		String segmentationType = null;
+		if (segmentationType.compareToIgnoreCase(StringConstants.GIFT_SEGMENTATION) == 0){
 
+		}
+		else{
+	        Constituent constituent =  constituentService.readConstituentById(execResp.getEntityid().get(0));
+			s = constituent.getSite();
 
-        Constituent constituent =  constituentService.readConstituentById(resp.getEntityid().get(0));
-		Site s = constituent.getSite();
-		generateMail((ArrayList<Long>) resp.getEntityid(), s, lableTemplateName, mailingTemplateName);
+		}
+
+		generateMail((ArrayList<Long>) execResp.getEntityid(), s, lableTemplateName, mailingTemplateName, segmentationType);
 	}
 
-	public void generateMail(ArrayList<Long> ids, Site s, String lableTemplateName, String mailingTemplateName) {
+	public void generateMail(ArrayList<Long> ids, Site s, String lableTemplateName, String mailingTemplateName, String segmentationType) {
 		setTemplateName(mailingTemplateName);
 		setLabelTemplateName(lableTemplateName);
 
 		//set the site
 		setSite(s);
-
-		//ArrayList<Long> ids = new ArrayList<Long>();
-
-		/*
-		for (Constituent constituent : list) {
-			ids.add(constituent.getId());
-		}
-		*/
 
 		//
 		// first we run the report passing in the constituent.id as a parameter
@@ -229,7 +233,7 @@ public class MailService {
 			labelRD.setName(getLabelTemplateName() + dateFormat.format(date));
 			labelRD.setLabel(labelRD.getName());
 			labelRD.setDescription(labelRD.getName());
-			labelRD.setParentFolder("/Reports/" + getSite().getName() + "/Content_files");
+			labelRD.setParentFolder("/Reports/" + getSite().getName() + "/System_Generated_Mail");
 			labelRD.setUriString(labelRD.getParentFolder() + "/" + labelRD.getName());
 			labelRD.setWsType(labelRD.TYPE_CONTENT_RESOURCE);
 			labelRD.setResourceProperty(ResourceDescriptor.PROP_CONTENT_RESOURCE_TYPE,ResourceDescriptor.CONTENT_TYPE_PDF);
@@ -254,7 +258,7 @@ public class MailService {
 			reportRD.setName(getTemplateName() + dateFormat.format(date));
 			reportRD.setLabel(reportRD.getName());
 			reportRD.setDescription(reportRD.getName());
-			reportRD.setParentFolder("/Reports/" + getSite().getName() + "/Content_files");
+			reportRD.setParentFolder("/Reports/" + getSite().getName() + "/System_Generated_Mail");
 			reportRD.setUriString(reportRD.getParentFolder() + "/" + reportRD.getName());
 			reportRD.setWsType(reportRD.TYPE_CONTENT_RESOURCE);
 			reportRD.setResourceProperty(ResourceDescriptor.PROP_CONTENT_RESOURCE_TYPE,ResourceDescriptor.CONTENT_TYPE_PDF);
@@ -413,5 +417,13 @@ public class MailService {
 	public void setConstituentService(
 			ConstituentService constituentService) {
 		this.constituentService = constituentService;
+	}
+
+	public SegmentationService getSegmentationService() {
+		return segmentationService;
+	}
+
+	public void setSegmentationService(SegmentationService segmentationService) {
+		this.segmentationService = segmentationService;
 	}
 }

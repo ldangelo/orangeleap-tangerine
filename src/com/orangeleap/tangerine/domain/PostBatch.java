@@ -43,6 +43,7 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private boolean posted;
     private Long postedById;
     private Date postedDate;
+    private boolean hasErrors;
     private String siteName;
     private Date createDate;
     private Date updateDate;
@@ -139,6 +140,14 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     public void setPostedDate(Date postedDate) {
         this.postedDate = postedDate;
+    }
+
+    public boolean isHasErrors() {
+        return hasErrors;
+    }
+
+    public void setHasErrors(boolean hasErrors) {
+        this.hasErrors = hasErrors;
     }
 
     public String getSiteName() {

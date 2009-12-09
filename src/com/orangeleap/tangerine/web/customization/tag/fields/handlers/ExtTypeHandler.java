@@ -31,21 +31,21 @@ public final class ExtTypeHandler {
 
     public static String findExtType(Class clazz) {
         String extType;
-        if (clazz.equals(Date.class)) {
+        if (Date.class.equals(clazz)) {
             extType = "date";
         }
-        else if (clazz.equals(Boolean.class) || clazz.equals(Boolean.TYPE)) {
+        else if (Boolean.class.equals(clazz) || Boolean.TYPE.equals(clazz)) {
             extType = "boolean";
         }
-        else if (clazz.equals(Byte.class) || clazz.equals(Integer.class) || clazz.equals(Short.class) || clazz.equals(Long.class) ||
-                clazz.equals(Byte.TYPE) || clazz.equals(Integer.TYPE) || clazz.equals(Short.TYPE) || clazz.equals(Long.TYPE)) {
+        else if (Byte.class.equals(clazz) || Integer.class.equals(clazz) || Short.class.equals(clazz) || Long.class.equals(clazz) ||
+                Byte.TYPE.equals(clazz) || Integer.TYPE.equals(clazz) || Short.TYPE.equals(clazz) || Long.TYPE.equals(clazz)) {
             extType = "int";
         }
-        else if (clazz.equals(Double.class) || clazz.equals(Float.class) || clazz.equals(BigDecimal.class) ||
-                clazz.equals(Double.TYPE) || clazz.equals(Float.TYPE)) {
+        else if (Double.class.equals(clazz) || Float.class.equals(clazz) || BigDecimal.class.equals(clazz) ||
+                Double.TYPE.equals(clazz) || Float.TYPE.equals(clazz)) {
             extType = "float";
         }
-        else if (clazz.equals(Character.class) || clazz.equals(String.class) || clazz.equals(Character.TYPE)) {
+        else if (Character.class.equals(clazz) || String.class.equals(clazz) || Character.TYPE.equals(clazz)) {
             extType = "string";
         }
         else {

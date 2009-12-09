@@ -254,7 +254,12 @@ public class SectionFieldTag extends AbstractTag {
 
                         sb.append("{name: '").append(escapedFieldName).append("', ");
                         sb.append("mapping: '").append(escapedFieldName).append("', ");
-                        String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
+
+                        Class clazz = bw.getPropertyType(sectionFld.getFieldPropertyName());
+                        if (clazz == null) {
+                            logger.warn("writeSections: no Class able to be resolved for field = " + sectionFld.getFieldPropertyName());
+                        }
+                        String extType = ExtTypeHandler.findExtType(clazz);
                         sb.append("type: '").append(extType).append("'");
                         if (StringConstants.DATE.equals(extType)) {
                             sb.append(", dateFormat: '");

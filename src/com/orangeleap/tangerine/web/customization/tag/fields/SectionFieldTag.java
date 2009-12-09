@@ -255,11 +255,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("{name: '").append(escapedFieldName).append("', ");
                         sb.append("mapping: '").append(escapedFieldName).append("', ");
 
-                        Class clazz = bw.getPropertyType(sectionFld.getFieldPropertyName());
-                        if (clazz == null) {
-                            logger.warn("writeSections: no Class able to be resolved for field = " + sectionFld.getFieldPropertyName());
-                        }
-                        String extType = ExtTypeHandler.findExtType(clazz);
+                        String extType = findExtType(bw, sectionFld);
                         sb.append("type: '").append(extType).append("'");
                         if (StringConstants.DATE.equals(extType)) {
                             sb.append(", dateFormat: '");
@@ -382,7 +378,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("dataIndex: '").append(TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName())).append("', sortable: ");
                         sb.append( ! isListGrid && StringConstants.FULLTEXT.equals(searchTypeValue) ? Boolean.FALSE.toString() : Boolean.TRUE.toString());
 
-                        String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
+                        String extType = findExtType(bw, sectionFld);
                         if (ExtTypeHandler.EXT_FLOAT.equals(extType) || ExtTypeHandler.EXT_BOOLEAN.equals(extType) ||
                                 ExtTypeHandler.EXT_DATE.equals(extType) || ExtTypeHandler.EXT_STRING.equals(extType)) {
                             sb.append(", renderer: ");
@@ -610,7 +606,7 @@ public class SectionFieldTag extends AbstractTag {
                         }
                         sb.append("{name: 'a").append(z).append("', ");
                         sb.append("mapping: 'a").append(z).append("', ");
-                        String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
+                        String extType = findExtType(bw, sectionFld);
                         sb.append("type: '").append(extType).append("'");
                         if ("date".equals(extType)) {
                             sb.append(", dateFormat: '");
@@ -705,7 +701,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("{header: '").append(sectionFld.getFieldDefinition().getDefaultLabel()).append("', ");
                         sb.append("dataIndex: 'a").append(y).append("', sortable: true");
 
-                        String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
+                        String extType = findExtType(bw, sectionFld);
                         if (ExtTypeHandler.EXT_FLOAT.equals(extType) || ExtTypeHandler.EXT_BOOLEAN.equals(extType) ||
                                 ExtTypeHandler.EXT_DATE.equals(extType) || ExtTypeHandler.EXT_STRING.equals(extType)) {
                             sb.append(", renderer: ");
@@ -787,26 +783,22 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("var rec = grid.getSelectionModel().getSelected();\n");
                     sb.append("if (rec) {\n");
                     sb.append("Ext.get(document.body).mask('").append(TangerineMessageAccessor.getMessage("loadingRecord")).append("');\n");
-
-                    /* Have to have parent and child URLs and Keys specified to invoke */ 
-                    if (StringUtils.hasText(entityUrl) && StringUtils.hasText(entityIdKey) && parentEntitySecFldAlias != null &&
-                            StringUtils.hasText(leafEntityUrl) && StringUtils.hasText(leafEntityIdKey) && childEntitySecFldAlias != null) {
-                        sb.append("if (rec.get('_is_leaf')) {\n");
-                        sb.append("window.location.href = \"").append(leafEntityUrl).append("?").append(leafEntityIdKey).append("=\" + rec.get('").append(parentEntitySecFldAlias).append("')"); // this is the child
-                        writeConstituentId(bw, sb);
-                        sb.append("}\n");
-                        sb.append("else {\n");
-                        sb.append("window.location.href = \"").append(entityUrl).append("?").append(entityIdKey).append("=\" + rec.get('").append(childEntitySecFldAlias).append("')");// this is the parent
-                        writeConstituentId(bw, sb);
-                        sb.append("}\n");
+                    sb.append("if (rec.get('_is_leaf')) {\n");
+                    if (StringUtils.hasText(leafEntityUrl) && StringUtils.hasText(leafEntityIdKey) && childEntitySecFldAlias != null) {
+                        writeSpecifiedTreeLink(bw, leafEntityUrl, leafEntityIdKey, childEntitySecFldAlias, sb);
                     }
                     else {
-                        sb.append("var entityArray = rec.id.split(\"-\");\n");
-                        sb.append("var entityType = entityArray[0];\n");
-                        sb.append("var entityId = entityArray[1];\n");
-                        sb.append("window.location.href = entityType + \".htm?\" + entityType + \"Id=\" + entityId");
-                        writeConstituentId(bw, sb);
+                        writeDefaultTreeLink(bw, sb);
                     }
+                    sb.append("}\n");
+                    sb.append("else {\n");
+                    if (StringUtils.hasText(entityUrl) && StringUtils.hasText(entityIdKey) && parentEntitySecFldAlias != null) {
+                        writeSpecifiedTreeLink(bw, entityUrl, entityIdKey, parentEntitySecFldAlias, sb);
+                    }
+                    else {
+                        writeDefaultTreeLink(bw, sb);
+                    }
+                    sb.append("}\n");
                     
                     sb.append("}\n");
                     sb.append("}\n");
@@ -1057,6 +1049,27 @@ public class SectionFieldTag extends AbstractTag {
         return FieldType.DATE.equals(fields.get(0).getFieldType()) ||
                 FieldType.DATE_TIME.equals(fields.get(0).getFieldType()) ||
                 FieldType.DATE_DISPLAY.equals(fields.get(0).getFieldType()) ? "DESC" : "ASC";
+    }
+
+    private void writeDefaultTreeLink(BeanWrapper bw, StringBuilder sb) {
+        sb.append("var entityArray = rec.id.split(\"-\");\n");
+        sb.append("var entityType = entityArray[0];\n");
+        sb.append("var entityId = entityArray[1];\n");
+        sb.append("window.location.href = entityType + \".htm?\" + entityType + \"Id=\" + entityId");
+        writeConstituentId(bw, sb);
+    }
+
+    private void writeSpecifiedTreeLink(BeanWrapper bw, String url, String idKey, String fieldName, StringBuilder sb) {
+        sb.append("window.location.href = \"").append(url).append("?").append(idKey).append("=\" + rec.get('").append(fieldName).append("')"); 
+        writeConstituentId(bw, sb);
+    }
+
+    private String findExtType(BeanWrapper bw, SectionField sectionFld) {
+        Class clazz = bw.getPropertyType(sectionFld.getFieldPropertyName());
+        if (clazz == null) {
+            logger.warn("findExtType: no Class able to be resolved for field = " + sectionFld.getFieldPropertyName());
+        }
+        return ExtTypeHandler.findExtType(clazz);
     }
 
 	private TangerineForm getTangerineForm() {

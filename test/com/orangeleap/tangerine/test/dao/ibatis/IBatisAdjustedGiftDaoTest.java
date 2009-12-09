@@ -16,6 +16,9 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Locale;
 
 public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
     
@@ -195,5 +198,45 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         BigDecimal amount = adjustedGiftDao.readTotalAdjustedAmountByConstituentId(200L);
         Assert.assertNotNull(amount);
         Assert.assertEquals(new BigDecimal("-181.00"), amount);
+    }
+
+    @Test(groups = { "testReadAdjustedGiftsBySegmentationReportIds" })
+    public void testReadAdjustedGiftsBySegmentationReportIds() {
+        Set<Long> reportIds = new HashSet<Long>();
+        reportIds.add(50L);
+        List<AdjustedGift> adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "createDate", "ASC", 0, 100, Locale.US);
+        junit.framework.Assert.assertNotNull(adjustedGifts);
+        junit.framework.Assert.assertEquals(2, adjustedGifts.size());
+        for (AdjustedGift adjustedGift : adjustedGifts) {
+            junit.framework.Assert.assertTrue(adjustedGift.getId() == 1L || adjustedGift.getId() == 2L);
+        }
+
+        reportIds = new HashSet<Long>();
+        reportIds.add(0L);
+        adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "createDate", "ASC", 0, 100, Locale.US);
+        junit.framework.Assert.assertNotNull(adjustedGifts);
+        junit.framework.Assert.assertTrue(adjustedGifts.isEmpty());
+
+        reportIds = new HashSet<Long>();
+        reportIds.add(51L);
+        adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "createDate", "ASC", 0, 100, Locale.US);
+        junit.framework.Assert.assertNotNull(adjustedGifts);
+        junit.framework.Assert.assertEquals(1, adjustedGifts.size());
+        junit.framework.Assert.assertEquals(new Long(3L), adjustedGifts.get(0).getId());
+    }
+
+    @Test(groups = { "testReadAdjustedGiftsBySegmentationReportIds" })
+    public void testReadCountAdjustedGiftsBySegmentationReportIds() {
+        Set<Long> reportIds = new HashSet<Long>();
+        reportIds.add(50L);
+        Assert.assertEquals(2, adjustedGiftDao.readCountAdjustedGiftsBySegmentationReportIds(reportIds));
+
+        reportIds = new HashSet<Long>();
+        reportIds.add(51L);
+        Assert.assertEquals(1, adjustedGiftDao.readCountAdjustedGiftsBySegmentationReportIds(reportIds));
+
+        reportIds = new HashSet<Long>();
+        reportIds.add(0L);
+        Assert.assertEquals(0, adjustedGiftDao.readCountAdjustedGiftsBySegmentationReportIds(reportIds));
     }
 }

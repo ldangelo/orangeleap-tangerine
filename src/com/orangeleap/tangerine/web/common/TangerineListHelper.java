@@ -56,55 +56,57 @@ public class TangerineListHelper {
     public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities,
                                    List<Map<String, Object>> paramMapList, boolean useAliasName, boolean useAliasId) {
         int sequence = 0;
-        for (Object thisEntity : entities) {
-            BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(thisEntity);
+        if (entities != null) {
+            for (Object thisEntity : entities) {
+                BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(thisEntity);
 
-            /**
-             * If useAliasId == true, set the aliasId to the ID and reset to ID to the next sequence number
-             */
-            if (useAliasId && beanWrapper.isWritableProperty(StringConstants.ALIAS_ID) && beanWrapper.isReadableProperty(StringConstants.ID)) {
-                beanWrapper.setPropertyValue(StringConstants.ALIAS_ID, beanWrapper.getPropertyValue(StringConstants.ID));
-                beanWrapper.setPropertyValue(StringConstants.ID, sequence++);
-            }
-
-            Map<String, Object> paramMap = new HashMap<String, Object>();
-
-            int x = 0;
-            for (SectionField field : sectionFields) {
-                String fieldPropertyName = field.getFieldPropertyName();
-                if (beanWrapper.isReadableProperty(fieldPropertyName)) {
-                    FieldHandler handler = fieldHandlerHelper.lookupFieldHandler(field.getFieldType());
-
-                    Object displayValue = StringConstants.EMPTY;
-                    if (beanWrapper.isReadableProperty(field.getFieldPropertyName())) {
-                        Object fieldValue = beanWrapper.getPropertyValue(field.getFieldPropertyName());
-                        if (fieldValue instanceof CustomField) {
-                            fieldValue = ((CustomField) fieldValue).getValue();
-                        }
-                        if (field.getFieldPropertyName().equals(StringConstants.ID) || field.getFieldPropertyName().equals(StringConstants.ALIAS_ID)) {
-                            displayValue = fieldValue;
-                        }
-                        else {
-                            displayValue = handler.resolveDisplayValue(request, PropertyAccessorFactory.forBeanPropertyAccess(thisEntity), field, fieldValue);
-                        }
-                    }
-                    if (displayValue instanceof String) {
-                        displayValue = HttpUtil.jsEscape((String) displayValue);
-
-                        String extType = ExtTypeHandler.findExtType(beanWrapper.getPropertyType(field.getFieldPropertyName()));
-                        if (ExtTypeHandler.EXT_BOOLEAN.equals(extType) && ("Y".equalsIgnoreCase((String) displayValue) ||
-                                "yes".equalsIgnoreCase((String) displayValue) ||
-                                "T".equalsIgnoreCase((String) displayValue) ||
-                                "true".equalsIgnoreCase((String) displayValue))) {
-                            displayValue = "true";
-                        }
-                    }
-                    String key = useAliasName && ! StringConstants.ID.equals(fieldPropertyName) && ! StringConstants.ALIAS_ID.equals(fieldPropertyName)
-                            ? new StringBuilder(SORT_KEY_PREFIX).append(x++).toString() : TangerineForm.escapeFieldName(fieldPropertyName);
-                    paramMap.put(key, displayValue);
+                /**
+                 * If useAliasId == true, set the aliasId to the ID and reset to ID to the next sequence number
+                 */
+                if (useAliasId && beanWrapper.isWritableProperty(StringConstants.ALIAS_ID) && beanWrapper.isReadableProperty(StringConstants.ID)) {
+                    beanWrapper.setPropertyValue(StringConstants.ALIAS_ID, beanWrapper.getPropertyValue(StringConstants.ID));
+                    beanWrapper.setPropertyValue(StringConstants.ID, sequence++);
                 }
+
+                Map<String, Object> paramMap = new HashMap<String, Object>();
+
+                int x = 0;
+                for (SectionField field : sectionFields) {
+                    String fieldPropertyName = field.getFieldPropertyName();
+                    if (beanWrapper.isReadableProperty(fieldPropertyName)) {
+                        FieldHandler handler = fieldHandlerHelper.lookupFieldHandler(field.getFieldType());
+
+                        Object displayValue = StringConstants.EMPTY;
+                        if (beanWrapper.isReadableProperty(field.getFieldPropertyName())) {
+                            Object fieldValue = beanWrapper.getPropertyValue(field.getFieldPropertyName());
+                            if (fieldValue instanceof CustomField) {
+                                fieldValue = ((CustomField) fieldValue).getValue();
+                            }
+                            if (field.getFieldPropertyName().equals(StringConstants.ID) || field.getFieldPropertyName().equals(StringConstants.ALIAS_ID)) {
+                                displayValue = fieldValue;
+                            }
+                            else {
+                                displayValue = handler.resolveDisplayValue(request, PropertyAccessorFactory.forBeanPropertyAccess(thisEntity), field, fieldValue);
+                            }
+                        }
+                        if (displayValue instanceof String) {
+                            displayValue = HttpUtil.jsEscape((String) displayValue);
+
+                            String extType = ExtTypeHandler.findExtType(beanWrapper.getPropertyType(field.getFieldPropertyName()));
+                            if (ExtTypeHandler.EXT_BOOLEAN.equals(extType) && ("Y".equalsIgnoreCase((String) displayValue) ||
+                                    "yes".equalsIgnoreCase((String) displayValue) ||
+                                    "T".equalsIgnoreCase((String) displayValue) ||
+                                    "true".equalsIgnoreCase((String) displayValue))) {
+                                displayValue = "true";
+                            }
+                        }
+                        String key = useAliasName && ! StringConstants.ID.equals(fieldPropertyName) && ! StringConstants.ALIAS_ID.equals(fieldPropertyName)
+                                ? new StringBuilder(SORT_KEY_PREFIX).append(x++).toString() : TangerineForm.escapeFieldName(fieldPropertyName);
+                        paramMap.put(key, displayValue);
+                    }
+                }
+                paramMapList.add(paramMap);
             }
-            paramMapList.add(paramMap);
         }
     }
 

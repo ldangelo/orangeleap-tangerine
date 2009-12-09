@@ -23,6 +23,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import java.util.List;
 import java.util.Map;
 import java.util.Locale;
+import java.util.Set;
 import java.math.BigDecimal;
 
 public interface AdjustedGiftDao {
@@ -41,4 +42,9 @@ public interface AdjustedGiftDao {
     int readCountByConstituentGiftId(Long constituentId, Long giftId);
 
     BigDecimal readTotalAdjustedAmountByConstituentId(Long constituentId);
+
+    List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
+
+    int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds);
 }

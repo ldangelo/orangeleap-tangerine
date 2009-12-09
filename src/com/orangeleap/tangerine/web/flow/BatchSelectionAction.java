@@ -27,7 +27,10 @@ import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchService;
@@ -83,6 +86,9 @@ public class BatchSelectionAction {
 
     @Resource(name = "giftService")
     private GiftService giftService;
+
+    @Resource(name = "adjustedGiftService")
+    private AdjustedGiftService adjustedGiftService;
 
     @Resource(name = "pageCustomizationService")
     protected PageCustomizationService pageCustomizationService;
@@ -267,9 +273,7 @@ public class BatchSelectionAction {
 
         /* Then clear out and add all segmentations */
         batch.clearAddAllPostBatchEntriesForSegmentations(pickedSegmentationIds);
-        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            appendModelForGift(request, batch, model, sortInfo);
-        }
+        createJsonModel(request, batch, model, sortInfo);
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
         
         return model;
@@ -287,14 +291,14 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
-    private void appendModelForGift(HttpServletRequest request, PostBatch batch, Map model, SortInfo sort) {
+    private void createJsonModel(HttpServletRequest request, PostBatch batch, Map model, SortInfo sort) {
         /* MetaData */
         final Map<String, Object> metaDataMap = initMetaData(sort.getStart(), sort.getLimit());
         metaDataMap.put(StringConstants.LIMIT, sort.getLimit());
 
-        final List<SectionField> allFields = tangerineListHelper.findSectionFields("giftList");
+        final List<SectionField> allFields = tangerineListHelper.findSectionFields(batch.getBatchType() + "List");
 
-        final BeanWrapper bw = createDefaultGift();
+        final BeanWrapper bw = createDefaultEntity(batch);
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
 
         addIdConstituentIdFields(fieldList, bw);
@@ -335,12 +339,22 @@ public class BatchSelectionAction {
         model.put(StringConstants.META_DATA, metaDataMap);
 
         Set<Long> reportIds = batch.getEntrySegmentationIds();
-        model.put(StringConstants.TOTAL_ROWS, giftService.readCountGiftsBySegmentationReportIds(reportIds));
-        final List<Gift> gifts = giftService.readGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
+        List rowObjects = null;
+        int totalRows = 0;
+        if (StringConstants.GIFT.equals(batch.getBatchType())) {
+            totalRows = giftService.readCountGiftsBySegmentationReportIds(reportIds);
+            rowObjects = giftService.readGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
+        }
+        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+            totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(reportIds);
+            rowObjects = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
+        }
+
+        model.put(StringConstants.TOTAL_ROWS, totalRows);
 
         List<Map<String, Object>> rowList = new ArrayList<Map<String, Object>>();
-        tangerineListHelper.addListFieldsToMap(request, allFields, gifts, rowList, false, false); // this needs to be 'allFields' to include the 'id' property
-        addConstituentIdsToRows(rowList, gifts);
+        tangerineListHelper.addListFieldsToMap(request, allFields, rowObjects, rowList, false, false); // this needs to be 'allFields' to include the 'id' property
+        addConstituentIdsToRows(rowList, rowObjects);
         model.put(StringConstants.ROWS, rowList);
     }
 
@@ -356,31 +370,51 @@ public class BatchSelectionAction {
             final Map<String, Object> constituentIdMap = new HashMap<String, Object>();
             constituentIdMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
             constituentIdMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
-            constituentIdMap.put(StringConstants.TYPE, "string");
+            constituentIdMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
             constituentIdMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID));
             fieldList.add(constituentIdMap);
         }
     }
 
-    private void addConstituentIdsToRows(final List<Map<String, Object>> rowList, final List<Gift> gifts) {
+    private void addConstituentIdsToRows(final List<Map<String, Object>> rowList, final List rows) {
         for (Map<String, Object> objectMap : rowList) {
             Long id = (Long) objectMap.get(StringConstants.ID);
-            for (Gift gift : gifts) {
-                if (gift.getId().equals(id)) {
-                    objectMap.put(StringConstants.CONSTITUENT_ID, (gift.getConstituent() == null || gift.getConstituent().getId() == null) ? gift.getConstituentId() : gift.getConstituent().getId());
-                    break;
+            for (Object thisRow : rows) {
+                BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(thisRow);
+                if (bw.isReadableProperty(StringConstants.ID) && ((Long) bw.getPropertyValue(StringConstants.ID)).equals(id)) {
+                    Long constituentId = null;
+                    if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null) {
+                        constituentId = (Long) bw.getPropertyValue(StringConstants.CONSTITUENT_ID);
+                    }
+                    else if (bw.isReadableProperty(StringConstants.CONSTITUENT_DOT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_DOT_ID) != null) {
+                        constituentId = (Long) bw.getPropertyValue(StringConstants.CONSTITUENT_DOT_ID); 
+                    }
+                    if (constituentId != null) {
+                        objectMap.put(StringConstants.CONSTITUENT_ID, constituentId);
+                        break;
+                    }
                 }
             }
         }
     }
 
-    private BeanWrapper createDefaultGift() {
-        // Mock objects for introspection
-        Gift gift = new Gift();
+    /**
+     * Create a mock entity object for introspection
+     * @param batch the batch to create a mock default entity object for
+     * @return a BeanWrapper of the mock entity object
+     */
+    private BeanWrapper createDefaultEntity(PostBatch batch) {
+        AbstractPaymentInfoEntity entity = null;
+        if (StringConstants.GIFT.equals(batch.getBatchType())) {
+            entity = new Gift();
+        }
+        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+            entity = new AdjustedGift();
+        }
         Constituent constituent = new Constituent(0L, new Site());
-        gift.setConstituent(constituent);
-        gift.setPaymentSource(new PaymentSource(constituent));
-        return PropertyAccessorFactory.forBeanPropertyAccess(gift);
+        entity.setConstituent(constituent);
+        entity.setPaymentSource(new PaymentSource(constituent));
+        return PropertyAccessorFactory.forBeanPropertyAccess(entity);
     }
 
     @SuppressWarnings("unchecked")
@@ -472,10 +506,7 @@ public class BatchSelectionAction {
         fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
         fieldList.add(fieldMap);
 
-        BeanWrapper bean = null;
-        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            bean = createDefaultGift();
-        }
+        BeanWrapper bean = createDefaultEntity(batch);
         if (bean != null) {
             batch.clearUpdateFields();
             for (String thisKey : enteredParams.keySet()) {
@@ -512,13 +543,29 @@ public class BatchSelectionAction {
         }
         metaDataMap.put(StringConstants.FIELDS, fieldList);
 
+        List rows = null;
+        final Map<String, Object> oldRowMap = new HashMap<String, Object>();
+        final Map<String, Object> newRowMap = new HashMap<String, Object>();
         if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            final List<Gift> gifts = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
-            for (Gift gift : gifts) {
-                final Map<String, Object> oldRowMap = new HashMap<String, Object>();
-                final Map<String, Object> newRowMap = new HashMap<String, Object>();
+            rows = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
+        }
+        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+            rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
+        }
+        contrastUpdatedValues(rows, oldRowMap, newRowMap, rowValues, enteredParams);
 
-                BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(gift);
+        model.put(StringConstants.ROWS, rowValues);
+        model.put(StringConstants.TOTAL_ROWS, rowValues.size());
+
+        return model;
+    }
+
+    private void contrastUpdatedValues(final List rows, final Map<String, Object> oldRowMap,
+                                       final Map<String, Object> newRowMap, final List<Map<String, Object>> rowValues,
+                                       final Map<String, Object> enteredParams) {
+        if (rows != null) {
+            for (Object thisRow : rows) {
+                BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(thisRow);
                 oldRowMap.put(StringConstants.TYPE, TangerineMessageAccessor.getMessage("before"));
                 newRowMap.put(StringConstants.TYPE, TangerineMessageAccessor.getMessage("after"));
                 oldRowMap.put(StringConstants.ID, "old-" + bw.getPropertyValue(StringConstants.ID));
@@ -543,11 +590,6 @@ public class BatchSelectionAction {
                 rowValues.add(newRowMap); // 1 row for the new value
             }
         }
-
-        model.put(StringConstants.ROWS, rowValues);
-        model.put(StringConstants.TOTAL_ROWS, rowValues.size());
-
-        return model;
     }
 
     @SuppressWarnings("unchecked")

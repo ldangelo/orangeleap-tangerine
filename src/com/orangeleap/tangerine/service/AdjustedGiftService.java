@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Locale;
+import java.util.Set;
 
 public interface AdjustedGiftService {
 
@@ -66,4 +67,8 @@ public interface AdjustedGiftService {
 	BigDecimal findCurrentTotalPaidAdjustedAmount(List<AdjustedGift> adjustedGifts);
 
 	BigDecimal findCurrentTotalPaidAdjustedAmount(Long originalGiftId);
+
+    List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds, SortInfo sort, Locale locale);
+
+    int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds);
 }

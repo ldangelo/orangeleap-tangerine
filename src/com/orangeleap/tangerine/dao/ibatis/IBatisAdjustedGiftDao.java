@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @Repository("adjustedGiftDAO")
 public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<AdjustedGift> implements AdjustedGiftDao {
@@ -115,5 +117,30 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
         Map<String,Object> params = setupParams();
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
         return (BigDecimal) getSqlMapClientTemplate().queryForObject("SELECT_SUM_ADJUSTED_GIFTS_AMOUNT_BY_CONSTITUENT_ID", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.ADJUSTED_GIFT, "ADJUSTED_GIFT.ADJUSTED_GIFT_LIST_RESULT",
+                sortPropertyName, direction, start, limit, locale);
+        params.put("reportIds", new ArrayList<Long>(reportIds));
+
+        return getSqlMapClientTemplate().queryForList("SELECT_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
+    }
+
+    @Override
+    public int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds);
+        }
+        Map<String,Object> params = setupParams();
+        params.put("reportIds", new ArrayList<Long>(reportIds));
+        return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
     }
 }

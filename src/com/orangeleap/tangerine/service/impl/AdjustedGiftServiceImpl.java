@@ -1,23 +1,5 @@
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
 import com.orangeleap.tangerine.controller.validator.AdjustedDistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
@@ -37,6 +19,23 @@ import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Service("adjustedGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -339,5 +338,22 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
             logger.trace("readTotalAdjustedAmountByConstituentId: constituentId = " + constituentId);
         }
         return adjustedGiftDao.readTotalAdjustedAmountByConstituentId(constituentId);
+    }
+
+    @Override
+    public List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds + " sort = " + sort);
+        }
+        return adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+    }
+
+    @Override
+    public int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds);
+        }
+        return adjustedGiftDao.readCountAdjustedGiftsBySegmentationReportIds(reportIds);
     }
 }

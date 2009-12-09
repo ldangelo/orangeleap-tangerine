@@ -58,6 +58,12 @@ public class SectionFieldTag extends AbstractTag {
 	private FieldService fieldService;
 	private String pageName;
     private String gridName;
+    private String entityUrl;
+    private String entityIdKey;
+    private String entitySecFldName;
+    private String leafEntityUrl;
+    private String leafEntityIdKey;
+    private String leafEntitySecFldName;
 	private FieldHandlerHelper fieldHandlerHelper;
 	private GridHandler gridHandler;
 
@@ -67,6 +73,30 @@ public class SectionFieldTag extends AbstractTag {
 
     public void setGridName(String gridName) {
         this.gridName = gridName;
+    }
+
+    public void setEntityUrl(String entityUrl) {
+        this.entityUrl = entityUrl;
+    }
+
+    public void setEntityIdKey(String entityIdKey) {
+        this.entityIdKey = entityIdKey;
+    }
+
+    public void setEntitySecFldName(String entitySecFldName) {
+        this.entitySecFldName = entitySecFldName;
+    }
+
+    public void setLeafEntityUrl(String leafEntityUrl) {
+        this.leafEntityUrl = leafEntityUrl;
+    }
+
+    public void setLeafEntityIdKey(String leafEntityIdKey) {
+        this.leafEntityIdKey = leafEntityIdKey;
+    }
+
+    public void setLeafEntitySecFldName(String leafEntitySecFldName) {
+        this.leafEntitySecFldName = leafEntitySecFldName;
     }
 
     @Override
@@ -258,7 +288,6 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("getState: function() {\n");
                         sb.append("var config = {};\n");
                         sb.append("config.start = this.cursor;\n");
-//                        sb.append("config.limit = this.pageSize;\n");
                         sb.append("if (OrangeLeap.thisSiteName) {\n");
                         sb.append("config.siteName = OrangeLeap.thisSiteName;\n");
                         sb.append("}\n");
@@ -279,9 +308,6 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("if (state.start) {\n");
                         sb.append("this.cursor = state.start;\n");
                         sb.append("}\n");
-//                        sb.append("if (state.limit) {\n");
-//                        sb.append("this.pageSize = state.limit;\n");
-//                        sb.append("}\n");
                         sb.append("}\n");
                         sb.append("}\n");
                         sb.append("},\n");
@@ -401,18 +427,18 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("var rec = grid.getSelectionModel().getSelected();\n");
                     sb.append("Ext.get(document.body).mask('").append(TangerineMessageAccessor.getMessage("loadingRecord")).append("');\n");
                     sb.append("window.location.href = \"");
-                    if (StringConstants.PAYMENT_SOURCE.equals(entityType)) {
-                        sb.append("paymentManagerEdit");
+
+                    if ( ! StringUtils.hasText(entityUrl)) {
+                        entityUrl = new StringBuilder(entityType).append(".htm").toString();
                     }
-                    else if (StringConstants.ADDRESS.equals(entityType) || StringConstants.PHONE.equals(entityType) || StringConstants.EMAIL.equals(entityType)) {
-                        sb.append(entityType).append("ManagerEdit");
+                    if ( ! StringUtils.hasText(entityIdKey)) {
+                        entityIdKey = StringConstants.ID;
                     }
-                    else {
-                        sb.append(entityType);
-                    }
-                    sb.append(".htm?");
-                    sb.append(entityType).append("Id=\" + rec.data.id");
-                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                    sb.append(entityUrl).append("?");
+                    sb.append(entityType).append("Id=\" + rec.get('").append(entityIdKey).append("')");
+                    if ((bw.isReadableProperty(StringConstants.CONSTITUENT) && bw.getPropertyValue(StringConstants.CONSTITUENT) != null &&
+                            ((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
+                            (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null)) {
                         sb.append(" + \"&constituentId=");
                         if (isListGrid) {
                             if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
@@ -568,7 +594,15 @@ public class SectionFieldTag extends AbstractTag {
                     }
 
                     int z = 0;
+                    String parentEntitySecFldAlias = null;
+                    String childEntitySecFldAlias = null;
                     for (SectionField sectionFld : fields) {
+                        if (StringUtils.hasText(entitySecFldName) && sectionFld.getFieldPropertyName().equals(entitySecFldName)) {
+                            parentEntitySecFldAlias = sectionFld.getFieldPropertyName();
+                        }
+                        if (StringUtils.hasText(leafEntitySecFldName) && sectionFld.getFieldPropertyName().equals(leafEntitySecFldName)) {
+                            childEntitySecFldAlias = sectionFld.getFieldPropertyName();
+                        }
                         sb.append("{name: 'a").append(z).append("', ");
                         sb.append("mapping: 'a").append(z).append("', ");
                         String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
@@ -711,7 +745,6 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("getState: function() {\n");
                     sb.append("var config = {};\n");
                     sb.append("config.start = this.cursor;\n");
-//                    sb.append("config.limit = this.pageSize;\n");
                     sb.append("var queryParams = OrangeLeap.getQueryParams();\n");
                     sb.append("if (queryParams) {\n");
                     sb.append("var thisConstituentId = queryParams['constituentId'];\n");
@@ -729,9 +762,6 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("if (state.start) {\n");
                     sb.append("this.cursor = state.start;\n");
                     sb.append("}\n");
-//                    sb.append("if (state.limit) {\n");
-//                    sb.append("this.pageSize = state.limit;\n");
-//                    sb.append("}\n");
                     sb.append("}\n");
                     sb.append("}\n");
                     sb.append("},\n");
@@ -752,27 +782,27 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("var rec = grid.getSelectionModel().getSelected();\n");
                     sb.append("if (rec) {\n");
                     sb.append("Ext.get(document.body).mask('").append(TangerineMessageAccessor.getMessage("loadingRecord")).append("');\n");
-                    sb.append("var entityArray = rec.id.split(\"-\");\n");
-                    sb.append("var entityType = entityArray[0];\n");
-                    sb.append("var entityId = entityArray[1];\n");
-                    sb.append("if (\"").append(StringConstants.PAYMENT_SOURCE).append("\" == entityType) {\n");
-                    sb.append("entityType = \"paymentManagerEdit\";\n");
-                    sb.append("}\n");
-                    sb.append("else if (\"").append(StringConstants.ADDRESS).append("\" == entityType || \"").append(StringConstants.PHONE).append("\" == entityType || \"").append(StringConstants.EMAIL).append("\" == entityType) {\n");
-                    sb.append("entityType += \"ManagerEdit\";\n");
-                    sb.append("}\n");
-                    sb.append("window.location.href = entityType + \".htm?\" + entityType + \"Id=\" + entityId");
-                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
-                        sb.append(" + \"&constituentId=");
-                        if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
-                            sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
-                        }
-                        else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
-                            sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
-                        }
-                        sb.append("\"");
+
+                    /* Have to have parent and child URLs and Keys specified to invoke */ 
+                    if (StringUtils.hasText(entityUrl) && StringUtils.hasText(entityIdKey) && parentEntitySecFldAlias != null &&
+                            StringUtils.hasText(leafEntityUrl) && StringUtils.hasText(leafEntityIdKey) && childEntitySecFldAlias != null) {
+                        sb.append("if (rec.get('_is_leaf')) {\n");
+                        sb.append("window.location.href = \"").append(leafEntityUrl).append("?").append(leafEntityIdKey).append("=\" + rec.get('").append(parentEntitySecFldAlias).append("')"); // this is the child
+                        writeConstituentId(bw, sb);
+                        sb.append("}\n");
+                        sb.append("else {\n");
+                        sb.append("window.location.href = \"").append(entityUrl).append("?").append(entityIdKey).append("=\" + rec.get('").append(childEntitySecFldAlias).append("')");// this is the parent
+                        writeConstituentId(bw, sb);
+                        sb.append("}\n");
                     }
-                    sb.append(";\n");
+                    else {
+                        sb.append("var entityArray = rec.id.split(\"-\");\n");
+                        sb.append("var entityType = entityArray[0];\n");
+                        sb.append("var entityId = entityArray[1];\n");
+                        sb.append("window.location.href = entityType + \".htm?\" + entityType + \"Id=\" + entityId");
+                        writeConstituentId(bw, sb);
+                    }
+                    
                     sb.append("}\n");
                     sb.append("}\n");
                     sb.append("},\n");
@@ -1001,6 +1031,22 @@ public class SectionFieldTag extends AbstractTag {
 			}
 		}
 	}
+
+    private void writeConstituentId(BeanWrapper bw, StringBuilder sb) {
+        if ((bw.isReadableProperty(StringConstants.CONSTITUENT) && bw.getPropertyValue(StringConstants.CONSTITUENT) != null &&
+                ((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
+                (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null)) {
+            sb.append(" + \"&constituentId=");
+            if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
+                sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+            }
+            else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+                sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+            }
+            sb.append("\"");
+        }
+        sb.append(";\n");
+    }
 
     public static String getInitDirection(List<SectionField> fields) {
         return FieldType.DATE.equals(fields.get(0).getFieldType()) ||

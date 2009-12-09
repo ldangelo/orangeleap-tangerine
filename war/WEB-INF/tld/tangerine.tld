@@ -12,7 +12,6 @@
     	<name>fields</name>
      	<tag-class>com.orangeleap.tangerine.web.customization.tag.fields.SectionFieldTag</tag-class>
      	<body-content>empty</body-content>
-     	<description></description>
      	<attribute>
             <name>pageName</name>
             <required>true</required>
@@ -24,7 +23,49 @@
            <description>Use this to alias an entity (for example, 'softGift' for 'gift') </description>
            <required>false</required>
            <rtexprvalue>true</rtexprvalue>
-       </attribute>
+        </attribute>
+
+        <attribute>
+           <name>entityUrl</name>
+           <description>the URL to direct to (normally defaults to entityType - like 'gift.htm'). Needs the .htm suffix.  If using with a tree grid, the parent node URL</description>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+        <attribute>
+           <name>entityIdKey</name>
+           <description>the key of the entity ID (normally defaults to entityType + 'Id' - like 'giftId').  If using with a tree grid, the parent node key</description>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+        <attribute>
+           <name>entitySecFldName</name>
+           <description>the name of the section field that contains the entity ID.  If using with a tree grid, the parent node's section field</description>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+        <attribute>
+           <name>leafEntityUrl</name>
+           <description>for a tree grid leaf, the URL to direct to (normally defaults to entityType - like 'gift.htm')</description>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+        <attribute>
+           <name>leafEntityIdKey</name>
+           <description>for a tree grid leaf, the key of the entity ID (normally defaults to entityType + 'Id' - like 'giftId')</description>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+        <attribute>
+           <name>leafEntitySecFldName</name>
+           <description>the name of the section field that contains the entity ID.</description>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
 </taglib>

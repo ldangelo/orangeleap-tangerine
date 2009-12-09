@@ -10,6 +10,6 @@
         </body>
     </html>
     <page:param name="scripts">
-        <tangerine:fields pageName="paymentSourceList"/>
+        <tangerine:fields pageName="paymentSourceList" entityUrl="paymentManagerEdit.htm"/>
     </page:param>
 </page:applyDecorator>

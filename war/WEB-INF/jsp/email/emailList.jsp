@@ -10,6 +10,6 @@
         </body>
     </html>
     <page:param name="scripts">
-        <tangerine:fields pageName="emailList"/>
+        <tangerine:fields pageName="emailList" entityUrl="emailManagerEdit.htm"/>
     </page:param>
 </page:applyDecorator>

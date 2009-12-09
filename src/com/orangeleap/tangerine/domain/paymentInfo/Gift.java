@@ -81,16 +81,6 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 	}
 	
 	
-	public DistributionLine getFirstDistributionLine() {
-		if (getDistributionLines() == null || getDistributionLines().size() == 0) {
-			DistributionLine dl = new DistributionLine(getConstituent());
-			dl.setGiftId(getId());
-			return dl;
-		}
-		return getDistributionLines().get(0);
-	}
-
-
 	public String getGiftStatus() {
 		return giftStatus;
 	}

@@ -75,6 +75,15 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         line.setDefaults();
         lines.add(line);
     }
+    
+	public DistributionLine getFirstDistributionLine() {
+		if (getDistributionLines() == null || getDistributionLines().size() == 0) {
+			DistributionLine dl = new DistributionLine(getConstituent());
+			dl.setGiftId(getId());
+			return dl;
+		}
+		return getDistributionLines().get(0);
+	}
 
     public String getComments() {
         return comments;

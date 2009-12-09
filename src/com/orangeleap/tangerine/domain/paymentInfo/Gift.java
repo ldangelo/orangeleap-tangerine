@@ -60,6 +60,7 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 	private String paymentMessage;
 	private String avsMessage;
 	private GiftEntryType entryType = GiftEntryType.MANUAL;
+	private Long aliasGiftId;
 
 	private List<Long> associatedPledgeIds;
 	private List<Long> associatedRecurringGiftIds;
@@ -276,6 +277,17 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 	public void setAdjustedGifts(List<AdjustedGift> adjustedGifts) {
 		this.adjustedGifts = adjustedGifts;
 	}
+	
+	
+	// not persisted - controller use only
+	public void setAliasGiftId(Long aliasGiftId) {
+		this.aliasGiftId = aliasGiftId;
+	}
+
+	public Long getAliasGiftId() {
+		return aliasGiftId;
+	}
+
 
 	public Boolean getIsAuthorized() {
 		return !StringUtils.trimToEmpty(authCode).equals("");

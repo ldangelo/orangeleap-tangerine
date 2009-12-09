@@ -76,6 +76,7 @@ public class DistroLineListController extends TangerineJsonListController {
             // Returns gifts with one and only one filtered matching distro line of interest (where custom field constituentReferenceCustomField = constituent id)
             // Multiple lines with same gift id may be returned since this is by distro line id, not gift id.
             List<Gift> gifts = giftService.readGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, sort, request.getLocale()); 
+            makeUniqueIds(gifts);
             addListFieldsToMap(request, sectionFields, gifts, list, true);
 
             Map<Long,Long> adjustGiftCountMap = new HashMap<Long,Long>(); //adjustedGiftService.countAdjustedGiftDistroLinesByOriginalGiftId(gifts, constituentReferenceCustomField);
@@ -97,4 +98,13 @@ public class DistroLineListController extends TangerineJsonListController {
         map.put("success", Boolean.TRUE);
         return map;
     }
+    
+    private void makeUniqueIds(List<Gift> gifts) {
+    	Long i = 0L;
+    	for (Gift g: gifts) {
+    		g.setAliasGiftId(g.getId());
+    		g.setId(i++);
+    	}
+    }
+    
 }

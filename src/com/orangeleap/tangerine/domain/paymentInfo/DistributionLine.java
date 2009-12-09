@@ -42,8 +42,6 @@ public class DistributionLine extends AbstractCustomizableEntity {
     private Long recurringGiftId;
     private Long adjustedGiftId;
     private Constituent constituent;
-    private Gift gift;  
-    private AdjustedGift adjustedGift;  
 
     public DistributionLine() {
     }
@@ -157,27 +155,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
     public void setConstituent(Constituent constituent) {
         this.constituent = constituent;
     }
-    
-    public void setGift(Gift gift) {
-		this.gift = gift;
-	}
-    
-    // Note: This is only populated in certain use cases such as soft gift list view
-	public Gift getGift() {
-		return gift;
-	}
-	
-	public void setAdjustedGift(AdjustedGift adjustedGift) {
-		this.adjustedGift = adjustedGift;
-	}
 
-    // Note: This is only populated in certain use cases such as soft gift list view
-	public AdjustedGift getAdjustedGift() {
-		return adjustedGift;
-	}
-
-
-	
     public boolean isValid() {
         boolean valid = false;
         if (amount != null) {
@@ -246,5 +224,4 @@ public class DistributionLine extends AbstractCustomizableEntity {
             append(super.toString()).append("giftId", giftId).append("pledgeId", pledgeId).append("recurringGiftId", recurringGiftId).append("adjustedGiftId", adjustedGiftId).
             toString();
     }
-
 }

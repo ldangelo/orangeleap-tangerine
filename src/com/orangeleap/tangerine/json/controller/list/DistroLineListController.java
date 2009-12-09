@@ -31,7 +31,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
@@ -77,7 +76,7 @@ public class DistroLineListController extends TangerineJsonListController {
             // Returns gifts with one and only one filtered matching distro line of interest (where custom field constituentReferenceCustomField = constituent id)
             // Multiple lines with same gift id may be returned since this is by distro line id, not gift id.
             List<Gift> gifts = giftService.readGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, sort, request.getLocale()); 
-            addListFieldsToMap(request, sectionFields, getDistroLineList(gifts), list, true);
+            addListFieldsToMap(request, sectionFields, gifts, list, true);
 
             Map<Long,Long> adjustGiftCountMap = new HashMap<Long,Long>(); //adjustedGiftService.countAdjustedGiftDistroLinesByOriginalGiftId(gifts, constituentReferenceCustomField);
             setParentNodeAttributes(list, adjustGiftCountMap, StringConstants.GIFT);
@@ -97,18 +96,5 @@ public class DistroLineListController extends TangerineJsonListController {
         map.put("totalRows", count);
         map.put("success", Boolean.TRUE);
         return map;
-    }
-    
-    // These gifts only have one distro line each.
-    private List<DistributionLine> getDistroLineList(List<Gift> gifts) {
-    	List<DistributionLine> result = new ArrayList<DistributionLine>();
-    	for (Gift g: gifts) {
-    		if (g.getDistributionLines() != null && g.getDistributionLines().size() > 0) {
-	    		DistributionLine dl = g.getDistributionLines().get(0);
-	    		dl.setGift(g);
-	    		result.add(dl);
-    		}    		
-    	}
-    	return result;
     }
 }

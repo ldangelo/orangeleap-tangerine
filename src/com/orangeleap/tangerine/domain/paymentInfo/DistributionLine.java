@@ -43,6 +43,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
     private Long adjustedGiftId;
     private Constituent constituent;
     private Gift gift;  
+    private AdjustedGift adjustedGift;  
 
     public DistributionLine() {
     }
@@ -165,6 +166,16 @@ public class DistributionLine extends AbstractCustomizableEntity {
 	public Gift getGift() {
 		return gift;
 	}
+	
+	public void setAdjustedGift(AdjustedGift adjustedGift) {
+		this.adjustedGift = adjustedGift;
+	}
+
+    // Note: This is only populated in certain use cases such as soft gift list view
+	public AdjustedGift getAdjustedGift() {
+		return adjustedGift;
+	}
+
 
 	
     public boolean isValid() {
@@ -236,5 +247,4 @@ public class DistributionLine extends AbstractCustomizableEntity {
             toString();
     }
 
-	
 }

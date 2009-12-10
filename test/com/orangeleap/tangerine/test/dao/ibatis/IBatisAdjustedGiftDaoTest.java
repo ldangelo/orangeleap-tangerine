@@ -204,7 +204,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
     public void testReadAdjustedGiftsBySegmentationReportIds() {
         Set<Long> reportIds = new HashSet<Long>();
         reportIds.add(50L);
-        List<AdjustedGift> adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "createDate", "ASC", 0, 100, Locale.US);
+        List<AdjustedGift> adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "adjustedAmount", "ASC", 0, 100, Locale.US);
         junit.framework.Assert.assertNotNull(adjustedGifts);
         junit.framework.Assert.assertEquals(2, adjustedGifts.size());
         for (AdjustedGift adjustedGift : adjustedGifts) {
@@ -213,13 +213,13 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
 
         reportIds = new HashSet<Long>();
         reportIds.add(0L);
-        adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "createDate", "ASC", 0, 100, Locale.US);
+        adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "adjustedAmount", "ASC", 0, 100, Locale.US);
         junit.framework.Assert.assertNotNull(adjustedGifts);
         junit.framework.Assert.assertTrue(adjustedGifts.isEmpty());
 
         reportIds = new HashSet<Long>();
         reportIds.add(51L);
-        adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "createDate", "ASC", 0, 100, Locale.US);
+        adjustedGifts = adjustedGiftDao.readAdjustedGiftsBySegmentationReportIds(reportIds, "adjustedAmount", "ASC", 0, 100, Locale.US);
         junit.framework.Assert.assertNotNull(adjustedGifts);
         junit.framework.Assert.assertEquals(1, adjustedGifts.size());
         junit.framework.Assert.assertEquals(new Long(3L), adjustedGifts.get(0).getId());

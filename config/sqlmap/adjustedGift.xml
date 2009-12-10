@@ -4,7 +4,7 @@
 
 	<resultMap id="MIN_ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift" groupBy="id">
 		<result property="id" column="ADJUSTED_GIFT_ID" jdbcType="BIGINT" />
-		<result property="adjustedAmount" column="ADJUSTED_AMOUNT" jdbcType="DECIMAL" />
+		<result property="adjustedAmount" column="ADJUSTED_GIFT_ADJUSTED_AMOUNT" jdbcType="DECIMAL" />
 		<result property="adjustedReason" column="ADJUSTED_REASON" jdbcType="VARCHAR"/>
 		<result property="adjustedStatus" column="ADJUSTED_STATUS" jdbcType="VARCHAR"/>
 		<result property="adjustedTransactionDate" column="ADJUSTED_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
@@ -43,7 +43,7 @@
 	</resultMap>
 
 	<sql id="ADJUSTED_GIFT_COLS_FRAGMENT">
-		ag.ADJUSTED_GIFT_ID, ag.ADJUSTED_AMOUNT, ag.ADJUSTED_REASON, ag.ADJUSTED_STATUS, ag.ADJUSTED_TRANSACTION_DATE, ag.ADJUSTED_TYPE, 
+		ag.ADJUSTED_GIFT_ID, ag.ADJUSTED_AMOUNT as ADJUSTED_GIFT_ADJUSTED_AMOUNT, ag.ADJUSTED_REASON, ag.ADJUSTED_STATUS, ag.ADJUSTED_TRANSACTION_DATE, ag.ADJUSTED_TYPE, 
 		ag.ADJUSTED_PAYMENT_REQUIRED, ag.ADJUSTED_PAYMENT_TO, 
 		ag.AUTH_CODE as ADJUSTED_AUTH_CODE, ag.CHECK_NUMBER as ADJUSTED_CHECK_NUMBER,
 		ag.COMMENTS as ADJUSTED_COMMENTS, ag.GIFT_ID as ORIGINAL_GIFT_ID, ag.PAYMENT_MESSAGE as ADJUSTED_PAYMENT_MESSAGE,

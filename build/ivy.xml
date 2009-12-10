@@ -40,6 +40,11 @@
         </dependency>
     
     
+        <!-- Groovy -->
+        <dependency org="org.codehaus.groovy" name="groovy-all" transitive="false" rev="1.5.8">
+            <artifact name="groovy-all" type="jar"/>
+            <artifact name="groovy-all" type="source" ext="jar" classifier="sources" conf="sources"/>
+        </dependency>
     
 
         <!-- Commons -->

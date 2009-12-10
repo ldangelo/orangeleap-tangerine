@@ -326,7 +326,7 @@ public class BatchSelectionAction {
         metaDataMap.put(StringConstants.FIELDS, fieldList);
 
         final Map<String, String> sortInfoMap = new HashMap<String, String>();
-        if ( ! StringUtils.hasText(sort.getSort())) {
+        if ( ! StringUtils.hasText(sort.getSort()) || ! bw.isReadableProperty(sort.getSort())) {
             final List<SectionField> fieldsExceptId = pageCustomizationService.getFieldsExceptId(allFields);
             sort.setSort(TangerineForm.escapeFieldName(fieldsExceptId.get(0).getFieldPropertyName()));
             sort.setDir(SectionFieldTag.getInitDirection(fieldsExceptId));
@@ -486,10 +486,16 @@ public class BatchSelectionAction {
         final Map<String, Object> metaDataMap = initMetaData(sortInfo.getStart(),
                 (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
 
+        BeanWrapper bean = createDefaultEntity(batch);
+
         final Map<String, String> sortInfoMap = new HashMap<String, String>();
+        if ( ! bean.isReadableProperty(sortInfo.getSort())) {  // If the sort key is not one of the bean's properties, use the ID as default
+            sortInfo.setSort(StringConstants.ID);
+        }
         sortInfoMap.put(StringConstants.FIELD, sortInfo.getSort());
         sortInfoMap.put(StringConstants.DIRECTION, sortInfo.getDir());
         metaDataMap.put(StringConstants.SORT_INFO, sortInfoMap);
+
         model.put(StringConstants.META_DATA, metaDataMap);
 
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
@@ -507,57 +513,52 @@ public class BatchSelectionAction {
         fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
         fieldList.add(fieldMap);
 
-        BeanWrapper bean = createDefaultEntity(batch);
-        if (bean != null) {
-            batch.clearUpdateFields();
-            // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
-            for (String thisKey : enteredParams.keySet()) {
-                String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
-                FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-                if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
-                    fieldMap = new HashMap<String, Object>();
+        batch.clearUpdateFields();
+        // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
+        for (String thisKey : enteredParams.keySet()) {
+            String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
+            FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+            if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
+                fieldMap = new HashMap<String, Object>();
 
-                    // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
-                    batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
+                // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
+                batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
 
-                    String escapedFieldName = TangerineForm.escapeFieldName(fieldDef.getFieldName());
-                    fieldMap.put(StringConstants.NAME, escapedFieldName);
-                    fieldMap.put(StringConstants.MAPPING, escapedFieldName);
+                String escapedFieldName = TangerineForm.escapeFieldName(fieldDef.getFieldName());
+                fieldMap.put(StringConstants.NAME, escapedFieldName);
+                fieldMap.put(StringConstants.MAPPING, escapedFieldName);
 
-                    String propertyName = fieldDef.getFieldName();
-                    if (bean.getPropertyValue(propertyName) instanceof CustomField) {
-                        propertyName += StringConstants.DOT_VALUE;
-                    }
-                    String extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
-                    fieldMap.put(StringConstants.TYPE, extType);
-                    fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
+                String propertyName = fieldDef.getFieldName();
+                if (bean.getPropertyValue(propertyName) instanceof CustomField) {
+                    propertyName += StringConstants.DOT_VALUE;
+                }
+                String extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
+                fieldMap.put(StringConstants.TYPE, extType);
+                fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
 
-                    if (ExtTypeHandler.EXT_DATE.equals(extType)) {
-                        String format;
+                if (ExtTypeHandler.EXT_DATE.equals(extType)) {
+                    String format;
 //                        if (FieldType.CC_EXPIRATION.equals(fieldDef.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(fieldDef.getFieldType())) {
 //                            format = "Y-m-d"; // TODO: put back CC?
 //                        }
 //                        else {
-                            format = "Y-m-d H:i:s";
+                        format = "Y-m-d H:i:s";
 //                        }
-                        fieldMap.put(StringConstants.DATE_FORMAT, format);
-                    }
-                    fieldList.add(fieldMap);
+                    fieldMap.put(StringConstants.DATE_FORMAT, format);
                 }
+                fieldList.add(fieldMap);
             }
         }
         metaDataMap.put(StringConstants.FIELDS, fieldList);
 
         List rows = null;
-        final Map<String, Object> oldRowMap = new HashMap<String, Object>();
-        final Map<String, Object> newRowMap = new HashMap<String, Object>();
         if (StringConstants.GIFT.equals(batch.getBatchType())) {
             rows = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
         }
         else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
             rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
         }
-        contrastUpdatedValues(batch, rows, oldRowMap, newRowMap, rowValues, enteredParams);
+        contrastUpdatedValues(batch, rows, rowValues, enteredParams);
 
         model.put(StringConstants.ROWS, rowValues);
         model.put(StringConstants.TOTAL_ROWS, rowValues.size());
@@ -565,12 +566,14 @@ public class BatchSelectionAction {
         return model;
     }
 
-    private void contrastUpdatedValues(final PostBatch batch, final List rows, final Map<String, Object> oldRowMap,
-                                       final Map<String, Object> newRowMap, final List<Map<String, Object>> rowValues,
+    private void contrastUpdatedValues(final PostBatch batch, final List rows,
+                                       final List<Map<String, Object>> rowValues,
                                        final Map<String, Object> enteredParams) {
         if (rows != null) {
             for (Object thisRow : rows) {
                 BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(thisRow);
+                final Map<String, Object> oldRowMap = new HashMap<String, Object>();
+                final Map<String, Object> newRowMap = new HashMap<String, Object>();
                 oldRowMap.put(StringConstants.TYPE, TangerineMessageAccessor.getMessage("before"));
                 newRowMap.put(StringConstants.TYPE, TangerineMessageAccessor.getMessage("after"));
                 oldRowMap.put(StringConstants.ID, "old-" + bw.getPropertyValue(StringConstants.ID));

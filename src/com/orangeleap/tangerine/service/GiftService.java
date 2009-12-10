@@ -74,6 +74,8 @@ public interface GiftService {
 
     int readCountGiftsBySegmentationReportIds(Set<Long> reportIds);
 
+    List<Gift> readAllGiftsBySegmentationReportIds(final Set<Long> reportIds);
+
     Gift reprocessGift(Gift gift) throws BindException;
 
     Map<String, Object> readNumGiftsTotalAmount(Long constituentId);

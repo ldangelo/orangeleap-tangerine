@@ -222,4 +222,8 @@ public final class StringConstants {
     public static final String ACCOUNT_STRING_1 = "AccountString1";
     public static final String ACCOUNT_STRING_2 = "AccountString2";
     public static final String GL_ACCOUNT_CODE = "GLAccountCode";
+
+    public static final String OPEN = "open";
+    public static final String ERRORS = "errors";
+    public static final String EXECUTED = "executed";
 }

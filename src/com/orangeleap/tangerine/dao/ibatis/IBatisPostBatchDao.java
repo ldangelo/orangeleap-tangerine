@@ -45,17 +45,41 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 		super(sqlMapClient);
 	}
 
+    private void addBatchStatusParam(final String showBatchStatus, final Map<String, Object> params) {
+        if (StringConstants.ERRORS.equals(showBatchStatus))  {
+            params.put("showErrors", true);
+        }
+        else if (StringConstants.EXECUTED.equals(showBatchStatus)) {
+            params.put("showRanBatches", true);
+        }
+        else {
+            // assume 'open' is the batch type
+            params.put("showRanBatches", false);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Override
-    public List<PostBatch> readBatches(boolean showRanBatches, String sortPropertyName, String direction, int start, int limit, Locale locale) {
+    public List<PostBatch> readBatchesByStatus(final String showBatchStatus, String sortPropertyName, String direction, int start, int limit, Locale locale) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readBatches: showRanBatches = " + showRanBatches + " sortPropertyName = " + sortPropertyName + " direction = " + direction +
+            logger.trace("readBatchesByStatus: showBatchStatus = " + showBatchStatus + " sortPropertyName = " + sortPropertyName + " direction = " + direction +
                     " start = " + start + " limit = " + limit);
         }
         Map<String, Object> params = setupSortParams("postBatch", "POST_BATCH.POST_BATCH_RESULT",
                 sortPropertyName, direction, start, limit, locale);
-        params.put("showRanBatches", showRanBatches);
+
+        addBatchStatusParam(showBatchStatus, params);
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_POST_BATCHES", params);
+    }
+
+    @Override
+    public int countBatchesByStatus(String showBatchStatus) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("countBatchesByStatus: showBatchStatus = " + showBatchStatus);
+        }
+        Map<String, Object> params = setupParams();
+        addBatchStatusParam(showBatchStatus, params);
+        return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_LIMITED_POST_BATCHES", params);
     }
 
     /**

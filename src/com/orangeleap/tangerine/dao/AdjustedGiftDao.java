@@ -47,4 +47,6 @@ public interface AdjustedGiftDao {
                                                          int start, int limit, Locale locale);
 
     int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds);
+
+    List<AdjustedGift> readAllAdjustedGiftsBySegmentationReportIds(final Set<Long> reportIds);
 }

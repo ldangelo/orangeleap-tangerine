@@ -59,6 +59,8 @@ public interface GiftDao {
 
     int readCountGiftsBySegmentationReportIds(Set<Long> reportIds);
 
+    List<Gift> readAllGiftsBySegmentationReportIds(final Set<Long> reportIds);
+
     public PaginatedResult readPaginatedGiftListByConstituentId(Long constituentId, SortInfo sortinfo);
 
     List<Gift> readAllGiftsByConstituentId(Long constituentId, String sortPropertyName, String direction,
@@ -69,7 +71,6 @@ public interface GiftDao {
 	public List<Gift> readGiftDistroLinesByConstituentId(Long constituentId, String constituentReferenceCustomField, String sort, String dir,
 			int start, int limit, Locale locale);
 
-	int readGiftDistroLinesCountByConstituentId(Long constituentId,
-			String constituentReferenceCustomField);
+	int readGiftDistroLinesCountByConstituentId(Long constituentId, String constituentReferenceCustomField);
 
 }

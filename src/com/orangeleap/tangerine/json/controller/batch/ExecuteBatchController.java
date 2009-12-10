@@ -45,6 +45,9 @@ public class ExecuteBatchController {
         }
         // TODO: permissions through the filter
         PostBatch batch = postBatchService.readBatch(batchId);
+
+        // check for batch errors first before executing
+        // if no errors, then execute
 //        postBatchService.deleteBatch(batch);
         final ModelMap model = new ModelMap();
         model.put(StringConstants.SUCCESS, Boolean.TRUE);

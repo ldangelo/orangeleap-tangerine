@@ -43,7 +43,9 @@ public interface PostBatchService {
 //    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
 //	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
 
-    List<PostBatch> readBatches(boolean batchUpdated, SortInfo sort, Locale locale);
+    List<PostBatch> readBatchesByStatus(String showBatchStatus, SortInfo sort, Locale locale);
+
+    int countBatchesByStatus(String showBatchStatus);
 
     PostBatch readBatch(Long batchId);
 

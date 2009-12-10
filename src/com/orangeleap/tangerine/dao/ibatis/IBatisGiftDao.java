@@ -250,7 +250,7 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGiftsBySegmentationReportIds(Set<Long> reportIds, String sortPropertyName, String direction,
+    public List<Gift> readGiftsBySegmentationReportIds(final Set<Long> reportIds, String sortPropertyName, String direction,
                                                          int start, int limit, Locale locale) {
         if (logger.isTraceEnabled()) {
             logger.trace("readGiftsBySegmentationReportIds: reportIds = " + reportIds + " sortPropertyName = " + sortPropertyName +
@@ -264,13 +264,25 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     }
 
     @Override
-    public int readCountGiftsBySegmentationReportIds(Set<Long> reportIds) {
+    public int readCountGiftsBySegmentationReportIds(final Set<Long> reportIds) {
         if (logger.isTraceEnabled()) {
             logger.trace("readCountGiftsBySegmentationReportIds: reportIds = " + reportIds);
         }
         Map<String,Object> params = setupParams();
         params.put("reportIds", new ArrayList<Long>(reportIds));
         return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Gift> readAllGiftsBySegmentationReportIds(final Set<Long> reportIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsBySegmentationReportIds: reportIds = " + reportIds);
+        }
+        final Map<String, Object> params = setupParams();
+        params.put("reportIds", new ArrayList<Long>(reportIds));
+
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
     }
 
     @SuppressWarnings("unchecked")

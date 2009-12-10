@@ -30,19 +30,24 @@ import java.util.Map;
 
 public interface PostBatchDao {
 
-    public List<PostBatch> listBatches();
-
     public PostBatch readPostBatchById(Long postBatchId);
 
     public PostBatch maintainPostBatch(PostBatch batch);
 
+    public void deletePostBatch(PostBatch batch);
+
+    List<PostBatch> readBatchesByStatus(String showBatchStatus, String sortPropertyName, String direction, int start, int limit, Locale locale);
+
+    int countBatchesByStatus(String showBatchStatus);
+
+
+
+
+    public List<PostBatch> listBatches();
+
     public List<PostBatchEntry> readPostBatchReviewSetItems(Long postBatchId);
 
     public PaginatedResult readPostBatchReviewSetItems(Long postBatchId, SortInfo sortInfo);
-
-    public PostBatchEntry maintainPostBatchReviewSetItem(PostBatchEntry postBatchEntry);
-
-    public void deletePostBatch(PostBatch batch);
 
     public void insertIntoPostBatchFromGiftSelect(PostBatch postbatch, Map<String, Object> searchmap);
 
@@ -50,5 +55,5 @@ public interface PostBatchDao {
 
     public Long getReviewSetSize(Long postBatchId);
 
-    List<PostBatch> readBatches(boolean batchUpdated, String sortPropertyName, String direction, int start, int limit, Locale locale);
+    public PostBatchEntry maintainPostBatchReviewSetItem(PostBatchEntry postBatchEntry);
 }

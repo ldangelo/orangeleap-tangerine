@@ -341,7 +341,7 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
     }
 
     @Override
-    public List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds, SortInfo sort, Locale locale) {
+    public List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(final Set<Long> reportIds, SortInfo sort, Locale locale) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds + " sort = " + sort);
         }
@@ -350,10 +350,18 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
     }
 
     @Override
-    public int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds) {
+    public int readCountAdjustedGiftsBySegmentationReportIds(final Set<Long> reportIds) {
         if (logger.isTraceEnabled()) {
             logger.trace("readCountAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds);
         }
         return adjustedGiftDao.readCountAdjustedGiftsBySegmentationReportIds(reportIds);
+    }
+
+    @Override
+    public List<AdjustedGift> readAllAdjustedGiftsBySegmentationReportIds(final Set<Long> reportIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds);
+        }
+        return adjustedGiftDao.readAllAdjustedGiftsBySegmentationReportIds(reportIds);
     }
 }

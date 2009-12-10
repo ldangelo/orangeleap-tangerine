@@ -279,21 +279,10 @@ public class BatchSelectionAction {
         return model;
     }
 
-    private Map<String, Object> initMetaData(int start, int limit) {
-        final Map<String, Object> metaDataMap = new LinkedHashMap<String, Object>();
-        metaDataMap.put(StringConstants.ID_PROPERTY, StringConstants.ID);
-        metaDataMap.put(StringConstants.ROOT, StringConstants.ROWS);
-        metaDataMap.put(StringConstants.TOTAL_PROPERTY, StringConstants.TOTAL_ROWS);
-        metaDataMap.put(StringConstants.SUCCESS_PROPERTY, StringConstants.SUCCESS);
-        metaDataMap.put(StringConstants.START, start);
-        metaDataMap.put(StringConstants.LIMIT, limit);
-        return metaDataMap;
-    }
-
     @SuppressWarnings("unchecked")
     private void createJsonModel(HttpServletRequest request, PostBatch batch, Map model, SortInfo sort) {
         /* MetaData */
-        final Map<String, Object> metaDataMap = initMetaData(sort.getStart(), sort.getLimit());
+        final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sort.getStart(), sort.getLimit());
         metaDataMap.put(StringConstants.LIMIT, sort.getLimit());
 
         final List<SectionField> allFields = tangerineListHelper.findSectionFields(batch.getBatchType() + "List");
@@ -483,7 +472,7 @@ public class BatchSelectionAction {
         final Set<Long> segmentationReportIds = batch.getEntrySegmentationIds();
         final List<Map<String, Object>> rowValues = new ArrayList<Map<String, Object>>();
 
-        final Map<String, Object> metaDataMap = initMetaData(sortInfo.getStart(),
+        final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortInfo.getStart(),
                 (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
 
         BeanWrapper bean = createDefaultEntity(batch);

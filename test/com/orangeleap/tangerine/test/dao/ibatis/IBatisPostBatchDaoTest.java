@@ -4,12 +4,15 @@ import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
 
@@ -24,7 +27,7 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
     }
 
     @Test(groups = { "testMaintainPostBatch" }, dependsOnGroups = { "testReadPostBatch" })
-    public void testMaintainGift() throws Exception {
+    public void testMaintainPostBatch() throws Exception {
         // Insert
         PostBatch batch = new PostBatch();
         batch.setBatchCreatedById(100L);
@@ -144,5 +147,31 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertNotNull(batch.getBatchCreatedDate());
         Assert.assertNotNull(batch.getPostBatchEntries());
         Assert.assertTrue(batch.getPostBatchEntries().isEmpty());
+    }
+
+    @Test(groups = { "testReadPostBatch" })
+    public void testReadBatches() throws Exception {
+        List<PostBatch> batches = postBatchDao.readBatchesByStatus(StringConstants.OPEN, "createDate", "ASC", 0, 100, Locale.getDefault());
+        Assert.assertNotNull(batches);
+        Assert.assertEquals(1, batches.size());
+        Assert.assertEquals(new Long(2L), batches.get(0).getId());
+
+        Assert.assertEquals(1, postBatchDao.countBatchesByStatus(StringConstants.OPEN));
+
+        batches = postBatchDao.readBatchesByStatus(StringConstants.ERRORS, "createDate", "ASC", 0, 100, Locale.getDefault());
+        Assert.assertNotNull(batches);
+        Assert.assertEquals(1, batches.size());
+        Assert.assertEquals(new Long(2L), batches.get(0).getId());
+
+        Assert.assertEquals(1, postBatchDao.countBatchesByStatus(StringConstants.ERRORS));
+
+        batches = postBatchDao.readBatchesByStatus(StringConstants.EXECUTED, "createDate", "ASC", 0, 100, Locale.getDefault());
+        Assert.assertNotNull(batches);
+        Assert.assertEquals(2, batches.size());
+        for (PostBatch batch : batches) {
+            Assert.assertTrue(1L == batch.getId() || 3L == batch.getId());
+        }
+
+        Assert.assertEquals(2, postBatchDao.countBatchesByStatus(StringConstants.EXECUTED));
     }
 }

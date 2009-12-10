@@ -41,6 +41,7 @@ import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeRequest;
@@ -52,6 +53,7 @@ import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 
 import javax.annotation.Resource;
@@ -114,7 +116,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public final static String IDS = "ids";
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public PostBatch maintainBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainBatch: batchId = " + batch.getId());
@@ -125,7 +126,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public void deleteBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {
             logger.trace("deleteBatch: batchId = " + batch.getId());
@@ -137,12 +137,20 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    public List<PostBatch> readBatches(boolean showRanBatches, SortInfo sort, Locale locale) {
+    public List<PostBatch> readBatchesByStatus(String showBatchStatus, SortInfo sort, Locale locale) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readBatches: showRanBatches = " + showRanBatches + " sort = " + sort);
+            logger.trace("readBatchesByStatus: showBatchStatus = " + showBatchStatus + " sort = " + sort);
         }
-        return postBatchDao.readBatches(showRanBatches, sort.getSort(), sort.getDir(), sort.getStart(),
+        return postBatchDao.readBatchesByStatus(showBatchStatus, sort.getSort(), sort.getDir(), sort.getStart(),
                 sort.getLimit(), locale);
+    }
+
+    @Override
+    public int countBatchesByStatus(String showBatchStatus) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("countBatchesByStatus: showBatchStatus = " + showBatchStatus);
+        }
+        return postBatchDao.countBatchesByStatus(showBatchStatus);
     }
 
     @Override
@@ -162,7 +170,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         PostBatch batch;
         if (batchId != null && batchId > 0) {
             batch = readBatch(batchId);
-        } else {
+        }
+        else {
             batch = new PostBatch();
         }
         return batch;
@@ -250,28 +259,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     /**
      * ************* the following will be removed ***************
      */
-//    @Override
-//    public Map<String, String> readAllowedGiftSelectFields() {
-//
-//    	Map<String, String> map = new TreeMap<String, String>();
-//        map.put(IDS, "Gift Ref Numbers");
-//        map.put("amountLessThan", "Amount Less Than");
-//        map.put("amountGreaterThan", "Amount Greater Than");
-//        map.put("currencyCode", "Currency Code");
-//        map.put("createdDateBefore", "Created Date Before");
-//        map.put("createdDateAfter", "Created Date After");
-//        map.put("constituentId", "Constituent Id");
-//        map.put(STATUS, "Gift Status");
-//        map.put("paymentType", "Payment Type");
-//        map.put("donationDate", "Donation Date");
-//        map.put("postmarkDate", "Postmark Date");
-//        map.put(SOURCE, "Source");
-//        map.put("designationCode", "Designation Code");
-//        map.put("motivationCode", "Motivation Code");
-//        map.put(POSTED, "Posted");
-//
-//        return map;
-//    }
 
 //    private Map<String, Object> createSearchMap(Map<String, String> map) {
 //
@@ -312,15 +299,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 //        return result;
 //    }
 
-//    @Override
-//    public Map<String, String> readAllowedGiftUpdateFields() {
-//       Map<String, String> map = new TreeMap<String, String>();
-//       map.put(POSTED_DATE, "Posted Date (Creates Journal Entry)");  // Updating this triggers a post (creates journal entry)
-//       map.put(STATUS, "Status");
-//       map.put(SOURCE, "Source");
-//       return map;
-//    }
-
 //    private void setField(boolean isGift, AbstractPaymentInfoEntity apie, String key, String value) {
 //       if (key.equals(POSTED_DATE)) {
 //           DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -346,34 +324,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 //       }
 //    }
 //
-//    private void setGiftField(Gift gift, String key, String value) {
-//       if (key.equals(STATUS)) {
-//    	   gift.setGiftStatus(value);
-//       } else {
-//    	   throw new RuntimeException("Invalid field "+key);
-//       }
-//    }
-//
-//    private void setAdjustedGiftField(AdjustedGift ag, String key, String value) {
-//        if (key.equals(STATUS)) {
-//     	   ag.setAdjustedStatus(value);
-//        } else {
-//     	   throw new RuntimeException("Invalid field "+key);
-//        }
-//    }
-//
-//    @Override
-//    public List<PostBatch> listBatchs() {
-//        return postBatchDao.listBatches();
-//    }
-
-//    @Override
-//    public PostBatch readBatch(Long batchId) {
-//        logger.debug("readBatch: id = "+batchId);
-//        if (batchId == null) return null;
-//        return postBatchDao.readPostBatchById(batchId);
-//    }
-
 //    // Evaluates criteria to create list of matching gifts (snapshot at this moment in time).
 //    @Override
 //    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch) {
@@ -402,16 +352,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 //
 //        return getBatchSelectionList(postbatch);
 //    }
-    private void saveGift(Gift gift) throws BindException {
-        gift.setSuppressValidation(true);
-        giftService.editGift(gift);
-    }
-
-    private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
-        adjustedGift.setSuppressValidation(true);
-        adjustedGiftService.maintainAdjustedGift(adjustedGift);
-    }
-
 //    // Reads previous list of matched gifts. Does not re-evaluate any criteria.
 //    @Override
 //    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
@@ -437,23 +377,48 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     // Sets fields on gifts/adjusted gifts in reviewed batch list
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @SuppressWarnings("unchecked")
     public PostBatch executeBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {
             logger.trace("executeBatch: batchId = " + batch.getId());
         }
-        batch.clearUpdateErrors();
-        if (StringConstants.GIFT.equals(batch.getBatchType()) || StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-            return executePostableBatches(batch);
+
+        List entries = null;
+        if (StringConstants.GIFT.equals(batch.getBatchType())) {
+            entries = giftService.readAllGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
+
         }
-        else {
-            return null; //TODO
+        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+            entries = adjustedGiftService.readAllAdjustedGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
         }
+        return null; //TODO
     }
 
-    public PostBatch executePostableBatches(PostBatch batch) {
+    public void checkForBatchErrors(PostBatch batch) {
         if (logger.isTraceEnabled()) {
-            logger.trace("executePostableBatches: batchId = " + batch.getId());
+            logger.trace("checkForBatchErrors: batchId = " + batch.getId());
+        }
+        batch.clearUpdateErrors();
+        if (StringConstants.GIFT.equals(batch.getBatchType()) || StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+            final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
+            if (StringUtils.hasText(postedDateString)) {
+                final DateFormat dateFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
+                Date postedDate;
+                try {
+                    postedDate = dateFormat.parse(postedDateString);
+                }
+                catch (Exception e) {
+                    batch.addUpdateError(TangerineMessageAccessor.getMessage("invalidPostedDate", postedDateString));
+                }
+            }
+        }
+
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public PostBatch executeBatchEntry(PostBatch batch) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("executeBatchEntry: batchId = " + batch.getId());
         }
         final DateFormat dateFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
         final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
@@ -478,10 +443,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
 
         // Get list to update
-        // TODO process in single transactions and support partial batch updates.
-        Set<Long> segmentationIds = batch.getEntrySegmentationIds();
-        int total = giftService.readCountGiftsBySegmentationReportIds(segmentationIds);
-//        final List<Gift> gifts = giftService.readGiftsBySegmentationReportIds(segmentationIds);
+        final List<Gift> gifts = giftService.readAllGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
 
         List<PostBatchEntry> list = postBatchDao.readPostBatchReviewSetItems(batch.getId()); // TODO: grab gifts/adjusted gifts based on segmentations
         if (list.size() > 2000) {
@@ -742,5 +704,15 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     private String getKey(String s1, String s2) {
         return new StringBuilder(s1).append(" : ").append(s2).toString();
+    }
+
+    private void saveGift(Gift gift) throws BindException {
+        gift.setSuppressValidation(true);
+        giftService.editGift(gift);
+    }
+
+    private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
+        adjustedGift.setSuppressValidation(true);
+        adjustedGiftService.maintainAdjustedGift(adjustedGift);
     }
 }

@@ -72,11 +72,34 @@
 
     <select id="SELECT_LIMITED_POST_BATCHES" resultMap="POST_BATCH_RESULT_NO_ENTRIES" parameterClass="map">
         <include refid="SELECT_POST_BATCH_FRAGMENT"/>
-        and post_batch.EXECUTED = #showRanBatches#
+
+        <isNotNull property="showRanBatches">
+            and post_batch.EXECUTED = #showRanBatches#
+        </isNotNull>
+
+        <isNotNull property="showErrors">
+            and post_batch.HAS_ERRORS = #showErrors#
+        </isNotNull>
+
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
         limit $offset$, $limit$
+    </select>
+
+    <select id="COUNT_LIMITED_POST_BATCHES" resultClass="int" parameterClass="map">
+        select count(post_batch.POST_BATCH_ID)
+        
+        from POST_BATCH post_batch
+        where post_batch.SITE_NAME = #siteName#
+
+        <isNotNull property="showRanBatches">
+            and post_batch.EXECUTED = #showRanBatches#
+        </isNotNull>
+
+        <isNotNull property="showErrors">
+            and post_batch.HAS_ERRORS = #showErrors#
+        </isNotNull>
     </select>
 
     <delete id="DELETE_POST_BATCH" parameterClass="map">

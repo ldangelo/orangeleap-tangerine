@@ -145,7 +145,7 @@
         and ag.CONSTITUENT_ID = #constituentId#
     </select>
 
-    <select id="SELECT_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID" resultMap="ADJUSTED_GIFT_LIST_RESULT" parameterClass="map">
+    <sql id="ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID_FRAGMENT">
         select
         <include refid="ADJUSTED_GIFT_COLS_FRAGMENT" />,
         <include refid="CONSTITUENT_COLS_FRAGMENT" />,
@@ -178,6 +178,12 @@
         <iterate property="reportIds" conjunction="," open="(" close=")">
             #reportIds[]#
         </iterate>
+    </sql>
+
+    <select id="SELECT_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID" resultMap="ADJUSTED_GIFT_LIST_RESULT" parameterClass="map">
+
+        <include refid="ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID_FRAGMENT" />
+
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
@@ -196,6 +202,13 @@
         <iterate property="reportIds" conjunction="," open="(" close=")">
             #reportIds[]#
         </iterate>
+    </select>
+
+    <!-- Differs from 'SELECT_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID' in that there is no order by clause and no limit - grab them all -->
+    <select id="SELECT_ALL_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID" resultMap="ADJUSTED_GIFT_LIST_RESULT" parameterClass="map">
+
+        <include refid="ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID_FRAGMENT" />
+
     </select>
 
 	<insert id="INSERT_ADJUSTED_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift">

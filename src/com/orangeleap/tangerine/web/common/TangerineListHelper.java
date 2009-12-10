@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -108,6 +109,17 @@ public class TangerineListHelper {
                 paramMapList.add(paramMap);
             }
         }
+    }
+
+    public Map<String, Object> initMetaData(int start, int limit) {
+        final Map<String, Object> metaDataMap = new LinkedHashMap<String, Object>();
+        metaDataMap.put(StringConstants.ID_PROPERTY, StringConstants.ID);
+        metaDataMap.put(StringConstants.ROOT, StringConstants.ROWS);
+        metaDataMap.put(StringConstants.TOTAL_PROPERTY, StringConstants.TOTAL_ROWS);
+        metaDataMap.put(StringConstants.SUCCESS_PROPERTY, StringConstants.SUCCESS);
+        metaDataMap.put(StringConstants.START, start);
+        metaDataMap.put(StringConstants.LIMIT, limit);
+        return metaDataMap;
     }
 
     public List<SectionField> findSectionFields(String listPageName) {

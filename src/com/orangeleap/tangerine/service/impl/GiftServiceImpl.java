@@ -672,7 +672,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public List<Gift> readGiftsBySegmentationReportIds(Set<Long> reportIds, SortInfo sort, Locale locale) {
+    public List<Gift> readGiftsBySegmentationReportIds(final Set<Long> reportIds, SortInfo sort, Locale locale) {
         if (logger.isTraceEnabled()) {
             logger.trace("readGiftsBySegmentationReportIds: reportIds = " + reportIds + " sort = " + sort);
         }
@@ -681,11 +681,19 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public int readCountGiftsBySegmentationReportIds(Set<Long> reportIds) {
+    public int readCountGiftsBySegmentationReportIds(final Set<Long> reportIds) {
         if (logger.isTraceEnabled()) {
             logger.trace("readCountGiftsBySegmentationReportIds: reportIds = " + reportIds);
         }
         return giftDao.readCountGiftsBySegmentationReportIds(reportIds);
+    }
+
+    @Override
+    public List<Gift> readAllGiftsBySegmentationReportIds(final Set<Long> reportIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsBySegmentationReportIds: reportIds = " + reportIds);
+        }
+        return giftDao.readAllGiftsBySegmentationReportIds(reportIds);
     }
 
     @Override

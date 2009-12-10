@@ -121,13 +121,13 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds, String sortPropertyName, String direction,
+    public List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(final Set<Long> reportIds, String sortPropertyName, String direction,
                                                          int start, int limit, Locale locale) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds + " sortPropertyName = " + sortPropertyName +
                     " direction = " + direction + " start = " + start + " limit = " + limit);
         }
-        Map<String, Object> params = setupSortParams(StringConstants.ADJUSTED_GIFT, "ADJUSTED_GIFT.ADJUSTED_GIFT_LIST_RESULT",
+        final Map<String, Object> params = setupSortParams(StringConstants.ADJUSTED_GIFT, "ADJUSTED_GIFT.ADJUSTED_GIFT_LIST_RESULT",
                 sortPropertyName, direction, start, limit, locale);
         params.put("reportIds", new ArrayList<Long>(reportIds));
 
@@ -135,12 +135,24 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
     }
 
     @Override
-    public int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds) {
+    public int readCountAdjustedGiftsBySegmentationReportIds(final Set<Long> reportIds) {
         if (logger.isTraceEnabled()) {
             logger.trace("readCountAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds);
         }
-        Map<String,Object> params = setupParams();
+        final Map<String,Object> params = setupParams();
         params.put("reportIds", new ArrayList<Long>(reportIds));
         return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<AdjustedGift> readAllAdjustedGiftsBySegmentationReportIds(final Set<Long> reportIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllAdjustedGiftsBySegmentationReportIds: reportIds = " + reportIds);
+        }
+        final Map<String, Object> params = setupParams();
+        params.put("reportIds", new ArrayList<Long>(reportIds));
+
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
     }
 }

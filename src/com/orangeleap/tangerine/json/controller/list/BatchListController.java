@@ -24,7 +24,11 @@ import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +38,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Controller
 public class BatchListController extends TangerineJsonListController {
@@ -46,6 +53,45 @@ public class BatchListController extends TangerineJsonListController {
 
     @Resource(name = "constituentService")
     private ConstituentService constituentService;
+
+    public static final String BATCH_TYPE = "batchType";
+    public static final String BATCH_DESC = "batchDesc";
+    public static final String EXECUTED = "executed";
+    public static final String EXECUTED_DATE = "executedDate";
+    public static final String EXECUTED_BY_USER = "executedByUser";
+    public static final String CREATE_DATE = "createDate";
+
+    private final Set<String> openBatchFields;
+    private final Set<String> executedBatchFields;
+    private final Set<String> errorBatchFields;
+
+    // for executed batches, hide actions & createDt, errors, column
+    // for open batches, hide executeDt & executedByUser, errors column
+    public BatchListController() {
+        openBatchFields = new LinkedHashSet<String>();
+        openBatchFields.add(StringConstants.ID);
+        openBatchFields.add(BATCH_TYPE);
+        openBatchFields.add(BATCH_DESC);
+        openBatchFields.add(CREATE_DATE);
+        openBatchFields.add(EXECUTED);
+
+        executedBatchFields = new LinkedHashSet<String>();
+        executedBatchFields.add(StringConstants.ID);
+        executedBatchFields.add(BATCH_TYPE);
+        executedBatchFields.add(BATCH_DESC);
+        executedBatchFields.add(CREATE_DATE);
+        executedBatchFields.add(EXECUTED_DATE);
+        executedBatchFields.add(EXECUTED_BY_USER);
+        executedBatchFields.add(EXECUTED);
+
+        errorBatchFields = new LinkedHashSet<String>();
+        errorBatchFields.add(StringConstants.ID);
+        errorBatchFields.add(BATCH_TYPE);
+        errorBatchFields.add(BATCH_DESC);
+        errorBatchFields.add(CREATE_DATE);
+        errorBatchFields.add(StringConstants.ERRORS);
+        errorBatchFields.add(EXECUTED);
+    }
 
     @SuppressWarnings("unchecked")
     public void checkAccess(HttpServletRequest request) {
@@ -57,29 +103,96 @@ public class BatchListController extends TangerineJsonListController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/batchList.json")
-    public ModelMap getBatchList(HttpServletRequest request, boolean showRanBatches, SortInfo sort) {
-        List<Map<String, Object>> returnList = getPostBatchList(showRanBatches, sort, request.getLocale());
-        ModelMap map = new ModelMap(StringConstants.ROWS, returnList);
-        map.put(StringConstants.TOTAL_ROWS, returnList.size());
-        return map;
+    public ModelMap getBatchList(HttpServletRequest request, String showBatchStatus, SortInfo sortInfo) {
+        checkAccess(request);
+        final ModelMap model = new ModelMap();
+        checkSortKey(sortInfo, showBatchStatus);
+        setupMetaData(model, showBatchStatus, sortInfo);
+        setupRows(model, showBatchStatus, sortInfo, request.getLocale());
+        return model;
     }
 
-    private List<Map<String, Object>> getPostBatchList(boolean showRanBatches, SortInfo sort, Locale locale) {
-        List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+    @SuppressWarnings("unchecked")
+    private void setupRows(ModelMap model, String showBatchStatus, SortInfo sortInfo, Locale locale) {
+        model.put(StringConstants.TOTAL_ROWS, postBatchService.countBatchesByStatus(showBatchStatus));
 
-    	List<PostBatch> batches = postBatchService.readBatches(showRanBatches, sort, locale);
+        final List<Map<String, Object>> rowList = new ArrayList<Map<String, Object>>();
+
+    	final List<PostBatch> batches = postBatchService.readBatchesByStatus(showBatchStatus, sortInfo, locale);
     	for (PostBatch batch : batches) {
-            Map<String, Object> map = new HashMap<String, Object>();
+            final Map<String, Object> map = new HashMap<String, Object>();
+            final Set<String> fieldNames = findFieldNamesByStatus(showBatchStatus);
+            BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(batch);
 
-            map.put(StringConstants.ID, batch.getId());
-            map.put("batchType", batch.getBatchType());
-            map.put("batchDesc", batch.getBatchDesc());
-            map.put("executed", batch.isExecuted());
-            map.put("executedDate", batch.getExecutedDate());
-            map.put("createDate", batch.getCreateDate());
-            map.put("executedByUser", batch.getExecutedByUser());
-            returnList.add(map);
+            for (String thisFieldName : fieldNames) {
+                if (bean.isReadableProperty(thisFieldName)) {
+                    map.put(thisFieldName, bean.getPropertyValue(thisFieldName));
+                }
+            }
+            rowList.add(map);
     	}
-    	return returnList;
+        model.put(StringConstants.ROWS, rowList);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setupMetaData(final ModelMap model, final String showBatchStatus, final SortInfo sortInfo) {
+        final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortInfo.getStart(), sortInfo.getLimit());
+
+        final Map<String, String> sortInfoMap = new HashMap<String, String>();
+        sortInfoMap.put(StringConstants.FIELD, sortInfo.getSort());
+        sortInfoMap.put(StringConstants.DIRECTION, sortInfo.getDir());
+        metaDataMap.put(StringConstants.SORT_INFO, sortInfoMap);
+
+        setupFields(metaDataMap, showBatchStatus);
+        model.put(StringConstants.META_DATA, metaDataMap);
+    }
+
+    /**
+     * Check that the sort key is valid for the type of batch status we are inquiring about
+     * @param sort
+     * @param showBatchStatus
+     */
+    private void checkSortKey(final SortInfo sort, final String showBatchStatus) {
+        if ((StringConstants.OPEN.equals(showBatchStatus) && ! openBatchFields.contains(sort.getSort())) ||
+                (StringConstants.EXECUTED.equals(showBatchStatus) && ! executedBatchFields.contains(sort.getSort())) ||
+                (StringConstants.ERRORS.equals(showBatchStatus) && ! errorBatchFields.contains(sort.getSort()))) {
+            sort.setSort(StringConstants.ID);
+            sort.setDir("ASC");
+        }
+    }
+
+    private void setupFields(final Map<String, Object> metaDataMap, final String showBatchStatus) {
+        final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
+
+        final Set<String> fieldNames = findFieldNamesByStatus(showBatchStatus);
+        for (String thisFieldName : fieldNames) {
+            final Map<String, Object> fieldMap = new HashMap<String, Object>();
+
+            fieldMap.put(StringConstants.NAME, thisFieldName);
+            fieldMap.put(StringConstants.MAPPING, thisFieldName);
+
+            String extType = ExtTypeHandler.EXT_STRING;
+            if (StringConstants.ID.equals(thisFieldName)) {
+                extType = ExtTypeHandler.EXT_INT;
+            }
+            else if (EXECUTED.equals(thisFieldName)) {
+                extType = ExtTypeHandler.EXT_BOOLEAN;
+            }
+            else if (EXECUTED_DATE.equals(thisFieldName) || CREATE_DATE.equals(thisFieldName)) {
+                extType = ExtTypeHandler.EXT_DATE;
+                fieldMap.put(StringConstants.DATE_FORMAT, "Y-m-d H:i:s");
+            }
+
+            fieldMap.put(StringConstants.TYPE, extType);
+            fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(thisFieldName));
+
+            fieldList.add(fieldMap);
+        }
+        metaDataMap.put(StringConstants.FIELDS, fieldList);
+    }
+
+    private Set<String> findFieldNamesByStatus(String showBatchStatus) {
+        return StringConstants.EXECUTED.equals(showBatchStatus) ? executedBatchFields :
+                (StringConstants.ERRORS.equals(showBatchStatus) ? errorBatchFields : openBatchFields);
     }
 }

@@ -23,6 +23,7 @@ OrangeLeap.msgBundle = {
     adjustedGift: 'Adjusted Gift',
     showOpenBatches: 'Show Open Batches',
     showExecutedBatches: 'Show Executed Batches',
+    showBatchesWithErrors: 'Show Batches with Errors',
     askExecuteBatch: 'Execute Batch?',
     askDeleteBatch: 'Delete Batch?',
     areYouSureDeleteBatch: 'Are you sure you want to delete batch ID <strong>{0}</strong>?',
@@ -94,39 +95,79 @@ Ext.onReady(function() {
             msg: msgs.errorAjax });
     });
 
+    var batchReader = new Ext.data.JsonReader();
+
     var store = new OrangeLeap.ListStore({
-        totalProperty: 'totalRows',
-        root: 'rows',
         url: 'batchList.json',
+        reader: batchReader,
+        root: 'rows',
+        totalProperty: 'totalRows',
         autoSave: true,
         remoteSort: true,
-        sortInfo: {field: 'createDate', direction: 'DESC'},
+        sortInfo: {field: 'id', direction: 'ASC'},
         fields: [
-            {name: 'id', mapping: 'id', type: 'int'},
-            {name: 'batchType', mapping: 'batchType', type: 'string'},
-            {name: 'batchDesc', mapping: 'batchDesc', type: 'string'},
-            {name: 'executed', mapping: 'executed', type: 'boolean'},
-            {name: 'executedDate', mapping: 'executedDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-            {name: 'createDate', mapping: 'createDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-            {name: 'executedByUser', mapping: 'executedByUser', type: 'string'}
-        ]
-    });
-    store.on('load', function(store, recs, options) {
-        if (combo.getValue() == 'true') {
-            // for executed batches, hide actions & createDt column
-            grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), true);
-            grid.colModel.setHidden(grid.colModel.getIndexById('actions'), true);
-            grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), false);
-            grid.colModel.setHidden(grid.colModel.getIndexById('executedByUser'), false);
+            {name: 'id', mapping: 'id', type: 'int'}
+        ],
+        listeners: {
+            'metachange': function(store, meta) {
+                var cols = [];
+                var fields = meta.fields;
+
+                for (var x = 0; x < fields.length; x++) {
+                    var name = fields[x].name;
+                    // Do not have a column for 'executed' displayed
+                    if (name != 'executed') {
+                        var hdr = fields[x].header;
+                        cols[cols.length] = {
+                            header: hdr, dataIndex: name, sortable: true,
+                            renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                                return '<span ext:qtitle="' + hdr + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                            }
+                        };
+                    }
+                }
+                var showBatchStatus = combo.getValue();
+                if (showBatchStatus !== 'executed') {
+                    /* Add the 'actions' column for not executed batches */
+                    cols[cols.length] = { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;', id: 'actions',
+                        renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                            if ( ! record.get('executed')) {
+                                var html = '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id +
+                                           '" ext:qwidth="150" ext:qtip="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
+                                html += '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id +
+                                        '" ext:qwidth="150" ext:qtip="' + msgs.removeBatch + '">' + msgs.removeBatch + '</a>';
+                                return html;
+                            }
+                            return '';
+                        }
+                    }
+                }
+                grid.reconfigure(store, new Ext.grid.ColumnModel(cols));
+                bar.bindStore(store, true);
+            },
+            'exception': function(misc) {
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorAjax });
+            }
         }
-        else {
-           // for not executed batches, hide executeDt & executedByUser column
-            grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), true);
-            grid.colModel.setHidden(grid.colModel.getIndexById('executedByUser'), true);
-            grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), false);
-            grid.colModel.setHidden(grid.colModel.getIndexById('actions'), false);
-        }
     });
+//    store.on('load', function(store, recs, options) {
+//        if (combo.getValue() == 'executed') {
+//            // for executed batches, hide actions & createDt column
+//            grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), true);
+//            grid.colModel.setHidden(grid.colModel.getIndexById('actions'), true);
+//            grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), false);
+//            grid.colModel.setHidden(grid.colModel.getIndexById('executedByUser'), false);
+//        }
+//        else {
+//           // for not executed batches, hide executeDt & executedByUser column
+//            grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), true);
+//            grid.colModel.setHidden(grid.colModel.getIndexById('executedByUser'), true);
+//            grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), false);
+//            grid.colModel.setHidden(grid.colModel.getIndexById('actions'), false);
+//        }
+//    });
 
     // custom toolbar for batch GRID to  - this effectively overrides what the 'refresh' button action is on the GRID toolbar
     OrangeLeap.BatchGridToolbar = Ext.extend(Ext.PagingToolbar, {
@@ -138,7 +179,7 @@ Ext.onReady(function() {
             var state = this.store.getSortState();
             o['sort'] = state.field;
             o['dir'] = state.direction;
-            o['showRanBatches'] = combo.getValue();
+            o['showBatchStatus'] = combo.getValue();
 
             if (this.fireEvent('beforechange', this, o) !== false) {
                 this.store.load( {params: o} );
@@ -169,13 +210,13 @@ Ext.onReady(function() {
     var combo = new Ext.form.ComboBox({
        store: new Ext.data.ArrayStore({
             fields: [
-                'showRanBatches',
+                'showBatchStatus',
                 'desc'
             ],
-            data: [['false', msgs.showOpenBatches], ['true', msgs.showExecutedBatches]] 
+            data: [['open', msgs.showOpenBatches], ['executed', msgs.showExecutedBatches], ['errors', msgs.showBatchesWithErrors]]
         }),
         displayField: 'desc',
-        valueField: 'showRanBatches',
+        valueField: 'showBatchStatus',
         typeAhead: false,
         mode: 'local',
         forceSelection: true,
@@ -188,8 +229,8 @@ Ext.onReady(function() {
         stateEvents: ['select']
     });
     combo.on('select', function(comboBox, record, index) {
-        var showRanBatchesVal = comboBox.getValue();
-        if (showRanBatchesVal == 'true') {
+        var showBatchStatusVal = comboBox.getValue();
+        if (showBatchStatusVal !== 'open') {
             grid.addButton.disable();
         }
         else {
@@ -197,10 +238,10 @@ Ext.onReady(function() {
         }
         var state = store.getSortState();
         if (state) {
-            state.field = showRanBatchesVal == 'true' ? 'executedDate' : 'createDate';
+            state.field = showBatchStatusVal == 'executed' ? 'executedDate' : 'createDate';
             state.direction = 'DESC';
         }
-        store.load( { params: { showRanBatches: showRanBatchesVal, start: 0, limit: 100, sort: state.field, dir: state.direction } });
+        store.load( { params: { showBatchStatus: showBatchStatusVal, start: 0, limit: 100, sort: state.field, dir: state.direction } });
     });
 
     var grid = new Ext.grid.GridPanel({
@@ -250,43 +291,7 @@ Ext.onReady(function() {
         store: store,
         addClass: 'pointer',
         columns: [
-            { header: msgs.batchId, dataIndex: 'id', width: 40, sortable: true },
-            { header: msgs.type, dataIndex: 'batchType', width: 150, sortable: true,
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return '<span ext:qtitle="' + msgs.type + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
-                }
-            },
-            { header: msgs.description, dataIndex: 'batchDesc', sortable: true,
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return '<span ext:qtitle="' + msgs.description + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
-                }
-            },
-            { header: msgs.executeDate, dataIndex: 'executedDate', sortable: true, id: 'executedDt',
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return '<span ext:qtitle="' + msgs.executeDate + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
-                }
-            },
-            { header: msgs.creationDate, dataIndex: 'createDate', sortable: true, id: 'createDt',
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return '<span ext:qtitle="' + msgs.creationDate + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
-                }
-            },
-            { header: msgs.userId, dataIndex: 'executedByUser', sortable: true, id: 'executedByUser',
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    return '<span ext:qtitle="' + msgs.userId + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
-                }
-            },
-            { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;', id: 'actions', 
-                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                    if ( ! record.get('batchUpdated')) {
-                        var html = '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id +
-                                   '" ext:qwidth="150" ext:qtip="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
-                        html += '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id +
-                                '" ext:qwidth="150" ext:qtip="' + msgs.removeBatch + '">' + msgs.removeBatch + '</a>';
-                        return html;
-                    }
-                }
-            }
+            { header: msgs.id, dataIndex: 'id', width: 40, sortable: true }
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 //        viewConfig: { forceFit: true },
@@ -350,9 +355,11 @@ Ext.onReady(function() {
     
     store.sortToggle[sortProp] = sortDir;
     store.sortInfo = { field: sortProp, direction: sortDir };
-    store.load( { params: { showRanBatches: 'false', start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir },
+
+    // When the page loads, show the Open Batches first
+    store.load( { params: { showBatchStatus: 'open', start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir },
         callback: function(rec, options, success) {
-            combo.setValue('false');
+            combo.setValue('open');
             var thisView = grid.getView();
             if (thisView.prevScrollState) {
                 thisView.restoreScroll(thisView.prevScrollState);
@@ -431,6 +438,7 @@ Ext.onReady(function() {
         }
     }
 
+    /* The following are the for the create/edit/view batch modal window */
     function showBatchWin(thisBatchId) {
         batchID = thisBatchId;
         if (batchWin.rendered) {
@@ -1577,7 +1585,7 @@ Ext.onReady(function() {
                 // reload the main batch window to see the new batch
                 store.reload({
                     // to see the new batch, we have to reload the 'Open Batches' with CreateDate in desc order
-                    params: { showRanBatches: false, start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
+                    params: { showBatchStatus: 'open', start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
                     callback: function() {
                         // TODO: highlight the saved row & add success icon
                     }

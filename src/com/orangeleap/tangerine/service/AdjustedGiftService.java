@@ -71,4 +71,6 @@ public interface AdjustedGiftService {
     List<AdjustedGift> readAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds, SortInfo sort, Locale locale);
 
     int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds);
+
+    List<AdjustedGift> readAllAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds);
 }

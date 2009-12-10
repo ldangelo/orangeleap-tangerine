@@ -430,6 +430,7 @@ public class BatchSelectionAction {
 
         if (picklist != null) {
             for (PicklistItem item : picklist.getActivePicklistItems()) {
+                // the defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
                 String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(item.getDefaultDisplayValue()).toString();
                 FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
                 if (fieldDef != null) {
@@ -509,21 +510,25 @@ public class BatchSelectionAction {
         BeanWrapper bean = createDefaultEntity(batch);
         if (bean != null) {
             batch.clearUpdateFields();
+            // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
             for (String thisKey : enteredParams.keySet()) {
                 String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
                 FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-                if (fieldDef != null && bean.isReadableProperty(thisKey)) {
+                if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
                     fieldMap = new HashMap<String, Object>();
 
+                    // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
                     batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
 
-                    String escapedKey = TangerineForm.escapeFieldName(thisKey);
-                    fieldMap.put(StringConstants.NAME, escapedKey);
-                    fieldMap.put(StringConstants.MAPPING, escapedKey);
-                    if (bean.getPropertyValue(thisKey) instanceof CustomField) {
-                        thisKey += StringConstants.DOT_VALUE;
+                    String escapedFieldName = TangerineForm.escapeFieldName(fieldDef.getFieldName());
+                    fieldMap.put(StringConstants.NAME, escapedFieldName);
+                    fieldMap.put(StringConstants.MAPPING, escapedFieldName);
+
+                    String propertyName = fieldDef.getFieldName();
+                    if (bean.getPropertyValue(propertyName) instanceof CustomField) {
+                        propertyName += StringConstants.DOT_VALUE;
                     }
-                    String extType = ExtTypeHandler.findExtType(bean.getPropertyType(thisKey));
+                    String extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
                     fieldMap.put(StringConstants.TYPE, extType);
                     fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
 
@@ -552,7 +557,7 @@ public class BatchSelectionAction {
         else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
             rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
         }
-        contrastUpdatedValues(rows, oldRowMap, newRowMap, rowValues, enteredParams);
+        contrastUpdatedValues(batch, rows, oldRowMap, newRowMap, rowValues, enteredParams);
 
         model.put(StringConstants.ROWS, rowValues);
         model.put(StringConstants.TOTAL_ROWS, rowValues.size());
@@ -560,7 +565,7 @@ public class BatchSelectionAction {
         return model;
     }
 
-    private void contrastUpdatedValues(final List rows, final Map<String, Object> oldRowMap,
+    private void contrastUpdatedValues(final PostBatch batch, final List rows, final Map<String, Object> oldRowMap,
                                        final Map<String, Object> newRowMap, final List<Map<String, Object>> rowValues,
                                        final Map<String, Object> enteredParams) {
         if (rows != null) {
@@ -576,14 +581,17 @@ public class BatchSelectionAction {
 
                 for (Map.Entry<String, Object> paramEntry : enteredParams.entrySet()) {
                     String key = paramEntry.getKey();
-                    if (bw.isWritableProperty(key)) {
-                        String evalKey = key;
-                        if (bw.getPropertyValue(key) instanceof CustomField) {
-                            evalKey += StringConstants.DOT_VALUE;
+                    // the batchType + key is the fieldDefinitionId; we need to resolve the fieldName
+                    String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(key).toString();
+                    FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+                    if (fieldDef != null && bw.isWritableProperty(fieldDef.getFieldName())) {
+                        String propertyName = fieldDef.getFieldName();
+                        if (bw.getPropertyValue(propertyName) instanceof CustomField) {
+                            propertyName += StringConstants.DOT_VALUE;
                         }
-                        String escapedKey = TangerineForm.escapeFieldName(key);
-                        oldRowMap.put(escapedKey, bw.getPropertyValue(evalKey));
-                        newRowMap.put(escapedKey, paramEntry.getValue());
+                        String escapedFieldName = TangerineForm.escapeFieldName(propertyName);
+                        oldRowMap.put(escapedFieldName, bw.getPropertyValue(propertyName));
+                        newRowMap.put(escapedFieldName, paramEntry.getValue());
                     }
                 }
                 rowValues.add(oldRowMap); // 1 row for the old value

@@ -56,6 +56,9 @@ public class OrangeLeapRuleSession {
 						Object[] args = {map};
 						groovyObject.invokeMethod("run", args);
 						
+					} catch (OrangeLeapConsequenceRuntimeException e) {
+						logger.error(e.getMessage());
+						throw e;
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 						throw new RuntimeException(e);

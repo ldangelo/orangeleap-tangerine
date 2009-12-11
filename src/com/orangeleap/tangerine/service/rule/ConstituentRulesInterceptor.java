@@ -98,6 +98,16 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 				}
 				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
 				logger.error(ce);
+			} catch (OrangeLeapConsequenceRuntimeException ce) {
+				if (ce.getCause() instanceof DuplicateConstituentException) {
+					DuplicateConstituentException dce = (DuplicateConstituentException) ce.getCause();
+					throw dce;
+				}
+				if (ce.getCause() instanceof ConstituentValidationException) {
+					ConstituentValidationException cve = (ConstituentValidationException) ce.getCause();
+					throw cve;
+				}
+				logger.error(ce);
 			} catch (Exception e) {
 				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
 				logger.error(e);

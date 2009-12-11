@@ -235,8 +235,10 @@ public class ObjectConverter {
                     //
                     // handle custom field map
                     ConvertCustomFieldMapToJAXB((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from, (com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
-                } else if (writeMethod != null && readMethod != null)
-                    writeMethod.invoke(to, readMethod.invoke(from));
+                } else if (writeMethod != null && readMethod != null) {
+                	
+                	writeMethod.invoke(to, readMethod.invoke(from));
+                }
 
             } catch (ClassNotFoundException cnfe) {
                 logger.info(cnfe.getMessage());
@@ -305,7 +307,10 @@ public class ObjectConverter {
             cf.setName(value.getName());
             cf.setSequenceNumber(value.getSequenceNumber());
             //cf.setStartDate(new XMLGregorianCalendar());
-            cf.setValue(value.getValue());
+            if (value.getValue() != null)
+            	cf.setValue(value.getValue());
+            else 
+            	cf.setValue("");
 
 
             cvf.setKey(key);

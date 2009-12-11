@@ -86,26 +86,43 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="abstractEntity" abstract="true">
+		<xs:sequence>
+			<xs:element name="id" minOccurs="0" maxOccurs="1" type="xs:long" />
+			<xs:element name="createDate" minOccurs="0" maxOccurs="1"
+				type="xs:dateTime" />
+			<xs:element name="updateDate" minOccurs="0" maxOccurs="1"
+				type="xs:dateTime" />
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:complexType name="abstractCustomizableEntity"
 		abstract="true">
-		<xs:sequence>
-			<xs:element name="customFieldMap" minOccurs="1" maxOccurs="1">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
-							<xs:complexType>
-								<xs:sequence>
-									<xs:element name="key" minOccurs="1" maxOccurs="1"
-										type="xs:string" />
-									<xs:element name="value" minOccurs="1" maxOccurs="1"
-										type="tns:customField" />
-								</xs:sequence>
-							</xs:complexType>
-						</xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="tns:abstractEntity">
+				<xs:sequence>
+
+					<xs:element name="customFieldMap" minOccurs="1"
+						maxOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="key" minOccurs="1" maxOccurs="1"
+												type="xs:string" />
+											<xs:element name="value" minOccurs="1" maxOccurs="1"
+												type="tns:customField" />
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="address">
@@ -113,19 +130,19 @@
 			<xs:extension base="tns:abstractCommunicationEntity">
 				<xs:sequence>
 					<xs:element name="addressLine1" type="xs:string"
-						minOccurs="1" maxOccurs="1" />
+						minOccurs="0" maxOccurs="1" />
 					<xs:element name="addressLine2" type="xs:string"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="addressLine3" type="xs:string"
 						minOccurs="0" maxOccurs="1" />
-					<xs:element name="city" type="xs:string" minOccurs="1"
+					<xs:element name="city" type="xs:string" minOccurs="0"
 						maxOccurs="1" />
-					<xs:element name="country" type="xs:string" minOccurs="1"
+					<xs:element name="country" type="xs:string" minOccurs="0"
 						maxOccurs="1" />
 					<xs:element name="postalCode" type="xs:string"
-						minOccurs="1" maxOccurs="1" />
+						minOccurs="0" maxOccurs="1" />
 					<xs:element name="stateProvince" type="xs:string"
-						minOccurs="1" maxOccurs="1" />
+						minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -151,8 +168,8 @@
 					<xs:element name="effectiveDate" type="xs:dateTime"
 						minOccurs="0" />
 					<xs:element name="inactive" type="xs:boolean" />
-					<xs:element name="constituentId" type="xs:long"
-						minOccurs="1" maxOccurs="1" />
+<!-- 					<xs:element name="constituentId" type="xs:long"
+						minOccurs="1" maxOccurs="1" /> -->
 					<xs:element name="primary" type="xs:boolean" />
 					<xs:element name="receiveCorrespondence" type="xs:boolean" />
 					<xs:element name="seasonalEndDate" type="xs:dateTime"
@@ -391,6 +408,8 @@
 		<xs:complexContent>
 			<xs:extension base="tns:abstractCustomizableEntity">
 				<xs:sequence>
+					<xs:element name="constituentId" type="xs:long"
+						minOccurs="0" maxOccurs="1" />
 					<xs:element name="accountNumber" type="xs:long"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="firstName" type="xs:string" minOccurs="1"
@@ -430,17 +449,17 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-   <xs:complexType name="segmentation">
-     <xs:sequence>
-     	<xs:element name="name" type="xs:string"/>
-     	<xs:element name="description" type="xs:string"/>
-     	<xs:element name="id" type="xs:long"/>
-     	<xs:element name="type" type="xs:string"/>
-     	<xs:element name="executionUser" type="xs:string"/>
-     	<xs:element name="executionCount" type="xs:long"/>
-     	<xs:element name="executionDate" type="xs:dateTime"/>
-     </xs:sequence>
-    </xs:complexType>
+	<xs:complexType name="segmentation">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
+			<xs:element name="description" type="xs:string" />
+			<xs:element name="id" type="xs:long" />
+			<xs:element name="type" type="xs:string" />
+			<xs:element name="executionUser" type="xs:string" />
+			<xs:element name="executionCount" type="xs:long" />
+			<xs:element name="executionDate" type="xs:dateTime" />
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:element name="GetConstituentByIdRequest">
 		<xs:complexType>
@@ -550,8 +569,8 @@
 	<xs:element name="SaveOrUpdateConstituentRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="constituent" type="tns:constituent" minOccurs="1"
-					maxOccurs="1" />
+				<xs:element name="constituent" type="tns:constituent"
+					minOccurs="1" maxOccurs="1" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -559,8 +578,8 @@
 	<xs:element name="SaveOrUpdateConstituentResponse">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="constituent" type="tns:constituent" minOccurs="1"
-					maxOccurs="1" />
+				<xs:element name="constituent" type="tns:constituent"
+					minOccurs="1" maxOccurs="1" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

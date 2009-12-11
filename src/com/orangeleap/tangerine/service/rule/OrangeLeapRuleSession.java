@@ -49,6 +49,7 @@ public class OrangeLeapRuleSession {
 						
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
 						String script = rulesConfService.readRulesEventScript(orangeLeapRuleBase.getRuleEventType(), orangeLeapRuleBase.isTestMode());
+						if (script == null || script.length() == 0) return;
 
 						Class groovyClass = loader.parseClass("class RuleRunner{ void run(Map map) { "+script+" } }", "rules.groovy");
 						GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();

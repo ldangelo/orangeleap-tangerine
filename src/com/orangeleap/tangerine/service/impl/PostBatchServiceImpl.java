@@ -481,13 +481,13 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     private void createMaps(final Map<String, String> bankMap, final Map<String, String> codeMap) {
-        Picklist bankCodes = picklistItemService.getPicklist("customFieldMap[bank]");
+        Picklist bankCodes = picklistItemService.getPicklist(StringConstants.BANK_CUSTOM_FIELD);
         addItemsToMap(bankCodes, bankMap);
         if (bankMap.isEmpty()) {
             throw new RuntimeException("Posting bank GL account codes not defined.  Go to Manage Picklist Items and set up Bank and Designation Code customizations for GL Accounts.");
         }
 
-        Picklist projectCodes = picklistItemService.getPicklist("projectCode");
+        Picklist projectCodes = picklistItemService.getPicklist(StringConstants.PROJECT_CODE);
         addItemsToMap(projectCodes, codeMap);
         if (codeMap.isEmpty()) {
             throw new RuntimeException("No active designation GL codes defined.");

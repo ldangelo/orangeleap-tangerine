@@ -127,15 +127,20 @@ Ext.onReady(function() {
                     }
                 }
                 var showBatchStatus = combo.getValue();
-                if (showBatchStatus !== 'executed') {
+                if (showBatchStatus !== 'executed' && (OrangeLeap.allowExecute || OrangeLeap.allowDelete)) {
                     /* Add the 'actions' column for not executed batches */
                     cols[cols.length] = { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;', id: 'actions',
                         renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                             if ( ! record.get('executed')) {
-                                var html = '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id +
-                                           '" ext:qwidth="150" ext:qtip="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
-                                html += '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id +
-                                        '" ext:qwidth="150" ext:qtip="' + msgs.removeBatch + '">' + msgs.removeBatch + '</a>';
+                                var html = '';
+                                if (OrangeLeap.allowExecute) {
+                                    html += '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id +
+                                               '" ext:qwidth="150" ext:qtip="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
+                                }
+                                if (OrangeLeap.allowDelete) {
+                                    html += '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id +
+                                            '" ext:qwidth="150" ext:qtip="' + msgs.removeBatch + '">' + msgs.removeBatch + '</a>';
+                                }
                                 return html;
                             }
                             return '';
@@ -152,22 +157,6 @@ Ext.onReady(function() {
             }
         }
     });
-//    store.on('load', function(store, recs, options) {
-//        if (combo.getValue() == 'executed') {
-//            // for executed batches, hide actions & createDt column
-//            grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), true);
-//            grid.colModel.setHidden(grid.colModel.getIndexById('actions'), true);
-//            grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), false);
-//            grid.colModel.setHidden(grid.colModel.getIndexById('executedByUser'), false);
-//        }
-//        else {
-//           // for not executed batches, hide executeDt & executedByUser column
-//            grid.colModel.setHidden(grid.colModel.getIndexById('executedDt'), true);
-//            grid.colModel.setHidden(grid.colModel.getIndexById('executedByUser'), true);
-//            grid.colModel.setHidden(grid.colModel.getIndexById('createDt'), false);
-//            grid.colModel.setHidden(grid.colModel.getIndexById('actions'), false);
-//        }
-//    });
 
     // custom toolbar for batch GRID to  - this effectively overrides what the 'refresh' button action is on the GRID toolbar
     OrangeLeap.BatchGridToolbar = Ext.extend(Ext.PagingToolbar, {
@@ -230,11 +219,14 @@ Ext.onReady(function() {
     });
     combo.on('select', function(comboBox, record, index) {
         var showBatchStatusVal = comboBox.getValue();
-        if (showBatchStatusVal !== 'open') {
-            grid.addButton.disable();
-        }
-        else {
-            grid.addButton.enable();
+
+        if (OrangeLeap.allowCreate) {
+            if (showBatchStatusVal !== 'open') {
+                grid.addButton.disable();
+            }
+            else {
+                grid.addButton.enable();
+            }
         }
         var state = store.getSortState();
         if (state) {
@@ -303,16 +295,20 @@ Ext.onReady(function() {
         loadMask: true,
         listeners: {
             rowdblclick: function(grid, row, evt) {
-                var rec = grid.getSelectionModel().getSelected();
-                showBatchWin(rec.get('id'));
+                if (OrangeLeap.allowCreate) {
+                    var rec = grid.getSelectionModel().getSelected();
+                    showBatchWin(rec.get('id'));
+                }
             },
             click: function(event) {
-                var deleteTarget = event.getTarget('a.deleteLink');
-                if (deleteTarget) {
-                    event.stopPropagation();
-                    deleteBatch(deleteTarget);
+                if (OrangeLeap.allowDelete) {
+                    var deleteTarget = event.getTarget('a.deleteLink');
+                    if (deleteTarget) {
+                        event.stopPropagation();
+                        deleteBatch(deleteTarget);
+                    }
                 }
-                else {
+                if (OrangeLeap.allowExecute) {
                     var executeTarget = event.getTarget('a.executeLink');
                     if (executeTarget) {
                         event.stopPropagation();
@@ -322,17 +318,24 @@ Ext.onReady(function() {
             }
         },
         tbar: [
-            combo, ' ', '-', ' ', 
-            {
-                text: msgs.addNew, tooltip: msgs.addNewBatch, iconCls:'add', id: 'addButton', ref: '../addButton',
-                handler: function() {
-                    showBatchWin(null);
-                }
-            }
+            combo
         ],
         bbar: bar,
         renderTo: 'managerGrid'
     });
+
+    if (OrangeLeap.allowCreate) {
+        var toolbar = grid.getTopToolbar();
+        toolbar.addSpacer();
+        toolbar.addSeparator();
+        toolbar.addSpacer();
+        toolbar.addButton({ text: msgs.addNew, tooltip: msgs.addNewBatch,
+            iconCls:'add', id: 'addButton', ref: '../addButton',
+            handler: function() {
+                showBatchWin(null);
+            }
+        });
+    }
 
     var sortDir = 'DESC';
     var sortProp = 'createDate';
@@ -368,87 +371,93 @@ Ext.onReady(function() {
     });
 
     function executeBatch(target) {
-        var batchId = target.id;
-        if (batchId) {
-            batchId = batchId.replace('execute-link-', '');
-            var rec = store.getById(batchId);
-            // Disallow executes of already executed batches
-            if (rec.get('executed')) {
-                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                    buttons: Ext.MessageBox.OK,
-                    msg: msgs.cannotExecuteExecutedBatch });
-            }
-            else {
-                Ext.Msg.show({
-                    title: msgs.askExecuteBatch,
-                    msg: String.format(msgs.areYouSureExecuteBatch, batchId),
-                    buttons: Ext.Msg.OKCANCEL,
-                    icon: Ext.MessageBox.WARNING,
-                    fn: function(btn, text) {
-                        if (btn == "ok") {
-                            var recToExecute = store.getById(batchId);
-                            if (recToExecute) {
+        if (OrangeLeap.allowExecute) {
+            var batchId = target.id;
+            if (batchId) {
+                batchId = batchId.replace('execute-link-', '');
+                var rec = store.getById(batchId);
+                // Disallow executes of already executed batches
+                if (rec.get('executed')) {
+                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.MessageBox.OK,
+                        msg: msgs.cannotExecuteExecutedBatch });
+                }
+                else {
+                    Ext.Msg.show({
+                        title: msgs.askExecuteBatch,
+                        msg: String.format(msgs.areYouSureExecuteBatch, batchId),
+                        buttons: Ext.Msg.OKCANCEL,
+                        icon: Ext.MessageBox.WARNING,
+                        fn: function(btn, text) {
+                            if (btn == "ok") {
+                                var recToExecute = store.getById(batchId);
+                                if (recToExecute) {
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     }
 
     function deleteBatch(target) {
-        var batchId = target.id;
-        if (batchId) {
-            batchId = batchId.replace('delete-link-', '');
-            var rec = store.getById(batchId);
-            // Disallow deletes of executed batches
-            if (rec.get('executed')) {
-                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                    buttons: Ext.MessageBox.OK,
-                    msg: msgs.cannotDeleteExecutedBatch });
-            }
-            else {
-                Ext.Msg.show({
-                    title: msgs.askDeleteBatch,
-                    msg: String.format(msgs.areYouSureDeleteBatch, batchId),
-                    buttons: Ext.Msg.OKCANCEL,
-                    icon: Ext.MessageBox.WARNING,
-                    fn: function(btn, text) {
-                        if (btn == "ok") {
-                            Ext.get('batchList').mask(msgs.deletingBatch);
-                            Ext.Ajax.request({
-                                url: 'deleteBatch.json',
-                                method: 'POST',
-                                params: { 'batchId': batchId },
-                                success: function(response, options) {
-                                    store.remove(rec);
-                                    Ext.get('batchList').unmask();
-                                },
-                                failure: function(response, options) {
-                                    Ext.get('batchList').unmask();
-                                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                                        buttons: Ext.MessageBox.OK,
-                                        msg: msgs.errorBatchDelete });
-                                }
-                            });
+        if (OrangeLeap.allowDelete) {
+            var batchId = target.id;
+            if (batchId) {
+                batchId = batchId.replace('delete-link-', '');
+                var rec = store.getById(batchId);
+                // Disallow deletes of executed batches
+                if (rec.get('executed')) {
+                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.MessageBox.OK,
+                        msg: msgs.cannotDeleteExecutedBatch });
+                }
+                else {
+                    Ext.Msg.show({
+                        title: msgs.askDeleteBatch,
+                        msg: String.format(msgs.areYouSureDeleteBatch, batchId),
+                        buttons: Ext.Msg.OKCANCEL,
+                        icon: Ext.MessageBox.WARNING,
+                        fn: function(btn, text) {
+                            if (btn == "ok") {
+                                Ext.get('batchList').mask(msgs.deletingBatch);
+                                Ext.Ajax.request({
+                                    url: 'deleteBatch.json',
+                                    method: 'POST',
+                                    params: { 'batchId': batchId },
+                                    success: function(response, options) {
+                                        store.remove(rec);
+                                        Ext.get('batchList').unmask();
+                                    },
+                                    failure: function(response, options) {
+                                        Ext.get('batchList').unmask();
+                                        Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                                            buttons: Ext.MessageBox.OK,
+                                            msg: msgs.errorBatchDelete });
+                                    }
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     }
 
     /* The following are the for the create/edit/view batch modal window */
     function showBatchWin(thisBatchId) {
-        batchID = thisBatchId;
-        if (batchWin.rendered) {
-            // If batchWin has already been rendered, make sure step1 is the first one shown
-            var panel = batchWin.groupTabPanel;
-            panel.setActiveGroup(0);
-            var firstItem = panel.items.items[0];
-            firstItem.setActiveTab(firstItem.items.items[0]);
+        if (OrangeLeap.allowCreate) {
+            batchID = thisBatchId;
+            if (batchWin.rendered) {
+                // If batchWin has already been rendered, make sure step1 is the first one shown
+                var panel = batchWin.groupTabPanel;
+                panel.setActiveGroup(0);
+                var firstItem = panel.items.items[0];
+                firstItem.setActiveTab(firstItem.items.items[0]);
+            }
+            batchWin.show(batchWin);
         }
-        batchWin.show(batchWin);
     }
 
     // custom toolbar for batch window to invoke initFocus - this effectively overrides what the 'refresh' button action is on the toolbar
@@ -1081,6 +1090,7 @@ Ext.onReady(function() {
                     }
                 }
                 step3Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+                step3Bar.bindStore(store, true);
             },
             'beforeload': function(store, options) {
                 Ext.get($('#step2Grp').parent('div').next().attr('id')).mask(msgs.loadingRows);
@@ -1470,6 +1480,7 @@ Ext.onReady(function() {
             }
         }
         step5Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+        step5Bar.bindStore(store, true);
     });
     step5Store.proxy.on('load', function(proxy, txn, options) {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow

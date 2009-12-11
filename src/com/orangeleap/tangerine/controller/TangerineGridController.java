@@ -22,6 +22,7 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.web.common.TangerineListHelper;
 import org.apache.commons.logging.Log;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
@@ -38,7 +39,10 @@ public abstract class TangerineGridController extends ParameterizableViewControl
 
     @Resource(name="constituentService")
     protected ConstituentService constituentService;
-    
+
+    @Resource(name = "tangerineListHelper")
+    protected TangerineListHelper tangerineListHelper;
+
     public Long getIdAsLong(HttpServletRequest request, String id) {
         if (logger.isTraceEnabled()) {
             logger.trace("getIdAsLong: id = " + id);

@@ -19,7 +19,9 @@
 package com.orangeleap.tangerine.json.controller.batch;
 
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.json.controller.list.TangerineJsonListController;
 import com.orangeleap.tangerine.service.PostBatchService;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
@@ -28,9 +30,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class ExecuteBatchController {
+public class ExecuteBatchController extends TangerineJsonListController {
 
     protected final Log logger = OLLogger.getLog(getClass());
 
@@ -39,11 +42,11 @@ public class ExecuteBatchController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/executeBatch.json")
-    public ModelMap executeBatch(final Long batchId) {
+    public ModelMap executeBatch(final HttpServletRequest request, final Long batchId) {
         if (logger.isTraceEnabled()) {
             logger.trace("executeBatch: batchId = " + batchId);
         }
-        // TODO: permissions through the filter
+        checkAccess(request, PageType.executeBatch);
         PostBatch batch = postBatchService.readBatch(batchId);
 
         // check for batch errors first before executing

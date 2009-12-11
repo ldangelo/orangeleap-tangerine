@@ -85,7 +85,9 @@ public enum PageType {
     siteSettings("/siteSettings.htm"),
     siteDefaults("/siteDefaults.htm"),
     batch("/batch.htm"),
-    postbatch("/postbatch.htm"), // TODO: remove
+    executeBatch("/executeBatch.json"),
+    deleteBatch("/deleteBatch.json"),
+    createBatch("/createBatch.json"),
     logView("/logView.htm"),
     screenDefinition("/screenDefinition.htm"),
     manageDashboard("/manageDashboard.htm");

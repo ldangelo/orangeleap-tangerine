@@ -102,14 +102,6 @@ public class BatchSelectionAction {
     @Resource(name = "fieldService")
     private FieldService fieldService;
 
-    @SuppressWarnings("unchecked")
-    public void checkAccess(HttpServletRequest request) {
-        Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get(PageType.batch.getPageName()) != AccessType.ALLOWED) {
-            throw new RuntimeException("You are not authorized to access this page"); // TODO: use invalid access exception and move to filter
-        }
-    }
-
     private String resolveSegmentationFieldName(String key) {
         String resolvedName = key;
         if (StringConstants.NAME.equals(key)) {
@@ -128,6 +120,10 @@ public class BatchSelectionAction {
             resolvedName = "lastRunByUserName";
         }
         return resolvedName;
+    }
+
+    private HttpServletRequest getRequest(final RequestContext flowRequestContext) {
+        return (HttpServletRequest) ((ServletExternalContext) flowRequestContext.getExternalContext()).getNativeRequest();
     }
 
     private void setFlowScopeAttribute(final RequestContext flowRequestContext, final Object object, final String key) {
@@ -149,6 +145,7 @@ public class BatchSelectionAction {
         if (logger.isTraceEnabled()) {
             logger.trace("step1FindBatchInfo: batchId = " + batchId);
         }
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
         final ModelMap model = new ModelMap();
         PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         
@@ -225,6 +222,7 @@ public class BatchSelectionAction {
             logger.trace("step2FindSegmentations: batchType = " + batchType + " pickedIds = " + pickedIds + " notPickedIds = " +
                     notPickedIds + " batchDesc = " + batchDesc + " sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
         }
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
         final ModelMap model = new ModelMap();
         final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
         
@@ -255,15 +253,15 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
-    public ModelMap step3FindRowsForSegmentations(final RequestContext flowRequestContext, final ExternalContext externalContext, final String pickedIds,
+    public ModelMap step3FindRowsForSegmentations(final RequestContext flowRequestContext, final String pickedIds,
                                                   final String notPickedIds, final String sort, final String dir, final String limit, final String start) {
         if (logger.isTraceEnabled()) {
             logger.trace("step3FindRowsForSegmentations: pickedIds = " + pickedIds + " notPickedIds = " + notPickedIds +
                     " sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
         }
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
         final ModelMap model = new ModelMap();
-
-        final HttpServletRequest request = (HttpServletRequest) ((ServletExternalContext) externalContext).getNativeRequest();
+        final HttpServletRequest request = getRequest(flowRequestContext);
         final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
 
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
@@ -411,6 +409,7 @@ public class BatchSelectionAction {
         if (logger.isTraceEnabled()) {
             logger.trace("step4FindBatchUpdateFields:");
         }
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final String picklistNameId = new StringBuilder(batch.getBatchType()).append(BATCH_FIELDS).toString();
         final Picklist picklist = picklistItemService.getPicklist(picklistNameId);
@@ -457,14 +456,15 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
-    public ModelMap step5ReviewUpdates(final RequestContext flowRequestContext, final ExternalContext externalContext, 
-                                       final String sort, final String dir, final String limit, final String start) {
+    public ModelMap step5ReviewUpdates(final RequestContext flowRequestContext, final String sort, final String dir,
+                                       final String limit, final String start) {
         if (logger.isTraceEnabled()) {
             logger.trace("step5ReviewUpdates: sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
         }
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
-        final HttpServletRequest request = (HttpServletRequest) ((ServletExternalContext) externalContext).getNativeRequest();
+        final HttpServletRequest request = getRequest(flowRequestContext);
         final Map<String, Object> enteredParams = findEnteredParameters(request);
 
         final ModelMap model = new ModelMap();
@@ -597,6 +597,7 @@ public class BatchSelectionAction {
         if (logger.isTraceEnabled()) {
             logger.trace("saveBatch:");
         }
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final PostBatch savedBatch = postBatchService.maintainBatch(batch);
 
@@ -611,6 +612,7 @@ public class BatchSelectionAction {
         if (logger.isTraceEnabled()) {
             logger.trace("cancelBatch:");
         }
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
         final ModelMap map = new ModelMap();
         map.put(StringConstants.SUCCESS, Boolean.TRUE);
         return map;

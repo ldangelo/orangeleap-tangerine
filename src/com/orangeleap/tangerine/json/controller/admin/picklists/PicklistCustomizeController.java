@@ -146,8 +146,8 @@ public class PicklistCustomizeController extends AbstractPicklistController {
     }
 
     private boolean isGLCoded(Picklist picklist) {
-    	return picklist.getPicklistNameId().endsWith("projectCode")
-            || picklist.getPicklistNameId().endsWith("customFieldMap[bank]");
+    	return picklist.getPicklistNameId().endsWith(StringConstants.PROJECT_CODE)
+            || picklist.getPicklistNameId().endsWith(StringConstants.BANK_CUSTOM_FIELD);
     }
 
 	protected Map<String, String> getCustomFieldNameValues(Map<String, CustomField> map) {

@@ -22,6 +22,7 @@ import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -32,6 +33,7 @@ import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandl
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +55,18 @@ public class TangerineListHelper {
     protected TangerineUserHelper tangerineUserHelper;
 
     public static final String SORT_KEY_PREFIX = "a";
+
+    @SuppressWarnings("unchecked")
+    public boolean isAccessAllowed(HttpServletRequest request, PageType pageType) {
+        Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
+        return pageAccess.get(pageType.getPageName()) == AccessType.ALLOWED;
+    }
+
+    public void checkAccess(HttpServletRequest request, PageType pageType) {
+        if ( ! isAccessAllowed(request, pageType)) {
+            throw new RuntimeException("You are not authorized to access this page");
+        }
+    }
 
     public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities,
                                    List<Map<String, Object>> paramMapList, boolean useAliasName, boolean useAliasId) {

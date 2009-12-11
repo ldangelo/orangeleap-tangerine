@@ -6,6 +6,12 @@
         </head>
     </html>
     <page:param name="scripts">
+        <script type="text/javascript">
+            Ext.ns('OrangeLeap');
+            OrangeLeap.allowCreate = <c:out value="${requestScope.allowCreate}"/>;
+            OrangeLeap.allowExecute = <c:out value="${requestScope.allowExecute}"/>;
+            OrangeLeap.allowDelete = <c:out value="${requestScope.allowDelete}"/>;
+        </script>
         <script type="text/javascript" src="js/extjs/ux/grid/DynamicPropertyGrid.js"></script>
         <script type="text/javascript" src="js/extjs/ux/group/GroupTab.js"></script>
         <script type="text/javascript" src="js/extjs/ux/group/GroupTabPanel.js"></script>

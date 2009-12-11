@@ -19,7 +19,9 @@
 package com.orangeleap.tangerine.json.controller.batch;
 
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.json.controller.list.TangerineJsonListController;
 import com.orangeleap.tangerine.service.PostBatchService;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
@@ -28,9 +30,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class DeleteBatchController {
+public class DeleteBatchController extends TangerineJsonListController {
 
     protected final Log logger = OLLogger.getLog(getClass());
 
@@ -39,11 +42,11 @@ public class DeleteBatchController {
     
     @SuppressWarnings("unchecked")
     @RequestMapping("/deleteBatch.json")
-    public ModelMap deleteBatch(final Long batchId) {
+    public ModelMap deleteBatch(final HttpServletRequest request, final Long batchId) {
         if (logger.isTraceEnabled()) {
             logger.trace("deleteBatch: batchId = " + batchId);
         }
-        // TODO: permissions through the filter
+        checkAccess(request, PageType.deleteBatch);
         PostBatch batch = postBatchService.readBatch(batchId);
         postBatchService.deleteBatch(batch);
         final ModelMap model = new ModelMap();

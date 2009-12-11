@@ -27,6 +27,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import org.apache.commons.collections.set.UnmodifiableSet;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Controller;
@@ -65,46 +66,40 @@ public class BatchListController extends TangerineJsonListController {
     private final Set<String> executedBatchFields;
     private final Set<String> errorBatchFields;
 
-    // for executed batches, hide actions & createDt, errors, column
-    // for open batches, hide executeDt & executedByUser, errors column
-    public BatchListController() {
-        openBatchFields = new LinkedHashSet<String>();
-        openBatchFields.add(StringConstants.ID);
-        openBatchFields.add(BATCH_TYPE);
-        openBatchFields.add(BATCH_DESC);
-        openBatchFields.add(CREATE_DATE);
-        openBatchFields.add(EXECUTED);
-
-        executedBatchFields = new LinkedHashSet<String>();
-        executedBatchFields.add(StringConstants.ID);
-        executedBatchFields.add(BATCH_TYPE);
-        executedBatchFields.add(BATCH_DESC);
-        executedBatchFields.add(CREATE_DATE);
-        executedBatchFields.add(EXECUTED_DATE);
-        executedBatchFields.add(EXECUTED_BY_USER);
-        executedBatchFields.add(EXECUTED);
-
-        errorBatchFields = new LinkedHashSet<String>();
-        errorBatchFields.add(StringConstants.ID);
-        errorBatchFields.add(BATCH_TYPE);
-        errorBatchFields.add(BATCH_DESC);
-        errorBatchFields.add(CREATE_DATE);
-        errorBatchFields.add(StringConstants.ERRORS);
-        errorBatchFields.add(EXECUTED);
-    }
-
     @SuppressWarnings("unchecked")
-    public void checkAccess(HttpServletRequest request) {
-        Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
-        if (pageAccess.get(PageType.batch.getPageName()) != AccessType.ALLOWED) {
-            throw new RuntimeException("You are not authorized to access this page"); // TODO: use invalid access exception and move to filter
-        }
+    public BatchListController() {
+        Set<String> fields = new LinkedHashSet<String>();
+        fields.add(StringConstants.ID);
+        fields.add(BATCH_TYPE);
+        fields.add(BATCH_DESC);
+        fields.add(CREATE_DATE);
+        fields.add(EXECUTED);
+        openBatchFields = UnmodifiableSet.decorate(fields);
+
+        fields = new LinkedHashSet<String>();
+        fields.add(StringConstants.ID);
+        fields.add(BATCH_TYPE);
+        fields.add(BATCH_DESC);
+        fields.add(CREATE_DATE);
+        fields.add(EXECUTED_DATE);
+        fields.add(EXECUTED_BY_USER);
+        fields.add(EXECUTED);
+        executedBatchFields = UnmodifiableSet.decorate(fields);
+
+        fields = new LinkedHashSet<String>();
+        fields.add(StringConstants.ID);
+        fields.add(BATCH_TYPE);
+        fields.add(BATCH_DESC);
+        fields.add(CREATE_DATE);
+        fields.add(StringConstants.ERRORS);
+        fields.add(EXECUTED);
+        errorBatchFields = UnmodifiableSet.decorate(fields);
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/batchList.json")
     public ModelMap getBatchList(HttpServletRequest request, String showBatchStatus, SortInfo sortInfo) {
-        checkAccess(request);
+        checkAccess(request, PageType.batch);
         final ModelMap model = new ModelMap();
         checkSortKey(sortInfo, showBatchStatus);
         setupMetaData(model, showBatchStatus, sortInfo);

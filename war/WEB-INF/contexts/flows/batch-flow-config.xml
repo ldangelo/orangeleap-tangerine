@@ -30,7 +30,7 @@
 
     <view-state id="batchStep3">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext, externalContext,
+            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext,
                 requestParameters.pickedIds, requestParameters.notPickedIds, requestParameters.sort,
                 requestParameters.dir, requestParameters.limit, requestParameters.start)"
                     result="flowScope.model"/>
@@ -57,7 +57,7 @@
 
     <view-state id="batchStep5">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step5ReviewUpdates(flowRequestContext, externalContext, requestParameters.sort,
+            <evaluate expression="batchSelectionAction.step5ReviewUpdates(flowRequestContext, requestParameters.sort,
                     requestParameters.dir, requestParameters.limit, requestParameters.start)"
                       result="flowScope.model"/>
         </on-entry>

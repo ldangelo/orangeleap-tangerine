@@ -21,10 +21,13 @@ package com.orangeleap.tangerine.json.controller.list;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.common.TangerineListHelper;
 import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.web.util.WebUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +45,15 @@ public abstract class TangerineJsonListController {
     private static final String PARENT_NODE = "_parent";
     private static final String LEAF_NODE = "_is_leaf";
 
+    @SuppressWarnings("unchecked")
+    public boolean isAccessAllowed(HttpServletRequest request, PageType pageType) {
+        return tangerineListHelper.isAccessAllowed(request, pageType);
+    }
+
+    public void checkAccess(HttpServletRequest request, PageType pageType) {
+        tangerineListHelper.checkAccess(request, pageType);
+    }
+    
     public void addListFieldsToMap(HttpServletRequest request, List<SectionField> sectionFields, List entities,
                                    List<Map<String, Object>> paramMapList, boolean useAliasName, boolean useAliasId) {
         tangerineListHelper.addListFieldsToMap(request, sectionFields, entities, paramMapList, useAliasName, useAliasId);

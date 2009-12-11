@@ -40,7 +40,7 @@ OrangeLeap.msgBundle = {
     userId: 'User ID',
     executeBatch: 'Execute Batch',
     removeBatch: 'Remove Batch',
-    batchList: 'Batch List',
+    batchList: 'Batch List <span id="savedMarker" class="marker">Saved</span> <span id="executedMarker" class="marker">Executed</span> <span id="deletedMarker" class="marker">Deleted</span>',
     addNewBatch: 'Add a new Batch',
     manageBatch: 'Manage Batch',
     chooseSegmentations: 'Choose Segmentations',
@@ -392,12 +392,30 @@ Ext.onReady(function() {
                             if (btn == "ok") {
                                 var recToExecute = store.getById(batchId);
                                 if (recToExecute) {
+// TODO: do in callback
+//                                    hideOtherMarkers('executedMarker');                                    
+//                                    $("#executedMarker").show();
+//                                    setTimeout(function() {
+//                                        $("#executedMarker").hide();
+//                                    }, 10000);
                                 }
                             }
                         }
                     });
                 }
             }
+        }
+    }
+
+    function hideOtherMarkers(markerName) {
+        if (markerName != 'executedMarker') {
+            $('#executedMarker').hide();
+        }
+        if (markerName != 'savedMarker') {
+            $('#savedMarker').hide();
+        }
+        if (markerName != 'deletedMarker') {
+            $('#deletedMarker').hide();
         }
     }
 
@@ -429,6 +447,11 @@ Ext.onReady(function() {
                                     success: function(response, options) {
                                         store.remove(rec);
                                         Ext.get('batchList').unmask();
+                                        hideOtherMarkers('deletedMarker');
+                                        $("#deletedMarker").show();
+                                        setTimeout(function() {
+                                            $("#deletedMarker").hide();
+                                        }, 10000);
                                     },
                                     failure: function(response, options) {
                                         Ext.get('batchList').unmask();
@@ -760,7 +783,7 @@ Ext.onReady(function() {
                         'value',
                         'desc'
                     ],
-                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]] //TODO: put back adjustedGift when adjustedGift segmentations ready
+                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]] 
                 }),
                 displayField: 'desc',
                 valueField: 'value',
@@ -1593,15 +1616,36 @@ Ext.onReady(function() {
             method: 'POST',
             params: { '_eventId_save': 'save', 'execution': getFlowExecutionKey() },
             success: function(response, options) {
+                var responseText = response.responseText;
                 // reload the main batch window to see the new batch
                 store.reload({
                     // to see the new batch, we have to reload the 'Open Batches' with CreateDate in desc order
                     params: { showBatchStatus: 'open', start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
                     callback: function() {
-                        // TODO: highlight the saved row & add success icon
+                        // TODO: highlight the background
+                        
+//                        var obj = Ext.decode(responseText);
+//                        if (obj && obj.batchId) {
+//                            var recIndex = store.indexOfId(obj.batchId);
+//                            if (recIndex > -1) {
+//                                var row = grid.getView().getRow(recIndex);
+//                                if (row) {
+//                                    Ext.fly(row).highlight("FFFF9C", {
+//                                        attr: "background-color",
+//                                        easing: 'easeOut',
+//                                        duration: 3
+//                                    });
+//                                }
+//                            }
+//                        }
                     }
                 });
-                batchWin.hide(batchWin);
+                cancelBatch(); // tell the server side to end the flow
+                hideOtherMarkers('savedMarker');
+                $("#savedMarker").show();
+                setTimeout(function() {
+                    $("#savedMarker").hide();
+                }, 10000);
             },
             failure: function(response, options) {
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,

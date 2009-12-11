@@ -80,7 +80,8 @@ div#managerGrid table.saveButton td,
 div#managerGrid table.disabledButton td, div.win table.disabledButton td { cursor: default; }
 
 #managementGrid #savedMarker, #managerGrid #savedMarker { visibility: hidden; font-size: 12px; }
-#customizeWin #customizedFieldsSavedMarker, #optionsWin #optionsFieldsSavedMarker { display: none; font-size: 11px; }
+#customizeWin #customizedFieldsSavedMarker, #optionsWin #optionsFieldsSavedMarker, div#managerGrid #batchList .marker { display: none; font-size: 11px; }
+div#managerGrid #batchList .marker { visibility: visible; }
 
 a.customizeLink, a.deleteLink, a.executeLink { background-position: top left; background-repeat: no-repeat; height: 16px; width: 16px; display: inline-block; text-indent: -3000px; }
 a.customizeLink { background-image: url(../images/icons/gears.png); }

@@ -253,7 +253,7 @@ table.disabledButton button {
     cursor: default;
 }
 
-#savedMarker, .savedIcon {
+#savedMarker, #deletedMarker, #executedMarker, .savedIcon {
 	background:transparent url(../images/icons/check-eee.gif) no-repeat center left;
 	margin-left:12px;
 	padding-left:18px;

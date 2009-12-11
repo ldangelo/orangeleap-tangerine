@@ -36,7 +36,6 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -54,8 +53,6 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
-import org.springframework.web.util.WebUtils;
-import org.springframework.webflow.context.ExternalContext;
 import org.springframework.webflow.context.servlet.ServletExternalContext;
 import org.springframework.webflow.core.collection.MutableAttributeMap;
 import org.springframework.webflow.execution.RequestContext;
@@ -67,7 +64,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,6 +73,7 @@ import java.util.TreeSet;
 public class BatchSelectionAction {
 
     protected final Log logger = OLLogger.getLog(getClass());
+
     public static final String PARAM_PREFIX = "param-";
     public static final String BATCH_FIELDS = "BatchFields";
     public static final String PICKED_SEGMENTATION_IDS = "pickedSegmentationIds";
@@ -603,11 +600,12 @@ public class BatchSelectionAction {
         tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final PostBatch savedBatch = postBatchService.maintainBatch(batch);
+        setFlowScopeAttribute(flowRequestContext, savedBatch, StringConstants.BATCH);
 
-        final ModelMap map = new ModelMap();
-        map.put(StringConstants.BATCH_ID, savedBatch.getId());
-        map.put(StringConstants.SUCCESS, Boolean.TRUE);
-        return map;
+        final ModelMap model = new ModelMap();
+        model.put(StringConstants.BATCH_ID, savedBatch.getId());
+        model.put(StringConstants.SUCCESS, Boolean.TRUE);
+        return model;
     }
 
     @SuppressWarnings("unchecked")
@@ -616,9 +614,9 @@ public class BatchSelectionAction {
             logger.trace("cancelBatch:");
         }
         tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
-        final ModelMap map = new ModelMap();
-        map.put(StringConstants.SUCCESS, Boolean.TRUE);
-        return map;
+        final ModelMap model = new ModelMap();
+        model.put(StringConstants.SUCCESS, Boolean.TRUE);
+        return model;
     }
 
     private Map<String, Object> findEnteredParameters(final HttpServletRequest request) {

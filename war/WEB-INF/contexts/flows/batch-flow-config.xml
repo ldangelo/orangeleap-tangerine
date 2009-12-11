@@ -12,7 +12,7 @@
         </on-entry>
         <transition on="step1" to="batchStep1"/> <!-- if reloading the current page -->
         <transition on="step2" to="batchStep2"/>
-        <transition on="cancel" to="batchCancelled"/>
+        <transition on="cancel" to="batchCompleted"/>
     </view-state>
 
     <view-state id="batchStep2">
@@ -25,7 +25,7 @@
         <transition on="step1" to="batchStep1"/>
         <transition on="step2" to="batchStep2"/> <!-- if reloading the current page -->
         <transition on="step3" to="batchStep3"/>
-        <transition on="cancel" to="batchCancelled"/>
+        <transition on="cancel" to="batchCompleted"/>
     </view-state>
 
     <view-state id="batchStep3">
@@ -39,7 +39,7 @@
         <transition on="step2" to="batchStep2"/>
         <transition on="step3" to="batchStep3"/> <!-- if reloading the current page -->
         <transition on="step4" to="batchStep4"/>
-        <transition on="cancel" to="batchCancelled"/>
+        <transition on="cancel" to="batchCompleted"/>
     </view-state>
 
     <view-state id="batchStep4">
@@ -52,7 +52,7 @@
         <transition on="step3" to="batchStep3"/>
         <transition on="step4" to="batchStep4"/> <!-- if reloading the current page -->
         <transition on="step5" to="batchStep5"/>
-        <transition on="cancel" to="batchCancelled"/>
+        <transition on="cancel" to="batchCompleted"/>
     </view-state>
 
     <view-state id="batchStep5">
@@ -66,17 +66,18 @@
         <transition on="step3" to="batchStep3"/>
         <transition on="step4" to="batchStep4"/>
         <transition on="step5" to="batchStep5"/> <!-- if reloading the current page -->
-        <transition on="save" to="batchFinished"/>
-        <transition on="cancel" to="batchCancelled"/>
+        <transition on="save" to="batchSave"/>
+        <transition on="cancel" to="batchCompleted"/>
     </view-state>
 
-    <end-state id="batchFinished">
+    <view-state id="batchSave">
         <on-entry>
             <evaluate expression="batchSelectionAction.saveBatch(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
-    </end-state>
+        <transition on="cancel" to="batchCompleted"/>
+    </view-state>
     
-    <end-state id="batchCancelled">
+    <end-state id="batchCompleted">
         <on-entry>
             <evaluate expression="batchSelectionAction.cancelBatch(flowRequestContext)" result="flowScope.model"/>
         </on-entry>

@@ -57,11 +57,13 @@ public class TangerineListHelper {
     public static final String SORT_KEY_PREFIX = "a";
 
     @SuppressWarnings("unchecked")
+    // TODO: move to annotation
     public boolean isAccessAllowed(HttpServletRequest request, PageType pageType) {
         Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
         return pageAccess.get(pageType.getPageName()) == AccessType.ALLOWED;
     }
 
+    // TODO: move to annotation
     public void checkAccess(HttpServletRequest request, PageType pageType) {
         if ( ! isAccessAllowed(request, pageType)) {
             throw new RuntimeException("You are not authorized to access this page");

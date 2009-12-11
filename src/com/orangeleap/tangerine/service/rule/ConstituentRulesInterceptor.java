@@ -18,10 +18,13 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
+import com.orangeleap.tangerine.type.RuleEventType;
+import com.orangeleap.tangerine.type.RuleObjectType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -38,8 +41,13 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 
 		String site = constituent.getSite().getName();
 		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
+       
+		OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
+		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventType.CONSTITUENT_SAVE, site, false);
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
+		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
+		
 		try{
 			@SuppressWarnings("unused")
 			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
@@ -60,6 +68,7 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 			constituent.setGifts(gs.readMonetaryGifts(constituent));
 			constituent.setSite(ss.readSite(constituent.getSite().getName()));
 			workingMemory.insert(constituent);
+			olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
 
 			try {
 				List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(constituent.getId());
@@ -75,6 +84,8 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 				logger.debug("*** firing all rules");
 
 				workingMemory.fireAllRules();
+
+				olWorkingMemory.executeRules(); 
 
 			} catch (ConsequenceException ce) {
 				if (ce.getCause() instanceof DuplicateConstituentException) {

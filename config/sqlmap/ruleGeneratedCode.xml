@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RULE_GENERATED_CODE">
+
+    <resultMap id="RULE_GENERATED_CODE_RESULT" class="com.orangeleap.tangerine.domain.RuleGeneratedCode">
+        <result property="id" column="RULE_GENERATED_CODE_RULE_GENERATED_CODE_ID" />
+        <result property="ruleEventTypeNameId" column="RULE_GENERATED_CODE_RULE_EVENT_TYPE_NAME_ID" />
+        <result property="isTestOnly" column="RULE_GENERATED_CODE_IS_TEST_ONLY" />
+        <result property="generatedCodeText" column="RULE_GENERATED_CODE_GENERATED_CODE_TEXT" />
+        <result property="siteName" column="RULE_GENERATED_CODE_SITE_NAME" />
+        <result property="createDate" column="RULE_GENERATED_CODE_CREATE_DATE" />
+        <result property="updateDate" column="RULE_GENERATED_CODE_UPDATE_DATE" />
+    </resultMap>
+
+    <sql id="RULE_GENERATED_CODE_COLS_FRAGMENT">
+        rule_generated_code.RULE_GENERATED_CODE_ID as RULE_GENERATED_CODE_RULE_GENERATED_CODE_ID,
+        rule_generated_code.RULE_EVENT_TYPE_NAME_ID as RULE_GENERATED_CODE_RULE_EVENT_TYPE_NAME_ID,
+        rule_generated_code.IS_TEST_ONLY as RULE_GENERATED_CODE_IS_TEST_ONLY,
+        rule_generated_code.GENERATED_CODE_TEXT as RULE_GENERATED_CODE_GENERATED_CODE_TEXT,
+        rule_generated_code.SITE_NAME as RULE_GENERATED_CODE_SITE_NAME,
+        rule_generated_code.CREATE_DATE as RULE_GENERATED_CODE_CREATE_DATE,
+        rule_generated_code.UPDATE_DATE as RULE_GENERATED_CODE_UPDATE_DATE    
+    </sql>
+
+    <sql id="SELECT_RULE_GENERATED_CODE_FRAGMENT">
+        select 
+        <include refid="RULE_GENERATED_CODE_COLS_FRAGMENT"/>
+        from RULE_GENERATED_CODE rule_generated_code 
+        where rule_generated_code.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_RULE_GENERATED_CODE_BY_ID" resultMap="RULE_GENERATED_CODE_RESULT" parameterClass="map" >
+        <include refid="SELECT_RULE_GENERATED_CODE_FRAGMENT"/>
+        and rule_generated_code.RULE_GENERATED_CODE_ID = #id#
+    </select>
+
+    <select id="SELECT_RULE_GENERATED_CODE_BY_TYPE_MODE" resultMap="RULE_GENERATED_CODE_RESULT" parameterClass="map" >
+        <include refid="SELECT_RULE_GENERATED_CODE_FRAGMENT"/>
+        and rule_generated_code.RULE_EVENT_TYPE_NAME_ID = #type#
+        and rule_generated_code.IS_TEST_ONLY = #mode#
+    </select>
+
+    <insert id="INSERT_RULE_GENERATED_CODE" parameterClass="com.orangeleap.tangerine.domain.RuleGeneratedCode">
+        insert into RULE_GENERATED_CODE (
+        	RULE_GENERATED_CODE_ID,
+        	RULE_EVENT_TYPE_NAME_ID,
+        	IS_TEST_ONLY,
+        	GENERATED_CODE_TEXT,
+        	SITE_NAME,
+        	CREATE_DATE,
+        	UPDATE_DATE        )
+        values (
+        	#id# ,
+        	#ruleEventTypeNameId# ,
+        	#isTestOnly# ,
+        	#generatedCodeText# ,
+        	#siteName# ,
+        	now(),
+        	now()        )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_RULE_GENERATED_CODE" parameterClass="com.orangeleap.tangerine.domain.RuleGeneratedCode">
+        update RULE_GENERATED_CODE
+        SET 
+        	RULE_GENERATED_CODE_ID = #id# ,
+        	RULE_EVENT_TYPE_NAME_ID = #ruleEventTypeNameId# ,
+        	IS_TEST_ONLY = #isTestOnly# ,
+        	GENERATED_CODE_TEXT = #generatedCodeText# ,
+        	SITE_NAME = #siteName# ,
+        	UPDATE_DATE = now()        
+        where RULE_GENERATED_CODE_ID = #id#
+    </update>
+
+</sqlMap>
+

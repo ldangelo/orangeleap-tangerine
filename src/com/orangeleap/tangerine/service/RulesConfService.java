@@ -23,6 +23,6 @@ import com.orangeleap.tangerine.type.RuleEventType;
 
 public interface RulesConfService {
 
-    public String readRulesEventScript(RuleEventType rulesEventType, String siteName, boolean testMode);
+    public String readRulesEventScript(RuleEventType rulesEventType, boolean testMode);
 
 }

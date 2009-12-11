@@ -33,8 +33,6 @@ public class OrangeLeapRuleSession {
 		@SuppressWarnings("unchecked")
 		public void executeRules() {
 			
-			if (!"true".equals(System.getProperty("enable.groovy"))) return;
-			
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
 			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventType();
 	        boolean reentrant = RulesStack.push(operation);
@@ -50,7 +48,7 @@ public class OrangeLeapRuleSession {
 						GroovyClassLoader loader = new GroovyClassLoader(parent);
 						
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
-						String script = rulesConfService.readRulesEventScript(orangeLeapRuleBase.getRuleEventType(), orangeLeapRuleBase.getSiteName(), orangeLeapRuleBase.isTestMode());
+						String script = rulesConfService.readRulesEventScript(orangeLeapRuleBase.getRuleEventType(), orangeLeapRuleBase.isTestMode());
 
 						Class groovyClass = loader.parseClass("class RuleRunner{ void run(Map map) { "+script+" } }", "rules.groovy");
 						GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();

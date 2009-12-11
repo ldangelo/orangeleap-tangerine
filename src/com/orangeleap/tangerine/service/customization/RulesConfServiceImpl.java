@@ -25,13 +25,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.CacheGroupDao;
+import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
+import com.orangeleap.tangerine.domain.RuleGeneratedCode;
 import com.orangeleap.tangerine.service.RulesConfService;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.type.RuleEventType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
-@Service("RulesConfService")
+@Service("rulesConfService")
 @Transactional
 public class RulesConfServiceImpl extends AbstractTangerineService implements RulesConfService {
 
@@ -46,10 +48,12 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
 
-    public String readRulesEventScript(RuleEventType rulesEventType, String siteName, boolean testMode) {
-		// TODO read script for event type, site, and testmode
-		String script = "println \"name = \"+map.constituent.getFullName()";
-    	return script;
+    @Resource(name = "ruleGeneratedCodeDAO")
+    private RuleGeneratedCodeDao ruleGeneratedCodeDao;
+
+    public String readRulesEventScript(RuleEventType rulesEventType, boolean testMode) {
+    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventType, testMode);
+    	return rgc == null ? "" : rgc.getGeneratedCodeText();
     }
 
 }

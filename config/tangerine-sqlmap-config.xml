@@ -59,4 +59,6 @@
     <sqlMap resource="sqlmap/rollupValue.xml"/>
     <sqlMap resource="sqlmap/rollupStatType.xml"/>
 
+    <sqlMap resource="sqlmap/ruleGeneratedCode.xml"/>
+
 </sqlMapConfig>

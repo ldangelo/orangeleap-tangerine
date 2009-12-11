@@ -576,14 +576,17 @@ public class BatchSelectionAction {
                     // the batchType + key is the fieldDefinitionId; we need to resolve the fieldName
                     String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(key).toString();
                     FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-                    if (fieldDef != null && bw.isWritableProperty(fieldDef.getFieldName())) {
-                        String propertyName = fieldDef.getFieldName();
-                        if (bw.getPropertyValue(propertyName) instanceof CustomField) {
-                            propertyName += StringConstants.DOT_VALUE;
+                    if (fieldDef != null) {
+                        String fieldName = fieldDef.getFieldName();
+                        if (bw.isReadableProperty(fieldName)) {
+                            String propertyName = fieldName;
+                            if (bw.getPropertyValue(propertyName) instanceof CustomField) {
+                                propertyName += StringConstants.DOT_VALUE;
+                            }
+                            String escapedFieldName = TangerineForm.escapeFieldName(fieldName);
+                            oldRowMap.put(escapedFieldName, bw.getPropertyValue(propertyName));
+                            newRowMap.put(escapedFieldName, paramEntry.getValue());
                         }
-                        String escapedFieldName = TangerineForm.escapeFieldName(propertyName);
-                        oldRowMap.put(escapedFieldName, bw.getPropertyValue(propertyName));
-                        newRowMap.put(escapedFieldName, paramEntry.getValue());
                     }
                 }
                 rowValues.add(oldRowMap); // 1 row for the old value

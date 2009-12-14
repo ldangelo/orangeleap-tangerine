@@ -18,6 +18,8 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
@@ -25,8 +27,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.CacheGroupDao;
+import com.orangeleap.tangerine.dao.RuleDao;
 import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
+import com.orangeleap.tangerine.dao.RuleSegmentDao;
+import com.orangeleap.tangerine.dao.RuleSegmentTypeDao;
+import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode;
+import com.orangeleap.tangerine.domain.customization.rule.RuleSegment;
+import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
+import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -50,9 +59,26 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "ruleGeneratedCodeDAO")
     private RuleGeneratedCodeDao ruleGeneratedCodeDao;
 
+    @Resource(name = "ruleDAO")
+    private RuleDao ruleDao;
+
+    @Resource(name = "ruleSegmentDAO")
+    private RuleSegmentDao ruleSegmentDao;
+
+    @Resource(name = "ruleSegmentTypeDAO")
+    private RuleSegmentTypeDao ruleSegmentTypeDao;
+
+    
+    
+    
+    
     public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
+    	
+    	compileRulesEventScript(rulesEventNameType, testMode);  // TODO remove once UI rules admin wizard updates trigger compile
+    	
     	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
     	return rgc == null ? "" : rgc.getGeneratedCodeText();
+    	
     }
 
     public void compileRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
@@ -67,7 +93,30 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     }
     
     private String compileCode(RuleEventNameType rulesEventType, boolean testMode) {
-    	return "";
+    	StringBuilder script = new StringBuilder();
+    	List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType(), testMode);
+    	for (Rule rule: rules) {
+    		if (rule.getRuleIsActive() && rule.getRuleVersions().size() > 0) {
+    			StringBuilder conditions = new StringBuilder();
+    			StringBuilder consequences = new StringBuilder();
+    			RuleVersion ruleVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
+    			List<RuleSegment> ruleSegments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
+    			for (RuleSegment ruleSegment : ruleSegments) {
+    				RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(ruleSegment.getRuleSegmentTypeId());
+    				String text = ruleSegmentType.getRuleSegmentTypeText();
+    				// TODO replacement parms
+    				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {
+    					if (conditions.length() > 0) conditions.append("&& ");
+    					conditions.append("(").append(text).append(")\n");
+    				} else {
+    					consequences.append(text).append(";\n");
+    				}
+    				script.append("// ").append(rule.getRuleDesc());
+    				script.append("if ( \n").append(conditions.toString()).append("   ) {\n").append(consequences.toString()).append("}\n\n");
+    			}
+    		}
+    	}
+    	return script.toString();
     }
 
 }

@@ -13,6 +13,11 @@ import com.orangeleap.tangerine.domain.GeneratedId;
 public class RuleSegmentType implements GeneratedId, Serializable {
     
     private static final long serialVersionUID = 1L;
+    
+    public static final String CONDITION_TYPE = "condition";
+    public static final String CONSEQUENCE_TYPE = "consequence";
+    
+    
 
     private Long id;
     private String ruleSegmentTypeType;

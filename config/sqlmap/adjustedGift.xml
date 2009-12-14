@@ -97,16 +97,16 @@
     </select>
 
     <select id="COUNT_ADJUSTED_GIFT_DISTRO_LINES_BY_ORIGINAL_GIFT_ID" resultClass="java.util.HashMap" parameterClass="map">
-        SELECT ag.GIFT_ID as giftId, count(ag.ADJUSTED_GIFT_ID) AS adjustedGiftCount
+        SELECT ag.GIFT_ID as giftId, count(dl.DISTRO_LINE_ID) AS adjustedGiftCount
         FROM ADJUSTED_GIFT ag
         inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
-        inner join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
+        inner join DISTRO_LINE dl on ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID
         WHERE ag.GIFT_ID IN
         <iterate property="giftIds" conjunction="," open="(" close=")">
             #giftIds[]#
         </iterate>
         AND p.SITE_NAME = #siteName#
-        GROUP BY GIFT_ID
+        GROUP BY ag.GIFT_ID
     </select>
 
     <select id="SELECT_LIMITED_ADJUSTED_GIFTS_BY_CONSTITUENT_GIFT_ID" resultMap="ADJUSTED_GIFT_LIST_RESULT" parameterClass="map">
@@ -195,7 +195,7 @@
         select count(ag.ADJUSTED_GIFT_ID)
         from ADJUSTED_GIFT ag
         inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
-        inner join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
+        inner join DISTRO_LINE dl on ag.GIFT_ID = dl.GIFT_ID
         where p.SITE_NAME = #siteName#
         and ag.CONSTITUENT_ID = #constituentId#
         and ag.GIFT_ID = #giftId#

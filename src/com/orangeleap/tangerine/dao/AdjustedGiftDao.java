@@ -49,4 +49,15 @@ public interface AdjustedGiftDao {
     int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds);
 
     List<AdjustedGift> readAllAdjustedGiftsBySegmentationReportIds(final Set<Long> reportIds);
+
+	public Map<Long, Long> countAdjustedGiftDistroLinesByOriginalGiftId(
+			List<Long> giftIds, String constituentReferenceCustomField);
+
+	public List<AdjustedGift> readAllAdjustedGiftDistroLinesByConstituentGiftId(
+			Long constituentId, long giftId, String constituentReferenceCustomField, String sort, String dir,
+			int start, int limit, Locale locale);
+
+	public int readAdjustedGiftDistroLinesCountByConstituentGiftId(
+			Long constituentId, long giftId,
+			String constituentReferenceCustomField);
 }

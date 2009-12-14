@@ -364,4 +364,43 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         }
         return adjustedGiftDao.readAllAdjustedGiftsBySegmentationReportIds(reportIds);
     }
+
+	@Override
+	public Map<Long, Long> countAdjustedGiftDistroLinesByOriginalGiftId(
+			List<Gift> gifts, String constituentReferenceCustomField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("countAdjustedGiftDistroLinesByOriginalGiftId");
+        }
+        final List<Long> giftIds = new ArrayList<Long>();
+        if (gifts != null) {
+            for (Gift gift : gifts) {
+                giftIds.add(gift.getId());
+            }
+        }
+        if (giftIds.isEmpty()) {
+            return new HashMap<Long, Long>();
+        }
+        return adjustedGiftDao.countAdjustedGiftDistroLinesByOriginalGiftId(giftIds, constituentReferenceCustomField);
+	}
+
+	@Override
+	public int readAdjustedGiftDistroLinesCountByConstituentGiftId(
+			Long constituentId, String constituentReferenceCustomField,
+			long giftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAdjustedGiftDistroLinesCountByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId);
+        }
+        return adjustedGiftDao.readAdjustedGiftDistroLinesCountByConstituentGiftId(constituentId, giftId, constituentReferenceCustomField);
+	}
+
+	@Override
+	public List<AdjustedGift> readAllAdjustedGiftDistroLinesByConstituentId(
+			Long constituentId, String constituentReferenceCustomField,
+			long giftId, SortInfo sort, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllAdjustedGiftDistroLinesByConstituentId: constituentId = " + constituentId + " sort = " + sort);
+        }
+        return adjustedGiftDao.readAllAdjustedGiftDistroLinesByConstituentGiftId(constituentId, giftId, constituentReferenceCustomField, sort.getSort(), sort.getDir(), sort.getStart(),
+                sort.getLimit(), locale);
+	}
 }

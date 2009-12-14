@@ -18,22 +18,25 @@
 
 package com.orangeleap.tangerine.json.controller.list;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class DistroLineListController extends TangerineJsonListController {
@@ -81,12 +84,12 @@ public class DistroLineListController extends TangerineJsonListController {
             count = giftService.readGiftDistroLinesCountByConstituentId(constituentId, constituentReferenceCustomField);
         }
         else {
-//            List<SectionField> sectionFields = findSectionFields(pageNamePrefix+"AdjustmentList");
-//            resolveSortFieldName(sectionFields, sort);
-//            List<AdjustedGift> adjustedGifts = adjustedGiftService.readAdjustedGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, giftId, sort, request.getLocale());
-//            addListFieldsToMap(request, sectionFields, adjustedGifts, list, true);
-//            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT);
-//            count = adjustedGiftService.readAdjustedGiftDistroLinesCountByConstituentGiftId(constituentId, constituentReferenceCustomField, giftId);
+            List<SectionField> sectionFields = findSectionFields(pageNamePrefix+"AdjustmentList");
+            resolveSortFieldName(sectionFields, sort);
+            List<AdjustedGift> adjustedGifts = adjustedGiftService.readAllAdjustedGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, giftId, sort, request.getLocale());
+            addListFieldsToMap(request, sectionFields, adjustedGifts, list, true, true);
+            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT);
+            count = adjustedGiftService.readAdjustedGiftDistroLinesCountByConstituentGiftId(constituentId, constituentReferenceCustomField, giftId);
         }
 
         sort.setSort(unresolvedSortField);

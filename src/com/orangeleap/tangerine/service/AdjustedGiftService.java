@@ -73,4 +73,14 @@ public interface AdjustedGiftService {
     int readCountAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds);
 
     List<AdjustedGift> readAllAdjustedGiftsBySegmentationReportIds(Set<Long> reportIds);
+
+	Map<Long, Long> countAdjustedGiftDistroLinesByOriginalGiftId(
+			List<Gift> gifts, String constituentReferenceCustomField);
+
+	List<AdjustedGift> readAllAdjustedGiftDistroLinesByConstituentId(
+			Long constituentId, String constituentReferenceCustomField,
+			long giftId, SortInfo sort, Locale locale);
+
+	int readAdjustedGiftDistroLinesCountByConstituentGiftId(Long constituentId,
+			String constituentReferenceCustomField, long giftId);
 }

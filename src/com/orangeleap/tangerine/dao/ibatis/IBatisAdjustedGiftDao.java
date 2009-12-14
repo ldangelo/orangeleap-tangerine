@@ -1,20 +1,21 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.dao.AdjustedGiftDao;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.dao.AdjustedGiftDao;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 
 @Repository("adjustedGiftDAO")
 public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<AdjustedGift> implements AdjustedGiftDao {
@@ -155,4 +156,49 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
 
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_ADJUSTED_GIFTS_BY_SEGMENTATION_REPORT_ID", params);
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<Long, Long> countAdjustedGiftDistroLinesByOriginalGiftId(
+			List<Long> giftIds, String constituentReferenceCustomField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("countAdjustedGiftDistroLinesByOriginalGiftId: originalGiftIds = " + giftIds);
+        }
+        final Map<String, Object> params = setupParams();
+        params.put("giftIds", giftIds);
+        params.put("constituentReferenceCustomField", constituentReferenceCustomField);
+        return getSqlMapClientTemplate().queryForMap("COUNT_ADJUSTED_GIFT_DISTRO_LINES_BY_ORIGINAL_GIFT_ID", params, "giftId", "adjustedGiftCount");
+	}
+
+	@Override
+	public int readAdjustedGiftDistroLinesCountByConstituentGiftId(
+			Long constituentId, long giftId,
+			String constituentReferenceCustomField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCountByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId);
+        }
+        Map<String,Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        params.put(StringConstants.GIFT_ID, giftId);
+        params.put("constituentReferenceCustomField", constituentReferenceCustomField);
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_ADJUSTED_GIFT_DISTRO_LINES_COUNT_BY_CONSTITUENT_GIFT_ID", params);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<AdjustedGift> readAllAdjustedGiftDistroLinesByConstituentGiftId(
+			Long constituentId, long giftId, String constituentReferenceCustomField, String sort, String dir,
+			int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllAdjustedGiftsByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId + " sortPropertyName = " + sort +
+                    " direction = " + dir + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.ADJUSTED_GIFT, "ADJUSTED_GIFT.ADJUSTED_GIFT_LIST_RESULT",
+        		sort, dir, start, limit, locale);
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        params.put(StringConstants.GIFT_ID, giftId);
+        params.put("constituentReferenceCustomField", constituentReferenceCustomField);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_ADJUSTED_GIFT_DISTRO_LINES_BY_CONSTITUENT_GIFT_ID", params);
+	}
 }

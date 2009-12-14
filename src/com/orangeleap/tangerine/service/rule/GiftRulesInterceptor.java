@@ -21,7 +21,7 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.type.RuleEventType;
+import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.type.RuleObjectType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RuleTask;
@@ -49,7 +49,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
         OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
         
 		RuleBase ruleBase = agent.getRuleBase();
-		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventType.GIFT_SAVE, site, false);
+		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.GIFT_SAVE, site, false);
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
 		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
 import com.orangeleap.tangerine.domain.RuleGeneratedCode;
-import com.orangeleap.tangerine.type.RuleEventType;
+import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;
 
 /** 
@@ -48,9 +48,9 @@ public class IBatisRuleGeneratedCodeDao extends AbstractIBatisDao implements Rul
 
 	@Override
 	public RuleGeneratedCode readRuleGeneratedCodeByTypeMode(
-			RuleEventType rulesEventType, boolean testMode) {
+			RuleEventNameType rulesEventNameType, boolean testMode) {
         Map<String, Object> params = setupParams();
-        params.put("type", rulesEventType.getType());
+        params.put("type", rulesEventNameType.getType());
         params.put("mode", testMode);
         return (RuleGeneratedCode)getSqlMapClientTemplate().queryForObject("SELECT_RULE_GENERATED_CODE_BY_TYPE_MODE", params);
 	}

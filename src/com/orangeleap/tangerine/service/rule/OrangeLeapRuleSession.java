@@ -34,13 +34,13 @@ public class OrangeLeapRuleSession {
 		public void executeRules() {
 			
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
-			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventType();
+			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventNameType();
 	        boolean reentrant = RulesStack.push(operation);
 	        try {
 		        if (!reentrant) {
 					try {
 						
-						logger.debug("Executing dynamic ruleset for "+orangeLeapRuleBase.getRuleEventType());
+						logger.debug("Executing dynamic ruleset for "+orangeLeapRuleBase.getRuleEventNameType());
 						
 						addServicesToMap();
 						
@@ -48,7 +48,7 @@ public class OrangeLeapRuleSession {
 						GroovyClassLoader loader = new GroovyClassLoader(parent);
 						
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
-						String script = rulesConfService.readRulesEventScript(orangeLeapRuleBase.getRuleEventType(), orangeLeapRuleBase.isTestMode());
+						String script = rulesConfService.readRulesEventScript(orangeLeapRuleBase.getRuleEventNameType(), orangeLeapRuleBase.isTestMode());
 						if (script == null || script.length() == 0) return;
 
 						Class groovyClass = loader.parseClass("class RuleRunner{ void run(Map map) { "+script+" } }", "rules.groovy");

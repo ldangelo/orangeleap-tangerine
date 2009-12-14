@@ -1,6 +1,6 @@
 package com.orangeleap.tangerine.type;
 
-public enum RuleEventType {
+public enum RuleEventNameType {
 	
 	GIFT_SAVE("gift-save"),
 	CONSTITUENT_SAVE("constituent-save"),
@@ -10,7 +10,7 @@ public enum RuleEventType {
 	
 	private String type;
 
-	private RuleEventType(String type) {
+	private RuleEventNameType(String type) {
 		this.type = type;
 	}
 	

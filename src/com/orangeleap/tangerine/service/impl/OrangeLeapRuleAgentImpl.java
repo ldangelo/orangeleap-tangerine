@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
-import com.orangeleap.tangerine.type.RuleEventType;
+import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;
 
 @Service("OrangeLeapRuleAgent")
@@ -37,8 +37,8 @@ public class OrangeLeapRuleAgentImpl implements OrangeLeapRuleAgent, Application
     private ApplicationContext applicationContext;
 	
 	@Override
-	public OrangeLeapRuleBase getOrangeLeapRuleBase(RuleEventType ruleEventType, String siteName, boolean testMode) {
-		return new OrangeLeapRuleBase(ruleEventType, siteName, testMode, applicationContext);
+	public OrangeLeapRuleBase getOrangeLeapRuleBase(RuleEventNameType rulesEventNameType, String siteName, boolean testMode) {
+		return new OrangeLeapRuleBase(rulesEventNameType, siteName, testMode, applicationContext);
 	}
 
 	@Override

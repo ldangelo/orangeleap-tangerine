@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.dao;
 
 import com.orangeleap.tangerine.domain.RuleGeneratedCode;
-import com.orangeleap.tangerine.type.RuleEventType;
+import com.orangeleap.tangerine.type.RuleEventNameType;
 
 public interface RuleGeneratedCodeDao {
 
@@ -9,6 +9,6 @@ public interface RuleGeneratedCodeDao {
 
     public RuleGeneratedCode maintainRuleGeneratedCode(RuleGeneratedCode ruleGeneratedCode);
     
-    public RuleGeneratedCode readRuleGeneratedCodeByTypeMode(RuleEventType rulesEventType, boolean testMode);
+    public RuleGeneratedCode readRuleGeneratedCodeByTypeMode(RuleEventNameType rulesEventNameType, boolean testMode);
 
 }

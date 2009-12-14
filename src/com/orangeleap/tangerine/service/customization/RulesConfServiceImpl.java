@@ -29,7 +29,7 @@ import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
 import com.orangeleap.tangerine.domain.RuleGeneratedCode;
 import com.orangeleap.tangerine.service.RulesConfService;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
-import com.orangeleap.tangerine.type.RuleEventType;
+import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -51,23 +51,23 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "ruleGeneratedCodeDAO")
     private RuleGeneratedCodeDao ruleGeneratedCodeDao;
 
-    public String readRulesEventScript(RuleEventType rulesEventType, boolean testMode) {
-    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventType, testMode);
+    public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
+    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
     	return rgc == null ? "" : rgc.getGeneratedCodeText();
     }
 
-    public void compileRulesEventScript(RuleEventType rulesEventType, boolean testMode) {
-    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventType, testMode);
+    public void compileRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
+    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
     	if (rgc == null) {
     		rgc = new RuleGeneratedCode();
     		rgc.setIsTestOnly(testMode);
-    		rgc.setRuleEventTypeNameId(rulesEventType.getType());
+    		rgc.setRuleEventTypeNameId(rulesEventNameType.getType());
     	}
-    	rgc.setGeneratedCodeText(compileCode(rulesEventType, testMode));
+    	rgc.setGeneratedCodeText(compileCode(rulesEventNameType, testMode));
     	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
     }
     
-    private String compileCode(RuleEventType rulesEventType, boolean testMode) {
+    private String compileCode(RuleEventNameType rulesEventType, boolean testMode) {
     	return "";
     }
 

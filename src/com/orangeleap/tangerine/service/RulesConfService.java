@@ -18,11 +18,11 @@
 
 package com.orangeleap.tangerine.service;
 
-import com.orangeleap.tangerine.type.RuleEventType;
+import com.orangeleap.tangerine.type.RuleEventNameType;
 
 
 public interface RulesConfService {
 
-    public String readRulesEventScript(RuleEventType rulesEventType, boolean testMode);
+    public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode);
 
 }

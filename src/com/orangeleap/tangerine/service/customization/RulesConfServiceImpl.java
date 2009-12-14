@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
 import com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode;
-import com.orangeleap.tangerine.service.RulesConfService;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;

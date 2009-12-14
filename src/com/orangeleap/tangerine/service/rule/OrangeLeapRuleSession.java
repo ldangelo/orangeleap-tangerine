@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.springframework.context.ApplicationContext;
 
-import com.orangeleap.tangerine.service.RulesConfService;
+import com.orangeleap.tangerine.service.customization.RulesConfService;
 import com.orangeleap.tangerine.type.RuleObjectType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;

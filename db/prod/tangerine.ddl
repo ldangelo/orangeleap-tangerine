@@ -1320,7 +1320,7 @@ CREATE TABLE `RULE_SEGMENT_PARM` (
 `RULE_SEGMENT_PARM_ID` bigint(20) NOT NULL auto_increment,
 `RULE_SEGMENT_ID` bigint(20) NOT NULL,
 `RULE_SEGMENT_PARM_SEQ` bigint(20) NOT NULL,
-`RULE_SEGMENT_PARM_STRING_VALUE` varchar(255), -- can be alphanumeric string only - no dots or left parens
+`RULE_SEGMENT_PARM_STRING_VALUE` varchar(255), -- can be alphanumeric string only - no dots or left parens or backslashes
 `RULE_SEGMENT_PARM_NUMERIC_VALUE` decimal(19,2), 
 `RULE_SEGMENT_PARM_DATE_VALUE` datetime, 
 PRIMARY KEY  (`RULE_SEGMENT_PARM_ID`)

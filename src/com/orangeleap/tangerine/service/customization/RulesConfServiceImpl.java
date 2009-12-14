@@ -56,4 +56,19 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	return rgc == null ? "" : rgc.getGeneratedCodeText();
     }
 
+    public void compileRulesEventScript(RuleEventType rulesEventType, boolean testMode) {
+    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventType, testMode);
+    	if (rgc == null) {
+    		rgc = new RuleGeneratedCode();
+    		rgc.setIsTestOnly(testMode);
+    		rgc.setRuleEventTypeNameId(rulesEventType.getType());
+    	}
+    	rgc.setGeneratedCodeText(compileCode(rulesEventType, testMode));
+    	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
+    }
+    
+    private String compileCode(RuleEventType rulesEventType, boolean testMode) {
+    	return "";
+    }
+
 }

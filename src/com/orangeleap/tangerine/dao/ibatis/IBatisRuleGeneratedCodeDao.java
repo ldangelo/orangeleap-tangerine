@@ -32,6 +32,7 @@ public class IBatisRuleGeneratedCodeDao extends AbstractIBatisDao implements Rul
         if (logger.isTraceEnabled()) {
             logger.trace("maintainRuleGeneratedCode: ruleGeneratedCodeId = " + ruleGeneratedCode.getId());
         }
+        ruleGeneratedCode.setSiteName(getSiteName());
         return (RuleGeneratedCode)insertOrUpdate(ruleGeneratedCode, "RULE_GENERATED_CODE");
     }
 

@@ -4,7 +4,8 @@ public enum RuleEventType {
 	
 	GIFT_SAVE("gift-save"),
 	CONSTITUENT_SAVE("constituent-save"),
-	TOUCHPOINT_SAVE("touchpoint-save")
+	TOUCHPOINT_SAVE("touchpoint-save"),
+	SCHEDULED("scheduled")
 	;
 	
 	private String type;

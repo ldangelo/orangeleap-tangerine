@@ -19,7 +19,8 @@
 
     <sql id="SELECT_RULE_SEGMENT_FRAGMENT">
         select 
-        <include refid="RULE_SEGMENT_COLS_FRAGMENT"/>
+        <include refid="RULE_SEGMENT_COLS_FRAGMENT"/>,
+        <include refid="RULE_SEGMENT_PARM_COLS_FRAGMENT"/>
         from RULE_SEGMENT rule_segment 
         inner join RULE_SEGMENT_PARM rule_segment_parm on rule_segment.RULE_SEGMENT_ID = rule_segment_parm.RULE_SEGMENT_ID
     </sql>

@@ -23,7 +23,8 @@
 
     <sql id="SELECT_RULE_FRAGMENT">
         select 
-        <include refid="RULE_COLS_FRAGMENT"/>
+        <include refid="RULE_COLS_FRAGMENT"/>,
+        <include refid="RULE_VERSION_COLS_FRAGMENT"/>
         from RULE rule 
         inner join RULE_VERSION rule_version
         where rule.SITE_NAME = #siteName#

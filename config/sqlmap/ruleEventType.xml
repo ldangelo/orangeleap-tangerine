@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RULE_EVENT_TYPE">
+
+    <resultMap id="RULE_EVENT_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleEventType">
+        <result property="id" column="RULE_EVENT_TYPE_RULE_EVENT_TYPE_ID" />
+        <result property="ruleEventTypeNameId" column="RULE_EVENT_TYPE_RULE_EVENT_TYPE_NAME_ID" />
+    </resultMap>
+
+    <sql id="RULE_EVENT_TYPE_COLS_FRAGMENT">
+        rule_event_type.RULE_EVENT_TYPE_ID as RULE_EVENT_TYPE_RULE_EVENT_TYPE_ID,
+        rule_event_type.RULE_EVENT_TYPE_NAME_ID as RULE_EVENT_TYPE_RULE_EVENT_TYPE_NAME_ID    
+    </sql>
+
+    <sql id="SELECT_RULE_EVENT_TYPE_FRAGMENT">
+        select 
+        <include refid="RULE_EVENT_TYPE_COLS_FRAGMENT"/>
+        from RULE_EVENT_TYPE rule_event_type 
+        where rule_event_type.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_RULE_EVENT_TYPE_BY_ID" resultMap="RULE_EVENT_TYPE_RESULT" parameterClass="map" >
+        <include refid="SELECT_RULE_EVENT_TYPE_FRAGMENT"/>
+        and rule_event_type.RULE_EVENT_TYPE_ID = #id#
+    </select>
+
+    <insert id="INSERT_RULE_EVENT_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleEventType">
+        insert into RULE_EVENT_TYPE (
+        	RULE_EVENT_TYPE_ID,
+        	RULE_EVENT_TYPE_NAME_ID        )
+        values (
+        	#id# ,
+        	#ruleEventTypeNameId#         )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_RULE_EVENT_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleEventType">
+        update RULE_EVENT_TYPE
+        SET 
+        	RULE_EVENT_TYPE_ID = #id# ,
+        	RULE_EVENT_TYPE_NAME_ID = #ruleEventTypeNameId#         
+        where RULE_EVENT_TYPE_ID = #id#
+    </update>
+
+</sqlMap>
+

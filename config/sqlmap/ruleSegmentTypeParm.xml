@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RULE_SEGMENT_TYPE_PARM">
+
+    <resultMap id="RULE_SEGMENT_TYPE_PARM_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentTypeParm">
+        <result property="id" column="RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_PARM_ID" />
+        <result property="ruleSegmentTypeId" column="RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_ID" />
+        <result property="ruleSegmentTypeParmSeq" column="RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_PARM_SEQ" />
+        <result property="ruleSegmentTypeParmType" column="RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_PARM_TYPE" />
+        <result property="ruleSegmentTypeParmPicklistNameId" column="RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID" />
+    </resultMap>
+
+    <sql id="RULE_SEGMENT_TYPE_PARM_COLS_FRAGMENT">
+        rule_segment_type_parm.RULE_SEGMENT_TYPE_PARM_ID as RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_PARM_ID,
+        rule_segment_type_parm.RULE_SEGMENT_TYPE_ID as RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_ID,
+        rule_segment_type_parm.RULE_SEGMENT_TYPE_PARM_SEQ as RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_PARM_SEQ,
+        rule_segment_type_parm.RULE_SEGMENT_TYPE_PARM_TYPE as RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_PARM_TYPE,
+        rule_segment_type_parm.RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID as RULE_SEGMENT_TYPE_PARM_RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID    
+    </sql>
+
+    <sql id="SELECT_RULE_SEGMENT_TYPE_PARM_FRAGMENT">
+        select 
+        <include refid="RULE_SEGMENT_TYPE_PARM_COLS_FRAGMENT"/>
+        from RULE_SEGMENT_TYPE_PARM rule_segment_type_parm 
+        where rule_segment_type_parm.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_RULE_SEGMENT_TYPE_PARM_BY_ID" resultMap="RULE_SEGMENT_TYPE_PARM_RESULT" parameterClass="map" >
+        <include refid="SELECT_RULE_SEGMENT_TYPE_PARM_FRAGMENT"/>
+        and rule_segment_type_parm.RULE_SEGMENT_TYPE_PARM_ID = #id#
+    </select>
+
+    <insert id="INSERT_RULE_SEGMENT_TYPE_PARM" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentTypeParm">
+        insert into RULE_SEGMENT_TYPE_PARM (
+        	RULE_SEGMENT_TYPE_PARM_ID,
+        	RULE_SEGMENT_TYPE_ID,
+        	RULE_SEGMENT_TYPE_PARM_SEQ,
+        	RULE_SEGMENT_TYPE_PARM_TYPE,
+        	RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID        )
+        values (
+        	#id# ,
+        	#ruleSegmentTypeId# ,
+        	#ruleSegmentTypeParmSeq# ,
+        	#ruleSegmentTypeParmType# ,
+        	#ruleSegmentTypeParmPicklistNameId#         )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_RULE_SEGMENT_TYPE_PARM" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentTypeParm">
+        update RULE_SEGMENT_TYPE_PARM
+        SET 
+        	RULE_SEGMENT_TYPE_PARM_ID = #id# ,
+        	RULE_SEGMENT_TYPE_ID = #ruleSegmentTypeId# ,
+        	RULE_SEGMENT_TYPE_PARM_SEQ = #ruleSegmentTypeParmSeq# ,
+        	RULE_SEGMENT_TYPE_PARM_TYPE = #ruleSegmentTypeParmType# ,
+        	RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID = #ruleSegmentTypeParmPicklistNameId#         
+        where RULE_SEGMENT_TYPE_PARM_ID = #id#
+    </update>
+
+</sqlMap>
+

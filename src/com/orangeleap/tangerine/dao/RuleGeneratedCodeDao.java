@@ -1,6 +1,6 @@
 package com.orangeleap.tangerine.dao;
 
-import com.orangeleap.tangerine.domain.RuleGeneratedCode;
+import com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 
 public interface RuleGeneratedCodeDao {

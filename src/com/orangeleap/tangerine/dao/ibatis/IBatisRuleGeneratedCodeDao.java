@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
-import com.orangeleap.tangerine.domain.RuleGeneratedCode;
+import com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;
 

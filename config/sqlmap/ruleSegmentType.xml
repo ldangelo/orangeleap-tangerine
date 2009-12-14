@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RULE_SEGMENT_TYPE">
+
+    <resultMap id="RULE_SEGMENT_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType">
+        <result property="id" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_ID" />
+        <result property="ruleSegmentTypeType" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TYPE" />
+        <result property="ruleSegmentTypeText" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TEXT" />
+    </resultMap>
+
+    <sql id="RULE_SEGMENT_TYPE_COLS_FRAGMENT">
+        rule_segment_type.RULE_SEGMENT_TYPE_ID as RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_ID,
+        rule_segment_type.RULE_SEGMENT_TYPE_TYPE as RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TYPE,
+        rule_segment_type.RULE_SEGMENT_TYPE_TEXT as RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TEXT    
+    </sql>
+
+    <sql id="SELECT_RULE_SEGMENT_TYPE_FRAGMENT">
+        select 
+        <include refid="RULE_SEGMENT_TYPE_COLS_FRAGMENT"/>
+        from RULE_SEGMENT_TYPE rule_segment_type 
+        where rule_segment_type.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_RULE_SEGMENT_TYPE_BY_ID" resultMap="RULE_SEGMENT_TYPE_RESULT" parameterClass="map" >
+        <include refid="SELECT_RULE_SEGMENT_TYPE_FRAGMENT"/>
+        and rule_segment_type.RULE_SEGMENT_TYPE_ID = #id#
+    </select>
+
+    <insert id="INSERT_RULE_SEGMENT_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType">
+        insert into RULE_SEGMENT_TYPE (
+        	RULE_SEGMENT_TYPE_ID,
+        	RULE_SEGMENT_TYPE_TYPE,
+        	RULE_SEGMENT_TYPE_TEXT        )
+        values (
+        	#id# ,
+        	#ruleSegmentTypeType# ,
+        	#ruleSegmentTypeText#         )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_RULE_SEGMENT_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType">
+        update RULE_SEGMENT_TYPE
+        SET 
+        	RULE_SEGMENT_TYPE_ID = #id# ,
+        	RULE_SEGMENT_TYPE_TYPE = #ruleSegmentTypeType# ,
+        	RULE_SEGMENT_TYPE_TEXT = #ruleSegmentTypeText#         
+        where RULE_SEGMENT_TYPE_ID = #id#
+    </update>
+
+</sqlMap>
+

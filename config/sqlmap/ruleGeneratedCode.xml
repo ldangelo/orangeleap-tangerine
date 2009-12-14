@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RULE_GENERATED_CODE">
 
-    <resultMap id="RULE_GENERATED_CODE_RESULT" class="com.orangeleap.tangerine.domain.RuleGeneratedCode">
+    <resultMap id="RULE_GENERATED_CODE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode">
         <result property="id" column="RULE_GENERATED_CODE_RULE_GENERATED_CODE_ID" />
         <result property="ruleEventTypeNameId" column="RULE_GENERATED_CODE_RULE_EVENT_TYPE_NAME_ID" />
         <result property="isTestOnly" column="RULE_GENERATED_CODE_IS_TEST_ONLY" />
@@ -40,7 +40,7 @@
         and rule_generated_code.IS_TEST_ONLY = #mode#
     </select>
 
-    <insert id="INSERT_RULE_GENERATED_CODE" parameterClass="com.orangeleap.tangerine.domain.RuleGeneratedCode">
+    <insert id="INSERT_RULE_GENERATED_CODE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode">
         insert into RULE_GENERATED_CODE (
         	RULE_GENERATED_CODE_ID,
         	RULE_EVENT_TYPE_NAME_ID,
@@ -62,7 +62,7 @@
         </selectKey>
     </insert>
 
-    <update id="UPDATE_RULE_GENERATED_CODE" parameterClass="com.orangeleap.tangerine.domain.RuleGeneratedCode">
+    <update id="UPDATE_RULE_GENERATED_CODE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode">
         update RULE_GENERATED_CODE
         SET 
         	RULE_GENERATED_CODE_ID = #id# ,

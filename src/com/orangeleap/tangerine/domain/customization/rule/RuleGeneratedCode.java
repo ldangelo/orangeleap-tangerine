@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.domain;
+package com.orangeleap.tangerine.domain.customization.rule;
 
 import java.util.Date;
 import java.math.BigDecimal;
@@ -11,6 +11,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
+import com.orangeleap.tangerine.domain.GeneratedId;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class RuleGeneratedCode implements GeneratedId, Serializable {

@@ -1,6 +1,8 @@
 package com.orangeleap.tangerine.domain.customization.rule;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -16,6 +18,9 @@ public class RuleSegment implements GeneratedId, Serializable {
     private Long ruleVersionId;
     private Long ruleSegmentSeq;
     private Long ruleSegmentTypeId;
+
+    private List<RuleSegmentParm> ruleSegmentParms = new ArrayList<RuleSegmentParm>();
+
 	
     public RuleSegment() { }
 
@@ -94,5 +99,15 @@ public class RuleSegment implements GeneratedId, Serializable {
         .append("ruleSegmentTypeId", ""+ruleSegmentTypeId)
         .toString();
     }
+
+
+	public void setRuleSegmentParms(List<RuleSegmentParm> ruleSegmentParms) {
+		this.ruleSegmentParms = ruleSegmentParms;
+	}
+
+
+	public List<RuleSegmentParm> getRuleSegmentParms() {
+		return ruleSegmentParms;
+	}
 
 }

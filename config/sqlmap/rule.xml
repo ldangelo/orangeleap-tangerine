@@ -2,13 +2,14 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RULE">
 
-    <resultMap id="RULE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.Rule">
+    <resultMap id="RULE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.Rule"  groupBy="id"  >
         <result property="id" column="RULE_RULE_ID" />
         <result property="ruleEventTypeNameId" column="RULE_RULE_EVENT_TYPE_NAME_ID" />
         <result property="ruleSeq" column="RULE_RULE_SEQ" />
         <result property="ruleDesc" column="RULE_RULE_DESC" />
         <result property="ruleIsActive" column="RULE_RULE_IS_ACTIVE" />
         <result property="siteName" column="RULE_SITE_NAME" />
+		<result property="ruleVersions" resultMap="RULE_VERSION.RULE_VERSION_RESULT" />
     </resultMap>
 
     <sql id="RULE_COLS_FRAGMENT">
@@ -24,12 +25,14 @@
         select 
         <include refid="RULE_COLS_FRAGMENT"/>
         from RULE rule 
+        inner join RULE_VERSION rule_version
         where rule.SITE_NAME = #siteName#
     </sql>
 
     <select id="SELECT_RULE_BY_ID" resultMap="RULE_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_FRAGMENT"/>
         and rule.RULE_ID = #id#
+        order by rule_version.RULE_VERSION_SEQ
     </select>
 
     <insert id="INSERT_RULE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.Rule">

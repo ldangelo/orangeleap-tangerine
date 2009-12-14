@@ -2,10 +2,11 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RULE_SEGMENT_TYPE">
 
-    <resultMap id="RULE_SEGMENT_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType">
+    <resultMap id="RULE_SEGMENT_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType"  groupBy="id" >
         <result property="id" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_ID" />
         <result property="ruleSegmentTypeType" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TYPE" />
         <result property="ruleSegmentTypeText" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TEXT" />
+		<result property="ruleSegmentTypeParms" resultMap="RULE_SEGMENT_TYPE_PARM.RULE_SEGMENT_TYPE_PARM_RESULT" />
     </resultMap>
 
     <sql id="RULE_SEGMENT_TYPE_COLS_FRAGMENT">
@@ -17,13 +18,14 @@
     <sql id="SELECT_RULE_SEGMENT_TYPE_FRAGMENT">
         select 
         <include refid="RULE_SEGMENT_TYPE_COLS_FRAGMENT"/>
-        from RULE_SEGMENT_TYPE rule_segment_type 
-        where rule_segment_type.SITE_NAME = #siteName#
-    </sql>
+        from RULE_SEGMENT_TYPE rule_segment_type
+        inner join RULE_SEGMENT_TYPE_PARM rule_segment_type_parm on rule_segment_type.RULE_SEGMENT_TYPE_ID = rule_segment_type_parm.RULE_SEGMENT_TYPE_ID
+     </sql>
 
     <select id="SELECT_RULE_SEGMENT_TYPE_BY_ID" resultMap="RULE_SEGMENT_TYPE_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_SEGMENT_TYPE_FRAGMENT"/>
-        and rule_segment_type.RULE_SEGMENT_TYPE_ID = #id#
+         where rule_segment_type.RULE_SEGMENT_TYPE_ID = #id#
+         order by rule_segment_type_parm.RULE_SEGMENT_TYPE_PARM_SEQ
     </select>
 
     <insert id="INSERT_RULE_SEGMENT_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType">

@@ -2,14 +2,15 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RULE_SEGMENT">
 
-    <resultMap id="RULE_SEGMENT_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleSegment">
+    <resultMap id="RULE_SEGMENT_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleSegment"  groupBy="id"  >
         <result property="id" column="RULE_SEGMENT_RULE_SEGMENT_ID" />
         <result property="ruleVersionId" column="RULE_SEGMENT_RULE_VERSION_ID" />
         <result property="ruleSegmentSeq" column="RULE_SEGMENT_RULE_SEGMENT_SEQ" />
         <result property="ruleSegmentTypeId" column="RULE_SEGMENT_RULE_SEGMENT_TYPE_ID" />
+		<result property="ruleSegmentParms" resultMap="RULE_SEGMENT_PARM.RULE_SEGMENT_PARM_RESULT" />
     </resultMap>
 
-    <sql id="RULE_SEGMENT_COLS_FRAGMENT">
+    <sql id="RULE_SEGMENT_COLS_FRAGMENT">  
         rule_segment.RULE_SEGMENT_ID as RULE_SEGMENT_RULE_SEGMENT_ID,
         rule_segment.RULE_VERSION_ID as RULE_SEGMENT_RULE_VERSION_ID,
         rule_segment.RULE_SEGMENT_SEQ as RULE_SEGMENT_RULE_SEGMENT_SEQ,
@@ -20,12 +21,13 @@
         select 
         <include refid="RULE_SEGMENT_COLS_FRAGMENT"/>
         from RULE_SEGMENT rule_segment 
-        where rule_segment.SITE_NAME = #siteName#
+        inner join RULE_SEGMENT_PARM rule_segment_parm on rule_segment.RULE_SEGMENT_ID = rule_segment_parm.RULE_SEGMENT_ID
     </sql>
 
     <select id="SELECT_RULE_SEGMENT_BY_ID" resultMap="RULE_SEGMENT_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_SEGMENT_FRAGMENT"/>
-        and rule_segment.RULE_SEGMENT_ID = #id#
+        where rule_segment.RULE_SEGMENT_ID = #id#
+        order by rule_segment_parm.RULE_SEGMENT_PARM_SEQ
     </select>
 
     <insert id="INSERT_RULE_SEGMENT" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleSegment">

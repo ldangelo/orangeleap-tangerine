@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
+
+import com.orangeleap.tangerine.type.RuleEventNameType;
+import com.orangeleap.tangerine.type.RuleObjectType;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -21,6 +24,7 @@ import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.RuleTask;
@@ -63,7 +67,12 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
 		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(gift.getSite().getName()).getRuleBase();
 
+		OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
+		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.EMAIL, gift.getSite().getName(), false);
+
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
+		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
+
 		try{
 			if (logger.isDebugEnabled()) {
 				workingMemory.addEventListener (new DebugAgendaEventListener());
@@ -93,6 +102,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 					workingMemory.setFocus(site+"email");
 
 					workingMemory.insert(gift);
+					olWorkingMemory.put(RuleObjectType.GIFT, gift);
 
 					Constituent constituent = gift.getConstituent();
 
@@ -100,6 +110,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 					constituent.setSite(ss.readSite(constituent.getSite().getName()));
 
 					workingMemory.insert(constituent);
+					olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
 
 				} catch (Exception ex) {
 					logger.error(ex.getMessage());

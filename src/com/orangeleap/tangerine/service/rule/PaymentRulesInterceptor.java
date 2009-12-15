@@ -24,8 +24,11 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.type.RuleEventNameType;
+import com.orangeleap.tangerine.type.RuleObjectType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -51,8 +54,13 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
         String site = gift.getSite().getName();
         RuleBase ruleBase = ((DroolsRuleAgent) applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
 
+        OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
+		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.PAYMENT_PROCESSING, site, false);
+
         StatefulSession workingMemory = ruleBase.newStatefulSession();
-        try{
+		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
+
+		try{
         	if (logger.isDebugEnabled()) {
                 workingMemory.addEventListener(new DebugAgendaEventListener());
                 workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
@@ -76,7 +84,9 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 
 
                 workingMemory.insert(gift.getSite());
+				olWorkingMemory.put(RuleObjectType.SITE, ss.readSite(site));
                 workingMemory.insert(gift);
+				olWorkingMemory.put(RuleObjectType.GIFT, gift);
 
     /*			List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift
     					.getConstituent().getId());
@@ -87,7 +97,9 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 
                 Constituent constituent = gift.getConstituent();
                 constituent.setGifts(gs.readMonetaryGifts(constituent));
+
                 workingMemory.insert(constituent);
+				olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
 
             } catch (Exception ex) {
                 logger.info(ex.getMessage());
@@ -100,6 +112,8 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 
                 workingMemory.fireAllRules();
 
+				olWorkingMemory.executeRules(); 
+				
             } catch (Exception e) {
                 logger
                         .info("*** exception firing rules - make sure rule base exists and global variable is set: ");

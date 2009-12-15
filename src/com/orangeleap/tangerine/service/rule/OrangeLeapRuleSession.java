@@ -60,14 +60,17 @@ public class OrangeLeapRuleSession {
 	        
 		}
 		
+		// Add any new services used by rules to this list:
 		private void addServicesToMap() {
 			map.put("siteName", orangeLeapRuleBase.getSiteName());
 			ApplicationContext applicationContext = orangeLeapRuleBase.getApplicationContext();
+			map.put("applicationContext", applicationContext);
+			map.put("tangerineUserHelper", applicationContext.getBean("tangerineUserHelper"));
+			map.put("userHelper", applicationContext.getBean("tangerineUserHelper"));
+			map.put("siteService", applicationContext.getBean("siteService"));
 			map.put("constituentService", applicationContext.getBean("constituentService"));
 			map.put("giftService", applicationContext.getBean("giftService"));
-			map.put("siteService", applicationContext.getBean("siteService"));
 			map.put("picklistItemService", applicationContext.getBean("picklistItemService"));
-			map.put("tangerineUserHelper", applicationContext.getBean("tangerineUserHelper"));
 			map.put("emailService", applicationContext.getBean("emailService"));
 			map.put("errorLogService", applicationContext.getBean("errorLogService"));
 		}

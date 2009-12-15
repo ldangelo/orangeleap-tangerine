@@ -5,6 +5,7 @@
     <resultMap id="RULE_SEGMENT_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType"  groupBy="id" >
         <result property="id" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_ID" />
         <result property="ruleSegmentTypeType" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TYPE" />
+        <result property="ruleSegmentTypePhrase" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_PHRASE" />
         <result property="ruleSegmentTypeText" column="RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TEXT" />
 		<result property="ruleSegmentTypeParms" resultMap="RULE_SEGMENT_TYPE_PARM.RULE_SEGMENT_TYPE_PARM_RESULT" />
     </resultMap>
@@ -12,6 +13,7 @@
     <sql id="RULE_SEGMENT_TYPE_COLS_FRAGMENT">
         rule_segment_type.RULE_SEGMENT_TYPE_ID as RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_ID,
         rule_segment_type.RULE_SEGMENT_TYPE_TYPE as RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TYPE,
+        rule_segment_type.RULE_SEGMENT_TYPE_PHRASE as RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_PHRASE,
         rule_segment_type.RULE_SEGMENT_TYPE_TEXT as RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_TEXT    
     </sql>
 
@@ -33,6 +35,7 @@
         insert into RULE_SEGMENT_TYPE (
         	RULE_SEGMENT_TYPE_ID,
         	RULE_SEGMENT_TYPE_TYPE,
+        	RULE_SEGMENT_TYPE_PHRASE,
         	RULE_SEGMENT_TYPE_TEXT        )
         values (
         	#id# ,
@@ -48,6 +51,7 @@
         SET 
         	RULE_SEGMENT_TYPE_ID = #id# ,
         	RULE_SEGMENT_TYPE_TYPE = #ruleSegmentTypeType# ,
+        	RULE_SEGMENT_TYPE_PHRASE = #ruleSegmentTypePhrase# ,
         	RULE_SEGMENT_TYPE_TEXT = #ruleSegmentTypeText#         
         where RULE_SEGMENT_TYPE_ID = #id#
     </update>

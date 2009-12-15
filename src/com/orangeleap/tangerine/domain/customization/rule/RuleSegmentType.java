@@ -21,6 +21,7 @@ public class RuleSegmentType implements GeneratedId, Serializable {
 
     private Long id;
     private String ruleSegmentTypeType;
+    private String ruleSegmentTypePhrase;
     private String ruleSegmentTypeText;
     
 	private List<RuleSegmentTypeParm> ruleSegmentTypeParms = new ArrayList<RuleSegmentTypeParm>();
@@ -44,6 +45,15 @@ public class RuleSegmentType implements GeneratedId, Serializable {
 
     public void setRuleSegmentTypeType(String ruleSegmentTypeType) {
         this.ruleSegmentTypeType = ruleSegmentTypeType;
+    }
+
+    
+    public String getRuleSegmentTypePhrase() {
+        return ruleSegmentTypePhrase;
+    }
+    
+    public void setRuleSegmentTypePhrase(String ruleSegmentTypePhrase) {
+        this.ruleSegmentTypePhrase = ruleSegmentTypePhrase;
     }
 
     

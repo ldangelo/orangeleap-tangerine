@@ -39,6 +39,7 @@ public class SectionDefinition implements GeneratedId, Serializable {
     private Integer sectionOrder;
     private Site site;
     private String role;
+    private boolean displayCollapsed;
 
     @Override
     public Long getId() {
@@ -108,6 +109,14 @@ public class SectionDefinition implements GeneratedId, Serializable {
 
     public String getSectionHtmlName() {
         return sectionName.replace('.', '_');
+    }
+
+    public boolean isDisplayCollapsed() {
+        return displayCollapsed;
+    }
+
+    public void setDisplayCollapsed(boolean displayCollapsed) {
+        this.displayCollapsed = displayCollapsed;
     }
 
     @Override

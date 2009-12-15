@@ -13,15 +13,17 @@
 		<result property="pageType" column="SEC_DEF_PAGE_TYPE" jdbcType="VARCHAR" />
 		<result property="role" column="SEC_DEF_ROLE" jdbcType="VARCHAR" />
 		<result property="sectionName" column="SEC_DEF_SECTION_NAME" jdbcType="VARCHAR" />
-		<result property="sectionOrder" column="SEC_DEF_SECTION_ORDER" jdbcType="INTEGER" />
-		<result property="site" resultMap="SECTION_DEFINITION.SEC_DEF_SITE_NAME_RESULT" />
+        <result property="sectionOrder" column="SEC_DEF_SECTION_ORDER" jdbcType="INTEGER" />
+        <result property="displayCollapsed" column="SEC_DEF_DISPLAY_COLLAPSED" jdbcType="CHAR" />
+        <result property="site" resultMap="SECTION_DEFINITION.SEC_DEF_SITE_NAME_RESULT" />
 	</resultMap>
 	
 	<sql id="SECTION_DEF_COLS_FRAGMENT">
 		sd.SECTION_DEFINITION_ID, sd.DEFAULT_LABEL as SEC_DEF_DEFAULT_LABEL, 
 		sd.LAYOUT_TYPE as SEC_DEF_LAYOUT_TYPE, sd.PAGE_TYPE as SEC_DEF_PAGE_TYPE, 
 		sd.ROLE as SEC_DEF_ROLE, sd.SECTION_NAME as SEC_DEF_SECTION_NAME, 
-		sd.SECTION_ORDER as SEC_DEF_SECTION_ORDER, sd.SITE_NAME as SEC_DEF_SITE_NAME
+		sd.SECTION_ORDER as SEC_DEF_SECTION_ORDER, sd.SITE_NAME as SEC_DEF_SITE_NAME,
+		sd.DISPLAY_COLLAPSED as SEC_DEF_DISPLAY_COLLAPSED
 	</sql>
 	
 	<select id="SELECT_DISTINCT_ROLES" resultClass="java.lang.String"  >
@@ -73,9 +75,9 @@
 
 	<insert id="INSERT_SECTION_DEFINITION" parameterClass="com.orangeleap.tangerine.domain.customization.SectionDefinition">
 		insert into SECTION_DEFINITION (DEFAULT_LABEL, LAYOUT_TYPE, PAGE_TYPE,
-		ROLE, SECTION_NAME, SECTION_ORDER, SITE_NAME)
+		ROLE, SECTION_NAME, SECTION_ORDER, DISPLAY_COLLAPSED, SITE_NAME)
 		values (#defaultLabel#, #layoutType#,
-		#pageType#, #role#, #sectionName#, #sectionOrder#, #site.name#)
+		#pageType#, #role#, #sectionName#, #sectionOrder#, #displayCollapsed#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -89,6 +91,7 @@
 		ROLE = #role#,
 		SECTION_NAME = #sectionName#,
 		SECTION_ORDER = #sectionOrder#,
+		DISPLAY_COLLAPSED = #displayCollapsed#,
 		SITE_NAME = #site.name#
 		where SECTION_DEFINITION_ID = #id#
 	</update>

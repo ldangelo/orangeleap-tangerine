@@ -1,13 +1,5 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.dao.SectionDao;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
@@ -16,6 +8,13 @@ import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IBatisSectionDaoTest extends AbstractIBatisTest {
     
@@ -51,6 +50,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
             assert LayoutType.TWO_COLUMN.equals(secDef.getLayoutType());
             assert "ROLE_SUPER_MANAGER".equals(secDef.getRole());
             assert secDef.getSite() == null;
+            assert ! secDef.isDisplayCollapsed();
         }
     } 
 
@@ -76,6 +76,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
             assert LayoutType.TWO_COLUMN.equals(secDef.getLayoutType()) || LayoutType.ONE_COLUMN.equals(secDef.getLayoutType());
             assert "ROLE_USER".equals(secDef.getRole());
             assert secDef.getSite() != null && "company1".equals(secDef.getSite().getName());
+            assert ! secDef.isDisplayCollapsed();
         }
     } 
     

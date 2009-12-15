@@ -928,7 +928,11 @@ public class SectionFieldTag extends AbstractTag {
 	}
 
 	protected void writeSectionHeader(SectionDefinition sectionDef, String headerClass, StringBuilder sb) {
-		sb.append("<h4 class=\"").append(headerClass).append("\" title=\"").append(TangerineMessageAccessor.getMessage("expandCollapseSection"));
+		sb.append("<h4 class=\"").append(headerClass);
+        if (sectionDef.isDisplayCollapsed()) {
+            sb.append(" collapsed");
+        }
+        sb.append("\" title=\"").append(TangerineMessageAccessor.getMessage("expandCollapseSection"));
         sb.append("\">").append(getSectionHeader(sectionDef)).append("</h4>");
 	}
 
@@ -975,7 +979,11 @@ public class SectionFieldTag extends AbstractTag {
 		if (LayoutType.ONE_COLUMN.equals(sectionDef.getLayoutType()) || LayoutType.ONE_COLUMN_HIDDEN.equals(sectionDef.getLayoutType())) {
 			writeSectionHeader(sectionDef, "formSectionHeader", sb);
 		}
-		sb.append("<ul class=\"formFields width385\">");
+		sb.append("<ul class=\"formFields width385\"");
+        if (sectionDef.isDisplayCollapsed()) {
+            sb.append(" style=\"display:none\"");
+        }
+        sb.append(">");
 	}
 
 	protected void writeSingleColumnEnd(StringBuilder sb) {

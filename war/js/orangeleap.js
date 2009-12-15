@@ -64,43 +64,6 @@ $(document).ready(function() {
 	$("span.secondary:has('a.active')").each(function(){
 		$(this).addClass("active").prev(".groupHeader").addClass("groupActive");
 	});
-
-    function expandCollapseSection($elem, isCollapsed) {
-        var $columns = $elem.nextAll('.column');
-        if ( ! $columns.length) {
-            $columns = $elem.nextAll('.formFields')
-        }
-        $columns.each(function() {
-            if (isCollapsed) {
-                // if already collapsed, expand
-                $(this).show();
-            }
-            else {
-                $(this).hide();
-            }
-        });
-        if (isCollapsed) {
-            $elem.removeClass('collapsed');
-//            Ext.state.Manager.set($elem.parent().attr('id'), 'expanded');
-        }
-        else {
-            $elem.addClass('collapsed');
-//            Ext.state.Manager.set($elem.parent().attr('id'), 'collapsed');
-        }
-    }
-
-    $('h4.formSectionHeader').click(function() {
-        var $elem = $(this);
-        var isCollapsed = $elem.hasClass('collapsed');
-        expandCollapseSection($elem, isCollapsed);
-    });
-    $('h4.formSectionHeader').each(function() {
-        // done onLoad
-        var $elem = $(this);
-        var thisId = $elem.parent().attr('id');
-        var isCollapsed = (Ext.state.Manager.get(thisId, 'expanded') === 'collapsed');
-        expandCollapseSection($elem, ! isCollapsed);
-    });
 	
 	$("div.navGroup:not(:has('a.active'))").hoverIntent({
 		sensitivity: 7,
@@ -258,6 +221,50 @@ $(document).ready(function() {
 		}
 	})();
 });
+
+Ext.onReady(function() {
+    // these expandCollapseSection/$('h4.formSectionHeader') functions need to be in Ext.onReady
+    // instead of $(document).ready to ensure the Ext.state.Manager has the right provider setup 
+    function expandCollapseSection($elem, isCollapsed) {
+        var $columns = $elem.nextAll('.formFields');
+        if ( ! $columns.length) {
+            $columns = $elem.parent().find('.column .formFields');
+        }
+        $columns.each(function() {
+            if (isCollapsed) {
+                // if already collapsed, expand
+                $(this).show();
+            }
+            else {
+                $(this).hide();
+            }
+        });
+        if (isCollapsed) {
+            $elem.removeClass('collapsed');
+        }
+        else {
+            $elem.addClass('collapsed');
+        }
+    }
+
+    $('h4.formSectionHeader').click(function() {
+        var $elem = $(this);
+        var isCollapsed = $elem.hasClass('collapsed');
+        expandCollapseSection($elem, isCollapsed);
+        var thisId = $elem.parent().attr('id');
+        Ext.state.Manager.set(thisId, ! isCollapsed); // negate isCollapsed because expandCollapseSection() will toggle it
+    });
+    $('h4.formSectionHeader').each(function() {
+        // done onLoad
+        var $elem = $(this);
+        var thisId = $elem.parent().attr('id');
+        var isCollapsed = Ext.state.Manager.get(thisId);
+        if (isCollapsed !== undefined) {
+            expandCollapseSection($elem, ! isCollapsed); // negate isCollapsed because expandCollapseSection() will toggle it
+        }
+    });
+});
+
 function saveInPlace(elem, baseUrl) {
 	var queryString = $(elem).parent().parent().find("input").serialize();
 	$.ajax({

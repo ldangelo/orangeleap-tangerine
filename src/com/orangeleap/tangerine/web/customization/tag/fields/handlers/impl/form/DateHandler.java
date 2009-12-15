@@ -67,7 +67,7 @@ public class DateHandler extends AbstractFieldHandler {
 
     @Override
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
-        return formatDate(fieldValue, StringConstants.EXT_DATE_FORMAT);
+        return formatDate(fieldValue, StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1);
     }
 
     protected String formatDate(final Object fieldValue, final String dateFormat) {

@@ -34,7 +34,7 @@ public class TangerineMessageAccessor {
         return getMessage(msg, new String[] { arg });
     }
 
-    public static String getMessage(String msg, String[] args) {
+    public static String getMessage(String msg, String... args) {
         return messageSource.getMessage(msg, args, msg, Locale.getDefault());
     }
 

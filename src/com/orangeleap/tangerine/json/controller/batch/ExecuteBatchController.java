@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,11 +32,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Controller
 public class ExecuteBatchController extends TangerineJsonListController {
 
     protected final Log logger = OLLogger.getLog(getClass());
+    public static final String HAS_ERRORS = "hasErrors";
 
     @Resource(name = "postBatchService")
     private PostBatchService postBatchService;
@@ -47,12 +51,29 @@ public class ExecuteBatchController extends TangerineJsonListController {
             logger.trace("executeBatch: batchId = " + batchId);
         }
         checkAccess(request, PageType.executeBatch);
-        PostBatch batch = postBatchService.readBatch(batchId);
+        final PostBatch batch = postBatchService.readBatch(batchId);
+
+        final ModelMap model = new ModelMap();
 
         // check for batch errors first before executing
-        // if no errors, then execute
-//        postBatchService.deleteBatch(batch);
-        final ModelMap model = new ModelMap();
+        final Set<String> errorMsgs = new TreeSet<String>();
+        if (batch == null) {
+            errorMsgs.add(TangerineMessageAccessor.getMessage("invalidBatchId"));
+        }
+        else {
+            postBatchService.checkPreExecuteBatchErrors(batch);
+            errorMsgs.addAll(batch.getUpdateErrors());
+        }
+
+        if ( ! errorMsgs.isEmpty()) {
+            model.put(HAS_ERRORS, Boolean.TRUE);
+            model.put("errorMsgs", errorMsgs);
+        }
+        else {
+            // allow execution of the batch if no errors are found
+            model.put(HAS_ERRORS, Boolean.FALSE);
+        }
+
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
         return model;
     }

@@ -32,7 +32,9 @@ public class PostBatchEntry implements GeneratedId, Serializable {
     private Long id;
     private Long postBatchId;
     private Long segmentationId;
+    private Long constituentId;
     private Long giftId;
+    private Long adjustedGiftId;
     private Long pledgeId;
     private Date createDate;
     private Date updateDate;
@@ -67,12 +69,28 @@ public class PostBatchEntry implements GeneratedId, Serializable {
         this.segmentationId = segmentationId;
     }
 
+    public Long getConstituentId() {
+        return constituentId;
+    }
+
+    public void setConstituentId(Long constituentId) {
+        this.constituentId = constituentId;
+    }
+
     public Long getGiftId() {
         return giftId;
     }
 
     public void setGiftId(Long giftId) {
         this.giftId = giftId;
+    }
+
+    public Long getAdjustedGiftId() {
+        return adjustedGiftId;
+    }
+
+    public void setAdjustedGiftId(Long adjustedGiftId) {
+        this.adjustedGiftId = adjustedGiftId;
     }
 
     public Long getPledgeId() {

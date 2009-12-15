@@ -31,6 +31,14 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     private static final long serialVersionUID = 1L;
 
+    public PostBatch() { }
+
+    public PostBatch(String batchDesc, String batchType) {
+        this();
+        this.batchDesc = batchDesc;
+        this.batchType = batchType;
+    }
+
     private String batchDesc;
     /** batchType maps to 'entity' */
     private String batchType;
@@ -51,8 +59,6 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private List<PostBatchEntry> postBatchEntries = new ArrayList<PostBatchEntry>();
     private Map<String, String> updateFields = new TreeMap<String, String>();
     private List<String> updateErrors = new ArrayList<String>();
-
-    public PostBatch() { }
 
     public String getBatchDesc() {
         return batchDesc;
@@ -86,6 +92,12 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.batchCreatedDate = batchCreatedDate;
     }
 
+    public void setExecutionFields(Long executedById) {
+        setExecuted(true);
+        setExecutedDate(new Date());
+        setExecutedById(executedById);
+    }
+
     public boolean isExecuted() {
         return executed;
     }
@@ -116,6 +128,12 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     public void setExecutedDate(Date executedDate) {
         this.executedDate = executedDate;
+    }
+
+    public void setPostedFields(Long postedById) {
+        setPosted(true);
+        setPostedDate(new Date());
+        setPostedById(postedById);
     }
 
     public boolean isPosted() {

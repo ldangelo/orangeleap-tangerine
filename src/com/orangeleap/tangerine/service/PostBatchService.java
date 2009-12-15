@@ -33,15 +33,17 @@ public interface PostBatchService {
 //    public Map<String, String> readAllowedGiftUpdateFields();
 //    public List<PostBatch> listBatchs();
 //    public PostBatch readBatch(Long batchId);
-    public PostBatch maintainBatch(PostBatch postbatch);
-
-	public PostBatch executeBatch(PostBatch postbatch);
-
-	public void deleteBatch(PostBatch postbatch);
-
 //    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
 //    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
 //	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
+
+    void checkPreExecuteBatchErrors(PostBatch batch);
+    
+    PostBatch maintainBatch(PostBatch postbatch);
+
+	PostBatch executeBatch(PostBatch postbatch);
+
+	void deleteBatch(PostBatch postbatch);
 
     List<PostBatch> readBatchesByStatus(String showBatchStatus, SortInfo sort, Locale locale);
 
@@ -55,5 +57,5 @@ public interface PostBatchService {
     
     List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
 
-    int findTotalSegmentations(String batchType);
+    long findTotalSegmentations(String batchType);
 }

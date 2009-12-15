@@ -6,7 +6,9 @@
         <result property="id" column="POST_BATCH_ENTRY_ID" />
         <result property="postBatchId" column="POST_BATCH_ENTRY_POST_BATCH_ID" />
         <result property="segmentationId" column="POST_BATCH_ENTRY_SEGMENTATION_ID" />
+        <result property="constituentId" column="POST_BATCH_ENTRY_CONSTITUENT_ID" />
         <result property="giftId" column="POST_BATCH_ENTRY_GIFT_ID" />
+        <result property="adjustedGiftId" column="POST_BATCH_ENTRY_ADJUSTED_GIFT_ID" />
         <result property="pledgeId" column="POST_BATCH_ENTRY_PLEDGE_ID" />
         <result property="createDate" column="POST_BATCH_ENTRY_CREATE_DATE" />
         <result property="updateDate" column="POST_BATCH_ENTRY_UPDATE_DATE" />
@@ -16,7 +18,9 @@
         pbs.POST_BATCH_ENTRY_ID as POST_BATCH_ENTRY_ID,
         pbs.POST_BATCH_ID as POST_BATCH_ENTRY_POST_BATCH_ID,
         pbs.SEGMENTATION_ID as POST_BATCH_ENTRY_SEGMENTATION_ID,
+        pbs.CONSTITUENT_ID as POST_BATCH_ENTRY_CONSTITUENT_ID,
         pbs.GIFT_ID as POST_BATCH_ENTRY_GIFT_ID,
+        pbs.ADJUSTED_GIFT_ID as POST_BATCH_ENTRY_ADJUSTED_GIFT_ID,
         pbs.PLEDGE_ID as POST_BATCH_ENTRY_PLEDGE_ID,
         pbs.CREATE_DATE as POST_BATCH_ENTRY_CREATE_DATE,
         pbs.UPDATE_DATE as POST_BATCH_ENTRY_UPDATE_DATE
@@ -47,13 +51,17 @@
     <insert id="INSERT_POST_BATCH_ENTRY" parameterClass="com.orangeleap.tangerine.domain.PostBatchEntry">
         insert into POST_BATCH_ENTRY (POST_BATCH_ID,
         	SEGMENTATION_ID,
+        	CONSTITUENT_ID,
             GIFT_ID,
+            ADJUSTED_GIFT_ID,
             PLEDGE_ID,
         	CREATE_DATE,
         	UPDATE_DATE)
         values (#postBatchId#,
         	#segmentationId#,
+        	#constituentId#,
             #giftId#,
+            #adjustedGiftId#,
             #pledgeId#,
         	now(),
         	now())
@@ -64,9 +72,11 @@
 
     <update id="UPDATE_POST_BATCH_ENTRY" parameterClass="com.orangeleap.tangerine.domain.PostBatchEntry">
         update POST_BATCH_ENTRY
-        SET POST_BATCH_ID = #postBatchId# ,
+        SET POST_BATCH_ID = #postBatchId#,
+            CONSTITUENT_ID = #constituentId#,
         	SEGMENTATION_ID = #segmentationId#,
             GIFT_ID = #giftId#,
+            ADJUSTED_GIFT_ID = #adjustedGiftId#,
             PLEDGE_ID = #pledgeId#,
         	UPDATE_DATE = now()
         where POST_BATCH_ENTRY_ID = #id#

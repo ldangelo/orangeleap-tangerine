@@ -173,10 +173,13 @@ public final class StringConstants {
     public static final String CREDIT_CARD_EXP_DISPLAY_FORMAT = "MM / yyyy";
     public static final String EXT_SCRIPT = "extScript";
     public static final String COMMA_SPACE = ", ";
-    public static final String EXT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
     public static final String MM_DD_YYYY_FORMAT = "MM/dd/yyyy";
+
     public static final String YYYY_MM_DD_FORMAT = "yyyy-MM-dd";
+    public static final String YYYY_MM_DD_HH_MM_SS_FORMAT_1 = "yyyy-MM-dd HH:mm:ss";
+    public static final String YYYY_MM_DD_HH_MM_SS_FORMAT_2 = "yyyy/MM/dd HH:mm:ss";
+    public static final String MM_DD_YYYY_HH_MM_SS_FORMAT_1 = "MM/dd/yyyy HH:mm:ss";
+    public static final String MM_DD_YYYY_HH_MM_SS_FORMAT_2 = "MM-dd-yyyy HH:mm:ss";
 
     public static final String NAME = "name";
     public static final String GROUP = "group";
@@ -215,6 +218,7 @@ public final class StringConstants {
     public static final String BATCH_ID = "batchId";
     public static final String BATCH_DESC = "batchDesc";
     public static final String BATCH_TYPE = "batchType";
+    public static final String BATCH_ERROR = "batchError";
 
     public static final String POSTED_DATE = "postedDate";
     public static final String POSTED = "posted";

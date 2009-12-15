@@ -26,9 +26,9 @@ import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.domain.Postable;
 import com.orangeleap.tangerine.domain.Segmentation;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
-import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -44,12 +44,18 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.theguru.client.GetSegmentationCountByTypeRequest;
+import com.orangeleap.theguru.client.GetSegmentationCountByTypeResponse;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeRequest;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
 import com.orangeleap.theguru.client.ObjectFactory;
 import com.orangeleap.theguru.client.Theguru;
 import com.orangeleap.theguru.client.WSClient;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,9 +64,9 @@ import org.springframework.validation.BindException;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -110,10 +116,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public final static String ADJUSTED_GIFT = "adjustedgift";
     public final static String DISTRO_LINE = "distributionline";
     public final static String DEFAULT = "_default";
-
-    public final static String SOURCE = "source";
-    public final static String STATUS = "status";
-    public final static String IDS = "ids";
 
     @Override
     public PostBatch maintainBatch(PostBatch batch) {
@@ -187,7 +189,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         final List<Segmentation> segmentations = findSegmentations(batchType, sortField, sortDirection, startIndex, resultCount);
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         if (segmentations != null) {
-            final SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.EXT_DATE_FORMAT);
+            final SimpleDateFormat sdf = new SimpleDateFormat(StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1);
             for (Segmentation segmentation : segmentations) {
                 Map<String, Object> returnMap = new HashMap<String, Object>();
                 returnMap.put(StringConstants.ID, segmentation.getId());
@@ -203,12 +205,36 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         return returnList;
     }
 
+    private String resolveGuruSegmentationType(String batchType) {
+        String resolvedType = null;
+        if (StringConstants.GIFT.equals(batchType)) {
+            resolvedType = StringConstants.GIFT_SEGMENTATION;
+        }
+        else if (StringConstants.ADJUSTED_GIFT.equals(batchType)) {
+            resolvedType = StringConstants.ADJUSTED_GIFT_SEGMENTATION;
+        }
+        return resolvedType;
+    }
+
     @Override
-    public int findTotalSegmentations(String batchType) {
+    public long findTotalSegmentations(final String batchType) {
         if (logger.isTraceEnabled()) {
             logger.trace("findTotalSegmentations: batchType = " + batchType);
         }
-        return 2;// TODO: fix
+        final Theguru theGuru = new WSClient().getTheGuru();
+        final ObjectFactory objFactory = new ObjectFactory();
+        final GetSegmentationCountByTypeRequest req = objFactory.createGetSegmentationCountByTypeRequest();
+
+        final String resolvedType = resolveGuruSegmentationType(batchType);
+
+        long count = 0;
+        if (resolvedType != null) {
+            final GetSegmentationCountByTypeResponse resp = theGuru.getSegmentationCountByType(req);
+            if (resp != null) {
+                count = resp.getCount();
+            }
+        }
+        return count;
     }
 
     @Override
@@ -217,18 +243,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             logger.trace("findSegmentations: batchType = " + batchType + " sortField = " + sortField +
                     " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
         }
-        Theguru theGuru = new WSClient().getTheGuru();
-        ObjectFactory objFactory = new ObjectFactory();
-        GetSegmentationListByTypeRequest req = objFactory.createGetSegmentationListByTypeRequest();
+        final Theguru theGuru = new WSClient().getTheGuru();
+        final ObjectFactory objFactory = new ObjectFactory();
+        final GetSegmentationListByTypeRequest req = objFactory.createGetSegmentationListByTypeRequest();
 
-        List<Segmentation> returnSegmentations = new ArrayList<Segmentation>();
-        String resolvedType = null;
-        if (StringConstants.GIFT.equals(batchType)) {
-            resolvedType = StringConstants.GIFT_SEGMENTATION;
-        }
-        else if (StringConstants.ADJUSTED_GIFT.equals(batchType)) {
-            resolvedType = StringConstants.ADJUSTED_GIFT_SEGMENTATION;
-        }
+        final List<Segmentation> returnSegmentations = new ArrayList<Segmentation>();
+        final String resolvedType = resolveGuruSegmentationType(batchType);
         if (resolvedType != null) {
             req.setType(resolvedType);
             req.setSortField(sortField);
@@ -378,12 +398,13 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Override
     @SuppressWarnings("unchecked")
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public PostBatch executeBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {
             logger.trace("executeBatch: batchId = " + batch.getId());
         }
 
-        List entries = null;
+        List<? extends AbstractCustomizableEntity> entries = null;
         if (StringConstants.GIFT.equals(batch.getBatchType())) {
             entries = giftService.readAllGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
 
@@ -391,110 +412,82 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
             entries = adjustedGiftService.readAllAdjustedGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
         }
-        return null; //TODO
-    }
-
-    public void checkForBatchErrors(PostBatch batch) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("checkForBatchErrors: batchId = " + batch.getId());
-        }
-        batch.clearUpdateErrors();
-        if (StringConstants.GIFT.equals(batch.getBatchType()) || StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-            final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
-            if (StringUtils.hasText(postedDateString)) {
-                final DateFormat dateFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
-                Date postedDate;
+        final List<AbstractCustomizableEntity> erroredEntities = new ArrayList<AbstractCustomizableEntity>();
+        if (entries != null) {
+            for (AbstractCustomizableEntity entity : entries) {
+                boolean executed;
                 try {
-                    postedDate = dateFormat.parse(postedDateString);
+                    executed = executeBatchEntry(batch, entity);
                 }
                 catch (Exception e) {
-                    batch.addUpdateError(TangerineMessageAccessor.getMessage("invalidPostedDate", postedDateString));
+                    executed = false;
+                }
+                if ( ! executed) {
+                    AbstractCustomizableEntity originalEntity = copyEntityBatchErrorsToCleanEntity(entity);
+                    if (originalEntity != null) {
+                        erroredEntities.add(originalEntity);
+                    }
                 }
             }
         }
+        if ( ! erroredEntities.isEmpty()) {
+            createErrorBatch(batch, erroredEntities);
+        }
 
+        Long thisUserId = tangerineUserHelper.lookupUserId();
+        if (StringUtils.hasText(batch.getUpdateFieldValue(StringConstants.POSTED_DATE))) {
+            batch.setPostedFields(thisUserId);
+        }
+        batch.setExecutionFields(thisUserId);
+        return postBatchDao.maintainPostBatch(batch);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public PostBatch executeBatchEntry(PostBatch batch) {
+    @Override
+    public void checkPreExecuteBatchErrors(PostBatch batch) {
         if (logger.isTraceEnabled()) {
-            logger.trace("executeBatchEntry: batchId = " + batch.getId());
+            logger.trace("checkPreExecuteBatchErrors: batchId = " + batch.getId());
         }
-        final DateFormat dateFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
-        final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
-        final boolean doPost = postedDateString != null;
+        if (batch != null) {
+            batch.clearUpdateErrors();
 
-        Date postedDate = null;
-        final Map<String, String> bankMap = new HashMap<String, String>();
-        final Map<String, String> codeMap = new HashMap<String, String>();
-
-        if (doPost) {
-            try {
-                postedDate = dateFormat.parse(postedDateString);
+            if (batch.isExecuted()) {
+                batch.addUpdateError(TangerineMessageAccessor.getMessage("errorBatchExecuted"));
             }
-            catch (Exception e) {
-                throw new RuntimeException("Invalid posted date.");
-            }
-            createMaps(bankMap, codeMap);
-        }
-        else {
-            // Can't update these fields if not posting.
-            batch.removeUpdateField(StringConstants.POSTED_DATE);
-        }
+            else {
+                if (StringConstants.GIFT.equals(batch.getBatchType()) || StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+                    final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
 
-        // Get list to update
-        final List<Gift> gifts = giftService.readAllGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
-
-        List<PostBatchEntry> list = postBatchDao.readPostBatchReviewSetItems(batch.getId()); // TODO: grab gifts/adjusted gifts based on segmentations
-        if (list.size() > 2000) {
-            throw new RuntimeException("PostBatch size limit exceeded.");   // TODO remove size limit when supporting partial updates
-        }
-        for (PostBatchEntry entry : list) {
-            try {
-                processUpdateItem(entry, batch, doPost, codeMap, bankMap);
-            }
-            catch (Exception e) {
-                String msg = new StringBuilder(entry.getSegmentationId().toString()).append(": ").append(e.getMessage()).toString();
-                logger.error(msg, e);
-                batch.addUpdateError(msg);
+                    final Map<String, String> bankCodeMap = new HashMap<String, String>();
+                    final Map<String, String> projectCodeMap = new HashMap<String, String>();
+                    if (StringUtils.hasText(postedDateString)) {
+                        try {
+                            new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).parse(postedDateString);
+                        }
+                        catch (Exception e) {
+                            batch.addUpdateError(TangerineMessageAccessor.getMessage("invalidPostedDate", postedDateString));
+                        }
+                        createBankProjectCodeMaps(bankCodeMap, projectCodeMap);
+                        if (bankCodeMap.isEmpty()) {
+                            batch.addUpdateError(TangerineMessageAccessor.getMessage("invalidBankCode"));
+                        }
+                        if (projectCodeMap.isEmpty()) {
+                            batch.addUpdateError(TangerineMessageAccessor.getMessage("invalidDesignationCode"));
+                        }
+                    }
+                }
             }
         }
-
-        if ( ! batch.getUpdateErrors().isEmpty()) {
-            // rollback entire batch for now.  otherwise we have to support reprocess partial
-            throw new PostBatchUpdateException(batch.getUpdateErrors());
-        }
-
-        if (doPost) {
-            batch.setPosted(true);
-            batch.setPostedDate(postedDate);
-            batch.setPostedById(tangerineUserHelper.lookupUserId());
-        }
-
-        batch.setExecuted(true);
-        batch.setExecutedDate(new java.util.Date());
-        batch.setExecutedById(tangerineUserHelper.lookupUserId());
-
-        // Update
-        batch = postBatchDao.maintainPostBatch(batch);
-        return batch;
     }
 
-    private void createMaps(final Map<String, String> bankMap, final Map<String, String> codeMap) {
+    private void createBankProjectCodeMaps(final Map<String, String> bankCodeMap, final Map<String, String> projectCodeMap) {
         Picklist bankCodes = picklistItemService.getPicklist(StringConstants.BANK_CUSTOM_FIELD);
-        addItemsToMap(bankCodes, bankMap);
-        if (bankMap.isEmpty()) {
-            throw new RuntimeException("Posting bank GL account codes not defined.  Go to Manage Picklist Items and set up Bank and Designation Code customizations for GL Accounts.");
-        }
+        addBankProjectCodesToMap(bankCodes, bankCodeMap);
 
         Picklist projectCodes = picklistItemService.getPicklist(StringConstants.PROJECT_CODE);
-        addItemsToMap(projectCodes, codeMap);
-        if (codeMap.isEmpty()) {
-            throw new RuntimeException("No active designation GL codes defined.");
-        }
+        addBankProjectCodesToMap(projectCodes, projectCodeMap);
     }
 
-    private void addItemsToMap(Picklist picklist, Map<String, String> map) {
+    private void addBankProjectCodesToMap(Picklist picklist, Map<String, String> map) {
         for (PicklistItem item : picklist.getActivePicklistItems()) {
             if (item.getCustomFieldValue(StringConstants.ACCOUNT_STRING_1) == null ||
                     item.getCustomFieldValue(StringConstants.ACCOUNT_STRING_2) == null ||
@@ -514,83 +507,321 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
     }
 
-    private void processUpdateItem(PostBatchEntry entry, PostBatch batch, boolean doPost,
-                                   Map<String, String> codeMap, Map<String, String> bankMap) throws Exception {
-        boolean isGift = StringConstants.GIFT.equals(batch.getBatchType());
-        AbstractPaymentInfoEntity entity;
-
-        boolean wasPreviouslyPosted;
-        if (isGift) {
-            entity = giftService.readGiftById(entry.getSegmentationId());
-            wasPreviouslyPosted = ((Gift) entity).isPosted();
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {BindException.class})
+    public boolean executeBatchEntry(PostBatch batch, AbstractCustomizableEntity entity) throws BindException {
+        if (logger.isTraceEnabled()) {
+            logger.trace("executeBatchEntry: batchId = " + batch.getId() + " entityType = " + entity.getType() + " entityId = " + entity.getId());
         }
-        else {
-            entity = adjustedGiftService.readAdjustedGiftById(entry.getSegmentationId());
-            wasPreviouslyPosted = ((AdjustedGift) entity).isPosted();
-        }
+        boolean doPost = false;
+        boolean executed = false;
+        final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
 
         // Record previous values for audit trail
         siteService.populateDefaultEntityEditorMaps(entity);
 
-        if (doPost) {
-            // Don't allow double posting.
-            if (wasPreviouslyPosted) {
-                String msg = "Item " + entity.getId() + " previously posted - cannot re-doPost.";
-                throw new RuntimeException(msg);
-            }
-            ((Postable) entity).setPosted(true);
-        }
+        if (entity instanceof Postable) { // Gift and AdjustedGift are the only Postable objects
+            final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
 
-        // Set update values.  
-        for (Map.Entry<String, String> me : batch.getUpdateFields().entrySet()) {
-            // TODO: use a BeanWrapper here instead
-//        	setField(isGift, entity, me.getKey(), me.getValue());
+            if (StringUtils.hasText(postedDateString)) {
+                Date postedDate = null;
+                try {
+                    postedDate = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).parse(postedDateString);
+                    doPost = true;
+                }
+                catch (Exception ex) {
+                    // should not get thrown if check for errors run first
+                    logger.warn("executeBatchEntry: Could not parse postedDate " + postedDateString);
+                    addBatchErrorToEntity(entity, "invalidPostedDate", postedDateString);
+                }
+                Boolean isPosted = ((Postable) entity).isPosted();
+                if (postedDate != null && isPosted) {
+                    // Don't allow double posting
+                    addBatchErrorToEntity(entity, "cannotRepost", StringUtils.capitalize(entity.getType()), StringConstants.EMPTY + entity.getId());
+                }
+                else {
+                    ((Postable) entity).setPostedDate(postedDate);
+                }
+            }
         }
+        if ( ! hasBatchErrorsInEntity(entity)) {
+            for (Map.Entry<String, String> updateFldEntry : batch.getUpdateFields().entrySet()) {
+                if ( ! updateFldEntry.getKey().equals(StringConstants.POSTED_DATE)) { // posted date is handled above
+                    // the batchType + updateField key is the FieldDefinitionID; we need to resolve the FieldName from it
+                    String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(updateFldEntry.getKey()).toString();
 
-        // Update record.
-        if (isGift) {
-            Gift gift = (Gift) entity;
-            saveGift(gift);
-            if (doPost) {
-                createJournalEntries(gift, null, batch, codeMap, bankMap);
+                    final FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+                    if (fieldDef != null && bw.isWritableProperty(fieldDef.getFieldName())) {
+                        String propertyName = fieldDef.getFieldName();
+                        if (propertyName.indexOf(StringConstants.CUSTOM_FIELD_MAP_START) > -1) {
+                            propertyName += StringConstants.DOT_VALUE;
+                        }
+                        Class clazz = bw.getPropertyType(propertyName);
+                        if (String.class.equals(clazz)) {
+                            bw.setPropertyValue(propertyName, updateFldEntry.getValue());
+                        }
+                        else if (Date.class.equals(clazz)) {
+                            try {
+                                Date date = DateUtils.parseDate(updateFldEntry.getValue(), new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
+                                        StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,
+                                        StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_1, StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_2,
+                                        StringConstants.MM_DD_YYYY_FORMAT});
+                                bw.setPropertyValue(propertyName, date);
+                            }
+                            catch (Exception exception) {
+                                addBatchErrorToEntity(entity, "invalidDateField", updateFldEntry.getValue(), fieldDef.getDefaultLabel());
+                            }
+                        }
+                        else if (Boolean.class.equals(clazz) || Boolean.TYPE.equals(clazz)) {
+                            bw.setPropertyValue(propertyName, Boolean.parseBoolean(updateFldEntry.getValue()));
+                        }
+                        else if (Byte.class.equals(clazz) || Integer.class.equals(clazz) || Short.class.equals(clazz) || Long.class.equals(clazz) ||
+                                Byte.TYPE.equals(clazz) || Integer.TYPE.equals(clazz) || Short.TYPE.equals(clazz) || Long.TYPE.equals(clazz) ||
+                                Double.class.equals(clazz) || Float.class.equals(clazz) || Double.TYPE.equals(clazz) || Float.TYPE.equals(clazz) ||
+                                BigDecimal.class.equals(clazz)) {
+                            if (NumberUtils.isNumber(updateFldEntry.getValue())) {
+                                if (BigDecimal.class.equals(clazz)) {
+                                    bw.setPropertyValue(propertyName, new BigDecimal(updateFldEntry.getValue()));
+                                }
+                                else {
+                                    bw.setPropertyValue(propertyName, NumberUtils.createNumber(updateFldEntry.getValue()));
+                                }
+                            }
+                            else {
+                                addBatchErrorToEntity(entity, "invalidField", updateFldEntry.getValue(), fieldDef.getDefaultLabel());
+                            }
+                        }
+                    }
+                }
             }
         }
-        else {
-            AdjustedGift adjustedGift = (AdjustedGift) entity;
-            saveAdjustedGift(adjustedGift);
-            Gift gift = giftService.readGiftById(adjustedGift.getOriginalGiftId());
-            if (doPost) {
-                createJournalEntries(gift, adjustedGift, batch, codeMap, bankMap);
+        if ( ! hasBatchErrorsInEntity(entity)) {
+            entity.setSuppressValidation(true);
+
+            if (entity instanceof Gift) {
+                Gift gift = (Gift) entity;
+                gift = giftService.editGift(gift);
+                if (doPost) {
+                    createJournalEntries(gift, null, batch);
+                }
             }
+            else if (entity instanceof AdjustedGift) {
+                AdjustedGift adjustedGift = (AdjustedGift) entity;
+                adjustedGift = adjustedGiftService.editAdjustedGift(adjustedGift);
+                if (doPost) {
+                    Gift gift = giftService.readGiftById(adjustedGift.getOriginalGiftId());
+                    createJournalEntries(gift, adjustedGift, batch);
+                }
+            }
+            executed = true;
         }
+        return executed;
     }
+
+    private void addBatchErrorToEntity(AbstractCustomizableEntity entity, String errorMsgKey, String... args) {
+        entity.addCustomFieldValue(StringConstants.BATCH_ERROR, TangerineMessageAccessor.getMessage(errorMsgKey, args));
+    }
+
+    private boolean hasBatchErrorsInEntity(AbstractCustomizableEntity entity) {
+        return StringUtils.hasText(getBatchErrorsInEntity(entity));
+    }
+
+    private String getBatchErrorsInEntity(AbstractCustomizableEntity entity) {
+        return entity.getCustomFieldValue(StringConstants.BATCH_ERROR);
+    }
+
+    private AbstractCustomizableEntity copyEntityBatchErrorsToCleanEntity(AbstractCustomizableEntity dirtyEntity) {
+        /** Copy the 'batchError' custom field to a 'clean' dirtyEntity; the regular 'dirtyEntity' may have errors and not be savable */
+        AbstractCustomizableEntity cleanEntity = null;
+        if (dirtyEntity instanceof Gift) {
+            cleanEntity = giftService.readGiftById(dirtyEntity.getId());
+        }
+        else if (dirtyEntity instanceof AdjustedGift) {
+            cleanEntity = adjustedGiftService.readAdjustedGiftById(dirtyEntity.getId());
+        }
+        if (cleanEntity != null) {
+            cleanEntity.addCustomFieldValue(StringConstants.BATCH_ERROR, getBatchErrorsInEntity(dirtyEntity));
+        }
+        return cleanEntity;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public PostBatch createErrorBatch(PostBatch originalBatch, List<AbstractCustomizableEntity> entities) {
+        PostBatch batchForErrors = new PostBatch(TangerineMessageAccessor.getMessage("errorBatch"), originalBatch.getBatchType());
+        batchForErrors.setHasErrors(true);
+
+        for (AbstractCustomizableEntity entity : entities) {
+            // Save the batchError field in the entity
+            entity.setSuppressValidation(true);
+            try {
+                PostBatchEntry batchEntry = new PostBatchEntry();
+                if (entity instanceof Gift) {
+                    entity = giftService.editGift((Gift) entity);
+                    batchEntry.setGiftId(entity.getId());
+                }
+                else if (entity instanceof AdjustedGift) {
+                    entity = adjustedGiftService.editAdjustedGift((AdjustedGift) entity);
+                    batchEntry.setAdjustedGiftId(entity.getId());
+                }
+                batchForErrors.addPostBatchEntry(batchEntry);
+            }
+            catch (Exception ex) {
+                logger.error("createErrorBatch: could not save entityId = " + entity.getId() + " type = " + entity.getType() + " to the batch for errors due to exception", ex);
+            }
+        }
+        return maintainBatch(batchForErrors);
+    }
+
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    public PostBatch executeBatchEntry(PostBatch batch) {
+//        if (logger.isTraceEnabled()) {
+//            logger.trace("executeBatchEntry: batchId = " + batch.getId());
+//        }
+//        final DateFormat dateFormat = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT);
+//        final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
+//        final boolean doPost = postedDateString != null;
+//
+//        Date postedDate = null;
+//        final Map<String, String> bankMap = new HashMap<String, String>();
+//        final Map<String, String> codeMap = new HashMap<String, String>();
+//
+//        if (doPost) {
+//            try {
+//                postedDate = dateFormat.parse(postedDateString);
+//            }
+//            catch (Exception e) {
+//                throw new RuntimeException("Invalid posted date.");
+//            }
+//            createBankProjectCodeMaps(bankMap, codeMap);
+//        }
+//        else {
+//            // Can't update these fields if not posting.
+//            batch.removeUpdateField(StringConstants.POSTED_DATE);
+//        }
+//
+//        // Get list to update
+//        final List<Gift> gifts = giftService.readAllGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
+//
+//        List<PostBatchEntry> list = postBatchDao.readPostBatchReviewSetItems(batch.getId()); // TODO: grab gifts/adjusted gifts based on segmentations
+//        if (list.size() > 2000) {
+//            throw new RuntimeException("PostBatch size limit exceeded.");   // TODO remove size limit when supporting partial updates
+//        }
+//        for (PostBatchEntry entry : list) {
+//            try {
+//                processUpdateItem(entry, batch, doPost, codeMap, bankMap);
+//            }
+//            catch (Exception e) {
+//                String msg = new StringBuilder(entry.getSegmentationId().toString()).append(": ").append(e.getMessage()).toString();
+//                logger.error(msg, e);
+//                batch.addUpdateError(msg);
+//            }
+//        }
+//
+//        if ( ! batch.getUpdateErrors().isEmpty()) {
+//            // rollback entire batch for now.  otherwise we have to support reprocess partial
+//            throw new PostBatchUpdateException(batch.getUpdateErrors());
+//        }
+//
+//        if (doPost) {
+//            batch.setPosted(true);
+//            batch.setPostedDate(postedDate);
+//            batch.setPostedById(tangerineUserHelper.lookupUserId());
+//        }
+//
+//        batch.setExecuted(true);
+//        batch.setExecutedDate(new java.util.Date());
+//        batch.setExecutedById(tangerineUserHelper.lookupUserId());
+//
+//        // Update
+//        batch = postBatchDao.maintainPostBatch(batch);
+//        return batch;
+//    }
+//
+//    private void processUpdateItem(PostBatchEntry entry, PostBatch batch, boolean doPost,
+//                                   Map<String, String> codeMap, Map<String, String> bankMap) throws Exception {
+//        boolean isGift = StringConstants.GIFT.equals(batch.getBatchType());
+//        AbstractPaymentInfoEntity entity;
+//
+//        boolean wasPreviouslyPosted;
+//        if (isGift) {
+//            entity = giftService.readGiftById(entry.getSegmentationId());
+//            wasPreviouslyPosted = ((Gift) entity).isPosted();
+//        }
+//        else {
+//            entity = adjustedGiftService.readAdjustedGiftById(entry.getSegmentationId());
+//            wasPreviouslyPosted = ((AdjustedGift) entity).isPosted();
+//        }
+//
+//        // Record previous values for audit trail
+//        siteService.populateDefaultEntityEditorMaps(entity);
+//
+//        if (doPost) {
+//            // Don't allow double posting.
+//            if (wasPreviouslyPosted) {
+//                String msg = "Item " + entity.getId() + " previously posted - cannot re-doPost.";
+//                throw new RuntimeException(msg);
+//            }
+//            ((Postable) entity).setPosted(true);
+//        }
+//
+//        // Set update values.
+//        for (Map.Entry<String, String> me : batch.getUpdateFields().entrySet()) {
+//            // TODO: use a BeanWrapper here instead
+////        	setField(isGift, entity, me.getKey(), me.getValue());
+//        }
+//
+//        // Update record.
+//        if (isGift) {
+//            Gift gift = (Gift) entity;
+//            saveGift(gift);
+//            if (doPost) {
+//                createJournalEntries(gift, null, batch);
+//            }
+//        }
+//        else {
+//            AdjustedGift adjustedGift = (AdjustedGift) entity;
+//            saveAdjustedGift(adjustedGift);
+//            Gift gift = giftService.readGiftById(adjustedGift.getOriginalGiftId());
+//            if (doPost) {
+//                createJournalEntries(gift, adjustedGift, batch);
+//            }
+//        }
+//    }
 
     public final static class PostBatchUpdateException extends RuntimeException {
         private static final long serialVersionUID = 1L;
-        private List<String> errors;
+        private Collection<String> errors;
 
-        public PostBatchUpdateException(List<String> errors) {
-            super("Errors exist in batch: " + errors.get(0));
+        public PostBatchUpdateException(Collection<String> errors) {
+            super("Errors exist in batch: " + StringUtils.collectionToCommaDelimitedString(errors));
             this.errors = errors;
         }
 
-        public List<String> getErrors() {
+        @SuppressWarnings("unchecked")
+        public PostBatchUpdateException(String errors) {
+            super("Errors exist in batch: " + errors);
+            this.errors = StringUtils.commaDelimitedListToSet(errors);
+        }
+
+        public Collection<String> getErrors() {
             return errors;
         }
     }
 
-    private void createJournalEntries(Gift gift, AdjustedGift adjustedGift, PostBatch batch,
-                                      Map<String, String> codeMap, Map<String, String> bankMap) {
-        createJournalEntry(gift, adjustedGift, null, batch, codeMap, bankMap);
+    private void createJournalEntries(Gift gift, AdjustedGift adjustedGift, PostBatch batch) {
+        final Map<String, String> bankCodeMap = new HashMap<String, String>();
+        final Map<String, String> projectCodeMap = new HashMap<String, String>();
+        createBankProjectCodeMaps(bankCodeMap, projectCodeMap);
+
+        createJournalEntry(gift, adjustedGift, null, batch, bankCodeMap, projectCodeMap);
         List<DistributionLine> distributionLines = adjustedGift == null ? gift.getDistributionLines() : adjustedGift.getDistributionLines();
         for (DistributionLine line : distributionLines) {
-            createJournalEntry(gift, adjustedGift, line, batch, codeMap, bankMap);
+            createJournalEntry(gift, adjustedGift, line, batch, bankCodeMap, projectCodeMap);
         }
     }
 
     private void createJournalEntry(Gift gift, AdjustedGift adjustedGift, DistributionLine distributionLine,
-                                    PostBatch batch, Map<String, String> codeMap, Map<String, String> bankMap) {
-        boolean isDebit = gift.getAmount().compareTo(new BigDecimal("0")) >= 0;
+                                    PostBatch batch, Map<String, String> bankCodeMap, Map<String, String> projectCodeMap) {
+        boolean isDebit = gift.getAmount().compareTo(BigDecimal.ZERO) >= 0;
         boolean isHeader = distributionLine == null;
         boolean isGift = adjustedGift == null;
 
@@ -612,8 +843,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 journal.setEntity(StringConstants.GIFT);
                 journal.setEntityId(gift.getId());
                 journal.setAmount(gift.getAmount());
-                journal.setCode(getBank(gift, bankMap));
-                journal.setDescription("Gift from " + gift.getConstituent().getRecognitionName()); // TODO: message bundle?
+                journal.setCode(getBankCode(gift, bankCodeMap));
+                journal.setDescription(TangerineMessageAccessor.getMessage("journalGiftDescription", gift.getConstituent().getRecognitionName()));
             }
             else {
                 journal.setJeType(isDebit ? CREDIT : DEBIT);
@@ -622,11 +853,11 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 journal.setOrigEntity(StringConstants.GIFT);
                 journal.setOrigEntityId(gift.getId());
                 journal.setAmount(adjustedGift.getAdjustedAmount());
-                journal.setCode(getBank(adjustedGift, bankMap));
+                journal.setCode(getBankCode(adjustedGift, bankCodeMap));
                 journal.setAdjustmentDate(adjustedGift.getAdjustedTransactionDate());
-                journal.setDescription("Adjustment associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName()); // TODO: message bundle?
+                journal.setDescription(TangerineMessageAccessor.getMessage("journalAdjustedGiftDescription", gift.getId().toString(), gift.getConstituent().getRecognitionName()));
             }
-            updateJournalCodes(journal, bankMap, journal.getCode(), batch);
+            updateJournalCodes(journal, bankCodeMap, journal.getCode(), isGift ? gift : adjustedGift);
         }
         else {
             // Distribution lines
@@ -637,82 +868,74 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             journal.setMasterEntityId(isGift ? gift.getId() : adjustedGift.getId());
 
             journal.setAmount(distributionLine.getAmount());
-            journal.setCode(getProjectCode(distributionLine, codeMap));
+            journal.setCode(getProjectCode(distributionLine, projectCodeMap));
 
             if (isGift) {
                 journal.setJeType(isDebit ? CREDIT : DEBIT);
-                journal.setDescription("Associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
+                journal.setDescription(TangerineMessageAccessor.getMessage("journalDistroLineGiftDescription", gift.getId().toString(), gift.getConstituent().getRecognitionName()));
             }
             else {
                 journal.setJeType(isDebit ? DEBIT : CREDIT);
-                journal.setDescription("Adjusted gift ID " + adjustedGift.getId() + ", associated with original gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
+                journal.setDescription(TangerineMessageAccessor.getMessage("journalDistroLineAdjustedGiftDescription", adjustedGift.getId().toString(), gift.getId().toString(), gift.getConstituent().getRecognitionName()));
                 journal.setAdjustmentDate(adjustedGift.getAdjustedTransactionDate());
                 journal.setOrigEntity(StringConstants.GIFT);
                 journal.setOrigEntityId(gift.getId());
             }
-
-            updateJournalCodes(journal, codeMap, journal.getCode(), batch);
+            updateJournalCodes(journal, projectCodeMap, journal.getCode(), isGift ? gift : adjustedGift);
+        }
+        if (hasBatchErrorsInEntity(isGift ? gift : adjustedGift)) {
+            throw new PostBatchUpdateException(getBatchErrorsInEntity(isGift ? gift : adjustedGift));
         }
         journalDao.maintainJournal(journal);
     }
 
-    private String getBank(AbstractCustomizableEntity entity, Map<String, String> bankMap) {
-        String defaultbank = bankMap.get(DEFAULT);
+    private String getBankCode(AbstractCustomizableEntity entity, Map<String, String> bankCodeMap) {
+        String defaultBank = bankCodeMap.get(DEFAULT);
         String bank = entity.getCustomFieldValue(BANK);
         if (bank == null) {
-            bank = defaultbank;
+            bank = defaultBank;
         }
-        bank = (bank == null ? "" : bank.trim());
+        bank = (bank == null ? StringConstants.EMPTY : bank.trim());
         if (bank.equalsIgnoreCase(StringConstants.NONE)) {
             bank = StringConstants.EMPTY;
         }
         return bank;
     }
 
-    private String getProjectCode(DistributionLine distributionLine, Map<String, String> codeMap) {
-        String defaultcode = codeMap.get(DEFAULT);
+    private String getProjectCode(DistributionLine distributionLine, Map<String, String> projectCodeMap) {
+        String defaultCode = projectCodeMap.get(DEFAULT);
         String projectCode = distributionLine.getProjectCode();
         if (projectCode == null) {
-            projectCode = defaultcode;
+            projectCode = defaultCode;
         }
-        projectCode = (projectCode == null ? "" : projectCode.trim());
+        projectCode = (projectCode == null ? StringConstants.EMPTY : projectCode.trim());
         if (projectCode.equalsIgnoreCase(StringConstants.NONE)) {
-            projectCode = "";
+            projectCode = StringConstants.EMPTY;
         }
         return projectCode;
     }
 
-    private void updateJournalCodes(Journal journal, Map<String, String> map, String code, PostBatch batch) {
+    private void updateJournalCodes(Journal journal, Map<String, String> map, String code, AbstractCustomizableEntity entity) {
         String glAccount1 = map.get(getKey(code, StringConstants.ACCOUNT_STRING_1));
         if (glAccount1 == null) {
-            batch.getUpdateErrors().add("Invalid AccountString1 for " + code);
+            addBatchErrorToEntity(entity, "invalidAccountString1", code);
         }
         journal.setGlAccount1(glAccount1);
 
         String glAccount2 = map.get(getKey(code, StringConstants.ACCOUNT_STRING_2));
         if (glAccount2 == null) {
-            batch.getUpdateErrors().add("Invalid AccountString2 for " + code);
+            addBatchErrorToEntity(entity, "invalidAccountString2", code);
         }
         journal.setGlAccount2(glAccount2);
 
         String glCode = map.get(getKey(code, StringConstants.GL_ACCOUNT_CODE));
         if (glCode == null) {
-            batch.getUpdateErrors().add("Invalid GL Code for " + code);
+            addBatchErrorToEntity(entity, "invalidGLCode", code);
         }
         journal.setGlCode(glCode);
     }
 
     private String getKey(String s1, String s2) {
         return new StringBuilder(s1).append(" : ").append(s2).toString();
-    }
-
-    private void saveGift(Gift gift) throws BindException {
-        gift.setSuppressValidation(true);
-        giftService.editGift(gift);
-    }
-
-    private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
-        adjustedGift.setSuppressValidation(true);
-        adjustedGiftService.maintainAdjustedGift(adjustedGift);
     }
 }

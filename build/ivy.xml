@@ -32,14 +32,14 @@
     </publications>
 
     <dependencies>
-    
-    
+
+
     	<!-- Orange Leap -->
         <dependency org="orangeleap" name="orangeleap-common-security" transitive="false" rev="1.2" >
             <artifact name="orangeleap-common-security" type="jar"/>
         </dependency>
-    
-    
+
+
         <!-- Groovy -->
         <dependency org="org.codehaus.groovy" name="groovy-all" transitive="false" rev="1.5.8">
             <artifact name="groovy-all" type="jar"/>
@@ -228,8 +228,9 @@
         <dependency org="opensymphony" name="quartz" transitive="false" rev="1.6.1"/>
 
         <!-- Drools -->
-        <dependency org="org.drools" name="drools-compiler" rev="4.0.7"/>
-        <dependency org="org.drools" name="drools-core" rev="4.0.7"/>
+		<dependency org="org.drools" name="drools-compiler" rev="5.0.1"/>
+        <dependency org="org.drools" name="drools-core" rev="5.0.1"/>
+        <dependency org="org.drools" name="drools-api" rev="5.0.1"/>
 
         <!-- JSP/Servlets/Ajax -->
         <dependency org="opensymphony" name="sitemesh" transitive="false" rev="2.4.2"/>
@@ -392,7 +393,7 @@
             <artifact name="spring-js" type="jar" ext="jar"/>
             <artifact name="spring-js" type="source" ext="jar" classifier="sources" conf="sources"/>
         </dependency>
-        
+
         <!-- CAS & Axis -->
         <dependency org="org.jasig.cas" name="cas-client-core" transitive="false" rev="3.1.8">
             <artifact name="cas-client-core" type="jar"/>
@@ -417,8 +418,8 @@
         </dependency>
 
         <!-- Mvel -->
-        <dependency org="org.mvel" name="mvel" transitive="false" rev="1.3.1-java1.4">
-            <artifact name="mvel" type="jar"/>
+        <dependency org="org.mvel" name="mvel2" transitive="false" rev="2.0.10">
+            <artifact name="mvel2" type="jar"/>
         </dependency>
 
         <!-- ActiveMQ -->
@@ -437,12 +438,12 @@
                     rev="3.0.0">
             <artifact name="jasperserver-ireport-plugin" type="jar"/>
         </dependency>
-        <!-- Jasperserver common--> 
+        <!-- Jasperserver common-->
         <dependency org="com.jaspersoft.jasperserver" name="jasperserver-common-ws" transitive="false" rev="3.0.0">
             <artifact name="jasperserver-common-ws" type="jar"/>
         </dependency>
 
-        <!-- Jasper Reports --> 
+        <!-- Jasper Reports -->
         <dependency org="net.sf.jasperreports" name="jasperreports" transitive="false" rev="3.0.0">
             <artifact name="jasperreports" type="jar"/>
         </dependency>
@@ -526,22 +527,22 @@
 
         <dependency org="net.sf.jsr107cache" name="jsr107cache" transitive="false" rev="1.0"/>
 
-		
+
 		<!-- JsLex -->
 		<dependency org="com.rockstarapps.jslex" name="jslex-ant" rev="1.2b" transitive="false" conf="compile->default">
 			<artifact name="jslex-ant" type="jar" ext="jar"/>
 		</dependency>
-		
+
 		<dependency org="com.rockstarapps.jslex" name="jslex-optimization" rev="1.2b" transitive="false" conf="compile->default">
 			<artifact name="jslex-optimization" type="jar" ext="jar"/>
 		</dependency>
-		
+
 		<!-- SOAP Client -->
 		<dependency org="org.apache.cxf" name="cxf" rev="2.2.3" >
 			<artifactId name="cxf" type="jar" ext="jar"/>
 
    		</dependency>
-		
+
 		<dependency org="com.sun.xml.fastinfoset" name="FastInfoset" rev="1.2.3">
 			<artifactId name="fastinfoset" type="jar" ext="jar"/>
 		</dependency>
@@ -549,7 +550,7 @@
 		<dependency org="org.apache.neethi" name="neethi" rev="2.0.4">
 			<artifactId name="neethi" type="jar" ext="jar"/>
 		</dependency>
-		
+
 		<dependency org="org.apache.ws.commons" name="xmlschema" rev="1.4.5">
 			<artifactId name="xmlschema" type="jar" ext="jar"/>
 		</dependency>
@@ -577,7 +578,7 @@
 		<dependency org="xml-security" name="xmlsec" rev="1.4.3" >
 			<artifactId name="xmlsec" type="jar" ext="jar"/>
 		</dependency>
-		 
+
 
         <!-- JsLex -->
         <dependency org="com.rockstarapps.jslex" name="jslex-ant" rev="1.2b" transitive="false" conf="compile->default">

@@ -61,6 +61,7 @@ import org.apache.commons.logging.Log;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
@@ -135,7 +136,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     private CommunicationHistoryService communicationHistoryService;
 
     private ApplicationContext context;
-    
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ConstituentValidationException.class, BindException.class})
     public Constituent maintainConstituent(Constituent constituent) throws ConstituentValidationException, BindException {
@@ -145,7 +146,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (constituent.getSite() == null || !tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName())) {
             throw new ConstituentValidationException();
         }
-        
+
         setOptInPrefs(constituent);
 
         if (constituent.getFieldLabelMap() != null && !constituent.isSuppressValidation()) {
@@ -557,7 +558,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         this.context = applicationContext;
 
     }
-    
+
     @Override
     public void updateFullTextSearchIndex(Long constituentId) {
 	     entitySearchDao.updateFullTextIndex(readConstituentById(constituentId));

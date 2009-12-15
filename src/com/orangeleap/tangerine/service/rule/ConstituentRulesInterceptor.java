@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.spi.ConsequenceException;
+import org.drools.runtime.rule.ConsequenceException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

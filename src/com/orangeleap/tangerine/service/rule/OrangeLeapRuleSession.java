@@ -72,6 +72,7 @@ public class OrangeLeapRuleSession {
 			map.put("giftService", applicationContext.getBean("giftService"));
 			map.put("picklistItemService", applicationContext.getBean("picklistItemService"));
 			map.put("emailService", applicationContext.getBean("emailService"));
+			map.put("mailService", applicationContext.getBean("mailService"));
 			map.put("errorLogService", applicationContext.getBean("errorLogService"));
 		}
 		

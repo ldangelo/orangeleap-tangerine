@@ -103,6 +103,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     			List<RuleSegment> ruleSegments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
     			for (RuleSegment ruleSegment : ruleSegments) {
     				RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(ruleSegment.getRuleSegmentTypeId());
+    				if (ruleSegmentType == null) throw new RuntimeException("Invalid rule segment type for rule: "+rule.getRuleDesc());
     				String text = ruleSegmentType.getRuleSegmentTypeText();
     				// TODO replacement parms
     				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {

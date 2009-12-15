@@ -116,7 +116,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 			try {
 				logger.debug("*** firing all rules");
 
-				workingMemory.fireAllRules();
+				//workingMemory.fireAllRules();
 				
 				olWorkingMemory.executeRules(); 
 				

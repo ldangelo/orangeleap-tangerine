@@ -20,7 +20,7 @@
         <include refid="RULE_SEGMENT_TYPE_COLS_FRAGMENT"/>,
         <include refid="RULE_SEGMENT_TYPE_PARM_COLS_FRAGMENT"/>
         from RULE_SEGMENT_TYPE rule_segment_type
-        inner join RULE_SEGMENT_TYPE_PARM rule_segment_type_parm on rule_segment_type.RULE_SEGMENT_TYPE_ID = rule_segment_type_parm.RULE_SEGMENT_TYPE_ID
+        left outer join RULE_SEGMENT_TYPE_PARM rule_segment_type_parm on rule_segment_type.RULE_SEGMENT_TYPE_ID = rule_segment_type_parm.RULE_SEGMENT_TYPE_ID
      </sql>
 
     <select id="SELECT_RULE_SEGMENT_TYPE_BY_ID" resultMap="RULE_SEGMENT_TYPE_RESULT" parameterClass="map" >

@@ -93,31 +93,44 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     }
     
     private String compileCode(RuleEventNameType rulesEventType, boolean testMode) {
+    	
     	StringBuilder script = new StringBuilder();
-    	List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType(), testMode);
-    	for (Rule rule: rules) {
-    		if (rule.getRuleIsActive() && rule.getRuleVersions().size() > 0) {
-    			StringBuilder conditions = new StringBuilder();
-    			StringBuilder consequences = new StringBuilder();
-    			RuleVersion ruleVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
-    			List<RuleSegment> ruleSegments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
-    			for (RuleSegment ruleSegment : ruleSegments) {
-    				RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(ruleSegment.getRuleSegmentTypeId());
-    				if (ruleSegmentType == null) throw new RuntimeException("Invalid rule segment type for rule: "+rule.getRuleDesc());
-    				String text = ruleSegmentType.getRuleSegmentTypeText();
-    				// TODO replacement parms
-    				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {
-    					if (conditions.length() > 0) conditions.append("&& ");
-    					conditions.append("(").append(text).append(")\n");
-    				} else {
-    					consequences.append(text).append(";\n");
-    				}
-    				script.append("// ").append(rule.getRuleDesc());
-    				script.append("if ( \n").append(conditions.toString()).append("   ) {\n").append(consequences.toString()).append("}\n\n");
-    			}
-    		}
+    	
+    	try {
+	    	List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType(), testMode);
+	    	for (Rule rule: rules) {
+	    		if (rule.getRuleIsActive() && rule.getRuleVersions().size() > 0) {
+	    			StringBuilder conditions = new StringBuilder();
+	    			StringBuilder consequences = new StringBuilder();
+	    			RuleVersion ruleVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
+	    			List<RuleSegment> ruleSegments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
+	    			for (RuleSegment ruleSegment : ruleSegments) {
+	    				RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(ruleSegment.getRuleSegmentTypeId());
+	    				if (ruleSegmentType == null) throw new RuntimeException("Invalid rule segment type for rule: "+rule.getRuleDesc());
+	    				String text = ruleSegmentType.getRuleSegmentTypeText();
+	    				// TODO replacement parms
+	    				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {
+	    					if (conditions.length() > 0) conditions.append("&& ");
+	    					conditions.append("(").append(text).append(") \\\n");
+	    				} else {
+	    					consequences.append(text).append("; \n");
+	    				}
+	    				script.append("// ").append(rule.getRuleDesc()).append("\n");
+	    				script.append("if ( \\\n").append(conditions.toString()).append("   ) { \n").append(consequences.toString()).append("} \n\n");
+	    			}
+	    		}
+	    	}
+    	
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		logger.error("Error in rules script generation: " + (rulesEventType == null ? "Null rules event type" : rulesEventType.getType()) + "\n" + script, e);
     	}
-    	return script.toString();
+    	
+    	String result = script.toString();
+    	//System.out.println("script:\n" + result);
+    	logger.debug(result);
+
+    	return result;
     }
 
 }

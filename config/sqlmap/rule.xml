@@ -26,7 +26,7 @@
         <include refid="RULE_COLS_FRAGMENT"/>,
         <include refid="RULE_VERSION_COLS_FRAGMENT"/>
         from RULE rule 
-        inner join RULE_VERSION rule_version
+        inner join RULE_VERSION rule_version on rule_version.RULE_ID = rule.RULE_ID
         where rule.SITE_NAME = #siteName#
     </sql>
 

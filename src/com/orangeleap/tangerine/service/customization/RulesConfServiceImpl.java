@@ -115,9 +115,9 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 	    				} else {
 	    					consequences.append(text).append("; \n");
 	    				}
-	    				script.append("// ").append(rule.getRuleDesc()).append("\n");
-	    				script.append("if ( \\\n").append(conditions.toString()).append("   ) { \n").append(consequences.toString()).append("} \n\n");
 	    			}
+    				script.append("// ").append(rule.getRuleDesc()).append("\n");
+    				script.append("if ( \\\n").append(conditions.toString()).append("   ) { \n").append(consequences.toString()).append("} \n\n");
 	    		}
 	    	}
     	

@@ -109,7 +109,9 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	private Long getTotalCount(String stat) {
 		Map<String, Long> map = counts.get(TOTAL);
 		if (map == null) return 0L;
-		return map.get(stat);
+		Long value = map.get(stat);
+		if (value == null) value = 0L;
+		return value;
 	}
 
 }

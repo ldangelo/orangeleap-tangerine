@@ -64,6 +64,43 @@ $(document).ready(function() {
 	$("span.secondary:has('a.active')").each(function(){
 		$(this).addClass("active").prev(".groupHeader").addClass("groupActive");
 	});
+
+    function expandCollapseSection($elem, isCollapsed) {
+        var $columns = $elem.nextAll('.column');
+        if ( ! $columns.length) {
+            $columns = $elem.nextAll('.formFields')
+        }
+        $columns.each(function() {
+            if (isCollapsed) {
+                // if already collapsed, expand
+                $(this).show();
+            }
+            else {
+                $(this).hide();
+            }
+        });
+        if (isCollapsed) {
+            $elem.removeClass('collapsed');
+//            Ext.state.Manager.set($elem.parent().attr('id'), 'expanded');
+        }
+        else {
+            $elem.addClass('collapsed');
+//            Ext.state.Manager.set($elem.parent().attr('id'), 'collapsed');
+        }
+    }
+
+    $('h4.formSectionHeader').click(function() {
+        var $elem = $(this);
+        var isCollapsed = $elem.hasClass('collapsed');
+        expandCollapseSection($elem, isCollapsed);
+    });
+    $('h4.formSectionHeader').each(function() {
+        // done onLoad
+        var $elem = $(this);
+        var thisId = $elem.parent().attr('id');
+        var isCollapsed = (Ext.state.Manager.get(thisId, 'expanded') === 'collapsed');
+        expandCollapseSection($elem, ! isCollapsed);
+    });
 	
 	$("div.navGroup:not(:has('a.active'))").hoverIntent({
 		sensitivity: 7,

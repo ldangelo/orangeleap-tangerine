@@ -928,7 +928,8 @@ public class SectionFieldTag extends AbstractTag {
 	}
 
 	protected void writeSectionHeader(SectionDefinition sectionDef, String headerClass, StringBuilder sb) {
-		sb.append("<h4 class=\"").append(headerClass).append("\">").append(getSectionHeader(sectionDef)).append("</h4>");
+		sb.append("<h4 class=\"").append(headerClass).append("\" title=\"").append(TangerineMessageAccessor.getMessage("expandCollapseSection"));
+        sb.append("\">").append(getSectionHeader(sectionDef)).append("</h4>");
 	}
 
 	protected String getSectionHeader(SectionDefinition sectionDef) {

@@ -121,13 +121,21 @@ a.helpLink:hover img {
 	background-color: #ffb;
 }
 h4.formSectionHeader {
-	font-weight:bold;
-	font-family:Arial, sans-serif;
-	font-size:14px;
-	margin:0 0 6px 0;
-	padding:0;
-	color:#777;
-	border-bottom:1px solid #aaa;
+    background-image: url(../images/icons/expandCollapse.png);
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    border-bottom: 1px solid #AAAAAA;
+    color: #777777;
+    cursor: pointer;
+    font-family: Arial,sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 0 6px;
+    padding: 0 0 0 12px;
+    min-width: 378px;
+}
+h4.formSectionHeader.collapsed {
+    background-position: left top;
 }
 div.singleColumn h4.formSectionHeader { width: 98%; }
 h4.gridSectionHeader {

@@ -1,8 +1,5 @@
 package com.orangeleap.tangerine.service.rule;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyObject;
-
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -44,17 +41,10 @@ public class OrangeLeapRuleSession {
 						
 						addServicesToMap();
 						
-						ClassLoader parent = getClass().getClassLoader();
-						GroovyClassLoader loader = new GroovyClassLoader(parent);
-						
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
 						String script = rulesConfService.readRulesEventScript(orangeLeapRuleBase.getRuleEventNameType(), orangeLeapRuleBase.isTestMode());
 						if (script == null || script.length() == 0) return;
-
-						Class groovyClass = loader.parseClass("class RuleRunner{ void run(Map map) { "+script+" } }", "rules.groovy");
-						GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
-						Object[] args = {map};
-						groovyObject.invokeMethod("run", args);
+						rulesConfService.runScript(script, map);
 						
 					} catch (OrangeLeapConsequenceRuntimeException e) {
 						logger.error(e.getMessage());

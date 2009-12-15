@@ -18,7 +18,12 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -37,6 +42,7 @@ import com.orangeleap.tangerine.domain.customization.rule.RuleSegment;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
+import com.orangeleap.tangerine.service.rule.OrangeLeapConsequenceRuntimeException;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -71,30 +77,59 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     
     
     
-    
+    @Override
     public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
     	
-    	compileRulesEventScript(rulesEventNameType, testMode);  // TODO remove once UI rules admin wizard updates trigger compile
+    	generateRulesEventScript(rulesEventNameType, testMode);  // TODO remove once UI rules admin wizard updates trigger compile
     	
     	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
     	return rgc == null ? "" : rgc.getGeneratedCodeText();
     	
     }
 
-    public void compileRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
+    @Override
+    public Class compileScript(String script) {
+		ClassLoader parent = getClass().getClassLoader();
+		GroovyClassLoader loader = new GroovyClassLoader(parent);
+		Class groovyClass = loader.parseClass("class RuleRunner{ void run(Map map) { "+script+" } }", "rules.groovy");
+		return groovyClass;
+    }
+
+    @Override
+    public void runScript(String script, Map<String, Object> map) {
+		try {
+			Class groovyClass = compileScript(script);
+			GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
+			Object[] args = {map};
+			groovyObject.invokeMethod("run", args);
+		} catch (OrangeLeapConsequenceRuntimeException e) {
+			throw e;
+		} catch (InstantiationException e) { 
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) { 
+			throw new RuntimeException(e);
+		} catch (RuntimeException e) { 
+			e.printStackTrace();
+			throw new RuntimeException("Error in rules script execution:", e);
+		}
+    }
+
+    @Override
+    public void generateRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
     	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
     	if (rgc == null) {
     		rgc = new RuleGeneratedCode();
     		rgc.setIsTestOnly(testMode);
     		rgc.setRuleEventTypeNameId(rulesEventNameType.getType());
     	}
-    	rgc.setGeneratedCodeText(compileCode(rulesEventNameType, testMode));
+    	rgc.setGeneratedCodeText(generateCode(rulesEventNameType, testMode));
     	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
     }
     
-    private String compileCode(RuleEventNameType rulesEventType, boolean testMode) {
+    private String generateCode(RuleEventNameType rulesEventType, boolean testMode) {
     	
     	StringBuilder script = new StringBuilder();
+    	String result = "";
     	
     	try {
 	    	List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType(), testMode);
@@ -120,17 +155,19 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     				script.append("if ( \\\n").append(conditions.toString()).append("   ) { \n").append(consequences.toString()).append("} \n\n");
 	    		}
 	    	}
+	    	
+	    	result = script.toString();
+	    	compileScript(result); // Test compile
+	    	logger.debug(result);
     	
     	} catch (Exception e) {
     		e.printStackTrace();
     		logger.error("Error in rules script generation: " + (rulesEventType == null ? "Null rules event type" : rulesEventType.getType()) + "\n" + script, e);
     	}
     	
-    	String result = script.toString();
-    	//System.out.println("script:\n" + result);
-    	logger.debug(result);
-
     	return result;
+    	
     }
+    
 
 }

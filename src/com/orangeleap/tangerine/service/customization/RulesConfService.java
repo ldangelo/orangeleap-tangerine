@@ -18,11 +18,17 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import java.util.Map;
+
 import com.orangeleap.tangerine.type.RuleEventNameType;
 
 
 public interface RulesConfService {
 
     public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode);
+    @SuppressWarnings("unchecked")
+	public Class compileScript(String script);
+    public void runScript(String script, Map<String, Object> map);
+    public void generateRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode);
 
 }

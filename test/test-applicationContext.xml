@@ -14,35 +14,15 @@
            http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-           
-     <bean id="PropertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+    <!-- Beans defined here will override those with the same IDs in the regular applicationContext.xml --> 
+    <bean id="appPropertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="order" value="1" />
 		<property name="locations">
 			<list>
 				<value>classpath:test.properties</value>
 			</list>
 		</property>
-	</bean>
-           
-    <import resource="validator-context.xml"/>
-           
-	<context:component-scan base-package="com.orangeleap.tangerine">
-		<context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
-	</context:component-scan>
-
-	<aop:aspectj-autoproxy />
-	
-	<import resource="applicationContext-integration-test.xml"/>
-
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource">
-			<ref local="dataSource"/>
-		</property>
-	</bean>
-	
-	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-		<property name="configLocation" value="classpath:tangerine-sqlmap-config.xml"/>
-		<property name="dataSource" ref="dataSource"/>
 	</bean>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -51,59 +31,21 @@
 		<property name="username" value="orangeleap"/>
 		<property name="password" value="orangeleap"/>
 	</bean>
-	
+
+    <bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/orangeleaptest" />
+		<property name="username" value="orangeleap"/>
+		<property name="password" value="orangeleap"/>
+	</bean>
+
+    <!-- Doesn't appear to be invoked in any test so it appears if 'dataSource-pooled-jndi' is set to any Mock object the tests will run fine --> 
+    <bean id="dataSource-pooled-jndi" class="org.springframework.mock.web.MockHttpServletRequest"/>
+
 	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.test.dataprovider.MockTangerineUserHelperProvider" factory-method="createMockUserHelper" />
-	
-    <!-- Load EHCache bean here, since it is needed by messageSource -->
-    <bean id="cacheManager"
-          class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
-          p:configLocation="classpath:ehcache.xml"/>
 
-    <bean id="messageResourceCache"
-          class="org.springframework.cache.ehcache.EhCacheFactoryBean"
-          p:cacheManager-ref="cacheManager"
-          p:cacheName="messageResourceCache"
-          />
-    
-    <bean id="pageCustomizationCache"
-          class="org.springframework.cache.ehcache.EhCacheFactoryBean"
-          p:cacheManager-ref="cacheManager"
-          p:cacheName="pageCustomizationCache"
-          />
-
-    <bean id="picklistCache"
-          class="org.springframework.cache.ehcache.EhCacheFactoryBean"
-          p:cacheManager-ref="cacheManager"
-          p:cacheName="picklistCache"
-          />
-	
-	<bean id="staticMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
- 		<property name="basename" value="tangerine-messages" />
-		<property name="useCodeAsDefaultMessage" value="false" />
-	</bean>
-
-	<bean id="bundleMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
- 		<property name="basename" value="tangerine-messages" />
-		<property name="useCodeAsDefaultMessage" value="false" />
-	</bean>
-
-	<!-- this is not a bean, this is a static library initialization -->
-	<bean id="tangerineMessageAccessor" class="com.orangeleap.tangerine.util.TangerineMessageAccessor" factory-method="setMessageSource">
-		<constructor-arg>
-			<ref local="bundleMessageSource"/>
-		</constructor-arg>
-	</bean>
-	
 	<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
 		<property name="configFile" value="config/linehandler.properties"/>
-	</bean>
-
-	<bean id="checkService" class="com.orangeleap.tangerine.service.impl.CheckServiceImpl">
-	  <property name="url" value="http://www.echex.net/wsv/batch102.cfc"/>
-	</bean>
-
-	<bean id="achGateway" class="com.orangeleap.tangerine.service.payments.EchexPaymentGateway">
-	  <property name="checkService" ref="checkService"/>
 	</bean>
 
     <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
@@ -112,18 +54,5 @@
         <property name="password" value="${ldap.password}"/>
         <property name="url" value="ldap://${ldap.host}:${ldap.port}/${ldap.root}"/>
     </bean>
-    
-	<bean id="emailSendingService" class="com.orangeleap.tangerine.service.communication.EmailService">
-		<property name="communicationHistoryService" ref="communicationHistoryService"/>
-		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
-		<property name="repositoryUri" value="/services/repository"/>
-	</bean>
-	
-	<bean id="mailService" class="com.orangeleap.tangerine.service.communication.MailService">
-		<property name="communicationHistoryService" ref="communicationHistoryService"/>
-		<property name="baseUri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver"/>
-		<property name="repositoryUri" value="/services/repository"/>
-	</bean>
-    
 	
 </beans>

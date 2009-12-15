@@ -14,7 +14,7 @@ public class SwitchTest extends AbstractTransactionalDataSourceSpringContextTest
 
 	@Override
  	protected String[] getConfigLocations() {
-		return new String[]{"test-applicationContext.xml"};
+		return new String[]{"applicationContext.xml", "test-applicationContext.xml"};
  	}
 	
 }

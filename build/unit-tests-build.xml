@@ -112,6 +112,10 @@
 			<fileset dir="${test.src.dir}/config/xml/templates">
 				<include name="*.inc"/>
 			</fileset>
+            <fileset dir="${war.dir}/WEB-INF">
+                <include name="applicationContext*.xml"/>
+                <include name="contexts/**/*.xml"/>
+            </fileset>
 		</copy>
 
 		<jar destfile="${stage.dir}/orangeleap-tests.jar" basedir="${stage.dir}/test-folder">

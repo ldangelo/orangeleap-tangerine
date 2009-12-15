@@ -319,7 +319,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
         }
     }
 
-    private void resolveItemOrder(final Picklist originalPicklist, final List<PicklistItem> items) {
+    protected void resolveItemOrder(final Picklist originalPicklist, final List<PicklistItem> items) {
         // First sort the picklist items in their specified order and determine which items have duplicate item orders
         Comparator itemOrderComparator = new Comparator() {
             @Override

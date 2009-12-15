@@ -59,6 +59,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
 
+    //TODO cache scripts and groovy classes
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
 

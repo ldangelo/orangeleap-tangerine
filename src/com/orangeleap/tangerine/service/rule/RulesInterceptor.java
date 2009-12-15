@@ -126,6 +126,8 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
 				workingMemory.fireAllRules();
 
+				olWorkingMemory.executeRules(); 
+
 			} catch (Exception e) {
 				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
 				logger.error(e);

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE">
+
+    <resultMap id="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType">
+        <result property="ruleEventTypeId" column="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RULE_EVENT_TYPE_ID" />
+        <result property="ruleSegmentTypeId" column="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_ID" />
+    </resultMap>
+
+    <sql id="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_COLS_FRAGMENT">
+        rule_event_type_x_rule_segment_type.RULE_EVENT_TYPE_ID as RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RULE_EVENT_TYPE_ID,
+        rule_event_type_x_rule_segment_type.RULE_SEGMENT_TYPE_ID as RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RULE_SEGMENT_TYPE_ID    
+    </sql>
+
+    <sql id="SELECT_RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_FRAGMENT">
+        select 
+        <include refid="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_COLS_FRAGMENT"/>
+        from RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE rule_event_type_x_rule_segment_type 
+    </sql>
+
+    <select id="SELECT_RULE_SEGMENT_TYPE_X_RULE_EVENT_TYPE_BY_RULE_EVENT_TYPE_ID" resultMap="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RESULT" parameterClass="map" >
+        <include refid="SELECT_RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_FRAGMENT"/>
+        where rule_event_type_x_rule_segment_type.RULE_EVENT_TYPE_ID = #ruleEventTypeId#
+    </select>
+
+    <insert id="INSERT_RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType">
+        insert into RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (
+        	RULE_EVENT_TYPE_ID,
+        	RULE_SEGMENT_TYPE_ID        )
+        values (
+        	#ruleEventTypeId# ,
+        	#ruleSegmentTypeId#         )
+    </insert>
+
+    <update id="DELETE_RULE_SEGMENT_TYPE_X_RULE_EVENT_TYPE_BY_RULE_EVENT_TYPE_ID" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType">
+        delete from RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE
+        where
+        	RULE_EVENT_TYPE_ID = #ruleEventTypeId#
+    </update>
+
+</sqlMap>
+

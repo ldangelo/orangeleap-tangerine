@@ -22,6 +22,8 @@ import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -185,15 +187,14 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     		RuleSegmentParm ruleSegmentParm = ruleSegment.getRuleSegmentParms().get(i);
     		RuleSegmentTypeParmType type = RuleSegmentTypeParmType.valueOf(ruleSegmentTypeParm.getRuleSegmentTypeParmType());
     		
-    		if (type.equals(RuleSegmentTypeParmType.STRING) || type.equals(RuleSegmentTypeParmType.PICKLIST)) {
+    		if (type.equals(RuleSegmentTypeParmType.STRING) || type.equals(RuleSegmentTypeParmType.PICKLIST) || type.equals(RuleSegmentTypeParmType.SITE_VARIABLE)) {
         		String parmvalue = ruleSegmentParm.getRuleSegmentParmStringValue();
         		parmvalue = whiteList(parmvalue); 
     			text = replaceNextParm(text, parmvalue);
-    		}
-    		else if (type.equals(RuleSegmentTypeParmType.NUMBER)) {
+    		} else if (type.equals(RuleSegmentTypeParmType.NUMBER)) {
         		BigDecimal parmvalue = ruleSegmentParm.getRuleSegmentParmNumericValue();
-    			text = replaceNextParm(text, ""+parmvalue);
-    		}
+    			if (parmvalue != null) text = replaceNextParm(text, parmvalue.toString());
+    		} 
     		// TODO support other parm types
     		
     	}
@@ -206,8 +207,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	return text.substring(0,i) + value + text.substring(i+1);
     }
     
-    // These characters are allowed in groovy script text or picklist value parms - no backslashes, quotes, dots, parens, or semicolons.
-    private static String WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+    // These characters are allowed in groovy script text or picklist value parms - no backslashes, quotes, parens, or semicolons.
+    private static String WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.-_ ";
     
     private String whiteList(String s) {
     	StringBuilder sb = new StringBuilder();

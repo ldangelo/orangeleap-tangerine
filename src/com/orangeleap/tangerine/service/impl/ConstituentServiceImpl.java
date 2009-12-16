@@ -18,6 +18,31 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+
 import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
@@ -40,6 +65,7 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RelationshipService;
@@ -48,7 +74,11 @@ import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
+import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
+import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.type.RuleEventNameType;
+import com.orangeleap.tangerine.type.RuleObjectType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -56,30 +86,6 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
-import javax.annotation.Resource;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @Service("constituentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -134,6 +140,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Resource(name = "communicationHistoryService")
     private CommunicationHistoryService communicationHistoryService;
+
+    @Resource(name = "OrangeLeapRuleAgent")
+    private OrangeLeapRuleAgent orangeLeapRuleAgent;
 
     private ApplicationContext context;
 
@@ -573,9 +582,21 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
 		TaskStack.clear();
 
+		Site site = ss.readSite(uh.lookupUserSiteName());
+
 		RuleBase ruleBase = ((DroolsRuleAgent) context
 				.getBean("DroolsRuleAgent")).getRuleAgent(uh.lookupUserSiteName())
 				.getRuleBase();
+		
+		
+		RuleEventNameType ruleEventNameType = null;
+		if (schedule.contains("daily")) ruleEventNameType = RuleEventNameType.SCHEDULED_DAILY;
+		if (schedule.contains("weekly")) ruleEventNameType = RuleEventNameType.SCHEDULED_WEEKLY;
+		if (schedule.contains("monthly")) ruleEventNameType = RuleEventNameType.SCHEDULED_MONTHLY;
+
+		OrangeLeapRuleBase olRuleBase = orangeLeapRuleAgent.getOrangeLeapRuleBase(ruleEventNameType, site.getName(), false);
+		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
+
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
 		try{
@@ -591,8 +612,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 			workingMemory.setGlobal("picklistItemService",plis);
 			workingMemory.setGlobal("userHelper",uh);
 
-			Site s = ss.readSite(uh.lookupUserSiteName());
-			workingMemory.insert(s);
+		
+			workingMemory.insert(site);
+			olWorkingMemory.put(RuleObjectType.SITE, site);
 
 			Boolean updated = false;
 
@@ -616,11 +638,16 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 			if (updated) {
 				p.setGifts(giftList);
 				ss.populateDefaultEntityEditorMaps(p);
-				p.setSite(s);
+				p.setSite(site);
 				FactHandle pfh = workingMemory.insert(p);
+				olWorkingMemory.put(RuleObjectType.CONSTITUENT, p);
+				olWorkingMemory.put(RuleObjectType.AS_OF_DATE, compareDate);
 			}
 
 			workingMemory.fireAllRules();
+			
+			if (updated) olWorkingMemory.executeRules(); 
+
 
 			TaskStack.execute();
 			TaskStack.clear();

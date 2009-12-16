@@ -5,7 +5,8 @@ public enum RuleObjectType {
 	SITE("site"),
 	CONSTITUENT("constituent"),
 	GIFT("gift"),
-	TOUCHPOINT("touchpoint");
+	TOUCHPOINT("touchpoint"),
+	AS_OF_DATE("asOfDate");
 	
 	private String type;
 

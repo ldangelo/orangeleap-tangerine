@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.event.DebugAgendaEventListener;
@@ -39,16 +38,20 @@ import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RulesService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
+import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
+import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
+import com.orangeleap.tangerine.type.RuleEventNameType;
+import com.orangeleap.tangerine.type.RuleObjectType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
@@ -64,6 +67,10 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 	@Resource(name = "constituentService")
 	private ConstituentService constituentService;
+	
+    @Resource(name = "OrangeLeapRuleAgent")
+    private OrangeLeapRuleAgent orangeLeapRuleAgent;
+
 
 	private ApplicationContext applicationContext;
 
@@ -159,9 +166,19 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			try {
 				TaskStack.clear();
 
+				Site site = ss.readSite(uh.lookupUserSiteName());
+
 				RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
 						.getBean("DroolsRuleAgent")).getRuleAgent(
 						uh.lookupUserSiteName()).getRuleBase();
+				
+				RuleEventNameType ruleEventNameType = null;
+				if (schedule.contains("daily")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_DAILY;
+				if (schedule.contains("weekly")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_WEEKLY;
+				if (schedule.contains("monthly")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_MONTHLY;
+
+				OrangeLeapRuleBase olRuleBase = orangeLeapRuleAgent.getOrangeLeapRuleBase(ruleEventNameType, site.getName(), false);
+				OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
 
 				StatefulSession workingMemory = ruleBase.newStatefulSession();
 				try {
@@ -180,10 +197,11 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 					workingMemory.setGlobal("picklistItemService", plis);
 					workingMemory.setGlobal("userHelper", uh);
 
-					Site s = ss.readSite(uh.lookupUserSiteName());
-					workingMemory.insert(s);
+					workingMemory.insert(site);
+					olWorkingMemory.put(RuleObjectType.SITE, site);
 
 					workingMemory.fireAllRules();
+					olWorkingMemory.executeRules(); 
 
 					TaskStack.execute();
 					TaskStack.clear();

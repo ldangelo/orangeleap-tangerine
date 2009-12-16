@@ -3,7 +3,6 @@ package com.orangeleap.tangerine.dao;
 import java.util.List;
 
 import com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType;
-import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
 
 public interface RuleEventTypeXRuleSegmentTypeDao {
 

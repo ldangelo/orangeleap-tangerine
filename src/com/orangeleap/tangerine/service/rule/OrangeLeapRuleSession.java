@@ -64,6 +64,7 @@ public class OrangeLeapRuleSession {
 		private void addServicesToMap() {
 			map.put("siteName", orangeLeapRuleBase.getSiteName());
 			ApplicationContext applicationContext = orangeLeapRuleBase.getApplicationContext();
+			map.put("logger", logger);
 			map.put("applicationContext", applicationContext);
 			map.put("tangerineUserHelper", applicationContext.getBean("tangerineUserHelper"));
 			map.put("userHelper", applicationContext.getBean("tangerineUserHelper"));

@@ -21,7 +21,7 @@ package com.orangeleap.tangerine.service.customization;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 
-import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -39,11 +39,14 @@ import com.orangeleap.tangerine.dao.RuleSegmentTypeDao;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegment;
+import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentParm;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
+import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentTypeParm;
 import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.service.rule.OrangeLeapConsequenceRuntimeException;
 import com.orangeleap.tangerine.type.RuleEventNameType;
+import com.orangeleap.tangerine.type.RuleSegmentTypeParmType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -75,7 +78,6 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "ruleSegmentTypeDAO")
     private RuleSegmentTypeDao ruleSegmentTypeDao;
 
-    
     
     
     @Override
@@ -144,7 +146,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 	    				RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(ruleSegment.getRuleSegmentTypeId());
 	    				if (ruleSegmentType == null) throw new RuntimeException("Invalid rule segment type for rule: "+rule.getRuleDesc());
 	    				String text = ruleSegmentType.getRuleSegmentTypeText();
-	    				// TODO replacement parms
+	    				text = replaceParms(text, rule, ruleVersion, ruleSegment, ruleSegmentType);
 	    				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {
 	    					if (conditions.length() > 0) conditions.append("&& ");
 	    					conditions.append("(").append(text).append(") \\\n");
@@ -153,6 +155,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 	    				}
 	    			}
     				script.append("// ").append(rule.getRuleDesc()).append("\n");
+    				script.append("map.logger.debug(\"Running rule id "+rule.getId()+"\");"); // do not print desc here
     				script.append("if ( \\\n").append(conditions.toString()).append("   ) { \n").append(consequences.toString()).append("} \n\n");
 	    		}
 	    	}
@@ -170,5 +173,52 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	
     }
     
+    private String replaceParms(String text, Rule rule, RuleVersion ruleVersion, RuleSegment ruleSegment, RuleSegmentType ruleSegmentType) {
+    	
+    	if (ruleSegment.getRuleSegmentParms().size() != ruleSegmentType.getRuleSegmentTypeParms().size()) {
+    		throw new RuntimeException("Number of parameters for rule \"" + rule.getRuleDesc() + "\", \"" + ruleSegmentType.getRuleSegmentTypePhrase() + "\" is not correct.");
+    	}
+    	
+    	for (int i = 0; i < ruleSegmentType.getRuleSegmentTypeParms().size(); i++) {
+    		
+    		RuleSegmentTypeParm ruleSegmentTypeParm = ruleSegmentType.getRuleSegmentTypeParms().get(i);
+    		RuleSegmentParm ruleSegmentParm = ruleSegment.getRuleSegmentParms().get(i);
+    		RuleSegmentTypeParmType type = RuleSegmentTypeParmType.valueOf(ruleSegmentTypeParm.getRuleSegmentTypeParmType());
+    		
+    		if (type.equals(RuleSegmentTypeParmType.STRING) || type.equals(RuleSegmentTypeParmType.PICKLIST)) {
+        		String parmvalue = ruleSegmentParm.getRuleSegmentParmStringValue();
+        		parmvalue = whiteList(parmvalue); 
+    			text = replaceNextParm(text, parmvalue);
+    		}
+    		else if (type.equals(RuleSegmentTypeParmType.NUMBER)) {
+        		BigDecimal parmvalue = ruleSegmentParm.getRuleSegmentParmNumericValue();
+    			text = replaceNextParm(text, ""+parmvalue);
+    		}
+    		// TODO support other parm types
+    		
+    	}
+    	return text;
+    }
+    
+    private String replaceNextParm(String text, String value) {
+    	int i = text.indexOf("?");
+    	if (i == -1) throw new RuntimeException("Invalid number of parameters in rule phrase: " + text);
+    	return text.substring(0,i) + value + text.substring(i+1);
+    }
+    
+    // These characters are allowed in groovy script text or picklist value parms - no backslashes, quotes, dots, parens, or semicolons.
+    private static String WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+    
+    private String whiteList(String s) {
+    	StringBuilder sb = new StringBuilder();
+    	if (s == null) return "";
+    	for (int i = 0; i < s.length(); i++) {
+    		char c = s.charAt(i);
+    		if (WHITELIST.indexOf(c) > -1) {
+    			sb.append(c);
+    		}
+    	}
+    	return sb.toString();
+    }
 
 }

@@ -3,16 +3,20 @@ SET foreign_key_checks = 0;
 
 use company1;
 
+delete from RULE_GENERATED_CODE;
 delete from RULE_SEGMENT_TYPE;
+delete from RULE_SEGMENT_TYPE_PARM;
 delete from RULE;
 delete from RULE_VERSION;
 delete from RULE_SEGMENT;
+delete from RULE_SEGMENT_PARM;
 
 -- DSL (globally available orangeleap-defined rule phrases)
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (1,'condition','is a login user','map.constituent.getCustomFieldValue("constituentIndividualRoles").contains("user")');
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (2,'consequence','set testfield value','map.constituent.setCustomFieldValue("testfield","testvalue"); map.constituentService.maintainConstituent(map.constituent);');
--- this one would normally be a parameterized rule instead so they could set any login id:
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (3,'condition','is nolan','map.constituent.getLoginId().equals("nolan")'); 
+-- This one would normally be a parameterized rule instead so they could set any login id:
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (3,'condition','is login user ?','map.constituent.getLoginId().equals("?")'); 
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_PARM_ID, RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (1,3,0,'STRING'); 
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (4,'consequence','set testfield2 value','map.constituent.setCustomFieldValue("testfield2","testvalue2"); map.constituentService.maintainConstituent(map.constituent);');
 
 -- DSLR (site-specific rules)
@@ -23,6 +27,7 @@ INSERT INTO RULE_SEGMENT (RULE_SEGMENT_ID,RULE_VERSION_ID,RULE_SEGMENT_SEQ,RULE_
 INSERT INTO RULE_SEGMENT (RULE_SEGMENT_ID,RULE_VERSION_ID,RULE_SEGMENT_SEQ,RULE_SEGMENT_TYPE_ID) VALUES (3,1,2,3);
 INSERT INTO RULE_SEGMENT (RULE_SEGMENT_ID,RULE_VERSION_ID,RULE_SEGMENT_SEQ,RULE_SEGMENT_TYPE_ID) VALUES (4,1,3,4);
 
+INSERT INTO RULE_SEGMENT_PARM (RULE_SEGMENT_PARM_ID,RULE_SEGMENT_ID,RULE_SEGMENT_PARM_SEQ,RULE_SEGMENT_PARM_STRING_VALUE) VALUES (1,3,0,'nolan');
 
 SET foreign_key_checks = 1;
 

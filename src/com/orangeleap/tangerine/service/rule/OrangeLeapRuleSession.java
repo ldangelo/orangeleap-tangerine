@@ -41,7 +41,7 @@ public class OrangeLeapRuleSession {
 						
 						logger.debug("Executing dynamic ruleset for "+orangeLeapRuleBase.getRuleEventNameType());
 						
-						map.put("ruleExecutionSummary", new ArrayList<String>());
+						map.put(RULE_EXECUTION_SUMMARY, new ArrayList<String>());
 						addServicesToMap();
 						
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
@@ -69,12 +69,14 @@ public class OrangeLeapRuleSession {
 			
 			StringBuilder sb = new StringBuilder();
 			sb.append("Rules Execution Summary:\n");
-			List<String> summary = (List<String>)map.get("ruleExecutionSummary");
+			List<String> summary = (List<String>)map.get(RULE_EXECUTION_SUMMARY);
 			for (String s: summary) sb.append(s).append("\n");
 			
 			logger.info(sb.toString()); // TODO change to debug
 			
 		}
+		
+		public static final String RULE_EXECUTION_SUMMARY = "ruleExecutionSummary";
 		
 		// Add any new services used by rules to this list:
 		private void addServicesToMap() {

@@ -22,8 +22,7 @@ import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +46,7 @@ import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentTypeParm;
 import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.service.rule.OrangeLeapConsequenceRuntimeException;
+import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.type.RuleSegmentTypeParmType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -137,33 +137,71 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	String result = "";
     	
     	try {
-	    	List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType(), testMode);
+    		
+			script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule Event: "+rulesEventType.getType()+"\");\n"); 
+			script.append("boolean b;\n"); 
+			script.append("boolean lastb;\n\n"); 
+
+    		List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType(), testMode);
 	    	for (Rule rule: rules) {
 	    		if (rule.getRuleIsActive() && rule.getRuleVersions().size() > 0) {
-	    			StringBuilder conditions = new StringBuilder();
-	    			StringBuilder consequences = new StringBuilder();
+	    			
+	    			// Rule script
+	    			String desc = whiteList(rule.getRuleDesc());
+    				script.append("// ").append(desc).append("\n");
+    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"------------------------------------------------\");\n"); 
+    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule: "+desc+"\");\n"); 
+  
+    				List<String> conditions = new ArrayList<String>();
+	    			List<String> conditionstext = new ArrayList<String>();
+	    			List<String> consequences = new ArrayList<String>();
+	    			
+	    			// Replacement parms
 	    			RuleVersion ruleVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
 	    			List<RuleSegment> ruleSegments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
 	    			for (RuleSegment ruleSegment : ruleSegments) {
+	    				
 	    				RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(ruleSegment.getRuleSegmentTypeId());
 	    				if (ruleSegmentType == null) throw new RuntimeException("Invalid rule segment type for rule: "+rule.getRuleDesc());
-	    				String text = ruleSegmentType.getRuleSegmentTypeText();
-	    				text = replaceParms(text, rule, ruleVersion, ruleSegment, ruleSegmentType);
+	    				
+	    				String text = replaceParms(ruleSegmentType.getRuleSegmentTypeText(), rule, ruleVersion, ruleSegment, ruleSegmentType);
 	    				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {
-	    					if (conditions.length() > 0) conditions.append("&& ");
-	    					conditions.append("(").append(text).append(") \\\n");
+	    					conditions.add(text);
+	    					conditionstext.add(replaceParms(ruleSegmentType.getRuleSegmentTypePhrase(), rule, ruleVersion, ruleSegment, ruleSegmentType));
 	    				} else {
-	    					consequences.append(text).append("; \n");
+	    					consequences.add(text);
 	    				}
+	    				
 	    			}
-    				script.append("// ").append(rule.getRuleDesc()).append("\n");
-    				script.append("map.logger.debug(\"Running rule id "+rule.getId()+"\");\n"); // do not print desc here
-    				script.append("if ( \\\n").append(conditions.toString()).append("   ) { \n").append(consequences.toString()).append("} \n\n");
+  				
+    				// Conditions
+    				script.append("b = true;\n"); 
+    				script.append("lastb = true;\n"); 
+    				for (int i = 0; i < conditions.size();i++) {
+        				script.append("b = b && (" + conditions.get(i) + ");\n"); 
+        				script.append("if (lastb) map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Condition: "+conditionstext.get(i)+" = \" + b);\n"); 
+        				script.append("lastb = b;\n"); 
+    				}
+    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule evaluates to \" + b);\n"); 
+    				
+    				// Consequences
+    				if (!testMode) {
+	    				script.append("if (b) { \n");
+	    				for (int i = 0; i < consequences.size();i++) {
+	    					script.append(consequences.get(i)).append("; \n");
+	    				}
+	    				script.append("} \n");
+    				}
+    				
+    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"------------------------------------------------\");\n"); 
+    				script.append("\n");
 	    		}
 	    	}
 	    	
 	    	result = script.toString();
-	    	compileScript(result); // Test compile
+
+	    	// Test compile
+	    	compileScript(result); 
 	    	logger.debug(result);
     	
     	} catch (Exception e) {

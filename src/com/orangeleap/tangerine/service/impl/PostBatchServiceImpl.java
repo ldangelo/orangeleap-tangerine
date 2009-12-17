@@ -82,13 +82,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     @Resource(name = "postBatchEntryService")
     private PostBatchEntryService postBatchEntryService;
 
-//    public final static String DEBIT = "debit";
-//    public final static String CREDIT = "credit";
-//    public final static String BANK = "bank";
-//    public final static String ADJUSTED_GIFT = "adjustedgift";
-//    public final static String DISTRO_LINE = "distributionline";
-//    public final static String DEFAULT = "_default";
-
     @Override
     public PostBatch maintainBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {

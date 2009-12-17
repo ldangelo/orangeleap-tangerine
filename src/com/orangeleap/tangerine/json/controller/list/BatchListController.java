@@ -91,7 +91,6 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(BATCH_TYPE);
         fields.add(BATCH_DESC);
         fields.add(CREATE_DATE);
-        fields.add(StringConstants.ERRORS);
         fields.add(EXECUTED);
         errorBatchFields = UnmodifiableSet.decorate(fields);
     }

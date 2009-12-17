@@ -30,6 +30,7 @@ OrangeLeap.msgBundle = {
     areYouSureExecuteBatch: 'Are you sure you want to execute batch ID <strong>{0}</strong>?',
     cannotDeleteExecutedBatch: 'You cannot delete an executed batch.',
     cannotExecuteExecutedBatch: 'You cannot execute an already executed batch.',
+    cannotExecuteBatchCorrectErrors: 'This batch cannot be executed until the following errors are corrected: ',
     id: 'ID',
     batchId: 'Batch ID',
     type: 'Type',
@@ -48,6 +49,7 @@ OrangeLeap.msgBundle = {
     lastExecDt: 'Last Execution Date',
     lastExecBy: 'Last Executed By',
     error: 'Error',
+    info: 'Info',
     mustDoStep1: 'You must choose a Batch Type (Step 1) first.',
     mustDoStep2: 'You must pick Segmentations (Step 2) first.',
     mustDoStep3: 'There are no updatable rows based on the Segmentation you chose.  Choose a different segmentation (Step 2).',
@@ -81,7 +83,10 @@ OrangeLeap.msgBundle = {
     errorSave: 'The batch could not be saved due to an error.  Please try again or contact your administrator if this issue continues.',
     errorAjax: 'The request could not be processed due to an error.  Please try again or contact your administrator if this issue continues.',
     errorBatchDelete: 'The batch could not be deleted due to an error.  Please try again or contact your administrator if this issue continues.',
-    errorBatchExecute: 'The batch could not be executed due to an error.  Please try again or contact your administrator if this issue continues.'
+    errorBatchExecute: 'The batch could not be executed due to an error.  Please try again or contact your administrator if this issue continues.',
+    batchExecutedWithErrorBatchCreated: 'The batch execution completed but an error batch with the ID of <strong>{0}</strong> ' +
+                                        'was created for rows that were not able to be executed due to errors. ' +
+                                        'Select "Show Batches With Errors" to edit criteria and re-execute.'
 };
 
 Ext.onReady(function() {
@@ -392,12 +397,49 @@ Ext.onReady(function() {
                             if (btn == "ok") {
                                 var recToExecute = store.getById(batchId);
                                 if (recToExecute) {
-// TODO: do in callback
-//                                    hideOtherMarkers('executedMarker');                                    
-//                                    $("#executedMarker").show();
-//                                    setTimeout(function() {
-//                                        $("#executedMarker").hide();
-//                                    }, 10000);
+                                    Ext.get('batchList').mask(msgs.executingBatch);
+                                    
+                                    $('#batchExecutor').load(function() {
+                                        Ext.get('batchList').unmask();
+                                        var returnObj = Ext.decode( $( $(this).get(0).contentWindow.document.body ).text());
+                                        if ( ! returnObj) {
+                                            Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                                                buttons: Ext.MessageBox.OK,
+                                                msg: msgs.errorBatchExecute });
+                                        }
+                                        else {
+                                            if (returnObj.hasBatchErrors) {
+                                                var thisMsg = msgs.cannotExecuteBatchCorrectErrors;
+                                                if (returnObj.errorMsgs) {
+                                                    var len = returnObj.errorMsgs.length;
+                                                    thisMsg += '<ul class="listable">';
+                                                    for (var x = 0; x < len; x++) {
+                                                        var thisErrorMsg = returnObj.errorMsgs[x];
+                                                        thisErrorMsg = thisErrorMsg.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+                                                        thisMsg += '<li>' + thisErrorMsg + '</li>';
+                                                    }
+                                                    thisMsg += '</ul>';
+                                                }
+                                                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                                                    buttons: Ext.MessageBox.OK,
+                                                    msg: thisMsg });
+                                            }
+                                            else {
+                                                // no batch errors; check if any errors occurred in the batch entries themselves and an error batch was created
+                                                if (returnObj.errorBatchId && Ext.isNumber(returnObj.errorBatchId)) {
+                                                    var aMsg = String.format('batchExecutedWithErrorBatchCreated', returnObj.errorBatchId);
+                                                    Ext.MessageBox.show({ title: msgs.info, icon: Ext.MessageBox.INFO,
+                                                        buttons: Ext.MessageBox.OK, fn: showExecutedMarker, 
+                                                        msg: aMsg });
+                                                }
+                                                else {
+                                                    store.remove(recToExecute);
+                                                    showExecutedMarker();
+                                                }
+                                            }
+                                        }
+                                    });
+                                    $('#batchExecutor').attr('src', 'executeBatch.json?batchId=' + batchId);
                                 }
                             }
                         }
@@ -405,6 +447,14 @@ Ext.onReady(function() {
                 }
             }
         }
+    }
+
+    function showExecutedMarker() {
+        hideOtherMarkers('executedMarker');
+        $("#executedMarker").show();
+        setTimeout(function() {
+            $("#executedMarker").hide();
+        }, 10000);
     }
 
     function hideOtherMarkers(markerName) {

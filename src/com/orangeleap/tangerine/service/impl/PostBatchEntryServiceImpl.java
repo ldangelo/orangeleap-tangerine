@@ -343,7 +343,10 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
     public boolean isValidPostedDate(final String postedDateString) {
         boolean isValid;
         try {
-            DateUtils.parseDate(postedDateString, new String[] { StringConstants.MM_DD_YYYY_FORMAT, StringConstants.YYYY_MM_DD_FORMAT });
+            DateUtils.parseDate(postedDateString, new String[] { StringConstants.MM_DD_YYYY_FORMAT,
+                    StringConstants.YYYY_MM_DD_FORMAT,
+                    StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
+                    StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2 });
             isValid = true;
         }
         catch (Exception ex) {
@@ -358,7 +361,10 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
     public Date parsePostedDate(final String postedDateString) {
         Date date = null;
         try {
-            date = DateUtils.parseDate(postedDateString, new String[] { StringConstants.MM_DD_YYYY_FORMAT, StringConstants.YYYY_MM_DD_FORMAT });
+            date = DateUtils.parseDate(postedDateString, new String[] { StringConstants.MM_DD_YYYY_FORMAT,
+                    StringConstants.YYYY_MM_DD_FORMAT,
+                    StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
+                    StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2 });
         }
         catch (Exception ex) {
             // should not get thrown if isValidPostedDate() run first

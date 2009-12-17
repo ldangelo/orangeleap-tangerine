@@ -39,7 +39,7 @@ import java.util.TreeSet;
 public class ExecuteBatchController extends TangerineJsonListController {
 
     protected final Log logger = OLLogger.getLog(getClass());
-    public static final String HAS_ERRORS = "hasErrors";
+    public static final String HAS_BATCH_ERRORS = "hasBatchErrors";
 
     @Resource(name = "postBatchService")
     private PostBatchService postBatchService;
@@ -55,7 +55,7 @@ public class ExecuteBatchController extends TangerineJsonListController {
 
         final ModelMap model = new ModelMap();
 
-        // check for batch errors first before executing
+        // check for global batch errors first before executing
         final Set<String> errorMsgs = new TreeSet<String>();
         if (batch == null) {
             errorMsgs.add(TangerineMessageAccessor.getMessage("invalidBatchId"));
@@ -69,13 +69,13 @@ public class ExecuteBatchController extends TangerineJsonListController {
             // allow execution of the batch if no errors are found
             PostBatch executedBatch = postBatchService.executeBatch(batch);
             if (executedBatch.getErrorBatchId() != null && executedBatch.getErrorBatchId() > 0) {
-
+                model.put("errorBatchId", executedBatch.getErrorBatchId());
             }
-            model.put(HAS_ERRORS, Boolean.FALSE);
+            model.put(HAS_BATCH_ERRORS, Boolean.FALSE);
         }
         else {
             model.put("errorMsgs", errorMsgs);
-            model.put(HAS_ERRORS, Boolean.TRUE);
+            model.put(HAS_BATCH_ERRORS, Boolean.TRUE);
         }
 
         model.put(StringConstants.SUCCESS, Boolean.TRUE);

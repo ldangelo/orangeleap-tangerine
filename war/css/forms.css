@@ -4,6 +4,9 @@ ul.formFields {
 	padding:0pt;
 	width:100%;
 }
+ul.listable {
+    list-style-type: disc;
+}
 li.fieldGroup {
 	clear:both;
 	margin:0pt;

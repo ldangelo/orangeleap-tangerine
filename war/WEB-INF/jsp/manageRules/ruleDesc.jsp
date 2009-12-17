@@ -15,8 +15,8 @@
            
                 <h4>Enter Rule Description</h4><br/>
                 
-                <input id="desc" name="desc" value="${desc}"  size="60" />
-                <input id="active" name="active" type="checkbox" value="true" <c:if test="${active == 'true'}" >checked</c:if> /> 
+                <input id="desc" name="desc" value="${rule.ruleDesc}"  size="60" />
+                <input id="active" name="active" type="checkbox" value="true" <c:if test="${rule.ruleIsActive == 'true'}" >checked</c:if> /> 
                 
                 <br />
                 <br />

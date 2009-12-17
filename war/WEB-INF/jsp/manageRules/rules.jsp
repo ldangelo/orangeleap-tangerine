@@ -11,18 +11,16 @@
             <form>
            
            	<input type="hidden" id="ruleEventType" name="ruleEventType" value="${ruleEventType}" />
+	        <h4>Rules Definition to Manage</h4><br/>
            	
-            <c:if test="${fn:length(ruleDescs) == 0}" >
+            <c:if test="${fn:length(rules) == 0}" >
             
-	            There are no rules defined for this event type.<br/>
+	            There are no rules defined for this event type.<br/><br/>
             
             </c:if>
             
-            <input type="button" value="Create New Rule" class="button" onclick="createRule();  " /><br/><br/>
-           
-            <c:if test="${fn:length(ruleDescs) != 0}" >
+            <c:if test="${fn:length(rules) != 0}" >
 
-	            <h4>Rules Definition to Manage</h4><br/>
 	            <select  id="id" name="id"  onchange="hideShowEditButton();">
 	               <c:forEach var="rule" items="${rules}">
 	                 <option value="<c:out value='${rule.id}'/>" > <c:out value='${rule.ruleDesc}'/></option>
@@ -36,10 +34,12 @@
 
             </c:if>
             
+            <input type="button" value="Create New Rule" class="button" onclick="createRule();  " /><br/>
+           
             </form>
              
             <br/>
-			<a href="ruleEventType.htm">&laquo;Back</a>
+			<a href="ruleEventTypes.htm">&laquo;Back</a>
             
             </div>
             

@@ -32,10 +32,11 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.orangeleap.tangerine.dao.RuleDao;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
+import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.customization.RulesConfService;
-import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 
 public class ManageRuleController extends SimpleFormController {
@@ -45,8 +46,8 @@ public class ManageRuleController extends SimpleFormController {
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name = "pageCustomizationService")
-    private PageCustomizationService pageCustomizationService;
+    @Resource(name = "ruleDAO")
+    private RuleDao ruleDao;
 
     @Resource(name = "rulesConfService")
     private RulesConfService rulesConfService;
@@ -58,12 +59,12 @@ public class ManageRuleController extends SimpleFormController {
 
         if (!ManageRuleEventTypeController.accessAllowed(request)) return null;
         
-        String pageType = request.getParameter("pageType"); 
+        String ruleEventType = request.getParameter("ruleEventType"); 
         
-
+ 
         ModelAndView mav = new ModelAndView(getSuccessView());
-        mav.addObject("pageType", pageType);
-        mav.addObject("sectionNames", getSelectionList(request));
+        mav.addObject("ruleEventType", ruleEventType);
+        mav.addObject("rules", getSelectionList(request));
         return mav;
 
     }
@@ -73,16 +74,10 @@ public class ManageRuleController extends SimpleFormController {
     	return "";
     }
     
-    private Map<String, String> getSelectionList(HttpServletRequest request) {
-    	String pageType = request.getParameter("pageType");
-    	if (pageType == null || pageType.length() == 0) pageType = "constituent";
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageType(PageType.valueOf(pageType));
-
-        Map<String, String> map = new TreeMap<String, String>();
-        for (SectionDefinition sectionDefinition : sectionDefinitions) {
-        	map.put(sectionDefinition.getDefaultLabel() + " - " + sectionDefinition.getRole(), ""+sectionDefinition.getId());
-        }
-        return map;
+    private List<Rule> getSelectionList(HttpServletRequest request) {
+    	String ruleEventType = request.getParameter("ruleEventType");
+    	if (ruleEventType == null || ruleEventType.length() == 0) ruleEventType = "";
+        return ruleDao.readByRuleEventTypeNameId(ruleEventType, false);
     }
     
 }

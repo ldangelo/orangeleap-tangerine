@@ -68,7 +68,7 @@ public class OrangeLeapRuleSession {
 		private void printRulesExecutionSummary() {
 			
 			StringBuilder sb = new StringBuilder();
-			sb.append("Rule Execution Summary:\n");
+			sb.append("Rules Execution Summary:\n");
 			List<String> summary = (List<String>)map.get("ruleExecutionSummary");
 			for (String s: summary) sb.append(s).append("\n");
 			

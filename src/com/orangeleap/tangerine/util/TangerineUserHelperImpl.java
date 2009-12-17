@@ -155,6 +155,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
         final GrantedAuthority[] ga = new GrantedAuthority[] {new GrantedAuthorityImpl("ROLE_SUPER_ADMIN"), new GrantedAuthorityImpl("ROLE_USER")};
         
         final Site site = getSite(siteName);
+        if (site == null) throw new RuntimeException("Invalid site "+siteName);
        
         // Set the details so that the operations on this class will still work with one
         // of our fabricated auth tokens

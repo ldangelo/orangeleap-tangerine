@@ -168,6 +168,13 @@
    						   <a href="pageTypes.htm"><spring:message code="manageScreenDefinitions"/></a>
 						</c:if>
 					</li> 
+					<%-- 
+			  		<li>
+			            <c:if test="${pageAccess['/manageRules']=='ALLOWED'}">
+   						   <a href="ruleEventTypes.htm"><spring:message code="manageRules"/></a>
+						</c:if>
+					</li> 
+					--%>
 			  		<li>
 			            <c:if test="${pageAccess['/siteSettings.htm']=='ALLOWED'}">
    						   <a href="siteDefaults.htm"><spring:message code="siteDefaults"/></a>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       
+    <bean id="ruleEventTypes" class="com.orangeleap.tangerine.controller.manageRules.ManageRuleEventTypeController">
+        <property name="formView" value="manageRules/ruleEventTypes" />
+        <property name="successView" value="manageRules/ruleEventTypes" />
+    </bean>
+
+	<bean id="rules" class="com.orangeleap.tangerine.controller.manageRules.ManageRuleController">
+        <property name="formView" value="manageRules/rules" />
+        <property name="successView" value="manageRules/rules" />
+    </bean>
+
+	<bean id="editSegmentTypes" class="com.orangeleap.tangerine.controller.manageRules.ManageSegmentTypesController">
+        <property name="formView" value="manageRules/editSegmentTypes" />
+        <property name="successView" value="manageRules/editSegmentTypes" />
+    </bean>
+
+	<bean id="createRule" class="com.orangeleap.tangerine.controller.manageRules.CreateRuleController">
+        <property name="formView" value="manageRules/createRule" />
+        <property name="successView" value="manageRules/createRule" />
+    </bean>
+
+	<bean id="ruleDesc" class="com.orangeleap.tangerine.controller.manageRules.ManageRuleDescController">
+        <property name="formView" value="manageRules/ruleDesc" />
+        <property name="successView" value="manageRules/ruleDesc" />
+    </bean>
+
+    <bean id="manageRulesUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+                <prop key="/manageRules.htm">ruleEventTypes</prop>
+                <prop key="/ruleEventTypes.htm">ruleEventTypes</prop>
+                <prop key="/rules.htm">rules</prop>
+                <prop key="/editSegmentTypes.htm">editSegmentTypes</prop>
+                <prop key="/createRule.htm">createRule</prop>
+                <prop key="/ruleDesc.htm">ruleDesc</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

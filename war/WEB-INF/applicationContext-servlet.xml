@@ -38,6 +38,7 @@
     <import resource="contexts/schedule-context.xml"/>
     <import resource="contexts/screenDefinition-context.xml"/>
     <import resource="contexts/giftSummary-context.xml"/>
+    <import resource="contexts/manageRules-context.xml"/>
 
     <import resource="contexts/flows/batch-servlet-context.xml"/>
 

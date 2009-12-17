@@ -84,7 +84,7 @@ OrangeLeap.msgBundle = {
     errorAjax: 'The request could not be processed due to an error.  Please try again or contact your administrator if this issue continues.',
     errorBatchDelete: 'The batch could not be deleted due to an error.  Please try again or contact your administrator if this issue continues.',
     errorBatchExecute: 'The batch could not be executed due to an error.  Please try again or contact your administrator if this issue continues.',
-    batchExecutedWithErrorBatchCreated: 'The batch execution completed but an error batch with the ID of <strong>{0}</strong> ' +
+    batchExecutedWithErrorBatchCreated: 'The batch execution completed but an Error Batch with ID <strong>{0}</strong> ' +
                                         'was created for rows that were not able to be executed due to errors. ' +
                                         'Select "Show Batches With Errors" to edit criteria and re-execute.'
 };
@@ -425,15 +425,16 @@ Ext.onReady(function() {
                                                     msg: thisMsg });
                                             }
                                             else {
+                                                store.remove(recToExecute);
+
                                                 // no batch errors; check if any errors occurred in the batch entries themselves and an error batch was created
                                                 if (returnObj.errorBatchId && Ext.isNumber(returnObj.errorBatchId)) {
-                                                    var aMsg = String.format('batchExecutedWithErrorBatchCreated', returnObj.errorBatchId);
+                                                    var aMsg = String.format(msgs.batchExecutedWithErrorBatchCreated, returnObj.errorBatchId);
                                                     Ext.MessageBox.show({ title: msgs.info, icon: Ext.MessageBox.INFO,
                                                         buttons: Ext.MessageBox.OK, fn: showExecutedMarker, 
                                                         msg: aMsg });
                                                 }
                                                 else {
-                                                    store.remove(recToExecute);
                                                     showExecutedMarker();
                                                 }
                                             }

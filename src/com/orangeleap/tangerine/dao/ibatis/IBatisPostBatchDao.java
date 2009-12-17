@@ -55,6 +55,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         else {
             // assume 'open' is the batch type
             params.put("showRanBatches", false);
+            params.put("showErrors", false);
         }
     }
 

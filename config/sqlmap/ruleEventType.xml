@@ -2,9 +2,10 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RULE_EVENT_TYPE">
 
-    <resultMap id="RULE_EVENT_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleEventType">
+    <resultMap id="RULE_EVENT_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.rule.RuleEventType"  groupBy="id" >
         <result property="id" column="RULE_EVENT_TYPE_RULE_EVENT_TYPE_ID" />
         <result property="ruleEventTypeNameId" column="RULE_EVENT_TYPE_RULE_EVENT_TYPE_NAME_ID" />
+		<result property="ruleEventTypeXRuleSegmentTypes" resultMap="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE.RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RESULT" />
     </resultMap>
 
     <sql id="RULE_EVENT_TYPE_COLS_FRAGMENT">
@@ -14,8 +15,10 @@
 
     <sql id="SELECT_RULE_EVENT_TYPE_FRAGMENT">
         select 
-        <include refid="RULE_EVENT_TYPE_COLS_FRAGMENT"/>
+        <include refid="RULE_EVENT_TYPE_COLS_FRAGMENT"/>,
+        <include refid="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_COLS_FRAGMENT"/>
         from RULE_EVENT_TYPE rule_event_type 
+        inner join RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE rule_event_type_x_rule_segment_type on rule_event_type.RULE_EVENT_TYPE_ID = rule_event_type_x_rule_segment_type.RULE_EVENT_TYPE_ID
         where rule_event_type.SITE_NAME = #siteName#
     </sql>
 

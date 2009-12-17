@@ -59,8 +59,6 @@
     <sqlMap resource="sqlmap/rollupValue.xml"/>
     <sqlMap resource="sqlmap/rollupStatType.xml"/>
 
-    <sqlMap resource="sqlmap/ruleEventType.xml"/>
-    <sqlMap resource="sqlmap/ruleEventTypeXRuleSegmentType.xml"/>
     <sqlMap resource="sqlmap/ruleGeneratedCode.xml"/>
     <sqlMap resource="sqlmap/ruleVersion.xml"/>
     <sqlMap resource="sqlmap/rule.xml"/>
@@ -68,5 +66,7 @@
     <sqlMap resource="sqlmap/ruleSegment.xml"/>
     <sqlMap resource="sqlmap/ruleSegmentTypeParm.xml"/>
     <sqlMap resource="sqlmap/ruleSegmentType.xml"/>
+    <sqlMap resource="sqlmap/ruleEventTypeXRuleSegmentType.xml"/>
+    <sqlMap resource="sqlmap/ruleEventType.xml"/>
 
 </sqlMapConfig>

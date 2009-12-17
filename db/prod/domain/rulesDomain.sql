@@ -16,10 +16,14 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID) VALUES
 
 -- RULE_SEGMENT_TYPE and RULE_SEGMENT_TYPE_PARM (code function definitions for rule text phrases)
 
--- TODO
+-- TODO replace with actual list
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (1,'condition','is a login user','map.constituent.getCustomFieldValue("constituentIndividualRoles").contains("user")');
+
 
 
 
 -- RULE_EVENT_TYPE_X_SEGMENT_TYPE (what segment types can be used for what event types)
 
--- TODO
+-- TODO replace with actual list
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES (1,1);
+

@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -43,5 +44,15 @@ public class IBatisRuleEventTypeDao extends AbstractIBatisDao implements RuleEve
         params.put("id", id);
         return (RuleEventType)getSqlMapClientTemplate().queryForObject("SELECT_RULE_EVENT_TYPE_BY_ID", params);
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RuleEventType> readAllRuleEventTypes() {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllRuleEventTypes:");
+        }
+        Map<String, Object> params = setupParams();
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_RULE_EVENT_TYPES", params);
+	}
     
 }

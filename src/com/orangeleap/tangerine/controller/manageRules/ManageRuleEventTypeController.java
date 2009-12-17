@@ -33,7 +33,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.dao.RuleEventTypeDao;
+import com.orangeleap.tangerine.domain.customization.rule.RuleEventType;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.util.OLLogger;
 
@@ -44,15 +45,15 @@ public class ManageRuleEventTypeController extends SimpleFormController {
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name = "pageCustomizationService")
-    private PageCustomizationService pageCustomizationService;
+    @Resource(name = "ruleEventTypeDAO")
+    private RuleEventTypeDao ruleEventTypeDao;
   
 
     
 	@SuppressWarnings("unchecked")
 	public static boolean accessAllowed(HttpServletRequest request) {
 		Map<String, AccessType> pageAccess = (Map<String, AccessType>)WebUtils.getSessionAttribute(request, "pageAccess");
-		return pageAccess.get("/screenDefinition.htm") == AccessType.ALLOWED;
+		return pageAccess.get("/manageRules.htm") == AccessType.ALLOWED;
 	}
 
 
@@ -68,32 +69,9 @@ public class ManageRuleEventTypeController extends SimpleFormController {
         if (!accessAllowed(request)) return null;
 
         ModelAndView mav = super.showForm(request, response, errors, controlModel);
-        mav.addObject("pageTypes", getSelectionList());
+        mav.addObject("ruleEventTypes", ruleEventTypeDao.readAllRuleEventTypes());
         return mav;
     }
 
 
-    private Map<String, String> getSelectionList() {
-        Map<String, String> map = new TreeMap<String, String>();
-    	List<String> list = pageCustomizationService.readDistintSectionDefinitionsPageTypes();
-        for (String s : list) {
-        	map.put(getDescription(s), s);
-        }
-        return map;
-    }
-    
-    private String getDescription(String s) {
-    	StringBuilder sb = new StringBuilder();
-    	for (int i = 0; i < s.length() ;i++) {
-    		char c = s.charAt(i);
-    		if (i == 0) c = Character.toUpperCase(c);
-    		if (Character.isUpperCase(c)) {
-    			sb.append(" ");
-    			c = Character.toUpperCase(c);
-    		}
-    		sb.append(c);
-    	}
-		return sb.toString();
-    }
-    
 }

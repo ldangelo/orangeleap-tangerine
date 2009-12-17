@@ -34,6 +34,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.service.customization.RulesConfService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 
@@ -47,6 +48,9 @@ public class ManageRuleController extends SimpleFormController {
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
 
+    @Resource(name = "rulesConfService")
+    private RulesConfService rulesConfService;
+  
 
     @SuppressWarnings("unchecked")
 	@Override

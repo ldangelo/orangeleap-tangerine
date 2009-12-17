@@ -155,6 +155,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     				List<String> conditions = new ArrayList<String>();
 	    			List<String> conditionstext = new ArrayList<String>();
 	    			List<String> consequences = new ArrayList<String>();
+	    			List<String> consequencestext = new ArrayList<String>();
 	    			
 	    			// Replacement parms
 	    			RuleVersion ruleVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
@@ -164,12 +165,14 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 	    				RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(ruleSegment.getRuleSegmentTypeId());
 	    				if (ruleSegmentType == null) throw new RuntimeException("Invalid rule segment type for rule: "+rule.getRuleDesc());
 	    				
-	    				String text = replaceParms(ruleSegmentType.getRuleSegmentTypeText(), rule, ruleVersion, ruleSegment, ruleSegmentType);
+	    				String code = replaceParms(ruleSegmentType.getRuleSegmentTypeText(), rule, ruleVersion, ruleSegment, ruleSegmentType);
+	    				String text = replaceParms(ruleSegmentType.getRuleSegmentTypePhrase(), rule, ruleVersion, ruleSegment, ruleSegmentType);
 	    				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {
-	    					conditions.add(text);
-	    					conditionstext.add(replaceParms(ruleSegmentType.getRuleSegmentTypePhrase(), rule, ruleVersion, ruleSegment, ruleSegmentType));
+	    					conditions.add(code);
+	    					conditionstext.add(text);
 	    				} else {
-	    					consequences.add(text);
+	    					consequences.add(code);
+	    					consequencestext.add(text);
 	    				}
 	    				
 	    			}
@@ -185,13 +188,12 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule evaluates to \" + b);\n"); 
     				
     				// Consequences
-    				if (!testMode) {
-	    				script.append("if (b) { \n");
-	    				for (int i = 0; i < consequences.size();i++) {
-	    					script.append(consequences.get(i)).append("; \n");
-	    				}
-	    				script.append("} \n");
+    				script.append("if (b) { \n");
+    				for (int i = 0; i < consequences.size();i++) {
+    					if (!testMode) script.append(consequences.get(i)).append("; \n");
+        				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Consequence: "+consequencestext.get(i)+"\");\n"); 
     				}
+    				script.append("} \n");
     				
     				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"------------------------------------------------\");\n"); 
     				script.append("\n");

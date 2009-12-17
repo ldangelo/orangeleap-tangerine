@@ -440,9 +440,10 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testReadGift" })
     public void testReadAllGiftsBySite() throws Exception {
         List<Gift> gifts = giftDao.readAllGiftsBySite();
-        assert gifts != null && gifts.size() == 7;
+        Assert.assertNotNull(gifts);
+        Assert.assertEquals(15, gifts.size());
         for (Gift gift : gifts) {
-            assert gift.getId() >= 100L && gift.getId() <= 700L;
+            Assert.assertTrue(gift.getId() >= 100L && gift.getId() <= 7000L);
         }
     }
 

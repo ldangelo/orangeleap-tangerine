@@ -25,7 +25,7 @@ public class MockTangerineUserHelperProvider {
         roles.add("ROLE_USER");
         
         tangerineUserHelperMock.checking(new Expectations() {{
-            allowing (tangerineUserHelper).lookupUserId(); will(returnValue(new Long(1)));
+            allowing (tangerineUserHelper).lookupUserId(); will(returnValue(100L));
             allowing (tangerineUserHelper).lookupUserName(); will(returnValue("nryan"));
             allowing (tangerineUserHelper).lookupUserSiteName(); will(returnValue("company1"));
             allowing (tangerineUserHelper).lookupUserPassword(); will(returnValue("password"));

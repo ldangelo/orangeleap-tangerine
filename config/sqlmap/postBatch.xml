@@ -16,6 +16,7 @@
         <result property="postedById" column="POST_BATCH_POSTED_BY_ID" />
         <result property="postedDate" column="POST_BATCH_POSTED_DATE" />
         <result property="hasErrors" column="POST_BATCH_HAS_ERRORS" />
+        <result property="errorBatchId" column="POST_BATCH_ERROR_BATCH_ID" />
         <result property="siteName" column="POST_BATCH_SITE_NAME" />
         <result property="createDate" column="POST_BATCH_CREATE_DATE" />
         <result property="updateDate" column="POST_BATCH_UPDATE_DATE" />
@@ -38,6 +39,7 @@
         post_batch.POSTED_BY_ID as POST_BATCH_POSTED_BY_ID,
         post_batch.POSTED_DATE as POST_BATCH_POSTED_DATE,
         post_batch.HAS_ERRORS as POST_BATCH_HAS_ERRORS,
+        post_batch.ERROR_BATCH_ID as POST_BATCH_ERROR_BATCH_ID,
         post_batch.SITE_NAME as POST_BATCH_SITE_NAME,
         post_batch.CREATE_DATE as POST_BATCH_CREATE_DATE,
         post_batch.UPDATE_DATE as POST_BATCH_UPDATE_DATE,
@@ -122,6 +124,7 @@
         	POSTED_BY_ID,
         	POSTED_DATE,
             HAS_ERRORS,
+            ERROR_BATCH_ID,
         	SITE_NAME,
         	CREATE_DATE,
         	UPDATE_DATE )
@@ -138,6 +141,7 @@
         	#postedById# ,
         	#postedDate# ,
             #hasErrors# ,
+            #errorBatchId# ,
         	#siteName# ,
         	now(),
         	now()        )
@@ -161,6 +165,7 @@
         	POSTED_BY_ID = #postedById# ,
         	POSTED_DATE = #postedDate# ,
             HAS_ERRORS = #hasErrors# ,
+            ERROR_BATCH_ID = #errorBatchId# ,
         	SITE_NAME = #siteName# ,
         	UPDATE_DATE = now()
         where POST_BATCH_ID = #id#

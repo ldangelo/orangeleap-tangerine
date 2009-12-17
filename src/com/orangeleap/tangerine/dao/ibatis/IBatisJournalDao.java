@@ -44,8 +44,6 @@ public class IBatisJournalDao extends AbstractIBatisDao implements JournalDao {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainJournal: journal = " + journal.getId());
         }
-        Journal aJournal = (Journal) insertOrUpdate(journal, "JOURNAL");
-        return aJournal;
+        return (Journal) insertOrUpdate(journal, "JOURNAL");
     }
-
 }

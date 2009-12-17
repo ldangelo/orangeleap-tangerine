@@ -90,6 +90,7 @@ public enum PageType {
     createBatch("/createBatch.json"),
     logView("/logView.htm"),
     screenDefinition("/screenDefinition.htm"),
+    manageRules("/manageRules.htm"),
     manageDashboard("/manageDashboard.htm");
 
     private String pageName;

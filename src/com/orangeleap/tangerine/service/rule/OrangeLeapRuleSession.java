@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.service.rule;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -39,6 +41,7 @@ public class OrangeLeapRuleSession {
 						
 						logger.debug("Executing dynamic ruleset for "+orangeLeapRuleBase.getRuleEventNameType());
 						
+						map.put("ruleExecutionSummary", new ArrayList<String>());
 						addServicesToMap();
 						
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
@@ -55,14 +58,26 @@ public class OrangeLeapRuleSession {
 					}
 		        }
 	        } finally {
+	        	printRulesExecutionSummary();
 	        	RulesStack.pop(operation);
 	        }
 	        
 		}
 		
+		@SuppressWarnings("unchecked")
+		private void printRulesExecutionSummary() {
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("Rule Execution Summary:\n");
+			List<String> summary = (List<String>)map.get("ruleExecutionSummary");
+			for (String s: summary) sb.append(s).append("\n");
+			
+			logger.info(sb.toString()); // TODO change to debug
+			
+		}
+		
 		// Add any new services used by rules to this list:
 		private void addServicesToMap() {
-			map.put("siteName", orangeLeapRuleBase.getSiteName());
 			ApplicationContext applicationContext = orangeLeapRuleBase.getApplicationContext();
 			map.put("logger", logger);
 			map.put("applicationContext", applicationContext);

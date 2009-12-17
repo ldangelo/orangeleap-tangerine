@@ -38,6 +38,8 @@ public interface AdjustedGiftService {
 
     public AdjustedGift readAdjustedGiftById(Long adjustedGiftId);
 
+    List<AdjustedGift> readAdjustedGiftsByIds(final Set<Long> adjustedGiftIds);
+
     public List<AdjustedGift> readAdjustedGiftsForOriginalGiftId(Long originalGiftId);
 
     public AdjustedGift maintainAdjustedGift(AdjustedGift adjustedGift) throws BindException;

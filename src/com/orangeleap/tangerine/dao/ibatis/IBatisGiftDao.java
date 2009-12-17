@@ -96,6 +96,21 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         return gift;
     }
 
+    @Override
+    public List<Gift> readGiftsByIds(Set<Long> giftIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsByIds: giftIds = " + giftIds);
+        }
+        List<Gift> gifts = new ArrayList<Gift>();
+        for (Long giftId : giftIds) {
+            Gift gift = readGiftById(giftId);
+            if (gift != null) {
+                gifts.add(gift);
+            }
+        }
+        return gifts;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId) {

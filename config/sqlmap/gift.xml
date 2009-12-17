@@ -50,7 +50,7 @@
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 
-	<resultMap id="GIFT_DISTRO_LINES_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
+	<resultMap id="GIFT_DISTRO_LINES_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
         <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
         <result property="phone" resultMap="PHONE.PHONE_RESULT" />
         <result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
@@ -97,10 +97,10 @@
 		and g.GIFT_TYPE != 'GIFT_IN_KIND'
     </sql>
 
-	<select id="SELECT_GIFT_BY_ID" resultMap="GIFT_RESULT" parameterClass="map">
-		<include refid="GIFT_QUERY_FRAGMENT" />
-		and g.GIFT_ID = #id#
-	</select>
+    <select id="SELECT_GIFT_BY_ID" resultMap="GIFT_RESULT" parameterClass="map">
+        <include refid="GIFT_QUERY_FRAGMENT" />
+        and g.GIFT_ID = #id#
+    </select>
 
 	<select id="SELECT_ALL_GIFTS_BY_SITE" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
@@ -375,7 +375,7 @@
 		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 	</select>
 
-    <sql id="GIFTS_BY_SEGMENTATION_REPORT_ID_FRAGMENT">
+    <select id="SELECT_GIFTS_BY_SEGMENTATION_REPORT_ID" resultMap="GIFT_LIST_RESULT" parameterClass="map">
         select
         <include refid="GIFT_COLS_FRAGMENT" />,
         <include refid="CONSTITUENT_COLS_FRAGMENT" />,
@@ -408,12 +408,6 @@
         <iterate property="reportIds" conjunction="," open="(" close=")">
             #reportIds[]#
         </iterate>
-    </sql>
-
-    <select id="SELECT_GIFTS_BY_SEGMENTATION_REPORT_ID" resultMap="GIFT_LIST_RESULT" parameterClass="map">
-
-        <include refid="GIFTS_BY_SEGMENTATION_REPORT_ID_FRAGMENT" />
-
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
@@ -435,11 +429,30 @@
         </iterate>
     </select>
 
-    <!-- Differs from 'SELECT_GIFTS_BY_SEGMENTATION_REPORT_ID' in that there is no order by clause and no limit - grab them all -->
-    <select id="SELECT_ALL_GIFTS_BY_SEGMENTATION_REPORT_ID" resultMap="GIFT_LIST_RESULT" parameterClass="map">
+    <select id="SELECT_ALL_GIFTS_BY_SEGMENTATION_REPORT_ID" resultMap="GIFT_RESULT" parameterClass="map">
+        select
+        <include refid="GIFT_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />,
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+        <include refid="DISTRO_LINE_COLS_FRAGMENT" />
 
-        <include refid="GIFTS_BY_SEGMENTATION_REPORT_ID_FRAGMENT" />
+        from GIFT g
+        inner join THEGURU_SEGMENTATION_RESULT res on g.GIFT_ID = res.ENTITY_ID
+        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
+        left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
+        left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+        left outer join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
 
+        where p.SITE_NAME = #siteName#
+        and g.GIFT_TYPE != 'GIFT_IN_KIND'
+        and res.REPORT_ID in
+        <iterate property="reportIds" conjunction="," open="(" close=")">
+            #reportIds[]#
+        </iterate>
+        
     </select>
 
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">

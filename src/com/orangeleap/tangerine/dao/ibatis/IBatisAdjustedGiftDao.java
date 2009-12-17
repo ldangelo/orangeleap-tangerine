@@ -61,6 +61,21 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
         return adjustedGift;
     }
 
+    @Override
+    public List<AdjustedGift> readAdjustedGiftsByIds(final Set<Long> adjustedGiftIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAdjustedGiftsByIds: adjustedGiftIds = " + adjustedGiftIds);
+        }
+        List<AdjustedGift> adjustedGifts = new ArrayList<AdjustedGift>();
+        for (Long adjustedGiftId : adjustedGiftIds) {
+            AdjustedGift adjustedGift = readAdjustedGiftById(adjustedGiftId);
+            if (adjustedGift != null) {
+                adjustedGifts.add(adjustedGift);
+            }
+        }
+        return adjustedGifts;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<AdjustedGift> readAdjustedGiftsForOriginalGiftId(final Long originalGiftId) {

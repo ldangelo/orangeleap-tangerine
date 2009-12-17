@@ -202,6 +202,14 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
     }
 
     @Override
+    public List<AdjustedGift> readAdjustedGiftsByIds(final Set<Long> adjustedGiftIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAdjustedGiftsByIds: adjustedGiftIds = " + adjustedGiftIds);
+        }
+        return adjustedGiftDao.readAdjustedGiftsByIds(adjustedGiftIds);
+    }
+
+    @Override
     public List<AdjustedGift> readAdjustedGiftsForOriginalGiftId(Long originalGiftId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAdjustedGiftsForOriginalGiftId: originalGiftId = " + originalGiftId);

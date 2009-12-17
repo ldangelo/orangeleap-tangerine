@@ -20,11 +20,8 @@ package com.orangeleap.tangerine.test.dataprovider;
 
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchEntry;
-import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.testng.annotations.DataProvider;
-
-import javax.annotation.Resource;
 
 public class BatchProvider {
 
@@ -92,6 +89,47 @@ public class BatchProvider {
         batch.addUpdateField("giftStatus", "Not Paid");
         batch.addUpdateField("postmarkDate", "06/30/2000");
         batch.addUpdateField("checkNumber", "15");
+
+        return new Object[][] { new Object[] { batch } };
+    }
+
+    @DataProvider(name = "setupBatchForGiftsNoPosting")
+    public static Object[][] createBatchForGiftsNoPosting() {
+        PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+        batch.addPostBatchEntry(new PostBatchEntry(7000L));
+        batch.addUpdateField("amount", "29.99");
+        batch.addUpdateField("donationDate", "12/31/2000");
+        batch.addUpdateField("giftStatus", "Pending");
+
+        return new Object[][] { new Object[] { batch } };
+    }
+
+    @DataProvider(name = "setupBatchForGiftsWithInvalidAmountsDates")
+    public static Object[][] createBatchForGiftsWithInvalidAmountsDates() {
+        PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+        batch.addPostBatchEntry(new PostBatchEntry(8000L));
+        batch.addUpdateField("amount", "xyz");
+        batch.addUpdateField("donationDate", "0");
+        batch.addUpdateField("giftStatus", "Pending");
+
+        return new Object[][] { new Object[] { batch } };
+    }
+
+    @DataProvider(name = "setupGiftBatchWithGiftIdsNoSegmentationIds")
+    public static Object[][] createBatchWithGiftIdsNoSegmentationIds() {
+        PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+
+        PostBatchEntry entry = new PostBatchEntry();
+        entry.setGiftId(9000L);
+        batch.addPostBatchEntry(entry);
+
+        entry = new PostBatchEntry();
+        entry.setGiftId(9001L);
+        batch.addPostBatchEntry(entry);
+
+        batch.addUpdateField("amount", "1.01");
+        batch.addUpdateField("donationDate", "03/30/2009");
+        batch.addUpdateField("giftStatus", "Not Paid");
 
         return new Object[][] { new Object[] { batch } };
     }

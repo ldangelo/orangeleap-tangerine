@@ -177,12 +177,51 @@ public class PostBatchServiceImplTest extends BaseTest {
         }
     }
 
+    @Test(dataProvider = "setupBatchForGiftsWithInvalidAmountsDates", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsC" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsA" })
+    public void testExecuteBatchForGiftsWithInvalidAmountsDates(PostBatch batch) throws Exception {
+        batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        Assert.assertNotNull(savedBatch);
+        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertTrue(savedBatch.isExecuted());
+        Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
+        Assert.assertNotNull(savedBatch.getExecutedDate());
+
+        Assert.assertFalse(savedBatch.isPosted());
+        Assert.assertNull(savedBatch.getPostedById());
+        Assert.assertNull(savedBatch.getPostedDate());
+
+        Assert.assertNotNull(savedBatch.getErrorBatchId());
+        Assert.assertTrue(savedBatch.getErrorBatchId() > 0);
+
+        PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
+        Assert.assertNotNull(errorBatch);
+        Assert.assertTrue(errorBatch.getId() > 0);
+        Assert.assertTrue(errorBatch.isHasErrors());
+        Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
+        Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
+
+        for (PostBatchEntry entry : errorBatch.getPostBatchEntries()) {
+            Assert.assertTrue(entry.getGiftId() == 8000L || entry.getGiftId() == 8001L);
+
+            Gift gift = giftService.readGiftById(entry.getGiftId());
+            String giftErrors = gift.getCustomFieldValue(StringConstants.BATCH_ERROR);
+            Assert.assertTrue(StringUtils.hasText(giftErrors));
+            Set<String> errors = new TreeSet<String>();
+            CollectionUtils.addAll(errors, StringUtils.delimitedListToStringArray(giftErrors, StringConstants.CUSTOM_FIELD_SEPARATOR));
+
+            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidDateField", "0", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
+            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
+            checkUneditedGiftValues(gift);
+        }
+    }
+
     /**
      * This test assumes the customFieldMap[bank] and projectCode picklists are not defined in testData.sql
      * @param batch
      * @throws Exception
      */
-    @Test(dataProvider = "setupBatchForGiftsWithInvalidJournalGLAccounts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsC" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsB" })
+    @Test(dataProvider = "setupBatchForGiftsWithInvalidJournalGLAccounts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsD" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsC" })
     public void testExecuteBatchForGiftsWithInvalidJournalGLAccounts(PostBatch batch) throws Exception {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
@@ -222,10 +261,9 @@ public class PostBatchServiceImplTest extends BaseTest {
         }
     }
 
-    @Test(dataProvider = "setupBatchForGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsC" })
+    @Test(dataProvider = "setupBatchForGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
     public void testExecuteBatchForGifts(PostBatch batch) throws Exception {
-        setupBankProjectCodePicklists();    // this should only be done once in this class
-
+        setupBankProjectCodePicklists();
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
@@ -283,6 +321,7 @@ public class PostBatchServiceImplTest extends BaseTest {
                 else if (gift.getId() == 6002L) {
                     Assert.assertEquals(gift.getPaymentType(), "Cash");
                 }
+                // TODO: test for journal entries
             }
             else {
                 // These should not have been updated
@@ -305,10 +344,99 @@ public class PostBatchServiceImplTest extends BaseTest {
         }
     }
 
+    @Test(dataProvider = "setupBatchForGiftsNoPosting", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
+    public void testExecuteBatchForGiftsNoPosting(PostBatch batch) throws Exception {
+        batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        Assert.assertNotNull(savedBatch);
+        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertTrue(savedBatch.isExecuted());
+        Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
+        Assert.assertNotNull(savedBatch.getExecutedDate());
+
+        Assert.assertFalse(savedBatch.isPosted());
+        Assert.assertNull(savedBatch.getPostedById());
+        Assert.assertNull(savedBatch.getPostedDate());
+
+        Assert.assertNull(savedBatch.getErrorBatchId());
+        List<Gift> gifts = giftService.readAllGiftsBySegmentationReportIds(savedBatch.getEntrySegmentationIds());
+        Assert.assertNotNull(gifts);
+        for (Gift gift : gifts) {
+            if (gift.getId() == 7000L || gift.getId() == 7001L) {
+                // These should be updated with the new fields
+                Assert.assertEquals(gift.getAmount(), new BigDecimal("29.99"));
+                if (gift.getId() == 7000L) {
+                    Assert.assertTrue(gift.isPosted());
+                    Assert.assertNotNull(gift.getPostedDate());
+                }
+                else {
+                    Assert.assertFalse(gift.isPosted());
+                    Assert.assertNull(gift.getPostedDate());
+                }
+                Assert.assertEquals(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(gift.getDonationDate()), "12/31/2000");
+                Assert.assertEquals(gift.getGiftStatus(), "Pending");
+                Assert.assertNull(gift.getCheckNumber());
+                Assert.assertNull(gift.getPostmarkDate());
+
+                if (gift.getId() == 7000L) {
+                    Assert.assertEquals(gift.getPaymentType(), "Cash");
+                }
+                else if (gift.getId() == 7001L) {
+                    Assert.assertEquals(gift.getPaymentType(), "Check");
+                }
+            }
+        }
+    }
+
+    @Test(dataProvider = "setupGiftBatchWithGiftIdsNoSegmentationIds", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
+    public void testExecuteBatchWithGiftIdsNoSegmentationIds(PostBatch batch) throws Exception {
+        batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        Assert.assertNotNull(savedBatch);
+        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertTrue(savedBatch.isExecuted());
+        Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
+        Assert.assertNotNull(savedBatch.getExecutedDate());
+
+        Assert.assertFalse(savedBatch.isPosted());
+        Assert.assertNull(savedBatch.getPostedById());
+        Assert.assertNull(savedBatch.getPostedDate());
+
+        Assert.assertNull(savedBatch.getErrorBatchId());
+        Assert.assertTrue(savedBatch.getEntrySegmentationIds().isEmpty());
+        Assert.assertFalse(savedBatch.getEntryGiftIds().isEmpty());
+        List<Gift> gifts = giftService.readGiftsByIds(savedBatch.getEntryGiftIds());
+        Assert.assertNotNull(gifts);
+        for (Gift gift : gifts) {
+            if (gift.getId() == 9000L || gift.getId() == 9001L) {
+                // These should be updated with the new fields
+                Assert.assertEquals(gift.getAmount(), new BigDecimal("1.01"));
+                if (gift.getId() == 9000L) {
+                    Assert.assertTrue(gift.isPosted());
+                    Assert.assertNotNull(gift.getPostedDate());
+                }
+                else {
+                    Assert.assertFalse(gift.isPosted());
+                    Assert.assertNull(gift.getPostedDate());
+                }
+                Assert.assertEquals(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(gift.getDonationDate()), "03/30/2009");
+                Assert.assertEquals(gift.getGiftStatus(), "Not Paid");
+
+                if (gift.getId() == 9000L) {
+                    Assert.assertEquals(gift.getPaymentType(), "Cash");
+                }
+                else if (gift.getId() == 9001L) {
+                    Assert.assertEquals(gift.getPaymentType(), "Check");
+                }
+            }
+        }
+    }
+
     private void setupBankProjectCodePicklists() {
         /* This assumes the customFieldMap[bank] and projectCode picklists are not defined in testData.sql */
         Site site = siteService.readSite("company1");
         Picklist bankPicklist = new Picklist();
+        List<PicklistItem> items = new ArrayList<PicklistItem>();
         bankPicklist.setPicklistNameId(StringConstants.BANK_CUSTOM_FIELD);
         bankPicklist.setPicklistName(StringConstants.BANK_CUSTOM_FIELD);
         bankPicklist.setPicklistDesc("Bank");
@@ -320,24 +448,23 @@ public class PostBatchServiceImplTest extends BaseTest {
         bankItem.addCustomFieldValue(StringConstants.ACCOUNT_STRING_1, "12345");
         bankItem.addCustomFieldValue(StringConstants.ACCOUNT_STRING_2, "987");
         bankItem.addCustomFieldValue(StringConstants.GL_ACCOUNT_CODE, "1000000");
-        List<PicklistItem> items = new ArrayList<PicklistItem>();
         items.add(bankItem);
         bankPicklist.setPicklistItems(items);
         picklistItemService.maintainPicklist(bankPicklist);
 
         Picklist projectPicklist = new Picklist();
+        items = new ArrayList<PicklistItem>();
         projectPicklist.setPicklistNameId(StringConstants.PROJECT_CODE);
         projectPicklist.setPicklistName(StringConstants.PROJECT_CODE);
         projectPicklist.setPicklistDesc("Designation Code");
         projectPicklist.setSite(site);
         PicklistItem projectItem = new PicklistItem();
-        projectItem.setItemName("foo");
-        projectItem.setDefaultDisplayValue("foo");
+        projectItem.setItemName("01000");
+        projectItem.setDefaultDisplayValue("01000");
         projectItem.setItemOrder(0);
         projectItem.addCustomFieldValue(StringConstants.ACCOUNT_STRING_1, "54321");
         projectItem.addCustomFieldValue(StringConstants.ACCOUNT_STRING_2, "789");
         projectItem.addCustomFieldValue(StringConstants.GL_ACCOUNT_CODE, "0000001");
-        items = new ArrayList<PicklistItem>();
         items.add(projectItem);
         projectPicklist.setPicklistItems(items);
         picklistItemService.maintainPicklist(projectPicklist);

@@ -247,14 +247,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     // Used for update only.
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public Gift editGift(Gift gift) throws BindException {
         return editGift(gift, false);
     }
 
     // Used for update only.
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public Gift editGift(Gift gift, boolean doValidateDistributionLines) throws BindException {
         boolean reentrant = RulesStack.push(EDIT_METHOD);
         try {
@@ -373,6 +373,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.trace("readGiftById: giftId = " + giftId);
         }
         return giftDao.readGiftById(giftId);
+    }
+
+    @Override
+    public List<Gift> readGiftsByIds(Set<Long> giftIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsByIds: giftIds = " + giftIds);
+        }
+        return giftDao.readGiftsByIds(giftIds);
     }
 
     @Override

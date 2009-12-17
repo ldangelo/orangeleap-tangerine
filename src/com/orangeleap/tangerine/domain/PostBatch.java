@@ -17,6 +17,10 @@
  */
 package com.orangeleap.tangerine.domain;
 
+import com.orangeleap.tangerine.util.StringConstants;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Date;
@@ -232,10 +236,32 @@ public class PostBatch extends AbstractCustomizableEntity  {
     }
 
     public Set<Long> getEntrySegmentationIds() {
-        Set<Long> ids = new TreeSet<Long>();
+        return getEntryByIdNames("segmentationId");
+    }
+
+    public Set<Long> getEntryGiftIds() {
+        return getEntryByIdNames(StringConstants.GIFT_ID);
+    }
+
+    public Set<Long> getEntryAdjustedGiftIds() {
+        return getEntryByIdNames(StringConstants.ADJUSTED_GIFT_ID);
+    }
+
+    public Set<Long> getEntryPledgeIds() {
+        return getEntryByIdNames(StringConstants.PLEDGE_ID);
+    }
+
+    private Set<Long> getEntryByIdNames(String idName) {
+        final Set<Long> ids = new TreeSet<Long>();
         if (postBatchEntries != null) {
             for (PostBatchEntry thisSeg : postBatchEntries) {
-                ids.add(thisSeg.getSegmentationId());
+                BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(thisSeg);
+                if (bw.isReadableProperty(idName)) {
+                    Object id = bw.getPropertyValue(idName);
+                    if (id != null) {
+                        ids.add((Long) id);
+                    }
+                }
             }
         }
         return ids;

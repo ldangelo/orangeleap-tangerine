@@ -42,6 +42,8 @@ public interface GiftService {
 
     public Gift readGiftById(Long giftId);
 
+    List<Gift> readGiftsByIds(Set<Long> giftIds);
+
     public Gift readGiftByIdCreateIfNull(Constituent constituent, String giftId);
 
     public List<Gift> readMonetaryGifts(Constituent constituent);

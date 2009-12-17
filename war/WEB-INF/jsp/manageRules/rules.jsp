@@ -29,12 +29,12 @@
 	            
 	            <br/><br/>
 	
-	            <input id="editDescButton" type="button" class="button" value="Edit Description / Active Status"  onclick="window.location = 'ruleDesc.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " />
-	            <input type="button" value="Edit Conditions and Consequences" class="button"  onclick="window.location = 'editRuleSegments.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " />
+	            <a href="#" onclick="window.location = 'ruleDesc.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " >Edit Description / Active Status</a>&nbsp;&nbsp;&nbsp;
+	            <a href="#" onclick="window.location = 'editRuleSegments.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " >Edit Conditions and Consequences</a>&nbsp;&nbsp;&nbsp;
 
             </c:if>
             
-            <input type="button" value="Create New Rule" class="button" onclick="createRule();  " /><br/>
+            <a href="#" onclick="createRule();  " >Create New Rule</a><br/>
            
             </form>
              

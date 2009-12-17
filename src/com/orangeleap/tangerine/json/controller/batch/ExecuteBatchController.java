@@ -65,13 +65,17 @@ public class ExecuteBatchController extends TangerineJsonListController {
             errorMsgs.addAll(batch.getUpdateErrors());
         }
 
-        if ( ! errorMsgs.isEmpty()) {
-            model.put(HAS_ERRORS, Boolean.TRUE);
-            model.put("errorMsgs", errorMsgs);
+        if (errorMsgs.isEmpty()) {
+            // allow execution of the batch if no errors are found
+            PostBatch executedBatch = postBatchService.executeBatch(batch);
+            if (executedBatch.getErrorBatchId() != null && executedBatch.getErrorBatchId() > 0) {
+
+            }
+            model.put(HAS_ERRORS, Boolean.FALSE);
         }
         else {
-            // allow execution of the batch if no errors are found
-            model.put(HAS_ERRORS, Boolean.FALSE);
+            model.put("errorMsgs", errorMsgs);
+            model.put(HAS_ERRORS, Boolean.TRUE);
         }
 
         model.put(StringConstants.SUCCESS, Boolean.TRUE);

@@ -95,7 +95,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
-        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
         Assert.assertEquals(new Long(100L), savedBatch.getExecutedById());
         Assert.assertNotNull(savedBatch.getExecutedDate());
@@ -109,7 +109,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
-        Assert.assertTrue(errorBatch.isHasErrors());
+        Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
 
@@ -133,7 +133,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
-        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
@@ -148,7 +148,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
-        Assert.assertTrue(errorBatch.isHasErrors());
+        Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
 
@@ -182,7 +182,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
-        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
@@ -197,7 +197,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
-        Assert.assertTrue(errorBatch.isHasErrors());
+        Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
 
@@ -226,7 +226,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
-        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
@@ -241,7 +241,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
-        Assert.assertTrue(errorBatch.isHasErrors());
+        Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
 
@@ -267,7 +267,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
-        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
@@ -281,7 +281,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
-        Assert.assertTrue(errorBatch.isHasErrors());
+        Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
 
@@ -349,7 +349,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
-        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
@@ -393,7 +393,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
         PostBatch savedBatch = postBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
-        Assert.assertFalse(savedBatch.isHasErrors());
+        Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());

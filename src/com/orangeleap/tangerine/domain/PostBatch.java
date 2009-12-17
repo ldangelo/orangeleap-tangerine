@@ -55,7 +55,7 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private boolean posted;
     private Long postedById;
     private Date postedDate;
-    private boolean hasErrors;
+    private boolean anErrorBatch;
     /** A pointer to a batch that contains the errored rows that used to be in this batch, if any */
     private Long errorBatchId;
     private String siteName;
@@ -166,12 +166,12 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.postedDate = postedDate;
     }
 
-    public boolean isHasErrors() {
-        return hasErrors;
+    public boolean isAnErrorBatch() {
+        return anErrorBatch;
     }
 
-    public void setHasErrors(boolean hasErrors) {
-        this.hasErrors = hasErrors;
+    public void setAnErrorBatch(boolean anErrorBatch) {
+        this.anErrorBatch = anErrorBatch;
     }
 
     public Long getErrorBatchId() {

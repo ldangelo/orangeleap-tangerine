@@ -94,7 +94,7 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertTrue(batch.isExecuted());
         Assert.assertEquals(new Long(100L), batch.getExecutedById());
         Assert.assertNotNull(batch.getExecutedDate());
-        Assert.assertFalse(batch.isHasErrors());
+        Assert.assertFalse(batch.isAnErrorBatch());
         Assert.assertTrue(batch.isPosted());
         Assert.assertEquals(new Long(100L), batch.getPostedById());
         Assert.assertNotNull(batch.getPostedDate());
@@ -121,7 +121,7 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertEquals(new Long(100L), batch.getBatchCreatedById());
         Assert.assertNotNull(batch.getBatchCreatedDate());
         Assert.assertFalse(batch.isPosted());
-        Assert.assertTrue(batch.isHasErrors());
+        Assert.assertTrue(batch.isAnErrorBatch());
         Assert.assertNull(batch.getPostedById());
         Assert.assertNull(batch.getPostedDate());
         Assert.assertEquals("company1", batch.getSiteName());
@@ -140,7 +140,7 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
         Assert.assertEquals("Batch 3", batch.getBatchDesc());
         Assert.assertEquals("constituent", batch.getBatchType());
         Assert.assertTrue(batch.isExecuted());
-        Assert.assertFalse(batch.isHasErrors());
+        Assert.assertFalse(batch.isAnErrorBatch());
         Assert.assertEquals(new Long(200L), batch.getExecutedById());
         Assert.assertEquals("pablo@company1.com", batch.getExecutedByUser());
         Assert.assertEquals(new Long(100L), batch.getBatchCreatedById());

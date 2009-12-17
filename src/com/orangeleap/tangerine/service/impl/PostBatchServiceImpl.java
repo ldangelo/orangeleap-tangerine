@@ -305,7 +305,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 postBatchEntryService.isValidPostedDate(batch.getUpdateFieldValue(StringConstants.POSTED_DATE))) {
             batch.setPostedFields(thisUserId);
         }
-        batch.setHasErrors(false);  // if this was an error batch, just set to an executed batch instead
+        batch.setAnErrorBatch(false);  // if this was an error batch, just set to an executed batch instead
         batch.setExecutionFields(thisUserId);
         return postBatchDao.maintainPostBatch(batch);
     }
@@ -361,7 +361,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     public PostBatch createErrorBatch(PostBatch originalBatch, List<AbstractCustomizableEntity> entities) {
         PostBatch batchForErrors = new PostBatch(TangerineMessageAccessor.getMessage("errorBatch"), originalBatch.getBatchType());
-        batchForErrors.setHasErrors(true);
+        batchForErrors.setAnErrorBatch(true);
 
         for (AbstractCustomizableEntity entity : entities) {
             // Save the batchError field in the entity

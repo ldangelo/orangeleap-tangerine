@@ -15,7 +15,7 @@
         <result property="posted" column="POST_BATCH_POSTED" />
         <result property="postedById" column="POST_BATCH_POSTED_BY_ID" />
         <result property="postedDate" column="POST_BATCH_POSTED_DATE" />
-        <result property="hasErrors" column="POST_BATCH_HAS_ERRORS" />
+        <result property="anErrorBatch" column="POST_BATCH_IS_ERROR_BATCH" />
         <result property="errorBatchId" column="POST_BATCH_ERROR_BATCH_ID" />
         <result property="siteName" column="POST_BATCH_SITE_NAME" />
         <result property="createDate" column="POST_BATCH_CREATE_DATE" />
@@ -38,7 +38,7 @@
         post_batch.POSTED as POST_BATCH_POSTED,
         post_batch.POSTED_BY_ID as POST_BATCH_POSTED_BY_ID,
         post_batch.POSTED_DATE as POST_BATCH_POSTED_DATE,
-        post_batch.HAS_ERRORS as POST_BATCH_HAS_ERRORS,
+        post_batch.IS_ERROR_BATCH as POST_BATCH_IS_ERROR_BATCH,
         post_batch.ERROR_BATCH_ID as POST_BATCH_ERROR_BATCH_ID,
         post_batch.SITE_NAME as POST_BATCH_SITE_NAME,
         post_batch.CREATE_DATE as POST_BATCH_CREATE_DATE,
@@ -80,7 +80,7 @@
         </isNotNull>
 
         <isNotNull property="showErrors">
-            and post_batch.HAS_ERRORS = #showErrors#
+            and post_batch.IS_ERROR_BATCH = #showErrors#
         </isNotNull>
 
         order by
@@ -100,7 +100,7 @@
         </isNotNull>
 
         <isNotNull property="showErrors">
-            and post_batch.HAS_ERRORS = #showErrors#
+            and post_batch.IS_ERROR_BATCH = #showErrors#
         </isNotNull>
     </select>
 
@@ -123,7 +123,7 @@
         	POSTED,
         	POSTED_BY_ID,
         	POSTED_DATE,
-            HAS_ERRORS,
+            IS_ERROR_BATCH,
             ERROR_BATCH_ID,
         	SITE_NAME,
         	CREATE_DATE,
@@ -140,7 +140,7 @@
         	#posted# ,
         	#postedById# ,
         	#postedDate# ,
-            #hasErrors# ,
+            #anErrorBatch# ,
             #errorBatchId# ,
         	#siteName# ,
         	now(),
@@ -164,7 +164,7 @@
         	POSTED = #posted# ,
         	POSTED_BY_ID = #postedById# ,
         	POSTED_DATE = #postedDate# ,
-            HAS_ERRORS = #hasErrors# ,
+            IS_ERROR_BATCH = #anErrorBatch# ,
             ERROR_BATCH_ID = #errorBatchId# ,
         	SITE_NAME = #siteName# ,
         	UPDATE_DATE = now()

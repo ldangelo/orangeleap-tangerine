@@ -13,7 +13,7 @@
                 <h4>Select Event Type Rules to Manage</h4><br/>
                 <select  id="ruleEventType" name="ruleEventType">
                    <c:forEach var="ruleEventType" items="${ruleEventTypes}">
-                     <option value="<c:out value='${ruleEventType.ruleEventTypeNameId}'/>" > <c:out value='${ruleEventType.ruleEventTypeNameId}'/></option>
+                     <option value="<c:out value='${ruleEventType.ruleEventTypeNameId}'/>" > <c:out value='${ruleEventType.ruleEventTypeDesc}'/></option>
                    </c:forEach>
                 </select>
                 

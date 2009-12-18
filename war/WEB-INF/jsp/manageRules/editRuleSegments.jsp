@@ -16,7 +16,7 @@
                 <table>
                 	<tr>
                 	<th>Condition or Consequence</th>
-                	<th>Parameters</th>
+                	<th>Move Up</th>
                 	</tr>
                     <c:forEach var="ruleSegment" items="${ruleSegmentList}">
 		                <tr>

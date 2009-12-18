@@ -16,6 +16,7 @@ public class RuleEventType implements GeneratedId, Serializable {
 
     private Long id;
     private String ruleEventTypeNameId;
+    private String ruleEventTypeDesc;
 	
     private List<RuleEventTypeXRuleSegmentType> ruleEventTypeXRuleSegmentTypes = new ArrayList<RuleEventTypeXRuleSegmentType>();
 
@@ -83,6 +84,16 @@ public class RuleEventType implements GeneratedId, Serializable {
 
 	public List<RuleEventTypeXRuleSegmentType> getRuleEventTypeXRuleSegmentTypes() {
 		return ruleEventTypeXRuleSegmentTypes;
+	}
+
+
+	public void setRuleEventTypeDesc(String ruleEventTypeDesc) {
+		this.ruleEventTypeDesc = ruleEventTypeDesc;
+	}
+
+
+	public String getRuleEventTypeDesc() {
+		return ruleEventTypeDesc;
 	}
 
 }

@@ -76,7 +76,7 @@
                  	   url: "editRuleSegments.htm",
                  	   data: data,
                  	   success: function(msg){
-                 	     if (action == 'moveup') {
+                 	     if (action == 'moveup' || action == 'add') {
                      	     window.location = "editRuleSegments.htm?"+parms;
                  	     }
                  	   },

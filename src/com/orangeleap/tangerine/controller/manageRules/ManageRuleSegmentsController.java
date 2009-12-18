@@ -171,8 +171,6 @@ public class ManageRuleSegmentsController extends SimpleFormController {
     	
         if (!ManageRuleEventTypeController.accessAllowed(request)) return null;
 
-if (true) return getModelAndView(request);  
-
         String ruleEventTypeName = request.getParameter("ruleEventType"); 
         Long id = new Long(request.getParameter("id")); 
         Long ruleSegmentId = new Long(request.getParameter("ruleSegmentId")); 
@@ -194,13 +192,16 @@ if (true) return getModelAndView(request);
         if (moveUp) {
         	// TODO
         } else if (add) {
+        	
             List<RuleSegmentType> availableSegmentTypes = rulesConfService.getAvailableRuleSegmentTypes(ruleEventTypeName);
         	ruleSegment = new RuleSegment();
             ruleSegment.setRuleVersionId(ruleVersion.getId());
             ruleSegment.setRuleSegmentSeq(maxSeq + 1L);
             ruleSegment.setRuleSegmentTypeId(availableSegmentTypes.get(0).getId());
             ruleSegmentDao.maintainRuleSegment(ruleSegment);
+            
         } else if (changeParm) {
+        	
         	int index = new Integer(action.substring(action.indexOf('-')+1));
         	RuleSegmentParm ruleSegmentParm = null;
         	if (index < ruleSegment.getRuleSegmentParms().size()) ruleSegmentParm = ruleSegment.getRuleSegmentParms().get(index);
@@ -209,19 +210,26 @@ if (true) return getModelAndView(request);
         		ruleSegmentParm.setRuleSegmentId(ruleSegment.getId());
         		ruleSegmentParm.setRuleSegmentParmSeq(new Long(ruleSegment.getRuleSegmentParms().size()));
         		ruleSegmentParm = ruleSegmentParmDao.maintainRuleSegmentParm(ruleSegmentParm);
+        		ruleSegment.getRuleSegmentParms().add(ruleSegmentParm);
         	}
             
-        	String value = request.getParameter("parm"+index);
-        	// TODO look at parm type
+        	String value = ""+request.getParameter("parm"+index);
+        	value = value.replace("\"", "").replace("\'", "").replace("\\", ""); // Important: remove quotes and escape chars
+        	
+        	
         	ruleSegmentParm.setRuleSegmentParmStringValue(value);
         	try {
         		ruleSegmentParm.setRuleSegmentParmNumericValue(new BigDecimal(value));
         	} catch (Exception e) {
         	}
+        	
         	ruleSegmentParmDao.maintainRuleSegmentParm(ruleSegmentParm);
+        	
         } else if (changeRuleSegmentType) {
+        	
         	ruleSegment.setRuleSegmentTypeId(new Long(ruleSegmentType));
             ruleSegmentDao.maintainRuleSegment(ruleSegment);
+            
         }
         
         return getModelAndView(request);

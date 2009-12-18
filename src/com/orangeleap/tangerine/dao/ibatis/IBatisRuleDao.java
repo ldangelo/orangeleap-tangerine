@@ -32,6 +32,7 @@ public class IBatisRuleDao extends AbstractIBatisDao implements RuleDao {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainRule: ruleId = " + rule.getId());
         }
+        rule.setSiteName(getSiteName());
         return (Rule)insertOrUpdate(rule, "RULE");
     }
 

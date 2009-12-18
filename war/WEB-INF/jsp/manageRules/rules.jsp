@@ -46,10 +46,10 @@
              <script>
              	function createRule() {
                  	var ruleEventType = '${ruleEventType}';
-                 	var params = 'id='+$('#id').val();
+                 	var params = 'ruleEventType='+ruleEventType;
                     $.ajax({
                  	   type: "POST",
-                 	   url: "ruleCreate.htm",
+                 	   url: "createRule.htm",
                  	   data: params,
                  	   success: function(msg){
                  	     window.location = "rules.htm?ruleEventType="+ruleEventType;

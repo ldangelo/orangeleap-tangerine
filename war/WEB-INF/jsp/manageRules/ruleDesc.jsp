@@ -15,9 +15,18 @@
            
                 <h4>Enter Rule Description</h4><br/>
                 
+                <table>
+                <tr>
+                <td>Description</td><td>Active</td>
+                </tr>
+                <tr>
+                <td>
                 <input id="desc" name="desc" value="${rule.ruleDesc}"  size="60" />
+                </td><td>
                 <input id="active" name="active" type="checkbox" value="true" <c:if test="${rule.ruleIsActive == 'true'}" >checked</c:if> /> 
-                
+                </td>
+                </tr>
+                </table>
                 <br />
                 <br />
                 <input type="submit" value="Save" class="saveButton" />

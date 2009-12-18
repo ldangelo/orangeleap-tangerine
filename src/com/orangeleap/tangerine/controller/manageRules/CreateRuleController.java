@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.controller.manageRules;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -30,10 +31,11 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.orangeleap.tangerine.dao.CacheGroupDao;
-import com.orangeleap.tangerine.dao.SectionDao;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.type.CacheGroupType;
+import com.orangeleap.tangerine.dao.RuleDao;
+import com.orangeleap.tangerine.dao.RuleVersionDao;
+import com.orangeleap.tangerine.domain.customization.rule.Rule;
+import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
+import com.orangeleap.tangerine.service.customization.RulesConfService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -44,20 +46,18 @@ public class CreateRuleController extends SimpleFormController {
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name = "pageCustomizationService")
-    private PageCustomizationService pageCustomizationService;
-    
-    @Resource(name = "sectionDAO")
-    private SectionDao sectionDao;
-    
-    @Resource(name = "cacheGroupDAO")
-    private CacheGroupDao cacheGroupDao;
+    @Resource(name = "ruleDAO")
+    private RuleDao ruleDao;
+ 
+    @Resource(name = "ruleVersionDAO")
+    private RuleVersionDao ruleVersionDao;
 
-
+    @Resource(name = "rulesConfService")
+    private RulesConfService rulesConfService;
+  
     @Resource(name = "tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
 
-  
     
     @SuppressWarnings("unchecked")
 	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
@@ -76,11 +76,22 @@ public class CreateRuleController extends SimpleFormController {
     	
         if (!ManageRuleEventTypeController.accessAllowed(request)) return null;
         
-        String id = request.getParameter("id"); 
+        String ruleEventType = request.getParameter("ruleEventType"); 
+        List<Rule> rules = ruleDao.readByRuleEventTypeNameId(ruleEventType, false);
         
-        pageCustomizationService.copySectionDefinition(new Long(id));
-
-        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
+        Rule rule = new Rule();
+        rule.setRuleIsActive(false);
+        rule.setRuleDesc("New Rule");
+        rule.setRuleEventTypeNameId(ruleEventType);
+        rule.setRuleSeq(new Long(rules.size()));
+        rule = ruleDao.maintainRule(rule);
+        
+        RuleVersion ruleVersion = new RuleVersion();
+        ruleVersion.setRuleId(rule.getId());
+        ruleVersion.setRuleVersionIsTestOnly(false);
+        ruleVersion.setRuleVersionSeq(0L);
+        ruleVersion.setUpdatedBy(tangerineUserHelper.lookupUserName());
+        ruleVersionDao.maintainRuleVersion(ruleVersion);
         
         return new ModelAndView(getSuccessView());
     	

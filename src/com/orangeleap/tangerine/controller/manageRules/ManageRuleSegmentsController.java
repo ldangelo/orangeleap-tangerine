@@ -109,7 +109,7 @@ public class ManageRuleSegmentsController extends SimpleFormController {
         ModelAndView mav = new ModelAndView(getSuccessView());
         
         mav.addObject("id", id);
-        mav.addObject("ruleEventType", ruleEventType);
+        mav.addObject("ruleEventType", ruleEventType.getRuleEventTypeNameId());
         mav.addObject("ruleSegmentList", segmentViews);
         mav.addObject("ruleSegmentTypes", availableSegmentTypes);
         

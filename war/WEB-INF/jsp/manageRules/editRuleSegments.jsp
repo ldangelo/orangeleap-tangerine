@@ -22,9 +22,8 @@
 		                <tr>
 		                <td>
 		                <table>
-		                
 		                <tr>
-		                <td>
+		                <td  colspan="5" >
 		                 <select  id="ruleSegmentType" name="ruleSegmentType"  onchange="update('${ruleSegment.id}','changeRuleSegmentType', this);" >
                    			<c:forEach var="ruleSegmentType" items="${ruleSegmentTypes}">
                      			<option <c:if test='${ruleSegment.ruleSegmentTypeId == ruleSegmentType.id}'>selected</c:if> value="<c:out value='${ruleSegmentType.id}'/>" > <c:out value='${ruleSegmentType.ruleSegmentTypePhrase}'/></option>
@@ -32,8 +31,7 @@
                 		 </select>
 		                </td>
 		                </tr>
-		                
-		                
+
 		                <tr>
 		                <td>
 		                    <input id="parm0" name="parm0" value="<c:out value='${ruleSegment.parms[0]}'/>"  onchange="update('${ruleSegment.id}','changeparm-0', this);" />
@@ -60,7 +58,7 @@
 
 				<br/><br/>
 				
-                <a href="">Add new</a><br/>
+                <a href="#" onclick="update('0','add', this);" >Add new</a><br/>
 
              </form>
              

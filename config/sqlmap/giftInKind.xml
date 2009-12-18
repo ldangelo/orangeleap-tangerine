@@ -123,6 +123,37 @@
         where p.SITE_NAME = #siteName#
         and gik.CONSTITUENT_ID = #constituentId#
     </select>
+    
+    <select id="SELECT_FIRST_OR_LAST_GIFT_IN_KIND_BY_CONSTITUENT" resultMap="GIFT_IN_KIND_RESULT" parameterClass="map">
+		<include refid="GIFT_IN_KIND_QUERY_FRAGMENT" />
+		and gik.CONSTITUENT_ID = #constituentId#
+		<isNotNull property="fromDate">
+		and gik.DONATION_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and gik.DONATION_DATE &lt;= #toDate#
+		</isNotNull>
+		order by gik.DONATION_DATE 
+		<isNull property="first">
+		desc
+		</isNull>
+		limit 1
+	</select>
+	
+	<select id="SELECT_LARGEST_GIFT_IN_KIND_BY_CONSTITUENT" resultMap="GIFT_IN_KIND_RESULT" parameterClass="map">
+		<include refid="GIFT_IN_KIND_QUERY_FRAGMENT" />
+		and gik.CONSTITUENT_ID = #constituentId#
+		<isNotNull property="fromDate">
+		and gik.DONATION_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and gik.DONATION_DATE &lt;= #toDate#
+		</isNotNull>
+		order by gik.FAIR_MARKET_VALUE 
+		desc
+		limit 1
+	</select>
+    
 
 	<insert id="INSERT_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">
 		insert into GIFT_IN_KIND (FAIR_MARKET_VALUE, CURRENCY_CODE, DONATION_DATE, MOTIVATION_CODE, OTHER_MOTIVATION, 

@@ -301,9 +301,6 @@ public class ObjectConverter {
             cf.setEntityId(value.getEntityId());
             cf.setEntityType(value.getEntityType());
 
-            if (value.getId() != null)
-                cf.setId(value.getId());
-
             cf.setName(value.getName());
             cf.setSequenceNumber(value.getSequenceNumber());
             //cf.setStartDate(new XMLGregorianCalendar());
@@ -350,9 +347,6 @@ public class ObjectConverter {
             //cf.setEndDate(new XMLGregorianCalendar(value.getEndDate()));
             cf.setEntityId(value.getEntityId());
             cf.setEntityType(value.getEntityType());
-
-
-            cf.setId(value.getId());
 
             cf.setName(value.getName());
             cf.setSequenceNumber(value.getSequenceNumber());

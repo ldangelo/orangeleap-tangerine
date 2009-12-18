@@ -6,41 +6,7 @@
 
 	<xs:complexType name="site">
 		<xs:sequence>
-			<xs:element name="achCompanyName" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="achMerchantId" type="xs:int" minOccurs="0" />
-			<xs:element name="achRuleNumber" type="xs:int" minOccurs="0" />
-			<xs:element name="achSiteNumber" type="xs:int" minOccurs="0" />
-			<xs:element name="achTestMode" type="xs:int" minOccurs="0" />
-			<xs:element name="active" type="xs:boolean" />
-			<xs:element name="createDate" type="xs:dateTime"
-				minOccurs="0" />
-			<xs:element name="jasperPassword" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="jasperUserId" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="localeString" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="majorDonorAccountManagerId" type="xs:int"
-				minOccurs="0" />
-			<xs:element name="merchantBin" type="xs:string" minOccurs="0" />
-			<xs:element name="merchantNumber" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="merchantTerminalId" type="xs:string"
-				minOccurs="0" />
 			<xs:element name="name" type="xs:string" minOccurs="0" />
-			<xs:element name="smtpAccountName" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="smtpFromAddress" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="smtpPassword" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="smtpServerName" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="timeZoneString" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="updateDate" type="xs:dateTime"
-				minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -78,7 +44,7 @@
 			<xs:element name="endDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="entityId" type="xs:long" minOccurs="0" />
 			<xs:element name="entityType" type="xs:string" minOccurs="1" />
-			<xs:element name="id" type="xs:long" minOccurs="1" />
+
 			<xs:element name="name" type="xs:string" minOccurs="1" />
 			<xs:element name="sequenceNumber" type="xs:int" minOccurs="1" />
 			<xs:element name="startDate" type="xs:dateTime" minOccurs="0" />

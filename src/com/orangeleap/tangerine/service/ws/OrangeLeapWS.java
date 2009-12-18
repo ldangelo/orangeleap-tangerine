@@ -75,7 +75,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class OrangeLeapWS {
 
-    private static final Log logger = LogFactory.getLog(LdapAuthenticationProvider.class);
+    private static final Log logger = LogFactory.getLog(OrangeLeapWS.class);
 
     ApplicationContext applicationContext;
 

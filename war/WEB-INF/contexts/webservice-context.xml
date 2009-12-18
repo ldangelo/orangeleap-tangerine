@@ -12,27 +12,46 @@
 
     <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
 
-	<bean id="orangeleap"
-		class="org.springframework.ws.wsdl.wsdl11.DynamicWsdl11Definition">
+	<bean id="orangeleap" class="org.springframework.ws.wsdl.wsdl11.DynamicWsdl11Definition">
 		<property name="builder">
 			<bean
 				class="org.springframework.ws.wsdl.wsdl11.builder.XsdBasedSoap11Wsdl4jDefinitionBuilder">
 				<property name="schema" value="/WEB-INF/orangeleap.xsd" />
 				<property name="portTypeName" value="OrangeLeap" />
 				<property name="locationUri" value="/services/1.0/" />
+				<property name="targetNamespace" value="http://www.orangeleap.com/orangeleap/services/1.0"/>
 			</bean>
 		</property>	
 	</bean>
 
-	<bean id="schema" class="org.springframework.xml.xsd.SimpleXsdSchema">
-    	<property name="xsd" value="/WEB-INF/orangeleap.xsd"/>
+	<bean id="orangeleapV2" class="org.springframework.ws.wsdl.wsdl11.DynamicWsdl11Definition">
+		<property name="builder">
+			<bean
+				class="org.springframework.ws.wsdl.wsdl11.builder.XsdBasedSoap11Wsdl4jDefinitionBuilder">
+				<property name="schema" value="/WEB-INF/orangeleapv2.xsd" />
+				<property name="portTypeName" value="OrangeLeap" />
+				<property name="locationUri" value="/services/2.0/" />
+				<property name="targetNamespace" value="http://www.orangeleap.com/orangeleap/services/2.0"/>
+			</bean>
+		</property>	
 	</bean>
+
+<!-- 	<bean id="schema" class="org.springframework.xml.xsd.SimpleXsdSchema">
+    	<property name="xsd" value="/WEB-INF/orangeleap.xsd"/>
+	</bean> -->
 
     <bean id="constituentEndpoint" class="com.orangeleap.tangerine.service.ws.OrangeLeapWS">
     	
         <constructor-arg ref="constituentService"/>
         <constructor-arg ref="giftService"/>
         <constructor-arg ref="communicationHistoryService"/>
+    </bean>
+
+    <bean id="constituentEndpointV2" class="com.orangeleap.tangerine.service.ws.OrangeLeapWSV2">
+        <constructor-arg ref="constituentService"/>
+        <constructor-arg ref="giftService"/>
+        <constructor-arg ref="communicationHistoryService"/>
+        <constructor-arg ref="picklistItemService"/>
     </bean>
 
     <security:global-method-security secured-annotations="enabled"/>
@@ -58,43 +77,37 @@
         <constructor-arg ref="marshaller"/>
     </bean>
 
+    <bean class="org.springframework.ws.server.endpoint.adapter.GenericMarshallingMethodEndpointAdapter">
+        <constructor-arg ref="marshallerv2"/>
+    </bean>
+
      <sws:marshalling-endpoints/>
  
     <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="com.orangeleap.tangerine.ws.schema"/>
- <!--       <property name="classesToBeBound">
-            <list>
-                <value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateConstituentRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.ConstituentResponse</value>
-                <value>com.orangeleap.tangerine.ws.schema.CreateDefaultConstituentRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.GetSegmentationRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.GetSegmentationResponse</value>
-                <value>com.orangeleap.tangerine.ws.schema.GiftResponse</value>
-                <value>com.orangeleap.tangerine.ws.schema.GetConstituentGiftRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateGiftRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.SearchConstituentsRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.FindConstituentsRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.GetSegmentationListRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse</value>
-                <value>com.orangeleap.tangerine.ws.schema.GetConstituentGiftResponse</value>
-                <value>com.orangeleap.tangerine.ws.schema.GetCommunicationHistoryRequest</value>
-                <value>com.orangeleap.tangerine.ws.schema.GetCommunicationHistoryResponse</value>
-                <value>com.orangeleap.tangerine.ws.schema.AddCommunicationHistoryRequest</value>
-            </list>
-        </property> -->
-    </bean>
+     </bean>
+    <bean id="marshallerv2" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="com.orangeleap.tangerine.ws.schema.v2"/>
+     </bean>
 
+<!-- 
      <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
          <property name="schema" value="/WEB-INF/orangeleap.xsd"/>
          <property name="validateRequest" value="true"/>
          <property name="validateResponse" value="true"/>
      </bean>
+ -->
+      
+     <bean id="loggingInterceptor"
+    	class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
+	
 
      <bean class="org.springframework.ws.server.endpoint.mapping.PayloadRootAnnotationMethodEndpointMapping">
      <property name="interceptors">
          <list>
-             <ref bean="wsSecurityInterceptor" />
-             <ref bean="validatingInterceptor" />
+         	<ref bean="loggingInterceptor"/>
+           	<ref bean="wsSecurityInterceptor" />
+            <!-- <ref bean="validatingInterceptor" /> -->
          </list>
      </property>
      </bean>

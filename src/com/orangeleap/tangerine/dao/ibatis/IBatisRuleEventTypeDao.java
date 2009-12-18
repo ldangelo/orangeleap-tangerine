@@ -54,5 +54,15 @@ public class IBatisRuleEventTypeDao extends AbstractIBatisDao implements RuleEve
         Map<String, Object> params = setupParams();
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_RULE_EVENT_TYPES", params);
 	}
+
+	@Override
+	public RuleEventType readRuleEventTypeByNameId(String id) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRuleEventTypeByNameId: id = " + id);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", id);
+        return (RuleEventType)getSqlMapClientTemplate().queryForObject("SELECT_RULE_EVENT_TYPE_BY_NAME_ID", params);
+	}
     
 }

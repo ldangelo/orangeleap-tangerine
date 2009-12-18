@@ -15,9 +15,9 @@
         <property name="successView" value="manageRules/rules" />
     </bean>
 
-	<bean id="editSegmentTypes" class="com.orangeleap.tangerine.controller.manageRules.ManageSegmentTypesController">
-        <property name="formView" value="manageRules/editSegmentTypes" />
-        <property name="successView" value="manageRules/editSegmentTypes" />
+	<bean id="editRuleSegments" class="com.orangeleap.tangerine.controller.manageRules.ManageRuleSegmentsController">
+        <property name="formView" value="manageRules/editRuleSegments" />
+        <property name="successView" value="manageRules/editRuleSegments" />
     </bean>
 
 	<bean id="createRule" class="com.orangeleap.tangerine.controller.manageRules.CreateRuleController">
@@ -36,7 +36,7 @@
                 <prop key="/manageRules.htm">ruleEventTypes</prop>
                 <prop key="/ruleEventTypes.htm">ruleEventTypes</prop>
                 <prop key="/rules.htm">rules</prop>
-                <prop key="/editSegmentTypes.htm">editSegmentTypes</prop>
+                <prop key="/editRuleSegments.htm">editRuleSegments</prop>
                 <prop key="/createRule.htm">createRule</prop>
                 <prop key="/ruleDesc.htm">ruleDesc</prop>
 			</props>

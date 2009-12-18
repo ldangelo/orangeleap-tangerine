@@ -26,6 +26,11 @@
         and rule_event_type.RULE_EVENT_TYPE_ID = #id#
     </select>
 
+    <select id="SELECT_RULE_EVENT_TYPE_BY_NAME_ID" resultMap="RULE_EVENT_TYPE_RESULT" parameterClass="map" >
+        <include refid="SELECT_RULE_EVENT_TYPE_FRAGMENT"/>
+        and rule_event_type.RULE_EVENT_TYPE_NAME_ID = #id#
+    </select>
+
     <select id="SELECT_ALL_RULE_EVENT_TYPES" resultMap="RULE_EVENT_TYPE_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_EVENT_TYPE_FRAGMENT"/>
     </select>

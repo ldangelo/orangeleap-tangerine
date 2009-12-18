@@ -153,25 +153,25 @@ public class IBatisPostBatchDaoTest extends AbstractIBatisTest {
     public void testReadBatches() throws Exception {
         List<PostBatch> batches = postBatchDao.readBatchesByStatus(StringConstants.OPEN, "createDate", "ASC", 0, 100, Locale.getDefault());
         Assert.assertNotNull(batches);
-        Assert.assertEquals(1, batches.size());
-        Assert.assertEquals(new Long(2L), batches.get(0).getId());
+        Assert.assertEquals(batches.size(), 1);
+        Assert.assertEquals(batches.get(0).getId(), new Long(4L));
 
         Assert.assertEquals(1, postBatchDao.countBatchesByStatus(StringConstants.OPEN));
 
         batches = postBatchDao.readBatchesByStatus(StringConstants.ERRORS, "createDate", "ASC", 0, 100, Locale.getDefault());
         Assert.assertNotNull(batches);
-        Assert.assertEquals(1, batches.size());
-        Assert.assertEquals(new Long(2L), batches.get(0).getId());
+        Assert.assertEquals(batches.size(), 1);
+        Assert.assertEquals(batches.get(0).getId(), new Long(2L));
 
         Assert.assertEquals(1, postBatchDao.countBatchesByStatus(StringConstants.ERRORS));
 
         batches = postBatchDao.readBatchesByStatus(StringConstants.EXECUTED, "createDate", "ASC", 0, 100, Locale.getDefault());
         Assert.assertNotNull(batches);
-        Assert.assertEquals(2, batches.size());
+        Assert.assertEquals(batches.size(), 2);
         for (PostBatch batch : batches) {
             Assert.assertTrue(1L == batch.getId() || 3L == batch.getId());
         }
 
-        Assert.assertEquals(2, postBatchDao.countBatchesByStatus(StringConstants.EXECUTED));
+        Assert.assertEquals(postBatchDao.countBatchesByStatus(StringConstants.EXECUTED), 2);
     }
 }

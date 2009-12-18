@@ -426,6 +426,9 @@ values (2, 'Batch 2', 'gift', 0, 100, now(), 'company1', now(), now(), 1);
 insert into POST_BATCH (POST_BATCH_ID, POST_BATCH_DESC, ENTITY, EXECUTED, EXECUTED_BY_ID, EXECUTED_DATE, BATCH_CREATED_BY_ID, BATCH_CREATED_DATE, SITE_NAME, CREATE_DATE, UPDATE_DATE)
 values (3, 'Batch 3', 'constituent', 1, 200, now(), 100, now(), 'company1', now(), now());
 
+insert into POST_BATCH (POST_BATCH_ID, POST_BATCH_DESC, ENTITY, EXECUTED, BATCH_CREATED_BY_ID, BATCH_CREATED_DATE, SITE_NAME, CREATE_DATE, UPDATE_DATE, IS_ERROR_BATCH)
+values (4, 'Batch 4', 'gift', 0, 100, now(), 'company1', now(), now(), 0);
+
 -- Post Batch Entries
 insert into POST_BATCH_ENTRY (POST_BATCH_ID, SEGMENTATION_ID, CREATE_DATE, UPDATE_DATE)
 values (1, 100, now(), now());

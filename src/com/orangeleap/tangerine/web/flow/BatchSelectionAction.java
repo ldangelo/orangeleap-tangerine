@@ -244,7 +244,7 @@ public class BatchSelectionAction {
         model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, pickedSegmentationIds, batchType,
                 resolveSegmentationFieldName(sortInfo.getSort()), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit()));
-        model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batchType));
+        model.put(StringConstants.TOTAL_ROWS, 2);//postBatchService.findTotalSegmentations(batchType));
 
         return model;
     }

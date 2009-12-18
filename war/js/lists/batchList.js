@@ -41,7 +41,10 @@ OrangeLeap.msgBundle = {
     userId: 'User ID',
     executeBatch: 'Execute Batch',
     removeBatch: 'Remove Batch',
-    batchList: 'Batch List <span id="savedMarker" class="marker">Saved</span> <span id="executedMarker" class="marker">Executed</span> <span id="deletedMarker" class="marker">Deleted</span>',
+    batchList: 'Batch List <span id="savedMarker" class="marker">Saved</span> <span id="executedMarker" class="marker"></span> <span id="deletedMarker" class="marker"></span>',
+    savedBatchId: 'Saved Batch ID {0}',
+    executedBatchId: 'Executed Batch ID {0}',
+    deletedBatchId: 'Deleted Batch ID {0}',
     addNewBatch: 'Add a new Batch',
     manageBatch: 'Manage Batch',
     chooseSegmentations: 'Choose Segmentations',
@@ -126,7 +129,7 @@ Ext.onReady(function() {
                         cols[cols.length] = {
                             header: hdr, dataIndex: name, sortable: true,
                             renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                                return '<span ext:qtitle="' + hdr + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                                return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                             }
                         };
                     }
@@ -435,7 +438,7 @@ Ext.onReady(function() {
                                                         msg: aMsg });
                                                 }
                                                 else {
-                                                    showExecutedMarker();
+                                                    showExecutedMarker(batchId);
                                                 }
                                             }
                                         }
@@ -450,9 +453,10 @@ Ext.onReady(function() {
         }
     }
 
-    function showExecutedMarker() {
+    function showExecutedMarker(batchId) {
         hideOtherMarkers('executedMarker');
-        $("#executedMarker").show();
+        $('#executedMarker').text(String.format(msgs.executedBatchId, batchId));
+        $('#executedMarker').show();
         setTimeout(function() {
             $("#executedMarker").hide();
         }, 10000);
@@ -499,6 +503,7 @@ Ext.onReady(function() {
                                         store.remove(rec);
                                         Ext.get('batchList').unmask();
                                         hideOtherMarkers('deletedMarker');
+                                        $('#deletedMarker').text(String.format(msgs.deletedBatchId, batchId));
                                         $("#deletedMarker").show();
                                         setTimeout(function() {
                                             $("#deletedMarker").hide();
@@ -1158,7 +1163,7 @@ Ext.onReady(function() {
                         cols[cols.length] = {
                             header: fields[x].header, dataIndex: name, sortable: true,
                             renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                                return '<span ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                                return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                             }
                         };
                     }
@@ -1548,7 +1553,7 @@ Ext.onReady(function() {
                 cols[cols.length] = {
                     header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                        return '<span ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                        return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                     }
                 };
             }

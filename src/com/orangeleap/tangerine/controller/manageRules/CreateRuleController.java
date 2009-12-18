@@ -36,6 +36,7 @@ import com.orangeleap.tangerine.dao.RuleSegmentDao;
 import com.orangeleap.tangerine.dao.RuleVersionDao;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegment;
+import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
 import com.orangeleap.tangerine.service.customization.RulesConfService;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -99,9 +100,10 @@ public class CreateRuleController extends SimpleFormController {
         ruleVersionDao.maintainRuleVersion(ruleVersion);
 
         RuleSegment ruleSegment = new RuleSegment();
+        List<RuleSegmentType> availableSegmentTypes = rulesConfService.getAvailableRuleSegmentTypes(ruleEventType);
         ruleSegment.setRuleVersionId(ruleVersion.getId());
         ruleSegment.setRuleSegmentSeq(0L);
-        ruleSegment.setRuleSegmentTypeId(0L);
+        ruleSegment.setRuleSegmentTypeId(availableSegmentTypes.get(0).getId());
         ruleSegmentDao.maintainRuleSegment(ruleSegment);
         
         return new ModelAndView(getSuccessView());

@@ -18,12 +18,16 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import java.util.List;
 import java.util.Map;
 
+import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 
 
 public interface RulesConfService {
+
+	public List<RuleSegmentType> getAvailableRuleSegmentTypes(String ruleEventTypeName);
 
     public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode);
     @SuppressWarnings("unchecked")

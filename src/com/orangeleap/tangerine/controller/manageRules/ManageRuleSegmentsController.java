@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.controller.manageRules;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +36,9 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.orangeleap.tangerine.dao.RuleDao;
 import com.orangeleap.tangerine.dao.RuleEventTypeDao;
 import com.orangeleap.tangerine.dao.RuleSegmentDao;
+import com.orangeleap.tangerine.dao.RuleSegmentParmDao;
 import com.orangeleap.tangerine.dao.RuleSegmentTypeDao;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
-import com.orangeleap.tangerine.domain.customization.rule.RuleEventType;
-import com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegment;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentParm;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
@@ -60,6 +60,9 @@ public class ManageRuleSegmentsController extends SimpleFormController {
 
     @Resource(name = "ruleSegmentDAO")
     private RuleSegmentDao ruleSegmentDao;
+
+    @Resource(name = "ruleSegmentParmDAO")
+    private RuleSegmentParmDao ruleSegmentParmDao;
 
     @Resource(name = "ruleSegmentTypeDAO")
     private RuleSegmentTypeDao ruleSegmentTypeDao;
@@ -98,18 +101,12 @@ public class ManageRuleSegmentsController extends SimpleFormController {
         List<SegmentView> segmentViews = new ArrayList<SegmentView>();
         for (RuleSegment segment: segments) segmentViews.add(new SegmentView(segment));
         	
-        RuleEventType ruleEventType = ruleEventTypeDao.readRuleEventTypeByNameId(ruleEventTypeName);
-        List<RuleSegmentType> availableSegmentTypes = new ArrayList<RuleSegmentType>();
-        List<RuleEventTypeXRuleSegmentType> rxss = ruleEventType.getRuleEventTypeXRuleSegmentTypes();
-        for (RuleEventTypeXRuleSegmentType rxs: rxss) {
-        	RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(rxs.getRuleSegmentTypeId());
-        	availableSegmentTypes.add(ruleSegmentType);
-        }
+        List<RuleSegmentType> availableSegmentTypes = rulesConfService.getAvailableRuleSegmentTypes(ruleEventTypeName);
         
         ModelAndView mav = new ModelAndView(getSuccessView());
         
         mav.addObject("id", id);
-        mav.addObject("ruleEventType", ruleEventType.getRuleEventTypeNameId());
+        mav.addObject("ruleEventType", ruleEventTypeName);
         mav.addObject("ruleSegmentList", segmentViews);
         mav.addObject("ruleSegmentTypes", availableSegmentTypes);
         
@@ -164,25 +161,81 @@ public class ManageRuleSegmentsController extends SimpleFormController {
     
    
     private static final String MOVE_UP = "moveup";
+    private static final String ADD = "add";
+    private static final String CHANGE_PARM = "changeparm";
+    private static final String CHANGE_RULE_SEGMENT_TYPE = "changeRuleSegmentType";
     
     
     @Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
     	
         if (!ManageRuleEventTypeController.accessAllowed(request)) return null;
-        
-        String id = request.getParameter("id"); 
-        String fieldName = request.getParameter("fieldName"); 
-        String action = request.getParameter("action"); 
+
+if (true) return getModelAndView(request);  
+
+        String ruleEventTypeName = request.getParameter("ruleEventType"); 
+        Long id = new Long(request.getParameter("id")); 
+        Long ruleSegmentId = new Long(request.getParameter("ruleSegmentId")); 
+        String ruleSegmentType = request.getParameter("ruleSegmentType"); 
+
+        String action = ""+request.getParameter("action"); 
         boolean moveUp = MOVE_UP.equals(action);
+        boolean add = ADD.equals(action);
+        boolean changeParm = action.startsWith(CHANGE_PARM);
+        boolean changeRuleSegmentType = CHANGE_RULE_SEGMENT_TYPE.equals(action);
         
-        int index = 0;
-        if (moveUp && index > 0) {
-        	
+        Rule rule = ruleDao.readRuleById(id);
+        RuleVersion ruleVersion = rule.getRuleVersions().get(0);
+        List<RuleSegment> segments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
+        long maxSeq = segments.get(segments.size()-1).getRuleSegmentSeq();
+        
+        RuleSegment ruleSegment = getRuleSegment(ruleSegmentId, segments);
+        
+        if (moveUp) {
+        	// TODO
+        } else if (add) {
+            List<RuleSegmentType> availableSegmentTypes = rulesConfService.getAvailableRuleSegmentTypes(ruleEventTypeName);
+        	ruleSegment = new RuleSegment();
+            ruleSegment.setRuleVersionId(ruleVersion.getId());
+            ruleSegment.setRuleSegmentSeq(maxSeq + 1L);
+            ruleSegment.setRuleSegmentTypeId(availableSegmentTypes.get(0).getId());
+            ruleSegmentDao.maintainRuleSegment(ruleSegment);
+        } else if (changeParm) {
+        	int index = new Integer(action.substring(action.indexOf('-')+1));
+        	RuleSegmentParm ruleSegmentParm = null;
+        	if (index < ruleSegment.getRuleSegmentParms().size()) ruleSegmentParm = ruleSegment.getRuleSegmentParms().get(index);
+        	while (index >= ruleSegment.getRuleSegmentParms().size()) {
+        		ruleSegmentParm = new RuleSegmentParm();
+        		ruleSegmentParm.setRuleSegmentId(ruleSegment.getId());
+        		ruleSegmentParm.setRuleSegmentParmSeq(new Long(ruleSegment.getRuleSegmentParms().size()));
+        		ruleSegmentParm = ruleSegmentParmDao.maintainRuleSegmentParm(ruleSegmentParm);
+        	}
+            
+        	String value = request.getParameter("parm"+index);
+        	// TODO look at parm type
+        	ruleSegmentParm.setRuleSegmentParmStringValue(value);
+        	try {
+        		ruleSegmentParm.setRuleSegmentParmNumericValue(new BigDecimal(value));
+        	} catch (Exception e) {
+        	}
+        	ruleSegmentParmDao.maintainRuleSegmentParm(ruleSegmentParm);
+        } else if (changeRuleSegmentType) {
+        	ruleSegment.setRuleSegmentTypeId(new Long(ruleSegmentType));
+            ruleSegmentDao.maintainRuleSegment(ruleSegment);
         }
         
-        return new ModelAndView(getSuccessView());
+        return getModelAndView(request);
 
+    }
+    
+    private RuleSegment getRuleSegment(Long ruleSegmentId, List<RuleSegment> segments) {
+    	 RuleSegment ruleSegment = null;
+         for (RuleSegment segment: segments) {
+         	if (segment.getId().equals(ruleSegmentId)) {
+         		ruleSegment = segment;
+         	}
+         }
+         return ruleSegment;
     }
     
     

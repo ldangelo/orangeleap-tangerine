@@ -34,10 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.RuleDao;
+import com.orangeleap.tangerine.dao.RuleEventTypeDao;
 import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
 import com.orangeleap.tangerine.dao.RuleSegmentDao;
 import com.orangeleap.tangerine.dao.RuleSegmentTypeDao;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
+import com.orangeleap.tangerine.domain.customization.rule.RuleEventType;
+import com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleGeneratedCode;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegment;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentParm;
@@ -71,6 +74,9 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "ruleGeneratedCodeDAO")
     private RuleGeneratedCodeDao ruleGeneratedCodeDao;
 
+    @Resource(name = "ruleEventTypeDAO")
+    private RuleEventTypeDao ruleEventTypeDao;
+
     @Resource(name = "ruleDAO")
     private RuleDao ruleDao;
 
@@ -79,6 +85,18 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 
     @Resource(name = "ruleSegmentTypeDAO")
     private RuleSegmentTypeDao ruleSegmentTypeDao;
+    
+    @Override
+	public List<RuleSegmentType> getAvailableRuleSegmentTypes(String ruleEventTypeName) {
+    	 RuleEventType ruleEventType = ruleEventTypeDao.readRuleEventTypeByNameId(ruleEventTypeName);
+         List<RuleSegmentType> availableSegmentTypes = new ArrayList<RuleSegmentType>();
+         List<RuleEventTypeXRuleSegmentType> rxss = ruleEventType.getRuleEventTypeXRuleSegmentTypes();
+         for (RuleEventTypeXRuleSegmentType rxs: rxss) {
+         	RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(rxs.getRuleSegmentTypeId());
+         	availableSegmentTypes.add(ruleSegmentType);
+         }
+         return availableSegmentTypes;
+	}
 
     
     
@@ -217,7 +235,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     
     private String replaceParms(String text, Rule rule, RuleVersion ruleVersion, RuleSegment ruleSegment, RuleSegmentType ruleSegmentType) {
     	
-    	if (ruleSegment.getRuleSegmentParms().size() != ruleSegmentType.getRuleSegmentTypeParms().size()) {
+    	if (ruleSegment.getRuleSegmentParms().size() < ruleSegmentType.getRuleSegmentTypeParms().size()) {
+    		// Allow rule to have extraneous parms as long as it has the minimum number required
     		throw new RuntimeException("Number of parameters for rule \"" + rule.getRuleDesc() + "\", \"" + ruleSegmentType.getRuleSegmentTypePhrase() + "\" is not correct.");
     	}
     	

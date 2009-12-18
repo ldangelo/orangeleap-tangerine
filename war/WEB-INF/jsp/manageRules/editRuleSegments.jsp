@@ -70,7 +70,7 @@
                  	
                  	var parms = 'ruleEventType=${ruleEventType}&id='+$('#id').val();
              		var data = parms + '&ruleSegmentId=' + ruleSegmentId + '&action=' + action;
-             		data = data + '&' + $(input).serialize();
+             		if (input) data = data + '&' + $(input).serialize();
                     $.ajax({
                  	   type: "POST",
                  	   url: "editRuleSegments.htm",

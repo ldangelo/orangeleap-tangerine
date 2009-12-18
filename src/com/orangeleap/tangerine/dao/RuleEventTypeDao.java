@@ -13,5 +13,5 @@ public interface RuleEventTypeDao {
     public List<RuleEventType> readAllRuleEventTypes();
 
     public RuleEventType maintainRuleEventType(RuleEventType ruleEventType);
-
+    
 }

@@ -32,8 +32,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.RuleDao;
+import com.orangeleap.tangerine.dao.RuleSegmentDao;
 import com.orangeleap.tangerine.dao.RuleVersionDao;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
+import com.orangeleap.tangerine.domain.customization.rule.RuleSegment;
 import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
 import com.orangeleap.tangerine.service.customization.RulesConfService;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -51,6 +53,9 @@ public class CreateRuleController extends SimpleFormController {
  
     @Resource(name = "ruleVersionDAO")
     private RuleVersionDao ruleVersionDao;
+
+    @Resource(name = "ruleSegmentDAO")
+    private RuleSegmentDao ruleSegmentDao;
 
     @Resource(name = "rulesConfService")
     private RulesConfService rulesConfService;
@@ -92,6 +97,12 @@ public class CreateRuleController extends SimpleFormController {
         ruleVersion.setRuleVersionSeq(0L);
         ruleVersion.setUpdatedBy(tangerineUserHelper.lookupUserName());
         ruleVersionDao.maintainRuleVersion(ruleVersion);
+
+        RuleSegment ruleSegment = new RuleSegment();
+        ruleSegment.setRuleVersionId(ruleVersion.getId());
+        ruleSegment.setRuleSegmentSeq(0L);
+        ruleSegment.setRuleSegmentTypeId(0L);
+        ruleSegmentDao.maintainRuleSegment(ruleSegment);
         
         return new ModelAndView(getSuccessView());
     	

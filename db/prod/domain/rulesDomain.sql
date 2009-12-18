@@ -17,7 +17,7 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_E
 -- RULE_SEGMENT_TYPE and RULE_SEGMENT_TYPE_PARM (code function definitions for rule text phrases)
 
 -- TODO replace with actual list
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (1,'condition','is a login user','map.constituent.getCustomFieldValue("constituentIndividualRoles").contains("user")');
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (1,'condition','Constituent is a login user','map.constituent.getCustomFieldValue("constituentIndividualRoles").contains("user")');
 
 
 

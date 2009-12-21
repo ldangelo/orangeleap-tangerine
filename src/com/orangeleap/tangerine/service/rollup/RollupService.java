@@ -24,6 +24,8 @@ import java.util.Map;
 
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
@@ -62,5 +64,9 @@ public interface RollupService {
     public Gift readIndirectGiftViewFirstOrLastByConstituentId(Long constituentId, GiftType giftType, String giftStatus, boolean first, String constituentReferenceCustomField);
 	public Gift readIndirectGiftViewLargestByConstituentId(Long constituentId, GiftType giftType, String giftStatus, String constituentReferenceCustomField);
 
+    public Pledge readPledgeViewFirstOrLastByConstituentId(Long constituentId, boolean first);
+	public Pledge readPledgeViewLargestByConstituentId(Long constituentId);
+    public RecurringGift readRecurringGiftViewFirstOrLastByConstituentId(Long constituentId, boolean first);
+	public RecurringGift readRecurringGiftViewLargestByConstituentId(Long constituentId);
 	
 }

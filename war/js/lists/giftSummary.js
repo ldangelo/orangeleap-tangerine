@@ -95,12 +95,12 @@ Ext.onReady(function() {
     	         {
       	            title:'Pledges',
     	            html : '',
-            	    attributeList : '|Projected Pledge Amount|'
+            	    attributeList : '|First Pledge|Last Pledge|Largest Pledge|Projected Pledge Amount|'
       	         },
     	         {
       	            title:'Recurring Gifts',
     	            html : '',
-            	    attributeList : '|Projected Recurring Gift Amount|'
+            	    attributeList : '|First Recurring Gift|Last Recurring Gift|Largest Recurring Gift|Projected Recurring Gift Amount|'
       	         },
     	         {
        	            title:'Gifts In Kind',

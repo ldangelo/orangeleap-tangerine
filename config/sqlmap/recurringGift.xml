@@ -290,5 +290,37 @@
 		</isNotNull>
 		limit 200
 	</statement>
+	
+	<select id="SELECT_FIRST_OR_LAST_RECURRING_GIFT_BY_CONSTITUENT" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
+		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
+		and rg.CONSTITUENT_ID = #constituentId#
+		<isNotNull property="fromDate">
+		and rg.START_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and rg.START_DATE &lt;= #toDate#
+		</isNotNull>
+		order by rg.START_DATE, rg.CREATE_DATE 
+		<isNull property="first">
+		desc
+		</isNull>
+		limit 1
+	</select>
+	
+	<select id="SELECT_LARGEST_RECURRING_GIFT_BY_CONSTITUENT" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
+		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
+		and rg.CONSTITUENT_ID = #constituentId#
+		<isNotNull property="fromDate">
+		and rg.PLEDGE_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and rg.PLEDGE_DATE &lt;= #toDate#
+		</isNotNull>
+		order by greatest(rg.AMOUNT_PAID, rg.AMOUNT_TOTAL)
+		desc
+		limit 1
+	</select>
+	
+	
   
 </sqlMap>

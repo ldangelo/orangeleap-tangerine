@@ -278,5 +278,36 @@
 		</isNotNull>
 		limit 200
 	</statement>
+	
+	<select id="SELECT_FIRST_OR_LAST_PLEDGE_BY_CONSTITUENT" resultMap="PLEDGE_RESULT" parameterClass="map">
+		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE" />
+		and c.CONSTITUENT_ID = #constituentId#
+		<isNotNull property="fromDate">
+		and c.PLEDGE_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and c.PLEDGE_DATE &lt;= #toDate#
+		</isNotNull>
+		order by c.PLEDGE_DATE, c.CREATE_DATE 
+		<isNull property="first">
+		desc
+		</isNull>
+		limit 1
+	</select>
+	
+	<select id="SELECT_LARGEST_PLEDGE_BY_CONSTITUENT" resultMap="PLEDGE_RESULT" parameterClass="map">
+		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE" />
+		and c.CONSTITUENT_ID = #constituentId#
+		<isNotNull property="fromDate">
+		and c.PLEDGE_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and c.PLEDGE_DATE &lt;= #toDate#
+		</isNotNull>
+		order by greatest(c.AMOUNT_PAID, c.AMOUNT_TOTAL)
+		desc
+		limit 1
+	</select>
+	
 
 </sqlMap>

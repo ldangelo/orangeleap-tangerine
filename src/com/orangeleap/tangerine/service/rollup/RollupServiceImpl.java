@@ -44,6 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
+import com.orangeleap.tangerine.dao.PledgeDao;
+import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.dao.RollupAttributeDao;
 import com.orangeleap.tangerine.dao.RollupSeriesDao;
 import com.orangeleap.tangerine.dao.RollupSeriesXAttributeDao;
@@ -51,6 +53,8 @@ import com.orangeleap.tangerine.dao.RollupValueDao;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesType;
@@ -85,6 +89,12 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 
     @Resource(name = "giftInKindDAO")
     private GiftInKindDao giftInKindDao;
+
+    @Resource(name = "pledgeDAO")
+    private PledgeDao pledgeDao;
+
+    @Resource(name = "recurringGiftDAO")
+    private RecurringGiftDao recurringGiftDao;
 
     @Resource(name = "siteService")
     private SiteService siteService;
@@ -207,6 +217,26 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     	return giftDao.readLargestIndirectGiftByConstituent(constituentId, null, null, giftType, giftStatus, constituentReferenceCustomField);
     }
     
+	@Override
+	public Pledge readPledgeViewFirstOrLastByConstituentId(Long constituentId, boolean first) {
+    	return pledgeDao.readFirstOrLastPledgeByConstituent(constituentId, null, null, first);
+	}
+
+	@Override
+	public Pledge readPledgeViewLargestByConstituentId(Long constituentId) {
+    	return pledgeDao.readLargestPledgeByConstituent(constituentId, null, null);
+	}
+
+	@Override
+	public RecurringGift readRecurringGiftViewFirstOrLastByConstituentId(Long constituentId, boolean first) {
+    	return recurringGiftDao.readFirstOrLastRecurringGiftByConstituent(constituentId, null, null, first);
+	}
+
+	@Override
+	public RecurringGift readRecurringGiftViewLargestByConstituentId(Long constituentId) {
+    	return recurringGiftDao.readLargestRecurringGiftByConstituent(constituentId, null, null);
+	}
+
 
 	@Override
 	public void deleteRollupValuesForAttributeSeries(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate) {

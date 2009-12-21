@@ -39,6 +39,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
@@ -110,6 +112,12 @@ public class GiftSummaryController {
     private static String FIRST_SOFT_GIFT =  "First Soft Gift";
     private static String LAST_SOFT_GIFT =  "Last Soft Gift";
     private static String LARGEST_SOFT_GIFT =  "Largest Soft Gift";
+    private static String FIRST_PLEDGE =  "First Pledge";
+    private static String LAST_PLEDGE =  "Last Pledge";
+    private static String LARGEST_PLEDGE =  "Largest Pledge";
+    private static String FIRST_RECURRING_GIFT =  "First Recurring Gift";
+    private static String LAST_RECURRING_GIFT =  "Last Recurring Gift";
+    private static String LARGEST_RECURRING_GIFT =  "Largest Recurring Gift";
     
     private int addFirstLastAndLargest(Long constituentId, String attributeList, List<Map<String, Object>> returnList, int index) {
     	
@@ -161,6 +169,38 @@ public class GiftSummaryController {
 	    	if (largestSoftGift != null) putGift(LARGEST_SOFT_GIFT, largestSoftGift, returnList, index++);
     	}
     	
+    	// Pledge
+    	if (requestedAttribute(FIRST_PLEDGE, attributeList)) {
+    		Pledge firstPledge = rollupService.readPledgeViewFirstOrLastByConstituentId(constituentId, true);
+    		if (firstPledge != null) putPledge(FIRST_PLEDGE, firstPledge, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LAST_PLEDGE, attributeList)) {
+    		Pledge lastPledge = rollupService.readPledgeViewFirstOrLastByConstituentId(constituentId, false);
+	    	if (lastPledge != null) putPledge(LAST_PLEDGE, lastPledge, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LARGEST_PLEDGE, attributeList)) {
+    		Pledge largestPledge = rollupService.readPledgeViewLargestByConstituentId(constituentId);
+	    	if (largestPledge != null) putPledge(LARGEST_PLEDGE, largestPledge, returnList, index++);
+    	}
+    	
+    	// Recurring Gift
+    	if (requestedAttribute(FIRST_RECURRING_GIFT, attributeList)) {
+    		RecurringGift firstRecurringGift = rollupService.readRecurringGiftViewFirstOrLastByConstituentId(constituentId, true);
+    		if (firstRecurringGift != null) putRecurringGift(FIRST_RECURRING_GIFT, firstRecurringGift, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LAST_RECURRING_GIFT, attributeList)) {
+    		RecurringGift lastRecurringGift = rollupService.readRecurringGiftViewFirstOrLastByConstituentId(constituentId, false);
+	    	if (lastRecurringGift != null) putRecurringGift(LAST_RECURRING_GIFT, lastRecurringGift, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LARGEST_RECURRING_GIFT, attributeList)) {
+    		RecurringGift largestRecurringGift = rollupService.readRecurringGiftViewLargestByConstituentId(constituentId);
+	    	if (largestRecurringGift != null) putRecurringGift(LARGEST_RECURRING_GIFT, largestRecurringGift, returnList, index++);
+    	}
+
     	return index;
     }
     
@@ -243,6 +283,55 @@ public class GiftSummaryController {
         map.put(AVG, giftInKind.getFairMarketValue());
     	
     	returnList.add(map);
+    }
+    
+    private void putPledge(String title, Pledge pledge, List<Map<String, Object>> returnList, int index) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(ID, "" + index);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "255");
+
+        map.put(ATTRIBUTE, title);
+        map.put(SERIES, "Lifetime");
+        map.put(START_DATE, pledge.getPledgeDate());
+        map.put(END_DATE, pledge.getPledgeDate());
+        map.put(CURRENCY_CODE, pledge.getCurrencyCode());
+        map.put(COUNT, 1);
+        BigDecimal amt = greatest(pledge.getAmountTotal(), pledge.getAmountPaid());
+        map.put(SUM, amt);
+        map.put(MIN, amt);
+        map.put(MAX, amt);
+        map.put(AVG, amt);
+    	
+    	returnList.add(map);
+    }
+    
+    private void putRecurringGift(String title, RecurringGift recurringGift, List<Map<String, Object>> returnList, int index) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(ID, "" + index);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "255");
+
+        map.put(ATTRIBUTE, title);
+        map.put(SERIES, "Lifetime");
+        map.put(START_DATE, recurringGift.getStartDate());
+        map.put(END_DATE, recurringGift.getEndDate());
+        map.put(CURRENCY_CODE, recurringGift.getCurrencyCode());
+        map.put(COUNT, 1);
+        BigDecimal amt = greatest(recurringGift.getAmountTotal(), recurringGift.getAmountPaid());
+        map.put(SUM, amt);
+        map.put(MIN, amt);
+        map.put(MAX, amt);
+        map.put(AVG, amt);
+    	
+    	returnList.add(map);
+    }
+    
+    private BigDecimal greatest(BigDecimal b1, BigDecimal b2) {
+    	if (b1 == null && b2 == null) return new BigDecimal(0);
+    	if (b1 == null) return b2;
+    	if (b2 == null) return b1;
+    	return (b1.compareTo(b2) > 0) ? b1 : b2;
     }
     
 }

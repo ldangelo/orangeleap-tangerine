@@ -18,6 +18,16 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
@@ -29,15 +39,6 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @Repository("pledgeDAO")
 public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implements PledgeDao {
@@ -248,4 +249,33 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
         return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_PLEDGES_COUNT_BY_CONSTITUENT_ID", params);
     }
+    
+	@Override
+	public Pledge readFirstOrLastPledgeByConstituent(Long constituentId, Date fromDate, Date toDate, boolean first) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFirstOrLastPledgeByConstituent: constituentId = " + constituentId + " fromDate = " + fromDate +
+                    " toDate = " + toDate + " first = "+first);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        if (first) params.put("first", first);
+        return (Pledge)getSqlMapClientTemplate().queryForObject("SELECT_FIRST_OR_LAST_PLEDGE_BY_CONSTITUENT", params);
+	}
+
+	@Override
+	public Pledge readLargestPledgeByConstituent(Long constituentId, Date fromDate, Date toDate) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readLargestPledgeByConstituent: constituentId = " + constituentId + " fromDate = " + fromDate +
+                    " toDate = " + toDate );
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        return (Pledge)getSqlMapClientTemplate().queryForObject("SELECT_LARGEST_PLEDGE_BY_CONSTITUENT", params);
+	}
+
+
 }

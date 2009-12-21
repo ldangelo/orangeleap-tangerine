@@ -90,7 +90,7 @@ Ext.onReady(function() {
     	         {
       	            title:'Soft Gifts',
     	            html : '',
-        	        attributeList : '|Soft Gift Amount|'
+        	        attributeList : '|First Soft Gift|Last Soft Gift|Largest Soft Gift|Soft Gift Amount|'
       	         },
     	         {
       	            title:'Pledges',

@@ -356,6 +356,39 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         return (Gift)getSqlMapClientTemplate().queryForObject("SELECT_LARGEST_GIFT_BY_CONSTITUENT", params);
 	}
 
+	@Override
+	public Gift readLargestIndirectGiftByConstituent(Long constituentId, Date fromDate, Date toDate, GiftType giftType, String giftStatus, String constituentReferenceCustomField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readLargestIndirectGiftByConstituent: constituentId = " + constituentId + " fromDate = " + fromDate +
+                    " toDate = " + toDate );
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        params.put("giftType", giftType);
+        params.put("giftStatus", giftStatus);
+        params.put("constituentReferenceCustomField", constituentReferenceCustomField);
+        return (Gift)getSqlMapClientTemplate().queryForObject("SELECT_LARGEST_INDIRECT_GIFT_BY_CONSTITUENT", params);
+	}
+
+	@Override
+	public Gift readFirstOrLastIndirectGiftByConstituent(Long constituentId, Date fromDate, Date toDate, GiftType giftType, String giftStatus, boolean first, String constituentReferenceCustomField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFirstOrLastIndirectGiftByConstituent: constituentId = " + constituentId + " fromDate = " + fromDate +
+                    " toDate = " + toDate + " first = "+first);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        params.put("giftType", giftType);
+        params.put("giftStatus", giftStatus);
+        if (first) params.put("first", first);
+        params.put("constituentReferenceCustomField", constituentReferenceCustomField);
+        return (Gift)getSqlMapClientTemplate().queryForObject("SELECT_FIRST_OR_LAST_INDIRECT_GIFT_BY_CONSTITUENT", params);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Gift> readGiftDistroLinesByConstituentId(Long constituentId,

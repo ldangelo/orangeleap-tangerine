@@ -75,4 +75,12 @@ public interface GiftDao {
 
 	int readGiftDistroLinesCountByConstituentId(Long constituentId, String constituentReferenceCustomField);
 
+	Gift readLargestIndirectGiftByConstituent(Long constituentId,
+			Date fromDate, Date toDate, GiftType giftType, String giftStatus,
+			String constituentReferenceCustomField);
+
+	Gift readFirstOrLastIndirectGiftByConstituent(Long constituentId,
+			Date fromDate, Date toDate, GiftType giftType, String giftStatus,
+			boolean first, String constituentReferenceCustomField);
+
 }

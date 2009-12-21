@@ -74,6 +74,8 @@ public class GiftSummaryController {
     private final static String MIN = "min";
     private final static String MAX = "max";
     private final static String AVG = "avg";
+    
+    private final static String ON_BEHALF_OF = "onBehalfOf";
 
 
     @RequestMapping(method = RequestMethod.POST)
@@ -105,6 +107,9 @@ public class GiftSummaryController {
     private static String FIRST_GIFT_IN_KIND =  "First Gift In Kind";
     private static String LAST_GIFT_IN_KIND =  "Last Gift In Kind";
     private static String LARGEST_GIFT_IN_KIND =  "Largest Gift In Kind";
+    private static String FIRST_SOFT_GIFT =  "First Soft Gift";
+    private static String LAST_SOFT_GIFT =  "Last Soft Gift";
+    private static String LARGEST_SOFT_GIFT =  "Largest Soft Gift";
     
     private int addFirstLastAndLargest(Long constituentId, String attributeList, List<Map<String, Object>> returnList, int index) {
     	
@@ -138,6 +143,22 @@ public class GiftSummaryController {
     	if (requestedAttribute(LARGEST_GIFT_IN_KIND, attributeList)) {
 	    	GiftInKind largestGiftInKind = rollupService.readGiftInKindViewLargestByConstituentId(constituentId);
 	    	if (largestGiftInKind != null) putGiftInKind(LARGEST_GIFT_IN_KIND, largestGiftInKind, returnList, index++);
+    	}
+    	
+    	// Soft Gift
+    	if (requestedAttribute(FIRST_SOFT_GIFT, attributeList)) {
+    		Gift firstSoftGift = rollupService.readIndirectGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", true, ON_BEHALF_OF);
+    		if (firstSoftGift != null) putGift(FIRST_SOFT_GIFT, firstSoftGift, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LAST_SOFT_GIFT, attributeList)) {
+	    	Gift lastSoftGift = rollupService.readIndirectGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", false, ON_BEHALF_OF);
+	    	if (lastSoftGift != null) putGift(LAST_SOFT_GIFT, lastSoftGift, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LARGEST_SOFT_GIFT, attributeList)) {
+	    	Gift largestSoftGift = rollupService.readIndirectGiftViewLargestByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", ON_BEHALF_OF);
+	    	if (largestSoftGift != null) putGift(LARGEST_SOFT_GIFT, largestSoftGift, returnList, index++);
     	}
     	
     	return index;

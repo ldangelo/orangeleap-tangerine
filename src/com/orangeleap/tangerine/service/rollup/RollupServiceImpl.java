@@ -196,6 +196,16 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     public GiftInKind readGiftInKindViewLargestByConstituentId(Long constituentId) {
     	return giftInKindDao.readLargestGiftInKindByConstituent(constituentId, null, null);
     }
+
+	@Override
+    public Gift readIndirectGiftViewFirstOrLastByConstituentId(Long constituentId, GiftType giftType, String giftStatus, boolean first, String constituentReferenceCustomField) {
+    	return giftDao.readFirstOrLastIndirectGiftByConstituent(constituentId, null, null, giftType, giftStatus, first, constituentReferenceCustomField);
+    }
+    
+	@Override
+    public Gift readIndirectGiftViewLargestByConstituentId(Long constituentId, GiftType giftType, String giftStatus, String constituentReferenceCustomField) {
+    	return giftDao.readLargestIndirectGiftByConstituent(constituentId, null, null, giftType, giftStatus, constituentReferenceCustomField);
+    }
     
 
 	@Override
@@ -298,6 +308,5 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 			return null;
 		}
 	}
-
 
 }

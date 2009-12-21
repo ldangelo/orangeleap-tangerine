@@ -86,6 +86,14 @@
 		left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
 		left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
 		left outer join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
+		<isNotNull property="constituentReferenceCustomField" >
+        inner join CUSTOM_FIELD cf on
+          cf.ENTITY_ID = dl.DISTRO_LINE_ID
+          and cf.ENTITY_TYPE = 'distributionline' 
+          and cf.FIELD_NAME = #constituentReferenceCustomField#
+          and cf.FIELD_VALUE = #constituentId#
+        </isNotNull>
+		
 		where p.SITE_NAME = #siteName#
 	</sql>
 	
@@ -128,7 +136,7 @@
 		<isNotNull property="giftType">
 		and g.GIFT_TYPE = #giftType#
 		</isNotNull>
-		order by g.DONATION_DATE 
+		order by g.DONATION_DATE, g.TRANSACTION_DATE 
 		<isNull property="first">
 		desc
 		</isNull>
@@ -138,6 +146,46 @@
 	<select id="SELECT_LARGEST_GIFT_BY_CONSTITUENT" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
 		and g.CONSTITUENT_ID = #constituentId#
+		<isNotNull property="fromDate">
+		and g.DONATION_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and g.DONATION_DATE &lt;= #toDate#
+		</isNotNull>
+		<isNotNull property="giftStatus">
+		and g.GIFT_STATUS = #giftStatus# 
+		</isNotNull>
+		<isNotNull property="giftType">
+		and g.GIFT_TYPE = #giftType#
+		</isNotNull>
+		order by g.ADJUSTED_AMOUNT 
+		desc
+		limit 1
+	</select>
+	
+	<select id="SELECT_FIRST_OR_LAST_INDIRECT_GIFT_BY_CONSTITUENT" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		<isNotNull property="fromDate">
+		and g.DONATION_DATE &gt;= #fromDate#
+		</isNotNull>
+		<isNotNull property="toDate">
+		and g.DONATION_DATE &lt;= #toDate#
+		</isNotNull>
+		<isNotNull property="giftStatus">
+		and g.GIFT_STATUS = #giftStatus# 
+		</isNotNull>
+		<isNotNull property="giftType">
+		and g.GIFT_TYPE = #giftType#
+		</isNotNull>
+		order by g.DONATION_DATE, g.TRANSACTION_DATE
+		<isNull property="first">
+		desc
+		</isNull>
+		limit 1
+	</select>
+	
+	<select id="SELECT_LARGEST_INDIRECT_GIFT_BY_CONSTITUENT" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
 		<isNotNull property="fromDate">
 		and g.DONATION_DATE &gt;= #fromDate#
 		</isNotNull>

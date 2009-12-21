@@ -43,12 +43,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.dao.RollupAttributeDao;
 import com.orangeleap.tangerine.dao.RollupSeriesDao;
 import com.orangeleap.tangerine.dao.RollupSeriesXAttributeDao;
 import com.orangeleap.tangerine.dao.RollupValueDao;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesType;
@@ -80,6 +82,9 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
+
+    @Resource(name = "giftInKindDAO")
+    private GiftInKindDao giftInKindDao;
 
     @Resource(name = "siteService")
     private SiteService siteService;
@@ -180,6 +185,16 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
 	@Override
     public Gift readGiftViewLargestByConstituentId(Long constituentId, GiftType giftType, String giftStatus) {
     	return giftDao.readLargestGiftByConstituent(constituentId, null, null, giftType, giftStatus);
+    }
+    
+	@Override
+    public GiftInKind readGiftInKindViewFirstOrLastByConstituentId(Long constituentId, boolean first) {
+    	return giftInKindDao.readFirstOrLastGiftInKindByConstituent(constituentId, null, null, first);
+    }
+    
+	@Override
+    public GiftInKind readGiftInKindViewLargestByConstituentId(Long constituentId) {
+    	return giftInKindDao.readLargestGiftInKindByConstituent(constituentId, null, null);
     }
     
 

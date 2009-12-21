@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupSeriesXAttribute;
@@ -55,6 +56,10 @@ public interface RollupService {
 
 	public void deleteRollupValuesForAttributeSeries(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate);
 	public void insertRollupDimensionValues(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate);
+
+	public GiftInKind readGiftInKindViewFirstOrLastByConstituentId(Long constituentId, boolean first);
+
+	public GiftInKind readGiftInKindViewLargestByConstituentId(Long constituentId);
 
 
 	

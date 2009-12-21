@@ -18,12 +18,13 @@
 
 package com.orangeleap.tangerine.dao;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-
-import java.util.List;
-import java.util.Locale;
 
 public interface GiftInKindDao {
 
@@ -39,4 +40,9 @@ public interface GiftInKindDao {
                                                          int start, int limit, Locale locale);
 
     int readCountByConstituentId(Long constituentId);
+    
+	public GiftInKind readFirstOrLastGiftInKindByConstituent(Long constituentId, Date fromDate, Date toDate, boolean first);
+
+	public GiftInKind readLargestGiftInKindByConstituent(Long constituentId, Date fromDate, Date toDate);
+
 }

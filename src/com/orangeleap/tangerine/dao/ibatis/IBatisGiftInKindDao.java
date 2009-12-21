@@ -18,6 +18,15 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
@@ -26,13 +35,6 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Locale;
 
 @Repository("giftInKindDAO")
 public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKindDao {
@@ -132,4 +134,35 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
         return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_GIFTS_IN_KIND_COUNT_BY_CONSTITUENT_ID", params);
     }
+
+	@Override
+	public GiftInKind readFirstOrLastGiftInKindByConstituent(Long constituentId,
+			Date fromDate, Date toDate, boolean first) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFirstOrLastGiftInKindByConstituent: constituentId = " + constituentId + " fromDate = " + fromDate +
+                    " toDate = " + toDate + " first = "+first);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        if (first) params.put("first", first);
+        return (GiftInKind)getSqlMapClientTemplate().queryForObject("SELECT_FIRST_OR_LAST_GIFT_IN_KIND_BY_CONSTITUENT", params);
+	}
+
+	@Override
+	public GiftInKind readLargestGiftInKindByConstituent(Long constituentId, Date fromDate,
+			Date toDate) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readLargestGiftInKindByConstituent: constituentId = " + constituentId + " fromDate = " + fromDate +
+                    " toDate = " + toDate );
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        return (GiftInKind)getSqlMapClientTemplate().queryForObject("SELECT_LARGEST_GIFT_IN_KIND_BY_CONSTITUENT", params);
+	}
+	
+	
 }

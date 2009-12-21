@@ -105,7 +105,7 @@ Ext.onReady(function() {
     	         {
        	            title:'Gifts In Kind',
     	            html : '',
-            	    attributeList : '|Gift In Kind Amount|'
+            	    attributeList : '|First Gift In Kind|Last Gift In Kind|Largest Gift In Kind|Gift In Kind Amount|'
        	         },
     	         {
         	        title:'Overall',

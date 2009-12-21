@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
@@ -101,12 +102,13 @@ public class GiftSummaryController {
     private static String FIRST_GIFT =  "First Gift";
     private static String LAST_GIFT =  "Last Gift";
     private static String LARGEST_GIFT =  "Largest Gift";
+    private static String FIRST_GIFT_IN_KIND =  "First Gift In Kind";
+    private static String LAST_GIFT_IN_KIND =  "Last Gift In Kind";
+    private static String LARGEST_GIFT_IN_KIND =  "Largest Gift In Kind";
     
-    private void addViewData(Long constituentId, String attributeList, List<Map<String, Object>> returnList) {
-    
-    	int index = 0;
-
-    	// Add lines for first and last gifts
+    private int addFirstLastAndLargest(Long constituentId, String attributeList, List<Map<String, Object>> returnList, int index) {
+    	
+    	// Gift
     	if (requestedAttribute(FIRST_GIFT, attributeList)) {
     		Gift firstGift = rollupService.readGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", true);
     		if (firstGift != null) putGift(FIRST_GIFT, firstGift, returnList, index++);
@@ -122,6 +124,31 @@ public class GiftSummaryController {
 	    	if (largestGift != null) putGift(LARGEST_GIFT, largestGift, returnList, index++);
     	}
     	
+    	// GIK
+    	if (requestedAttribute(FIRST_GIFT_IN_KIND, attributeList)) {
+    		GiftInKind firstGiftInKind = rollupService.readGiftInKindViewFirstOrLastByConstituentId(constituentId, true);
+    		if (firstGiftInKind != null) putGiftInKind(FIRST_GIFT_IN_KIND, firstGiftInKind, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LAST_GIFT_IN_KIND, attributeList)) {
+	    	GiftInKind lastGiftInKind = rollupService.readGiftInKindViewFirstOrLastByConstituentId(constituentId, false);
+	    	if (lastGiftInKind != null) putGiftInKind(LAST_GIFT_IN_KIND, lastGiftInKind, returnList, index++);
+    	}
+    	
+    	if (requestedAttribute(LARGEST_GIFT_IN_KIND, attributeList)) {
+	    	GiftInKind largestGiftInKind = rollupService.readGiftInKindViewLargestByConstituentId(constituentId);
+	    	if (largestGiftInKind != null) putGiftInKind(LARGEST_GIFT_IN_KIND, largestGiftInKind, returnList, index++);
+    	}
+    	
+    	return index;
+    }
+    
+    private void addViewData(Long constituentId, String attributeList, List<Map<String, Object>> returnList) {
+    
+    	int index = 0;
+    	
+    	index = addFirstLastAndLargest(constituentId, attributeList, returnList, index);
+
     	// Add stats
     	Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> data = rollupService.readGiftViewRollupValuesByConstituentId(constituentId);
     	for (Map.Entry<RollupAttribute, Map<RollupSeries, List<RollupValue>>> me : data.entrySet()) {
@@ -173,6 +200,26 @@ public class GiftSummaryController {
         map.put(MIN, gift.getAdjustedAmount());
         map.put(MAX, gift.getAdjustedAmount());
         map.put(AVG, gift.getAdjustedAmount());
+    	
+    	returnList.add(map);
+    }
+    
+    private void putGiftInKind(String title, GiftInKind giftInKind, List<Map<String, Object>> returnList, int index) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(ID, "" + index);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "255");
+
+        map.put(ATTRIBUTE, title);
+        map.put(SERIES, "Lifetime");
+        map.put(START_DATE, giftInKind.getDonationDate());
+        map.put(END_DATE, giftInKind.getDonationDate());
+        map.put(CURRENCY_CODE, giftInKind.getCurrencyCode());
+        map.put(COUNT, 1);
+        map.put(SUM, giftInKind.getFairMarketValue());
+        map.put(MIN, giftInKind.getFairMarketValue());
+        map.put(MAX, giftInKind.getFairMarketValue());
+        map.put(AVG, giftInKind.getFairMarketValue());
     	
     	returnList.add(map);
     }

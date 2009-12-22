@@ -32,7 +32,7 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_E
 -- *****************************************Custom Fields conditions***************************************************************
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has a custom field named ?';
+SET @PHRASE_CD = 'Constituent has a custom field named ?';
 SET @CODE_CD = 'map.constituent.getCustomFieldValue(?) != null && !map.constituent.getCustomFieldValue(?).equals("")';
 
 -- Insert code
@@ -50,7 +50,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has a custom field named ? that has a value of ?';
+SET @PHRASE_CD = 'Constituent has a custom field named ? that has a value of ?';
 SET @CODE_CD = 'map.constituent.getCustomFieldValue(?) == ?';
 
 -- Insert code
@@ -69,7 +69,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has a custom field named ? that does not have a value of ?';
+SET @PHRASE_CD = 'Constituent has a custom field named ? that does not have a value of ?';
 SET @CODE_CD = 'map.constituent.getCustomFieldValue(?) != ?';
 
 -- Insert code
@@ -88,7 +88,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has a custom field named ? that does not have a value of ?';
+SET @PHRASE_CD = 'Constituent has a custom field named ? that does not have a value of ?';
 SET @CODE_CD = 'map.constituent.getCustomFieldValue(?) != ?';
 
 -- Insert code
@@ -109,7 +109,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- *****************************************Roles, Profiles, Profile Types conditions********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has a donor profile of ?';
+SET @PHRASE_CD = 'Constituent has a donor profile of ?';
 SET @CODE_CD = 'map.constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES) != null && map.constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES).contains(?)';
 
 -- Insert code
@@ -125,7 +125,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who does not have a donor profile of ?';
+SET @PHRASE_CD = 'Constituent does not have a donor profile of ?';
 SET @CODE_CD = 'map.constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES) == null || map.constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES).contains(?) == false';
 
 -- Insert code
@@ -141,7 +141,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who is not a individual of type ?';
+SET @PHRASE_CD = 'Constituent is not a individual of type ?';
 SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().contains(?) == false';
 
 -- Insert code
@@ -158,7 +158,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who is not a donor';
+SET @PHRASE_CD = 'Constituent is not a donor';
 SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().contains("donor") == false';
 
 -- Insert code
@@ -172,7 +172,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 -- Insert the parameters for the condition
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who is not a individual of type ?';
+SET @PHRASE_CD = 'Constituent is not a individual of type ?';
 SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().indexOf(?) == -1';
 
 -- Insert code
@@ -189,7 +189,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who is a individual of type ?';
+SET @PHRASE_CD = 'Constituent is a individual of type ?';
 SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().indexOf(?) != -1';
 
 -- Insert code
@@ -206,7 +206,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who is not a organization of type ?';
+SET @PHRASE_CD = 'Constituent is not a organization of type ?';
 SET @CODE_CD = 'map.constituent.getConstituentOrganizationRoles() == null || map.constituent.getConstituentOrganizationRoles().indexOf(?) == -1';
 
 -- Insert code
@@ -223,7 +223,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who is a organization of type ?';
+SET @PHRASE_CD = 'Constituent is a organization of type ?';
 SET @CODE_CD = 'map.constituent.getConstituentOrganizationRoles() == null || map.constituent.getConstituentOrganizationRoles().indexOf(?) != -1';
 
 -- Insert code
@@ -243,7 +243,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 -- *****************************************Donations, Gifts, Major Donor conditions********************************************************
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has made a donation in the past ? ?';
+SET @PHRASE_CD = 'Constituent has made a donation in the past ? ?';
 SET @CODE_CD = 'map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, ?.intValue(), ?) >= 1';
 
 -- Insert code
@@ -262,7 +262,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has not made a donation in the past ? ?';
+SET @PHRASE_CD = 'Constituent has not made a donation in the past ? ?';
 SET @CODE_CD = 'map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, ?.intValue(), ?) == 0';
 
 -- Insert code
@@ -281,7 +281,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has donated ? gifts';
+SET @PHRASE_CD = 'Constituent has donated ? gifts';
 SET @CODE_CD = 'map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, -1, null) == ?';
 
 -- Insert code
@@ -297,7 +297,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'NUMBER');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has donated at least ? gifts';
+SET @PHRASE_CD = 'Constituent has donated at least ? gifts';
 SET @CODE_CD = 'map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, -1, null) >= ?';
 
 -- Insert code

@@ -20,6 +20,8 @@ public interface OrangeleapJmxNotificationBean extends OrangeleapJmxNotification
 	public final static String ECHEX_PAYMENT_ERROR = "echexpaymenterror";
 	public final static String ECHEX_PAYMENT_STATUS = "echexpaymentstatus";
 
+	public final static String RULE_CACHE_ATTEMPTS = "ruleCacheAttempts";
+	public final static String RULE_CACHE_HITS = "ruleCacheHits";
 	
 	public void publishNotification(String type, String message);
 

@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 
@@ -50,6 +51,7 @@ import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentParm;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentTypeParm;
 import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
+import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.service.rule.OrangeLeapConsequenceRuntimeException;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
@@ -71,7 +73,6 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
 
-    //TODO cache scripts and groovy classes
     @Resource(name = "ruleGeneratedCodeCache")
     private Cache ruleGeneratedCodeCache;
 
@@ -93,20 +94,24 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "ruleSegmentTypeDAO")
     private RuleSegmentTypeDao ruleSegmentTypeDao;
     
-    private static final int MAX_ENTRIES = 100;
-    private static volatile ThreadLocal<Map<String, GroovyObject>> groovyObjectCache;
+    @Resource(name = "OrangeleapJmxNotificationBean")
+    protected OrangeleapJmxNotificationBean orangeleapJmxNotificationBean;
 
-    public static void resetGroovyObjectCache() {
-    	ThreadLocal<Map<String, GroovyObject>> agroovyObjectCache = new ThreadLocal<Map<String, GroovyObject>>() {
-	        protected synchronized Map<String, GroovyObject> initialValue() {
-	            return new LinkedHashMap<String, GroovyObject>(MAX_ENTRIES + 1, .75F, true) {
+    
+    // Groovy class and object instances aren't threadsafe unless they don't have instance variables, which we don't.
+    private static final int MAX_ENTRIES = 100;
+    private static volatile Map<String, GroovyObject> groovyObjectCache;
+    
+    @SuppressWarnings("unchecked")
+	public static void resetGroovyObjectCache() {
+    	Map<String, GroovyObject> agroovyObjectCache = (Map<String, GroovyObject>)Collections.synchronizedMap(
+	        new LinkedHashMap<String, GroovyObject>(MAX_ENTRIES + 1, .75F, true) {
 					private static final long serialVersionUID = 1L;
 			        public boolean removeEldestEntry(Map.Entry<String, GroovyObject> eldest) {
 			            return size() > MAX_ENTRIES;
 			        }
-	            };
-	        }
-    	};
+	            }
+    	);
     	groovyObjectCache = agroovyObjectCache;
     }
 
@@ -144,16 +149,18 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 	@Override
     public void fireRulesEvent(RuleEventNameType rulesEventNameType, boolean testMode, Map<String, Object> map) {
 		try {
+        	orangeleapJmxNotificationBean.incrementStatCount(tangerineUserHelper.lookupUserSiteName(), OrangeleapJmxNotificationBean.RULE_CACHE_ATTEMPTS);
 		    String key = buildCacheKey(rulesEventNameType, testMode);
-	    	GroovyObject groovyObject = groovyObjectCache.get().get(key);
-	    	// TODO enable when dsl done
-	    	//if (groovyObject == null) 
-	    	{
+	    	GroovyObject groovyObject = groovyObjectCache.get(key);
+	    	// TODO Enable when DSL is done
+//	    	if (groovyObject == null) {
 	    		String script = readRulesEventScript(rulesEventNameType, testMode);
 				Class groovyClass = compileScript(script);
 				groovyObject = (GroovyObject) groovyClass.newInstance();
-		    	groovyObjectCache.get().put(key, groovyObject);
-	    	}
+//	    	} else {
+//	        	orangeleapJmxNotificationBean.incrementStatCount(tangerineUserHelper.lookupUserSiteName(), OrangeleapJmxNotificationBean.RULE_CACHE_HITS);
+//	    	}
+	    	groovyObjectCache.put(key, groovyObject); // This will update the position in the cache to MRU.
 			groovyObject.invokeMethod("run", new Object[]{map});
 		} catch (OrangeLeapConsequenceRuntimeException e) {
 			throw e;
@@ -179,11 +186,12 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 
     
     private String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
+
+    	RuleGeneratedCode rgc = null;
     	
-		generateRulesEventScript(rulesEventNameType, testMode);  // TODO remove once UI rules admin wizard updates trigger compile
-		
-		RuleGeneratedCode rgc = null;
-    	// TODO enable when dsl done
+		// TODO Remove when DSL is done
+		generateRulesEventScript(rulesEventNameType, testMode);  
+    	// TODO Enable when DSL is done
 //		String key = buildCacheKey(rulesEventNameType, testMode);
 //		Element ele = ruleGeneratedCodeCache.get(key);
 //		if (ele == null) {
@@ -238,8 +246,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 	    				RuleSegmentType ruleSegmentType = ruleSegmentTypeDao.readRuleSegmentTypeById(ruleSegment.getRuleSegmentTypeId());
 	    				if (ruleSegmentType == null) throw new RuntimeException("Invalid rule segment type for rule: "+rule.getRuleDesc());
 	    				
-	    				String code = replaceParms(ruleSegmentType.getRuleSegmentTypeText(), rule, ruleVersion, ruleSegment, ruleSegmentType);
-	    				String text = replaceParms(ruleSegmentType.getRuleSegmentTypePhrase(), rule, ruleVersion, ruleSegment, ruleSegmentType);
+	    				String code = replaceParms(ruleSegmentType.getRuleSegmentTypeText(), rule, ruleVersion, ruleSegment, ruleSegmentType, true);
+	    				String text = replaceParms(ruleSegmentType.getRuleSegmentTypePhrase(), rule, ruleVersion, ruleSegment, ruleSegmentType, false);
 	    				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {
 	    					conditions.add(code);
 	    					conditionstext.add(text);
@@ -289,12 +297,15 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	
     }
     
-    private String replaceParms(String text, Rule rule, RuleVersion ruleVersion, RuleSegment ruleSegment, RuleSegmentType ruleSegmentType) {
+    private String replaceParms(String text, Rule rule, RuleVersion ruleVersion, RuleSegment ruleSegment, RuleSegmentType ruleSegmentType, boolean code) {
     	
     	if (ruleSegment.getRuleSegmentParms().size() < ruleSegmentType.getRuleSegmentTypeParms().size()) {
     		// Allow rule to have extraneous parms as long as it has the minimum number required
     		throw new RuntimeException("Number of parameters for rule \"" + rule.getRuleDesc() + "\", \"" + ruleSegmentType.getRuleSegmentTypePhrase() + "\" is not correct.");
     	}
+    	
+    	String quot;
+    	if (code) quot = "\""; else quot = "";
     	
     	for (int i = 0; i < ruleSegmentType.getRuleSegmentTypeParms().size(); i++) {
     		
@@ -305,7 +316,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     		if (type.equals(RuleSegmentTypeParmType.STRING) || type.equals(RuleSegmentTypeParmType.PICKLIST) || type.equals(RuleSegmentTypeParmType.SITE_VARIABLE)) {
         		String parmvalue = ruleSegmentParm.getRuleSegmentParmStringValue();
         		parmvalue = whiteList(parmvalue); 
-    			text = replaceNextParm(text, "\""+parmvalue+"\"");
+    			text = replaceNextParm(text, quot + parmvalue + quot);
     		} else if (type.equals(RuleSegmentTypeParmType.NUMBER)) {
         		BigDecimal parmvalue = ruleSegmentParm.getRuleSegmentParmNumericValue();
     			if (parmvalue != null) text = replaceNextParm(text, parmvalue.toString());

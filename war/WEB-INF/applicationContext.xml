@@ -138,6 +138,12 @@
           p:cacheName="picklistCache"
           />
 
+    <bean id="ruleGeneratedCodeCache"
+          class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+          p:cacheManager-ref="cacheManager"
+          p:cacheName="ruleGeneratedCodeCache"
+          />
+
 	<!--
 	- The message source for this context, loaded from localized message files in the classpath (first) and then the database
 	-->

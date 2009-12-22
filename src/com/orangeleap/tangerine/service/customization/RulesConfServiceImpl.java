@@ -28,6 +28,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,8 @@ import com.orangeleap.tangerine.dao.RuleEventTypeDao;
 import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
 import com.orangeleap.tangerine.dao.RuleSegmentDao;
 import com.orangeleap.tangerine.dao.RuleSegmentTypeDao;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
+import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.domain.customization.rule.RuleEventType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType;
@@ -50,6 +55,7 @@ import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.service.rule.OrangeLeapConsequenceRuntimeException;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
+import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.type.RuleSegmentTypeParmType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -68,6 +74,9 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     protected TangerineUserHelper tangerineUserHelper;
 
     //TODO cache scripts and groovy classes
+    @Resource(name = "ruleGeneratedCodeCache")
+    private Cache ruleGeneratedCodeCache;
+
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
 
@@ -98,14 +107,32 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
          return availableSegmentTypes;
 	}
 
-    
+    private String buildCacheKey(RuleEventNameType rulesEventNameType, boolean testMode) {
+        String siteName = tangerineUserHelper.lookupUserSiteName();
+        siteName = (siteName == null ? "DEFAULT" : siteName);
+
+        StringBuilder builder = new StringBuilder(siteName);
+        builder.append(".").append(rulesEventNameType.getType());
+        builder.append(".").append(testMode);
+        return builder.toString();
+    }
+
     
     @Override
     public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
     	
-    	generateRulesEventScript(rulesEventNameType, testMode);  // TODO remove once UI rules admin wizard updates trigger compile
+		generateRulesEventScript(rulesEventNameType, testMode);  // TODO remove once UI rules admin wizard updates trigger compile
+		
+		RuleGeneratedCode rgc = null;
+//		String key = buildCacheKey(rulesEventNameType, testMode);
+//		Element ele = ruleGeneratedCodeCache.get(key);
+//		if (ele == null) {
+		    rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
+//			ruleGeneratedCodeCache.put(new Element(key, ruleGeneratedCodeCache));
+//		} else {
+//			rgc = (RuleGeneratedCode) ele.getValue();
+//		}
     	
-    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
     	return rgc == null ? "" : rgc.getGeneratedCodeText();
     	
     }
@@ -147,6 +174,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	}
     	rgc.setGeneratedCodeText(generateCode(rulesEventNameType, testMode));
     	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
     }
     
     private String generateCode(RuleEventNameType rulesEventType, boolean testMode) {

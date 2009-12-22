@@ -24,5 +24,6 @@ import javax.xml.bind.annotation.XmlType;
 public enum CacheGroupType {
     PICKLIST,
     PAGE_CUSTOMIZATION,
-    MESSAGE_RESOURCE
+    MESSAGE_RESOURCE,
+    RULE_GENERATED_CODE
 }

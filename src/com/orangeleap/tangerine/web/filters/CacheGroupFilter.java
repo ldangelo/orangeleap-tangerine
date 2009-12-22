@@ -63,6 +63,7 @@ public class CacheGroupFilter extends OncePerRequestFilter {
             Cache picklistCache = (Cache) getBean(request, "picklistCache");
             Cache pageCustomizationCache = (Cache) getBean(request, "pageCustomizationCache");
             Cache messageResourceCache = (Cache) getBean(request, "messageResourceCache");
+            Cache ruleGeneratedCodeCache = (Cache) getBean(request, "ruleGeneratedCodeCache");
             // Add others here...
 
 
@@ -86,6 +87,10 @@ public class CacheGroupFilter extends OncePerRequestFilter {
                             if (key.equals(CacheGroupType.MESSAGE_RESOURCE.toString())) {
                                 logger.debug("Update detected, clearing MESSAGE_RESOURCE cache.");
                                 messageResourceCache.removeAll();
+                            }
+                            if (key.equals(CacheGroupType.RULE_GENERATED_CODE.toString())) {
+                                logger.debug("Update detected, clearing RULE_GENERATED_CODE cache.");
+                                ruleGeneratedCodeCache.removeAll();
                             }
 
                         }

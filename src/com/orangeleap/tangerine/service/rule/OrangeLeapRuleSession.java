@@ -29,7 +29,6 @@ public class OrangeLeapRuleSession {
 			map.put(type.getType(), object);
 		}
 		
-		@SuppressWarnings("unchecked")
 		public void executeRules() {
 			
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
@@ -45,10 +44,8 @@ public class OrangeLeapRuleSession {
 						addServicesToMap();
 						
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
-						String script = rulesConfService.readRulesEventScript(orangeLeapRuleBase.getRuleEventNameType(), orangeLeapRuleBase.isTestMode());
-						if (script == null || script.length() == 0) return;
-						rulesConfService.runScript(script, map);
-						
+						rulesConfService.fireRulesEvent(orangeLeapRuleBase.getRuleEventNameType(), orangeLeapRuleBase.isTestMode(), map);
+
 					} catch (OrangeLeapConsequenceRuntimeException e) {
 						logger.error(e.getMessage());
 						throw e;

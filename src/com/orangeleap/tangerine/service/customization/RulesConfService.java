@@ -29,10 +29,8 @@ public interface RulesConfService {
 
 	public List<RuleSegmentType> getAvailableRuleSegmentTypes(String ruleEventTypeName);
 
-    public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode);
-    @SuppressWarnings("unchecked")
-	public Class compileScript(String script);
-    public void runScript(String script, Map<String, Object> map);
     public void generateRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode);
+
+	public void fireRulesEvent(RuleEventNameType rulesEventNameType, boolean testMode, Map<String, Object> map);
 
 }

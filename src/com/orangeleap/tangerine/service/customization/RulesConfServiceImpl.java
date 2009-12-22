@@ -29,7 +29,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
@@ -41,8 +40,6 @@ import com.orangeleap.tangerine.dao.RuleEventTypeDao;
 import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
 import com.orangeleap.tangerine.dao.RuleSegmentDao;
 import com.orangeleap.tangerine.dao.RuleSegmentTypeDao;
-import com.orangeleap.tangerine.domain.customization.FieldRequired;
-import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.domain.customization.rule.RuleEventType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType;
@@ -106,6 +103,27 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
          }
          return availableSegmentTypes;
 	}
+    
+    @Override
+    public void generateRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
+    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
+    	if (rgc == null) {
+    		rgc = new RuleGeneratedCode();
+    		rgc.setIsTestOnly(testMode);
+    		rgc.setRuleEventTypeNameId(rulesEventNameType.getType());
+    	}
+    	rgc.setGeneratedCodeText(generateCode(rulesEventNameType, testMode));
+    	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
+    }
+    
+    @Override
+    public void fireRulesEvent(RuleEventNameType rulesEventNameType, boolean testMode, Map<String, Object> map) {
+    	// TODO cache classloaders/classes
+		String script = readRulesEventScript(rulesEventNameType, testMode);
+		if (script == null || script.length() == 0) return;
+		runScript(script, map);
+    }
 
     private String buildCacheKey(RuleEventNameType rulesEventNameType, boolean testMode) {
         String siteName = tangerineUserHelper.lookupUserSiteName();
@@ -118,8 +136,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     }
 
     
-    @Override
-    public String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
+    private String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
     	
 		generateRulesEventScript(rulesEventNameType, testMode);  // TODO remove once UI rules admin wizard updates trigger compile
 		
@@ -137,16 +154,14 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	
     }
 
-    @Override
-    public Class compileScript(String script) {
+    private Class compileScript(String script) {
 		ClassLoader parent = getClass().getClassLoader();
 		GroovyClassLoader loader = new GroovyClassLoader(parent);
 		Class groovyClass = loader.parseClass("class RuleRunner{ void run(Map map) { "+script+" } }", "rules.groovy");
 		return groovyClass;
     }
 
-    @Override
-    public void runScript(String script, Map<String, Object> map) {
+    private void runScript(String script, Map<String, Object> map) {
 		try {
 			Class groovyClass = compileScript(script);
 			GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
@@ -164,19 +179,6 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 		}
     }
 
-    @Override
-    public void generateRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
-    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
-    	if (rgc == null) {
-    		rgc = new RuleGeneratedCode();
-    		rgc.setIsTestOnly(testMode);
-    		rgc.setRuleEventTypeNameId(rulesEventNameType.getType());
-    	}
-    	rgc.setGeneratedCodeText(generateCode(rulesEventNameType, testMode));
-    	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
-        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
-    }
-    
     private String generateCode(RuleEventNameType rulesEventType, boolean testMode) {
     	
     	StringBuilder script = new StringBuilder();

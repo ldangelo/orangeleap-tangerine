@@ -203,6 +203,10 @@
 	</bean>
 
 	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.util.TangerineUserHelperImpl"/>
+	<bean id="ruleHelperService" class="com.orangeleap.tangerine.service.rule.RuleHelperService">
+		<property name="userHelper" ref="tangerineUserHelper" />
+		<property name="constituentService" ref="constituentService"/>
+	</bean>
     <bean id="tableLogger" class="com.orangeleap.tangerine.util.TableLoggerImpl"/>
 
 	<!--
@@ -264,7 +268,7 @@
 
 
 	<bean id="applicationContextProvider" class="com.orangeleap.tangerine.util.ApplicationContextProvider"/>
-	
+
 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
     <property name="beans">
       <map>
@@ -279,6 +283,6 @@
       </bean>
     </property>
   </bean>
-	
-	
+
+
 </beans>

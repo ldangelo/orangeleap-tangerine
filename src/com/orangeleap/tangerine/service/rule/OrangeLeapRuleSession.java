@@ -14,35 +14,35 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
 
 public class OrangeLeapRuleSession {
-	
+
 		protected final Log logger = OLLogger.getLog(getClass());
-		
+
 		private OrangeLeapRuleBase orangeLeapRuleBase;
-		
+
 		private Map<String, Object> map = new TreeMap<String, Object>();
-		
+
 		public OrangeLeapRuleSession(OrangeLeapRuleBase orangeLeapRuleBase) {
 			this.orangeLeapRuleBase = orangeLeapRuleBase;
 		}
-		
+
 		public void put(RuleObjectType type, Object object) {
 			map.put(type.getType(), object);
 		}
-		
+
 		public void executeRules() {
-			
+
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
 			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventNameType();
 	        boolean reentrant = RulesStack.push(operation);
 	        try {
 		        if (!reentrant) {
 					try {
-						
+
 						logger.debug("Executing dynamic ruleset for "+orangeLeapRuleBase.getRuleEventNameType());
-						
+
 						map.put(RULE_EXECUTION_SUMMARY, new ArrayList<String>());
 						addServicesToMap();
-						
+
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
 						rulesConfService.fireRulesEvent(orangeLeapRuleBase.getRuleEventNameType(), orangeLeapRuleBase.isTestMode(), map);
 
@@ -58,23 +58,23 @@ public class OrangeLeapRuleSession {
 	        	printRulesExecutionSummary();
 	        	RulesStack.pop(operation);
 	        }
-	        
+
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		private void printRulesExecutionSummary() {
-			
+
 			StringBuilder sb = new StringBuilder();
 			sb.append("Rules Execution Summary:\n");
 			List<String> summary = (List<String>)map.get(RULE_EXECUTION_SUMMARY);
 			for (String s: summary) sb.append(s).append("\n");
-			
+
 			logger.info(sb.toString()); // TODO change to debug
-			
+
 		}
-		
+
 		public static final String RULE_EXECUTION_SUMMARY = "ruleExecutionSummary";
-		
+
 		// Add any new services used by rules to this list:
 		private void addServicesToMap() {
 			ApplicationContext applicationContext = orangeLeapRuleBase.getApplicationContext();
@@ -89,6 +89,7 @@ public class OrangeLeapRuleSession {
 			map.put("emailService", applicationContext.getBean("emailService"));
 			map.put("mailService", applicationContext.getBean("mailService"));
 			map.put("errorLogService", applicationContext.getBean("errorLogService"));
+			map.put("ruleHelperService", applicationContext.getBean("ruleHelperService"));
 		}
-		
+
 }

@@ -83,7 +83,10 @@ public class ManageRuleDescController extends SimpleFormController {
         
         Long id = new Long(request.getParameter("id")); 
         String ruleEventType = request.getParameter("ruleEventType"); 
-        RuleEventNameType rulesEventNameType = RuleEventNameType.valueOf(ruleEventType);
+        RuleEventNameType rulesEventNameType = null;
+        for (RuleEventNameType r : RuleEventNameType.values()) {
+        	if (r.getType().equals(ruleEventType)) rulesEventNameType = r;
+        }
 
         String newDesc = request.getParameter("desc"); 
         String newActive = request.getParameter("active"); 

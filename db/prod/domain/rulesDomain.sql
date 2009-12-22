@@ -33,7 +33,7 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_E
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'who has a custom field named ?';
-SET @CODE_CD = 'map.constituent.getCustomFieldValue("?") != null && !map.constituent.getCustomFieldValue("?").equals("")';
+SET @CODE_CD = 'map.constituent.getCustomFieldValue(?) != null && !map.constituent.getCustomFieldValue(?).equals("")';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
@@ -244,7 +244,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'who has made a donation in the past ? ?';
-SET @CODE_CD = 'map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, ?.intValue(), "?") >= 1';
+SET @CODE_CD = 'map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, ?.intValue(), ?) >= 1';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
@@ -263,7 +263,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'who has not made a donation in the past ? ?';
-SET @CODE_CD = 'map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, ?.intValue(), "?") == 0';
+SET @CODE_CD = 'map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, ?.intValue(), ?) == 0';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
@@ -320,7 +320,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- *****************************************Custom Fields Consequences********************************************************
 SET @PHRASE_CD = 'Set the custom field ? to ?';
-SET @CODE_CD = 'map.constituent.setCustomFieldValue("?","?"); map.constituentService.maintainConstituent(map.constituent);';
+SET @CODE_CD = 'map.constituent.setCustomFieldValue(?,?); map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);
@@ -339,7 +339,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Unset the individual as a ?';
-SET @CODE_CD = 'map.constituent.removeConstituentIndividualRoles("?"); map.constituentService.maintainConstituent(map.constituent);';
+SET @CODE_CD = 'map.constituent.removeConstituentIndividualRoles(?); map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);
@@ -355,7 +355,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'add donor profile of ?';
-SET @CODE_CD = 'map.constituent.addCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES,"?");map.constituentService.maintainConstituent(map.constituent);';
+SET @CODE_CD = 'map.constituent.addCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES,?);map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);

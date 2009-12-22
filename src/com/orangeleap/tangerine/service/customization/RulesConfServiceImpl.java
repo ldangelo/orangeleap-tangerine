@@ -280,13 +280,11 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     		if (type.equals(RuleSegmentTypeParmType.STRING) || type.equals(RuleSegmentTypeParmType.PICKLIST) || type.equals(RuleSegmentTypeParmType.SITE_VARIABLE)) {
         		String parmvalue = ruleSegmentParm.getRuleSegmentParmStringValue();
         		parmvalue = whiteList(parmvalue); 
-    			text = replaceNextParm(text, parmvalue);
+    			text = replaceNextParm(text, "\""+parmvalue+"\"");
     		} else if (type.equals(RuleSegmentTypeParmType.NUMBER)) {
         		BigDecimal parmvalue = ruleSegmentParm.getRuleSegmentParmNumericValue();
     			if (parmvalue != null) text = replaceNextParm(text, parmvalue.toString());
     		} 
-    		// TODO support other parm types
-    		
     	}
     	return text;
     }
@@ -302,12 +300,13 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     
     private String whiteList(String s) {
     	StringBuilder sb = new StringBuilder();
-    	if (s == null) return "";
-    	for (int i = 0; i < s.length(); i++) {
-    		char c = s.charAt(i);
-    		if (WHITELIST.indexOf(c) > -1) {
-    			sb.append(c);
-    		}
+    	if (s != null) {
+	    	for (int i = 0; i < s.length(); i++) {
+	    		char c = s.charAt(i);
+	    		if (WHITELIST.indexOf(c) > -1) {
+	    			sb.append(c);
+	    		}
+	    	}
     	}
     	return sb.toString();
     }

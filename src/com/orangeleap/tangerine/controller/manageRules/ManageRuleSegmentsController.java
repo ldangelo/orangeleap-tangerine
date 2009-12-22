@@ -245,7 +245,8 @@ public class ManageRuleSegmentsController extends SimpleFormController {
             
         }
         
-        rulesConfService.generateRulesEventScript(rulesEventNameType, false);
+        // need to only do if there are some conditions or will give compile err
+        //rulesConfService.generateRulesEventScript(rulesEventNameType, false);
         
         return getModelAndView(request);
 

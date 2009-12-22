@@ -23,6 +23,7 @@ import groovy.lang.GroovyObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,6 +93,28 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "ruleSegmentTypeDAO")
     private RuleSegmentTypeDao ruleSegmentTypeDao;
     
+    private static final int MAX_ENTRIES = 100;
+    private static volatile ThreadLocal<Map<String, GroovyObject>> groovyObjectCache;
+
+    public static void resetGroovyObjectCache() {
+    	ThreadLocal<Map<String, GroovyObject>> agroovyObjectCache = new ThreadLocal<Map<String, GroovyObject>>() {
+	        protected synchronized Map<String, GroovyObject> initialValue() {
+	            return new LinkedHashMap<String, GroovyObject>(MAX_ENTRIES + 1, .75F, true) {
+					private static final long serialVersionUID = 1L;
+			        public boolean removeEldestEntry(Map.Entry<String, GroovyObject> eldest) {
+			            return size() > MAX_ENTRIES;
+			        }
+	            };
+	        }
+    	};
+    	groovyObjectCache = agroovyObjectCache;
+    }
+
+    static { 
+    	resetGroovyObjectCache();
+    }
+
+    
     @Override
 	public List<RuleSegmentType> getAvailableRuleSegmentTypes(String ruleEventTypeName) {
     	 RuleEventType ruleEventType = ruleEventTypeDao.readRuleEventTypeByNameId(ruleEventTypeName);
@@ -117,12 +140,31 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
         cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void fireRulesEvent(RuleEventNameType rulesEventNameType, boolean testMode, Map<String, Object> map) {
-    	// TODO cache classloaders/classes
-		String script = readRulesEventScript(rulesEventNameType, testMode);
-		if (script == null || script.length() == 0) return;
-		runScript(script, map);
+		try {
+		    String key = buildCacheKey(rulesEventNameType, testMode);
+	    	GroovyObject groovyObject = groovyObjectCache.get().get(key);
+	    	// TODO enable when dsl done
+	    	//if (groovyObject == null) 
+	    	{
+	    		String script = readRulesEventScript(rulesEventNameType, testMode);
+				Class groovyClass = compileScript(script);
+				groovyObject = (GroovyObject) groovyClass.newInstance();
+		    	groovyObjectCache.get().put(key, groovyObject);
+	    	}
+			groovyObject.invokeMethod("run", new Object[]{map});
+		} catch (OrangeLeapConsequenceRuntimeException e) {
+			throw e;
+		} catch (InstantiationException e) { 
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) { 
+			throw new RuntimeException(e);
+		} catch (RuntimeException e) { 
+			e.printStackTrace();
+			throw new RuntimeException("Error in rules script execution:", e);
+		}
     }
 
     private String buildCacheKey(RuleEventNameType rulesEventNameType, boolean testMode) {
@@ -141,6 +183,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 		generateRulesEventScript(rulesEventNameType, testMode);  // TODO remove once UI rules admin wizard updates trigger compile
 		
 		RuleGeneratedCode rgc = null;
+    	// TODO enable when dsl done
 //		String key = buildCacheKey(rulesEventNameType, testMode);
 //		Element ele = ruleGeneratedCodeCache.get(key);
 //		if (ele == null) {
@@ -160,25 +203,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 		Class groovyClass = loader.parseClass("class RuleRunner{ void run(Map map) { "+script+" } }", "rules.groovy");
 		return groovyClass;
     }
-
-    private void runScript(String script, Map<String, Object> map) {
-		try {
-			Class groovyClass = compileScript(script);
-			GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
-			Object[] args = {map};
-			groovyObject.invokeMethod("run", args);
-		} catch (OrangeLeapConsequenceRuntimeException e) {
-			throw e;
-		} catch (InstantiationException e) { 
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) { 
-			throw new RuntimeException(e);
-		} catch (RuntimeException e) { 
-			e.printStackTrace();
-			throw new RuntimeException("Error in rules script execution:", e);
-		}
-    }
-
+  
     private String generateCode(RuleEventNameType rulesEventType, boolean testMode) {
     	
     	StringBuilder script = new StringBuilder();

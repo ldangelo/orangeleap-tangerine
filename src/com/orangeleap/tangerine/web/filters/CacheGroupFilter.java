@@ -19,25 +19,29 @@
 package com.orangeleap.tangerine.web.filters;
 
 
-import com.orangeleap.tangerine.dao.CacheGroupDao;
-import com.orangeleap.tangerine.domain.CacheGroup;
-import com.orangeleap.tangerine.type.CacheGroupType;
-import com.orangeleap.tangerine.util.OLLogger;
-import net.sf.ehcache.Cache;
-import org.apache.commons.logging.Log;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import net.sf.ehcache.Cache;
+
+import org.apache.commons.logging.Log;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.orangeleap.tangerine.dao.CacheGroupDao;
+import com.orangeleap.tangerine.domain.CacheGroup;
+import com.orangeleap.tangerine.service.customization.RulesConfServiceImpl;
+import com.orangeleap.tangerine.type.CacheGroupType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class CacheGroupFilter extends OncePerRequestFilter {
 
@@ -91,6 +95,7 @@ public class CacheGroupFilter extends OncePerRequestFilter {
                             if (key.equals(CacheGroupType.RULE_GENERATED_CODE.toString())) {
                                 logger.debug("Update detected, clearing RULE_GENERATED_CODE cache.");
                                 ruleGeneratedCodeCache.removeAll();
+                                RulesConfServiceImpl.resetGroovyObjectCache();
                             }
 
                         }

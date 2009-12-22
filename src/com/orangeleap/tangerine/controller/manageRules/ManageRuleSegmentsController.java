@@ -190,7 +190,18 @@ public class ManageRuleSegmentsController extends SimpleFormController {
         RuleSegment ruleSegment = getRuleSegment(ruleSegmentId, segments);
         
         if (moveUp) {
-        	// TODO
+        	for (int i = 0; i < segments.size();i++) {
+        		RuleSegment asegment = segments.get(i);
+        		if (ruleSegment.equals(asegment) && i > 0) {
+        			RuleSegment lastsegment = segments.get(i-1);
+        			Long seq = lastsegment.getRuleSegmentSeq();
+        			lastsegment.setRuleSegmentSeq(ruleSegment.getRuleSegmentSeq());
+        			ruleSegment.setRuleSegmentSeq(seq);
+                    ruleSegmentDao.maintainRuleSegment(lastsegment);
+                    ruleSegmentDao.maintainRuleSegment(ruleSegment);
+        			break;
+        		}
+        	}
         } else if (add) {
         	
             List<RuleSegmentType> availableSegmentTypes = rulesConfService.getAvailableRuleSegmentTypes(ruleEventTypeName);

@@ -257,6 +257,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	} catch (Exception e) {
     		e.printStackTrace();
     		logger.error("Error in rules script generation: " + (rulesEventType == null ? "Null rules event type" : rulesEventType.getType()) + "\n" + script, e);
+    		throw new RuntimeException("Rule is invalid.");
     	}
     	
     	return result;

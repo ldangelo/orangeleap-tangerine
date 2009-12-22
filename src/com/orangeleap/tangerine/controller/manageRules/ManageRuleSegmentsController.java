@@ -44,7 +44,6 @@ import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentParm;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleVersion;
 import com.orangeleap.tangerine.service.customization.RulesConfService;
-import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -173,7 +172,6 @@ public class ManageRuleSegmentsController extends SimpleFormController {
         if (!ManageRuleEventTypeController.accessAllowed(request)) return null;
 
         String ruleEventTypeName = request.getParameter("ruleEventType"); 
-        RuleEventNameType rulesEventNameType = RuleEventNameType.valueOf(ruleEventTypeName);
         Long id = new Long(request.getParameter("id")); 
         Long ruleSegmentId = new Long(request.getParameter("ruleSegmentId")); 
         String ruleSegmentType = request.getParameter("ruleSegmentType"); 
@@ -244,9 +242,6 @@ public class ManageRuleSegmentsController extends SimpleFormController {
             ruleSegmentDao.maintainRuleSegment(ruleSegment);
             
         }
-        
-        // need to only do if there are some conditions or will give compile err
-        //rulesConfService.generateRulesEventScript(rulesEventNameType, false);
         
         return getModelAndView(request);
 

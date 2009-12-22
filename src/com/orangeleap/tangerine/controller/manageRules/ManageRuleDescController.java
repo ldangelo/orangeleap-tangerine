@@ -25,17 +25,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.RuleDao;
-import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.service.customization.RulesConfService;
-import com.orangeleap.tangerine.type.CacheGroupType;
+import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.util.OLLogger;
 
 public class ManageRuleDescController extends SimpleFormController {
@@ -85,6 +83,7 @@ public class ManageRuleDescController extends SimpleFormController {
         
         Long id = new Long(request.getParameter("id")); 
         String ruleEventType = request.getParameter("ruleEventType"); 
+        RuleEventNameType rulesEventNameType = RuleEventNameType.valueOf(ruleEventType);
 
         String newDesc = request.getParameter("desc"); 
         String newActive = request.getParameter("active"); 
@@ -93,6 +92,8 @@ public class ManageRuleDescController extends SimpleFormController {
         rule.setRuleIsActive("true".equals(newActive));
         rule.setRuleDesc(newDesc);
         ruleDao.maintainRule(rule);
+        
+        rulesConfService.generateRulesEventScript(rulesEventNameType, false);
 
         return getModelAndView(id, ruleEventType);
 

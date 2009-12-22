@@ -319,7 +319,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 -- ********************************************************************************************************************************
 
 -- *****************************************Custom Fields Consequences********************************************************
-SET @PHRASE_CD = 'Set the custom field ? to ?';
+SET @PHRASE_CD = 'Set the constituent custom field ? to ?';
 SET @CODE_CD = 'map.constituent.setCustomFieldValue(?,?); map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -354,7 +354,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'add donor profile of ?';
+SET @PHRASE_CD = 'Add constituent donor profile of ?';
 SET @CODE_CD = 'map.constituent.addCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES,?);map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code

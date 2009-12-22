@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.service.customization;
 import java.util.List;
 import java.util.Map;
 
+import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 
@@ -32,5 +33,7 @@ public interface RulesConfService {
     public void generateRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode);
 
 	public void fireRulesEvent(RuleEventNameType rulesEventNameType, boolean testMode, Map<String, Object> map);
+
+	public void saveRule(Rule rule);
 
 }

@@ -311,4 +311,14 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	return sb.toString();
     }
 
+	@Override
+	public void saveRule(Rule rule) {
+		ruleDao.maintainRule(rule);
+        RuleEventNameType rulesEventNameType = null;
+        for (RuleEventNameType r : RuleEventNameType.values()) {
+        	if (r.getType().equals(rule.getRuleEventTypeNameId())) rulesEventNameType = r;
+        }
+        generateRulesEventScript(rulesEventNameType, false);
+	}
+
 }

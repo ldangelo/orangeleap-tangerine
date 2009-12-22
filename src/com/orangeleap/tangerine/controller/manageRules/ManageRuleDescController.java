@@ -83,10 +83,6 @@ public class ManageRuleDescController extends SimpleFormController {
         
         Long id = new Long(request.getParameter("id")); 
         String ruleEventType = request.getParameter("ruleEventType"); 
-        RuleEventNameType rulesEventNameType = null;
-        for (RuleEventNameType r : RuleEventNameType.values()) {
-        	if (r.getType().equals(ruleEventType)) rulesEventNameType = r;
-        }
 
         String newDesc = request.getParameter("desc"); 
         String newActive = request.getParameter("active"); 
@@ -94,11 +90,19 @@ public class ManageRuleDescController extends SimpleFormController {
         Rule rule = ruleDao.readRuleById(id);
         rule.setRuleIsActive("true".equals(newActive));
         rule.setRuleDesc(newDesc);
-        ruleDao.maintainRule(rule);
         
-        rulesConfService.generateRulesEventScript(rulesEventNameType, false);
+        String errorMessage = "";
+        try {
+        	rulesConfService.saveRule(rule);
+        } catch(Exception e) {
+        	logger.error(e);
+        	errorMessage  = "Unable to save invalid rule - check conditions and consequences.";
+        }
 
-        return getModelAndView(id, ruleEventType);
+        
+        ModelAndView mav = getModelAndView(id, ruleEventType);
+        mav.addObject("errorMessage", errorMessage);
+        return mav;
 
     }
     

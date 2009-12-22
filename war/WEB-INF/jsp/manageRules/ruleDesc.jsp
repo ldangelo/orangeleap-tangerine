@@ -15,6 +15,8 @@
            
                 <h4>Enter Rule Description</h4><br/>
                 
+                <b><c:out value="${errorMessage}"/></b>
+                
                 <table>
                 <tr>
                 <td>Description</td><td>Active</td>

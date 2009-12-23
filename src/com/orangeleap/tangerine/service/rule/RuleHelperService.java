@@ -25,6 +25,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -54,6 +55,10 @@ public class RuleHelperService {
 
 	public void setUserHelper(TangerineUserHelper userHelper) {
 		this.userHelper = userHelper;
+	}
+	
+	public static String trimToNull(String str) {
+		return StringUtils.trimToNull(str);
 	}
 
 	// Returns a Date object with a value of the time at the beginning of the year

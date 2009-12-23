@@ -33,7 +33,7 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_E
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Constituent has a custom field named ?';
-SET @CODE_CD = 'map.constituent.getCustomFieldValue(?) != null && !map.constituent.getCustomFieldValue(?).equals("")';
+SET @CODE_CD = 'map.ruleHelperService.trimToNull(map.constituent.getCustomFieldValue(?)) != null';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);

@@ -78,7 +78,7 @@ public class ManageRuleEventTypeController extends SimpleFormController {
         	}
         } catch(Exception e) {
         	logger.error(e);
-        	message  = "Unable to publish invalid ruleset.";
+        	message  = "Unable to publish invalid ruleset - check rule parameters.";
         }
 
         ModelAndView mav = super.showForm(request, response, errors, controlModel);

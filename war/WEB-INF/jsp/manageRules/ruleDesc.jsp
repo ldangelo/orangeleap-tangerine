@@ -15,8 +15,6 @@
            
                 <h4>Enter Rule Description</h4><br/>
                 
-                <b><c:out value="${errorMessage}"/></b>
-                
                 <table>
                 <tr>
                 <td>Description</td><td>Active</td>
@@ -36,7 +34,7 @@
                </form>
             
                <br/>
-		       <a href="rules.htm?ruleEventType=${ruleEventType}">&laquo;Back</a>
+		       <a href="#" onclick="window.location='rules.htm?ruleEventType=${ruleEventType}&id='+$('#id').val(); ">&laquo;Back</a>
 			
             </div>
            

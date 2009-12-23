@@ -63,7 +63,7 @@
              </form>
              
              <br/>
-		     <a href="rules.htm?ruleEventType=${ruleEventType}">&laquo;Back</a>
+		     <a href="#" onclick="window.location='rules.htm?ruleEventType=${ruleEventType}&id='+$('#id').val(); ">&laquo;Back</a>
              
              <script>
              	function update(ruleSegmentId, action, input) {

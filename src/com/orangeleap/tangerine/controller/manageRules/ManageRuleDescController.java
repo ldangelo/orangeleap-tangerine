@@ -90,18 +90,9 @@ public class ManageRuleDescController extends SimpleFormController {
         Rule rule = ruleDao.readRuleById(id);
         rule.setRuleIsActive("true".equals(newActive));
         rule.setRuleDesc(newDesc);
-        
-        String errorMessage = "";
-        try {
-        	rulesConfService.saveRule(rule);
-        } catch(Exception e) {
-        	logger.error(e);
-        	errorMessage  = "Unable to save invalid rule - check conditions and consequences.";
-        }
-
+		ruleDao.maintainRule(rule);
         
         ModelAndView mav = getModelAndView(id, ruleEventType);
-        mav.addObject("errorMessage", errorMessage);
         return mav;
 
     }

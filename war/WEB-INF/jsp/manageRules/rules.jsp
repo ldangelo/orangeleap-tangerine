@@ -23,7 +23,7 @@
 
 	            <select  id="id" name="id"  onchange="hideShowEditButton();">
 	               <c:forEach var="rule" items="${rules}">
-	                 <option value="<c:out value='${rule.id}'/>" > <c:out value='${rule.ruleDesc}'/></option>
+	                 <option <c:if test='${param.id == rule.id}'>selected</c:if> value="<c:out value='${rule.id}'/>" > <c:out value='${rule.ruleDesc}'/></option>
 	               </c:forEach>
 	            </select>
 	            
@@ -39,7 +39,7 @@
             </form>
              
             <br/>
-			<a href="ruleEventTypes.htm">&laquo;Back</a>
+			<a href="#" onclick="window.location = 'ruleEventTypes.htm?ruleEventType=${ruleEventType}';  " >&laquo;Back</a>
             
             </div>
             

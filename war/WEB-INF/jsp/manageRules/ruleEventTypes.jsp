@@ -11,17 +11,24 @@
            <form>
            
                 <h4>Select Event Type Rules to Manage</h4><br/>
+                
+               
+                <b><c:out value="${message}"/></b><br/><br/>
+                
+                
                 <select  id="ruleEventType" name="ruleEventType">
                    <c:forEach var="ruleEventType" items="${ruleEventTypes}">
-                     <option value="<c:out value='${ruleEventType.ruleEventTypeNameId}'/>" > <c:out value='${ruleEventType.ruleEventTypeDesc}'/></option>
+                     <option <c:if test='${param.ruleEventType == ruleEventType.ruleEventTypeNameId}'>selected</c:if>  value="<c:out value='${ruleEventType.ruleEventTypeNameId}'/>" > <c:out value='${ruleEventType.ruleEventTypeDesc}'/></option>
                    </c:forEach>
                 </select>
                 
                 <br/>
                 <br/>
+                <br/>
                 
-                
-                <input type="button" class="button" value="Go" onclick="window.location = 'rules.htm?ruleEventType=' + $('#ruleEventType').val();  " />
+                <a href="#" onclick="window.location = 'rules.htm?ruleEventType=' + $('#ruleEventType').val();  ">Edit Rules</a>&nbsp;&nbsp;
+
+                <a href="#"  onclick="window.location = 'ruleEventTypes.htm?action=publish&ruleEventType=' + $('#ruleEventType').val();  " >Publish Rules</a><br/>
                 
              </form>
             

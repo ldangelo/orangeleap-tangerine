@@ -348,11 +348,10 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     }
 
 	@Override
-	public void saveRule(Rule rule) {
-		ruleDao.maintainRule(rule);
+	public void publishEventTypeRules(String ruleEventTypeNameId) {
         RuleEventNameType rulesEventNameType = null;
         for (RuleEventNameType r : RuleEventNameType.values()) {
-        	if (r.getType().equals(rule.getRuleEventTypeNameId())) rulesEventNameType = r;
+        	if (r.getType().equals(ruleEventTypeNameId)) rulesEventNameType = r;
         }
         generateRulesEventScript(rulesEventNameType, false);
 	}

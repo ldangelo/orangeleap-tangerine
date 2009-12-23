@@ -18,9 +18,7 @@
 
 package com.orangeleap.tangerine.controller.manageRules;
 
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -34,7 +32,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.dao.RuleEventTypeDao;
-import com.orangeleap.tangerine.domain.customization.rule.RuleEventType;
+import com.orangeleap.tangerine.service.customization.RulesConfService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.util.OLLogger;
 
@@ -48,6 +46,8 @@ public class ManageRuleEventTypeController extends SimpleFormController {
     @Resource(name = "ruleEventTypeDAO")
     private RuleEventTypeDao ruleEventTypeDao;
   
+    @Resource(name = "rulesConfService")
+    private RulesConfService rulesConfService;
 
     
 	@SuppressWarnings("unchecked")
@@ -67,11 +67,26 @@ public class ManageRuleEventTypeController extends SimpleFormController {
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
         if (!accessAllowed(request)) return null;
+        String ruleEventType = request.getParameter("ruleEventType"); 
+        String action = request.getParameter("action"); 
+
+        String message = "";
+        try {
+        	if ("publish".equals(action)) {
+        		rulesConfService.publishEventTypeRules(ruleEventType);
+        		message = "Rule set published.";
+        	}
+        } catch(Exception e) {
+        	logger.error(e);
+        	message  = "Unable to publish invalid ruleset.";
+        }
 
         ModelAndView mav = super.showForm(request, response, errors, controlModel);
         mav.addObject("ruleEventTypes", ruleEventTypeDao.readAllRuleEventTypes());
+        mav.addObject("message", message);
         return mav;
     }
 
+  
 
 }

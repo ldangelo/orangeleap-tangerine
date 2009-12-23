@@ -301,7 +301,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	
     	if (ruleSegment.getRuleSegmentParms().size() < ruleSegmentType.getRuleSegmentTypeParms().size()) {
     		// Allow rule to have extraneous parms as long as it has the minimum number required
-    		throw new RuntimeException("Number of parameters for rule \"" + rule.getRuleDesc() + "\", \"" + ruleSegmentType.getRuleSegmentTypePhrase() + "\" is not correct.");
+    		throw new RuntimeException("Number of defined parameters for rule \"" + rule.getRuleDesc() + "\", \"" + ruleSegmentType.getRuleSegmentTypePhrase() + "\" is not correct.");
     	}
     	
     	String quot;

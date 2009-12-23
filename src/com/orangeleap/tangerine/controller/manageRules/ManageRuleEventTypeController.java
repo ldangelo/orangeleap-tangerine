@@ -74,7 +74,7 @@ public class ManageRuleEventTypeController extends SimpleFormController {
         try {
         	if ("publish".equals(action)) {
         		rulesConfService.publishEventTypeRules(ruleEventType);
-        		message = "Rule set published.";
+        		message = "Rule set published for "+ruleEventType;
         	}
         } catch(Exception e) {
         	logger.error(e);

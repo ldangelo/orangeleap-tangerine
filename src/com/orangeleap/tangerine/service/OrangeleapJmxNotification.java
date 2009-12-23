@@ -14,6 +14,8 @@ public interface OrangeleapJmxNotification    {
 	public Long getTotalOrbitalStatus();
 	public Long getTotalEchexStatus();
     
+	public Long getMemoryFreePercent();
+
 
     public Map<String, Map<String, Long>> getAllSiteCounts();
     public Map<String, Long> getSiteCounts(String sitename);

@@ -10,6 +10,7 @@ import org.springframework.jmx.export.notification.NotificationPublisherAware;
 import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
+import com.orangeleap.tangerine.util.OLLogger;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -104,6 +105,12 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	@Override
 	public Long getTotalEchexStatus() {
 		return getTotalCount(ECHEX_PAYMENT_STATUS);
+	}
+	
+	@Override
+	public Long getMemoryFreePercent() {
+		double pct = (OLLogger.getFreeMemory() * 1.0f) / Runtime.getRuntime().maxMemory();
+		return (Long)Math.round(pct * 100);
 	}
 	
 	private Long getTotalCount(String stat) {

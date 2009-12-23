@@ -13,8 +13,6 @@
                 <h4>Select Event Type Rules to Manage</h4><br/>
                 
                
-                <b><c:out value="${message}"/></b><br/><br/>
-                
                 
                 <select  id="ruleEventType" name="ruleEventType">
                    <c:forEach var="ruleEventType" items="${ruleEventTypes}">
@@ -22,7 +20,7 @@
                    </c:forEach>
                 </select>
                 
-                <br/>
+                <b><c:out value="${message}"/></b><br/>
                 <br/>
                 <br/>
                 

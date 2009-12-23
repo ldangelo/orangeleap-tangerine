@@ -203,6 +203,8 @@ public final class StringConstants {
     public static final String SUCCESS_PROPERTY = "successProperty";
     public static final String SORT_INFO = "sortInfo";
     public static final String FIELD = "field";
+    public static final String SORT = "sort";
+    public static final String DIR = "dir";
     public static final String START = "start";
     public static final String LIMIT = "limit";
     public static final String MAPPING = "mapping";

@@ -539,14 +539,14 @@ Ext.onReady(function() {
         }
     }
 
-    // custom toolbar for batch window to invoke initFocus - this effectively overrides what the 'refresh' button action is on the toolbar
+    // custom toolbar for batch window to invoke loadTab - this effectively overrides what the 'refresh' button action is on the toolbar
     OrangeLeap.BatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
         doLoad: function(start) {
             var o = { }, pn = this.getParams();
             o[pn.start] = start;
             o[pn.limit] = this.pageSize;
             if (this.fireEvent('beforechange', this, o) !== false) {
-                initFocus(batchWin.groupTabPanel, batchWin.groupTabPanel.activeGroup, start);
+                loadTab(batchWin.groupTabPanel, batchWin.groupTabPanel.activeGroup, batchWin.groupTabPanel.activeGroup, start);
             }
         }
     });
@@ -577,7 +577,15 @@ Ext.onReady(function() {
         return isCriteriaValid;
     }
 
-    function checkConditions(groupTabPanel, groupToShow, activeGroup) {
+    function beforeGroupChange(groupTabPanel, groupToShow, currentGroup) {
+        var isValid = checkConditions(groupTabPanel, groupToShow, currentGroup); // TODO: no need to check conditions for edit?
+        if (isValid) {
+//            isValid = initTabSaveParams(groupTabPanel, groupToShow, activeGroup, direction);
+        }
+        return isValid;
+    }
+
+    function checkConditions(groupTabPanel, groupToShow, currentGroup) {
         function checkBatchType() {
             var isValid = false;
             var batchType = getBatchTypeValue();
@@ -702,21 +710,61 @@ Ext.onReady(function() {
         return { 'pickedIds': pickedIds, 'notPickedIds': notPickedIds };
     }
 
-    function initFocus(groupTabPanel, thisGrp, startNum) {
+    function initTabSaveParams(groupTabPanel, newGroup, currentGroup) {
+        var saveParams = {};
+        if (currentGroup) {
+            if (currentGroup.mainItem.id == 'step1Grp') {
+                saveParams = { 'batchType': getBatchTypeValue(), 'batchDesc': Ext.getCmp('batchDesc').getValue(), 'previousStep': 'step1' };
+                $('#step1Num').addClass('complete');
+            }
+            else if (currentGroup.mainItem.id == 'step2Grp') {
+                var theseSegs = findPickedSegmentations();
+                saveParams = { 'pickedIds': theseSegs.pickedIds.toString(), 'notPickedIds': theseSegs.notPickedIds.toString(), 'previousStep': 'step2' };
+                $('#step2Num').addClass('complete');
+            }
+            else if (currentGroup.mainItem.id == 'step3Grp') {
+                // nothing to save for step3 - view only
+                saveParams = { 'previousStep': 'step3' };
+                $('#step3Num').addClass('complete');
+            }
+            else if (currentGroup.mainItem.id == 'step4Grp') {
+                var step4DataItems = step4Form.store.data.items;
+                for (var x = 0; x < step4DataItems.length; x++) {
+                    var value = step4DataItems[x].data.value;
+                    if (Ext.isDate(value)) {
+                        value = value.dateFormat('Y-m-d H:i:s');
+                    }
+                    saveParams['param-' + step4DataItems[x].data.name] = value;
+                }
+                saveParams['previousStep'] = 'step4';
+                $('#step4Num').addClass('complete');
+            }
+            else if (currentGroup.mainItem.id == 'step5Grp') {
+                // nothing to save for step5 - view only
+                saveParams = { 'previousStep': 'step5' };
+                $('#step5Num').addClass('complete');
+            }
+        }
+        return saveParams;
+    }
+
+    function loadTab(groupTabPanel, newGroup, currentGroup, startNum) {
         if ( ! startNum) {
             startNum = 0;
         }
-        if (thisGrp.mainItem.id == 'step1Grp') {
+        var saveParams = initTabSaveParams(groupTabPanel, newGroup, currentGroup);
+        var params = {};
+        if (newGroup.mainItem.id == 'step1Grp') {
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
             maskStep1Form();
+
+            var step1LoadParams = { 'batchId': batchID, '_eventId_step1': 'step1', 'execution': getFlowExecutionKey() };
+            jQuery.extend(params, step1LoadParams, saveParams); // copy properties from step1LoadParams & saveParams to params
+            
             step1Form.getForm().load({
-                url: 'doBatch.htm',
-                params: {
-                    'batchId': batchID,
-                    '_eventId_step1': 'step1',
-                    'execution': getFlowExecutionKey()
-                },
-                success: function(form, action) {
+                'url': 'doBatch.htm',
+                'params': params,
+                'success': function(form, action) {
                     flowExecutionKey = action.result.flowExecutionKey;
                     unmaskStep1Form();
                     setTimeout(function() {
@@ -726,7 +774,7 @@ Ext.onReady(function() {
                         }
                     }, 900);
                 },
-                failure: function(form, action) {
+                'failure': function(form, action) {
                     unmaskStep1Form();
                     Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                         buttons: Ext.MessageBox.OK,
@@ -734,52 +782,33 @@ Ext.onReady(function() {
                 }
             });
         }
-        else if (thisGrp.mainItem.id == 'step2Grp') {
-            // Submit step 1's data to step 2 - submit saved IDs to back end
-            var theseSegs = findPickedSegmentations();
-            step2Store.load({ params: { 'batchType': getBatchTypeValue(), 'pickedIds': theseSegs.pickedIds.toString(),
-                'notPickedIds': theseSegs.notPickedIds.toString(),
-                'batchDesc': Ext.getCmp('batchDesc').getValue(),
-                'start': startNum, 'limit': step2PageSize, '_eventId_step2': 'step2',
-                'execution': getFlowExecutionKey(), 'sort': 'lastDt', 'dir': 'DESC' }});
+        else if (newGroup.mainItem.id == 'step2Grp') {
+            var step2LoadParams = { '_eventId_step2': 'step2', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': step2PageSize, 'sort': 'lastDt', 'dir': 'DESC' };
+            jQuery.extend(params, step2LoadParams, saveParams); // copy properties from step2LoadParams & saveParams to params
+
+            step2Store.load({ 'params': params });
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
-            $('#step1Num').addClass('complete');
         }
-        else if (thisGrp.mainItem.id == 'step3Grp') {
-            // Submit step 2's data to step 3
-            var theseSegs = findPickedSegmentations();
-            step3Store.load({ params: { 'pickedIds': theseSegs.pickedIds.toString(), 'notPickedIds': theseSegs.notPickedIds.toString(),
-                '_eventId_step3': 'step3', 'execution': getFlowExecutionKey(), start: startNum, limit: 50 }});
+        else if (newGroup.mainItem.id == 'step3Grp') {
+            var step3LoadParams = { '_eventId_step3': 'step3', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': 50 };
+            jQuery.extend(params, step3LoadParams, saveParams); // copy properties from step3LoadParams & saveParams to params
+
+            step3Store.load({ 'params': params });
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
-            $('#step2Num').addClass('complete');
         }
-        else if (thisGrp.mainItem.id == 'step4Grp') {
-            // No data for step 3 (just reference data) to submit to step 4
-            step4UpdatableFieldsStore.load({ params: { '_eventId_step4': 'step4',
-                'execution': getFlowExecutionKey() }});
+        else if (newGroup.mainItem.id == 'step4Grp') {
+            var step4LoadParams = { '_eventId_step4': 'step4', 'execution': getFlowExecutionKey() };
+            jQuery.extend(params, step4LoadParams, saveParams); // copy properties from step4LoadParams & saveParams to params
+
+            step4UpdatableFieldsStore.load({ 'params': params });
             batchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
-            $('#step3Num').addClass('complete');
         }
-        else if (thisGrp.mainItem.id == 'step5Grp') {
-            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step5Tip);
-            // Submit step 4's data to step 5
-            var step4DataItems = step4Form.store.data.items;
-            var params = {};
-            for (var x = 0; x < step4DataItems.length; x++) {
-                var value = step4DataItems[x].data.value;
-                if (Ext.isDate(value)) {
-                    value = value.dateFormat('Y-m-d H:i:s');
-                }
-                params['param-' + step4DataItems[x].data.name] = value;
-            }
-            params['start'] = startNum;
-            params['limit'] = 20;
-            params['sort'] = 'id';
-            params['dir'] = 'ASC';
-            params['_eventId_step5'] = 'step5';
-            params['execution'] = getFlowExecutionKey();
+        else if (newGroup.mainItem.id == 'step5Grp') {
+            var step5LoadParams = { '_eventId_step5': 'step5', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': 20, 'sort': 'id', 'dir': 'ASC' };
+            jQuery.extend(params, step5LoadParams, saveParams); // copy properties from step5LoadParams & saveParams to params
+
             step5Store.load({ 'params': params });
-            $('#step4Num').addClass('complete');
+            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step5Tip);
         }
     }
 
@@ -1009,9 +1038,10 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(1);
-                    var firstItem = panel.items.items[0];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
+                    if (panel.setActiveGroup(0)) {
+                        var firstItem = panel.items.items[0];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
                 }
             },
             {
@@ -1267,9 +1297,10 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(1);
-                    var firstItem = panel.items.items[1];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
+                    if (panel.setActiveGroup(1)) {
+                        var firstItem = panel.items.items[1];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
                 }
             },
             {
@@ -1470,9 +1501,10 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(2);
-                    var firstItem = panel.items.items[2];
-                    firstItem.setActiveTab(firstItem.items.items[0]);
+                    if (panel.setActiveGroup(2)) { // check that all required fields entered and activeGroup is actually set to 2
+                        var firstItem = panel.items.items[2];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
                 }
             },
             {
@@ -1638,9 +1670,10 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
                     var panel = batchWin.groupTabPanel;
-                    panel.setActiveGroup(3);
-                    var thisItem = panel.items.items[3];
-                    thisItem.setActiveTab(thisItem.items.items[0]);
+                    if (panel.setActiveGroup(3)) {
+                        var thisItem = panel.items.items[3];
+                        thisItem.setActiveTab(thisItem.items.items[0]);
+                    }
                 }
             },
             {
@@ -1737,8 +1770,8 @@ Ext.onReady(function() {
              ref: '../groupTabPanel',
              layoutOnTabChange: true,
              listeners: {
-                 'groupchange': initFocus,
-                 'beforegroupchange': checkConditions
+                 'groupchange': loadTab,
+                 'beforegroupchange': beforeGroupChange
              },
              items: [
                  {

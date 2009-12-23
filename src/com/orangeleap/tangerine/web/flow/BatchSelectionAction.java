@@ -123,6 +123,11 @@ public class BatchSelectionAction {
         return (HttpServletRequest) ((ServletExternalContext) flowRequestContext.getExternalContext()).getNativeRequest();
     }
 
+    private String getRequestParameter(final RequestContext flowRequestContext, String parameterName) {
+        HttpServletRequest request = getRequest(flowRequestContext);
+        return request.getParameter(parameterName);
+    }
+
     private void setFlowScopeAttribute(final RequestContext flowRequestContext, final Object object, final String key) {
         MutableAttributeMap flowScopeMap = flowRequestContext.getFlowScope();
         flowScopeMap.put(key, object);
@@ -137,15 +142,90 @@ public class BatchSelectionAction {
         return (PostBatch) getFlowScopeAttribute(flowRequestContext, StringConstants.BATCH);
     }
 
+    private void determineStepToSave(final RequestContext flowRequestContext) {
+        final String previousStep = getRequestParameter(flowRequestContext, "previousStep");
+        if ("step1".equals(previousStep)) {
+            saveStep1Parameters(flowRequestContext);
+        }
+        else if ("step2".equals(previousStep)) {
+            saveStep2Parameters(flowRequestContext);
+        }
+        else if ("step4".equals(previousStep)) {
+            saveStep4Parameters(flowRequestContext);
+        }
+    }
+
+    private SortInfo getSortInfo(final RequestContext flowRequestContext) {
+        return new SortInfo(getRequestParameter(flowRequestContext, StringConstants.SORT),
+                getRequestParameter(flowRequestContext, StringConstants.DIR),
+                getRequestParameter(flowRequestContext, StringConstants.LIMIT),
+                getRequestParameter(flowRequestContext, StringConstants.START));
+    }
+
+    private void saveStep1Parameters(final RequestContext flowRequestContext) {
+        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        final String batchDesc = getRequestParameter(flowRequestContext, "batchDesc");
+        final String batchType = getRequestParameter(flowRequestContext, "batchType");
+        batch.setBatchDesc(batchDesc);
+        batch.setBatchType(batchType);
+        
+        /**
+         * Check if the batchType is different from what was previously entered during the flow - if so, reset the previously selected segmentation IDs and
+         * the updated fields
+         */
+        if (batch.getBatchType() != null && StringUtils.hasText(batch.getBatchType()) &&
+                StringUtils.hasText(batchType) && ! batchType.equals(batch.getBatchType())) {
+            batch.clearPostBatchEntries();
+            batch.clearUpdateFields();
+            Set<Long> pickedSegmentationIds = getPickedSegmentationIds(flowRequestContext);
+            if (pickedSegmentationIds != null) {
+                pickedSegmentationIds.clear();
+            }
+        }
+    }
+
+    private void saveStep2Parameters(final RequestContext flowRequestContext) {
+        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        final String pickedIds = getRequestParameter(flowRequestContext, "pickedIds");
+        final String notPickedIds = getRequestParameter(flowRequestContext, "notPickedIds");
+        syncPickedSegmentationIds(flowRequestContext, batch, pickedIds, notPickedIds);
+    }
+
+    private void saveStep4Parameters(final RequestContext flowRequestContext) {
+        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        final HttpServletRequest request = getRequest(flowRequestContext);
+        final Map<String, Object> enteredParams = findEnteredParameters(request);
+
+        BeanWrapper bean = createDefaultEntity(batch);
+        batch.clearUpdateFields();
+
+        // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
+        for (String thisKey : enteredParams.keySet()) {
+            String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
+            FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+            if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
+                // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
+                batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    public ModelMap step1FindBatchInfo(final RequestContext flowRequestContext, final Long batchId) {
+    public ModelMap step1FindBatchInfo(final RequestContext flowRequestContext) {
+        String batchIdStr = getRequestParameter(flowRequestContext, "batchId");
+        Long batchId = null;
+        if (NumberUtils.isDigits(batchIdStr)) {
+            batchId = new Long(getRequestParameter(flowRequestContext, "batchId"));
+        }
         if (logger.isTraceEnabled()) {
             logger.trace("step1FindBatchInfo: batchId = " + batchId);
         }
-        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch); // TODO: do as annotation
+        determineStepToSave(flowRequestContext);
+
         final ModelMap model = new ModelMap();
         PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        
+
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
         final Map<String, String> dataMap = new HashMap<String, String>();
         model.put(StringConstants.DATA, dataMap);
@@ -169,15 +249,21 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
+    private Set<Long> getPickedSegmentationIds(final RequestContext flowRequestContext) {
+        return (Set<Long>) getFlowScopeAttribute(flowRequestContext, PICKED_SEGMENTATION_IDS);
+    }
+
+    @SuppressWarnings("unchecked")
     private Set<Long> syncPickedSegmentationIds(final RequestContext flowRequestContext, final PostBatch batch, final String pickedIdsStr, final String notPickedIdsStr) {
 
         /**
          * Because users can pick/unpick IDs across multiple grid pages in the step 2 grid, we need to keep a running tab of which segmentation
          * IDs the users selected
          */
-        Set<Long> pickedSegmentationIds = (Set<Long>) getFlowScopeAttribute(flowRequestContext, PICKED_SEGMENTATION_IDS);
+        Set<Long> pickedSegmentationIds = getPickedSegmentationIds(flowRequestContext);
         if (pickedSegmentationIds == null) {
             pickedSegmentationIds = batch.getEntrySegmentationIds(); // Initialize with all the segmentation IDs for this batch
+            setFlowScopeAttribute(flowRequestContext, pickedSegmentationIds, PICKED_SEGMENTATION_IDS);
         }
         Set<String> pickedIds = StringUtils.commaDelimitedListToSet(pickedIdsStr);
         Set<String> notPickedIds = StringUtils.commaDelimitedListToSet(notPickedIdsStr);
@@ -208,66 +294,50 @@ public class BatchSelectionAction {
                 }
             }
         }
-        setFlowScopeAttribute(flowRequestContext, pickedSegmentationIds, PICKED_SEGMENTATION_IDS);
         return pickedSegmentationIds;
     }
 
     @SuppressWarnings("unchecked")
-    public ModelMap step2FindSegmentations(final RequestContext flowRequestContext, final String batchType, final String pickedIds, final String notPickedIds,
-                                           final String batchDesc, final String sort, final String dir, final String limit, final String start) {
+    public ModelMap step2FindSegmentations(final RequestContext flowRequestContext) {
         if (logger.isTraceEnabled()) {
-            logger.trace("step2FindSegmentations: batchType = " + batchType + " pickedIds = " + pickedIds + " notPickedIds = " +
-                    notPickedIds + " batchDesc = " + batchDesc + " sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
+            logger.trace("step2FindSegmentations:");
         }
-        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch); // TODO: do as annotation
+        determineStepToSave(flowRequestContext);
+        
         final ModelMap model = new ModelMap();
-        final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
+        final SortInfo sortInfo = getSortInfo(flowRequestContext);
         
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        batch.setBatchDesc(batchDesc);
 
-        Set<Long> pickedSegmentationIds = syncPickedSegmentationIds(flowRequestContext, batch, pickedIds, notPickedIds);
-
-        /**
-         * Check if the batchType is different from what was previously entered during the flow - if so, reset the previously selected segmentation IDs and
-         * the updated fields
-         */
-        if (batch.getBatchType() != null && StringUtils.hasText(batch.getBatchType()) &&
-                StringUtils.hasText(batchType) && ! batchType.equals(batch.getBatchType())) {
-            batch.clearPostBatchEntries();
-            batch.clearUpdateFields();
-            pickedSegmentationIds.clear();
-        }
-        batch.setBatchType(batchType);
-
-        model.put("pickedSegmentationsCount", pickedSegmentationIds.size());
-        model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, pickedSegmentationIds, batchType,
+        Set<Long> pickedSegmentationIds = getPickedSegmentationIds(flowRequestContext); 
+        model.put("pickedSegmentationsCount", pickedSegmentationIds == null ? 0 : pickedSegmentationIds.size());
+        model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, pickedSegmentationIds, batch.getBatchType(),
                 resolveSegmentationFieldName(sortInfo.getSort()), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit()));
-        model.put(StringConstants.TOTAL_ROWS, 2);//postBatchService.findTotalSegmentations(batchType));
+        model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batch.getBatchType())); 
 
         return model;
     }
 
     @SuppressWarnings("unchecked")
-    public ModelMap step3FindRowsForSegmentations(final RequestContext flowRequestContext, final String pickedIds,
-                                                  final String notPickedIds, final String sort, final String dir, final String limit, final String start) {
+    public ModelMap step3FindRowsForSegmentations(final RequestContext flowRequestContext) {
         if (logger.isTraceEnabled()) {
-            logger.trace("step3FindRowsForSegmentations: pickedIds = " + pickedIds + " notPickedIds = " + notPickedIds +
-                    " sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
+            logger.trace("step3FindRowsForSegmentations:");
         }
         tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
+        determineStepToSave(flowRequestContext);
+
         final ModelMap model = new ModelMap();
         final HttpServletRequest request = getRequest(flowRequestContext);
-        final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
+        final SortInfo sortInfo = getSortInfo(flowRequestContext);
 
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
 
-        /* First sync the segmentation Ids */
-        Set<Long> pickedSegmentationIds = syncPickedSegmentationIds(flowRequestContext, batch, pickedIds, notPickedIds);
+        Set<Long> pickedSegmentationIds = getPickedSegmentationIds(flowRequestContext);
 
-        /* Then clear out and add all segmentations */
-        batch.clearAddAllPostBatchEntriesForSegmentations(pickedSegmentationIds);
+        /* Clear out and add all segmentations */
+        batch.clearAddAllPostBatchEntriesForSegmentations(pickedSegmentationIds); // This needs to be done on load for step 3
         createJsonModel(request, batch, model, sortInfo);
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
         
@@ -407,6 +477,8 @@ public class BatchSelectionAction {
             logger.trace("step4FindBatchUpdateFields:");
         }
         tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
+        determineStepToSave(flowRequestContext);
+
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final String picklistNameId = new StringBuilder(batch.getBatchType()).append(BATCH_FIELDS).toString();
         final Picklist picklist = picklistItemService.getPicklist(picklistNameId);
@@ -445,7 +517,6 @@ public class BatchSelectionAction {
                 }
             }
         }
-
         model.put(StringConstants.ROWS, returnList);
         model.put(StringConstants.TOTAL_ROWS, returnList.size());
 
@@ -453,17 +524,17 @@ public class BatchSelectionAction {
     }
 
     @SuppressWarnings("unchecked")
-    public ModelMap step5ReviewUpdates(final RequestContext flowRequestContext, final String sort, final String dir,
-                                       final String limit, final String start) {
+    public ModelMap step5ReviewUpdates(final RequestContext flowRequestContext) {
         if (logger.isTraceEnabled()) {
-            logger.trace("step5ReviewUpdates: sort = " + sort + " dir = " + dir + " limit = " + limit + " start = " + start);
+            logger.trace("step5ReviewUpdates:");
         }
         tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
-        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        final SortInfo sortInfo = new SortInfo(sort, dir, limit, start);
-        final HttpServletRequest request = getRequest(flowRequestContext);
-        final Map<String, Object> enteredParams = findEnteredParameters(request);
+        determineStepToSave(flowRequestContext);
 
+        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        final SortInfo sortInfo = getSortInfo(flowRequestContext);
+
+        final HttpServletRequest request = getRequest(flowRequestContext);
         final ModelMap model = new ModelMap();
 
         final Set<Long> segmentationReportIds = batch.getEntrySegmentationIds();
@@ -499,41 +570,34 @@ public class BatchSelectionAction {
         fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
         fieldList.add(fieldMap);
 
-        batch.clearUpdateFields();
         // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
-        for (String thisKey : enteredParams.keySet()) {
+        for (String thisKey : batch.getUpdateFields().keySet()) {
             String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
             FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-            if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
-                fieldMap = new HashMap<String, Object>();
+            fieldMap = new HashMap<String, Object>();
+            String escapedFieldName = TangerineForm.escapeFieldName(fieldDef.getFieldName());
+            fieldMap.put(StringConstants.NAME, escapedFieldName);
+            fieldMap.put(StringConstants.MAPPING, escapedFieldName);
 
-                // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
-                batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
+            String propertyName = fieldDef.getFieldName();
+            if (bean.getPropertyValue(propertyName) instanceof CustomField) {
+                propertyName += StringConstants.DOT_VALUE;
+            }
+            String extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
+            fieldMap.put(StringConstants.TYPE, extType);
+            fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
 
-                String escapedFieldName = TangerineForm.escapeFieldName(fieldDef.getFieldName());
-                fieldMap.put(StringConstants.NAME, escapedFieldName);
-                fieldMap.put(StringConstants.MAPPING, escapedFieldName);
-
-                String propertyName = fieldDef.getFieldName();
-                if (bean.getPropertyValue(propertyName) instanceof CustomField) {
-                    propertyName += StringConstants.DOT_VALUE;
-                }
-                String extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
-                fieldMap.put(StringConstants.TYPE, extType);
-                fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
-
-                if (ExtTypeHandler.EXT_DATE.equals(extType)) {
-                    String format;
+            if (ExtTypeHandler.EXT_DATE.equals(extType)) {
+                String format;
 //                        if (FieldType.CC_EXPIRATION.equals(fieldDef.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(fieldDef.getFieldType())) {
 //                            format = "Y-m-d"; // TODO: put back CC?
 //                        }
 //                        else {
-                        format = "Y-m-d H:i:s";
+                    format = "Y-m-d H:i:s";
 //                        }
-                    fieldMap.put(StringConstants.DATE_FORMAT, format);
-                }
-                fieldList.add(fieldMap);
+                fieldMap.put(StringConstants.DATE_FORMAT, format);
             }
+            fieldList.add(fieldMap);
         }
         metaDataMap.put(StringConstants.FIELDS, fieldList);
 
@@ -544,7 +608,7 @@ public class BatchSelectionAction {
         else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
             rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
         }
-        contrastUpdatedValues(batch, rows, rowValues, enteredParams);
+        contrastUpdatedValues(batch, rows, rowValues, batch.getUpdateFields());
 
         model.put(StringConstants.ROWS, rowValues);
         model.put(StringConstants.TOTAL_ROWS, rowValues.size());
@@ -554,7 +618,7 @@ public class BatchSelectionAction {
 
     private void contrastUpdatedValues(final PostBatch batch, final List rows,
                                        final List<Map<String, Object>> rowValues,
-                                       final Map<String, Object> enteredParams) {
+                                       final Map<String, String> updateFields) {
         if (rows != null) {
             for (Object thisRow : rows) {
                 BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(thisRow);
@@ -568,23 +632,19 @@ public class BatchSelectionAction {
                 oldRowMap.put(StringConstants.DISPLAYED_ID, bw.getPropertyValue(StringConstants.ID));
                 newRowMap.put(StringConstants.DISPLAYED_ID, bw.getPropertyValue(StringConstants.ID));
 
-                for (Map.Entry<String, Object> paramEntry : enteredParams.entrySet()) {
-                    String key = paramEntry.getKey();
+                for (Map.Entry<String, String> fieldEntry : updateFields.entrySet()) {
+                    String key = fieldEntry.getKey();
                     // the batchType + key is the fieldDefinitionId; we need to resolve the fieldName
                     String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(key).toString();
                     FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-                    if (fieldDef != null) {
-                        String fieldName = fieldDef.getFieldName();
-                        if (bw.isReadableProperty(fieldName)) {
-                            String propertyName = fieldName;
-                            if (bw.getPropertyValue(propertyName) instanceof CustomField) {
-                                propertyName += StringConstants.DOT_VALUE;
-                            }
-                            String escapedFieldName = TangerineForm.escapeFieldName(fieldName);
-                            oldRowMap.put(escapedFieldName, bw.getPropertyValue(propertyName));
-                            newRowMap.put(escapedFieldName, paramEntry.getValue());
-                        }
+                    String fieldName = fieldDef.getFieldName();
+                    String propertyName = fieldName;
+                    if (bw.getPropertyValue(propertyName) instanceof CustomField) {
+                        propertyName += StringConstants.DOT_VALUE;
                     }
+                    String escapedFieldName = TangerineForm.escapeFieldName(fieldName);
+                    oldRowMap.put(escapedFieldName, bw.getPropertyValue(propertyName));
+                    newRowMap.put(escapedFieldName, fieldEntry.getValue());
                 }
                 rowValues.add(oldRowMap); // 1 row for the old value
                 rowValues.add(newRowMap); // 1 row for the new value

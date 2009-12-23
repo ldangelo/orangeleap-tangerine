@@ -230,8 +230,10 @@ public class PostBatch extends AbstractCustomizableEntity  {
     @SuppressWarnings("unchecked")
     public void clearAddAllPostBatchEntriesForSegmentations(Set<Long> pickedSegmentationIds) {
         clearPostBatchEntries();
-        for (Long thisSegmentationId : pickedSegmentationIds) {
-            addPostBatchEntry(new PostBatchEntry(thisSegmentationId));
+        if (pickedSegmentationIds != null) {
+            for (Long thisSegmentationId : pickedSegmentationIds) {
+                addPostBatchEntry(new PostBatchEntry(thisSegmentationId));
+            }
         }
     }
 

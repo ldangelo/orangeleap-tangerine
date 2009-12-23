@@ -163,7 +163,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 returnMap.put("count", segmentation.getCount());
                 returnMap.put("lastDt", segmentation.getLastRunDate() == null ? null : sdf.format(segmentation.getLastRunDate()));
                 returnMap.put("lastUser", segmentation.getLastRunByUser());
-                returnMap.put("picked", pickedSegmentationIds.contains(segmentation.getId()));
+                returnMap.put("picked", pickedSegmentationIds != null && pickedSegmentationIds.contains(segmentation.getId()));
                 returnList.add(returnMap);
             }
         }
@@ -186,20 +186,21 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         if (logger.isTraceEnabled()) {
             logger.trace("findTotalSegmentations: batchType = " + batchType);
         }
-        final Theguru theGuru = new WSClient().getTheGuru();
-        final ObjectFactory objFactory = new ObjectFactory();
-        final GetSegmentationCountByTypeRequest req = objFactory.createGetSegmentationCountByTypeRequest();
-
-        final String resolvedType = resolveGuruSegmentationType(batchType);
-
-        long count = 0;
-        if (resolvedType != null) {
-            final GetSegmentationCountByTypeResponse resp = theGuru.getSegmentationCountByType(req);
-            if (resp != null) {
-                count = resp.getCount();
-            }
-        }
-        return count;
+//        final Theguru theGuru = new WSClient().getTheGuru();
+//        final ObjectFactory objFactory = new ObjectFactory();
+//        final GetSegmentationCountByTypeRequest req = objFactory.createGetSegmentationCountByTypeRequest();
+//
+//        final String resolvedType = resolveGuruSegmentationType(batchType);
+//
+//        long count = 0;
+//        if (resolvedType != null) {
+//            final GetSegmentationCountByTypeResponse resp = theGuru.getSegmentationCountByType(req);
+//            if (resp != null) {
+//                count = resp.getCount();
+//            }
+//        }
+//        return count;
+        return 2; // TODO
     }
 
     @Override

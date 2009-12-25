@@ -55,7 +55,8 @@ OrangeLeap.msgBundle = {
     info: 'Info',
     mustDoStep1: 'You must choose a Batch Type (Step 1) first.',
     mustDoStep2: 'You must pick Segmentations (Step 2) first.',
-    mustDoStep3: 'There are no updatable rows based on the Segmentation you chose.  Choose a different segmentation (Step 2).',
+    noUpdatableRows: 'There are no updatable rows based on the Segmentation you chose.  Choose a different segmentation (Step 2).',
+    mustDoStep3: 'You must complete Step 3 first.',
     mustDoStep4: 'You must create Field Update Criteria (Step 4) first.',
     loading: 'Loading...',
     loadingSegmentations: 'Loading Segmentations...',
@@ -71,7 +72,7 @@ OrangeLeap.msgBundle = {
     step2Title: '<span class="step"><span class="stepNum" id="step2Num">2</span><span class="stepTxt">Choose Segmentations</span>',
     step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">View Rows That Will Be Updated</span>',
     step4Title: '<span class="step"><span class="stepNum" id="step4Num">4</span><span class="stepTxt">Create Field Update Criteria</span>',
-    step5Title: '<span class="step"><span class="stepNum" id="step4Num">5</span><span class="stepTxt">Confirm Changes</span>',
+    step5Title: '<span class="step"><span class="stepNum" id="step5Num">5</span><span class="stepTxt">Confirm Changes</span>',
     step1Tip: 'Step 1',
     step2Tip: 'Step 2',
     step3Tip: 'Step 3',
@@ -87,6 +88,7 @@ OrangeLeap.msgBundle = {
     errorAjax: 'The request could not be processed due to an error.  Please try again or contact your administrator if this issue continues.',
     errorBatchDelete: 'The batch could not be deleted due to an error.  Please try again or contact your administrator if this issue continues.',
     errorBatchExecute: 'The batch could not be executed due to an error.  Please try again or contact your administrator if this issue continues.',
+    errorStepLoad: 'The requested step could not be loaded due to an error.  Please try again or contact your administrator if this issue continues.',
     batchExecutedWithErrorBatchCreated: 'The batch execution completed but an Error Batch with ID <strong>{0}</strong> ' +
                                         'was created for rows that were not able to be executed due to errors. ' +
                                         'Select "Show Batches With Errors" to edit criteria and re-execute.'
@@ -553,8 +555,9 @@ Ext.onReady(function() {
 
     var flowExecutionKey = null;
     var batchID = null;
+    var accessibleSteps = ['step1Grp'];
 
-    /* Following is for the edit/add batch modal */
+    /* Following code to the end is for the edit/add batch modal */
     function elementFocus(fld) {
         $('#' + fld.getId()).parents('div.x-form-element').prev('label').addClass('inFocus');
     }
@@ -577,101 +580,104 @@ Ext.onReady(function() {
         return isCriteriaValid;
     }
 
-    function beforeGroupChange(groupTabPanel, groupToShow, currentGroup) {
-        var isValid = checkConditions(groupTabPanel, groupToShow, currentGroup); // TODO: no need to check conditions for edit?
-        if (isValid) {
-//            isValid = initTabSaveParams(groupTabPanel, groupToShow, activeGroup, direction);
+    function showErrorMsg(errorMsg) {
+        Ext.MessageBox.show.defer(1, Ext.MessageBox,
+            [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
+            buttons: Ext.MessageBox.OK,
+            msg: errorMsg}]); // use defer so that the msgBox will appear above the batchWin
+    }
+
+    function invalidateAccessibleSteps(invalidStepName) {
+        function deleteStep(stepName) {
+            var index = accessibleSteps.indexOf(stepName);
+            if (index > -1) {
+                delete accessibleSteps[index];
+            }
         }
-        return isValid;
+        if (invalidStepName == 'step1Grp') {
+            deleteStep('step2Grp');
+        }
+        if (invalidStepName == 'step1Grp' || invalidStepName == 'step2Grp') {
+            deleteStep('step3Grp');
+        }
+        if (invalidStepName == 'step1Grp' || invalidStepName == 'step2Grp' || invalidStepName == 'step3Grp') {
+            deleteStep('step4Grp');
+        }
+        if (invalidStepName == 'step1Grp' || invalidStepName == 'step2Grp' || invalidStepName == 'step3Grp' || invalidStepName == 'step4Grp') {
+            deleteStep('step5Grp');
+        }
     }
 
     function checkConditions(groupTabPanel, groupToShow, currentGroup) {
-        function checkBatchType() {
-            var isValid = false;
-            var batchType = getBatchTypeValue();
-            if ( ! batchType || Ext.isEmpty(batchType)) {
-                Ext.MessageBox.show.defer(1, Ext.MessageBox,
-                    [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                    buttons: Ext.MessageBox.OK,
-                    msg: msgs.mustDoStep1}]); // use defer so that the msgBox will appear above the batchWin
+        var isValid = true;
+        
+        // First check if the current group's conditions have been fulfilled
+        if (currentGroup && currentGroup.mainItem.id &&
+            groupToShow && groupToShow.mainItem.id &&
+            groupToShow.mainItem.id != currentGroup.mainItem.id &&
+            accessibleSteps.indexOf(groupToShow.mainItem.id) == -1) {
+            if (currentGroup.mainItem.id == 'step1Grp') {
+                var batchType = getBatchTypeValue();
+                if ( ! batchType || Ext.isEmpty(batchType)) {
+                    isValid = false;
+                    invalidateAccessibleSteps('step1Grp');
+                    showErrorMsg(msgs.mustDoStep1);
+                }
+                else if (accessibleSteps.indexOf('step2Grp') == -1) {
+                    accessibleSteps[accessibleSteps.length] = 'step2Grp';
+                }
             }
-            else {
-                isValid = true;
+            else if (currentGroup.mainItem.id == 'step2Grp') {
+                if ( ! hasPickedRows()) {
+                    isValid = false;
+                    invalidateAccessibleSteps('step2Grp');
+                    showErrorMsg(msgs.mustDoStep2);
+                }
+                else if (accessibleSteps.indexOf('step3Grp') == -1) {
+                    accessibleSteps[accessibleSteps.length] = 'step3Grp';
+                }
             }
-            return isValid;
+            else if (currentGroup.mainItem.id == 'step3Grp') {
+                if (step3Store.getCount() == 0) {
+                    isValid = false;
+                    invalidateAccessibleSteps('step3Grp');
+                    showErrorMsg(msgs.noUpdatableRows);
+                }
+                else if (accessibleSteps.indexOf('step4Grp') == -1) {
+                    accessibleSteps[accessibleSteps.length] = 'step4Grp';
+                }
+            }
+            else if (currentGroup.mainItem.id == 'step4Grp') {
+                if (step4Form.store.getCount() == 0 || ! checkFieldCriteriaValid()) {
+                    isValid = false;
+                    invalidateAccessibleSteps('step4Grp');
+                    showErrorMsg(msgs.mustDoStep4);
+                }
+                else if (accessibleSteps.indexOf('step5Grp') == -1) {
+                    accessibleSteps[accessibleSteps.length] = 'step5Grp';
+                }
+            }
         }
 
-        function checkSegmentationsPicked() {
-            var isValid = false;
-            if ( ! hasPickedRows()) {
-                Ext.MessageBox.show.defer(1, Ext.MessageBox,
-                    [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                    buttons: Ext.MessageBox.OK,
-                    msg: msgs.mustDoStep2}]); // use defer so that the msgBox will appear above the batchWin
-            }
-            else {
-                isValid = true;
-            }
-            return isValid;
-        }
-
-        function checkRowsAvailableToUpdate() {
-            var isValid = false;
-            if (step3Store.getCount() == 0) {
-                Ext.MessageBox.show.defer(1, Ext.MessageBox,
-                    [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                    buttons: Ext.MessageBox.OK,
-                    msg: msgs.mustDoStep3}]); // use defer so that the msgBox will appear above the batchWin
-            }
-            else {
-                isValid = true;
-            }
-            return isValid;
-        }
-
-        function checkUpdatableFieldCriteria() {
-            var isValid = false;
-            var thisStore = step4Form.store;
-
-            if (thisStore.getCount() == 0 || ! checkFieldCriteriaValid()) {
-                Ext.MessageBox.show.defer(1, Ext.MessageBox,
-                    [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                    buttons: Ext.MessageBox.OK,
-                    msg: msgs.mustDoStep4}]); // use defer so that the msgBox will appear above the batchWin
-            }
-            else {
-                isValid = true;
-            }
-            return isValid;
-        }
-
-        if (groupToShow.mainItem.id == 'step2Grp' ||
-                groupToShow.mainItem.id == 'step3Grp' ||
-                groupToShow.mainItem.id == 'step4Grp' ||
-                groupToShow.mainItem.id == 'step5Grp') {
-            if ( ! checkBatchType()) {
-                return false;
+        // Then check if all previous conditions for the group to show have been fulfilled
+        if (isValid) {
+            if (accessibleSteps.indexOf(groupToShow.mainItem.id) == -1) { // the step requested (e.g. step 5) is not available, so find which step (e.g. step 2) is missing
+                isValid = false;
+                if (accessibleSteps.indexOf('step4Grp') > -1) {
+                    showErrorMsg(msgs.mustDoStep4);
+                }
+                else if (accessibleSteps.indexOf('step3Grp') > -1) {
+                    showErrorMsg(msgs.mustDoStep3);
+                }
+                else if (accessibleSteps.indexOf('step2Grp') > -1) {
+                    showErrorMsg(msgs.mustDoStep2);
+                }
+                else if (accessibleSteps.indexOf('step1Grp') > -1) {
+                    showErrorMsg(msgs.mustDoStep1);
+                }
             }
         }
-        if (groupToShow.mainItem.id == 'step3Grp' ||
-                groupToShow.mainItem.id == 'step4Grp' ||
-                groupToShow.mainItem.id == 'step5Grp') {
-            if ( ! checkSegmentationsPicked()) {
-                return false;
-            }
-        }
-        if (groupToShow.mainItem.id == 'step4Grp' ||
-                groupToShow.mainItem.id == 'step5Grp') {
-            if ( ! checkRowsAvailableToUpdate()) {
-                return false;
-            }
-        }
-        if (groupToShow.mainItem.id == 'step5Grp') {
-            if ( ! checkUpdatableFieldCriteria()) {
-                return false;
-            }
-        }
-        return true;
+        return isValid;
     }
 
     function maskStep1Form() {
@@ -688,7 +694,30 @@ Ext.onReady(function() {
         }
     }
 
-    var step2PageSize = 20;
+    function findStepId(stepName) {
+        // 0 -> step 2
+        // 1 -> step 3
+        // 2 -> step 4
+        // 3 -> step 5
+        var stepNum = parseInt(stepName.replace(/step/gi, '').replace(/Grp/gi, ''), 10) - 2;
+        return $( $('#step1Grp').parent('div').siblings().get(stepNum) ).attr('id');
+    }
+
+    function maskStep(stepName, maskText) {
+        var id = findStepId(stepName);
+        if (id) {
+            Ext.get(id).mask(maskText);
+        }
+    }
+
+    function unmaskStep(stepName) {
+        var id = findStepId(stepName);
+        if (id) {
+            Ext.get(id).unmask();
+        }
+    }
+
+    var step2PageSize = 1;
 
     function findPickedSegmentations() {
          // this will find the picked and not picked segmentations on this page only
@@ -714,17 +743,17 @@ Ext.onReady(function() {
         var saveParams = {};
         if (currentGroup) {
             if (currentGroup.mainItem.id == 'step1Grp') {
-                saveParams = { 'batchType': getBatchTypeValue(), 'batchDesc': Ext.getCmp('batchDesc').getValue(), 'previousStep': 'step1' };
+                saveParams = { 'batchType': getBatchTypeValue(), 'batchDesc': Ext.getCmp('batchDesc').getValue(), 'previousStep': 'step1Grp' };
                 $('#step1Num').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step2Grp') {
                 var theseSegs = findPickedSegmentations();
-                saveParams = { 'pickedIds': theseSegs.pickedIds.toString(), 'notPickedIds': theseSegs.notPickedIds.toString(), 'previousStep': 'step2' };
+                saveParams = { 'pickedIds': theseSegs.pickedIds.toString(), 'notPickedIds': theseSegs.notPickedIds.toString(), 'previousStep': 'step2Grp' };
                 $('#step2Num').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step3Grp') {
                 // nothing to save for step3 - view only
-                saveParams = { 'previousStep': 'step3' };
+                saveParams = { 'previousStep': 'step3Grp' };
                 $('#step3Num').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step4Grp') {
@@ -736,12 +765,12 @@ Ext.onReady(function() {
                     }
                     saveParams['param-' + step4DataItems[x].data.name] = value;
                 }
-                saveParams['previousStep'] = 'step4';
+                saveParams['previousStep'] = 'step4Grp';
                 $('#step4Num').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step5Grp') {
                 // nothing to save for step5 - view only
-                saveParams = { 'previousStep': 'step5' };
+                saveParams = { 'previousStep': 'step5Grp' };
                 $('#step5Num').addClass('complete');
             }
         }
@@ -766,6 +795,7 @@ Ext.onReady(function() {
                 'params': params,
                 'success': function(form, action) {
                     flowExecutionKey = action.result.flowExecutionKey;
+                    accessibleSteps = action.result.accessibleSteps;
                     unmaskStep1Form();
                     setTimeout(function() {
                         var elem = Ext.getCmp('batchDesc');
@@ -927,7 +957,7 @@ Ext.onReady(function() {
         ],
         listeners: {
             'beforeload': function(store, options) {
-                Ext.get($('#step1Grp').parent('div').next().attr('id')).mask(msgs.loadingSegmentations);
+                maskStep('step2Grp', msgs.loadingSegmentations);
             },
             'load': function(store, records, options) {
                 var len = records.length;
@@ -939,10 +969,10 @@ Ext.onReady(function() {
                 if (hasPickedRows()) {
                     step2Form.nextButton.enable();
                 }
-                Ext.get($('#step1Grp').parent('div').next().attr('id')).unmask();
+                unmaskStep('step2Grp');
             },
             'exception': function(misc) {
-                Ext.get($('#step1Grp').parent('div').next().attr('id')).unmask();
+                unmaskStep('step2Grp');
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep2 });
@@ -952,6 +982,7 @@ Ext.onReady(function() {
     step2Store.proxy.on('load', function(proxy, txn, options) {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
         pickedSegmentationsCount = txn.reader.jsonData.pickedSegmentationsCount;
+        accessibleSteps = txn.reader.jsonData.accessibleSteps;
     });
 
     function hasPickedRows() {
@@ -996,6 +1027,7 @@ Ext.onReady(function() {
                 pickedSegmentationsCount--;
                 step2Form.getView().onRowDeselect(index);
                 if ( ! hasPickedRows()) {
+                    invalidateAccessibleSteps('step2Grp');
                     step2Form.nextButton.disable();
                 }
             }
@@ -1202,7 +1234,7 @@ Ext.onReady(function() {
                 step3Bar.bindStore(store, true);
             },
             'beforeload': function(store, options) {
-                Ext.get($('#step2Grp').parent('div').next().attr('id')).mask(msgs.loadingRows);
+                maskStep('step3Grp', msgs.loadingRows);
             },
             'load': function(store, records, options) {
                 if (records.length > 0) {
@@ -1211,10 +1243,10 @@ Ext.onReady(function() {
                 else {
                     step3Form.nextButton.disable();
                 }
-                Ext.get($('#step2Grp').parent('div').next().attr('id')).unmask();
+                unmaskStep('step3Grp');
             },
             'exception': function(misc) {
-                Ext.get($('#step2Grp').parent('div').next().attr('id')).unmask();
+                unmaskStep('step3Grp');
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep3 });
@@ -1223,6 +1255,7 @@ Ext.onReady(function() {
     });
     step3Store.proxy.on('load', function(proxy, txn, options) {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+        accessibleSteps = txn.reader.jsonData.accessibleSteps;
     });
 
     var step3Bar = new OrangeLeap.BatchWinToolbar({
@@ -1360,6 +1393,7 @@ Ext.onReady(function() {
                 var len = records.length;
                 var newPropertyNames = {};
                 var newCustomEditors = {};
+                var newCustomRenderers = {};
                 var initValues = {};
                 var newSource;
 
@@ -1429,6 +1463,15 @@ Ext.onReady(function() {
                                 store: myStore,
                                 value: initVal
                             }));
+                            newCustomRenderers[recName] = function(val, meta, r) {
+                                var returnVal = val;
+                                var aStore = this.grid.customEditors[r.get('name')].field.store;
+                                var index = aStore.find('itemName', val);
+                                if (index > -1) {
+                                    returnVal = aStore.getAt(index).get('displayVal');
+                                }
+                                return Ext.util.Format.htmlEncode(returnVal);
+                            };
                         }
                     }
                     else {
@@ -1445,14 +1488,15 @@ Ext.onReady(function() {
                 }
                 step4Form.propertyNames = newPropertyNames;
                 step4Form.customEditors = newCustomEditors;
+                step4Form.customRenderers = newCustomRenderers;
                 step4Form.setSource(newSource);
-                Ext.get($('#step3Grp').parent('div').next().attr('id')).unmask();
+                unmaskStep('step4Grp');
             },
             'beforeload': function(store, options) {
-                Ext.get($('#step3Grp').parent('div').next().attr('id')).mask(msgs.loading);
+                maskStep('step4Grp', msgs.loading);
             },
             'exception': function(misc) {
-                Ext.get($('#step3Grp').parent('div').next().attr('id')).unmask();
+                unmaskStep('step4Grp');
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep4 });
@@ -1462,6 +1506,7 @@ Ext.onReady(function() {
     var step4Picklists = {};
     step4UpdatableFieldsStore.proxy.on('load', function(proxy, txn, options) {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+        accessibleSteps = txn.reader.jsonData.accessibleSteps;
         if (txn.reader.jsonData && txn.reader.jsonData.rows) {
             var rows = txn.reader.jsonData.rows;
             var len = rows.length;
@@ -1562,13 +1607,13 @@ Ext.onReady(function() {
         ],
         listeners: {
             'beforeload': function(store, options) {
-                Ext.get($('#step4Grp').parent('div').next().attr('id')).mask(msgs.loadingRows);
+                maskStep('step5Grp', msgs.loadingRows);
             },
             'load': function(store, records, options) {
-                Ext.get($('#step4Grp').parent('div').next().attr('id')).unmask();
+                unmaskStep('step5Grp');
             },
             'exception': function(misc) {
-                Ext.get($('#step4Grp').parent('div').next().attr('id')).unmask();
+                unmaskStep('step5Grp');
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep5 });
@@ -1595,6 +1640,7 @@ Ext.onReady(function() {
     });
     step5Store.proxy.on('load', function(proxy, txn, options) {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+        accessibleSteps = txn.reader.jsonData.accessibleSteps;
     });
 
     var step5Bar = new OrangeLeap.BatchWinToolbar({
@@ -1711,30 +1757,32 @@ Ext.onReady(function() {
                     // to see the new batch, we have to reload the 'Open Batches' with CreateDate in desc order
                     params: { showBatchStatus: 'open', start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
                     callback: function() {
-                        // TODO: highlight the background
-                        
-//                        var obj = Ext.decode(responseText);
-//                        if (obj && obj.batchId) {
-//                            var recIndex = store.indexOfId(obj.batchId);
-//                            if (recIndex > -1) {
-//                                var row = grid.getView().getRow(recIndex);
-//                                if (row) {
-//                                    Ext.fly(row).highlight("FFFF9C", {
-//                                        attr: "background-color",
-//                                        easing: 'easeOut',
-//                                        duration: 3
-//                                    });
-//                                }
-//                            }
-//                        }
+                        cancelBatch(); // tell the server side to end the flow
+                        var obj = Ext.decode(responseText);
+                        if (obj && obj.batchId) {
+                            $('#batchList .' + grid.getView().selectedRowClass).each(function() {
+                                $(this).removeClass(grid.getView().selectedRowClass); // remove previous row highlighting
+                            });
+                            var recIndex = store.indexOfId(obj.batchId);
+                            if (recIndex > -1) {
+                                grid.getView().onRowSelect(recIndex);
+                            }
+                            hideOtherMarkers('savedMarker');
+                            $('#savedMarker').text(String.format(msgs.savedBatchId, obj.batchId));
+                            $("#savedMarker").show();
+                            setTimeout(function() {
+                                $("#savedMarker").hide();
+                            }, 10000);
+                        }
+                        else {
+                            hideOtherMarkers('savedMarker');
+                            $("#savedMarker").show();
+                            setTimeout(function() {
+                                $("#savedMarker").hide();
+                            }, 10000);
+                        }
                     }
                 });
-                cancelBatch(); // tell the server side to end the flow
-                hideOtherMarkers('savedMarker');
-                $("#savedMarker").show();
-                setTimeout(function() {
-                    $("#savedMarker").hide();
-                }, 10000);
             },
             failure: function(response, options) {
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
@@ -1763,6 +1811,17 @@ Ext.onReady(function() {
         modal: true,
         closable: false,
         closeAction: 'hide',
+        listeners: {
+            'show': function(win) {
+                if (batchID && Ext.isNumber(batchID) && batchID > 0) {
+                    $('#step1Num').addClass('complete');
+                    $('#step2Num').addClass('complete');
+                    $('#step3Num').addClass('complete');
+                    $('#step4Num').addClass('complete');
+                    $('#step5Num').addClass('complete');
+                }
+            }
+        },
         items:[{
              xtype: 'grouptabpanel',
              tabWidth: 135,
@@ -1770,8 +1829,8 @@ Ext.onReady(function() {
              ref: '../groupTabPanel',
              layoutOnTabChange: true,
              listeners: {
-                 'groupchange': loadTab,
-                 'beforegroupchange': beforeGroupChange
+                 'beforegroupchange': checkConditions,
+                 'groupchange': loadTab
              },
              items: [
                  {
@@ -1853,6 +1912,7 @@ Ext.onReady(function() {
 
     function resetSteps2Thru5() {
         pickedSegmentationsCount = 0;
+        accessibleSteps = ['step1Grp'];
         $('#step2Num').removeClass('complete');
         $('#step3Num').removeClass('complete');
         $('#step4Num').removeClass('complete');

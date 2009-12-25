@@ -11,17 +11,6 @@
     http://www.springframework.org/schema/webflow-config
     http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd">
 
-    <!--<bean id="batchHandlerAdapter" class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>-->
-
-    <!--<bean id="batchHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">-->
-        <!--<property name="alwaysUseFullPath" value="true" />-->
-        <!--<property name="mappings">-->
-            <!--<props>-->
-                <!--<prop key="/doBatch.htm">batchFlowController</prop>-->
-            <!--</props>-->
-        <!--</property>-->
-    <!--</bean>-->
-
     <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
 		<property name="order" value="0" />
 		<property name="flowRegistry" ref="flowRegistry" />

@@ -77,6 +77,13 @@ public class BatchSelectionAction {
     public static final String PARAM_PREFIX = "param-";
     public static final String BATCH_FIELDS = "BatchFields";
     public static final String PICKED_SEGMENTATION_IDS = "pickedSegmentationIds";
+    public static final String PREVIOUS_STEP = "previousStep";
+    public static final String ACCESSIBLE_STEPS = "accessibleSteps";
+    public static final String STEP_1_GRP = "step1Grp";
+    public static final String STEP_2_GRP = "step2Grp";
+    public static final String STEP_3_GRP = "step3Grp";
+    public static final String STEP_4_GRP = "step4Grp";
+    public static final String STEP_5_GRP = "step5Grp";
 
     @Resource(name = "postBatchService")
     private PostBatchService postBatchService;
@@ -143,14 +150,14 @@ public class BatchSelectionAction {
     }
 
     private void determineStepToSave(final RequestContext flowRequestContext) {
-        final String previousStep = getRequestParameter(flowRequestContext, "previousStep");
-        if ("step1".equals(previousStep)) {
+        final String previousStep = getRequestParameter(flowRequestContext, PREVIOUS_STEP);
+        if (STEP_1_GRP.equals(previousStep)) {
             saveStep1Parameters(flowRequestContext);
         }
-        else if ("step2".equals(previousStep)) {
+        else if (STEP_2_GRP.equals(previousStep)) {
             saveStep2Parameters(flowRequestContext);
         }
-        else if ("step4".equals(previousStep)) {
+        else if (STEP_4_GRP.equals(previousStep)) {
             saveStep4Parameters(flowRequestContext);
         }
     }
@@ -177,10 +184,6 @@ public class BatchSelectionAction {
                 StringUtils.hasText(batchType) && ! batchType.equals(batch.getBatchType())) {
             batch.clearPostBatchEntries();
             batch.clearUpdateFields();
-            Set<Long> pickedSegmentationIds = getPickedSegmentationIds(flowRequestContext);
-            if (pickedSegmentationIds != null) {
-                pickedSegmentationIds.clear();
-            }
         }
     }
 
@@ -245,26 +248,18 @@ public class BatchSelectionAction {
         dataMap.put(StringConstants.BATCH_DESC, batch.getBatchDesc());
         dataMap.put(StringConstants.BATCH_TYPE, batch.getBatchType());
 
+        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
     }
 
     @SuppressWarnings("unchecked")
-    private Set<Long> getPickedSegmentationIds(final RequestContext flowRequestContext) {
-        return (Set<Long>) getFlowScopeAttribute(flowRequestContext, PICKED_SEGMENTATION_IDS);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Set<Long> syncPickedSegmentationIds(final RequestContext flowRequestContext, final PostBatch batch, final String pickedIdsStr, final String notPickedIdsStr) {
+    private void syncPickedSegmentationIds(final RequestContext flowRequestContext, final PostBatch batch, final String pickedIdsStr, final String notPickedIdsStr) {
 
         /**
          * Because users can pick/unpick IDs across multiple grid pages in the step 2 grid, we need to keep a running tab of which segmentation
          * IDs the users selected
          */
-        Set<Long> pickedSegmentationIds = getPickedSegmentationIds(flowRequestContext);
-        if (pickedSegmentationIds == null) {
-            pickedSegmentationIds = batch.getEntrySegmentationIds(); // Initialize with all the segmentation IDs for this batch
-            setFlowScopeAttribute(flowRequestContext, pickedSegmentationIds, PICKED_SEGMENTATION_IDS);
-        }
+        Set<Long> pickedSegmentationIds = batch.getEntrySegmentationIds();
         Set<String> pickedIds = StringUtils.commaDelimitedListToSet(pickedIdsStr);
         Set<String> notPickedIds = StringUtils.commaDelimitedListToSet(notPickedIdsStr);
 
@@ -294,7 +289,7 @@ public class BatchSelectionAction {
                 }
             }
         }
-        return pickedSegmentationIds;
+        batch.clearAddAllPostBatchEntriesForSegmentations(pickedSegmentationIds);
     }
 
     @SuppressWarnings("unchecked")
@@ -310,13 +305,14 @@ public class BatchSelectionAction {
         
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
 
-        Set<Long> pickedSegmentationIds = getPickedSegmentationIds(flowRequestContext); 
+        Set<Long> pickedSegmentationIds = batch.getEntrySegmentationIds(); 
         model.put("pickedSegmentationsCount", pickedSegmentationIds == null ? 0 : pickedSegmentationIds.size());
         model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, pickedSegmentationIds, batch.getBatchType(),
                 resolveSegmentationFieldName(sortInfo.getSort()), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit()));
         model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batch.getBatchType())); 
 
+        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
     }
 
@@ -334,13 +330,14 @@ public class BatchSelectionAction {
 
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
 
-        Set<Long> pickedSegmentationIds = getPickedSegmentationIds(flowRequestContext);
+        Set<Long> pickedSegmentationIds = batch.getEntrySegmentationIds();
 
         /* Clear out and add all segmentations */
         batch.clearAddAllPostBatchEntriesForSegmentations(pickedSegmentationIds); // This needs to be done on load for step 3
         createJsonModel(request, batch, model, sortInfo);
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
         
+        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
     }
 
@@ -395,13 +392,15 @@ public class BatchSelectionAction {
         Set<Long> reportIds = batch.getEntrySegmentationIds();
         List rowObjects = null;
         int totalRows = 0;
-        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            totalRows = giftService.readCountGiftsBySegmentationReportIds(reportIds);
-            rowObjects = giftService.readGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
-        }
-        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-            totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(reportIds);
-            rowObjects = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
+        if ( ! reportIds.isEmpty()) {
+            if (StringConstants.GIFT.equals(batch.getBatchType())) {
+                totalRows = giftService.readCountGiftsBySegmentationReportIds(reportIds);
+                rowObjects = giftService.readGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
+            }
+            else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+                totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(reportIds);
+                rowObjects = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
+            }
         }
 
         model.put(StringConstants.TOTAL_ROWS, totalRows);
@@ -492,7 +491,7 @@ public class BatchSelectionAction {
                 FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
                 if (fieldDef != null) {
                     FieldType fieldType = fieldDef.getFieldType();
-                    if (fieldType.equals(FieldType.PICKLIST)) {
+                    if (fieldType.equals(FieldType.PICKLIST)) {  // TODO: MULTI_PICKLIST, CODE, etc?
                         final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
                         if (referencedPicklist != null) {
                             final List<Map<String, String>> referencedItemList = new ArrayList<Map<String, String>>();
@@ -520,6 +519,7 @@ public class BatchSelectionAction {
         model.put(StringConstants.ROWS, returnList);
         model.put(StringConstants.TOTAL_ROWS, returnList.size());
 
+        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
     }
 
@@ -583,7 +583,13 @@ public class BatchSelectionAction {
             if (bean.getPropertyValue(propertyName) instanceof CustomField) {
                 propertyName += StringConstants.DOT_VALUE;
             }
-            String extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
+            String extType;
+            if (fieldDef.getFieldType().equals(FieldType.PICKLIST)) {
+                extType = ExtTypeHandler.EXT_STRING;
+            }
+            else {
+                extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
+            }
             fieldMap.put(StringConstants.TYPE, extType);
             fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
 
@@ -613,6 +619,7 @@ public class BatchSelectionAction {
         model.put(StringConstants.ROWS, rowValues);
         model.put(StringConstants.TOTAL_ROWS, rowValues.size());
 
+        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
     }
 
@@ -643,8 +650,30 @@ public class BatchSelectionAction {
                         propertyName += StringConstants.DOT_VALUE;
                     }
                     String escapedFieldName = TangerineForm.escapeFieldName(fieldName);
-                    oldRowMap.put(escapedFieldName, bw.getPropertyValue(propertyName));
-                    newRowMap.put(escapedFieldName, fieldEntry.getValue());
+
+                    if (fieldDef.getFieldType().equals(FieldType.PICKLIST)) {   // TODO: MULTI_PICKLIST, CODE, etc?
+                        Object oldValObj = bw.getPropertyValue(propertyName);
+                        String oldVal = oldValObj == null ? null : oldValObj.toString();
+                        String newVal = fieldEntry.getValue();
+                        final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
+                        if (referencedPicklist != null) {
+                            for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {
+                                if (oldVal != null && referencedItem.getItemName().equals(oldVal)) {
+                                    oldVal = referencedItem.getDefaultDisplayValue();
+                                }
+                                if (referencedItem.getItemName().equals(newVal)) {
+                                    newVal = referencedItem.getDefaultDisplayValue();
+                                }
+                            }
+                        }
+                        oldRowMap.put(escapedFieldName, oldVal);
+                        newRowMap.put(escapedFieldName, newVal);
+
+                    }
+                    else {
+                        oldRowMap.put(escapedFieldName, bw.getPropertyValue(propertyName));
+                        newRowMap.put(escapedFieldName, fieldEntry.getValue());
+                    }
                 }
                 rowValues.add(oldRowMap); // 1 row for the old value
                 rowValues.add(newRowMap); // 1 row for the new value
@@ -677,6 +706,40 @@ public class BatchSelectionAction {
         final ModelMap model = new ModelMap();
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
         return model;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected List<String> determineAccessibleSteps(final RequestContext flowRequestContext) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("determineAccessibleSteps:");
+        }
+        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        final Set<String> accessibleSteps = new TreeSet<String>();
+        accessibleSteps.add(STEP_1_GRP); // step 1 always accessible
+
+        if (StringUtils.hasText(batch.getBatchType())) {
+            accessibleSteps.add(STEP_2_GRP);
+        }
+
+        if (accessibleSteps.contains(STEP_2_GRP) && ! batch.getEntrySegmentationIds().isEmpty()) {
+            accessibleSteps.add(STEP_3_GRP);
+        }
+
+        int totalRows = 0;
+        if (StringConstants.GIFT.equals(batch.getBatchType()) && ! batch.getEntrySegmentationIds().isEmpty()) {
+            totalRows = giftService.readCountGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
+        }
+        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType()) && ! batch.getEntrySegmentationIds().isEmpty()) {
+            totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
+        }
+        if (accessibleSteps.contains(STEP_3_GRP) && totalRows > 0) {
+            accessibleSteps.add(STEP_4_GRP);
+        }
+
+        if (accessibleSteps.contains(STEP_4_GRP) && ! batch.getUpdateFields().isEmpty()) {
+            accessibleSteps.add(STEP_5_GRP);
+        }
+        return new ArrayList<String>(accessibleSteps);
     }
 
     private Map<String, Object> findEnteredParameters(final HttpServletRequest request) {

@@ -50,23 +50,23 @@ public class BatchSelectionActionTest extends BaseTest {
     public void testSyncPickedSegmentationIds1() throws Exception {
         /* Test a new batch without any picked IDs set */
         invokeSyncPickedSegmentationIds(batch, "1,2,3,83", "3,4,5,83,6");
-        Assert.assertEquals("1,2,3,83", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("1,2,3,83", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
 
         /* Remove 2,3 and add 5,7,9 */
         invokeSyncPickedSegmentationIds(batch, "5,7,9", "99,2,3");
-        Assert.assertEquals("1,5,7,9,83", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("1,5,7,9,83", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
 
         /* Add 8 and don't remove anything */
         invokeSyncPickedSegmentationIds(batch, "8", "");
-        Assert.assertEquals("1,5,7,8,9,83", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("1,5,7,8,9,83", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
 
         /* Remove 1,5,7,8,9 and don't add anything */
         invokeSyncPickedSegmentationIds(batch, "", "7,9,8,5,1");
-        Assert.assertEquals("83", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("83", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
 
         /* Remove 83 and don't add anything */
         invokeSyncPickedSegmentationIds(batch, "", "83");
-        Assert.assertEquals("", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
     }
 
     @Test
@@ -79,15 +79,15 @@ public class BatchSelectionActionTest extends BaseTest {
 
         /* Test a batch with picked IDs set */
         invokeSyncPickedSegmentationIds(batch, "", "");
-        Assert.assertEquals("100,200", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("100,200", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
 
         /* Test add 1 but not remove anything */
         invokeSyncPickedSegmentationIds(batch, "1", "");
-        Assert.assertEquals("1,100,200", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("1,100,200", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
 
         /* Test removing 1,100,200 */
         invokeSyncPickedSegmentationIds(batch, "", "100,200,1");
-        Assert.assertEquals("", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
     }
 
     @Test
@@ -99,15 +99,15 @@ public class BatchSelectionActionTest extends BaseTest {
 
         /* Test remove 100 and add 200 */
         invokeSyncPickedSegmentationIds(batch, "200", "100");
-        Assert.assertEquals("200", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("200", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
 
         /* Test don't add or delete anything */
         invokeSyncPickedSegmentationIds(batch, "", "");
-        Assert.assertEquals("200", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("200", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
 
         /* Test adding 300 */
         invokeSyncPickedSegmentationIds(batch, "300", "");
-        Assert.assertEquals("200,300", StringUtils.collectionToCommaDelimitedString((Set<Long>)mockRequestContext.getFlowScope().get(BatchSelectionAction.PICKED_SEGMENTATION_IDS)));
+        Assert.assertEquals("200,300", StringUtils.collectionToCommaDelimitedString(batch.getEntrySegmentationIds()));
     }
 
     private Object invokeSyncPickedSegmentationIds(PostBatch batch, String pickedIdsStr, String notPickedIdsStr) throws Exception {

@@ -9,25 +9,10 @@
         <property name="viewName" value="batch/batchList"/>
     </bean>
 
-    <!-- deprecated, will be removed -->
-    <bean id="postbatch" class="com.orangeleap.tangerine.controller.postbatch.PostBatchFormController">
-        <property name="formView" value="postbatch/postbatch" />
-        <property name="successView" value="postbatch/postbatch" />
-    </bean>
-
-    <bean id="postbatchs" class="com.orangeleap.tangerine.controller.postbatch.PostBatchListController">
-        <property name="formView" value="postbatch/postbatchs" />
-        <property name="successView" value="postbatch/postbatchs" />
-    </bean>
-
-    <bean id="postbatchUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+    <bean id="batchUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/batch.htm">batchGridController</prop>
-
-                <!-- deprecated, will be removed -->
-                <prop key="/postbatchs.htm">postbatchs</prop>
-                <prop key="/postbatch.htm">postbatch</prop>
 			</props>
 		</property>
 	</bean>

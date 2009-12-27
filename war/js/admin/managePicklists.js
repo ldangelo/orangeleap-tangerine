@@ -41,7 +41,7 @@ Ext.onReady(function() {
             }
         }
         return val;
-    }
+    };
 
     var numberFld = new Ext.form.NumberField({
         allowBlank: false,

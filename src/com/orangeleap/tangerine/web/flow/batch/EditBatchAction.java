@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.orangeleap.tangerine.web.flow;
+package com.orangeleap.tangerine.web.flow.batch;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -45,6 +45,7 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.common.TangerineListHelper;
 import com.orangeleap.tangerine.web.customization.tag.fields.SectionFieldTag;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import com.orangeleap.tangerine.web.flow.AbstractAction;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -53,8 +54,6 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
-import org.springframework.webflow.context.servlet.ServletExternalContext;
-import org.springframework.webflow.core.collection.MutableAttributeMap;
 import org.springframework.webflow.execution.RequestContext;
 
 import javax.annotation.Resource;
@@ -69,14 +68,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-@Component("batchSelectionAction")
-public class BatchSelectionAction {
+@Component("editBatchAction")
+public class EditBatchAction extends AbstractAction {
 
     protected final Log logger = OLLogger.getLog(getClass());
 
     public static final String PARAM_PREFIX = "param-";
     public static final String BATCH_FIELDS = "BatchFields";
-    public static final String PICKED_SEGMENTATION_IDS = "pickedSegmentationIds";
     public static final String PREVIOUS_STEP = "previousStep";
     public static final String ACCESSIBLE_STEPS = "accessibleSteps";
     public static final String STEP_1_GRP = "step1Grp";
@@ -86,26 +84,30 @@ public class BatchSelectionAction {
     public static final String STEP_5_GRP = "step5Grp";
 
     @Resource(name = "postBatchService")
-    private PostBatchService postBatchService;
+    protected PostBatchService postBatchService;
 
     @Resource(name = "giftService")
-    private GiftService giftService;
+    protected GiftService giftService;
 
     @Resource(name = "adjustedGiftService")
-    private AdjustedGiftService adjustedGiftService;
+    protected AdjustedGiftService adjustedGiftService;
 
     @Resource(name = "pageCustomizationService")
     protected PageCustomizationService pageCustomizationService;
 
     @Resource(name = "picklistItemService")
-    private PicklistItemService picklistItemService;
+    protected PicklistItemService picklistItemService;
 
     @Resource(name = "tangerineListHelper")
     protected TangerineListHelper tangerineListHelper;
 
     @Resource(name = "fieldService")
-    private FieldService fieldService;
+    protected FieldService fieldService;
 
+    protected PostBatch getBatchFromFlowScope(final RequestContext flowRequestContext) {
+        return (PostBatch) getFlowScopeAttribute(flowRequestContext, StringConstants.BATCH);
+    }
+    
     private String resolveSegmentationFieldName(String key) {
         String resolvedName = key;
         if (StringConstants.NAME.equals(key)) {
@@ -126,29 +128,6 @@ public class BatchSelectionAction {
         return resolvedName;
     }
 
-    private HttpServletRequest getRequest(final RequestContext flowRequestContext) {
-        return (HttpServletRequest) ((ServletExternalContext) flowRequestContext.getExternalContext()).getNativeRequest();
-    }
-
-    private String getRequestParameter(final RequestContext flowRequestContext, String parameterName) {
-        HttpServletRequest request = getRequest(flowRequestContext);
-        return request.getParameter(parameterName);
-    }
-
-    private void setFlowScopeAttribute(final RequestContext flowRequestContext, final Object object, final String key) {
-        MutableAttributeMap flowScopeMap = flowRequestContext.getFlowScope();
-        flowScopeMap.put(key, object);
-    }
-
-    private Object getFlowScopeAttribute(final RequestContext flowRequestContext, final String key) {
-        MutableAttributeMap flowScopeMap = flowRequestContext.getFlowScope();
-        return flowScopeMap.get(key);
-    }
-
-    private PostBatch getBatchFromFlowScope(final RequestContext flowRequestContext) {
-        return (PostBatch) getFlowScopeAttribute(flowRequestContext, StringConstants.BATCH);
-    }
-
     private void determineStepToSave(final RequestContext flowRequestContext) {
         final String previousStep = getRequestParameter(flowRequestContext, PREVIOUS_STEP);
         if (STEP_1_GRP.equals(previousStep)) {
@@ -160,13 +139,6 @@ public class BatchSelectionAction {
         else if (STEP_4_GRP.equals(previousStep)) {
             saveStep4Parameters(flowRequestContext);
         }
-    }
-
-    private SortInfo getSortInfo(final RequestContext flowRequestContext) {
-        return new SortInfo(getRequestParameter(flowRequestContext, StringConstants.SORT),
-                getRequestParameter(flowRequestContext, StringConstants.DIR),
-                getRequestParameter(flowRequestContext, StringConstants.LIMIT),
-                getRequestParameter(flowRequestContext, StringConstants.START));
     }
 
     private void saveStep1Parameters(final RequestContext flowRequestContext) {

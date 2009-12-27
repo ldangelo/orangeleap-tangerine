@@ -21,7 +21,6 @@ package com.orangeleap.tangerine.json.controller.list;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PostBatchService;
-import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -33,7 +32,6 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.util.WebUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Controller
 public class BatchListController extends TangerineJsonListController {
@@ -61,6 +58,7 @@ public class BatchListController extends TangerineJsonListController {
     public static final String EXECUTED_DATE = "executedDate";
     public static final String EXECUTED_BY_USER = "executedByUser";
     public static final String CREATE_DATE = "createDate";
+    public static final String ERROR_BATCH_ID = "errorBatchId";
 
     private final Set<String> openBatchFields;
     private final Set<String> executedBatchFields;
@@ -73,7 +71,7 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(BATCH_TYPE);
         fields.add(BATCH_DESC);
         fields.add(CREATE_DATE);
-        fields.add(EXECUTED);
+        fields.add(EXECUTED); // must be last
         openBatchFields = UnmodifiableSet.decorate(fields);
 
         fields = new LinkedHashSet<String>();
@@ -83,7 +81,8 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(CREATE_DATE);
         fields.add(EXECUTED_DATE);
         fields.add(EXECUTED_BY_USER);
-        fields.add(EXECUTED);
+        fields.add(ERROR_BATCH_ID);
+        fields.add(EXECUTED); // must be last
         executedBatchFields = UnmodifiableSet.decorate(fields);
 
         fields = new LinkedHashSet<String>();
@@ -91,7 +90,7 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(BATCH_TYPE);
         fields.add(BATCH_DESC);
         fields.add(CREATE_DATE);
-        fields.add(EXECUTED);
+        fields.add(EXECUTED); // must be last
         errorBatchFields = UnmodifiableSet.decorate(fields);
     }
 
@@ -120,7 +119,12 @@ public class BatchListController extends TangerineJsonListController {
 
             for (String thisFieldName : fieldNames) {
                 if (bean.isReadableProperty(thisFieldName)) {
-                    map.put(thisFieldName, bean.getPropertyValue(thisFieldName));
+                    if (BATCH_TYPE.equals(thisFieldName)) {
+                        map.put(thisFieldName, TangerineMessageAccessor.getMessage((String) bean.getPropertyValue(thisFieldName)));
+                    }
+                    else {
+                        map.put(thisFieldName, bean.getPropertyValue(thisFieldName));
+                    }
                 }
             }
             rowList.add(map);

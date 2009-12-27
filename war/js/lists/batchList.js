@@ -41,6 +41,7 @@ OrangeLeap.msgBundle = {
     userId: 'User ID',
     executeBatch: 'Execute Batch',
     removeBatch: 'Remove Batch',
+    executed: 'Executed',
     batchList: 'Batch List <span id="savedMarker" class="marker">Saved</span> <span id="executedMarker" class="marker"></span> <span id="deletedMarker" class="marker"></span>',
     savedBatchId: 'Saved Batch ID {0}',
     executedBatchId: 'Executed Batch ID {0}',
@@ -91,7 +92,12 @@ OrangeLeap.msgBundle = {
     errorStepLoad: 'The requested step could not be loaded due to an error.  Please try again or contact your administrator if this issue continues.',
     batchExecutedWithErrorBatchCreated: 'The batch execution completed but an Error Batch with ID <strong>{0}</strong> ' +
                                         'was created for rows that were not able to be executed due to errors. ' +
-                                        'Select "Show Batches With Errors" to edit criteria and re-execute.'
+                                        'Select "Show Batches With Errors" to edit criteria and re-execute.',
+
+    reviewBatch: 'Review Batch',
+    reviewStep1Title: '<span class="step"><span class="stepNum complete" id="reviewStep1">1</span><span class="stepTxt">View Batch Type</span>',
+    reviewStep2Title: '<span class="step"><span class="stepNum complete" id="reviewStep2">2</span><span class="stepTxt">View Updated Rows</span>',
+    followingRowsModified: 'The following rows were modified by this batch'
 };
 
 Ext.onReady(function() {
@@ -139,7 +145,7 @@ Ext.onReady(function() {
                 var showBatchStatus = combo.getValue();
                 if (showBatchStatus !== 'executed' && (OrangeLeap.allowExecute || OrangeLeap.allowDelete)) {
                     /* Add the 'actions' column for not executed batches */
-                    cols[cols.length] = { header: ' ', width: 50, menuDisabled: true, fixed: false, css: 'cursor:default;', id: 'actions',
+                    cols[cols.length] = { header: ' ', width: 50, menuDisabled: true, fixed: false, hideable: false, css: 'cursor:default;', id: 'actions',
                         renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                             if ( ! record.get('executed')) {
                                 var html = '';
@@ -307,7 +313,7 @@ Ext.onReady(function() {
             rowdblclick: function(grid, row, evt) {
                 if (OrangeLeap.allowCreate) {
                     var rec = grid.getSelectionModel().getSelected();
-                    showBatchWin(rec.get('id'));
+                    showEditBatchWin(rec.get('id'));
                 }
             },
             click: function(event) {
@@ -342,7 +348,7 @@ Ext.onReady(function() {
         toolbar.addButton({ text: msgs.addNew, tooltip: msgs.addNewBatch,
             iconCls:'add', id: 'addButton', ref: '../addButton',
             handler: function() {
-                showBatchWin(null);
+                showEditBatchWin(null);
             }
         });
     }
@@ -457,7 +463,12 @@ Ext.onReady(function() {
 
     function showExecutedMarker(batchId) {
         hideOtherMarkers('executedMarker');
-        $('#executedMarker').text(String.format(msgs.executedBatchId, batchId));
+        if ( ! batchId || Ext.isEmpty(batchId)) {
+            $('#executedMarker').text(msgs.executed);
+        }
+        else {
+            $('#executedMarker').text(String.format(msgs.executedBatchId, batchId));
+        }
         $('#executedMarker').show();
         setTimeout(function() {
             $("#executedMarker").hide();
@@ -527,17 +538,17 @@ Ext.onReady(function() {
     }
 
     /* The following are the for the create/edit/view batch modal window */
-    function showBatchWin(thisBatchId) {
+    function showEditBatchWin(thisBatchId) {
         if (OrangeLeap.allowCreate) {
             batchID = thisBatchId;
-            if (batchWin.rendered) {
-                // If batchWin has already been rendered, make sure step1 is the first one shown
-                var panel = batchWin.groupTabPanel;
+            if (editBatchWin.rendered) {
+                // If editBatchWin has already been rendered, make sure step1 is the first one shown
+                var panel = editBatchWin.groupTabPanel;
                 panel.setActiveGroup(0);
                 var firstItem = panel.items.items[0];
                 firstItem.setActiveTab(firstItem.items.items[0]);
             }
-            batchWin.show(batchWin);
+            editBatchWin.show(editBatchWin);
         }
     }
 
@@ -548,7 +559,7 @@ Ext.onReady(function() {
             o[pn.start] = start;
             o[pn.limit] = this.pageSize;
             if (this.fireEvent('beforechange', this, o) !== false) {
-                loadTab(batchWin.groupTabPanel, batchWin.groupTabPanel.activeGroup, batchWin.groupTabPanel.activeGroup, start);
+                loadTab(editBatchWin.groupTabPanel, editBatchWin.groupTabPanel.activeGroup, editBatchWin.groupTabPanel.activeGroup, start);
             }
         }
     });
@@ -717,7 +728,7 @@ Ext.onReady(function() {
         }
     }
 
-    var step2PageSize = 1;
+    var step2PageSize = 20;
 
     function findPickedSegmentations() {
          // this will find the picked and not picked segmentations on this page only
@@ -784,7 +795,7 @@ Ext.onReady(function() {
         var saveParams = initTabSaveParams(groupTabPanel, newGroup, currentGroup);
         var params = {};
         if (newGroup.mainItem.id == 'step1Grp') {
-            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
+            editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
             maskStep1Form();
 
             var step1LoadParams = { 'batchId': batchID, '_eventId_step1': 'step1', 'execution': getFlowExecutionKey() };
@@ -817,28 +828,28 @@ Ext.onReady(function() {
             jQuery.extend(params, step2LoadParams, saveParams); // copy properties from step2LoadParams & saveParams to params
 
             step2Store.load({ 'params': params });
-            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
+            editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
         }
         else if (newGroup.mainItem.id == 'step3Grp') {
             var step3LoadParams = { '_eventId_step3': 'step3', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': 50 };
             jQuery.extend(params, step3LoadParams, saveParams); // copy properties from step3LoadParams & saveParams to params
 
             step3Store.load({ 'params': params });
-            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
+            editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
         }
         else if (newGroup.mainItem.id == 'step4Grp') {
             var step4LoadParams = { '_eventId_step4': 'step4', 'execution': getFlowExecutionKey() };
             jQuery.extend(params, step4LoadParams, saveParams); // copy properties from step4LoadParams & saveParams to params
 
             step4UpdatableFieldsStore.load({ 'params': params });
-            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
+            editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
         }
         else if (newGroup.mainItem.id == 'step5Grp') {
             var step5LoadParams = { '_eventId_step5': 'step5', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': 20, 'sort': 'id', 'dir': 'ASC' };
             jQuery.extend(params, step5LoadParams, saveParams); // copy properties from step5LoadParams & saveParams to params
 
             step5Store.load({ 'params': params });
-            batchWin.setTitle(msgs.manageBatch + ": " + msgs.step5Tip);
+            editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step5Tip);
         }
     }
 
@@ -861,7 +872,7 @@ Ext.onReady(function() {
                 disabledClass: 'disabledButton',
                 disabled: true,
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
+                    var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(1)) {
                         var firstItem = panel.items.items[1];
                         firstItem.setActiveTab(firstItem.items.items[0]);
@@ -920,7 +931,7 @@ Ext.onReady(function() {
                         else {
                             // If the new batch type is different from the old batch type, they have to repeat steps 2-5 again
                             if (newVal != oldVal) {
-                                resetSteps2Thru5();
+                                resetEditSteps2Thru5();
                             }
                             step1Form.nextButton.enable();
                         }
@@ -1069,7 +1080,7 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
+                    var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(0)) {
                         var firstItem = panel.items.items[0];
                         firstItem.setActiveTab(firstItem.items.items[0]);
@@ -1084,7 +1095,7 @@ Ext.onReady(function() {
                 disabled: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
+                    var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(2)) { // check that all required fields entered and activeGroup is actually set to 2
                         var firstItem = panel.items.items[2];
                         firstItem.setActiveTab(firstItem.items.items[0]);
@@ -1329,7 +1340,7 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
+                    var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(1)) {
                         var firstItem = panel.items.items[1];
                         firstItem.setActiveTab(firstItem.items.items[0]);
@@ -1344,7 +1355,7 @@ Ext.onReady(function() {
                 disabled: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
+                    var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(3)) { // check that all required fields entered and activeGroup is actually set to 3
                         var firstItem = panel.items.items[3];
                         firstItem.setActiveTab(firstItem.items.items[0]);
@@ -1470,6 +1481,15 @@ Ext.onReady(function() {
                                 if (index > -1) {
                                     returnVal = aStore.getAt(index).get('displayVal');
                                 }
+                                if (Ext.isEmpty(returnVal)) {
+                                    // No value so highlight this cell as in an error state
+                                    meta.css += ' x-form-invalid';
+                                    meta.attr = 'ext:qtip="' + msgs.valueRequired + '"; ext:qclass="x-form-invalid-tip"';
+                                }
+                                else {
+                                    meta.css = '';
+                                    meta.attr = 'ext:qtip=""';
+                                }
                                 return Ext.util.Format.htmlEncode(returnVal);
                             };
                         }
@@ -1545,7 +1565,7 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
+                    var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(2)) { // check that all required fields entered and activeGroup is actually set to 2
                         var firstItem = panel.items.items[2];
                         firstItem.setActiveTab(firstItem.items.items[0]);
@@ -1559,7 +1579,7 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
+                    var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(4)) { // check that all required fields entered and activeGroup is actually set to 4
                         var firstItem = panel.items.items[4];
                         firstItem.setActiveTab(firstItem.items.items[0]);
@@ -1697,7 +1717,7 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         selModel: step5RowSelect,
-        viewConfig: { forceFit: true },
+//        viewConfig: { forceFit: true },
         columns: [
             {
                 header: msgs.id,
@@ -1715,7 +1735,7 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    var panel = batchWin.groupTabPanel;
+                    var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(3)) {
                         var thisItem = panel.items.items[3];
                         thisItem.setActiveTab(thisItem.items.items[0]);
@@ -1757,7 +1777,6 @@ Ext.onReady(function() {
                     // to see the new batch, we have to reload the 'Open Batches' with CreateDate in desc order
                     params: { showBatchStatus: 'open', start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
                     callback: function() {
-                        cancelBatch(); // tell the server side to end the flow
                         var obj = Ext.decode(responseText);
                         if (obj && obj.batchId) {
                             $('#batchList .' + grid.getView().selectedRowClass).each(function() {
@@ -1783,6 +1802,7 @@ Ext.onReady(function() {
                         }
                     }
                 });
+                cancelBatch(); // tell the server side to end the flow
             },
             failure: function(response, options) {
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
@@ -1798,16 +1818,16 @@ Ext.onReady(function() {
             method: 'POST',
             params: { '_eventId_cancel': 'cancel', 'execution': getFlowExecutionKey() } 
         });
-        batchWin.hide(batchWin);
+        editBatchWin.hide(editBatchWin);
     }
 
-    var batchWin = new Ext.Window({
+    var editBatchWin = new Ext.Window({
         title: msgs.manageBatch,
         layout: 'fit',
         width: 875,
         height: 500,
         cls: 'win',
-        id: 'batchWin',
+        id: 'editBatchWin',
         modal: true,
         closable: false,
         closeAction: 'hide',
@@ -1885,32 +1905,32 @@ Ext.onReady(function() {
 
     var hideOnEscape = function(e) {
         if (e.keyCode == 27) {
-            batchWin.hide();
+            editBatchWin.hide();
         }
     };
-    batchWin.on('beforeshow', function() {
+    editBatchWin.on('beforeshow', function() {
         $(window).bind('keydown', function(e) {
             hideOnEscape(e);
         });
     });
-    batchWin.on('beforehide', function() {
-        resetBatchWin();
+    editBatchWin.on('beforehide', function() {
+        resetEditBatchWin();
         $(window).unbind('keydown', hideOnEscape);
     });
 
-    function resetBatchWin() {
+    function resetEditBatchWin() {
         // When the batchWin is hidden, clear out all set store objects, reset CSS classes, etc, for re-use for another batch
         flowExecutionKey = null; // on hide, clear out the flow execution key in order to start a new flow next time
-        batchWin.groupTabPanel.items.items[0].activeTab = null;
-        batchWin.groupTabPanel.strip.select('li.x-grouptabs-strip-active', true).removeClass('x-grouptabs-strip-active');
-        batchWin.groupTabPanel.activeGroup = null;
+        editBatchWin.groupTabPanel.items.items[0].activeTab = null;
+        editBatchWin.groupTabPanel.strip.select('li.x-grouptabs-strip-active', true).removeClass('x-grouptabs-strip-active');
+        editBatchWin.groupTabPanel.activeGroup = null;
         $('#step1Num').removeClass('complete');
         Ext.getCmp('batchDesc').setRawValue(''); // reset the batchDesc to empty string; use 'setRawValue()' to bypass form validation
         Ext.getCmp('batchType').setRawValue('gift'); // reset the batchDesc to 'gift'; use 'setRawValue()' to bypass form validation
-        resetSteps2Thru5();
+        resetEditSteps2Thru5();
     }
 
-    function resetSteps2Thru5() {
+    function resetEditSteps2Thru5() {
         pickedSegmentationsCount = 0;
         accessibleSteps = ['step1Grp'];
         $('#step2Num').removeClass('complete');
@@ -1923,6 +1943,280 @@ Ext.onReady(function() {
         step4Form.store.removeAll();
         step5Store.removeAll();
     }
+
+    /* The following is for the read-only batch window */
+    var reviewStep1Form = new Ext.form.FormPanel({
+        baseCls: 'x-plain',
+        labelAlign: 'right',
+        margins: '10 0',
+        formId: 'reviewStep1Form',
+        ctCls: 'wizard',
+        layoutConfig: {
+            labelSeparator: ''
+        },
+        buttons: [
+            {
+                text: msgs.next,
+                cls: 'saveButton',
+                ref: '../nextButton',
+                formBind: true,
+                handler: function(button, event) {
+                    var panel = reviewBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(1)) {
+                        var firstItem = panel.items.items[1];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+//                    cancelBatch(); // TODO:
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        items: [
+            {
+                fieldLabel: msgs.description, name: 'reviewBatchDesc', id: 'reviewBatchDesc', xtype: 'textarea',
+                maxLength: 255, height: 60, width: 500, grow: false, disabled: true
+            },
+            {
+                fieldLabel: msgs.type, name: 'reviewBatchType', id: 'reviewBatchType', xtype: 'combo', disabled: true,
+                store: new Ext.data.ArrayStore({
+                    fields: [
+                        'value',
+                        'desc'
+                    ],
+                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]]
+                }),
+                displayField: 'desc',
+                valueField: 'value',
+                mode: 'local',
+                minListWidth: 500,
+                width: 500
+            }
+        ]
+    });
+
+    var reviewStep2Store = new OrangeLeap.ListStore({
+        url: 'reviewBatch.htm',
+        reader: new Ext.data.JsonReader(),
+        root: 'rows',
+        totalProperty: 'totalRows',
+        remoteSort: true,
+        sortInfo: {field: 'id', direction: 'ASC'},
+        fields: [
+            {name: 'id', mapping: 'id', type: 'int'}
+        ],
+        listeners: {
+            'beforeload': function(store, options) {
+//                maskStep('step5Grp', msgs.loadingRows); // TODO
+            },
+            'load': function(store, records, options) {
+//                unmaskStep('step5Grp'); // TODO
+            },
+            'exception': function(misc) {
+//                unmaskStep('step5Grp'); // TODO
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep2 });
+            }
+        }
+    });
+
+    reviewStep2Store.on('metachange', function(store, meta) {
+        var cols = [];
+        var fields = meta.fields;
+        for (var x = 0; x < fields.length; x++) {
+            var name = fields[x].name;
+            if (name && name != 'constituentId' && name != 'id') {
+                cols[cols.length] = {
+                    header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
+                    renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                        return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                    }
+                };
+            }
+        }
+        reviewStep2Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+        reviewStep2Bar.bindStore(store, true);
+    });
+    reviewStep2Store.proxy.on('load', function(proxy, txn, options) {
+        reviewFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+    });
+
+    var reviewStep2Bar = new OrangeLeap.BatchWinToolbar({
+        pageSize: 50,
+        stateEvents: ['change'],
+        stateId: 'reviewStep2Bar',
+        stateful: true,
+        getState: function() {
+            var config = {};
+            config.start = this.cursor;
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.start) {
+                this.cursor = state.start;
+            }
+        },
+        store: reviewStep2Store,
+        displayInfo: true,
+        displayMsg: msgs.displayMsg,
+        emptyMsg: msgs.emptyMsg
+    });
+
+    var reviewStep2RowSelect = new Ext.grid.RowSelectionModel();
+    reviewStep2RowSelect.on('beforerowselect', function(selModel, rowIndex, keepExisting, record) {
+        return false;
+    });
+
+    var reviewStep2Toolbar = new Ext.Toolbar({
+        items: [
+            msgs.followingRowsModified
+        ]
+    });
+    reviewStep2Toolbar.on('afterlayout', function(tb){
+        tb.el.child('.x-toolbar-right').remove();
+        var t = tb.el.child('.x-toolbar-left');
+        t.removeClass('x-toolbar-left');
+        t = tb.el.child('.x-toolbar-ct');
+        t.setStyle('width', 'auto');
+        t.wrap({tag: 'center'});
+    }, null, {single: true});
+
+    var reviewStep2Form = new Ext.grid.GridPanel({
+        stateId: 'reviewStep2List',
+        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
+        stateful: true,
+        store: reviewStep2Store,
+        bbar: reviewStep2Bar,
+        stripeRows: false,
+        width: 726,
+        height: 468,
+        loadMask: true,
+        header: false,
+        frame: false,
+        border: false,
+        selModel: reviewStep2RowSelect,
+        columns: [
+            {
+                header: msgs.id,
+                sortable: false,
+                dataIndex: 'id',
+                editable: false,
+                editor: new Ext.form.DisplayField()
+            }
+        ],
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                handler: function(button, event) {
+                    var panel = reviewBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(0)) {
+                        var thisItem = panel.items.items[0];
+                        thisItem.setActiveTab(thisItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+//                    cancelBatch(); // TODO
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        tbar: reviewStep2Toolbar
+    });
+
+    var reviewBatchId = null;
+    var reviewFlowExecutionKey = null;
+
+    function loadReviewTab(groupTabPanel, newGroup, currentGroup, startNum) {
+        if ( ! startNum) {
+            startNum = 0;
+        }
+        if (newGroup.mainItem.id == 'step1Review') {
+            reviewBatchWin.setTitle(msgs.reviewBatch + ": " + msgs.step1Tip);
+//            maskStep1Form(); // TODO:
+
+            var params = { 'batchId': reviewBatchId, '_eventId_reviewStep1': 'reviewStep1', 'execution': reviewFlowExecutionKey };
+
+            reviewStep1Form.getForm().load({
+                'url': 'reviewBatch.htm',
+                'params': params,
+                'success': function(form, action) {
+                    reviewFlowExecutionKey = action.result.flowExecutionKey;
+                    // unmaskStep1Form(); // TODO
+                },
+                'failure': function(form, action) {
+                    // unmaskStep1Form(); // TODO
+                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.MessageBox.OK,
+                        msg: msgs.errorStep1 });
+                }
+            });
+        }
+        else if (newGroup.mainItem.id == 'step2Review') {
+            var params = { '_eventId_reviewStep2': 'reviewStep2', 'execution': reviewFlowExecutionKey, 'start': startNum, 'limit': 20, 'sort': 'id', 'dir': 'ASC' };
+            reviewStep2Store.load({ 'params': params }); // TODO
+            reviewBatchWin.setTitle(msgs.reviewBatch + ": " + msgs.step2Tip);
+        }
+    }
+
+    var reviewBatchWin = new Ext.Window({
+        title: msgs.reviewBatch,
+        layout: 'fit',
+        width: 875,
+        height: 500,
+        cls: 'win',
+        id: 'reviewBatchWin',
+        modal: true,
+        closable: false,
+        closeAction: 'hide',
+        items:[{
+             xtype: 'grouptabpanel',
+             tabWidth: 135,
+             activeGroup: 0,
+             ref: '../groupTabPanel',
+             layoutOnTabChange: true,
+             listeners: {
+                 'groupchange': loadReviewTab
+             },
+             items: [
+                 {
+                     layoutOnTabChange: true,
+                     items: [{
+                         id: 'step1Review',
+                         title: msgs.reviewStep1Title,
+                         tabTip: msgs.step1Tip,
+                         style: 'padding: 20px 40px;',
+                         items: [ reviewStep1Form ]
+                     }],
+                     listeners: {
+//                         'afterrender': maskStep1Form // TODO
+                     }
+                 },
+                 {
+                     layoutOnTabChange: true,
+                     items: [{
+                         id: 'step2Review',
+                         title: msgs.reviewStep2Title,
+                         tabTip: msgs.step2Tip,
+                         items: [ reviewStep2Form ]
+                     }]
+                 }
+             ]
+         }]
+    });
 });
 
 

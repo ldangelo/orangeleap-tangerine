@@ -143,12 +143,12 @@ ul.x-grouptabs-tab-strip-left li { padding: 10px 0; }
 
 .x-tab-panel-left .x-grouptabs-panel-header, .x-tab-panel-right .x-grouptabs-panel-header { background: transparent none repeat scroll 0 0; border: 0 none; float: left; }
 
-#batchWin .x-tab-panel { background-color: #EFEFEF; }
-#batchWin li.x-grouptabs-strip-active { background-color: #FFF; }
-#batchWin .x-tab-strip-wrap { text-align: left; }
-#batchWin div.x-form-item { margin-bottom: 20px; font-family: arial; }
-#batchWin div.x-form-item label { color: #173D5F; }
-#batchWin div.x-form-item label.inFocus { color: #000; }
+.win .x-tab-panel { background-color: #EFEFEF; }
+.win li.x-grouptabs-strip-active { background-color: #FFF; }
+.win .x-tab-strip-wrap { text-align: left; }
+.win div.x-form-item { margin-bottom: 20px; font-family: arial; }
+.win div.x-form-item label { color: #173D5F; }
+.win div.x-form-item label.inFocus { color: #000; }
 .x-grouptabs-panel ul.x-grouptabs-sub .x-grouptabs-main-item { display: none; }
 
 .x-tab-panel-left .x-tab-panel-header ul.x-grouptabs-strip a.x-grouptabs-text,

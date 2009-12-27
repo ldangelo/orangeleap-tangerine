@@ -118,7 +118,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
                 Boolean isPosted = ((Postable) entity).isPosted();
                 if (postedDate != null && isPosted) {
                     // Don't allow double posting
-                    addBatchErrorToEntity(entity, "cannotRepost", StringUtils.capitalize(entity.getType()), StringConstants.EMPTY + entity.getId());
+                    addBatchErrorToEntity(entity, "cannotRepost", TangerineMessageAccessor.getMessage(entity.getType()), StringConstants.EMPTY + entity.getId());
                 }
                 else {
                     ((Postable) entity).setPostedDate(postedDate);

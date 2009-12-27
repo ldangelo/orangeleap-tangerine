@@ -8,7 +8,7 @@
 
     <view-state id="batchStep1">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step1FindBatchInfo(flowRequestContext)" result="flowScope.model"/>
+            <evaluate expression="editBatchAction.step1FindBatchInfo(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
         <transition on="step1" to="batchStep1"/>
         <transition on="step2" to="batchStep2"/>
@@ -20,7 +20,7 @@
 
     <view-state id="batchStep2">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step2FindSegmentations(flowRequestContext)" result="flowScope.model"/>
+            <evaluate expression="editBatchAction.step2FindSegmentations(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
         <transition on="step1" to="batchStep1"/>
         <transition on="step2" to="batchStep2"/>
@@ -32,7 +32,7 @@
 
     <view-state id="batchStep3">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step3FindRowsForSegmentations(flowRequestContext)" result="flowScope.model"/>
+            <evaluate expression="editBatchAction.step3FindRowsForSegmentations(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
         <transition on="step1" to="batchStep1"/>
         <transition on="step2" to="batchStep2"/>
@@ -44,7 +44,7 @@
 
     <view-state id="batchStep4">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step4FindBatchUpdateFields(flowRequestContext)" result="flowScope.model"/>
+            <evaluate expression="editBatchAction.step4FindBatchUpdateFields(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
         <transition on="step1" to="batchStep1"/>
         <transition on="step2" to="batchStep2"/>
@@ -56,7 +56,7 @@
 
     <view-state id="batchStep5">
         <on-entry>
-            <evaluate expression="batchSelectionAction.step5ReviewUpdates(flowRequestContext)" result="flowScope.model"/>
+            <evaluate expression="editBatchAction.step5ReviewUpdates(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
         <transition on="step1" to="batchStep1"/>
         <transition on="step2" to="batchStep2"/>
@@ -69,14 +69,14 @@
 
     <view-state id="batchSave">
         <on-entry>
-            <evaluate expression="batchSelectionAction.saveBatch(flowRequestContext)" result="flowScope.model"/>
+            <evaluate expression="editBatchAction.saveBatch(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
         <transition on="cancel" to="batchCompleted"/>
     </view-state>
 
     <end-state id="batchCompleted">
         <on-entry>
-            <evaluate expression="batchSelectionAction.cancelBatch(flowRequestContext)" result="flowScope.model"/>
+            <evaluate expression="editBatchAction.cancelBatch(flowRequestContext)" result="flowScope.model"/>
         </on-entry>
     </end-state>
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+    <input name="batchId" type="long"/>
+
+    <view-state id="reviewBatchStep1">
+        <on-entry>
+            <evaluate expression="reviewBatchAction.reviewStep1(flowRequestContext, requestParameters.batchId)" result="flowScope.model"/>
+        </on-entry>
+        <transition on="reviewStep1" to="reviewBatchStep1"/>
+        <transition on="reviewStep2" to="reviewBatchStep2"/>
+        <transition on="cancel" to="reviewBatchCompleted"/>
+    </view-state>
+
+    <view-state id="reviewBatchStep2">
+        <on-entry>
+            <evaluate expression="reviewBatchAction.reviewStep2(flowRequestContext)" result="flowScope.model"/>
+        </on-entry>
+        <transition on="reviewStep1" to="reviewBatchStep1"/>
+        <transition on="reviewStep2" to="reviewBatchStep2"/>
+        <transition on="cancel" to="reviewBatchCompleted"/>
+    </view-state>
+
+    <end-state id="reviewBatchCompleted">
+    </end-state>
+
+</flow>

@@ -65,6 +65,15 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
         else if (typeof val == 'boolean') {
             rv = this.renderBool(val);
         }
+        if (Ext.isEmpty(val)) {
+            // No value so highlight this cell as in an error state
+            meta.css += ' x-form-invalid';
+            meta.attr = 'ext:qtip="A value is required"; ext:qclass="x-form-invalid-tip"'; // TODO: use message bundle
+        }
+        else {
+            meta.css = '';
+            meta.attr = 'ext:qtip=""';
+        }
         return Ext.util.Format.htmlEncode(rv);
     },
 
@@ -178,6 +187,16 @@ Ext.extend(OrangeLeap.DynamicPropertyColumnModel, Ext.grid.ColumnModel, {
 OrangeLeap.DynamicPropertyGrid = function(config) {
     this.updatableFieldsStore = config.updatableFieldsStore;
  	OrangeLeap.DynamicPropertyGrid.superclass.constructor.call(this, config);
+
+    var myself = this;
+    this.updatableFieldsStore.on('load', function(rec, options) {
+        if (rec && myself.getStore().getCount() != rec.data.length) {
+            myself.addCriteriaButton.enable();
+        }
+        else {
+            myself.addCriteriaButton.disable();
+        }
+    });
 };
 
 Ext.extend(OrangeLeap.DynamicPropertyGrid, Ext.grid.EditorGridPanel, {
@@ -205,6 +224,7 @@ Ext.extend(OrangeLeap.DynamicPropertyGrid, Ext.grid.EditorGridPanel, {
         this.cm = cm;
         this.ds = store.store;
         var thisGrid = this;
+
         this.tbar = [{
                 text: 'Add Criteria',
                 tooltip: 'Add Criteria to Update Field Value',
@@ -223,6 +243,9 @@ Ext.extend(OrangeLeap.DynamicPropertyGrid, Ext.grid.EditorGridPanel, {
                     thisGrid.startEditing(nextIndex, 0);
                     if ((nextIndex + 1) == thisGrid.updatableFieldsStore.getCount()) {
                         this.disable();
+                    }
+                    else {
+                        this.enable();
                     }
                 }
             }

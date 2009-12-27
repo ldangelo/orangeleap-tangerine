@@ -34,8 +34,6 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import com.orangeleap.theguru.client.GetSegmentationCountByTypeRequest;
-import com.orangeleap.theguru.client.GetSegmentationCountByTypeResponse;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeRequest;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
 import com.orangeleap.theguru.client.ObjectFactory;
@@ -200,7 +198,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 //            }
 //        }
 //        return count;
-        return 2; // TODO
+        return 2; // TODO: put back code above when Leo has fixed the web service request
     }
 
     @Override
@@ -269,6 +267,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             }
         }
         final List<AbstractCustomizableEntity> erroredEntities = new ArrayList<AbstractCustomizableEntity>();
+        final List<PostBatchEntry> executedEntries = new ArrayList<PostBatchEntry>();
         if (entries != null) {
             for (AbstractCustomizableEntity entity : entries) {
                 boolean executed;
@@ -279,7 +278,17 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                     executed = false;
                     logger.warn("executeBatch: exception occurred during saving of entity", e);
                 }
-                if ( ! executed) {
+                if (executed) {
+                    PostBatchEntry entry = new PostBatchEntry();
+                    if (entity instanceof Gift) {
+                        entry.setGiftId(entity.getId());
+                    }
+                    else if (entity instanceof AdjustedGift) {
+                        entry.setAdjustedGiftId(entity.getId());
+                    }
+                    executedEntries.add(entry);
+                }
+                else {
                     AbstractCustomizableEntity originalEntity = copyEntityBatchErrorsToCleanEntity(entity);
                     if (originalEntity != null) {
                         erroredEntities.add(originalEntity);
@@ -293,6 +302,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 batch.setErrorBatchId(errorBatch.getId());
             }
         }
+        batch.setPostBatchEntries(executedEntries); // this should contain just the executed gifts/adjustedGifts/etc
 
         Long thisUserId = tangerineUserHelper.lookupUserId();
         if (StringUtils.hasText(batch.getUpdateFieldValue(StringConstants.POSTED_DATE)) &&

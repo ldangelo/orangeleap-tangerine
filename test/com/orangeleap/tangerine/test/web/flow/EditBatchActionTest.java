@@ -20,7 +20,7 @@ package com.orangeleap.tangerine.test.web.flow;
 
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.test.BaseTest;
-import com.orangeleap.tangerine.web.flow.BatchSelectionAction;
+import com.orangeleap.tangerine.web.flow.batch.EditBatchAction;
 import org.junit.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.webflow.execution.RequestContext;
@@ -32,16 +32,16 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BatchSelectionActionTest extends BaseTest {
+public class EditBatchActionTest extends BaseTest {
 
     private RequestContext mockRequestContext;
-    private BatchSelectionAction action;
+    private EditBatchAction action;
     private PostBatch batch;
 
     @BeforeMethod
     public void setupMocks() {
         mockRequestContext = new MockRequestContext();
-        action = new BatchSelectionAction();
+        action = new EditBatchAction();
         batch = new PostBatch();
     }
 
@@ -111,7 +111,7 @@ public class BatchSelectionActionTest extends BaseTest {
     }
 
     private Object invokeSyncPickedSegmentationIds(PostBatch batch, String pickedIdsStr, String notPickedIdsStr) throws Exception {
-        Method method = BatchSelectionAction.class.getDeclaredMethod("syncPickedSegmentationIds", RequestContext.class, PostBatch.class, String.class, String.class);
+        Method method = EditBatchAction.class.getDeclaredMethod("syncPickedSegmentationIds", RequestContext.class, PostBatch.class, String.class, String.class);
         method.setAccessible(true);
         return method.invoke(action, mockRequestContext, batch, pickedIdsStr, notPickedIdsStr);
     }

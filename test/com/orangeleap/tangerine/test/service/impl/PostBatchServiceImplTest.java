@@ -261,7 +261,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         }
     }
 
-    @Test(dataProvider = "setupBatchForGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
+    @Test(dataProvider = "setupBatchForGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" })//, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
     public void testExecuteBatchForGifts(PostBatch batch) throws Exception {
         setupBankProjectCodePicklists();
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
@@ -300,7 +300,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         }
 
         /* Check that 2 not-posted gifts got updated (IDs 6001 and 6002) whereas the 2 posted gifts (6000, 6003) did not */
-        List<Gift> gifts = giftService.readAllGiftsBySegmentationReportIds(savedBatch.getEntrySegmentationIds());
+        List<Gift> gifts = giftService.readGiftsByIds(savedBatch.getEntryGiftIds());
         Assert.assertNotNull(gifts);
         for (Gift gift : gifts) {
             if (gift.getId() == 6001L || gift.getId() == 6002L) {
@@ -359,7 +359,7 @@ public class PostBatchServiceImplTest extends BaseTest {
         Assert.assertNull(savedBatch.getPostedDate());
 
         Assert.assertNull(savedBatch.getErrorBatchId());
-        List<Gift> gifts = giftService.readAllGiftsBySegmentationReportIds(savedBatch.getEntrySegmentationIds());
+        List<Gift> gifts = giftService.readGiftsByIds(savedBatch.getEntryGiftIds());
         Assert.assertNotNull(gifts);
         for (Gift gift : gifts) {
             if (gift.getId() == 7000L || gift.getId() == 7001L) {

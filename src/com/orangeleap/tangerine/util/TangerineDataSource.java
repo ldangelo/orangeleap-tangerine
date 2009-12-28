@@ -18,14 +18,17 @@
 
 package com.orangeleap.tangerine.util;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-
-import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class TangerineDataSource implements DataSource {
 
@@ -44,13 +47,19 @@ public class TangerineDataSource implements DataSource {
     @Override
     public Connection getConnection() throws SQLException {
 
+    	
+    	// Avoid error: "Cannot convert value '0000-00-00 00:00:00' from column 11 to TIMESTAMP."
+    	if (dataSource instanceof MysqlDataSource) {
+    		((MysqlDataSource)dataSource).setZeroDateTimeBehavior("convertToNull"); 
+    	}
+    	
+    	
         Connection conn = dataSource.getConnection();
         if (logger.isTraceEnabled()) {
             count++;
             logger.trace("getConnection() called, count = " + (int) count);
             //new Exception().fillInStackTrace().printStackTrace();
         }
-
 
         String siteName = tangerineUserHelper.lookupUserSiteName();
         boolean hasSite = siteName != null && siteName.trim().length() > 0;

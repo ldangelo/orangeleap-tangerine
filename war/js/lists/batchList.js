@@ -97,7 +97,8 @@ OrangeLeap.msgBundle = {
     reviewBatch: 'Review Batch',
     reviewStep1Title: '<span class="step"><span class="stepNum complete" id="reviewStep1">1</span><span class="stepTxt">View Batch Type</span>',
     reviewStep2Title: '<span class="step"><span class="stepNum complete" id="reviewStep2">2</span><span class="stepTxt">View Updated Rows</span>',
-    followingRowsModified: 'The following rows were modified by this batch'
+    followingRowsModified: 'The following rows were modified by this batch.  Values displayed in the grid may not necessarily reflect the current values, which can be seen by double-clicking on the row',
+    noRowsUpdated: 'No rows were updated as part of this batch.'
 };
 
 Ext.onReady(function() {
@@ -313,7 +314,14 @@ Ext.onReady(function() {
             rowdblclick: function(grid, row, evt) {
                 if (OrangeLeap.allowCreate) {
                     var rec = grid.getSelectionModel().getSelected();
-                    showEditBatchWin(rec.get('id'));
+                    if (rec.get('executed')) {
+                        reviewBatchId = rec.get('id');
+                        showModal(reviewBatchWin);
+                    }
+                    else {
+                        batchID = rec.get('id');
+                        showModal(editBatchWin);
+                    }
                 }
             },
             click: function(event) {
@@ -348,7 +356,8 @@ Ext.onReady(function() {
         toolbar.addButton({ text: msgs.addNew, tooltip: msgs.addNewBatch,
             iconCls:'add', id: 'addButton', ref: '../addButton',
             handler: function() {
-                showEditBatchWin(null);
+                batchID = null;
+                showModal(editBatchWin);
             }
         });
     }
@@ -537,23 +546,22 @@ Ext.onReady(function() {
         }
     }
 
-    /* The following are the for the create/edit/view batch modal window */
-    function showEditBatchWin(thisBatchId) {
+    /* The following are the for the batch modal window */
+    function showModal(win) {
         if (OrangeLeap.allowCreate) {
-            batchID = thisBatchId;
-            if (editBatchWin.rendered) {
-                // If editBatchWin has already been rendered, make sure step1 is the first one shown
-                var panel = editBatchWin.groupTabPanel;
+            if (win.rendered) {
+                // If the modal has already been rendered, make sure step1 is the first one shown
+                var panel = win.groupTabPanel;
                 panel.setActiveGroup(0);
                 var firstItem = panel.items.items[0];
                 firstItem.setActiveTab(firstItem.items.items[0]);
             }
-            editBatchWin.show(editBatchWin);
+            win.show(win);
         }
     }
 
-    // custom toolbar for batch window to invoke loadTab - this effectively overrides what the 'refresh' button action is on the toolbar
-    OrangeLeap.BatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
+    // custom toolbar for Edit Batch window to invoke loadTab - this effectively overrides what the 'refresh' button action is on the toolbar
+    OrangeLeap.EditBatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
         doLoad: function(start) {
             var o = { }, pn = this.getParams();
             o[pn.start] = start;
@@ -885,7 +893,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    cancelBatch();
+                    cancelEditBatch();
                 }
             }
         ],
@@ -1000,7 +1008,7 @@ Ext.onReady(function() {
         return pickedSegmentationsCount > 0;
     }
 
-    var step2Bar = new OrangeLeap.BatchWinToolbar({
+    var step2Bar = new OrangeLeap.EditBatchWinToolbar({
         pageSize: step2PageSize,
         stateEvents: ['change'],
         stateId: 'step2Bar',
@@ -1108,7 +1116,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    cancelBatch();
+                    cancelEditBatch();
                 }
             }
         ],
@@ -1269,7 +1277,7 @@ Ext.onReady(function() {
         accessibleSteps = txn.reader.jsonData.accessibleSteps;
     });
 
-    var step3Bar = new OrangeLeap.BatchWinToolbar({
+    var step3Bar = new OrangeLeap.EditBatchWinToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'step3Bar',
@@ -1368,7 +1376,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    cancelBatch();
+                    cancelEditBatch();
                 }
             }
         ],
@@ -1592,7 +1600,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    cancelBatch();
+                    cancelEditBatch();
                 }
             }
         ],
@@ -1648,7 +1656,7 @@ Ext.onReady(function() {
             var name = fields[x].name;
             if (name && name != 'constituentId' && name != 'id') {
                 cols[cols.length] = {
-                    header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
+                    header: fields[x].header, dataIndex: name, sortable: (name != 'type'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                         return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                     }
@@ -1663,7 +1671,7 @@ Ext.onReady(function() {
         accessibleSteps = txn.reader.jsonData.accessibleSteps;
     });
 
-    var step5Bar = new OrangeLeap.BatchWinToolbar({
+    var step5Bar = new OrangeLeap.EditBatchWinToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'step5Bar',
@@ -1757,7 +1765,7 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-                    cancelBatch();
+                    cancelEditBatch();
                 }
             }
         ],
@@ -1802,7 +1810,7 @@ Ext.onReady(function() {
                         }
                     }
                 });
-                cancelBatch(); // tell the server side to end the flow
+                cancelEditBatch(); // tell the server side to end the flow
             },
             failure: function(response, options) {
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
@@ -1812,7 +1820,7 @@ Ext.onReady(function() {
         });
     }
 
-    function cancelBatch() {
+    function cancelEditBatch() {
         Ext.Ajax.request({
             url: 'doBatch.htm',
             method: 'POST',
@@ -1840,6 +1848,15 @@ Ext.onReady(function() {
                     $('#step4Num').addClass('complete');
                     $('#step5Num').addClass('complete');
                 }
+            },
+            'beforeshow': function() {
+                $(this).bind('keydown', function(e) {
+                    hideEditOnEscape(e);
+                });
+            },
+            'beforehide': function() {
+                resetEditBatchWin();
+                $(this).unbind('keydown', hideEditOnEscape);
             }
         },
         items:[{
@@ -1870,6 +1887,7 @@ Ext.onReady(function() {
                      layoutOnTabChange: true,
                      items: [{
                          id: 'step2Grp',
+                         cls: 'grp',
                          title: msgs.step2Title,
                          tabTip: msgs.step2Tip,
                          items: [ step2Form ]
@@ -1878,6 +1896,7 @@ Ext.onReady(function() {
                  {
                      items: [{
                          id: 'step3Grp',
+                         cls: 'grp',
                          title: msgs.step3Title,
                          tabTip: msgs.step3Tip,
                          items: [ step3Form ]
@@ -1886,6 +1905,7 @@ Ext.onReady(function() {
                  {
                      items: [{
                          id: 'step4Grp',
+                         cls: 'grp',
                          title: msgs.step4Title,
                          tabTip: msgs.step4Tip,
                          items: [ step4Form ]
@@ -1894,6 +1914,7 @@ Ext.onReady(function() {
                  {
                      items: [{
                          id: 'step5Grp',
+                         cls: 'grp',
                          title: msgs.step5Title,
                          tabTip: msgs.step5Tip,
                          items: [ step5Form ]
@@ -1903,20 +1924,11 @@ Ext.onReady(function() {
          }]
     });
 
-    var hideOnEscape = function(e) {
+    var hideEditOnEscape = function(e) {
         if (e.keyCode == 27) {
             editBatchWin.hide();
         }
     };
-    editBatchWin.on('beforeshow', function() {
-        $(window).bind('keydown', function(e) {
-            hideOnEscape(e);
-        });
-    });
-    editBatchWin.on('beforehide', function() {
-        resetEditBatchWin();
-        $(window).unbind('keydown', hideOnEscape);
-    });
 
     function resetEditBatchWin() {
         // When the batchWin is hidden, clear out all set store objects, reset CSS classes, etc, for re-use for another batch
@@ -1944,7 +1956,10 @@ Ext.onReady(function() {
         step5Store.removeAll();
     }
 
-    /* The following is for the read-only batch window */
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /* The following below is for the read-only batch window */
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     var reviewStep1Form = new Ext.form.FormPanel({
         baseCls: 'x-plain',
         labelAlign: 'right',
@@ -1973,30 +1988,19 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-//                    cancelBatch(); // TODO:
+                    closeReviewBatch();
                 }
             }
         ],
         buttonAlign: 'center',
         items: [
             {
-                fieldLabel: msgs.description, name: 'reviewBatchDesc', id: 'reviewBatchDesc', xtype: 'textarea',
-                maxLength: 255, height: 60, width: 500, grow: false, disabled: true
+                fieldLabel: msgs.description, name: 'reviewBatchDesc', id: 'reviewBatchDesc', xtype: 'displayfield', cls: 'displayElem',
+                height: 60, width: 500
             },
             {
-                fieldLabel: msgs.type, name: 'reviewBatchType', id: 'reviewBatchType', xtype: 'combo', disabled: true,
-                store: new Ext.data.ArrayStore({
-                    fields: [
-                        'value',
-                        'desc'
-                    ],
-                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]]
-                }),
-                displayField: 'desc',
-                valueField: 'value',
-                mode: 'local',
-                minListWidth: 500,
-                width: 500
+                fieldLabel: msgs.type, name: 'reviewBatchType', id: 'reviewBatchType', xtype: 'displayfield', cls: 'displayElem',
+                height: 60, width: 500
             }
         ]
     });
@@ -2013,19 +2017,23 @@ Ext.onReady(function() {
         ],
         listeners: {
             'beforeload': function(store, options) {
-//                maskStep('step5Grp', msgs.loadingRows); // TODO
+                Ext.get(findStep2ReviewParentId()).mask(msgs.loadingRows);
             },
             'load': function(store, records, options) {
-//                unmaskStep('step5Grp'); // TODO
+                Ext.get(findStep2ReviewParentId()).unmask();
             },
             'exception': function(misc) {
-//                unmaskStep('step5Grp'); // TODO
+                Ext.get(findStep2ReviewParentId()).unmask();
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep2 });
             }
         }
     });
+
+    function findStep2ReviewParentId() {
+        return $( $('#step1Review').parent('div').siblings().get(0) ).attr('id');        
+    }
 
     reviewStep2Store.on('metachange', function(store, meta) {
         var cols = [];
@@ -2034,7 +2042,7 @@ Ext.onReady(function() {
             var name = fields[x].name;
             if (name && name != 'constituentId' && name != 'id') {
                 cols[cols.length] = {
-                    header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
+                    header: fields[x].header, dataIndex: name, sortable: (name != 'type'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                         return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                     }
@@ -2048,7 +2056,19 @@ Ext.onReady(function() {
         reviewFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
 
-    var reviewStep2Bar = new OrangeLeap.BatchWinToolbar({
+    // custom toolbar for Review Batch window to invoke loadTab - this effectively overrides what the 'refresh' button action is on the toolbar
+    OrangeLeap.ReviewBatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
+        doLoad: function(start) {
+            var o = { }, pn = this.getParams();
+            o[pn.start] = start;
+            o[pn.limit] = this.pageSize;
+            if (this.fireEvent('beforechange', this, o) !== false) {
+                loadTab(reviewBatchWin.groupTabPanel, reviewBatchWin.groupTabPanel.activeGroup, reviewBatchWin.groupTabPanel.activeGroup, start);
+            }
+        }
+    });
+
+    var reviewStep2Bar = new OrangeLeap.ReviewBatchWinToolbar({
         pageSize: 50,
         stateEvents: ['change'],
         stateId: 'reviewStep2Bar',
@@ -2067,11 +2087,6 @@ Ext.onReady(function() {
         displayInfo: true,
         displayMsg: msgs.displayMsg,
         emptyMsg: msgs.emptyMsg
-    });
-
-    var reviewStep2RowSelect = new Ext.grid.RowSelectionModel();
-    reviewStep2RowSelect.on('beforerowselect', function(selModel, rowIndex, keepExisting, record) {
-        return false;
     });
 
     var reviewStep2Toolbar = new Ext.Toolbar({
@@ -2101,7 +2116,10 @@ Ext.onReady(function() {
         header: false,
         frame: false,
         border: false,
-        selModel: reviewStep2RowSelect,
+        selModel: new Ext.grid.RowSelectionModel(),
+        viewConfig: {
+            emptyText: msgs.noRowsUpdated
+        },
         columns: [
             {
                 header: msgs.id,
@@ -2129,16 +2147,37 @@ Ext.onReady(function() {
                 cls: 'button',
                 ref: '../closeButton',
                 handler: function(button, event) {
-//                    cancelBatch(); // TODO
+                    closeReviewBatch();
                 }
             }
         ],
         buttonAlign: 'center',
-        tbar: reviewStep2Toolbar
+        tbar: reviewStep2Toolbar,
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, event) {
+                var reviewBatchType = Ext.getCmp('reviewBatchType').getValue();
+                var record = reviewStep2Store.getAt(rowIndex);
+                if (reviewBatchType && record) {
+                    // open window to view record
+                    var thisUrl = reviewBatchType + '.htm?' + reviewBatchType + 'Id=' + record.get('id') +
+                                          (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
+                    window.open(thisUrl, batchType + 'Win');
+                }
+            }
+        }
     });
 
     var reviewBatchId = null;
     var reviewFlowExecutionKey = null;
+
+    function closeReviewBatch() {
+        Ext.Ajax.request({
+            url: 'reviewBatch.htm',
+            method: 'POST',
+            params: { '_eventId_close': 'close', 'execution': reviewFlowExecutionKey }
+        });
+        reviewBatchWin.hide(reviewBatchWin);
+    }
 
     function loadReviewTab(groupTabPanel, newGroup, currentGroup, startNum) {
         if ( ! startNum) {
@@ -2146,19 +2185,17 @@ Ext.onReady(function() {
         }
         if (newGroup.mainItem.id == 'step1Review') {
             reviewBatchWin.setTitle(msgs.reviewBatch + ": " + msgs.step1Tip);
-//            maskStep1Form(); // TODO:
-
-            var params = { 'batchId': reviewBatchId, '_eventId_reviewStep1': 'reviewStep1', 'execution': reviewFlowExecutionKey };
+            maskReviewStep1();
 
             reviewStep1Form.getForm().load({
                 'url': 'reviewBatch.htm',
-                'params': params,
+                'params': { 'batchId': reviewBatchId, '_eventId_reviewStep1': 'reviewStep1', 'execution': reviewFlowExecutionKey },
                 'success': function(form, action) {
                     reviewFlowExecutionKey = action.result.flowExecutionKey;
-                    // unmaskStep1Form(); // TODO
+                    unmaskReviewStep1();
                 },
                 'failure': function(form, action) {
-                    // unmaskStep1Form(); // TODO
+                    unmaskReviewStep1();
                     Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                         buttons: Ext.MessageBox.OK,
                         msg: msgs.errorStep1 });
@@ -2166,9 +2203,25 @@ Ext.onReady(function() {
             });
         }
         else if (newGroup.mainItem.id == 'step2Review') {
-            var params = { '_eventId_reviewStep2': 'reviewStep2', 'execution': reviewFlowExecutionKey, 'start': startNum, 'limit': 20, 'sort': 'id', 'dir': 'ASC' };
-            reviewStep2Store.load({ 'params': params }); // TODO
+            reviewStep2Store.load({ 'params': { '_eventId_reviewStep2': 'reviewStep2', 
+                'execution': reviewFlowExecutionKey, 'start': startNum, 'limit': 20,
+                'sort': 'id', 'dir': 'ASC' }
+            });
             reviewBatchWin.setTitle(msgs.reviewBatch + ": " + msgs.step2Tip);
+        }
+    }
+
+    function maskReviewStep1() {
+        var step1ReviewDivId = $('#step1Review').parent('div').attr('id');
+        if (step1ReviewDivId) {
+            Ext.get(step1ReviewDivId).mask(msgs.loading);
+        }
+    }
+
+    function unmaskReviewStep1() {
+        var step1ReviewDivId = $('#step1Review').parent('div').attr('id');
+        if (step1ReviewDivId) {
+            Ext.get(step1ReviewDivId).unmask();
         }
     }
 
@@ -2182,6 +2235,17 @@ Ext.onReady(function() {
         modal: true,
         closable: false,
         closeAction: 'hide',
+        listeners: {
+            'beforeshow': function() {
+                $(this).bind('keydown', function(e) {
+                    hideReviewOnEscape(e);
+                });
+            },
+            'beforehide': function() {
+                resetReviewBatchWin();
+                $(this).unbind('keydown', hideReviewOnEscape);
+            }
+        },
         items:[{
              xtype: 'grouptabpanel',
              tabWidth: 135,
@@ -2202,13 +2266,14 @@ Ext.onReady(function() {
                          items: [ reviewStep1Form ]
                      }],
                      listeners: {
-//                         'afterrender': maskStep1Form // TODO
+                         'afterrender': maskReviewStep1
                      }
                  },
                  {
                      layoutOnTabChange: true,
                      items: [{
                          id: 'step2Review',
+                         cls: 'grp',
                          title: msgs.reviewStep2Title,
                          tabTip: msgs.step2Tip,
                          items: [ reviewStep2Form ]
@@ -2217,6 +2282,21 @@ Ext.onReady(function() {
              ]
          }]
     });
+
+    var hideReviewOnEscape = function(e) {
+        if (e.keyCode == 27) {
+            reviewBatchWin.hide();
+        }
+    };
+
+    function resetReviewBatchWin() {
+        // When the batchWin is hidden, clear out all set store objects, reset CSS classes, etc, for re-use for another batch
+        reviewFlowExecutionKey = null; // on hide, clear out the flow execution key in order to start a new flow next time
+        reviewBatchWin.groupTabPanel.items.items[0].activeTab = null;
+        reviewBatchWin.groupTabPanel.strip.select('li.x-grouptabs-strip-active', true).removeClass('x-grouptabs-strip-active');
+        reviewBatchWin.groupTabPanel.activeGroup = null;
+        reviewStep2Store.removeAll();
+    }
 });
 
 

@@ -28,7 +28,7 @@ ul.formFields li input {
 	padding:3px 4px;
 	border:1px solid #7f9db9;
 }
-ul.formFields li textarea {
+ul.formFields li textarea, .displayElem {
 	padding:3px 4px;
 	border:1px solid #7f9db9;
 }

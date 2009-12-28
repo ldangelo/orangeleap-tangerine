@@ -12,7 +12,7 @@
         </on-entry>
         <transition on="reviewStep1" to="reviewBatchStep1"/>
         <transition on="reviewStep2" to="reviewBatchStep2"/>
-        <transition on="cancel" to="reviewBatchCompleted"/>
+        <transition on="close" to="reviewBatchCompleted"/>
     </view-state>
 
     <view-state id="reviewBatchStep2">
@@ -21,7 +21,7 @@
         </on-entry>
         <transition on="reviewStep1" to="reviewBatchStep1"/>
         <transition on="reviewStep2" to="reviewBatchStep2"/>
-        <transition on="cancel" to="reviewBatchCompleted"/>
+        <transition on="close" to="reviewBatchCompleted"/>
     </view-state>
 
     <end-state id="reviewBatchCompleted">

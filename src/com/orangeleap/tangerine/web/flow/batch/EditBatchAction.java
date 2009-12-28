@@ -512,20 +512,53 @@ public class EditBatchAction extends AbstractAction {
         final Set<Long> segmentationReportIds = batch.getEntrySegmentationIds();
         final List<Map<String, Object>> rowValues = new ArrayList<Map<String, Object>>();
 
-        final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortInfo.getStart(),
-                (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
+        final Map<String, Object> metaDataMap = initStep5MetaData(batch, sortInfo.getSort(),
+                sortInfo.getDir(), sortInfo.getStart(), (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
+        model.put(StringConstants.META_DATA, metaDataMap);
+
+        List rows = null;
+        int totalRows = 0;
+
+        unescapeSortField(sortInfo);
+        
+        if (StringConstants.GIFT.equals(batch.getBatchType())) {
+            rows = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
+            totalRows = giftService.readCountGiftsBySegmentationReportIds(segmentationReportIds) * 2;
+        }
+        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+            rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
+            totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(segmentationReportIds) * 2;
+        }
+        contrastUpdatedValues(batch, rows, rowValues, batch.getUpdateFields());
+
+        model.put(StringConstants.ROWS, rowValues);
+        model.put(StringConstants.TOTAL_ROWS, totalRows);
+
+        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
+        return model;
+    }
+
+    protected void unescapeSortField(final SortInfo sortInfo) {
+        if (StringConstants.DISPLAYED_ID.equals(sortInfo.getSort())) {
+            sortInfo.setSort(StringConstants.ID); // displayedID maps to ID
+        }
+        sortInfo.setSort(TangerineForm.unescapeFieldName(sortInfo.getSort())); // convert from customFieldMap-tsb-bank-teb -> customFieldMap[bank]
+    }
+
+    protected Map<String, Object> initStep5MetaData(final PostBatch batch,
+                                                  String sortField, String sortDir, int sortStart, int sortLimit) {
+        final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortStart,
+                (sortLimit * 2)); // double the rows because of old & new values will be displayed
 
         BeanWrapper bean = createDefaultEntity(batch);
 
         final Map<String, String> sortInfoMap = new HashMap<String, String>();
-        if ( ! bean.isReadableProperty(sortInfo.getSort())) {  // If the sort key is not one of the bean's properties, use the ID as default
-            sortInfo.setSort(StringConstants.ID);
+        if ( ! bean.isReadableProperty(TangerineForm.unescapeFieldName(sortField))) {  // If the sort key is not one of the bean's properties, use the ID as default
+            sortField = StringConstants.ID;
         }
-        sortInfoMap.put(StringConstants.FIELD, sortInfo.getSort());
-        sortInfoMap.put(StringConstants.DIRECTION, sortInfo.getDir());
+        sortInfoMap.put(StringConstants.FIELD, sortField);
+        sortInfoMap.put(StringConstants.DIRECTION, sortDir);
         metaDataMap.put(StringConstants.SORT_INFO, sortInfoMap);
-
-        model.put(StringConstants.META_DATA, metaDataMap);
 
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
         Map<String, Object> fieldMap = new HashMap<String, Object>();
@@ -578,21 +611,7 @@ public class EditBatchAction extends AbstractAction {
             fieldList.add(fieldMap);
         }
         metaDataMap.put(StringConstants.FIELDS, fieldList);
-
-        List rows = null;
-        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            rows = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
-        }
-        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-            rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
-        }
-        contrastUpdatedValues(batch, rows, rowValues, batch.getUpdateFields());
-
-        model.put(StringConstants.ROWS, rowValues);
-        model.put(StringConstants.TOTAL_ROWS, rowValues.size());
-
-        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
-        return model;
+        return metaDataMap;
     }
 
     private void contrastUpdatedValues(final PostBatch batch, final List rows,

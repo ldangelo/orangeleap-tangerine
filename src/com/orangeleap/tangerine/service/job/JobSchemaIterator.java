@@ -110,7 +110,7 @@ public class JobSchemaIterator extends QuartzJobBean {
 	                logger.info("Processing jobs for "+schema); // Must log after changing schema context
 	                long t = System.currentTimeMillis();
 	                executeInternalForSchema(context, applicationContext);
-	                logger.info("Jobs for schema " + schema + " took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");
+	                logger.info("Jobs for schema " + schema + " took " + (System.currentTimeMillis() - t)/1000.0f/60f + " minutes.");
             	} catch (Exception e) {
             		e.printStackTrace();
             		logger.error("Error processing job for "+schema, e);

@@ -16,6 +16,8 @@ import com.orangeleap.tangerine.util.RulesStack;
 public class OrangeLeapRuleSession {
 
 		protected final Log logger = OLLogger.getLog(getClass());
+		
+		private static final boolean disableRules = "true".equalsIgnoreCase(System.getProperty("orangeleap.disable.rules.processing"));
 
 		private OrangeLeapRuleBase orangeLeapRuleBase;
 
@@ -30,6 +32,8 @@ public class OrangeLeapRuleSession {
 		}
 
 		public void executeRules() {
+			
+			if (disableRules) return;
 
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
 			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventNameType();

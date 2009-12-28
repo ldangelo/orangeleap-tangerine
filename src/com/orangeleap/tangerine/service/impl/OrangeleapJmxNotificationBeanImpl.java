@@ -108,9 +108,9 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	}
 	
 	@Override
-	public Long getMemoryFreePercent() {
+	public Long getMemoryUsedPercent() {
 		double pct = (OLLogger.getFreeMemory() * 1.0f) / Runtime.getRuntime().maxMemory();
-		return (Long)Math.round(pct * 100);
+		return (Long)Math.round((100d - pct) * 100);
 	}
 	
 	private Long getTotalCount(String stat) {

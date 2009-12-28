@@ -26,12 +26,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.ScheduledItem;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
@@ -40,6 +42,7 @@ import com.orangeleap.tangerine.service.NightlyBatchService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.ReminderService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -78,7 +81,10 @@ public class NightlyBatchServiceImpl implements NightlyBatchService
 
     @Resource(name = "tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
-    
+ 
+    @Resource(name = "siteService")
+    private SiteService siteService;
+ 
     private String getSiteName() {
     	return tangerineUserHelper.lookupUserSiteName();
     }
@@ -278,7 +284,15 @@ public class NightlyBatchServiceImpl implements NightlyBatchService
 	        if (logger.isTraceEnabled()) {
 	            logger.trace("processReminders:");
 	        }
-	
+
+	        // Check if set up for reminder emails.
+	        Site site = siteService.readSite(getSiteName());
+	    	if (StringUtils.trimToNull(site.getSmtpFromAddress()) == null) {
+	    		logger.info("Skipping processReminders(): SmtpFromAddress not set for "+site.getName());
+	    		return;
+	    	}
+	        	
+
 	        Calendar cal = getToday();
 	        Date today = cal.getTime();
 	

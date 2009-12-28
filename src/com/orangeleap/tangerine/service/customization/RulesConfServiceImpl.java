@@ -107,7 +107,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	Map<String, GroovyObject> agroovyObjectCache = (Map<String, GroovyObject>)Collections.synchronizedMap(
 	        new LinkedHashMap<String, GroovyObject>(MAX_ENTRIES + 1, .75F, true) {
 					private static final long serialVersionUID = 1L;
-			        public boolean removeEldestEntry(Map.Entry<String, GroovyObject> eldest) {
+					@Override
+					public boolean removeEldestEntry(Map.Entry<String, GroovyObject> eldest) {
 			            return size() > MAX_ENTRIES;
 			        }
 	            }

@@ -32,6 +32,9 @@ public interface AdjustedGiftDao {
 
     List<AdjustedGift> readAdjustedGiftsByIds(final Set<Long> adjustedGiftIds);
 
+    List<AdjustedGift> readLimitedAdjustedGiftsByIds(Set<Long> adjustedGiftIds, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale);
+
     public List<AdjustedGift> readAdjustedGiftsForOriginalGiftId(Long originalGiftId);
 
     public AdjustedGift maintainAdjustedGift(AdjustedGift adjustedGift);

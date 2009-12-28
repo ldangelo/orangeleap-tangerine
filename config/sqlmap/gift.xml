@@ -3,7 +3,7 @@
 <sqlMap namespace="GIFT">
 
 	<!-- Note: NO groupBy in base map -->
-	<resultMap id="MIN_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" >
+	<resultMap id="MIN_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		<result property="id" column="GIFT_ID" jdbcType="BIGINT" />
 		<result property="giftStatus" column="GIFT_STATUS" jdbcType="VARCHAR" />
 		<result property="giftType" column="GIFT_TYPE" jdbcType="VARCHAR" />
@@ -270,6 +270,48 @@
         where p.SITE_NAME = #siteName#
         and g.CONSTITUENT_ID = #constituentId#
         and g.GIFT_TYPE != 'GIFT_IN_KIND'
+        order by
+        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_LIMITED_GIFTS_BY_GIFT_IDS_NO_DISTRO_LINES" resultMap="GIFT_SEARCH_RESULT" parameterClass="map">
+        select
+        <include refid="GIFT_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />,
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
+
+        <dynamic prepend=",">
+            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+                custFld.FIELD_VALUE
+            </isEqual>
+        </dynamic>
+
+        from GIFT g
+        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
+        left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
+        left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+
+        <isNotNull property="entityType">
+            <isNotNull property="fieldName">
+                <isNotNull property="asOfDate">
+                    left outer join CUSTOM_FIELD custFld on g.GIFT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+                        and custFld.FIELD_NAME = #fieldName#
+                </isNotNull>
+            </isNotNull>
+        </isNotNull>
+
+        where p.SITE_NAME = #siteName#
+        and g.GIFT_TYPE != 'GIFT_IN_KIND'
+        and g.GIFT_ID in
+        <iterate property="giftIds" conjunction="," open="(" close=")">
+            #giftIds[]#
+        </iterate>
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$

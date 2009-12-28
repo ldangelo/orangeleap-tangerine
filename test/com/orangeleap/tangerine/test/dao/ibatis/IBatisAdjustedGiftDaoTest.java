@@ -7,6 +7,7 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.logging.Log;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -15,10 +16,10 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
     
@@ -169,6 +170,18 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
                 assert new BigDecimal("-.01").floatValue() == line.getAmount().floatValue();
             }
         }
+    }
+
+    @Test(groups = { "testReadAdjustedGift" })
+    public void testReadLimitedAdjustedGiftsByIds() throws Exception {
+        Set<Long> adjustedGiftIds = new HashSet<Long>();
+        adjustedGiftIds.add(1L);
+        adjustedGiftIds.add(3L);
+        List<AdjustedGift> adjustedGifts = adjustedGiftDao.readLimitedAdjustedGiftsByIds(adjustedGiftIds, StringConstants.ID, StringConstants.DESC, 0, 100, Locale.getDefault());
+        Assert.assertNotNull(adjustedGifts);
+        Assert.assertEquals(adjustedGifts.size(), 2);
+        Assert.assertEquals(adjustedGifts.get(0).getId(), new Long(3L));
+        Assert.assertEquals(adjustedGifts.get(1).getId(), new Long(1L));
     }
     
     @Test(groups = { "testReadAdjustedGift" })

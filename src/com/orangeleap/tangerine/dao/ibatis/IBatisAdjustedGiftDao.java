@@ -1,21 +1,20 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.orangeleap.tangerine.dao.AdjustedGiftDao;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.orangeleap.tangerine.dao.AdjustedGiftDao;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
 
 @Repository("adjustedGiftDAO")
 public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<AdjustedGift> implements AdjustedGiftDao {
@@ -74,6 +73,21 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
             }
         }
         return adjustedGifts;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<AdjustedGift> readLimitedAdjustedGiftsByIds(Set<Long> adjustedGiftIds, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readLimitedAdjustedGiftsByIds: adjustedGiftIds = " + adjustedGiftIds + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.ADJUSTED_GIFT, "ADJUSTED_GIFT.ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES",
+                sortPropertyName, direction, start, limit, locale);
+        params.put("adjustedGiftIds", new ArrayList<Long>(adjustedGiftIds));
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_ADJUSTED_GIFTS_BY_ADJUSTED_GIFT_IDS_NO_DISTRO_LINES", params);
     }
 
     @SuppressWarnings("unchecked")

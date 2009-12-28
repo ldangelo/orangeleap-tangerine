@@ -406,6 +406,20 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     }
 
     @Test(groups = { "testReadGift" })
+    public void testReadLimitedGiftsByIds() throws Exception {
+        Set<Long> giftIds = new HashSet<Long>();
+        giftIds.add(100L);
+        giftIds.add(400L);
+        List<Gift> gifts = giftDao.readLimitedGiftsByIds(giftIds, StringConstants.ID, StringConstants.DESC, 0, 100, Locale.getDefault());
+        Assert.assertNotNull(gifts);
+        Assert.assertEquals(gifts.size(), 2);
+        Assert.assertEquals(gifts.get(0).getId(), new Long(400L));
+        Assert.assertEquals(gifts.get(1).getId(), new Long(100L));
+        testGiftId400(gifts.get(0));
+        testGiftId100(gifts.get(1));
+    }
+
+    @Test(groups = { "testReadGift" })
     public void testReadGiftsByConstituentId() throws Exception {
         List<Gift> gifts = giftDao.readMonetaryGiftsByConstituentId(0L);
         assert gifts != null && gifts.isEmpty();

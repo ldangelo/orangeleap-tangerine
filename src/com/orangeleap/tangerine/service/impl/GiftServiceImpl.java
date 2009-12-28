@@ -384,6 +384,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
+    public List<Gift> readLimitedGiftsByIds(Set<Long> giftIds, SortInfo sortInfo, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readLimitedGiftsByIds: giftIds = " + giftIds + " sortInfo = " + sortInfo);
+        }
+        return giftDao.readLimitedGiftsByIds(giftIds, sortInfo.getSort(), sortInfo.getDir(), sortInfo.getStart(),
+                sortInfo.getLimit(), locale);
+    }
+
+    @Override
     public Gift readGiftByIdCreateIfNull(Constituent constituent, String giftId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readGiftByIdCreateIfNull: giftId = " + giftId +

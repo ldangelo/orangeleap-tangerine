@@ -46,7 +46,8 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 
     protected final Log logger = OLLogger.getLog(getClass());
 
-
+    private static final boolean enableLiveRollups = "true".equalsIgnoreCase(System.getProperty("orangeleap.enable.live.rollups"));
+    
     @Resource(name = "rollupService")
     private RollupService rollupService;
     
@@ -57,6 +58,9 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 	
 	@Override
     public void updateRollupsForConstituentRollupValueSource(RollupValueSource rvs) {
+		
+		if (!enableLiveRollups) return;  // Enabling this can cause mysql lock contention on the GIFT table.
+		
 		List<RollupAttribute> ras = rollupService.readAllRollupAttributesByType("constituent"); 
 		
 		// Sometimes only the constituentId is populated rather than the object.

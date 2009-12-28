@@ -113,6 +113,21 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 
     @SuppressWarnings("unchecked")
     @Override
+    public List<Gift> readLimitedGiftsByIds(Set<Long> giftIds, String sortPropertyName, String direction,
+                                                         int start, int limit, Locale locale) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readLimitedGiftsByIds: giftIds = " + giftIds + " sortPropertyName = " + sortPropertyName +
+                    " direction = " + direction + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupSortParams(StringConstants.GIFT, "GIFT.GIFT_SEARCH_RESULT",
+                sortPropertyName, direction, start, limit, locale);
+        params.put("giftIds", new ArrayList<Long>(giftIds));
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_GIFTS_BY_GIFT_IDS_NO_DISTRO_LINES", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readMonetaryGiftsByConstituentId: constituentId = " + constituentId);

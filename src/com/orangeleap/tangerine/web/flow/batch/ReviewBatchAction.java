@@ -31,6 +31,8 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -38,7 +40,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.webflow.execution.RequestContext;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +68,7 @@ public class ReviewBatchAction extends EditBatchAction {
             final Map<String, String> dataMap = new HashMap<String, String>();
             dataMap.put("reviewBatchDesc", batch.getBatchDesc());
             dataMap.put("reviewBatchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
+            dataMap.put("hiddenBatchType", batch.getBatchType());
             model.put(StringConstants.DATA, dataMap);
         }
         return model;
@@ -76,13 +81,93 @@ public class ReviewBatchAction extends EditBatchAction {
         }
         tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch); // TODO: do as annotation
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        final ModelMap model = new ModelMap();
+        final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
+
+        for (Map.Entry<String, String> updateFieldEntry : batch.getUpdateFields().entrySet()) {
+            final Map<String, Object> fieldMap = new HashMap<String, Object>();
+            String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(updateFieldEntry.getKey()).toString();
+            FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+            if (fieldDef != null) {
+                fieldMap.put(StringConstants.NAME, fieldDef.getDefaultLabel());
+
+                String value = updateFieldEntry.getValue();
+
+                if (FieldType.PICKLIST.equals(fieldDef.getFieldType())) {  // TODO: MULTI_PICKLIST, CODE, etc?
+                    final Picklist picklist = picklistItemService.getPicklist(fieldDef.getFieldName());
+                    if (picklist != null) {
+                        for (PicklistItem item : picklist.getActivePicklistItems()) {
+                            if (value.equals(item.getItemName())) {
+                                value = item.getDefaultDisplayValue();
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (FieldType.DATE.equals(fieldDef.getFieldType())) {
+                    value = formatDate(value, StringConstants.MM_DD_YYYY_FORMAT); // TODO: get date format based on locale
+                }
+                else if (FieldType.DATE_TIME.equals(fieldDef.getFieldType())) {
+                    value = formatDate(value, StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_1); // TODO: get date format based on locale
+                }
+                fieldMap.put(StringConstants.VALUE, value);
+                fieldList.add(fieldMap);
+            }
+        }
+        model.put(StringConstants.SUCCESS, Boolean.TRUE);
+        model.put(StringConstants.ROWS, fieldList);
+        model.put(StringConstants.TOTAL_ROWS, fieldList.size());
+        return model;
+    }
+
+    private String formatDate(String value, String desiredFormat) {
+        try {
+            Date date = DateUtils.parseDate(value, new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
+                    StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,
+                    StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_1, StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_2,
+                    StringConstants.MM_DD_YYYY_FORMAT});
+            value = new SimpleDateFormat(desiredFormat).format(date);
+        }
+        catch (Exception ex) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("formatDate: could not parse date = " + value);
+            }
+        }
+        return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ModelMap reviewStep3(final RequestContext flowRequestContext) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("reviewStep3: ");
+        }
+        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch); // TODO: do as annotation
+        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final SortInfo sortInfo = getSortInfo(flowRequestContext);
         final ModelMap model = new ModelMap();
 
+        final BeanWrapper bean = createDefaultEntity(batch);
+        final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortInfo.getStart(), sortInfo.getLimit());
+        initSortInfoMetaData(bean, sortInfo, metaDataMap);
         final List<Map<String, Object>> rowValues = new ArrayList<Map<String, Object>>();
 
-        final Map<String, Object> metaDataMap = initStep5MetaData(batch, sortInfo.getSort(), sortInfo.getDir(),
-                sortInfo.getStart(), sortInfo.getLimit());
+        final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
+        Map<String, Object> fieldMap = new HashMap<String, Object>();
+        fieldMap.put(StringConstants.NAME, StringConstants.ID);
+        fieldMap.put(StringConstants.MAPPING, StringConstants.ID);
+        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
+        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
+        fieldList.add(fieldMap);
+
+        fieldMap = new HashMap<String, Object>();
+        fieldMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
+        fieldMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
+        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
+        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID));
+        fieldList.add(fieldMap);
+
+        initBatchUpdateFields(batch, fieldList);
+        metaDataMap.put(StringConstants.FIELDS, fieldList);
         model.put(StringConstants.META_DATA, metaDataMap);
 
         unescapeSortField(sortInfo);
@@ -107,8 +192,8 @@ public class ReviewBatchAction extends EditBatchAction {
             for (AbstractCustomizableEntity entity : entities) {
                 final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
                 final Map<String, Object> rowMap = new HashMap<String, Object>();
-                rowMap.put(StringConstants.DISPLAYED_ID, bw.getPropertyValue(StringConstants.ID));
-                rowMap.put(StringConstants.TYPE, TangerineMessageAccessor.getMessage(batch.getBatchType()));
+                rowMap.put(StringConstants.ID, bw.getPropertyValue(StringConstants.ID));
+                rowMap.put(StringConstants.CONSTITUENT_ID, bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
 
                 for (Map.Entry<String, String> fieldEntry : batch.getUpdateFields().entrySet()) {
                     String key = fieldEntry.getKey();
@@ -141,9 +226,7 @@ public class ReviewBatchAction extends EditBatchAction {
                 }
                 rowValues.add(rowMap);
             }
-        }
-        else {
-            // if no entities updated, show the update fields instead
+            addConstituentIdsToRows(rowValues, entities);
         }
         model.put(StringConstants.ROWS, rowValues);
         model.put(StringConstants.TOTAL_ROWS, totalRows);

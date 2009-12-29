@@ -35,6 +35,7 @@ OrangeLeap.msgBundle = {
     batchId: 'Batch ID',
     type: 'Type',
     size: 'Size',
+    value: 'Value',
     description: 'Description',
     executeDate: 'Execute Date',
     creationDate: 'Creation Date',
@@ -96,7 +97,8 @@ OrangeLeap.msgBundle = {
 
     reviewBatch: 'Review Batch',
     reviewStep1Title: '<span class="step"><span class="stepNum complete" id="reviewStep1">1</span><span class="stepTxt">View Batch Type</span>',
-    reviewStep2Title: '<span class="step"><span class="stepNum complete" id="reviewStep2">2</span><span class="stepTxt">View Updated Rows</span>',
+    reviewStep2Title: '<span class="step"><span class="stepNum complete" id="reviewStep2">2</span><span class="stepTxt">View Update Fields</span>',
+    reviewStep3Title: '<span class="step"><span class="stepNum complete" id="reviewStep3">3</span><span class="stepTxt">View Updated Rows</span>',
     followingRowsModified: 'The following rows were modified by this batch.  Values displayed in the grid may not necessarily reflect the current values, which can be seen by double-clicking on the row',
     noRowsUpdated: 'No rows were updated as part of this batch.'
 };
@@ -1656,7 +1658,7 @@ Ext.onReady(function() {
             var name = fields[x].name;
             if (name && name != 'constituentId' && name != 'id') {
                 cols[cols.length] = {
-                    header: fields[x].header, dataIndex: name, sortable: (name != 'type'),
+                    header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                         return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                     }
@@ -2001,6 +2003,9 @@ Ext.onReady(function() {
             {
                 fieldLabel: msgs.type, name: 'reviewBatchType', id: 'reviewBatchType', xtype: 'displayfield', cls: 'displayElem',
                 height: 60, width: 500
+            },
+            {
+                name: 'hiddenBatchType', id: 'hiddenBatchType', xtype: 'hidden'
             }
         ]
     });
@@ -2011,9 +2016,10 @@ Ext.onReady(function() {
         root: 'rows',
         totalProperty: 'totalRows',
         remoteSort: true,
-        sortInfo: {field: 'id', direction: 'ASC'},
+        sortInfo: {field: 'name', direction: 'ASC'},
         fields: [
-            {name: 'id', mapping: 'id', type: 'int'}
+            {name: 'name', mapping: 'name', type: 'string'},
+            {name: 'value', mapping: 'value', type: 'auto'}
         ],
         listeners: {
             'beforeload': function(store, options) {
@@ -2035,12 +2041,96 @@ Ext.onReady(function() {
         return $( $('#step1Review').parent('div').siblings().get(0) ).attr('id');        
     }
 
-    reviewStep2Store.on('metachange', function(store, meta) {
+    var reviewStep2Grid = new Ext.grid.GridPanel({
+        columns: [
+            { header: msgs.name, dataIndex: 'name', sortable: true, width: 200 },
+            { header: msgs.value, dataIndex: 'value', sortable: true, width: 520 }
+        ],
+        width: 726,
+        height: 468,
+        header: false,
+        frame: false,
+        border: false,
+        stateId: 'reviewStep2List',
+        remoteSort: false,
+        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
+        stateful: true,
+        store: reviewStep2Store,
+        sortInfo: { field: 'name', direction: 'ASC' },
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                handler: function(button, event) {
+                    var panel = reviewBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(0)) {
+                        var thisItem = panel.items.items[0];
+                        thisItem.setActiveTab(thisItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.next,
+                cls: 'saveButton',
+                ref: '../nextButton',
+                formBind: true,
+                handler: function(button, event) {
+                    var panel = reviewBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(2)) {
+                        var firstItem = panel.items.items[2];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.close,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    closeReviewBatch();
+                }
+            }
+        ],
+        buttonAlign: 'center'
+    });
+
+    var reviewStep3Store = new OrangeLeap.ListStore({
+        url: 'reviewBatch.htm',
+        reader: new Ext.data.JsonReader(),
+        root: 'rows',
+        totalProperty: 'totalRows',
+        remoteSort: true,
+        sortInfo: {field: 'id', direction: 'ASC'},
+        fields: [
+            {name: 'id', mapping: 'id', type: 'int'}
+        ],
+        listeners: {
+            'beforeload': function(store, options) {
+                Ext.get(findStep3ReviewParentId()).mask(msgs.loadingRows);
+            },
+            'load': function(store, records, options) {
+                Ext.get(findStep3ReviewParentId()).unmask();
+            },
+            'exception': function(misc) {
+                Ext.get(findStep3ReviewParentId()).unmask();
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep3 });
+            }
+        }
+    });
+
+    function findStep3ReviewParentId() {
+        return $( $('#step1Review').parent('div').siblings().get(1) ).attr('id');
+    }
+
+    reviewStep3Store.on('metachange', function(store, meta) {
         var cols = [];
         var fields = meta.fields;
         for (var x = 0; x < fields.length; x++) {
             var name = fields[x].name;
-            if (name && name != 'constituentId' && name != 'id') {
+            if (name && name != 'constituentId') {
                 cols[cols.length] = {
                     header: fields[x].header, dataIndex: name, sortable: (name != 'type'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
@@ -2049,10 +2139,10 @@ Ext.onReady(function() {
                 };
             }
         }
-        reviewStep2Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
-        reviewStep2Bar.bindStore(store, true);
+        reviewStep3Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+        reviewStep3Bar.bindStore(store, true);
     });
-    reviewStep2Store.proxy.on('load', function(proxy, txn, options) {
+    reviewStep3Store.proxy.on('load', function(proxy, txn, options) {
         reviewFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
 
@@ -2063,15 +2153,15 @@ Ext.onReady(function() {
             o[pn.start] = start;
             o[pn.limit] = this.pageSize;
             if (this.fireEvent('beforechange', this, o) !== false) {
-                loadTab(reviewBatchWin.groupTabPanel, reviewBatchWin.groupTabPanel.activeGroup, reviewBatchWin.groupTabPanel.activeGroup, start);
+                loadReviewTab(reviewBatchWin.groupTabPanel, reviewBatchWin.groupTabPanel.activeGroup, reviewBatchWin.groupTabPanel.activeGroup, start);
             }
         }
     });
 
-    var reviewStep2Bar = new OrangeLeap.ReviewBatchWinToolbar({
+    var reviewStep3Bar = new OrangeLeap.ReviewBatchWinToolbar({
         pageSize: 50,
         stateEvents: ['change'],
-        stateId: 'reviewStep2Bar',
+        stateId: 'reviewStep3Bar',
         stateful: true,
         getState: function() {
             var config = {};
@@ -2083,18 +2173,18 @@ Ext.onReady(function() {
                 this.cursor = state.start;
             }
         },
-        store: reviewStep2Store,
+        store: reviewStep3Store,
         displayInfo: true,
         displayMsg: msgs.displayMsg,
         emptyMsg: msgs.emptyMsg
     });
 
-    var reviewStep2Toolbar = new Ext.Toolbar({
+    var reviewStep3Toolbar = new Ext.Toolbar({
         items: [
             msgs.followingRowsModified
         ]
     });
-    reviewStep2Toolbar.on('afterlayout', function(tb){
+    reviewStep3Toolbar.on('afterlayout', function(tb){
         tb.el.child('.x-toolbar-right').remove();
         var t = tb.el.child('.x-toolbar-left');
         t.removeClass('x-toolbar-left');
@@ -2103,12 +2193,12 @@ Ext.onReady(function() {
         t.wrap({tag: 'center'});
     }, null, {single: true});
 
-    var reviewStep2Form = new Ext.grid.GridPanel({
-        stateId: 'reviewStep2List',
+    var reviewStep3Form = new Ext.grid.GridPanel({
+        stateId: 'reviewStep3List',
         stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
         stateful: true,
-        store: reviewStep2Store,
-        bbar: reviewStep2Bar,
+        store: reviewStep3Store,
+        bbar: reviewStep3Bar,
         stripeRows: false,
         width: 726,
         height: 468,
@@ -2136,8 +2226,8 @@ Ext.onReady(function() {
                 ref: '../prevButton',
                 handler: function(button, event) {
                     var panel = reviewBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(0)) {
-                        var thisItem = panel.items.items[0];
+                    if (panel.setActiveGroup(1)) {
+                        var thisItem = panel.items.items[1];
                         thisItem.setActiveTab(thisItem.items.items[0]);
                     }
                 }
@@ -2152,16 +2242,16 @@ Ext.onReady(function() {
             }
         ],
         buttonAlign: 'center',
-        tbar: reviewStep2Toolbar,
+        tbar: reviewStep3Toolbar,
         listeners: {
             'rowdblclick': function(grid, rowIndex, event) {
-                var reviewBatchType = Ext.getCmp('reviewBatchType').getValue();
-                var record = reviewStep2Store.getAt(rowIndex);
-                if (reviewBatchType && record) {
+                var thisType = Ext.getCmp('hiddenBatchType').getValue();
+                var record = reviewStep3Store.getAt(rowIndex);
+                if (thisType && record) {
                     // open window to view record
-                    var thisUrl = reviewBatchType + '.htm?' + reviewBatchType + 'Id=' + record.get('id') +
+                    var thisUrl = thisType + '.htm?' + thisType + 'Id=' + record.get('id') +
                                           (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
-                    window.open(thisUrl, batchType + 'Win');
+                    window.open(thisUrl, 'review' + thisType + 'Win');
                 }
             }
         }
@@ -2204,10 +2294,16 @@ Ext.onReady(function() {
         }
         else if (newGroup.mainItem.id == 'step2Review') {
             reviewStep2Store.load({ 'params': { '_eventId_reviewStep2': 'reviewStep2', 
+                'execution': reviewFlowExecutionKey, 'sort': 'name', 'dir': 'ASC' }
+            });
+            reviewBatchWin.setTitle(msgs.reviewBatch + ": " + msgs.step2Tip);
+        }
+        else if (newGroup.mainItem.id == 'step3Review') {
+            reviewStep3Store.load({ 'params': { '_eventId_reviewStep3': 'reviewStep3',
                 'execution': reviewFlowExecutionKey, 'start': startNum, 'limit': 20,
                 'sort': 'id', 'dir': 'ASC' }
             });
-            reviewBatchWin.setTitle(msgs.reviewBatch + ": " + msgs.step2Tip);
+            reviewBatchWin.setTitle(msgs.reviewBatch + ": " + msgs.step3Tip);
         }
     }
 
@@ -2276,7 +2372,17 @@ Ext.onReady(function() {
                          cls: 'grp',
                          title: msgs.reviewStep2Title,
                          tabTip: msgs.step2Tip,
-                         items: [ reviewStep2Form ]
+                         items: [ reviewStep2Grid ]
+                     }]
+                 },
+                 {
+                     layoutOnTabChange: true,
+                     items: [{
+                         id: 'step3Review',
+                         cls: 'grp',
+                         title: msgs.reviewStep3Title,
+                         tabTip: msgs.step3Tip,
+                         items: [ reviewStep3Form ]
                      }]
                  }
              ]
@@ -2296,6 +2402,7 @@ Ext.onReady(function() {
         reviewBatchWin.groupTabPanel.strip.select('li.x-grouptabs-strip-active', true).removeClass('x-grouptabs-strip-active');
         reviewBatchWin.groupTabPanel.activeGroup = null;
         reviewStep2Store.removeAll();
+        reviewStep3Store.removeAll();
     }
 });
 

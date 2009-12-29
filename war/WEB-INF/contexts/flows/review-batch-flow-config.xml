@@ -12,6 +12,7 @@
         </on-entry>
         <transition on="reviewStep1" to="reviewBatchStep1"/>
         <transition on="reviewStep2" to="reviewBatchStep2"/>
+        <transition on="reviewStep3" to="reviewBatchStep3"/>
         <transition on="close" to="reviewBatchCompleted"/>
     </view-state>
 
@@ -21,6 +22,17 @@
         </on-entry>
         <transition on="reviewStep1" to="reviewBatchStep1"/>
         <transition on="reviewStep2" to="reviewBatchStep2"/>
+        <transition on="reviewStep3" to="reviewBatchStep3"/>
+        <transition on="close" to="reviewBatchCompleted"/>
+    </view-state>
+
+    <view-state id="reviewBatchStep3">
+        <on-entry>
+            <evaluate expression="reviewBatchAction.reviewStep3(flowRequestContext)" result="flowScope.model"/>
+        </on-entry>
+        <transition on="reviewStep1" to="reviewBatchStep1"/>
+        <transition on="reviewStep2" to="reviewBatchStep2"/>
+        <transition on="reviewStep3" to="reviewBatchStep3"/>
         <transition on="close" to="reviewBatchCompleted"/>
     </view-state>
 

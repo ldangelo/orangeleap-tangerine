@@ -401,7 +401,7 @@ public class EditBatchAction extends AbstractAction {
         }
     }
 
-    private void addConstituentIdsToRows(final List<Map<String, Object>> rowList, final List rows) {
+    protected void addConstituentIdsToRows(final List<Map<String, Object>> rowList, final List rows) {
         for (Map<String, Object> objectMap : rowList) {
             Long id = (Long) objectMap.get(StringConstants.ID);
             for (Object thisRow : rows) {
@@ -428,7 +428,7 @@ public class EditBatchAction extends AbstractAction {
      * @param batch the batch to create a mock default entity object for
      * @return a BeanWrapper of the mock entity object
      */
-    private BeanWrapper createDefaultEntity(PostBatch batch) {
+    protected BeanWrapper createDefaultEntity(PostBatch batch) {
         AbstractPaymentInfoEntity entity = null;
         if (StringConstants.GIFT.equals(batch.getBatchType())) {
             entity = new Gift();
@@ -512,8 +512,29 @@ public class EditBatchAction extends AbstractAction {
         final Set<Long> segmentationReportIds = batch.getEntrySegmentationIds();
         final List<Map<String, Object>> rowValues = new ArrayList<Map<String, Object>>();
 
-        final Map<String, Object> metaDataMap = initStep5MetaData(batch, sortInfo.getSort(),
-                sortInfo.getDir(), sortInfo.getStart(), (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
+        final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortInfo.getStart(),
+                (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
+
+        final BeanWrapper bean = createDefaultEntity(batch);
+        initSortInfoMetaData(bean, sortInfo, metaDataMap);
+
+        final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
+        Map<String, Object> fieldMap = new HashMap<String, Object>();
+        fieldMap.put(StringConstants.NAME, StringConstants.TYPE);
+        fieldMap.put(StringConstants.MAPPING, StringConstants.TYPE);
+        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
+        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.TYPE));
+        fieldList.add(fieldMap);
+
+        fieldMap = new HashMap<String, Object>();
+        fieldMap.put(StringConstants.NAME, StringConstants.DISPLAYED_ID);
+        fieldMap.put(StringConstants.MAPPING, StringConstants.DISPLAYED_ID);
+        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
+        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
+        fieldList.add(fieldMap);
+
+        initBatchUpdateFields(batch, fieldList);
+        metaDataMap.put(StringConstants.FIELDS, fieldList);
         model.put(StringConstants.META_DATA, metaDataMap);
 
         List rows = null;
@@ -539,79 +560,59 @@ public class EditBatchAction extends AbstractAction {
     }
 
     protected void unescapeSortField(final SortInfo sortInfo) {
-        if (StringConstants.DISPLAYED_ID.equals(sortInfo.getSort())) {
-            sortInfo.setSort(StringConstants.ID); // displayedID maps to ID
-        }
         sortInfo.setSort(TangerineForm.unescapeFieldName(sortInfo.getSort())); // convert from customFieldMap-tsb-bank-teb -> customFieldMap[bank]
     }
 
-    protected Map<String, Object> initStep5MetaData(final PostBatch batch,
-                                                  String sortField, String sortDir, int sortStart, int sortLimit) {
-        final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortStart,
-                (sortLimit * 2)); // double the rows because of old & new values will be displayed
-
-        BeanWrapper bean = createDefaultEntity(batch);
-
+    protected void initSortInfoMetaData(final BeanWrapper bean, final SortInfo sortInfo, final Map<String, Object> metaDataMap) {
         final Map<String, String> sortInfoMap = new HashMap<String, String>();
-        if ( ! bean.isReadableProperty(TangerineForm.unescapeFieldName(sortField))) {  // If the sort key is not one of the bean's properties, use the ID as default
-            sortField = StringConstants.ID;
+        if ( ! bean.isReadableProperty(TangerineForm.unescapeFieldName(sortInfo.getSort()))) {  // If the sort key is not one of the bean's properties, use the ID as default
+            sortInfo.setSort(StringConstants.ID);
         }
-        sortInfoMap.put(StringConstants.FIELD, sortField);
-        sortInfoMap.put(StringConstants.DIRECTION, sortDir);
+        sortInfoMap.put(StringConstants.FIELD, sortInfo.getSort());
+        sortInfoMap.put(StringConstants.DIRECTION, sortInfo.getDir());
         metaDataMap.put(StringConstants.SORT_INFO, sortInfoMap);
+    }
 
-        final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
-        Map<String, Object> fieldMap = new HashMap<String, Object>();
-        fieldMap.put(StringConstants.NAME, StringConstants.TYPE);
-        fieldMap.put(StringConstants.MAPPING, StringConstants.TYPE);
-        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.TYPE));
-        fieldList.add(fieldMap);
-
-        fieldMap = new HashMap<String, Object>();
-        fieldMap.put(StringConstants.NAME, StringConstants.DISPLAYED_ID);
-        fieldMap.put(StringConstants.MAPPING, StringConstants.DISPLAYED_ID);
-        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
-        fieldList.add(fieldMap);
+    protected void initBatchUpdateFields(final PostBatch batch, List<Map<String, Object>> fieldList) {
+        BeanWrapper bean = createDefaultEntity(batch);
 
         // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
         for (String thisKey : batch.getUpdateFields().keySet()) {
             String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
             FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-            fieldMap = new HashMap<String, Object>();
-            String escapedFieldName = TangerineForm.escapeFieldName(fieldDef.getFieldName());
-            fieldMap.put(StringConstants.NAME, escapedFieldName);
-            fieldMap.put(StringConstants.MAPPING, escapedFieldName);
+            if (fieldDef != null) {
+                Map<String, Object> fieldMap = new HashMap<String, Object>();
+                String escapedFieldName = TangerineForm.escapeFieldName(fieldDef.getFieldName());
+                fieldMap.put(StringConstants.NAME, escapedFieldName);
+                fieldMap.put(StringConstants.MAPPING, escapedFieldName);
 
-            String propertyName = fieldDef.getFieldName();
-            if (bean.getPropertyValue(propertyName) instanceof CustomField) {
-                propertyName += StringConstants.DOT_VALUE;
-            }
-            String extType;
-            if (fieldDef.getFieldType().equals(FieldType.PICKLIST)) {
-                extType = ExtTypeHandler.EXT_STRING;
-            }
-            else {
-                extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
-            }
-            fieldMap.put(StringConstants.TYPE, extType);
-            fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
+                String propertyName = fieldDef.getFieldName();
+                if (bean.getPropertyValue(propertyName) instanceof CustomField) {
+                    propertyName += StringConstants.DOT_VALUE;
+                }
+                String extType;
+                if (fieldDef.getFieldType().equals(FieldType.PICKLIST)) {
+                    extType = ExtTypeHandler.EXT_STRING;
+                }
+                else {
+                    extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
+                }
+                fieldMap.put(StringConstants.TYPE, extType);
+                fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
 
-            if (ExtTypeHandler.EXT_DATE.equals(extType)) {
-                String format;
-//                        if (FieldType.CC_EXPIRATION.equals(fieldDef.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(fieldDef.getFieldType())) {
-//                            format = "Y-m-d"; // TODO: put back CC?
-//                        }
-//                        else {
-                    format = "Y-m-d H:i:s";
-//                        }
-                fieldMap.put(StringConstants.DATE_FORMAT, format);
+                if (ExtTypeHandler.EXT_DATE.equals(extType)) {
+                    String format;
+    //                        if (FieldType.CC_EXPIRATION.equals(fieldDef.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(fieldDef.getFieldType())) {
+    //                            format = "Y-m-d"; // TODO: put back CC?
+    //                        }
+    //                        else {
+                        format = "Y-m-d H:i:s";
+    //                        }
+                    fieldMap.put(StringConstants.DATE_FORMAT, format);
+                }
+                fieldList.add(fieldMap);
             }
-            fieldList.add(fieldMap);
         }
-        metaDataMap.put(StringConstants.FIELDS, fieldList);
-        return metaDataMap;
     }
 
     private void contrastUpdatedValues(final PostBatch batch, final List rows,

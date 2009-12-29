@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -20,7 +22,8 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	
 	private NotificationPublisher publisher;
 	private Map<String, Map<String, Long>> counts = Collections.synchronizedMap(new TreeMap<String, Map<String, Long>>());
-
+	private List<Long> measurements = new ArrayList<Long>();
+	
 	@Override
 	public void setNotificationPublisher(NotificationPublisher notificationPublisher) {
         publisher = notificationPublisher;
@@ -107,8 +110,24 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 		return getTotalCount(ECHEX_PAYMENT_STATUS);
 	}
 	
+	private static final int MAX_MEASUREMENTS = 5;
+	
 	@Override
-	public Long getMemoryUsedPercent() {
+	public synchronized Long getMemoryUsedPercent() {
+		
+		if (measurements.size() > MAX_MEASUREMENTS) measurements.remove(0);
+		measurements.add(getMemoryUsedPercentMeasurement());
+		
+		// Return an average of the last n measurements to avoid spikes
+		Long avg = 0L;
+		for (Long measurement: measurements) {
+			avg += measurement;
+		}
+		return (Long)Math.round(avg * 1.0d / measurements.size());
+		
+	}
+	
+	private Long getMemoryUsedPercentMeasurement() {
 		double pct = (OLLogger.getFreeMemory() * 1.0f) / Runtime.getRuntime().maxMemory();
 		return (Long)Math.round((1d - pct) * 100);
 	}

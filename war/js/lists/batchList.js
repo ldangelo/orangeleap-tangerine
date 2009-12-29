@@ -3,8 +3,10 @@ Ext.WindowMgr.zseed = 9015; // use zseed so that the msgBox will appear above th
 Ext.ns('OrangeLeap', 'OrangeLeap.msgBundle');
 OrangeLeap.ListStore = Ext.extend(Ext.data.JsonStore, {
     sort: function(fieldName, dir) {
-        this.lastOptions.params['start'] = 0;
-        this.lastOptions.params['limit'] = 100;
+        if (this.lastOptions) {
+            this.lastOptions.params['start'] = 0;
+            this.lastOptions.params['limit'] = 100;
+        }
         return OrangeLeap.ListStore.superclass.sort.call(this, fieldName, dir);
     }
 });
@@ -97,9 +99,11 @@ OrangeLeap.msgBundle = {
 
     reviewBatch: 'Review Batch',
     reviewStep1Title: '<span class="step"><span class="stepNum complete" id="reviewStep1">1</span><span class="stepTxt">View Batch Type</span>',
-    reviewStep2Title: '<span class="step"><span class="stepNum complete" id="reviewStep2">2</span><span class="stepTxt">View Update Fields</span>',
+    reviewStep2Title: '<span class="step"><span class="stepNum complete" id="reviewStep2">2</span><span class="stepTxt">View Field Update Criteria</span>',
     reviewStep3Title: '<span class="step"><span class="stepNum complete" id="reviewStep3">3</span><span class="stepTxt">View Updated Rows</span>',
-    followingRowsModified: 'The following rows were modified by this batch.  Values displayed in the grid may not necessarily reflect the current values, which can be seen by double-clicking on the row',
+    followingRowsModified: '<div style="text-align: center" id="reviewStep3Header"><div>The following rows were modified by this batch.</div>' + 
+                           '<div>Values displayed in the grid may not necessarily reflect the current values</div>' +
+                           '<div>Double-click a row to display in a new window</div></div>',
     noRowsUpdated: 'No rows were updated as part of this batch.'
 };
 
@@ -2015,7 +2019,7 @@ Ext.onReady(function() {
         reader: new Ext.data.JsonReader(),
         root: 'rows',
         totalProperty: 'totalRows',
-        remoteSort: true,
+        remoteSort: false,
         sortInfo: {field: 'name', direction: 'ASC'},
         fields: [
             {name: 'name', mapping: 'name', type: 'string'},
@@ -2052,11 +2056,17 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         stateId: 'reviewStep2List',
-        remoteSort: false,
         stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
         stateful: true,
         store: reviewStep2Store,
-        sortInfo: { field: 'name', direction: 'ASC' },
+        selModel: new Ext.grid.RowSelectionModel({
+            singleSelect: false,
+            listeners: {
+                'beforerowselect': function() {
+                    return false; 
+                }
+            }
+        }),
         buttons: [
             {
                 text: msgs.previous,

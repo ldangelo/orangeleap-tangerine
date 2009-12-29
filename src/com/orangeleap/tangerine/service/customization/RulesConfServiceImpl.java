@@ -143,6 +143,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	}
     	rgc.setGeneratedCodeText(generateCode(rulesEventNameType, testMode));
     	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
+        ruleGeneratedCodeCache.removeAll();
         cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
     }
     

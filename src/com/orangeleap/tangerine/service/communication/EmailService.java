@@ -63,17 +63,10 @@ import com.orangeleap.tangerine.util.OLLogger;
 public class EmailService  {
 	protected final Log logger = OLLogger.getLog(getClass());
 
-//	private String userName = null;
-//	private String password = null;
+
 	private String baseUri = null;
 	private String repositoryUri = null;
-	// private String templateName = null;
-	// private String subject = null;
 	private CommunicationHistoryService communicationHistoryService;
-
-	// private java.util.Map<String, String> map = 
-	// private Site site;
-	// private ApplicationContext applicationContext;
 
 	private File runReport(Site site,Map params) {
 

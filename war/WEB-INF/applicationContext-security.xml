@@ -32,6 +32,8 @@
         <sec:intercept-url pattern="/js/jquery/jquery*.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/js/jquery.cookie.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/services/**" filters="none" />
+        <sec:intercept-url pattern="/services2.0/**" filters="none" />        
+        <sec:intercept-url pattern="/*.xsd" filters="none" />                
         <sec:intercept-url pattern="/**" access="ROLE_USER" />
         <sec:concurrent-session-control max-sessions="1" expired-url="/concurrentLogin.jsp" />
         <sec:anonymous granted-authority="ROLE_ANONYMOUS" key="anonymous" username="anonymous"/>

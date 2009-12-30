@@ -128,7 +128,7 @@ public class OrangeLeapWSV2 {
 		this.cs = cs;
 	}
 
-	@PayloadRoot(localPart = "GetConstituentByIdRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetConstituentByIdRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetConstituentByIdResponse getConstituentById(
 			GetConstituentByIdRequest request) {
 		GetConstituentByIdResponse response = new GetConstituentByIdResponse();
@@ -142,7 +142,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "CreateDefaultConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "CreateDefaultConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	/**
 	 * Describe <code>createDefaultConstituent</code> method here.
 	 *
@@ -161,7 +161,7 @@ public class OrangeLeapWSV2 {
 		return cr;
 	}
 
-	@PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public SaveOrUpdateConstituentResponse maintainConstituent(
 			SaveOrUpdateConstituentRequest p)
 			throws ConstituentValidationException, BindException {
@@ -181,7 +181,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "FindConstituentsRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "FindConstituentsRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public FindConstituentsResponse findConstituent(
 			FindConstituentsRequest request) {
 		FindConstituentsResponse cr = new FindConstituentsResponse();
@@ -240,7 +240,7 @@ public class OrangeLeapWSV2 {
 		return cr;
 	}
 
-	@PayloadRoot(localPart = "SearchConstituentsRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "SearchConstituentsRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public SearchConstituentsResponse searchConstituent(
 			SearchConstituentsRequest request) {
 		SearchConstituentsResponse cr = new SearchConstituentsResponse();
@@ -299,7 +299,7 @@ public class OrangeLeapWSV2 {
 		return cr;
 	}
 
-	@PayloadRoot(localPart = "SaveOrUpdatePledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "SaveOrUpdatePledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public SaveOrUpdatePledgeResponse maintainPledge(
 			SaveOrUpdatePledgeRequest request) {
 		com.orangeleap.tangerine.domain.Constituent c = cs
@@ -324,7 +324,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "SaveOrUpdateGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "SaveOrUpdateGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public SaveOrUpdateGiftResponse maintainGift(SaveOrUpdateGiftRequest request) {
 		com.orangeleap.tangerine.domain.Constituent c = cs
 				.readConstituentById(request.getConstituentId());
@@ -352,7 +352,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "GetConstituentPledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetConstituentPledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetConstituentPledgeResponse getConstituentsPledges(
 			GetConstituentPledgeRequest request) {
 		List<com.orangeleap.tangerine.domain.paymentInfo.Pledge> pledges = pledgeService
@@ -371,7 +371,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "GetConstituentGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetConstituentGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetConstituentGiftResponse getConstituentsGifts(
 			GetConstituentGiftRequest request) {
 		List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = giftService
@@ -394,7 +394,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "GetSegmentationByNameRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetSegmentationByNameRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameResponse getSegmentationByName(
 			com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameRequest req) {
 		com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameResponse response = new com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameResponse();
@@ -419,7 +419,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "GetSegmentationByIdRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetSegmentationByIdRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByIdResponse getSegmentationById(
 			com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByIdRequest req) {
 		com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByIdResponse response = new com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByIdResponse();
@@ -444,7 +444,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "GetSegmentationListRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetSegmentationListRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListResponse getSegmentationList(
 			com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListRequest req)
 			throws MalformedURLException {
@@ -478,7 +478,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "GetSegmentationListByTypeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetSegmentationListByTypeRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListByTypeResponse getSegmentationListByType(
 			com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListByTypeRequest req)
 			throws MalformedURLException {
@@ -512,7 +512,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "AddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "AddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public void addCommunicationHistory(AddCommunicationHistoryRequest req) {
 		ObjectConverter converter = new ObjectConverter();
 
@@ -529,7 +529,7 @@ public class OrangeLeapWSV2 {
 
 	}
 
-	@PayloadRoot(localPart = "BulkAddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "BulkAddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public void bulkAddCommunicationHistory(
 			BulkAddCommunicationHistoryRequest req) {
 		ObjectConverter converter = new ObjectConverter();
@@ -551,7 +551,7 @@ public class OrangeLeapWSV2 {
 		}
 	}
 
-	@PayloadRoot(localPart = "GetCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetCommunicationHistoryResponse getCommunicationHistory(
 			GetCommunicationHistoryRequest req) {
 		SortInfo sortInfo = new SortInfo();
@@ -575,7 +575,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "GetPickListsRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetPickListsRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetPickListsResponse getPickLists(GetPickListsRequest request) {
 		GetPickListsResponse response = new GetPickListsResponse();
 		List<Picklist> pickListList = picklistItemService.listPicklists();
@@ -591,7 +591,7 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
-	@PayloadRoot(localPart = "GetPickListByNameRequest", namespace = "http://www.orangeleap.com/orangeleap/services/2.0")
+	@PayloadRoot(localPart = "GetPickListByNameRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetPickListByNameResponse getPickListByName(
 			GetPickListByNameRequest request) {
 		GetPickListByNameResponse response = new GetPickListByNameResponse();

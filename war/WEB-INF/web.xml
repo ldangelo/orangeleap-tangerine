@@ -152,6 +152,19 @@
 		</init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>spring-ws-2.0</servlet-name>
+        <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/contexts/webservice2.0-context.xml</param-value>
+        </init-param>
+        <init-param>
+			<param-name>transformWsdlLocations</param-name>
+			<param-value>true</param-value>
+		</init-param>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>spring-ws</servlet-name>
         <url-pattern>/services/*</url-pattern>
@@ -159,7 +172,17 @@
 
 	<servlet-mapping>
         <servlet-name>spring-ws</servlet-name>
-        <url-pattern>*.wsdl</url-pattern>
+        <url-pattern>/services/orangeleap.wsdl</url-pattern>
+	</servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>spring-ws-2.0</servlet-name>
+        <url-pattern>/services2.0/*</url-pattern>
+    </servlet-mapping>
+    
+	<servlet-mapping>
+        <servlet-name>spring-ws-2.0</servlet-name>
+        <url-pattern>/services2.0/orangeleap.wsdl</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

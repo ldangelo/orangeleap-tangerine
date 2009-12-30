@@ -29,7 +29,7 @@
 	<import resource="contexts/pledge-context.xml"/>
 	<import resource="contexts/recurringGift-context.xml"/>
 	<import resource="contexts/relationship-context.xml"/>
-	<import resource="contexts/webservice-context.xml"/>
+<!-- 	<import resource="contexts/webservice-context.xml"/> -->
 	<import resource="contexts/customField-context.xml"/>
     <import resource="contexts/siteSettings-context.xml"/>
     <import resource="contexts/manageDashboard-context.xml"/>

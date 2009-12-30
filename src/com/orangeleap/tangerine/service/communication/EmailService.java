@@ -60,350 +60,309 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.util.OLLogger;
 
-//@Service("emailSendingService")
-public class EmailService implements ApplicationContextAware {
-    protected final Log logger = OLLogger.getLog(getClass());
-	
-    private String userName = null;
-    private String password = null;
-    private String baseUri = null;
-    private String repositoryUri = null;
-    private String templateName = null;
-    private String subject = null;
-    private CommunicationHistoryService communicationHistoryService;
-    private java.util.Map<String, String> map = new HashMap<String, String>();
-    private Site site;
-    private ApplicationContext applicationContext;
-
-    private File runReport() {
-
-        File temp = null;
-        JServer jserver = new JServer();
-        jserver.setUsername(site.getJasperUserId());
-        jserver.setPassword(site.getJasperPassword());
-        jserver.setUrl(baseUri + repositoryUri);
-
-        try {
-        	
-        	CasUtil.populateJserverWithCasCredentials(jserver, baseUri+"/j_acegi_cas_security_check");
-        	
-            Map<String, String> params = getReportParameters();
-
-            JasperPrint print = jserver.getWSClient().runReport(
-                    getReportUnit(jserver).getDescriptor(), params);
-
-            temp = File.createTempFile("orangeleap", ".pdf");
-            temp.deleteOnExit();
-            OutputStream out = new FileOutputStream(temp);
-            JasperExportManager.exportReportToPdfStream(print, out);
-            out.close();
-
-        } catch (JRException e) {
-
-            logger.error(e.getMessage());
-            return null;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return null;
-        }
-        return temp;
-    }
-
-    public void sendMail(String addresses, Constituent p, Gift g, String subject, String templateName, List<Email> selectedEmails) {
-    	sendMail(addresses, p, g, null, null, new HashMap<String, String>(), subject, templateName, selectedEmails);
-    }
-
-    public void sendMail(String addresses, Constituent p, Gift g, RecurringGift recurringGift, Pledge pledge, Map<String, String> reportParams, String subject, String templateName, List<Email> selectedEmails) {
-
-        setSubject(subject);
-        setTemplateName(templateName);
-
-        Site s = (g == null) ? p.getSite() : g.getSite();
-        setSite(s);
-
-        Map<String, String> params = getReportParameters();
-        params.clear();
-
-
-        params.put("Id", p.getId().toString());
-        if (g != null) {
-        	params.put("GiftId", g.getId().toString());
-            params.put("GiftAmount", g.getAmount().toString());
-        }
-        if (recurringGift != null) {
-        	params.put("RecurringGiftId", recurringGift.getId().toString());
-        }
-        if (pledge != null) {
-        	params.put("PledgeId", pledge.getId().toString());
-        }
-        params.putAll(reportParams);
-
-        //
-        // next we extract the output of the report and put it into a mime
-        // message
-        JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setHost(site.getSmtpServerName());
-
-        if (site.getSmtpAccountName() != null)
-            sender.setUsername(site.getSmtpAccountName());
-        if (site.getSmtpPassword() != null)
-            sender.setPassword(site.getSmtpPassword());
-
-        MimeMessage message = sender.createMimeMessage();
-        MimeMessageHelper helper;
-        try {
-            helper = new MimeMessageHelper(message, true, "UTF-8");
-        } catch (MessagingException e2) {
-            logger.error(e2.getMessage());
-            return;
-        }
-
-        File tempFile = runReport();
-
-        if (tempFile != null){
-        	FileSystemResource file = new FileSystemResource(tempFile);
-            try {
-                helper.addAttachment(getTemplateName() + ".pdf", file);
-
-                String itemName = "recent donation";
-                if (recurringGift != null) itemName = "commitment";
-                if (pledge != null) itemName = "pledge";
-
-                helper.setText("Thank you for your "+itemName+"!");
-                helper.setSubject(subject);
-                helper.setFrom(site.getSmtpFromAddress());
-
-                String emailAddresses[] = addresses.split(",");
-                for (int i = 0; i < emailAddresses.length; i++)
-                    helper.addTo(emailAddresses[i]);
-
-                //
-                // finally we mail the message
-                sender.send(message);
-                tempFile.delete();
-
-                //
-                // add entry to touchpoints for this e-mail
-                if (selectedEmails != null){
-                	for (Email e : selectedEmails) {
-                        CommunicationHistory ch = new CommunicationHistory();
-                        ch.setConstituent(p);
-                        if (g != null) ch.setGiftId(g.getId());
-                        if (recurringGift != null) ch.setRecurringGiftId(recurringGift.getId());
-                        if (pledge != null) ch.setPledgeId(pledge.getId());
-                        ch.setSystemGenerated(true);
-                        ch.setComments("Sent e-mail using template named " + getTemplateName());
-                        ch.setEntryType("Email");
-                        ch.setRecordDate(new Date());
-                        ch.setEmail(e);
-                        ch.setCustomFieldValue("template", getTemplateName());
-
-                        ch.setSuppressValidation(true);
-                        try {
-                            communicationHistoryService.maintainCommunicationHistory(ch);
-                        } catch (BindException e1) {
-                            // Should not happen when setSuppressValidation = true;
-                            logger.error(e1);
-                        }
-                    }
-                }else{
-                	//note touchpoint
-                	CommunicationHistory ch = new CommunicationHistory();
-                    ch.setConstituent(p);
-                    if (g != null) ch.setGiftId(g.getId());
-                    if (recurringGift != null) ch.setRecurringGiftId(recurringGift.getId());
-                    if (pledge != null) ch.setPledgeId(pledge.getId());
-                    ch.setSystemGenerated(true);
-                    ch.setComments("Sent e-mail to " + addresses + " reason: " + subject);
-                    ch.setEntryType("Note");
-                    ch.setRecordDate(new Date());
-                    //ch.setSelectedEmail(e);
-                    ch.setCustomFieldValue("template", getTemplateName());
-
-                    ch.setSuppressValidation(true);
-                    try {
-                        communicationHistoryService.maintainCommunicationHistory(ch);
-                    } catch (BindException e1) {
-                        // Should not happen when setSuppressValidation = true;
-                        logger.error(e1);
-                    }
-                }
-
-
-            } catch (MessagingException e1) {
-                logger.error(e1.getMessage());
-                return;
-            }
-
-        }else
-        	logger.error("Failed to generate report.");
-
-
-    }
-
-    public void sendMail(Constituent p, Gift g, String subject, String templateName) {
-    	sendMail(p,  g,  null, null, new HashMap<String, String>(), subject,  templateName);
-    }
-
-    public void sendMail(Constituent p, Gift g, RecurringGift recurringGift, Pledge pledge, Map<String, String> reportParams, String subject, String templateName) {
-        String strEmailAddrs = "";
-        List<Email> selectedEmails = new LinkedList<Email>();
-        setSubject(subject);
-        setTemplateName(templateName);
-
-        Site s = p.getSite();
-        setSite(s);
-
-
-        //
-        // first we run the report passing in the constituent.id as a parameter
-        List<Email> emailAddresses = p.getEmails();
-
-        for (Email e : emailAddresses) {
-            if (e.isReceiveCorrespondence() && !e.isInactive() && e.isValid()) {
-                selectedEmails.add(e);
-                strEmailAddrs += e.getEmailAddress() + ",";
-            }
-        }
-
-        //
-        // no e-mail addresses can receive mail
-        if (selectedEmails.size() == 0) {
-            return;
-        }
-
-        // remove the trailing ,
-        strEmailAddrs = strEmailAddrs.substring(0, strEmailAddrs.lastIndexOf(","));
-
-
-        this.sendMail(strEmailAddrs, p, g, recurringGift, pledge, reportParams, subject, templateName, selectedEmails);
-/*
-        //
-        // add entry to touchpoints for this e-mail
-        for (Email e : selectedEmails) {
-            CommunicationHistory ch = new CommunicationHistory();
-            ch.setConstituent(p);
-            ch.setGiftId(g.getId());
-            ch.setSystemGenerated(true);
-            ch.setComments("Sent e-mail using template named " + getTemplateName());
-            ch.setEntryType("Email");
-            ch.setRecordDate(new Date());
-            ch.setSelectedEmail(e);
-            ch.setCustomFieldValue("template", getTemplateName());
-
-            ch.setSuppressValidation(true);
-            try {
-                communicationHistoryService.maintainCommunicationHistory(ch);
-            } catch (BindException e1) {
-                // Should not happen when setSuppressValidation = true;
-                logger.error(e1);
-            }
-
-        }
-*/
-    }
-
-    private void setTemplateName(String templateName) {
-        this.templateName = templateName;
-
-    }
-
-    private String getTemplateName() {
-        return this.templateName;
-    }
-
-    private Map<String, String> getReportParameters() {
-
-        return map;
-    }
-
-    private RepositoryReportUnit getReportUnit(JServer jserver) {
-        ResourceDescriptor rd = new ResourceDescriptor();
-
-        rd.setName(this.getTemplateName());
-        rd.setParentFolder("/Reports/" + getSite().getName() + "/emailTemplates");
-        rd.setUriString(rd.getParentFolder() + "/" + rd.getName());
-        rd.setWsType(ResourceDescriptor.TYPE_REPORTUNIT);
-        List<ResourceProperty> p = new ArrayList<ResourceProperty>();
-
-        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, String> me = it.next();
-
-            ResourceProperty rp = new ResourceProperty(me.getKey().toString(), me.getValue().toString());
-            p.add(rp);
-        }
-
-        rd.setParameters(p);
-
-        return new RepositoryReportUnit(jserver, rd);
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getBaseUri() {
-        return baseUri;
-    }
-
-    public void setBaseUri(String uri) {
-        this.baseUri = uri;
-    }
-
-    public String getRepositoryUri() {
-        return repositoryUri;
-    }
-
-    public void setRepositoryUri(String uri) {
-        this.repositoryUri = uri;
-    }
-
-    public Log getLogger() {
-        return logger;
-    }
-
-    public Site getSite() {
-        return site;
-    }
-
-    public void setSite(Site site) {
-        this.site = site;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public CommunicationHistoryService getCommunicationHistoryService() {
-        return communicationHistoryService;
-    }
-
-    public void setCommunicationHistoryService(
-            CommunicationHistoryService communicationHistoryService) {
-        this.communicationHistoryService = communicationHistoryService;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext)
-            throws BeansException {
-        this.applicationContext = applicationContext;
-
-    }
+public class EmailService  {
+	protected final Log logger = OLLogger.getLog(getClass());
+
+//	private String userName = null;
+//	private String password = null;
+	private String baseUri = null;
+	private String repositoryUri = null;
+	// private String templateName = null;
+	// private String subject = null;
+	private CommunicationHistoryService communicationHistoryService;
+
+	// private java.util.Map<String, String> map = 
+	// private Site site;
+	// private ApplicationContext applicationContext;
+
+	private File runReport(Site site,Map params) {
+
+		File temp = null;
+		JServer jserver = new JServer();
+		jserver.setUsername(site.getJasperUserId());
+		jserver.setPassword(site.getJasperPassword());
+		jserver.setUrl(baseUri + repositoryUri);
+
+		try {
+
+			CasUtil.populateJserverWithCasCredentials(jserver, baseUri
+					+ "/j_acegi_cas_security_check");
+
+
+			JasperPrint print = jserver.getWSClient().runReport(
+					getReportUnit(jserver, baseUri, params, site).getDescriptor(), params);
+
+			temp = File.createTempFile("orangeleap", ".pdf");
+			temp.deleteOnExit();
+			OutputStream out = new FileOutputStream(temp);
+			JasperExportManager.exportReportToPdfStream(print, out);
+			out.close();
+
+		} catch (JRException e) {
+
+			logger.error(e.getMessage());
+			return null;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return null;
+		}
+		return temp;
+	}
+
+	public void sendMail(String addresses, Constituent p, Gift g,
+			String subject, String templateName, List<Email> selectedEmails) {
+		sendMail(addresses, p, g, null, null, new HashMap<String, String>(),
+				subject, templateName, selectedEmails);
+	}
+
+	public void sendMail(String addresses, Constituent p, Gift g,
+			RecurringGift recurringGift, Pledge pledge,
+			Map<String, String> reportParams, String subject,
+			String templateName, List<Email> selectedEmails) {
+
+
+		Site s = (g == null) ? p.getSite() : g.getSite();
+
+		Map<String, String> params = new HashMap<String,String>();
+		params.clear();
+
+		params.put("Id", p.getId().toString());
+		if (g != null) {
+			params.put("GiftId", g.getId().toString());
+			params.put("GiftAmount", g.getAmount().toString());
+		}
+		if (recurringGift != null) {
+			params.put("RecurringGiftId", recurringGift.getId().toString());
+		}
+		if (pledge != null) {
+			params.put("PledgeId", pledge.getId().toString());
+		}
+		params.putAll(reportParams);
+
+		//
+		// next we extract the output of the report and put it into a mime
+		// message
+		if (s.getSmtpServerName() != null) {
+			JavaMailSenderImpl sender = new JavaMailSenderImpl();
+			sender.setHost(s.getSmtpServerName());
+
+			if (s.getSmtpAccountName() != null)
+				sender.setUsername(s.getSmtpAccountName());
+			if (s.getSmtpPassword() != null)
+				sender.setPassword(s.getSmtpPassword());
+
+			MimeMessage message = sender.createMimeMessage();
+			MimeMessageHelper helper;
+			try {
+				helper = new MimeMessageHelper(message, true, "UTF-8");
+			} catch (MessagingException e2) {
+				logger.error(e2.getMessage());
+				return;
+			}
+
+			File tempFile = runReport(s,params);
+
+			if (tempFile != null) {
+				FileSystemResource file = new FileSystemResource(tempFile);
+				try {
+					helper.addAttachment(templateName + ".pdf", file);
+
+					String itemName = "recent donation";
+					if (recurringGift != null)
+						itemName = "commitment";
+					if (pledge != null)
+						itemName = "pledge";
+
+					helper.setText("Thank you for your " + itemName + "!");
+					helper.setSubject(subject);
+					helper.setFrom(s.getSmtpFromAddress());
+
+					String emailAddresses[] = addresses.split(",");
+					for (int i = 0; i < emailAddresses.length; i++)
+						helper.addTo(emailAddresses[i]);
+
+					//
+					// finally we mail the message
+					sender.send(message);
+					tempFile.delete();
+
+					//
+					// add entry to touchpoints for this e-mail
+					if (selectedEmails != null) {
+						for (Email e : selectedEmails) {
+							CommunicationHistory ch = new CommunicationHistory();
+							ch.setConstituent(p);
+							if (g != null)
+								ch.setGiftId(g.getId());
+							if (recurringGift != null)
+								ch.setRecurringGiftId(recurringGift.getId());
+							if (pledge != null)
+								ch.setPledgeId(pledge.getId());
+							ch.setSystemGenerated(true);
+							ch.setComments("Sent e-mail using template named "
+									+ templateName);
+							ch.setEntryType("Email");
+							ch.setRecordDate(new Date());
+							ch.setEmail(e);
+							ch.setCustomFieldValue("template",
+									templateName);
+
+							ch.setSuppressValidation(true);
+							try {
+								communicationHistoryService
+										.maintainCommunicationHistory(ch);
+							} catch (BindException e1) {
+								// Should not happen when setSuppressValidation
+								// = true;
+								logger.error(e1);
+							}
+						}
+					} else {
+						// note touchpoint
+						CommunicationHistory ch = new CommunicationHistory();
+						ch.setConstituent(p);
+						if (g != null)
+							ch.setGiftId(g.getId());
+						if (recurringGift != null)
+							ch.setRecurringGiftId(recurringGift.getId());
+						if (pledge != null)
+							ch.setPledgeId(pledge.getId());
+						ch.setSystemGenerated(true);
+						ch.setComments("Sent e-mail to " + addresses
+								+ " reason: " + subject);
+						ch.setEntryType("Note");
+						ch.setRecordDate(new Date());
+						// ch.setSelectedEmail(e);
+						ch.setCustomFieldValue("template", templateName);
+
+						ch.setSuppressValidation(true);
+						try {
+							communicationHistoryService
+									.maintainCommunicationHistory(ch);
+						} catch (BindException e1) {
+							// Should not happen when setSuppressValidation =
+							// true;
+							logger.error(e1);
+						}
+					}
+
+				} catch (MessagingException e1) {
+					logger.error(e1.getMessage());
+					return;
+				}
+			}
+		} else
+			logger.error("Failed to generate report.");
+
+	}
+
+	public void sendMail(Constituent p, Gift g, String subject,
+			String templateName) {
+		sendMail(p, g, null, null, new HashMap<String, String>(), subject,
+				templateName);
+	}
+
+	public void sendMail(Constituent p, Gift g, RecurringGift recurringGift,
+			Pledge pledge, Map<String, String> reportParams, String subject,
+			String templateName) {
+		String strEmailAddrs = "";
+		List<Email> selectedEmails = new LinkedList<Email>();
+
+		Site s = p.getSite();
+
+
+		//
+		// first we run the report passing in the constituent.id as a parameter
+		List<Email> emailAddresses = p.getEmails();
+
+		for (Email e : emailAddresses) {
+			if (e.isReceiveCorrespondence() && !e.isInactive() && e.isValid()) {
+				selectedEmails.add(e);
+				strEmailAddrs += e.getEmailAddress() + ",";
+			}
+		}
+
+		//
+		// no e-mail addresses can receive mail
+		if (selectedEmails.size() == 0) {
+			return;
+		}
+
+		// remove the trailing ,
+		strEmailAddrs = strEmailAddrs.substring(0, strEmailAddrs
+				.lastIndexOf(","));
+
+		this.sendMail(strEmailAddrs, p, g, recurringGift, pledge, reportParams,
+				subject, templateName, selectedEmails);
+		/*
+		 * // // add entry to touchpoints for this e-mail for (Email e :
+		 * selectedEmails) { CommunicationHistory ch = new
+		 * CommunicationHistory(); ch.setConstituent(p);
+		 * ch.setGiftId(g.getId()); ch.setSystemGenerated(true);
+		 * ch.setComments("Sent e-mail using template named " +
+		 * getTemplateName()); ch.setEntryType("Email"); ch.setRecordDate(new
+		 * Date()); ch.setSelectedEmail(e); ch.setCustomFieldValue("template",
+		 * getTemplateName());
+		 * 
+		 * ch.setSuppressValidation(true); try {
+		 * communicationHistoryService.maintainCommunicationHistory(ch); } catch
+		 * (BindException e1) { // Should not happen when setSuppressValidation
+		 * = true; logger.error(e1); }
+		 * 
+		 * }
+		 */
+	}
+
+	private RepositoryReportUnit getReportUnit(JServer jserver,String templatename,Map map,Site s) {
+		ResourceDescriptor rd = new ResourceDescriptor();
+
+		rd.setName(templatename);
+		rd.setParentFolder("/Reports/" + s.getName()
+				+ "/emailTemplates");
+		rd.setUriString(rd.getParentFolder() + "/" + rd.getName());
+		rd.setWsType(ResourceDescriptor.TYPE_REPORTUNIT);
+		List<ResourceProperty> p = new ArrayList<ResourceProperty>();
+
+		Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, String> me = it.next();
+
+			ResourceProperty rp = new ResourceProperty(me.getKey().toString(),
+					me.getValue().toString());
+			p.add(rp);
+		}
+
+		rd.setParameters(p);
+
+		return new RepositoryReportUnit(jserver, rd);
+	}
+
+	public String getBaseUri() {
+		return baseUri;
+	}
+
+	public void setBaseUri(String uri) {
+		this.baseUri = uri;
+	}
+
+	public String getRepositoryUri() {
+		return repositoryUri;
+	}
+
+	public void setRepositoryUri(String uri) {
+		this.repositoryUri = uri;
+	}
+
+	public Log getLogger() {
+		return logger;
+	}
+
+	public CommunicationHistoryService getCommunicationHistoryService() {
+		return communicationHistoryService;
+	}
+
+	public void setCommunicationHistoryService(
+			CommunicationHistoryService communicationHistoryService) {
+		this.communicationHistoryService = communicationHistoryService;
+	}
 }

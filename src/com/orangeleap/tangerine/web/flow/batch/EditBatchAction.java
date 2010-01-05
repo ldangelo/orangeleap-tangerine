@@ -485,7 +485,7 @@ public class EditBatchAction extends AbstractAction {
                     }
                     final Map<String, Object> map = new HashMap<String, Object>();
                     map.put(StringConstants.NAME, item.getDefaultDisplayValue());
-                    map.put(StringConstants.DESC, fieldDef.getDefaultLabel());
+                    map.put("desc", fieldDef.getDefaultLabel());
                     map.put(StringConstants.TYPE, fieldType.name().toLowerCase());
 
                     String updateFieldValue = batch.getUpdateFieldValue(item.getDefaultDisplayValue());

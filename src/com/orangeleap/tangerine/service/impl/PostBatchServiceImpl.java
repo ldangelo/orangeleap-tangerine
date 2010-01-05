@@ -143,6 +143,22 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
+    public List<Map<String, Object>> readPostBatchEntryErrorsByBatchId(Long postBatchId, SortInfo sortInfo) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPostBatchEntryErrorsByBatchId: postBatchId = " + postBatchId);
+        }
+        return postBatchDao.readPostBatchEntryErrorsByBatchId(postBatchId, sortInfo.getSort(), sortInfo.getDir(), sortInfo.getStart(), sortInfo.getLimit());
+    }
+
+    @Override
+    public int countPostBatchEntryErrorsByBatchId(Long postBatchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("countPostBatchEntryErrorsByBatchId: postBatchId = " + postBatchId);
+        }
+        return postBatchDao.countPostBatchEntryErrorsByBatchId(postBatchId);
+    }
+
+    @Override
     public List<Map<String, Object>> findSegmentationsForBatchType(PostBatch batch, Set<Long> pickedSegmentationIds, String batchType, String sortField,
                                                                    String sortDirection, int startIndex, int resultCount) {
         if (logger.isTraceEnabled()) {
@@ -266,7 +282,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 entries = adjustedGiftService.readAdjustedGiftsByIds(batch.getEntryAdjustedGiftIds());
             }
         }
-        final List<AbstractCustomizableEntity> erroredEntities = new ArrayList<AbstractCustomizableEntity>();
+        final List<PostBatchEntry> errorEntries = new ArrayList<PostBatchEntry>();
         final List<PostBatchEntry> executedEntries = new ArrayList<PostBatchEntry>();
         if (entries != null) {
             for (AbstractCustomizableEntity entity : entries) {
@@ -289,15 +305,14 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                     executedEntries.add(entry);
                 }
                 else {
-                    AbstractCustomizableEntity originalEntity = copyEntityBatchErrorsToCleanEntity(entity);
-                    if (originalEntity != null) {
-                        erroredEntities.add(originalEntity);
+                    if (postBatchEntryService.hasBatchErrorsInEntity(entity)) {
+                        errorEntries.add(copyEntityBatchErrorsToEntryErrors(entity));
                     }
                 }
             }
         }
-        if ( ! erroredEntities.isEmpty()) {
-            PostBatch errorBatch = createErrorBatch(batch, erroredEntities);
+        if ( ! errorEntries.isEmpty()) {
+            PostBatch errorBatch = createErrorBatch(batch, errorEntries);
             if (errorBatch != null && errorBatch.getId() != null) {
                 batch.setErrorBatchId(errorBatch.getId());
             }
@@ -348,44 +363,31 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
     }
 
-    private AbstractCustomizableEntity copyEntityBatchErrorsToCleanEntity(AbstractCustomizableEntity dirtyEntity) {
-        /** Copy the 'batchError' custom field to a 'clean' dirtyEntity; the regular 'dirtyEntity' may have errors and not be savable */
-        AbstractCustomizableEntity cleanEntity = null;
-        if (dirtyEntity instanceof Gift) {
-            cleanEntity = giftService.readGiftById(dirtyEntity.getId());
+    private PostBatchEntry copyEntityBatchErrorsToEntryErrors(AbstractCustomizableEntity entity) {
+        final PostBatchEntry entry = new PostBatchEntry();
+
+        if (entity instanceof Gift) {
+            entry.setGiftId(entity.getId());
         }
-        else if (dirtyEntity instanceof AdjustedGift) {
-            cleanEntity = adjustedGiftService.readAdjustedGiftById(dirtyEntity.getId());
+        else if (entity instanceof AdjustedGift) {
+            entry.setAdjustedGiftId(entity.getId());
         }
-        if (cleanEntity != null) {
-            cleanEntity.addCustomFieldValue(StringConstants.BATCH_ERROR, postBatchEntryService.getBatchErrorsInEntity(dirtyEntity));
+
+        final String errors = postBatchEntryService.getBatchErrorsInEntity(entity);
+        final String[] errorsSet = StringUtils.delimitedListToStringArray(errors, StringConstants.CUSTOM_FIELD_SEPARATOR);
+        if (errorsSet != null) {
+            for (String s : errorsSet) {
+                entry.addError(s);
+            }
         }
-        return cleanEntity;
+        return entry;
     }
 
-    public PostBatch createErrorBatch(PostBatch originalBatch, List<AbstractCustomizableEntity> entities) {
+    public PostBatch createErrorBatch(PostBatch originalBatch, List<PostBatchEntry> entries) {
         PostBatch batchForErrors = new PostBatch(TangerineMessageAccessor.getMessage("errorBatch"), originalBatch.getBatchType());
         batchForErrors.setAnErrorBatch(true);
-
-        for (AbstractCustomizableEntity entity : entities) {
-            // Save the batchError field in the entity
-            entity.setSuppressValidation(true);
-            try {
-                PostBatchEntry batchEntry = new PostBatchEntry();
-                if (entity instanceof Gift) {
-                    entity = giftService.editGift((Gift) entity);
-                    batchEntry.setGiftId(entity.getId());
-                }
-                else if (entity instanceof AdjustedGift) {
-                    entity = adjustedGiftService.editAdjustedGift((AdjustedGift) entity);
-                    batchEntry.setAdjustedGiftId(entity.getId());
-                }
-                batchForErrors.addPostBatchEntry(batchEntry);
-            }
-            catch (Exception ex) {
-                logger.error("createErrorBatch: could not save entityId = " + entity.getId() + " type = " + entity.getType() + " to the batch for errors due to exception", ex);
-            }
-        }
+        batchForErrors.setPostBatchEntries(entries);
+        batchForErrors.setUpdateFields(originalBatch.getUpdateFields()); // Copy the update fields from the original batch to the error batch
         return maintainBatch(batchForErrors);
     }
 }

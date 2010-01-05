@@ -212,7 +212,8 @@ public final class StringConstants {
     public static final String DATE = "date";
     public static final String DATE_FORMAT = "dateFormat";
     public static final String DIRECTION = "direction";
-    public static final String DESC = "desc";
+    public static final String ASC = "ASC";
+    public static final String DESC = "DESC";
     public static final String SELECTED = "selected";
     public static final String DATA = "data";
     public static final String DISPLAYED_ID = "displayedId";
@@ -224,6 +225,7 @@ public final class StringConstants {
 
     public static final String POSTED_DATE = "postedDate";
     public static final String POSTED = "posted";
+    public static final String BATCH_ERROR_CUSTOM_FIELD = "customFieldMap[batchError]";
 
     public static final String PROJECT_CODE = "projectCode";
     public static final String BANK_CUSTOM_FIELD = "customFieldMap[bank]";

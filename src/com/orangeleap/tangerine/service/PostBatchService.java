@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.PostBatchEntryError;
 import com.orangeleap.tangerine.domain.Segmentation;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -28,14 +29,6 @@ import java.util.Map;
 import java.util.Set;
 
 public interface PostBatchService {
-
-//    public Map<String, String> readAllowedGiftSelectFields();
-//    public Map<String, String> readAllowedGiftUpdateFields();
-//    public List<PostBatch> listBatchs();
-//    public PostBatch readBatch(Long batchId);
-//    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
-//    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
-//	public PaginatedResult getBatchSelectionList(long postbatchId, SortInfo sortInfo);
 
     void checkPreExecuteBatchErrors(PostBatch batch);
     
@@ -58,4 +51,8 @@ public interface PostBatchService {
     List<Segmentation> findSegmentations(String batchType, String sortField, String sortDirection, int startIndex, int resultCount);
 
     long findTotalSegmentations(String batchType);
+
+    List<Map<String, Object>> readPostBatchEntryErrorsByBatchId(Long postBatchId, SortInfo sortInfo);
+
+    int countPostBatchEntryErrorsByBatchId(Long postBatchId);
 }

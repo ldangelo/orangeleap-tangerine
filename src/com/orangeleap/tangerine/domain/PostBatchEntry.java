@@ -19,7 +19,10 @@ package com.orangeleap.tangerine.domain;
 
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A mapping of the segmentation/gift/pledge IDs associated with a batch
@@ -38,6 +41,7 @@ public class PostBatchEntry implements GeneratedId, Serializable {
     private Long pledgeId;
     private Date createDate;
     private Date updateDate;
+    private List<String> errors = new ArrayList<String>();
 
     public PostBatchEntry() { }
 
@@ -115,5 +119,26 @@ public class PostBatchEntry implements GeneratedId, Serializable {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
+    }
+
+    public void clearErrors() {
+        if (errors != null) {
+            errors.clear();
+        }
+    }
+
+    public void addError(String error) {
+        if (errors == null) {
+            errors = new ArrayList<String>();
+        }
+        errors.add(error);
     }
 }

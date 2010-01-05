@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+    <input name="batchId" type="long"/>
+
+    <view-state id="errorBatchStep1">
+        <on-entry>
+            <evaluate expression="errorBatchAction.errorStep1(flowRequestContext, requestParameters.batchId)" result="flowScope.model"/>
+        </on-entry>
+        <transition on="errorStep1" to="errorBatchStep1"/>
+        <transition on="errorStep2" to="errorBatchStep2"/>
+        <transition on="errorStep3" to="errorBatchStep3"/>
+        <transition on="errorStep4" to="errorBatchStep4"/>
+        <transition on="cancel" to="errorBatchCompleted"/>
+    </view-state>
+
+    <view-state id="errorBatchStep2">
+        <on-entry>
+            <evaluate expression="errorBatchAction.errorStep2(flowRequestContext)" result="flowScope.model"/>
+        </on-entry>
+        <transition on="errorStep1" to="errorBatchStep1"/>
+        <transition on="errorStep2" to="errorBatchStep2"/>
+        <transition on="errorStep3" to="errorBatchStep3"/>
+        <transition on="errorStep4" to="errorBatchStep4"/>
+        <transition on="cancel" to="errorBatchCompleted"/>
+    </view-state>
+
+    <view-state id="errorBatchStep3">
+        <on-entry>
+            <evaluate expression="errorBatchAction.errorStep3(flowRequestContext)" result="flowScope.model"/>
+        </on-entry>
+        <transition on="errorStep1" to="errorBatchStep1"/>
+        <transition on="errorStep2" to="errorBatchStep2"/>
+        <transition on="errorStep3" to="errorBatchStep3"/>
+        <transition on="errorStep4" to="errorBatchStep4"/>
+        <transition on="cancel" to="errorBatchCompleted"/>
+    </view-state>
+
+    <view-state id="errorBatchStep4">
+        <on-entry>
+            <evaluate expression="errorBatchAction.errorStep4(flowRequestContext)" result="flowScope.model"/>
+        </on-entry>
+        <transition on="errorStep1" to="errorBatchStep1"/>
+        <transition on="errorStep2" to="errorBatchStep2"/>
+        <transition on="errorStep3" to="errorBatchStep3"/>
+        <transition on="errorStep4" to="errorBatchStep4"/>
+        <transition on="cancel" to="errorBatchCompleted"/>
+        <transition on="save" to="errorBatchSave"/>
+    </view-state>
+
+    <view-state id="errorBatchSave">
+        <on-entry>
+            <evaluate expression="errorBatchAction.saveBatch(flowRequestContext)" result="flowScope.model"/>
+        </on-entry>
+        <transition on="cancel" to="errorBatchCompleted"/>
+    </view-state>
+
+    <end-state id="errorBatchCompleted">
+        <on-entry>
+            <evaluate expression="errorBatchAction.cancelBatch(flowRequestContext)" result="flowScope.model"/>
+        </on-entry>
+    </end-state>
+
+</flow>

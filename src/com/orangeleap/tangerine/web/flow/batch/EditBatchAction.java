@@ -131,17 +131,17 @@ public class EditBatchAction extends AbstractAction {
     private void determineStepToSave(final RequestContext flowRequestContext) {
         final String previousStep = getRequestParameter(flowRequestContext, PREVIOUS_STEP);
         if (STEP_1_GRP.equals(previousStep)) {
-            saveStep1Parameters(flowRequestContext);
+            saveBatchDescType(flowRequestContext);
         }
         else if (STEP_2_GRP.equals(previousStep)) {
-            saveStep2Parameters(flowRequestContext);
+            savePickedSegmentationIds(flowRequestContext);
         }
         else if (STEP_4_GRP.equals(previousStep)) {
-            saveStep4Parameters(flowRequestContext);
+            saveBatchUpdateFields(flowRequestContext);
         }
     }
 
-    private void saveStep1Parameters(final RequestContext flowRequestContext) {
+    private void saveBatchDescType(final RequestContext flowRequestContext) {
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final String batchDesc = getRequestParameter(flowRequestContext, "batchDesc");
         final String batchType = getRequestParameter(flowRequestContext, "batchType");
@@ -159,14 +159,14 @@ public class EditBatchAction extends AbstractAction {
         }
     }
 
-    private void saveStep2Parameters(final RequestContext flowRequestContext) {
+    private void savePickedSegmentationIds(final RequestContext flowRequestContext) {
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final String pickedIds = getRequestParameter(flowRequestContext, "pickedIds");
         final String notPickedIds = getRequestParameter(flowRequestContext, "notPickedIds");
         syncPickedSegmentationIds(flowRequestContext, batch, pickedIds, notPickedIds);
     }
 
-    private void saveStep4Parameters(final RequestContext flowRequestContext) {
+    protected void saveBatchUpdateFields(final RequestContext flowRequestContext) {
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final HttpServletRequest request = getRequest(flowRequestContext);
         final Map<String, Object> enteredParams = findEnteredParameters(request);
@@ -383,11 +383,11 @@ public class EditBatchAction extends AbstractAction {
         model.put(StringConstants.ROWS, rowList);
     }
 
-    private void addIdConstituentIdFields(final List<Map<String, Object>> fieldList, final BeanWrapper bw) {
+    protected void addIdConstituentIdFields(final List<Map<String, Object>> fieldList, final BeanWrapper bw) {
         final Map<String, Object> idMap = new HashMap<String, Object>();
         idMap.put(StringConstants.NAME, StringConstants.ID);
         idMap.put(StringConstants.MAPPING, StringConstants.ID);
-        idMap.put(StringConstants.TYPE, "int");
+        idMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
         idMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
         fieldList.add(idMap);
 
@@ -451,11 +451,18 @@ public class EditBatchAction extends AbstractAction {
         determineStepToSave(flowRequestContext);
 
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        final ModelMap model = new ModelMap();
+        findBatchUpdateFields(batch, model);
+        
+        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
+        return model;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void findBatchUpdateFields(final PostBatch batch, final ModelMap model) {
         final String picklistNameId = new StringBuilder(batch.getBatchType()).append(BATCH_FIELDS).toString();
         final Picklist picklist = picklistItemService.getPicklist(picklistNameId);
-        final ModelMap model = new ModelMap();
         final List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
-
         if (picklist != null) {
             for (PicklistItem item : picklist.getActivePicklistItems()) {
                 // the defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
@@ -490,9 +497,6 @@ public class EditBatchAction extends AbstractAction {
         }
         model.put(StringConstants.ROWS, returnList);
         model.put(StringConstants.TOTAL_ROWS, returnList.size());
-
-        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
-        return model;
     }
 
     @SuppressWarnings("unchecked")
@@ -512,6 +516,32 @@ public class EditBatchAction extends AbstractAction {
         final Set<Long> segmentationReportIds = batch.getEntrySegmentationIds();
         final List<Map<String, Object>> rowValues = new ArrayList<Map<String, Object>>();
 
+        initReviewUpdateFields(batch, model, sortInfo);
+
+        List rows = null;
+        int totalRows = 0;
+
+        unescapeSortField(sortInfo);
+        
+        if (StringConstants.GIFT.equals(batch.getBatchType())) {
+            rows = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
+            totalRows = giftService.readCountGiftsBySegmentationReportIds(segmentationReportIds) * 2;
+        }
+        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+            rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
+            totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(segmentationReportIds) * 2;
+        }
+        contrastUpdatedValues(batch, rows, rowValues, batch.getUpdateFields());
+
+        model.put(StringConstants.ROWS, rowValues);
+        model.put(StringConstants.TOTAL_ROWS, totalRows);
+
+        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
+        return model;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void initReviewUpdateFields(final PostBatch batch, final ModelMap model, final SortInfo sortInfo) {
         final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortInfo.getStart(),
                 (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
 
@@ -536,27 +566,6 @@ public class EditBatchAction extends AbstractAction {
         initBatchUpdateFields(batch, fieldList);
         metaDataMap.put(StringConstants.FIELDS, fieldList);
         model.put(StringConstants.META_DATA, metaDataMap);
-
-        List rows = null;
-        int totalRows = 0;
-
-        unescapeSortField(sortInfo);
-        
-        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            rows = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
-            totalRows = giftService.readCountGiftsBySegmentationReportIds(segmentationReportIds) * 2;
-        }
-        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-            rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
-            totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(segmentationReportIds) * 2;
-        }
-        contrastUpdatedValues(batch, rows, rowValues, batch.getUpdateFields());
-
-        model.put(StringConstants.ROWS, rowValues);
-        model.put(StringConstants.TOTAL_ROWS, totalRows);
-
-        model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
-        return model;
     }
 
     protected void unescapeSortField(final SortInfo sortInfo) {
@@ -602,12 +611,12 @@ public class EditBatchAction extends AbstractAction {
 
                 if (ExtTypeHandler.EXT_DATE.equals(extType)) {
                     String format;
-    //                        if (FieldType.CC_EXPIRATION.equals(fieldDef.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(fieldDef.getFieldType())) {
-    //                            format = "Y-m-d"; // TODO: put back CC?
-    //                        }
-    //                        else {
+//                        if (FieldType.CC_EXPIRATION.equals(fieldDef.getFieldType()) || FieldType.CC_EXPIRATION_DISPLAY.equals(fieldDef.getFieldType())) {
+//                            format = "Y-m-d"; // TODO: put back CC?
+//                        }
+//                        else {
                         format = "Y-m-d H:i:s";
-    //                        }
+//                        }
                     fieldMap.put(StringConstants.DATE_FORMAT, format);
                 }
                 fieldList.add(fieldMap);
@@ -615,8 +624,7 @@ public class EditBatchAction extends AbstractAction {
         }
     }
 
-    private void contrastUpdatedValues(final PostBatch batch, final List rows,
-                                       final List<Map<String, Object>> rowValues,
+    protected void contrastUpdatedValues(final PostBatch batch, final List rows, final List<Map<String, Object>> rowValues,
                                        final Map<String, String> updateFields) {
         if (rows != null) {
             for (Object thisRow : rows) {

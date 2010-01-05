@@ -33,18 +33,19 @@ import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.test.dataprovider.BatchProvider;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
-import org.apache.commons.collections.CollectionUtils;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class PostBatchServiceImplTest extends BaseTest {
 
@@ -90,6 +91,20 @@ public class PostBatchServiceImplTest extends BaseTest {
         }
     }
 
+    private Map<Long, Set<String>> groupByGiftId(List<Map<String, Object>> errors) {
+        Map<Long, Set<String>> groupedMap = new HashMap<Long, Set<String>>();
+        for (Map<String, Object> thisError : errors) {
+            Long giftId = new Long(thisError.get(StringConstants.GIFT_ID).toString());
+            Set<String> errorMsgs = groupedMap.get(giftId);
+            if (errorMsgs == null) {
+                errorMsgs = new HashSet<String>();
+                groupedMap.put(giftId, errorMsgs);
+            }
+            errorMsgs.add(thisError.get("errorMsg").toString());
+        }
+        return groupedMap;
+    }
+
     @Test(dataProvider = "setupBatchForGiftsWithInvalidPostedDate", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsA" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch" })
     public void testExecuteBatchForGiftsWithInvalidPostedDate(PostBatch batch) throws Exception {
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
@@ -112,20 +127,27 @@ public class PostBatchServiceImplTest extends BaseTest {
         Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
+        Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
+        Assert.assertEquals(errorBatch.getUpdateFieldValue(StringConstants.POSTED_DATE), batch.getUpdateFieldValue(StringConstants.POSTED_DATE));
 
         for (PostBatchEntry entry : errorBatch.getPostBatchEntries()) {
             Assert.assertTrue(entry.getGiftId() == 5000L || entry.getGiftId() == 5001L || entry.getGiftId() == 5002L || entry.getGiftId() == 5003L);
-
-            Gift gift = giftService.readGiftById(entry.getGiftId());
-            String giftErrors = gift.getCustomFieldValue(StringConstants.BATCH_ERROR);
-            Assert.assertTrue(StringUtils.hasText(giftErrors));
-
-            Set<String> errors = new TreeSet<String>();
-            CollectionUtils.addAll(errors, StringUtils.delimitedListToStringArray(giftErrors, StringConstants.CUSTOM_FIELD_SEPARATOR));
-
-            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidPostedDate", "01/01/blee")));
-            checkUneditedGiftValues(gift);
         }
+
+        List<Map<String, Object>> errors = postBatchService.readPostBatchEntryErrorsByBatchId(errorBatch.getId(), new SortInfo(StringConstants.GIFT_ID, StringConstants.ASC, 100, 0));
+        Assert.assertNotNull(errors);
+        Assert.assertFalse(errors.isEmpty());
+
+        Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
+        Assert.assertTrue(groupedMap.keySet().contains(5000L));
+        Assert.assertTrue(groupedMap.keySet().contains(5001L));
+        Assert.assertTrue(groupedMap.keySet().contains(5002L));
+        Assert.assertTrue(groupedMap.keySet().contains(5003L));
+
+        Assert.assertTrue(groupedMap.get(5000L).contains(TangerineMessageAccessor.getMessage("invalidPostedDate", "01/01/blee")));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidPostedDate", "01/01/blee")));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidPostedDate", "01/01/blee")));
+        Assert.assertTrue(groupedMap.get(5003L).contains(TangerineMessageAccessor.getMessage("invalidPostedDate", "01/01/blee")));
     }
 
     @Test(dataProvider = "setupBatchForGiftsWithPostedGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsB" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsA" })
@@ -151,30 +173,41 @@ public class PostBatchServiceImplTest extends BaseTest {
         Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
+        Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
 
         for (PostBatchEntry entry : errorBatch.getPostBatchEntries()) {
             Assert.assertTrue(entry.getGiftId() == 5000L || entry.getGiftId() == 5001L || entry.getGiftId() == 5002L || entry.getGiftId() == 5003L);
-
-            Gift gift = giftService.readGiftById(entry.getGiftId());
-            String giftErrors = gift.getCustomFieldValue(StringConstants.BATCH_ERROR);
-            Assert.assertTrue(StringUtils.hasText(giftErrors));
-            Set<String> errors = new TreeSet<String>();
-            CollectionUtils.addAll(errors, StringUtils.delimitedListToStringArray(giftErrors, StringConstants.CUSTOM_FIELD_SEPARATOR));
-
-            if (gift.getId() == 5000L || gift.getId() == 5003L) {
-                Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("cannotRepost", StringUtils.capitalize(gift.getType()), StringConstants.EMPTY + gift.getId())));
-                Assert.assertFalse(errors.contains(TangerineMessageAccessor.getMessage("invalidDateField", "jow", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
-                Assert.assertFalse(errors.contains(TangerineMessageAccessor.getMessage("invalidDateField", "8", fieldService.readFieldDefinition("gift.postmarkDate").getDefaultLabel())));
-                Assert.assertFalse(errors.contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
-            }
-            else {
-                Assert.assertFalse(errors.contains(TangerineMessageAccessor.getMessage("cannotRepost", StringUtils.capitalize(gift.getType()), StringConstants.EMPTY + gift.getId())));
-                Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidDateField", "jow", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
-                Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidDateField", "8", fieldService.readFieldDefinition("gift.postmarkDate").getDefaultLabel())));
-                Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
-            }
-            checkUneditedGiftValues(gift);
         }
+
+        List<Map<String, Object>> errors = postBatchService.readPostBatchEntryErrorsByBatchId(errorBatch.getId(), new SortInfo(StringConstants.GIFT_ID, StringConstants.ASC, 100, 0));
+        Assert.assertNotNull(errors);
+        Assert.assertFalse(errors.isEmpty());
+
+        Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
+        Assert.assertTrue(groupedMap.keySet().contains(5000L));
+        Assert.assertTrue(groupedMap.keySet().contains(5001L));
+        Assert.assertTrue(groupedMap.keySet().contains(5002L));
+        Assert.assertTrue(groupedMap.keySet().contains(5003L));
+
+        Assert.assertTrue(groupedMap.get(5000L).contains(TangerineMessageAccessor.getMessage("cannotRepost", "Gift", "5000")));
+        Assert.assertFalse(groupedMap.get(5000L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "jow", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
+        Assert.assertFalse(groupedMap.get(5000L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "8", fieldService.readFieldDefinition("gift.postmarkDate").getDefaultLabel())));
+        Assert.assertFalse(groupedMap.get(5000L).contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
+
+        Assert.assertFalse(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("cannotRepost", "Gift", "5001")));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "jow", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "8", fieldService.readFieldDefinition("gift.postmarkDate").getDefaultLabel())));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
+
+        Assert.assertFalse(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("cannotRepost", "Gift", "5002")));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "jow", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "8", fieldService.readFieldDefinition("gift.postmarkDate").getDefaultLabel())));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
+
+        Assert.assertTrue(groupedMap.get(5003L).contains(TangerineMessageAccessor.getMessage("cannotRepost", "Gift", "5003")));
+        Assert.assertFalse(groupedMap.get(5003L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "jow", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
+        Assert.assertFalse(groupedMap.get(5003L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "8", fieldService.readFieldDefinition("gift.postmarkDate").getDefaultLabel())));
+        Assert.assertFalse(groupedMap.get(5003L).contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
     }
 
     @Test(dataProvider = "setupBatchForGiftsWithInvalidAmountsDates", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsC" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsA" })
@@ -200,20 +233,20 @@ public class PostBatchServiceImplTest extends BaseTest {
         Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
+        Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
 
-        for (PostBatchEntry entry : errorBatch.getPostBatchEntries()) {
-            Assert.assertTrue(entry.getGiftId() == 8000L || entry.getGiftId() == 8001L);
+        List<Map<String, Object>> errors = postBatchService.readPostBatchEntryErrorsByBatchId(errorBatch.getId(), new SortInfo(StringConstants.GIFT_ID, StringConstants.ASC, 100, 0));
+        Assert.assertNotNull(errors);
+        Assert.assertFalse(errors.isEmpty());
 
-            Gift gift = giftService.readGiftById(entry.getGiftId());
-            String giftErrors = gift.getCustomFieldValue(StringConstants.BATCH_ERROR);
-            Assert.assertTrue(StringUtils.hasText(giftErrors));
-            Set<String> errors = new TreeSet<String>();
-            CollectionUtils.addAll(errors, StringUtils.delimitedListToStringArray(giftErrors, StringConstants.CUSTOM_FIELD_SEPARATOR));
+        Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
+        Assert.assertTrue(groupedMap.keySet().contains(8000L));
+        Assert.assertTrue(groupedMap.get(8000L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "0", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
+        Assert.assertTrue(groupedMap.get(8000L).contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
 
-            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidDateField", "0", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
-            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
-            checkUneditedGiftValues(gift);
-        }
+        Assert.assertTrue(groupedMap.keySet().contains(8001L));
+        Assert.assertTrue(groupedMap.get(8001L).contains(TangerineMessageAccessor.getMessage("invalidDateField", "0", fieldService.readFieldDefinition("gift.donationDate").getDefaultLabel())));
+        Assert.assertTrue(groupedMap.get(8001L).contains(TangerineMessageAccessor.getMessage("invalidField", "xyz", fieldService.readFieldDefinition("gift.amount").getDefaultLabel())));
     }
 
     /**
@@ -244,24 +277,25 @@ public class PostBatchServiceImplTest extends BaseTest {
         Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
+        Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
 
-        for (PostBatchEntry entry : errorBatch.getPostBatchEntries()) {
-            Assert.assertTrue(entry.getGiftId() == 5001L || entry.getGiftId() == 5002L);
+        List<Map<String, Object>> errors = postBatchService.readPostBatchEntryErrorsByBatchId(errorBatch.getId(), new SortInfo(StringConstants.GIFT_ID, StringConstants.ASC, 100, 0));
+        Assert.assertNotNull(errors);
+        Assert.assertFalse(errors.isEmpty());
 
-            Gift gift = giftService.readGiftById(entry.getGiftId());
-            String giftErrors = gift.getCustomFieldValue(StringConstants.BATCH_ERROR);
-            Assert.assertTrue(StringUtils.hasText(giftErrors));
-            Set<String> errors = new TreeSet<String>();
-            CollectionUtils.addAll(errors, StringUtils.delimitedListToStringArray(giftErrors, StringConstants.CUSTOM_FIELD_SEPARATOR));
+        Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
+        Assert.assertTrue(groupedMap.keySet().contains(5001L));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidAccountString1", "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidAccountString2", "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidGLCode", "Chase").trim()));
 
-            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidAccountString1", "Chase").trim()));
-            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidAccountString2", "Chase").trim()));
-            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("invalidGLCode", "Chase").trim()));
-            checkUneditedGiftValues(gift);
-        }
+        Assert.assertTrue(groupedMap.keySet().contains(5002L));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidAccountString1", "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidAccountString2", "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidGLCode", "Chase").trim()));
     }
 
-    @Test(dataProvider = "setupBatchForGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" })//, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
+    @Test(dataProvider = "setupBatchForGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
     public void testExecuteBatchForGifts(PostBatch batch) throws Exception {
         setupBankProjectCodePicklists();
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
@@ -284,20 +318,18 @@ public class PostBatchServiceImplTest extends BaseTest {
         Assert.assertTrue(errorBatch.isAnErrorBatch());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
+        Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
 
-        for (PostBatchEntry entry : errorBatch.getPostBatchEntries()) {
-            Assert.assertTrue(entry.getGiftId() == 6000L || entry.getGiftId() == 6003L);
+        List<Map<String, Object>> errors = postBatchService.readPostBatchEntryErrorsByBatchId(errorBatch.getId(), new SortInfo(StringConstants.GIFT_ID, StringConstants.ASC, 100, 0));
+        Assert.assertNotNull(errors);
+        Assert.assertFalse(errors.isEmpty());
 
-            Gift gift = giftService.readGiftById(entry.getGiftId());
-            String giftErrors = gift.getCustomFieldValue(StringConstants.BATCH_ERROR);
-            Assert.assertTrue(StringUtils.hasText(giftErrors));
+        Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
+        Assert.assertTrue(groupedMap.keySet().contains(6000L));
+        Assert.assertTrue(groupedMap.get(6000L).contains(TangerineMessageAccessor.getMessage("cannotRepost", "Gift", "6000")));
 
-            Set<String> errors = new TreeSet<String>();
-            CollectionUtils.addAll(errors, StringUtils.delimitedListToStringArray(giftErrors, StringConstants.CUSTOM_FIELD_SEPARATOR));
-            Assert.assertTrue(errors.contains(TangerineMessageAccessor.getMessage("cannotRepost", StringUtils.capitalize(gift.getType()), StringConstants.EMPTY + gift.getId())));
-
-            checkUneditedGiftValues(gift);
-        }
+        Assert.assertTrue(groupedMap.keySet().contains(6003L));
+        Assert.assertTrue(groupedMap.get(6003L).contains(TangerineMessageAccessor.getMessage("cannotRepost", "Gift", "6003")));
 
         /* Check that 2 not-posted gifts got updated (IDs 6001 and 6002) whereas the 2 posted gifts (6000, 6003) did not */
         List<Gift> gifts = giftService.readGiftsByIds(savedBatch.getEntryGiftIds());

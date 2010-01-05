@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="POST_BATCH_ENTRY_ERROR">
+
+    <select id="SELECT_POST_BATCH_ENTRY_ERRORS_BY_BATCH_ID" resultClass="java.util.HashMap" parameterClass="map">
+        select pbe.SEGMENTATION_ID as segmentationId, pbe.CONSTITUENT_ID as constituentId,
+        pbe.GIFT_ID as giftId, pbe.ADJUSTED_GIFT_ID as adjustedGiftId, pbe.PLEDGE_ID as pledgeId,
+        g.CONSTITUENT_ID AS giftConstituentId, ag.CONSTITUENT_ID AS adjustedGiftConstituentId,
+        pbee.ERROR_MSG as errorMsg
+        from POST_BATCH_ENTRY_ERROR pbee
+        inner join POST_BATCH_ENTRY pbe on pbe.POST_BATCH_ENTRY_ID = pbee.POST_BATCH_ENTRY_ID
+        LEFT OUTER JOIN GIFT g ON g.GIFT_ID = pbe.GIFT_ID
+        LEFT OUTER JOIN ADJUSTED_GIFT ag ON ag.ADJUSTED_GIFT_ID = pbe.ADJUSTED_GIFT_ID
+        where pbe.POST_BATCH_ID = #id#
+
+        order by
+        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$, $limit$
+    </select>
+
+    <select id="COUNT_POST_BATCH_ENTRY_ERRORS_BY_BATCH_ID" resultClass="int" parameterClass="map">
+        SELECT count(pbee.ERROR_MSG) AS count
+        FROM POST_BATCH_ENTRY_ERROR pbee
+        INNER JOIN POST_BATCH_ENTRY pbe ON pbe.POST_BATCH_ENTRY_ID = pbee.POST_BATCH_ENTRY_ID
+        WHERE pbe.POST_BATCH_ID = #id#
+    </select>
+
+    <delete id="DELETE_POST_BATCH_ENTRY_ERRORS_BY_POST_BATCH_ID" parameterClass="com.orangeleap.tangerine.domain.PostBatch">
+        delete from POST_BATCH_ENTRY_ERROR where POST_BATCH_ENTRY_ID in
+        (select pbe.POST_BATCH_ENTRY_ID from POST_BATCH_ENTRY pbe where pbe.POST_BATCH_ID = #id#)
+    </delete>
+
+    <insert id="INSERT_POST_BATCH_ENTRY_ERROR" parameterClass="com.orangeleap.tangerine.domain.PostBatchEntryError">
+        insert into POST_BATCH_ENTRY_ERROR (POST_BATCH_ENTRY_ID, ERROR_MSG)
+        values (#postBatchEntryId#, #errorMsg#)
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_POST_BATCH_ENTRY_ERROR" parameterClass="com.orangeleap.tangerine.domain.PostBatchEntryError">
+        update POST_BATCH_ENTRY_ERROR
+        SET POST_BATCH_ENTRY_ID = #postBatchEntryId#,
+            ERROR_MSG = #errorMsg#
+        where POST_BATCH_ENTRY_ERROR_ID = #id#
+    </update>
+
+</sqlMap>
+

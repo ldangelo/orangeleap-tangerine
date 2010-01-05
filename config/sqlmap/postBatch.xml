@@ -54,11 +54,6 @@
         where post_batch.SITE_NAME = #siteName#
     </sql>
 
-    <select id="SELECT_POST_BATCHES" resultMap="POST_BATCH_RESULT_NO_ENTRIES" parameterClass="map">
-        <include refid="SELECT_POST_BATCH_FRAGMENT"/>
-        order by post_batch.CREATE_DATE desc;
-    </select>
-
     <select id="SELECT_POST_BATCH_BY_ID" resultMap="POST_BATCH_RESULT" parameterClass="map">
         select
         <include refid="POST_BATCH_COLS_FRAGMENT"/>,

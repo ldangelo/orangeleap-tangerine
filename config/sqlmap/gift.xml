@@ -542,7 +542,6 @@
         <iterate property="reportIds" conjunction="," open="(" close=")">
             #reportIds[]#
         </iterate>
-        
     </select>
 
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">

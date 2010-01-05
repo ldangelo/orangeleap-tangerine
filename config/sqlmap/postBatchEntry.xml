@@ -26,23 +26,6 @@
         pbs.UPDATE_DATE as POST_BATCH_ENTRY_UPDATE_DATE
     </sql>
 
-    <sql id="SELECT_POST_BATCH_ENTRY_FRAGMENT">
-        select
-        <include refid="POST_BATCH_ENTRY_COLS_FRAGMENT"/>
-        from POST_BATCH_ENTRY pbs
-    </sql>
-
-    <select id="SELECT_POST_BATCH_ENTRIES" resultMap="POST_BATCH_ENTRY_RESULT" parameterClass="map">
-        <include refid="SELECT_POST_BATCH_ENTRY_FRAGMENT"/>
-        where pbs.POST_BATCH_ID = #postBatchId#
-    </select>
-
-    <select id="SELECT_POST_BATCH_REVIEW_SET_SIZE" resultClass="java.lang.Long" parameterClass="map">
-        select count(*) CNT
-        from POST_BATCH_ENTRY pbs
-        where pbs.POST_BATCH_ID = #postBatchId#
-    </select>
- 
     <delete id="DELETE_POST_BATCH_ENTRIES_BY_POST_BATCH_ID" parameterClass="com.orangeleap.tangerine.domain.PostBatch">
         delete from POST_BATCH_ENTRY
         where POST_BATCH_ID = #id#

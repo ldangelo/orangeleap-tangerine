@@ -19,9 +19,6 @@
 package com.orangeleap.tangerine.dao;
 
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchEntry;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
 
 import java.util.List;
 import java.util.Locale;
@@ -40,20 +37,7 @@ public interface PostBatchDao {
 
     int countBatchesByStatus(String showBatchStatus);
 
+    List<Map<String, Object>> readPostBatchEntryErrorsByBatchId(Long postBatchId, String sortPropertyName, String dir, int start, int limit);
 
-
-
-    public List<PostBatch> listBatches();
-
-    public List<PostBatchEntry> readPostBatchReviewSetItems(Long postBatchId);
-
-    public PaginatedResult readPostBatchReviewSetItems(Long postBatchId, SortInfo sortInfo);
-
-    public void insertIntoPostBatchFromGiftSelect(PostBatch postbatch, Map<String, Object> searchmap);
-
-    public void insertIntoPostBatchFromAdjustedGiftSelect(PostBatch postbatch, Map<String, Object> searchmap);
-
-    public Long getReviewSetSize(Long postBatchId);
-
-    public PostBatchEntry maintainPostBatchReviewSetItem(PostBatchEntry postBatchEntry);
+    int countPostBatchEntryErrorsByBatchId(Long postBatchId);
 }

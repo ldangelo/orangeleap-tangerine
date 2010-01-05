@@ -21,11 +21,10 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchEntry;
+import com.orangeleap.tangerine.domain.PostBatchEntryError;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -100,6 +99,34 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         return batch;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Map<String, Object>> readPostBatchEntryErrorsByBatchId(Long postBatchId, String sortPropertyName,
+                                                                       String dir, int start, int limit) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPostBatchEntryErrorsByBatchId: postBatchId = " + postBatchId + " sortPropertyName = " +
+                sortPropertyName + " dir = " + dir + " start = " + start + " limit = " + limit);
+        }
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.ID, postBatchId);
+        params.put("sortColumn", oneWord(sortPropertyName));
+        params.put("sortDir", oneWord(dir));
+        params.put("offset", start);
+        params.put("limit", limit);
+        return getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_ENTRY_ERRORS_BY_BATCH_ID", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public int countPostBatchEntryErrorsByBatchId(Long postBatchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("countPostBatchEntryErrorsByBatchId: postBatchId = " + postBatchId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.ID, postBatchId);
+        return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_POST_BATCH_ENTRY_ERRORS_BY_BATCH_ID", params);
+    }
+
 	@Override
 	public PostBatch maintainPostBatch(PostBatch batch) {
 		if (logger.isTraceEnabled()) {
@@ -107,6 +134,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 		}
         /* Delete PostBatchEntries first if the batch is being edited */
         if ( ! batch.isNew()) {
+            getSqlMapClientTemplate().delete("DELETE_POST_BATCH_ENTRY_ERRORS_BY_POST_BATCH_ID", batch);
             getSqlMapClientTemplate().delete("DELETE_POST_BATCH_ENTRIES_BY_POST_BATCH_ID", batch);
         }
         setCustomFields(batch);
@@ -125,6 +153,16 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
                 entry.setId(null); // a new ID will be generated during the insert
                 entry.setPostBatchId(batch.getId());
                 insertOrUpdate(entry, "POST_BATCH_ENTRY");
+
+                maintainPostBatchEntryErrors(entry);
+            }
+        }
+    }
+
+    private void maintainPostBatchEntryErrors(final PostBatchEntry entry) {
+        if (entry.getErrors() != null) {
+            for (String errorMsg : entry.getErrors()) {
+                insertOrUpdate(new PostBatchEntryError(entry.getId(), errorMsg), "POST_BATCH_ENTRY_ERROR");
             }
         }
     }
@@ -157,87 +195,9 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         Map<String, Object> params = setupParams();
         params.put("postBatch", batch);
         
-        // First, delete the segmentations, then the batch itself
+        // Delete the errors, entries, then the batch itself
+        getSqlMapClientTemplate().delete("DELETE_POST_BATCH_ENTRY_ERRORS_BY_POST_BATCH_ID", batch);
         getSqlMapClientTemplate().delete("DELETE_POST_BATCH_ENTRIES_BY_POST_BATCH_ID", batch);
         getSqlMapClientTemplate().delete("DELETE_POST_BATCH", params);
-    }
-
-    /********************************** below will be removed ******************************/
-    @SuppressWarnings("unchecked")
-	@Override
-    public List<PostBatchEntry> readPostBatchReviewSetItems(Long postBatchId) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readPostBatchById: postBatchId = " + postBatchId);
-        }
-        Map<String, Object> params = setupParams();
-        params.put("postBatchId", postBatchId);
-        List<PostBatchEntry> result = (List<PostBatchEntry>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS", params);
-        return result;
-    }
-    
-    @SuppressWarnings("unchecked")
-	@Override
-    public PaginatedResult readPostBatchReviewSetItems(Long postBatchId, SortInfo sortinfo) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readPostBatchReviewSetItems: postBatchId = " + postBatchId);
-        }
-        Map<String, Object> params = setupParams();
-        sortinfo.addParams(params);
-
-		params.put("postBatchId", postBatchId);
-
-        Long count = (Long)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_REVIEW_SET_SIZE", params);
-        PostBatch postbatch = readPostBatchById(postBatchId);
-        if (postbatch == null) return null;
-        List rows;
-        if (StringConstants.GIFT.equals(postbatch.getBatchType())) {
-           rows = getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS_GIFT_PAGINATED", params);
-        } else {
-           rows = getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS_ADJUSTED_GIFT_PAGINATED", params);
-        }
-        
-        PaginatedResult resp = new PaginatedResult();
-        resp.setRows(rows);
-        resp.setRowCount(count);
-        return resp;
-    }
-
-    @Override
-    public PostBatchEntry maintainPostBatchReviewSetItem(PostBatchEntry postBatchEntry) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("maintainPostBatchReviewSetItem: maintainPostBatchReviewSetItemId = " + postBatchEntry.getId());
-        }
-        PostBatchEntry aPostBatchEntry = (PostBatchEntry) insertOrUpdate(postBatchEntry, "POST_BATCH_REVIEW_SET_ITEM");
-        return aPostBatchEntry;
-    }
-
-    public void insertIntoPostBatchFromGiftSelect(PostBatch postbatch, Map<String, Object> searchmap) {
-        Map<String, Object> params = setupParams();
-        params.put("postBatchId", postbatch.getId());
-        params.putAll(searchmap);
-        getSqlMapClientTemplate().insert("INSERT_POST_BATCH_REVIEW_SET_ITEM_FROM_GIFT_SELECT", params);
-    }
-    
-    public void insertIntoPostBatchFromAdjustedGiftSelect(PostBatch postbatch, Map<String, Object> searchmap) {
-        Map<String, Object> params = setupParams();
-        params.put("postBatchId", postbatch.getId());
-        params.putAll(searchmap);
-        getSqlMapClientTemplate().insert("INSERT_POST_BATCH_REVIEW_SET_ITEM_FROM_ADJUSTED_GIFT_SELECT", params);
-    }
-
-    public Long getReviewSetSize(Long postBatchId) {
-        Map<String, Object> params = setupParams();
-        params.put("postBatchId", postBatchId);
-        return (Long)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_REVIEW_SET_SIZE", params);
-    }
-
-    @SuppressWarnings("unchecked")
-	@Override
-    public List<PostBatch> listBatches() {
-        if (logger.isTraceEnabled()) {
-            logger.trace("listBatches:");
-        }
-        Map<String, Object> params = setupParams();
-        return (List<PostBatch>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCHES", params);
     }
 }

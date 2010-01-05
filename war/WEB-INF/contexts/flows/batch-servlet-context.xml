@@ -27,6 +27,7 @@
     <flow:flow-registry id="flowRegistry" flow-builder-services="flowBuilderServices" base-path="/WEB-INF/contexts/flows/">
         <flow:flow-location path="edit-batch-flow-config.xml" id="doBatch"/>  <!-- 'doBatch' will match the URL 'doBatch.htm' -->
         <flow:flow-location path="review-batch-flow-config.xml" id="reviewBatch"/>  <!-- 'reviewBatch' will match the URL 'reviewBatch.htm' -->
+        <flow:flow-location path="error-batch-flow-config.xml" id="errorBatch"/>  <!-- 'errorBatch' will match the URL 'errorBatch.htm' -->
     </flow:flow-registry>
 
     <flow:flow-builder-services id="flowBuilderServices" view-factory-creator="viewFactoryCreator"/>

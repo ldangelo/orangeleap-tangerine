@@ -238,7 +238,7 @@ Ext.onReady(function() {
                 	lazyRenderer: true
                 })
             },
-            {   header: 'Url',
+            {   header: 'Details',
                 width: 170,
                 sortable: false,
                 dataIndex: 'url',

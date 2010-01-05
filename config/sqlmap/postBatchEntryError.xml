@@ -19,6 +19,12 @@
         limit $offset$, $limit$
     </select>
 
+    <select id="SELECT_POST_BATCH_ENTRY_ERRORS_BY_ENTRY_ID" resultClass="java.lang.String" parameterClass="long">
+        select pbee.ERROR_MSG as errorMsg
+        from POST_BATCH_ENTRY_ERROR pbee
+        where pbee.POST_BATCH_ENTRY_ID = #id#
+    </select>
+
     <select id="COUNT_POST_BATCH_ENTRY_ERRORS_BY_BATCH_ID" resultClass="int" parameterClass="map">
         SELECT count(pbee.ERROR_MSG) AS count
         FROM POST_BATCH_ENTRY_ERROR pbee

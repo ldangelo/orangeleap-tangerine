@@ -96,6 +96,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         params.put(StringConstants.ID, postBatchId);
         PostBatch batch = (PostBatch)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_BY_ID", params);
         readCustomFields(batch);
+        readEntryErrors(batch);
         return batch;
     }
 
@@ -183,6 +184,20 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
                 String key = entry.getKey();
                 String value = entry.getValue().getValue();
                 batch.addUpdateField(key, value);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readEntryErrors(PostBatch batch) {
+        if (batch != null) {
+            for (PostBatchEntry entry : batch.getPostBatchEntries()) {
+                if (entry.getId() != null && entry.getId() > 0) {
+                    List<String> errors = getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_ENTRY_ERRORS_BY_ENTRY_ID", entry.getId());
+                    if (errors != null && ! errors.isEmpty()) {
+                        entry.setErrors(errors);
+                    }
+                }
             }
         }
     }

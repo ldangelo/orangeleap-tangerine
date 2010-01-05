@@ -74,7 +74,7 @@ OrangeLeap.msgBundle = {
     noFieldUpdates: 'You did not create any Field Update Criteria.  Please create Criteria first (Step 4).',
     step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
     step2Title: '<span class="step"><span class="stepNum" id="step2Num">2</span><span class="stepTxt">Choose Segmentations</span>',
-    step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">View Rows That Will Be Updated</span>',
+    step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">View Rows To Be Updated</span>',
     step4Title: '<span class="step"><span class="stepNum" id="step4Num">4</span><span class="stepTxt">Create Field Update Criteria</span>',
     step5Title: '<span class="step"><span class="stepNum" id="step5Num">5</span><span class="stepTxt">Confirm Changes</span>',
     step1Tip: 'Step 1',
@@ -104,7 +104,15 @@ OrangeLeap.msgBundle = {
     followingRowsModified: '<div style="text-align: center" id="reviewStep3Header"><div>The following rows were modified by this batch.</div>' + 
                            '<div>Values displayed in the grid may not necessarily reflect the current values</div>' +
                            '<div>Double-click a row to display in a new window</div></div>',
-    noRowsUpdated: 'No rows were updated as part of this batch.'
+    noRowsUpdated: 'No rows were updated as part of this batch.',
+
+    rowsExecutedErrors: 'The errors listed occurred during the previous execution of the batch',
+    noRowsForErrorBatch: 'No rows were found for this batch.',
+    step1ErrorTitle: '<span class="step"><span class="stepNum complete" id="step1Error">1</span><span class="stepTxt">Enter Batch Description</span>',
+    step2ErrorTitle: '<span class="step"><span class="stepNum complete" id="step2Error">2</span><span class="stepTxt">View Rows To Be Updated and Errors</span>',
+    step3ErrorTitle: '<span class="step"><span class="stepNum complete" id="step3Error">3</span><span class="stepTxt">Edit Field Update Criteria</span>',
+    step4ErrorTitle: '<span class="step"><span class="stepNum complete" id="step4Error">4</span><span class="stepTxt">Confirm Changes</span>',
+    mustDoStep3Error: 'You must create Field Update Criteria (Step 3) first.'
 };
 
 Ext.onReady(function() {
@@ -325,8 +333,14 @@ Ext.onReady(function() {
                         showModal(reviewBatchWin);
                     }
                     else {
-                        batchID = rec.get('id');
-                        showModal(editBatchWin);
+                        if (combo.getValue() == 'errors') {
+                            errorBatchId = rec.get('id');
+                            showModal(errorBatchWin);
+                        }
+                        else {
+                            batchID = rec.get('id');
+                            showModal(editBatchWin);
+                        }
                     }
                 }
             },
@@ -390,7 +404,7 @@ Ext.onReady(function() {
     store.sortToggle[sortProp] = sortDir;
     store.sortInfo = { field: sortProp, direction: sortDir };
 
-    // When the page loads, show the Open Batches first
+    // When the page loads, show the Open Batches first  TODO: use previous selection of executed, errors, etc
     store.load( { params: { showBatchStatus: 'open', start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir },
         callback: function(rec, options, success) {
             combo.setValue('open');
@@ -552,7 +566,10 @@ Ext.onReady(function() {
         }
     }
 
-    /* The following are the for the batch modal window */
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /* The following are the for the create/edit batch modal window */
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     function showModal(win) {
         if (OrangeLeap.allowCreate) {
             if (win.rendered) {
@@ -591,8 +608,8 @@ Ext.onReady(function() {
         $('#' + fld.getId()).parents('div.x-form-element').prev('label').removeClass('inFocus');
     }
 
-    function checkFieldCriteriaValid() {
-        var thisStore = step4Form.store;
+    function checkFieldCriteriaValid(form) {
+        var thisStore = form.store;
         var isCriteriaValid = true;
         var recLength = thisStore.data.items.length;
         for (var x = 0; x < recLength; x++) {
@@ -673,7 +690,7 @@ Ext.onReady(function() {
                 }
             }
             else if (currentGroup.mainItem.id == 'step4Grp') {
-                if (step4Form.store.getCount() == 0 || ! checkFieldCriteriaValid()) {
+                if (step4Form.store.getCount() == 0 || ! checkFieldCriteriaValid(step4Form)) {
                     isValid = false;
                     invalidateAccessibleSteps('step4Grp');
                     showErrorMsg(msgs.mustDoStep4);
@@ -782,14 +799,7 @@ Ext.onReady(function() {
                 $('#step3Num').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step4Grp') {
-                var step4DataItems = step4Form.store.data.items;
-                for (var x = 0; x < step4DataItems.length; x++) {
-                    var value = step4DataItems[x].data.value;
-                    if (Ext.isDate(value)) {
-                        value = value.dateFormat('Y-m-d H:i:s');
-                    }
-                    saveParams['param-' + step4DataItems[x].data.name] = value;
-                }
+                findUpdateFields(step4Form.store, saveParams);
                 saveParams['previousStep'] = 'step4Grp';
                 $('#step4Num').addClass('complete');
             }
@@ -800,6 +810,17 @@ Ext.onReady(function() {
             }
         }
         return saveParams;
+    }
+
+    function findUpdateFields(store, saveParams) {
+        var dataItems = store.data.items;
+        for (var x = 0; x < dataItems.length; x++) {
+            var value = dataItems[x].data.value;
+            if (Ext.isDate(value)) {
+                value = value.dateFormat('Y-m-d H:i:s');
+            }
+            saveParams['param-' + dataItems[x].data.name] = value;
+        }
     }
 
     function loadTab(groupTabPanel, newGroup, currentGroup, startNum) {
@@ -1400,6 +1421,118 @@ Ext.onReady(function() {
         }
     });
 
+    function loadUpdatableFields(form, picklistData, store, records, options) {
+        var len = records.length;
+        var newPropertyNames = {};
+        var newCustomEditors = {};
+        var newCustomRenderers = {};
+        var initValues = {};
+        var newSource;
+
+        for (var x = 0; x < len; x++) {
+            var recName = records[x].get('name');
+            newPropertyNames[recName] = records[x].get('desc');
+
+            var recType = records[x].get('type');
+            var recVal = records[x].get('value');
+
+            // Source is for existing data, not new data
+            if (! Ext.isEmpty(recVal)) {
+                if ( ! newSource) {
+                    newSource = {};
+                }
+                records[x].set('selected', true);
+                if (recType == 'date' || recType == 'date_time') {
+                    newSource[recName] = Ext.isDate(recVal) ? recVal : Date.parseDate(recVal, 'Y-m-d H:i:s');
+                }
+                else if (recType == 'checkbox') {
+                    newSource[recName] = Ext.isBoolean(recVal) ? recVal : (recVal.toString().toLowerCase() == 'true' ||
+                                                                           recVal.toString().toLowerCase() == 't' ||
+                                                                           recVal.toString().toLowerCase() == 'y' ||
+                                                                           recVal == '1');
+                }
+                else if (recType == 'number' || recType == 'percentage') {
+                    newSource[recName] = Ext.isNumber(recVal) ? recVal : (recVal.toString().indexOf(".") > -1 ? parseFloat(recVal) : parseInt(recVal, 10));
+                }
+                else {
+                    newSource[recName] = recVal;
+                }
+            }
+
+            // Custom editors determine what type of control will be displayed to the user
+            if (recType == 'date' || recType == 'date_time') {
+                newCustomEditors[recName] = form.colModel.editors['date'];
+                initValues[recName] = new Date();
+            }
+            else if (recType == 'checkbox') {
+                newCustomEditors[recName] = form.colModel.editors['boolean'];
+                initValues[recName] = true;
+            }
+            else if (recType == 'number' || recType == 'percentage') {
+                newCustomEditors[recName] = form.colModel.editors['number'];
+                initValues[recName] = parseInt(0, 10);
+            }
+            else if (recType == 'picklist') {    // TODO: multi_picklist, code, code_other, query_lookup, query_lookup_other
+                var myPicklist = picklistData[recName + '-Data'];
+                if (myPicklist) {
+                    var myStore = new Ext.data.JsonStore({
+                        autoSave: false,
+                        fields: ['itemName', 'displayVal'],
+                        data: myPicklist
+                    });
+                    var initVal = myPicklist.length > 0 ? myPicklist[0]['itemName'] : '';
+                    initValues[recName] = initVal;
+                    newCustomEditors[recName] = new Ext.grid.GridEditor(new Ext.form.ComboBox({
+                        name: recName,
+                        allowBlank: false,
+                        displayField: 'displayVal',
+                        valueField: 'itemName',
+                        typeAhead: true,
+                        mode: 'local',
+                        triggerAction: 'all',
+                        selectOnFocus: true,
+                        forceSelection: true,
+                        store: myStore,
+                        value: initVal
+                    }));
+                    newCustomRenderers[recName] = function(val, meta, r) {
+                        var returnVal = val;
+                        var aStore = this.grid.customEditors[r.get('name')].field.store;
+                        var index = aStore.find('itemName', val);
+                        if (index > -1) {
+                            returnVal = aStore.getAt(index).get('displayVal');
+                        }
+                        if (Ext.isEmpty(returnVal)) {
+                            // No value so highlight this cell as in an error state
+                            meta.css += ' x-form-invalid';
+                            meta.attr = 'ext:qtip="' + msgs.valueRequired + '"; ext:qclass="x-form-invalid-tip"';
+                        }
+                        else {
+                            meta.css = '';
+                            meta.attr = 'ext:qtip=""';
+                        }
+                        return Ext.util.Format.htmlEncode(returnVal);
+                    };
+                }
+            }
+            else {
+                // every other type is a string editor type
+                initValues[recName] = '';
+            }
+        }
+        if ( ! newSource) {
+            // if there are no pre-existing values, we have to initialize to the first one in the records list with a default value
+            newSource = {};
+            var thisRecName = records[0].get('name');
+            records[0].set('selected', true);
+            newSource[thisRecName] = initValues[thisRecName];
+        }
+        form.propertyNames = newPropertyNames;
+        form.customEditors = newCustomEditors;
+        form.customRenderers = newCustomRenderers;
+        form.setSource(newSource);
+    }
+
     var step4UpdatableFieldsStore = new Ext.data.JsonStore({
         url: 'doBatch.htm',
         autoLoad: false,
@@ -1415,115 +1548,7 @@ Ext.onReady(function() {
         ],
         listeners: {
             'load': function(store, records, options) {
-                var len = records.length;
-                var newPropertyNames = {};
-                var newCustomEditors = {};
-                var newCustomRenderers = {};
-                var initValues = {};
-                var newSource;
-
-                for (var x = 0; x < len; x++) {
-                    var recName = records[x].get('name');
-                    newPropertyNames[recName] = records[x].get('desc');
-
-                    var recType = records[x].get('type');
-                    var recVal = records[x].get('value');
-
-                    // Source is for existing data, not new data
-                    if (! Ext.isEmpty(recVal)) {
-                        if ( ! newSource) {
-                            newSource = {};
-                        }
-                        records[x].set('selected', true);
-                        if (recType == 'date' || recType == 'date_time') {
-                            newSource[recName] = Ext.isDate(recVal) ? recVal : Date.parseDate(recVal, 'Y-m-d H:i:s');
-                        }
-                        else if (recType == 'checkbox') {
-                            newSource[recName] = Ext.isBoolean(recVal) ? recVal : (recVal.toString().toLowerCase() == 'true' ||
-                                                                                   recVal.toString().toLowerCase() == 't' ||
-                                                                                   recVal.toString().toLowerCase() == 'y' ||
-                                                                                   recVal == '1');
-                        }
-                        else if (recType == 'number' || recType == 'percentage') {
-                            newSource[recName] = Ext.isNumber(recVal) ? recVal : (recVal.toString().indexOf(".") > -1 ? parseFloat(recVal) : parseInt(recVal, 10));
-                        }
-                        else {
-                            newSource[recName] = recVal;
-                        }
-                    }
-
-                    // Custom editors determine what type of control will be displayed to the user
-                    if (recType == 'date' || recType == 'date_time') {
-                        newCustomEditors[recName] = step4Form.colModel.editors['date'];
-                        initValues[recName] = new Date();
-                    }
-                    else if (recType == 'checkbox') {
-                        newCustomEditors[recName] = step4Form.colModel.editors['boolean'];
-                        initValues[recName] = true;
-                    }
-                    else if (recType == 'number' || recType == 'percentage') {
-                        newCustomEditors[recName] = step4Form.colModel.editors['number'];
-                        initValues[recName] = parseInt(0, 10);
-                    }
-                    else if (recType == 'picklist') {    // TODO: multi_picklist, code, code_other, query_lookup, query_lookup_other
-                        var myPicklist = step4Picklists[recName + '-Data'];
-                        if (myPicklist) {
-                            var myStore = new Ext.data.JsonStore({
-                                autoSave: false,
-                                fields: ['itemName', 'displayVal'],
-                                data: myPicklist
-                            });
-                            var initVal = myPicklist.length > 0 ? myPicklist[0]['itemName'] : '';
-                            initValues[recName] = initVal;
-                            newCustomEditors[recName] = new Ext.grid.GridEditor(new Ext.form.ComboBox({
-                                name: recName,
-                                allowBlank: false,
-                                displayField: 'displayVal',
-                                valueField: 'itemName',
-                                typeAhead: true,
-                                mode: 'local',
-                                triggerAction: 'all',
-                                selectOnFocus: true,
-                                forceSelection: true,
-                                store: myStore,
-                                value: initVal
-                            }));
-                            newCustomRenderers[recName] = function(val, meta, r) {
-                                var returnVal = val;
-                                var aStore = this.grid.customEditors[r.get('name')].field.store;
-                                var index = aStore.find('itemName', val);
-                                if (index > -1) {
-                                    returnVal = aStore.getAt(index).get('displayVal');
-                                }
-                                if (Ext.isEmpty(returnVal)) {
-                                    // No value so highlight this cell as in an error state
-                                    meta.css += ' x-form-invalid';
-                                    meta.attr = 'ext:qtip="' + msgs.valueRequired + '"; ext:qclass="x-form-invalid-tip"';
-                                }
-                                else {
-                                    meta.css = '';
-                                    meta.attr = 'ext:qtip=""';
-                                }
-                                return Ext.util.Format.htmlEncode(returnVal);
-                            };
-                        }
-                    }
-                    else {
-                        // every other type is a string editor type
-                        initValues[recName] = '';
-                    }
-                }
-                if ( ! newSource) {
-                    // if there are no pre-existing values, we have to initialize to the first one in the records list with a default value
-                    newSource = {};
-                    var thisRecName = records[0].get('name');
-                    records[0].set('selected', true);
-                    newSource[thisRecName] = initValues[thisRecName];
-                }
-                step4Form.propertyNames = newPropertyNames;
-                step4Form.customEditors = newCustomEditors;
-                step4Form.customRenderers = newCustomRenderers;
-                step4Form.setSource(newSource);
+                loadUpdatableFields(step4Form, step4Picklists, store, records, options);
                 unmaskStep('step4Grp');
             },
             'beforeload': function(store, options) {
@@ -1538,9 +1563,8 @@ Ext.onReady(function() {
         }
     });
     var step4Picklists = {};
-    step4UpdatableFieldsStore.proxy.on('load', function(proxy, txn, options) {
-        flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
-        accessibleSteps = txn.reader.jsonData.accessibleSteps;
+
+    function proxyLoadUpdatableFields(obj, txn) {
         if (txn.reader.jsonData && txn.reader.jsonData.rows) {
             var rows = txn.reader.jsonData.rows;
             var len = rows.length;
@@ -1551,11 +1575,17 @@ Ext.onReady(function() {
                     var name = rows[x].name;
                     var picklistNameKey = name + '-Data'; // get the JSON itemName/displayVal data for the picklist
                     if (txn.reader.jsonData[picklistNameKey]) {
-                        step4Picklists[picklistNameKey] = txn.reader.jsonData[picklistNameKey];
+                        obj[picklistNameKey] = txn.reader.jsonData[picklistNameKey];
                     }
                 }
             }
         }
+    }
+
+    step4UpdatableFieldsStore.proxy.on('load', function(proxy, txn, options) {
+        flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+        accessibleSteps = txn.reader.jsonData.accessibleSteps;
+        proxyLoadUpdatableFields(step4Picklists, txn);
     });
 
     var step4Form = new OrangeLeap.DynamicPropertyGrid({
@@ -1614,7 +1644,7 @@ Ext.onReady(function() {
     });
 
     var checkStep4EnableButton = function(store) {
-        if (store.getCount() == 0 || ! checkFieldCriteriaValid()) {
+        if (store.getCount() == 0 || ! checkFieldCriteriaValid(step4Form)) {
             step4Form.nextButton.disable();
         }
         else {
@@ -1651,11 +1681,14 @@ Ext.onReady(function() {
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep5 });
+            },
+            'metachange': function(store, meta) {
+                comparisonMetaChange(step5Form, step5Bar, store, meta);
             }
         }
     });
 
-    step5Store.on('metachange', function(store, meta) {
+    function comparisonMetaChange(form, bar, store, meta) {
         var cols = [];
         var fields = meta.fields;
         for (var x = 0; x < fields.length; x++) {
@@ -1669,9 +1702,10 @@ Ext.onReady(function() {
                 };
             }
         }
-        step5Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
-        step5Bar.bindStore(store, true);
-    });
+        form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+        bar.bindStore(store, true);
+    }
+
     step5Store.proxy.on('load', function(proxy, txn, options) {
         flowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
         accessibleSteps = txn.reader.jsonData.accessibleSteps;
@@ -1698,9 +1732,10 @@ Ext.onReady(function() {
         emptyMsg: msgs.emptyMsg
     });
 
-    var step5RowSelect = new Ext.grid.RowSelectionModel();
-    step5RowSelect.on('beforerowselect', function(selModel, rowIndex, keepExisting, record) {
-        return false;
+    var step5RowSelect = new Ext.grid.RowSelectionModel({ listeners: {
+        'beforerowselect': function(selModel, rowIndex, keepExisting, record) {
+            return false;
+        } }
     });
 
     var step5Toolbar = new Ext.Toolbar({
@@ -1763,7 +1798,7 @@ Ext.onReady(function() {
                 formBind: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    saveBatch();
+                    saveBatch('doBatch.htm', getFlowExecutionKey(), cancelEditBatch, 'open');
                 }
             },
             {
@@ -1779,17 +1814,17 @@ Ext.onReady(function() {
         tbar: step5Toolbar
     });
 
-    function saveBatch() {
+    function saveBatch(saveUrl, executionKey, cancelFunc, batchStatusToShow) {
         Ext.Ajax.request({
-            url: 'doBatch.htm',
+            url: saveUrl,
             method: 'POST',
-            params: { '_eventId_save': 'save', 'execution': getFlowExecutionKey() },
+            params: { '_eventId_save': 'save', 'execution': executionKey },
             success: function(response, options) {
                 var responseText = response.responseText;
                 // reload the main batch window to see the new batch
                 store.reload({
-                    // to see the new batch, we have to reload the 'Open Batches' with CreateDate in desc order
-                    params: { showBatchStatus: 'open', start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
+                    // to see the new batch, we have to reload the desired status (open or error) with CreateDate in desc order
+                    params: { showBatchStatus: batchStatusToShow, start: 0, limit: 100, sort: 'createDate', dir: 'DESC' },
                     callback: function() {
                         var obj = Ext.decode(responseText);
                         if (obj && obj.batchId) {
@@ -1816,7 +1851,7 @@ Ext.onReady(function() {
                         }
                     }
                 });
-                cancelEditBatch(); // tell the server side to end the flow
+                cancelFunc(); // tell the server side to end the flow
             },
             failure: function(response, options) {
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
@@ -2413,6 +2448,673 @@ Ext.onReady(function() {
         reviewBatchWin.groupTabPanel.activeGroup = null;
         reviewStep2Store.removeAll();
         reviewStep3Store.removeAll();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /* The following below is for the errors-only batch window */
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    var errorStep1Form = new Ext.form.FormPanel({
+        baseCls: 'x-plain',
+        labelAlign: 'right',
+        margins: '10 0',
+        formId: 'errorStep1Form',
+        ctCls: 'wizard',
+        layoutConfig: {
+            labelSeparator: ''
+        },
+        buttons: [
+            {
+                text: msgs.next,
+                cls: 'saveButton',
+                ref: '../nextButton',
+                formBind: true,
+                handler: function(button, event) {
+                    var panel = errorBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(1)) {
+                        var firstItem = panel.items.items[1];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+//                        $('#step1Error').addClass('complete');
+                    }
+                }
+            },
+            {
+                text: msgs.cancel,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    cancelErrorBatch(); 
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        items: [
+            {
+                fieldLabel: msgs.description, name: 'errorBatchDesc', id: 'errorBatchDesc', xtype: 'textarea',
+                maxLength: 255, height: 60, width: 500, grow: true, growMin: 60, growMax: 400,
+                listeners: {
+                    'focus': elementFocus,
+                    'blur': elementBlur,
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.type, name: 'errorBatchType', id: 'errorBatchType', xtype: 'displayfield', cls: 'displayElem',
+                height: 60, width: 500
+            },
+            {
+                name: 'hiddenErrorBatchType', id: 'hiddenErrorBatchType', xtype: 'hidden'
+            }
+        ]
+    });
+
+    var errorStep2Store = new OrangeLeap.ListStore({
+        url: 'errorBatch.htm',
+        reader: new Ext.data.JsonReader(),
+        root: 'rows',
+        totalProperty: 'totalRows',
+        remoteSort: true,
+        sortInfo: {field: 'id', direction: 'ASC'},
+        fields: [
+            {name: 'id', mapping: 'id', type: 'int'}
+        ],
+        listeners: {
+            'metachange': function(store, meta) {
+                var cols = [];
+                var fields = meta.fields;
+                for (var x = 0; x < fields.length; x++) {
+                    var name = fields[x].name;
+                    if (name && name.indexOf('ConstituentId') == -1) {
+                        cols[cols.length] = {
+                            header: fields[x].header, dataIndex: name, sortable: true,
+                            renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                                return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                            }
+                        };
+                    }
+                }
+                errorStep2Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+                errorStep2Bar.bindStore(store, true);
+            },
+            'beforeload': function(store, options) {
+//                maskStep('step3Grp', msgs.loadingRows); TODO
+            },
+            'load': function(store, records, options) {
+                if (records.length > 0) {
+                    errorStep2Form.nextButton.enable();  // Only enable next if there are rows available to select
+                }
+                else {
+                    errorStep2Form.nextButton.disable();
+                }
+//                unmaskStep('step3Grp'); TODO
+            },
+            'exception': function(misc) {
+//                unmaskStep('step3Grp'); TODO
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep2 });
+            }
+        }
+    });
+    errorStep2Store.proxy.on('load', function(proxy, txn, options) {
+        errorFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+    });
+
+    // custom toolbar for Error Batch window to invoke loadTab - this effectively overrides what the 'refresh' button action is on the toolbar
+    OrangeLeap.ErrorBatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
+        doLoad: function(start) {
+            var o = { }, pn = this.getParams();
+            o[pn.start] = start;
+            o[pn.limit] = this.pageSize;
+            if (this.fireEvent('beforechange', this, o) !== false) {
+                loadErrorTab(errorBatchWin.groupTabPanel, errorBatchWin.groupTabPanel.activeGroup, errorBatchWin.groupTabPanel.activeGroup, start);
+            }
+        }
+    });
+
+    var errorStep2Bar = new OrangeLeap.ErrorBatchWinToolbar({
+        pageSize: 50,
+        stateEvents: ['change'],
+        stateId: 'errorStep2Bar',
+        stateful: true,
+        getState: function() {
+            var config = {};
+            config.start = this.cursor;
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.start) {
+                this.cursor = state.start;
+            }
+        },
+        store: errorStep2Store,
+        displayInfo: true,
+        displayMsg: msgs.displayMsg,
+        emptyMsg: msgs.emptyMsg
+    });
+
+    var errorStep2Toolbar = new Ext.Toolbar({
+        items: [
+            msgs.rowsExecutedErrors
+        ]
+    });
+    errorStep2Toolbar.on('afterlayout', function(tb){
+        tb.el.child('.x-toolbar-right').remove();
+        var t = tb.el.child('.x-toolbar-left');
+        t.removeClass('x-toolbar-left');
+        t = tb.el.child('.x-toolbar-ct');
+        t.setStyle('width', 'auto');
+        t.wrap({tag: 'center'});
+    }, null, {single: true});
+
+    var errorStep2Form = new Ext.grid.GridPanel({
+        stateId: 'errorStep2List',
+        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
+        stateful: true,
+        store: errorStep2Store,
+        bbar: errorStep2Bar,
+        width: 726,
+        height: 468,
+        forceLayout: true,
+        viewConfig: {
+            forceFit: true,
+            emptyText: msgs.noRowsForErrorBatch
+        },
+        header: false,
+        frame: false,
+        border: false,
+        selModel: new Ext.grid.RowSelectionModel(),
+        columns: [
+            {
+                header: msgs.id,
+                sortable: false,
+                dataIndex: 'id',
+                editable: false,
+                editor: new Ext.form.DisplayField()
+            }
+        ],
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = errorBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(0)) {
+                        var firstItem = panel.items.items[0];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.next,
+                cls: 'saveButton',
+                ref: '../nextButton',
+                formBind: true,
+                disabled: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = errorBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(2)) {
+                        var firstItem = panel.items.items[2];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+//                        $('#step2Error').addClass('complete');
+                    }
+                }
+            },
+            {
+                text: msgs.cancel,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    cancelErrorBatch();
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        tbar: errorStep2Toolbar,
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, event) {
+                var batchType = Ext.getCmp('hiddenErrorBatchType').getValue();
+                var record = errorStep2Store.getAt(rowIndex);
+                if (batchType && record) {
+                    // open window to view record
+                    var thisUrl = batchType + '.htm?' + batchType + 'Id=' + record.get(batchType + 'Id') +
+                                          (record.get(batchType + 'ConstituentId') ? '&constituentId=' + record.get(batchType + 'ConstituentId') : '');
+                    window.open(thisUrl, batchType + 'Win');
+                }
+            }
+        }
+    });
+
+    var errorStep3UpdatableFieldsStore = new Ext.data.JsonStore({
+        url: 'errorBatch.htm',
+        autoLoad: false,
+        autoSave: false,
+        totalProperty: 'totalRows',
+        root: 'rows',
+        fields: [
+            {name: 'name', type: 'string'},
+            {name: 'desc', type: 'string'},
+            {name: 'type', type: 'string'},
+            {name: 'value', type: 'string'},
+            {name: 'selected', type: 'boolean'}
+        ],
+        listeners: {
+            'load': function(store, records, options) {
+                loadUpdatableFields(errorStep3Form, errorStep3Picklists, store, records, options);
+//                unmaskStep('step4Grp'); TODO
+            },
+            'beforeload': function(store, options) {
+//                maskStep('step4Grp', msgs.loading); TODO
+            },
+            'exception': function(misc) {
+//                unmaskStep('step4Grp'); TODO
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep3 });
+            }
+        }
+    });
+    var errorStep3Picklists = {};
+    errorStep3UpdatableFieldsStore.proxy.on('load', function(proxy, txn, options) {
+        errorFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+        proxyLoadUpdatableFields(errorStep3Picklists, txn);
+    });
+    var errorStep3Form = new OrangeLeap.DynamicPropertyGrid({
+        width: 726,
+        height: 468,
+        loadMask: true,
+        header: false,
+        frame: false,
+        border: false,
+        forceLayout: true,
+        propertyNames: { },
+        source: { },
+        viewConfig : { forceFit: true },
+        updatableFieldsStore: errorStep3UpdatableFieldsStore,
+        customEditors: { },
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = errorBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(1)) {
+                        var firstItem = panel.items.items[1];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.next,
+                cls: 'saveButton',
+                ref: '../nextButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = errorBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(3)) {
+                        var firstItem = panel.items.items[3];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+//                        $('#step3Error').addClass('complete');
+                    }
+                }
+            },
+            {
+                text: msgs.cancel,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    cancelErrorBatch(); 
+                }
+            }
+        ],
+        buttonAlign: 'center'
+    });
+    var checkErrorStep3EnableButton = function(store) {
+        if (store.getCount() == 0 || ! checkFieldCriteriaValid(errorStep3Form)) {
+            errorStep3Form.nextButton.disable();
+        }
+        else {
+            errorStep3Form.nextButton.enable();
+        }
+    };
+    errorStep3Form.store.addListener({
+        'add': checkErrorStep3EnableButton,
+        'update': checkErrorStep3EnableButton,
+        'remove': checkErrorStep3EnableButton
+    });
+    var errorStep4Store = new OrangeLeap.ListStore({
+        url: 'errorBatch.htm',
+        reader: new Ext.data.JsonReader(),
+        root: 'rows',
+        totalProperty: 'totalRows',
+        remoteSort: true,
+        sortInfo: {field: 'id', direction: 'ASC'},
+        fields: [
+            {name: 'id', mapping: 'id', type: 'int'}
+        ],
+        listeners: {
+            'beforeload': function(store, options) {
+//                maskStep('step5Grp', msgs.loadingRows); TODO
+            },
+            'load': function(store, records, options) {
+//                unmaskStep('step5Grp'); TODO
+            },
+            'exception': function(misc) {
+//                unmaskStep('step5Grp'); TODO
+                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.MessageBox.OK,
+                    msg: msgs.errorStep4 });
+            },
+            'metachange': function(store, meta) {
+                comparisonMetaChange(errorStep4Form, errorStep4Bar, store, meta);
+            }
+        }
+    });
+    errorStep4Store.proxy.on('load', function(proxy, txn, options) {
+        errorFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
+    });
+
+    var errorStep4Bar = new OrangeLeap.ErrorBatchWinToolbar({
+        pageSize: 50,
+        stateEvents: ['change'],
+        stateId: 'errorStep4Bar',
+        stateful: true,
+        getState: function() {
+            var config = {};
+            config.start = this.cursor;
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.start) {
+                this.cursor = state.start;
+            }
+        },
+        store: errorStep4Store,
+        displayInfo: true,
+        displayMsg: msgs.displayMsg,
+        emptyMsg: msgs.emptyMsg
+    });
+    var errorStep4RowSelect = new Ext.grid.RowSelectionModel({ listeners: {
+        'beforerowselect': function(selModel, rowIndex, keepExisting, record) {
+            return false;
+        } }
+    });
+
+    var errorStep4Toolbar = new Ext.Toolbar({
+        items: [
+            msgs.followingChangesApplied
+        ]
+    });
+    errorStep4Toolbar.on('afterlayout', function(tb){
+        tb.el.child('.x-toolbar-right').remove();
+        var t = tb.el.child('.x-toolbar-left');
+        t.removeClass('x-toolbar-left');
+        t = tb.el.child('.x-toolbar-ct');
+        t.setStyle('width', 'auto');
+        t.wrap({tag: 'center'});
+    }, null, {single: true});
+
+    var errorStep4Form = new Ext.grid.GridPanel({
+        stateId: 'errorStep4List',
+        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
+        stateful: true,
+        store: errorStep4Store,
+        bbar: errorStep4Bar,
+        stripeRows: false,
+        width: 726,
+        height: 468,
+        loadMask: true,
+        header: false,
+        frame: false,
+        border: false,
+        selModel: errorStep4RowSelect,
+//        viewConfig: { forceFit: true },
+        columns: [
+            {
+                header: msgs.id,
+                sortable: false,
+                dataIndex: 'id',
+                editable: false,
+                editor: new Ext.form.DisplayField()
+            }
+        ],
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = errorBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(2)) {
+                        var thisItem = panel.items.items[2];
+                        thisItem.setActiveTab(thisItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.save,
+                cls: 'saveButton',
+                ref: '../saveButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    saveBatch('errorBatch.htm', errorFlowExecutionKey, cancelErrorBatch, 'errors');
+                }
+            },
+            {
+                text: msgs.cancel,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    cancelErrorBatch(); 
+                }
+            }
+        ],
+        buttonAlign: 'center',
+        tbar: errorStep4Toolbar
+    });
+
+    var errorBatchId = null;
+    var errorFlowExecutionKey = null;
+
+    function cancelErrorBatch() {
+        Ext.Ajax.request({
+            url: 'errorBatch.htm',
+            method: 'POST',
+            params: { '_eventId_cancel': 'cancel', 'execution': errorFlowExecutionKey }
+        });
+        errorBatchWin.hide(errorBatchWin);
+    }
+
+    function checkConditionsForErrorBatch(groupTabPanel, groupToShow, currentGroup) {
+        var isValid = true;
+        if (currentGroup && currentGroup.mainItem.id &&
+            groupToShow && groupToShow.mainItem.id &&
+            groupToShow.mainItem.id != currentGroup.mainItem.id &&
+            currentGroup.mainItem.id == 'step3Error' &&
+            (errorStep3Form.store.getCount() == 0 || ! checkFieldCriteriaValid(errorStep3Form))) {
+            isValid = false;
+            showErrorMsg(msgs.mustDoStep3Error);
+        }
+        return isValid;
+    }
+
+    var errorBatchWin = new Ext.Window({
+        title: msgs.manageBatch,
+        layout: 'fit',
+        width: 875,
+        height: 500,
+        cls: 'win',
+        id: 'errorBatchWin',
+        modal: true,
+        closable: false,
+        closeAction: 'hide',
+        listeners: {
+            'beforeshow': function() {
+                $(this).bind('keydown', function(e) {
+                    hideErrorOnEscape(e);
+                });
+            },
+            'beforehide': function() {
+                resetErrorBatchWin();
+                $(this).unbind('keydown', hideErrorOnEscape);
+            }
+        },
+        items:[{
+             xtype: 'grouptabpanel',
+             tabWidth: 135,
+             activeGroup: 0,
+             ref: '../groupTabPanel',
+             layoutOnTabChange: true,
+             listeners: {
+                 'beforegroupchange': checkConditionsForErrorBatch,
+                 'groupchange': loadErrorTab
+             },
+             items: [
+                 {
+                     layoutOnTabChange: true,
+                     items: [{
+                         id: 'step1Error',
+                         title: msgs.step1ErrorTitle,
+                         tabTip: msgs.step1Tip,
+                         style: 'padding: 20px 40px;',
+                         items: [ errorStep1Form ]
+                     }],
+                     listeners: {
+//                         'afterrender': maskStep1Form TODO
+                     }
+                 },
+                 {
+                     layoutOnTabChange: true,
+                     items: [{
+                         id: 'step2Error',
+                         cls: 'grp',
+                         title: msgs.step2ErrorTitle,
+                         tabTip: msgs.step2Tip,
+                         items: [ errorStep2Form ]
+                     }]
+                 },
+                 {
+                     items: [{
+                         id: 'step3Error',
+                         cls: 'grp',
+                         title: msgs.step3ErrorTitle,
+                         tabTip: msgs.step3Tip,
+                         items: [ errorStep3Form ]
+                     }]
+                 },
+                 {
+                     items: [{
+                         id: 'step4Error',
+                         cls: 'grp',
+                         title: msgs.step4ErrorTitle,
+                         tabTip: msgs.step4Tip,
+                         items: [ errorStep4Form ]
+                     }]
+                 }
+             ]
+         }]
+    });
+
+    var hideErrorOnEscape = function(e) {
+        if (e.keyCode == 27) {
+            errorBatchWin.hide();
+        }
+    };
+
+    function resetErrorBatchWin() {
+        // When the batchWin is hidden, clear out all set store objects, reset CSS classes, etc, for re-use for another batch
+        errorFlowExecutionKey = null; // on hide, clear out the flow execution key in order to start a new flow next time
+        errorBatchWin.groupTabPanel.items.items[0].activeTab = null;
+        errorBatchWin.groupTabPanel.strip.select('li.x-grouptabs-strip-active', true).removeClass('x-grouptabs-strip-active');
+        errorBatchWin.groupTabPanel.activeGroup = null;
+        Ext.getCmp('errorBatchDesc').setRawValue(''); // reset the batchDesc to empty string; use 'setRawValue()' to bypass form validation
+        errorStep2Store.removeAll();
+        errorStep3Form.store.removeAll();
+        errorStep3UpdatableFieldsStore.removeAll();
+        errorStep4Store.removeAll();
+    }
+
+    function initErrorTabSaveParams(groupTabPanel, newGroup, currentGroup) {
+        var saveParams = {};
+        if (currentGroup) {
+            if (currentGroup.mainItem.id == 'step1Error') {
+                saveParams = { 'batchDesc': Ext.getCmp('errorBatchDesc').getValue(), 'previousStep': 'step1Error' };
+//                $('#step1Error').addClass('complete');
+            }
+            else if (currentGroup.mainItem.id == 'step2Error') {
+                // nothing to save for step2 - view only
+                saveParams = { 'previousStep': 'step2Error' };
+//                $('#step2Error').addClass('complete');
+            }
+            else if (currentGroup.mainItem.id == 'step3Error') {
+                findUpdateFields(errorStep3Form.store, saveParams);
+                saveParams['previousStep'] = 'step3Error';
+//                $('#step3Error').addClass('complete');
+            }
+            else if (currentGroup.mainItem.id == 'step4Error') {
+                // nothing to save for step4 - view only
+                saveParams = { 'previousStep': 'step4Error' };
+//                $('#step4Error').addClass('complete');
+            }
+        }
+        return saveParams;
+    }
+
+    function loadErrorTab(groupTabPanel, newGroup, currentGroup, startNum) {
+        if ( ! startNum) {
+            startNum = 0;
+        }
+        var saveParams = initErrorTabSaveParams(groupTabPanel, newGroup, currentGroup);
+        var params = {};
+
+        if (newGroup.mainItem.id == 'step1Error') {
+            errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
+//            maskReviewStep1(); TODO
+
+            jQuery.extend(params, { 'batchId': errorBatchId, '_eventId_errorStep1': 'errorStep1', 'execution': errorFlowExecutionKey },
+                    saveParams); // copy properties from {} & saveParams to params
+
+            errorStep1Form.getForm().load({
+                'url': 'errorBatch.htm',
+                'params': params,
+                'success': function(form, action) {
+                    errorFlowExecutionKey = action.result.flowExecutionKey;
+//                    unmaskReviewStep1(); TODO
+                },
+                'failure': function(form, action) {
+//                    unmaskReviewStep1(); TODO
+                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.MessageBox.OK,
+                        msg: msgs.errorStep1 });
+                }
+            });
+        }
+        else if (newGroup.mainItem.id == 'step2Error') {
+            jQuery.extend(params, { '_eventId_errorStep2': 'errorStep2', 'execution': errorFlowExecutionKey, 'start': startNum, 'limit': 50 }, saveParams);
+            errorStep2Store.load({ 'params': params });
+            errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
+        }
+        else if (newGroup.mainItem.id == 'step3Error') {
+            jQuery.extend(params, { '_eventId_errorStep3': 'errorStep3', 'execution': errorFlowExecutionKey }, saveParams);
+            errorStep3UpdatableFieldsStore.load({ 'params': params });
+            errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
+        }
+        else if (newGroup.mainItem.id == 'step4Error') {
+            jQuery.extend(params, { '_eventId_errorStep4': 'errorStep4', 'execution': errorFlowExecutionKey, 'start': startNum,
+                'limit': 20, 'sort': 'id', 'dir': 'ASC' }, saveParams);
+            errorStep4Store.load({ 'params': params });
+            errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
+        }
     }
 });
 

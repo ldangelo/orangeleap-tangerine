@@ -190,11 +190,13 @@ OrangeLeap.DynamicPropertyGrid = function(config) {
 
     var myself = this;
     this.updatableFieldsStore.on('load', function(rec, options) {
-        if (rec && myself.getStore().getCount() != rec.data.length) {
-            myself.addCriteriaButton.enable();
-        }
-        else {
-            myself.addCriteriaButton.disable();
+        if (myself.addCriteriaButton) {
+            if (rec && myself.getStore().getCount() != rec.data.length) {
+                myself.addCriteriaButton.enable();
+            }
+            else {
+                myself.addCriteriaButton.disable();
+            }
         }
     });
 };

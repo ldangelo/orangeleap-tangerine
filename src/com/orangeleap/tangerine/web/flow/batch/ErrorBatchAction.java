@@ -57,18 +57,22 @@ public class ErrorBatchAction extends EditBatchAction {
         tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch); // TODO: do as annotation
         determineStepToSave(flowRequestContext);
         
-        final PostBatch batch = postBatchService.readBatch(batchId);
-        setFlowScopeAttribute(flowRequestContext, batch, StringConstants.BATCH);
+        PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+        if (batch == null || (batchId != null && ! batchId.equals(batch.getId()))) {
+            batch = postBatchService.readBatch(batchId);
+            setFlowScopeAttribute(flowRequestContext, batch, StringConstants.BATCH);
+        }
 
         final ModelMap model = new ModelMap();
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
 
-        final Map<String, String> dataMap = new HashMap<String, String>();
-        dataMap.put(StringConstants.BATCH_DESC, batch.getBatchDesc());
-        dataMap.put("errorBatchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
-        dataMap.put("hiddenErrorBatchType", batch.getBatchType());
-        model.put(StringConstants.DATA, dataMap);
-
+        if (batch != null) {
+            final Map<String, String> dataMap = new HashMap<String, String>();
+            dataMap.put("errorBatchDesc", batch.getBatchDesc());
+            dataMap.put("errorBatchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
+            dataMap.put("hiddenErrorBatchType", batch.getBatchType());
+            model.put(StringConstants.DATA, dataMap);
+        }
         return model;
     }
 
@@ -89,15 +93,12 @@ public class ErrorBatchAction extends EditBatchAction {
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final ModelMap model = new ModelMap();
 
-        List<Map<String, Object>> rowList = postBatchService.readPostBatchEntryErrorsByBatchId(batch.getId(), sortInfo);
-        final int totalRows = postBatchService.countPostBatchEntryErrorsByBatchId(batch.getId());
-
         // MetaData
         final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortInfo.getStart(), sortInfo.getLimit());
         final Map<String, String> sortInfoMap = new HashMap<String, String>();
         if ( ! StringUtils.hasText(sortInfo.getSort()) ||
-                (StringConstants.GIFT.equals(batch.getBatchType()) && ( ! sortInfo.getSort().equals(StringConstants.GIFT_ID) || ! sortInfo.getSort().equals("errorMsg"))) ||
-                (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType()) && ( ! sortInfo.getSort().equals(StringConstants.ADJUSTED_GIFT_ID) || ! sortInfo.getSort().equals("errorMsg")))) {
+                (StringConstants.GIFT.equals(batch.getBatchType()) && ( ! sortInfo.getSort().equals(StringConstants.GIFT_ID) && ! sortInfo.getSort().equals("errorMsg"))) ||
+                (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType()) && ( ! sortInfo.getSort().equals(StringConstants.ADJUSTED_GIFT_ID) && ! sortInfo.getSort().equals("errorMsg")))) {
             if (StringConstants.GIFT.equals(batch.getBatchType())) {
                 sortInfo.setSort(StringConstants.GIFT_ID);
             }
@@ -110,9 +111,12 @@ public class ErrorBatchAction extends EditBatchAction {
         sortInfoMap.put(StringConstants.DIRECTION, sortInfo.getDir());
         metaDataMap.put(StringConstants.SORT_INFO, sortInfoMap);
 
+        final List<Map<String, Object>> rowList = postBatchService.readPostBatchEntryErrorsByBatchId(batch.getId(), sortInfo);
+        addUniqueSequenceAsId(rowList);
+        final int totalRows = postBatchService.countPostBatchEntryErrorsByBatchId(batch.getId());
+
         // Fields
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
-        Map<String, Object> fieldMap = new HashMap<String, Object>();
         String idName = null;
         String constituentIdName = null;
 
@@ -125,12 +129,24 @@ public class ErrorBatchAction extends EditBatchAction {
             constituentIdName = "adjustedGiftConstituentId";
         }
         if (idName != null) {
+            Map<String, Object> fieldMap = new HashMap<String, Object>();
             fieldMap.put(StringConstants.NAME, idName);
             fieldMap.put(StringConstants.MAPPING, idName);
             fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
             fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
             fieldList.add(fieldMap);
+        }
 
+        Map<String, Object> fieldMap = new HashMap<String, Object>();
+        idName = TangerineForm.escapeFieldName("errorMsg");
+        fieldMap.put(StringConstants.NAME, idName);
+        fieldMap.put(StringConstants.MAPPING, idName);
+        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
+        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage("errors"));
+        fieldList.add(fieldMap);
+
+        if (constituentIdName != null) {
+            fieldMap = new HashMap<String, Object>();
             fieldMap.put(StringConstants.NAME, constituentIdName);
             fieldMap.put(StringConstants.MAPPING, constituentIdName);
             fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
@@ -138,15 +154,7 @@ public class ErrorBatchAction extends EditBatchAction {
             fieldList.add(fieldMap);
         }
 
-        fieldMap = new HashMap<String, Object>(); // errors
-        idName = TangerineForm.escapeFieldName("errorMsg");
-        fieldMap.put(StringConstants.NAME, idName);
-        fieldMap.put(StringConstants.MAPPING, idName);
-        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage("errors"));
-        fieldList.add(fieldMap);
         metaDataMap.put(StringConstants.FIELDS, fieldList);
-        
         model.put(StringConstants.META_DATA, metaDataMap);
         model.put(StringConstants.TOTAL_ROWS, totalRows);
         model.put(StringConstants.ROWS, rowList);
@@ -230,9 +238,15 @@ public class ErrorBatchAction extends EditBatchAction {
     private void saveBatchDesc(final RequestContext flowRequestContext) {
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         if (batch != null) {
-            final String batchDesc = getRequestParameter(flowRequestContext, "errorBatchDesc");
+            final String batchDesc = getRequestParameter(flowRequestContext, StringConstants.BATCH_DESC);
             batch.setBatchDesc(batchDesc);
         }
     }
 
+    private void addUniqueSequenceAsId(final List<Map<String, Object>> rowList) {
+        for (int x = 0; x < rowList.size(); x++) {
+            final Map<String, Object> rowMap = rowList.get(x);
+            rowMap.put(StringConstants.ID, x);
+        }
+    }
 }

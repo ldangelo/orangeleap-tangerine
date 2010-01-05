@@ -108,10 +108,10 @@ OrangeLeap.msgBundle = {
 
     rowsExecutedErrors: 'The errors listed occurred during the previous execution of the batch',
     noRowsForErrorBatch: 'No rows were found for this batch.',
-    step1ErrorTitle: '<span class="step"><span class="stepNum complete" id="step1Error">1</span><span class="stepTxt">Enter Batch Description</span>',
-    step2ErrorTitle: '<span class="step"><span class="stepNum complete" id="step2Error">2</span><span class="stepTxt">View Rows To Be Updated and Errors</span>',
-    step3ErrorTitle: '<span class="step"><span class="stepNum complete" id="step3Error">3</span><span class="stepTxt">Edit Field Update Criteria</span>',
-    step4ErrorTitle: '<span class="step"><span class="stepNum complete" id="step4Error">4</span><span class="stepTxt">Confirm Changes</span>',
+    step1ErrorTitle: '<span class="step"><span class="stepNum complete" id="errorStep1">1</span><span class="stepTxt">Enter Batch Description</span>',
+    step2ErrorTitle: '<span class="step"><span class="stepNum complete" id="errorStep2">2</span><span class="stepTxt">View Rows To Be Updated and Errors</span>',
+    step3ErrorTitle: '<span class="step"><span class="stepNum complete" id="errorStep3">3</span><span class="stepTxt">Edit Field Update Criteria</span>',
+    step4ErrorTitle: '<span class="step"><span class="stepNum complete" id="errorStep4">4</span><span class="stepTxt">Confirm Changes</span>',
     mustDoStep3Error: 'You must create Field Update Criteria (Step 3) first.'
 };
 
@@ -2473,7 +2473,6 @@ Ext.onReady(function() {
                     if (panel.setActiveGroup(1)) {
                         var firstItem = panel.items.items[1];
                         firstItem.setActiveTab(firstItem.items.items[0]);
-//                        $('#step1Error').addClass('complete');
                     }
                 }
             },
@@ -2507,6 +2506,10 @@ Ext.onReady(function() {
         ]
     });
 
+    function findStepErrorParentId(stepNum) {
+        return $( $('#step1Error').parent('div').siblings().get(stepNum - 2) ).attr('id');
+    }
+
     var errorStep2Store = new OrangeLeap.ListStore({
         url: 'errorBatch.htm',
         reader: new Ext.data.JsonReader(),
@@ -2536,7 +2539,7 @@ Ext.onReady(function() {
                 errorStep2Bar.bindStore(store, true);
             },
             'beforeload': function(store, options) {
-//                maskStep('step3Grp', msgs.loadingRows); TODO
+                Ext.get(findStepErrorParentId(2)).mask(msgs.loadingRows);
             },
             'load': function(store, records, options) {
                 if (records.length > 0) {
@@ -2545,10 +2548,10 @@ Ext.onReady(function() {
                 else {
                     errorStep2Form.nextButton.disable();
                 }
-//                unmaskStep('step3Grp'); TODO
+                Ext.get(findStepErrorParentId(2)).unmask();
             },
             'exception': function(misc) {
-//                unmaskStep('step3Grp'); TODO
+                Ext.get(findStepErrorParentId(2)).unmask();
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep2 });
@@ -2659,7 +2662,6 @@ Ext.onReady(function() {
                     if (panel.setActiveGroup(2)) {
                         var firstItem = panel.items.items[2];
                         firstItem.setActiveTab(firstItem.items.items[0]);
-//                        $('#step2Error').addClass('complete');
                     }
                 }
             },
@@ -2704,13 +2706,13 @@ Ext.onReady(function() {
         listeners: {
             'load': function(store, records, options) {
                 loadUpdatableFields(errorStep3Form, errorStep3Picklists, store, records, options);
-//                unmaskStep('step4Grp'); TODO
+                Ext.get(findStepErrorParentId(3)).unmask();
             },
             'beforeload': function(store, options) {
-//                maskStep('step4Grp', msgs.loading); TODO
+                Ext.get(findStepErrorParentId(3)).mask(msgs.loading);
             },
             'exception': function(misc) {
-//                unmaskStep('step4Grp'); TODO
+                Ext.get(findStepErrorParentId(3)).unmask();
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep3 });
@@ -2761,7 +2763,6 @@ Ext.onReady(function() {
                     if (panel.setActiveGroup(3)) {
                         var firstItem = panel.items.items[3];
                         firstItem.setActiveTab(firstItem.items.items[0]);
-//                        $('#step3Error').addClass('complete');
                     }
                 }
             },
@@ -2801,13 +2802,13 @@ Ext.onReady(function() {
         ],
         listeners: {
             'beforeload': function(store, options) {
-//                maskStep('step5Grp', msgs.loadingRows); TODO
+                Ext.get(findStepErrorParentId(4)).mask(msgs.loadingRows);
             },
             'load': function(store, records, options) {
-//                unmaskStep('step5Grp'); TODO
+                Ext.get(findStepErrorParentId(4)).unmask();
             },
             'exception': function(misc) {
-//                unmaskStep('step5Grp'); TODO
+                Ext.get(findStepErrorParentId(4)).unmask();
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep4 });
@@ -2875,7 +2876,6 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         selModel: errorStep4RowSelect,
-//        viewConfig: { forceFit: true },
         columns: [
             {
                 header: msgs.id,
@@ -2990,7 +2990,7 @@ Ext.onReady(function() {
                          items: [ errorStep1Form ]
                      }],
                      listeners: {
-//                         'afterrender': maskStep1Form TODO
+                         'afterrender': maskErrorStep1Form
                      }
                  },
                  {
@@ -3049,22 +3049,18 @@ Ext.onReady(function() {
         if (currentGroup) {
             if (currentGroup.mainItem.id == 'step1Error') {
                 saveParams = { 'batchDesc': Ext.getCmp('errorBatchDesc').getValue(), 'previousStep': 'step1Error' };
-//                $('#step1Error').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step2Error') {
                 // nothing to save for step2 - view only
                 saveParams = { 'previousStep': 'step2Error' };
-//                $('#step2Error').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step3Error') {
                 findUpdateFields(errorStep3Form.store, saveParams);
                 saveParams['previousStep'] = 'step3Error';
-//                $('#step3Error').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step4Error') {
                 // nothing to save for step4 - view only
                 saveParams = { 'previousStep': 'step4Error' };
-//                $('#step4Error').addClass('complete');
             }
         }
         return saveParams;
@@ -3079,7 +3075,7 @@ Ext.onReady(function() {
 
         if (newGroup.mainItem.id == 'step1Error') {
             errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
-//            maskReviewStep1(); TODO
+            maskErrorStep1Form(); 
 
             jQuery.extend(params, { 'batchId': errorBatchId, '_eventId_errorStep1': 'errorStep1', 'execution': errorFlowExecutionKey },
                     saveParams); // copy properties from {} & saveParams to params
@@ -3089,10 +3085,10 @@ Ext.onReady(function() {
                 'params': params,
                 'success': function(form, action) {
                     errorFlowExecutionKey = action.result.flowExecutionKey;
-//                    unmaskReviewStep1(); TODO
+                    unmaskErrorStep1Form(); 
                 },
                 'failure': function(form, action) {
-//                    unmaskReviewStep1(); TODO
+                    unmaskErrorStep1Form();
                     Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                         buttons: Ext.MessageBox.OK,
                         msg: msgs.errorStep1 });
@@ -3114,6 +3110,20 @@ Ext.onReady(function() {
                 'limit': 20, 'sort': 'id', 'dir': 'ASC' }, saveParams);
             errorStep4Store.load({ 'params': params });
             errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
+        }
+    }
+
+    function maskErrorStep1Form() {
+        var step1ErrorDivId = $('#step1Error').parent('div').attr('id');
+        if (step1ErrorDivId) {
+            Ext.get(step1ErrorDivId).mask(msgs.loading);
+        }
+    }
+
+    function unmaskErrorStep1Form() {
+        var step1ErrorDivId = $('#step1Error').parent('div').attr('id');
+        if (step1ErrorDivId) {
+            Ext.get(step1ErrorDivId).unmask();
         }
     }
 });

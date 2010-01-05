@@ -181,7 +181,7 @@ function text(itemData, elem) {
 function guru(itemData, elem) {
     try {
 
-        var url = '/'+contextPrefix+'jasperserver/fileview/fileview/Reports/' + OrangeLeap.thisSiteName +'/Content_files/'+itemData.url;
+        var url = '/'+contextPrefix+'jasperserver/fileview/fileview/Reports/' + OrangeLeap.thisSiteName +'/Content_files/'+itemData.url+'.html_files/img_0_0_0';
 
         url = url.replace(/amp;/g, "");
         var img = document.createElement("img");

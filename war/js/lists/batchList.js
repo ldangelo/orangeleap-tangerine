@@ -417,10 +417,10 @@ Ext.onReady(function() {
 
     function executeBatch(target) {
         if (OrangeLeap.allowExecute) {
-            var batchId = target.id;
-            if (batchId) {
-                batchId = batchId.replace('execute-link-', '');
-                var rec = store.getById(batchId);
+            var targetBatchId = target.id;
+            if (targetBatchId) {
+                targetBatchId = targetBatchId.replace('execute-link-', '');
+                var rec = store.getById(targetBatchId);
                 // Disallow executes of already executed batches
                 if (rec.get('executed')) {
                     Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
@@ -430,12 +430,12 @@ Ext.onReady(function() {
                 else {
                     Ext.Msg.show({
                         title: msgs.askExecuteBatch,
-                        msg: String.format(msgs.areYouSureExecuteBatch, batchId),
+                        msg: String.format(msgs.areYouSureExecuteBatch, targetBatchId),
                         buttons: Ext.Msg.OKCANCEL,
                         icon: Ext.MessageBox.WARNING,
                         fn: function(btn, text) {
                             if (btn == "ok") {
-                                var recToExecute = store.getById(batchId);
+                                var recToExecute = store.getById(targetBatchId);
                                 if (recToExecute) {
                                     Ext.get('batchList').mask(msgs.executingBatch);
                                     
@@ -473,14 +473,18 @@ Ext.onReady(function() {
                                                     Ext.MessageBox.show({ title: msgs.info, icon: Ext.MessageBox.INFO,
                                                         buttons: Ext.MessageBox.OK, fn: showExecutedMarker, 
                                                         msg: aMsg });
+                                                    if (combo.getValue() == 'errors') {
+                                                        // if on the errors view, reload the store to show the created error batch
+                                                        store.reload();
+                                                    }
                                                 }
                                                 else {
-                                                    showExecutedMarker(batchId);
+                                                    showExecutedMarker(targetBatchId);
                                                 }
                                             }
                                         }
                                     });
-                                    $('#batchExecutor').attr('src', 'executeBatch.json?batchId=' + batchId);
+                                    $('#batchExecutor').attr('src', 'executeBatch.json?batchId=' + targetBatchId);
                                 }
                             }
                         }
@@ -492,7 +496,7 @@ Ext.onReady(function() {
 
     function showExecutedMarker(batchId) {
         hideOtherMarkers('executedMarker');
-        if ( ! batchId || Ext.isEmpty(batchId)) {
+        if ( ! batchId || ! Ext.isNumber(batchId)) {
             $('#executedMarker').text(msgs.executed);
         }
         else {
@@ -518,10 +522,10 @@ Ext.onReady(function() {
 
     function deleteBatch(target) {
         if (OrangeLeap.allowDelete) {
-            var batchId = target.id;
-            if (batchId) {
-                batchId = batchId.replace('delete-link-', '');
-                var rec = store.getById(batchId);
+            var targetBatchId = target.id;
+            if (targetBatchId) {
+                targetBatchId = targetBatchId.replace('delete-link-', '');
+                var rec = store.getById(targetBatchId);
                 // Disallow deletes of executed batches
                 if (rec.get('executed')) {
                     Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
@@ -531,7 +535,7 @@ Ext.onReady(function() {
                 else {
                     Ext.Msg.show({
                         title: msgs.askDeleteBatch,
-                        msg: String.format(msgs.areYouSureDeleteBatch, batchId),
+                        msg: String.format(msgs.areYouSureDeleteBatch, targetBatchId),
                         buttons: Ext.Msg.OKCANCEL,
                         icon: Ext.MessageBox.WARNING,
                         fn: function(btn, text) {
@@ -540,12 +544,12 @@ Ext.onReady(function() {
                                 Ext.Ajax.request({
                                     url: 'deleteBatch.json',
                                     method: 'POST',
-                                    params: { 'batchId': batchId },
+                                    params: { 'batchId': targetBatchId },
                                     success: function(response, options) {
                                         store.remove(rec);
                                         Ext.get('batchList').unmask();
                                         hideOtherMarkers('deletedMarker');
-                                        $('#deletedMarker').text(String.format(msgs.deletedBatchId, batchId));
+                                        $('#deletedMarker').text(String.format(msgs.deletedBatchId, targetBatchId));
                                         $("#deletedMarker").show();
                                         setTimeout(function() {
                                             $("#deletedMarker").hide();

@@ -179,17 +179,31 @@ function text(itemData, elem) {
 }
 
 function guru(itemData, elem) {
-    try {
+
+	try {
 
         var url = '/'+contextPrefix+'jasperserver/fileview/fileview/Reports/' + OrangeLeap.thisSiteName +'/Content_files/'+itemData.url+'.html_files/img_0_0_0';
 
         url = url.replace(/amp;/g, "");
-        var img = document.createElement("img");
-        var aimg = $(img);
-        aimg.attr("src", url);
-        elem.appendChild(aimg.get(0));
+        
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: "",
+            success: function(html){
 
+        		// Only add img tag if image exists.
+        		var img = document.createElement("img");
+        		var aimg = $(img);
+        		aimg.attr("src", url);
+        		elem.appendChild(aimg.get(0));
+
+            	return false;
+            }
+
+        });
 
     } catch (e) {
     }
+    
 }

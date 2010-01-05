@@ -206,6 +206,7 @@
 	<bean id="ruleHelperService" class="com.orangeleap.tangerine.service.rule.RuleHelperService">
 		<property name="userHelper" ref="tangerineUserHelper" />
 		<property name="constituentService" ref="constituentService"/>
+		<property name="emailService" ref="emailSendingService"/>
 	</bean>
     <bean id="tableLogger" class="com.orangeleap.tangerine.util.TableLoggerImpl"/>
 

@@ -19,10 +19,12 @@
 package com.orangeleap.tangerine.service.rule;
 
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.communication.EmailService;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,8 +42,17 @@ public class RuleHelperService {
 
 	private static TangerineUserHelper userHelper;
 	private static ConstituentService constituentService;
+	private static EmailService emailService;
 
-    public ConstituentService getConstituentService() {
+    public  EmailService getEmailService() {
+		return emailService;
+	}
+
+	public  void setEmailService(EmailService emailService) {
+		this.emailService = emailService;
+	}
+
+	public ConstituentService getConstituentService() {
 		return constituentService;
 	}
 
@@ -56,7 +67,7 @@ public class RuleHelperService {
 	public void setUserHelper(TangerineUserHelper userHelper) {
 		this.userHelper = userHelper;
 	}
-	
+
 	public static String trimToNull(String str) {
 		return StringUtils.trimToNull(str);
 	}
@@ -235,7 +246,32 @@ public class RuleHelperService {
         return numberOfMatches;
     }
 
-    private static Boolean isDuplicate(Constituent p, String dupDetectCriteria) {
+
+    public static boolean analyzeMonthlyDonor(Constituent constituent, int numberOfMatches, int numberOfMonths) {
+
+    	int numMatches = 0;
+
+    	List<Gift> gifts = constituent.getGifts();
+
+    	// Cycle through the last x months
+    	for (int i = 0; i < numberOfMonths; i++) {
+    		// For each gift
+    		for (Gift g : gifts) {
+    			// If there is a gift in month x, add to number of matches
+    			if((g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i)))) {
+    				numMatches += 1;
+    				if(numberOfMatches == numMatches) {
+    					return true;
+    				}
+    				break;
+    			}
+    		}
+    	}
+    	return false;
+    }
+
+
+    public static Boolean isDuplicate(Constituent p, String dupDetectCriteria) {
    		Map<String,Object> params = new HashMap<String, Object>();
     	List<Long> ignoreIds = new ArrayList<Long>();
     	long ignoreId = p.getId();
@@ -315,5 +351,28 @@ public class RuleHelperService {
 }
 
 
+    /**
+     * Used by the groovy rule consequences to call the email sending service.
+     * @param addresses
+     * @param constituent
+     * @param gift
+     * @param subject
+     * @param templateName
+     * @param selectedEmails
+     */
+    public static void sendMail(String addresses, Constituent constituent, Gift gift, String subject, String templateName, List<Email> selectedEmails) {
+    	emailService.sendMail(addresses,constituent,gift,subject,templateName, null);
+    }
+
+    /**
+     * Used by the groovy rule consequences to call the email sending service.
+     * @param constituent
+     * @param gift
+     * @param subject
+     * @param templateName
+     */
+    public static void sendMail(Constituent p, Gift g, String subject, String templateName) {
+    	emailService.sendMail(p,  g,  null, null, new HashMap<String, String>(), subject,  templateName);
+    }
 
 }

@@ -282,13 +282,8 @@ Ext.onReady(function() {
             {text: 'Undo', cls: 'button', ref: '../undoButton', disabled: true,
                 disabledClass: 'disabledButton',
                 handler: function() {
-                    var thisGrid = Ext.get('managerGrid');
-                    thisGrid.mask("Undoing...");
-                    store.rejectChanges();
-                    $("#savedMarker").css('visibility', 'hidden');
-                    grid.saveButton.disable();
-                    grid.undoButton.disable();
-                    thisGrid.unmask();
+            		store.rejectChanges();
+            		window.location.reload();
                 }
             }
         ],

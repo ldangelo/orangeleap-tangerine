@@ -59,6 +59,7 @@ public class PostBatch extends AbstractCustomizableEntity  {
     /** A pointer to a batch that contains the errored rows that used to be in this batch, if any */
     private Long errorBatchId;
     private String siteName;
+    private boolean currentlyExecuting;
     private Date createDate;
     private Date updateDate;
 
@@ -188,6 +189,14 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
+    }
+
+    public boolean isCurrentlyExecuting() {
+        return currentlyExecuting;
+    }
+
+    public void setCurrentlyExecuting(boolean currentlyExecuting) {
+        this.currentlyExecuting = currentlyExecuting;
     }
 
     public Date getCreateDate() {

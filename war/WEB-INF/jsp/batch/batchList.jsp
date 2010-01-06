@@ -4,10 +4,6 @@
         <head>
             <title><spring:message code='batches'/></title>
         </head>
-        <body>
-            <%-- Use an iframe for now until we support asynchronous executions; iframes will not timeout for long requests like an ajax request will --%> 
-            <iframe id="batchExecutor" style="display:none"></iframe>
-        </body>
     </html>
     <page:param name="scripts">
         <script type="text/javascript">

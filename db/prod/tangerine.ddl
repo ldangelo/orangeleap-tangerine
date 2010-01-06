@@ -994,6 +994,7 @@ CREATE TABLE `POST_BATCH` (
 `POSTED_DATE` datetime default NULL,
 `SITE_NAME` varchar(255) NOT NULL,
 `IS_ERROR_BATCH` char(1) NOT NULL default '0',
+`IS_CURRENTLY_EXECUTING` char(1) NOT NULL default '0',
 `ERROR_BATCH_ID` bigint(20) default NULL,
 `CREATE_DATE` datetime default NULL,
 `UPDATE_DATE` datetime default NULL,

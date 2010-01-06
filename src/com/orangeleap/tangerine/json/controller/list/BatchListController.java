@@ -55,6 +55,7 @@ public class BatchListController extends TangerineJsonListController {
     public static final String BATCH_TYPE = "batchType";
     public static final String BATCH_DESC = "batchDesc";
     public static final String EXECUTED = "executed";
+    public static final String CURRENTLY_EXECUTING = "currentlyExecuting";
     public static final String EXECUTED_DATE = "executedDate";
     public static final String EXECUTED_BY_USER = "executedByUser";
     public static final String CREATE_DATE = "createDate";
@@ -71,6 +72,7 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(BATCH_TYPE);
         fields.add(BATCH_DESC);
         fields.add(CREATE_DATE);
+        fields.add(CURRENTLY_EXECUTING); // must be 2nd to last
         fields.add(EXECUTED); // must be last
         openBatchFields = UnmodifiableSet.decorate(fields);
 
@@ -90,6 +92,7 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(BATCH_TYPE);
         fields.add(BATCH_DESC);
         fields.add(CREATE_DATE);
+        fields.add(CURRENTLY_EXECUTING); // must be 2nd to last
         fields.add(EXECUTED); // must be last
         errorBatchFields = UnmodifiableSet.decorate(fields);
     }
@@ -97,7 +100,7 @@ public class BatchListController extends TangerineJsonListController {
     @SuppressWarnings("unchecked")
     @RequestMapping("/batchList.json")
     public ModelMap getBatchList(HttpServletRequest request, String showBatchStatus, SortInfo sortInfo) {
-        checkAccess(request, PageType.batch);
+        checkAccess(request, PageType.batch); // TODO: move to annotation
         final ModelMap model = new ModelMap();
         checkSortKey(sortInfo, showBatchStatus);
         setupMetaData(model, showBatchStatus, sortInfo);
@@ -155,7 +158,7 @@ public class BatchListController extends TangerineJsonListController {
                 (StringConstants.EXECUTED.equals(showBatchStatus) && ! executedBatchFields.contains(sort.getSort())) ||
                 (StringConstants.ERRORS.equals(showBatchStatus) && ! errorBatchFields.contains(sort.getSort()))) {
             sort.setSort(StringConstants.ID);
-            sort.setDir("ASC");
+            sort.setDir(StringConstants.ASC);
         }
     }
 
@@ -173,7 +176,7 @@ public class BatchListController extends TangerineJsonListController {
             if (StringConstants.ID.equals(thisFieldName)) {
                 extType = ExtTypeHandler.EXT_INT;
             }
-            else if (EXECUTED.equals(thisFieldName)) {
+            else if (EXECUTED.equals(thisFieldName) || CURRENTLY_EXECUTING.equals(thisFieldName)) {
                 extType = ExtTypeHandler.EXT_BOOLEAN;
             }
             else if (EXECUTED_DATE.equals(thisFieldName) || CREATE_DATE.equals(thisFieldName)) {

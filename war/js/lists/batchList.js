@@ -31,8 +31,11 @@ OrangeLeap.msgBundle = {
     areYouSureDeleteBatch: 'Are you sure you want to delete batch ID <strong>{0}</strong>?',
     areYouSureExecuteBatch: 'Are you sure you want to execute batch ID <strong>{0}</strong>?',
     cannotDeleteExecutedBatch: 'You cannot delete an executed batch.',
+    cannotDeleteExecutingBatch: 'You cannot delete a batch whose execution is currently in progress.',
     cannotExecuteExecutedBatch: 'You cannot execute an already executed batch.',
+    cannotExecuteExecutingBatch: 'You cannot execute a batch whose execution is currently in progress.',
     cannotExecuteBatchCorrectErrors: 'This batch cannot be executed until the following errors are corrected: ',
+    batchExecutionInProgressView: 'This batch is currently executing and can be viewed after execution completes.',
     id: 'ID',
     batchId: 'Batch ID',
     type: 'Type',
@@ -43,6 +46,7 @@ OrangeLeap.msgBundle = {
     creationDate: 'Creation Date',
     userId: 'User ID',
     executeBatch: 'Execute Batch',
+    executionInProgress: 'Batch Execution in Progress',
     removeBatch: 'Remove Batch',
     executed: 'Executed',
     batchList: 'Batch List <span id="savedMarker" class="marker">Saved</span> <span id="executedMarker" class="marker"></span> <span id="deletedMarker" class="marker"></span>',
@@ -146,8 +150,8 @@ Ext.onReady(function() {
 
                 for (var x = 0; x < fields.length; x++) {
                     var name = fields[x].name;
-                    // Do not have a column for 'executed' displayed
-                    if (name != 'executed') {
+                    // Do not have a displayed column for 'executed' or 'currentlyExecuting'
+                    if (name != 'executed' && name != 'currentlyExecuting') {
                         var hdr = fields[x].header;
                         cols[cols.length] = {
                             header: hdr, dataIndex: name, sortable: true,
@@ -162,8 +166,11 @@ Ext.onReady(function() {
                     /* Add the 'actions' column for not executed batches */
                     cols[cols.length] = { header: ' ', width: 50, menuDisabled: true, fixed: false, hideable: false, css: 'cursor:default;', id: 'actions',
                         renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                            if ( ! record.get('executed')) {
-                                var html = '';
+                            var html = '';
+                            if (record.get('currentlyExecuting')) {
+                                html += "<center><img src='images/icons/lock.png' style='width: 16px; height: 16px; border: 0' title='" + msgs.executionInProgress + "' alt='" + msgs.executionInProgress + "'/></center>";
+                            }
+                            else if ( ! record.get('executed')) {
                                 // Since IE7 does not support inline-block, wrap a table around the <a> links
                                 if ((OrangeLeap.allowExecute || OrangeLeap.allowDelete) && Ext.isIE7) {
                                     html += '<table><tr>';
@@ -194,9 +201,8 @@ Ext.onReady(function() {
                                 if ((OrangeLeap.allowExecute || OrangeLeap.allowDelete) && Ext.isIE7) {
                                     html += '</tr></table>';
                                 }
-                                return html;
                             }
-                            return '';
+                            return html;
                         }
                     }
                 }
@@ -354,6 +360,10 @@ Ext.onReady(function() {
                         reviewBatchId = rec.get('id');
                         showModal(reviewBatchWin);
                     }
+                    else if (rec.get('currentlyExecuting')) {
+                        Ext.MessageBox.show({ title: msgs.info, icon: Ext.MessageBox.INFO,
+                            buttons: Ext.MessageBox.OK, msg: msgs.batchExecutionInProgressView });
+                    }
                     else {
                         if (combo.getValue() == 'errors') {
                             errorBatchId = rec.get('id');
@@ -450,6 +460,11 @@ Ext.onReady(function() {
                         buttons: Ext.MessageBox.OK,
                         msg: msgs.cannotExecuteExecutedBatch });
                 }
+                else if (rec.get('currentlyExecuting')) {
+                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.MessageBox.OK,
+                        msg: msgs.cannotExecuteExecutingBatch});
+                }
                 else {
                     Ext.Msg.show({
                         title: msgs.askExecuteBatch,
@@ -461,53 +476,64 @@ Ext.onReady(function() {
                                 var recToExecute = store.getById(targetBatchId);
                                 if (recToExecute) {
                                     Ext.get('batchList').mask(msgs.executingBatch);
-                                    
-                                    $('#batchExecutor').load(function() {
-                                        Ext.get('batchList').unmask();
-                                        var returnObj = Ext.decode( $( $(this).get(0).contentWindow.document.body ).text());
-                                        if ( ! returnObj) {
+
+                                    Ext.Ajax.request({
+                                        url: 'executeBatch.json',
+                                        method: 'POST',
+                                        params: { 'batchId': targetBatchId },
+                                        timeout: 14400000, // timeout to execute batch is 4 hours (4h * 60m * 60s * 1000ms) 
+                                        success: function(response, options) {
+                                            Ext.get('batchList').unmask();
+                                            var returnObj = Ext.decode(response.responseText);
+                                            if ( ! returnObj) {
+                                                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                                                    buttons: Ext.MessageBox.OK,
+                                                    msg: msgs.errorBatchExecute });
+                                            }
+                                            else {
+                                                if (returnObj.hasBatchErrors) {
+                                                    var thisMsg = msgs.cannotExecuteBatchCorrectErrors;
+                                                    if (returnObj.errorMsgs) {
+                                                        var len = returnObj.errorMsgs.length;
+                                                        thisMsg += '<ul class="listable">';
+                                                        for (var x = 0; x < len; x++) {
+                                                            var thisErrorMsg = returnObj.errorMsgs[x];
+                                                            thisErrorMsg = thisErrorMsg.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+                                                            thisMsg += '<li>' + thisErrorMsg + '</li>';
+                                                        }
+                                                        thisMsg += '</ul>';
+                                                    }
+                                                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                                                        buttons: Ext.MessageBox.OK,
+                                                        msg: thisMsg });
+                                                }
+                                                else {
+                                                    store.remove(recToExecute);
+
+                                                    // no batch errors; check if any errors occurred in the batch entries themselves and an error batch was created
+                                                    if (returnObj.errorBatchId && Ext.isNumber(returnObj.errorBatchId)) {
+                                                        var aMsg = String.format(msgs.batchExecutedWithErrorBatchCreated, returnObj.errorBatchId);
+                                                        Ext.MessageBox.show({ title: msgs.info, icon: Ext.MessageBox.INFO,
+                                                            buttons: Ext.MessageBox.OK, fn: showExecutedMarker,
+                                                            msg: aMsg });
+                                                        if (combo.getValue() == 'errors') {
+                                                            // if on the errors view, reload the store to show the created error batch
+                                                            store.reload();
+                                                        }
+                                                    }
+                                                    else {
+                                                        showExecutedMarker(targetBatchId);
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        failure: function(response, options) {
+                                            Ext.get('batchList').unmask();
                                             Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                                                 buttons: Ext.MessageBox.OK,
                                                 msg: msgs.errorBatchExecute });
                                         }
-                                        else {
-                                            if (returnObj.hasBatchErrors) {
-                                                var thisMsg = msgs.cannotExecuteBatchCorrectErrors;
-                                                if (returnObj.errorMsgs) {
-                                                    var len = returnObj.errorMsgs.length;
-                                                    thisMsg += '<ul class="listable">';
-                                                    for (var x = 0; x < len; x++) {
-                                                        var thisErrorMsg = returnObj.errorMsgs[x];
-                                                        thisErrorMsg = thisErrorMsg.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
-                                                        thisMsg += '<li>' + thisErrorMsg + '</li>';
-                                                    }
-                                                    thisMsg += '</ul>';
-                                                }
-                                                Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                                                    buttons: Ext.MessageBox.OK,
-                                                    msg: thisMsg });
-                                            }
-                                            else {
-                                                store.remove(recToExecute);
-
-                                                // no batch errors; check if any errors occurred in the batch entries themselves and an error batch was created
-                                                if (returnObj.errorBatchId && Ext.isNumber(returnObj.errorBatchId)) {
-                                                    var aMsg = String.format(msgs.batchExecutedWithErrorBatchCreated, returnObj.errorBatchId);
-                                                    Ext.MessageBox.show({ title: msgs.info, icon: Ext.MessageBox.INFO,
-                                                        buttons: Ext.MessageBox.OK, fn: showExecutedMarker, 
-                                                        msg: aMsg });
-                                                    if (combo.getValue() == 'errors') {
-                                                        // if on the errors view, reload the store to show the created error batch
-                                                        store.reload();
-                                                    }
-                                                }
-                                                else {
-                                                    showExecutedMarker(targetBatchId);
-                                                }
-                                            }
-                                        }
                                     });
-                                    $('#batchExecutor').attr('src', 'executeBatch.json?batchId=' + targetBatchId);
                                 }
                             }
                         }
@@ -547,6 +573,11 @@ Ext.onReady(function() {
                     Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                         buttons: Ext.MessageBox.OK,
                         msg: msgs.cannotDeleteExecutedBatch });
+                }
+                else if (rec.get('currentlyExecuting')) {
+                    Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.MessageBox.OK,
+                        msg: msgs.cannotDeleteExecutingBatch});
                 }
                 else {
                     Ext.Msg.show({

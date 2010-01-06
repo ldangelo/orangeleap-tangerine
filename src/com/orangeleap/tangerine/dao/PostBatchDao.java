@@ -40,4 +40,6 @@ public interface PostBatchDao {
     List<Map<String, Object>> readPostBatchEntryErrorsByBatchId(Long postBatchId, String sortPropertyName, String dir, int start, int limit);
 
     int countPostBatchEntryErrorsByBatchId(Long postBatchId);
+
+    void updateBatchCurrentlyExecuting(PostBatch batch);
 }

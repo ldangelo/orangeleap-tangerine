@@ -90,7 +90,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
     @Override
     public PostBatch readPostBatchById(Long postBatchId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readPostBatchById: postBatchId = " + postBatchId);
+            logger.trace("readPostBatchById: batchId = " + postBatchId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.ID, postBatchId);
@@ -105,7 +105,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
     public List<Map<String, Object>> readPostBatchEntryErrorsByBatchId(Long postBatchId, String sortPropertyName,
                                                                        String dir, int start, int limit) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readPostBatchEntryErrorsByBatchId: postBatchId = " + postBatchId + " sortPropertyName = " +
+            logger.trace("readPostBatchEntryErrorsByBatchId: batchId = " + postBatchId + " sortPropertyName = " +
                 sortPropertyName + " dir = " + dir + " start = " + start + " limit = " + limit);
         }
         Map<String, Object> params = setupParams();
@@ -121,7 +121,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
     @Override
     public int countPostBatchEntryErrorsByBatchId(Long postBatchId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("countPostBatchEntryErrorsByBatchId: postBatchId = " + postBatchId);
+            logger.trace("countPostBatchEntryErrorsByBatchId: batchId = " + postBatchId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.ID, postBatchId);
@@ -131,7 +131,7 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
 	@Override
 	public PostBatch maintainPostBatch(PostBatch batch) {
 		if (logger.isTraceEnabled()) {
-			logger.trace("maintainPostBatch: postBatchId = " + batch.getId());
+			logger.trace("maintainPostBatch: batchId = " + batch.getId());
 		}
         /* Delete PostBatchEntries first if the batch is being edited */
         if ( ! batch.isNew()) {
@@ -143,6 +143,14 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         maintainPostBatchEntries(batch);
         return batch;
 	}
+
+    @Override
+    public void updateBatchCurrentlyExecuting(PostBatch batch) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateBatchCurrentlyExecuting: batchId = " + batch.getId());
+        }
+        getSqlMapClientTemplate().update("UPDATE_POST_BATCH_CURRENTLY_EXECUTING", batch);
+    }
 
     /**
      * Delete the existing PostBatchEntries if any, and insert again

@@ -261,6 +261,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         if (logger.isTraceEnabled()) {
             logger.trace("executeBatch: batchId = " + batch.getId());
         }
+        /* First, set a flag that the batch is currently executing */
+        batch.setCurrentlyExecuting(true);
+        postBatchDao.updateBatchCurrentlyExecuting(batch);
 
         List<? extends AbstractCustomizableEntity> entries = null;
         Set<Long> segmentationIds = batch.getEntrySegmentationIds();
@@ -326,6 +329,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
         batch.setAnErrorBatch(false);  // if this was an error batch, just set to an executed batch instead
         batch.setExecutionFields(thisUserId);
+
+        batch.setCurrentlyExecuting(false); // reset to not executing anymore
         return postBatchDao.maintainPostBatch(batch);
     }
 
@@ -337,7 +342,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         if (batch != null) {
             batch.clearUpdateErrors();
 
-            if (batch.isExecuted()) {
+            if (batch.isCurrentlyExecuting()) {
+                batch.addUpdateError(TangerineMessageAccessor.getMessage("errorBatchCurrentlyExecuting"));
+            }
+            else if (batch.isExecuted()) {
                 batch.addUpdateError(TangerineMessageAccessor.getMessage("errorBatchExecuted"));
             }
             else {

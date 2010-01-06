@@ -8,11 +8,11 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
-import com.orangeleap.tangerine.dao.ConstituentDao;
-import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
@@ -40,12 +40,12 @@ public class CommunicationHistoryRulesInterceptor implements ApplicationContextA
 		
 		Constituent constituent = communicationHistory.getConstituent();
 		if (constituent == null && communicationHistory.getConstituentId() != null) {
-			constituent = ((ConstituentDao)applicationContext.getBean("constituentDAO")).readConstituentById(communicationHistory.getConstituentId());
+			constituent = ((ConstituentService)applicationContext.getBean("constituentService")).readConstituentById(communicationHistory.getConstituentId());
 		}
 		olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
 		
 		if (communicationHistory.getGiftId() != null && !communicationHistory.getGiftId().equals(0)) {
-			Gift gift = ((GiftDao)applicationContext.getBean("giftDAO")).readGiftById(communicationHistory.getGiftId());
+			Gift gift = ((GiftService)applicationContext.getBean("giftService")).readGiftById(communicationHistory.getGiftId());
 			olWorkingMemory.put(RuleObjectType.GIFT, gift);
 		}
 

@@ -261,7 +261,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     private synchronized void writeRulesFailureLog(String message) {
         try {
 
-            errorLogService.addErrorMessage(message, "gift.rules");
+            errorLogService.addErrorMessage(message, "constituent.rules");
 
         } catch (Exception e) {
             logger.error("Unable to write to rules error log file: " + message);

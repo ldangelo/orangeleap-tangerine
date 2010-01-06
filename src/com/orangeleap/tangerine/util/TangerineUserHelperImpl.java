@@ -127,7 +127,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     @Override
     public String getSiteOptionByName(String name) {
     	Map<String, String> soMap = this.getSiteOptionsMap();
-    	return soMap.get(name).toString();
+    	return soMap.get(name);
 
     	//return ((SiteService)applicationContext.getBean("siteService")).getSiteOptionById(id).getOptionValue().toString();
     }

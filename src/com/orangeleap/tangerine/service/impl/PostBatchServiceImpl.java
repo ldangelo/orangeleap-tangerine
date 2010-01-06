@@ -256,15 +256,20 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
+    public void updateBatchCurrentlyExecutingTrue(PostBatch batch) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateBatchCurrentlyExecutingTrue: batchId = " + batch.getId());
+        }
+        batch.setCurrentlyExecuting(true);
+        postBatchDao.updateBatchCurrentlyExecuting(batch);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public PostBatch executeBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {
             logger.trace("executeBatch: batchId = " + batch.getId());
         }
-        /* First, set a flag that the batch is currently executing */
-//        batch.setCurrentlyExecuting(true);
-//        postBatchDao.updateBatchCurrentlyExecuting(batch);
-
         List<? extends AbstractCustomizableEntity> entries = null;
         Set<Long> segmentationIds = batch.getEntrySegmentationIds();
         if (StringConstants.GIFT.equals(batch.getBatchType())) {

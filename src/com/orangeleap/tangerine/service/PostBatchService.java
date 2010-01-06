@@ -55,4 +55,6 @@ public interface PostBatchService {
     List<Map<String, Object>> readPostBatchEntryErrorsByBatchId(Long postBatchId, SortInfo sortInfo);
 
     int countPostBatchEntryErrorsByBatchId(Long postBatchId);
+
+    void updateBatchCurrentlyExecutingTrue(PostBatch batch);
 }

@@ -66,6 +66,7 @@ public class ExecuteBatchController extends TangerineJsonListController {
         }
 
         if (errorMsgs.isEmpty()) {
+            postBatchService.updateBatchCurrentlyExecutingTrue(batch);
             // allow execution of the batch if no errors are found
             PostBatch executedBatch = postBatchService.executeBatch(batch);
             if (executedBatch.getErrorBatchId() != null && executedBatch.getErrorBatchId() > 0) {

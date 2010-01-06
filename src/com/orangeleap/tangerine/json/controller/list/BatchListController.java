@@ -157,8 +157,13 @@ public class BatchListController extends TangerineJsonListController {
         if ((StringConstants.OPEN.equals(showBatchStatus) && ! openBatchFields.contains(sort.getSort())) ||
                 (StringConstants.EXECUTED.equals(showBatchStatus) && ! executedBatchFields.contains(sort.getSort())) ||
                 (StringConstants.ERRORS.equals(showBatchStatus) && ! errorBatchFields.contains(sort.getSort()))) {
-            sort.setSort(StringConstants.ID);
-            sort.setDir(StringConstants.ASC);
+            if (StringConstants.EXECUTED.equals(showBatchStatus)) {
+                sort.setSort(EXECUTED_DATE);
+            }
+            else {
+                sort.setSort(CREATE_DATE);
+            }
+            sort.setDir(StringConstants.DESC);
         }
     }
 

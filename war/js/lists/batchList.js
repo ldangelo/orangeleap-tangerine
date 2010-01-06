@@ -293,6 +293,7 @@ Ext.onReady(function() {
             state.direction = 'DESC';
         }
         store.load( { params: { showBatchStatus: showBatchStatusVal, start: 0, limit: 100, sort: state.field, dir: state.direction } });
+        Ext.state.Manager.set('showBatchStatus', showBatchStatusVal);
     });
 
     var grid = new Ext.grid.GridPanel({
@@ -403,13 +404,18 @@ Ext.onReady(function() {
         renderTo: 'managerGrid'
     });
 
+    var prevShowBatchStatus = Ext.state.Manager.get('showBatchStatus');
+    if ( ! prevShowBatchStatus) {
+        prevShowBatchStatus = 'open';
+    }
+
     if (OrangeLeap.allowCreate) {
         var toolbar = grid.getTopToolbar();
         toolbar.addSpacer();
         toolbar.addSeparator();
         toolbar.addSpacer();
         toolbar.addButton({ text: msgs.addNew, tooltip: msgs.addNewBatch,
-            iconCls:'add', id: 'addButton', ref: '../addButton',
+            iconCls:'add', id: 'addButton', ref: '../addButton', disabled: prevShowBatchStatus != 'open',
             handler: function() {
                 batchID = null;
                 showModal(editBatchWin);
@@ -418,7 +424,8 @@ Ext.onReady(function() {
     }
 
     var sortDir = 'DESC';
-    var sortProp = 'createDate';
+    var sortProp = prevShowBatchStatus == 'executed' ? 'executedDate' : 'createDate';
+    
     var pageStart = 0;
     var pageLimit = 100;
     if (grid.sortParams) {
@@ -439,10 +446,9 @@ Ext.onReady(function() {
     store.sortToggle[sortProp] = sortDir;
     store.sortInfo = { field: sortProp, direction: sortDir };
 
-    // When the page loads, show the Open Batches first  TODO: use previous selection of executed, errors, etc
-    store.load( { params: { showBatchStatus: 'open', start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir },
+    store.load( { params: { showBatchStatus: prevShowBatchStatus, start: pageStart, limit: pageLimit, sort: sortProp, dir: sortDir },
         callback: function(rec, options, success) {
-            combo.setValue('open');
+            combo.setValue(prevShowBatchStatus);
             var thisView = grid.getView();
             if (thisView.prevScrollState) {
                 thisView.restoreScroll(thisView.prevScrollState);

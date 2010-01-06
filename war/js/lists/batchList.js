@@ -344,7 +344,7 @@ Ext.onReady(function() {
         columns: [
             { header: msgs.id, dataIndex: 'id', width: 40, sortable: true }
         ],
-        sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+        sm: new Ext.grid.RowSelectionModel({ singleSelect: true }),
 //        viewConfig: { forceFit: true },
         height: 600,
         width: 780,
@@ -353,7 +353,9 @@ Ext.onReady(function() {
         title: msgs.batchList,
         loadMask: true,
         listeners: {
-            rowdblclick: function(grid, row, evt) {
+            rowdblclick: function(grid, rowIndex, evt) {
+                removeGridRowHighlighting();
+                grid.getView().onRowSelect(rowIndex);
                 if (OrangeLeap.allowCreate) {
                     var rec = grid.getSelectionModel().getSelected();
                     if (rec.get('executed')) {
@@ -616,6 +618,12 @@ Ext.onReady(function() {
         }
     }
 
+    function removeGridRowHighlighting() {
+        $('#batchList .' + grid.getView().selectedRowClass).each(function() {
+            $(this).removeClass(grid.getView().selectedRowClass); // remove previous row highlighting
+        });
+    }
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* The following are the for the create/edit batch modal window */
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1878,9 +1886,7 @@ Ext.onReady(function() {
                     callback: function() {
                         var obj = Ext.decode(responseText);
                         if (obj && obj.batchId) {
-                            $('#batchList .' + grid.getView().selectedRowClass).each(function() {
-                                $(this).removeClass(grid.getView().selectedRowClass); // remove previous row highlighting
-                            });
+                            removeGridRowHighlighting();
                             var recIndex = store.indexOfId(obj.batchId);
                             if (recIndex > -1) {
                                 grid.getView().onRowSelect(recIndex);

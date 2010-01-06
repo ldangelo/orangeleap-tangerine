@@ -17,8 +17,6 @@ public class OrangeLeapRuleSession {
 
 		protected final Log logger = OLLogger.getLog(getClass());
 		
-		private static final boolean enableRules = "true".equalsIgnoreCase(System.getProperty("orangeleap.enable.db.rules.processing"));
-
 		private OrangeLeapRuleBase orangeLeapRuleBase;
 
 		private Map<String, Object> map = new TreeMap<String, Object>();
@@ -28,13 +26,11 @@ public class OrangeLeapRuleSession {
 		}
 
 		public void put(RuleObjectType type, Object object) {
-			map.put(type.getType(), object);
+			if (object != null) map.put(type.getType(), object);
 		}
 
 		public void executeRules() {
 			
-			//if (!enableRules) return;
-
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
 			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventNameType();
 	        boolean reentrant = RulesStack.push(operation);

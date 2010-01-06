@@ -33,7 +33,7 @@ public class OrangeLeapRuleSession {
 
 		public void executeRules() {
 			
-			if (!enableRules) return;
+			//if (!enableRules) return;
 
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
 			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventNameType();

@@ -51,10 +51,14 @@
     <gateway id="newConstituent" service-interface="com.orangeleap.tangerine.integration.NewConstituent"/>
 
     <gateway id="newGift" service-interface="com.orangeleap.tangerine.integration.NewGift"/>
+    
+    <gateway id="newCommunicationHistory" service-interface="com.orangeleap.tangerine.integration.NewCommunicationHistory"/>
+    
     <!--  <gateway id="newConstituent" service-interface="com.orangeleap.tangerine.integration.NewConstituent"/>
  <gateway id="newAddress" service-interface="com.orangeleap.tangerine.integration.NewAddress"/> -->
 
     <channel id="newGiftChannel"/>
+    <channel id="newCommunicationHistoryChannel"/>
     <channel id="newConstituentChannel"/>
     <channel id="newAddressChannel"/>
     <channel id="gift_drools_channel"/>
@@ -75,6 +79,8 @@
     <service-activator input-channel="gift_drools_channel" ref="GiftDrools" method="doApplyRules"/>
     <service-activator input-channel="payment_drools_channel" ref="PaymentDrools" method="doApplyRules"/>
     <service-activator input-channel="constituent_drools_channel" ref="ConstituentDrools" method="doApplyRules"/>
+    <service-activator input-channel="communicationHistory_drools_channel" ref="CommunicationHistoryDrools" method="doApplyRules"/>
+
     <!--  <service-activator input-channel="constituent_drools_channel" ref="ConstituentDrools" method="doApplyRules"/> -->
 
     <!--<router id="routerEndpoint" input-channel="newGiftChannel" ref="giftRouter"/>
@@ -90,6 +96,11 @@
         <recipient channel="payment_drools_channel"/>
         <recipient channel="gift_drools_channel"/>
         <recipient channel="gift_transformer"/>
+    </recipient-list-router>
+
+    <recipient-list-router id="communicationHistoryRouter" input-channel="newCommunicationHistoryChannel">
+        <recipient channel="communicationHistory_drools_channel"/>
+        <!-- <recipient channel="communicationHistory_transformer"/> -->
     </recipient-list-router>
 
     <transformer input-channel="constituent_transformer" output-channel="constituent_marshalling_transformer"
@@ -126,6 +137,8 @@
     <beans:bean id="PaymentDrools" class="com.orangeleap.tangerine.service.rule.PaymentRulesInterceptor"/>
 
     <beans:bean id="ConstituentDrools" class="com.orangeleap.tangerine.service.rule.ConstituentRulesInterceptor"/>
+
+    <beans:bean id="CommunicationHistoryDrools" class="com.orangeleap.tangerine.service.rule.CommunicationHistoryRulesInterceptor"/>
 
     <beans:bean id="emailInterceptor" class="com.orangeleap.tangerine.service.rule.EmailRulesInterceptor">
         <beans:property name="agendaGroup" value="email"/>

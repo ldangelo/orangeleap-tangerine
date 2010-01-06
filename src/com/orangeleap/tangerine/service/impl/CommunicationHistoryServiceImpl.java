@@ -18,17 +18,15 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
-import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.service.AuditService;
-import com.orangeleap.tangerine.service.CommunicationHistoryService;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,13 +34,22 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Locale;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.integration.NewCommunicationHistory;
+import com.orangeleap.tangerine.service.AuditService;
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.RulesStack;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("communicationHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class CommunicationHistoryServiceImpl extends AbstractTangerineService implements CommunicationHistoryService {
+public class CommunicationHistoryServiceImpl extends AbstractTangerineService implements CommunicationHistoryService, ApplicationContextAware {
 
     /**
      * Logger for this class and subclasses
@@ -61,6 +68,12 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
     @Resource(name = "communicationHistoryEntityValidator")
     protected EntityValidator entityValidator;
 
+    private ApplicationContext context;
+
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+        context = applicationContext;
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
@@ -90,9 +103,44 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
         }
         CommunicationHistory savedHistory = communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
         auditService.auditObject(savedHistory, communicationHistory.getConstituent());
+        
+        routeCommunicationHistory(savedHistory);
+        
         return savedHistory;
     }
 
+    
+    private final static String ROUTE_METHOD = "CommunicationHistoryServiceImpl.routeCommunicationHistory";
+
+    private void routeCommunicationHistory(CommunicationHistory communicationHistory) {
+
+    	boolean wasRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
+
+        boolean reentrant = RulesStack.push(ROUTE_METHOD);
+        try {
+
+        	if (!reentrant){
+            	try {
+            		NewCommunicationHistory newCommunicationHistory = (NewCommunicationHistory) context.getBean("newCommunicationHistory");
+                    newCommunicationHistory.routeCommunicationHistory(communicationHistory);
+                }
+                catch (Exception ex) {
+                    logger.error("RULES_FAILURE: CommunicationHistory -" + ex.getMessage(), ex);
+                }
+        	}
+        } finally {
+            RulesStack.pop(ROUTE_METHOD);
+        }
+
+    	boolean isRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
+
+    	if (!wasRollbackOnly && isRollbackOnly) {
+    		logger.error("Rules processing caused transaction rollback for communicationHistory "+communicationHistory.getId());
+    	}
+
+    }
+    
+    
     @Override
     public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId) {
         if (logger.isTraceEnabled()) {

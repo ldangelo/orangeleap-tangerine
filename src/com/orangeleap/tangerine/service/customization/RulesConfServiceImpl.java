@@ -144,6 +144,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	rgc.setGeneratedCodeText(generateCode(rulesEventNameType, testMode));
     	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
         ruleGeneratedCodeCache.removeAll();
+        resetGroovyObjectCache();
         cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
     }
     
@@ -153,16 +154,19 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 		try {
         	orangeleapJmxNotificationBean.incrementStatCount(tangerineUserHelper.lookupUserSiteName(), OrangeleapJmxNotificationBean.RULE_CACHE_ATTEMPTS);
 		    String key = buildCacheKey(rulesEventNameType, testMode);
-	    	GroovyObject groovyObject = groovyObjectCache.get(key);
-	    	// TODO Enable when DSL is done
-//	    	if (groovyObject == null) {
-	    		String script = readRulesEventScript(rulesEventNameType, testMode);
-				Class groovyClass = compileScript(script);
-				groovyObject = (GroovyObject) groovyClass.newInstance();
-//	    	} else {
-//	        	orangeleapJmxNotificationBean.incrementStatCount(tangerineUserHelper.lookupUserSiteName(), OrangeleapJmxNotificationBean.RULE_CACHE_HITS);
-//	    	}
-	    	groovyObjectCache.put(key, groovyObject); // This will update the position in the cache to MRU.
+		    GroovyObject groovyObject;
+		    synchronized (groovyObjectCache) {
+		    	groovyObject = groovyObjectCache.get(key);
+		    	// TODO Enable when DSL is done
+	//	    	if (groovyObject == null) {
+		    		String script = readRulesEventScript(rulesEventNameType, testMode);
+					Class groovyClass = compileScript(script);
+					groovyObject = (GroovyObject) groovyClass.newInstance();
+	//	    	} else {
+	//	        	orangeleapJmxNotificationBean.incrementStatCount(tangerineUserHelper.lookupUserSiteName(), OrangeleapJmxNotificationBean.RULE_CACHE_HITS);
+	//	    	}
+		    	groovyObjectCache.put(key, groovyObject); // This will update the position in the cache to MRU.
+		    }
 			groovyObject.invokeMethod("run", new Object[]{map});
 		} catch (OrangeLeapConsequenceRuntimeException e) {
 			throw e;

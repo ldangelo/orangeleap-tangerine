@@ -105,8 +105,17 @@ public class ScheduleEditFormController extends SimpleFormController {
     
     private List<ScheduledItem> getScheduledItems(Schedulable schedulable, HttpServletRequest request) {
     	List<ScheduledItem> scheduledItems = scheduledItemService.readSchedule(schedulable);
-    	if (scheduledItems.size() == 0) scheduledItems.add(getScheduledItem(request));
+    	if (allCompleted(scheduledItems)) {
+    		scheduledItems.add(getScheduledItem(request));
+    	}
     	return scheduledItems;
+    }
+    
+    private boolean allCompleted(List<ScheduledItem> scheduledItems) {
+    	for (ScheduledItem scheduledItem: scheduledItems) {
+    		if (!scheduledItem.isCompleted()) return false;
+    	}
+    	return true;
     }
     
     private ScheduledItem getScheduledItem(HttpServletRequest request) {

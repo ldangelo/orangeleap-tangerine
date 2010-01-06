@@ -164,13 +164,35 @@ Ext.onReady(function() {
                         renderer: function(value, metaData, record, rowIndex, colIndex, store) {
                             if ( ! record.get('executed')) {
                                 var html = '';
+                                // Since IE7 does not support inline-block, wrap a table around the <a> links
+                                if ((OrangeLeap.allowExecute || OrangeLeap.allowDelete) && Ext.isIE7) {
+                                    html += '<table><tr>';
+                                }
                                 if (OrangeLeap.allowExecute) {
+                                    if (Ext.isIE7) {
+                                        html += '<td>';
+                                    }
                                     html += '<a href="javascript:void(0)" class="executeLink" id="execute-link-' + record.id +
-                                               '" ext:qwidth="150" ext:qtip="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>&nbsp;';
+                                               '" ext:qwidth="150" ext:qtip="' + msgs.executeBatch + '">' + msgs.executeBatch + '</a>';
+                                    if ( ! Ext.isIE7) {
+                                        html += '&nbsp;';
+                                    }
+                                    if (Ext.isIE7) {
+                                        html += '</td>';
+                                    }
                                 }
                                 if (OrangeLeap.allowDelete) {
+                                    if (Ext.isIE7) {
+                                        html += '<td>';
+                                    }
                                     html += '<a href="javascript:void(0)" class="deleteLink" id="delete-link-' + record.id +
                                             '" ext:qwidth="150" ext:qtip="' + msgs.removeBatch + '">' + msgs.removeBatch + '</a>';
+                                    if (Ext.isIE7) {
+                                        html += '</td>';
+                                    }
+                                }
+                                if ((OrangeLeap.allowExecute || OrangeLeap.allowDelete) && Ext.isIE7) {
+                                    html += '</tr></table>';
                                 }
                                 return html;
                             }
@@ -345,6 +367,7 @@ Ext.onReady(function() {
                 }
             },
             click: function(event) {
+                hideMarkers();
                 if (OrangeLeap.allowDelete) {
                     var deleteTarget = event.getTarget('a.deleteLink');
                     if (deleteTarget) {
@@ -495,7 +518,6 @@ Ext.onReady(function() {
     }
 
     function showExecutedMarker(batchId) {
-        hideOtherMarkers('executedMarker');
         if ( ! batchId || ! Ext.isNumber(batchId)) {
             $('#executedMarker').text(msgs.executed);
         }
@@ -508,16 +530,10 @@ Ext.onReady(function() {
         }, 10000);
     }
 
-    function hideOtherMarkers(markerName) {
-        if (markerName != 'executedMarker') {
-            $('#executedMarker').hide();
-        }
-        if (markerName != 'savedMarker') {
-            $('#savedMarker').hide();
-        }
-        if (markerName != 'deletedMarker') {
-            $('#deletedMarker').hide();
-        }
+    function hideMarkers() {
+        $('#executedMarker').hide();
+        $('#savedMarker').hide();
+        $('#deletedMarker').hide();
     }
 
     function deleteBatch(target) {
@@ -548,7 +564,6 @@ Ext.onReady(function() {
                                     success: function(response, options) {
                                         store.remove(rec);
                                         Ext.get('batchList').unmask();
-                                        hideOtherMarkers('deletedMarker');
                                         $('#deletedMarker').text(String.format(msgs.deletedBatchId, targetBatchId));
                                         $("#deletedMarker").show();
                                         setTimeout(function() {
@@ -1839,7 +1854,6 @@ Ext.onReady(function() {
                             if (recIndex > -1) {
                                 grid.getView().onRowSelect(recIndex);
                             }
-                            hideOtherMarkers('savedMarker');
                             $('#savedMarker').text(String.format(msgs.savedBatchId, obj.batchId));
                             $("#savedMarker").show();
                             setTimeout(function() {
@@ -1847,7 +1861,6 @@ Ext.onReady(function() {
                             }, 10000);
                         }
                         else {
-                            hideOtherMarkers('savedMarker');
                             $("#savedMarker").show();
                             setTimeout(function() {
                                 $("#savedMarker").hide();

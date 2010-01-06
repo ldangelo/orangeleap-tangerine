@@ -41,4 +41,5 @@ tr.hiddenRow.noDisplay td table ul.width350, tr.hiddenRow.noDisplay td table div
 
 span.step { margin: 10px 5px; clear: both; }
 span.stepNum { display: block; float: left; }
-span.stepTxt { display: block; min-height: 3.6em; vertical-align: inherit; padding: 0 0; }
+span.stepTxt { display: block; min-height: 3em; vertical-align: inherit; padding: 0 0; }
+a.customizeLink, a.deleteLink, a.executeLink { zoom: 1; display: block; }

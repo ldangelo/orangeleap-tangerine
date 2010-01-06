@@ -159,6 +159,8 @@ public class ReviewBatchAction extends EditBatchAction {
         fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
         fieldList.add(fieldMap);
 
+        initBatchUpdateFields(batch, fieldList);
+
         fieldMap = new HashMap<String, Object>();
         fieldMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
         fieldMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
@@ -166,7 +168,6 @@ public class ReviewBatchAction extends EditBatchAction {
         fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID));
         fieldList.add(fieldMap);
 
-        initBatchUpdateFields(batch, fieldList);
         metaDataMap.put(StringConstants.FIELDS, fieldList);
         model.put(StringConstants.META_DATA, metaDataMap);
 

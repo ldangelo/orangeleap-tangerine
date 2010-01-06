@@ -181,6 +181,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     
     private boolean logPaymentHistory(Gift oldGift, Gift newGift) {
     	
+    	if (newGift == null) return false;
+ 
     	if (oldGift == null) {
     		return logByStatus(newGift);
     	}

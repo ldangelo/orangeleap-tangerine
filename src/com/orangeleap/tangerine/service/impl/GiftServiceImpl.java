@@ -32,6 +32,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeansException;
@@ -147,6 +148,10 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             long t0 = System.currentTimeMillis(); // start counting after validated
 
             setDefaultDates(gift);
+            
+            Gift oldGift = null;
+            if (!gift.isNew()) oldGift = giftDao.readGiftById(gift.getId());
+            
             gift = saveAuditGift(gift);
 
             
@@ -155,7 +160,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             if (!reentrant) {
                 
             	routeGift(gift);
-                paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+            	Gift newGift = giftDao.readGiftById(gift.getId());
+            	
+            	if ( logPaymentHistory(oldGift, newGift) ) {
+            		paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+            	}
 
                 long t1 = System.currentTimeMillis();
                 orangeleapJmxNotificationBean.incrementStat(this.getSiteName(), "maintainGiftTime", (t1-t0));
@@ -168,6 +177,27 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         finally {
             RulesStack.pop(MAINTAIN_METHOD);
         }
+    }
+    
+    private boolean logPaymentHistory(Gift oldGift, Gift newGift) {
+    	
+    	if (oldGift == null) {
+    		return logByStatus(newGift);
+    	}
+    	
+    	boolean statusChanged = !StringUtils.equals(newGift.getGiftStatus(), oldGift.getGiftStatus());
+    	boolean txRefNumChanged = !StringUtils.equals(newGift.getTxRefNum(), oldGift.getTxRefNum());
+    	
+    	if ( statusChanged || txRefNumChanged ) {
+    		return logByStatus(newGift);
+    	}
+    	
+    	return false;
+    }
+    
+    private boolean logByStatus(Gift gift) {
+    	return "Paid".equals(gift.getGiftStatus()) 
+		|| ("Not Paid".equals(gift.getGiftStatus()) && "Declined".equals(gift.getPaymentStatus()));
     }
 
     private void validateGift(Gift gift, boolean doValidateDistributionLines)

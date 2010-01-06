@@ -66,16 +66,19 @@ public class RelationshipsController extends SimpleFormController {
         Map<String, Object> returnMap = relationshipService.readRelationshipFieldDefinitions(request.getParameter(StringConstants.CONSTITUENT_ID));
         Constituent constituent = (Constituent) returnMap.get(StringConstants.CONSTITUENT);
         List<FieldDefinition> fields = (List<FieldDefinition>) returnMap.get(StringConstants.FIELDS);
+        List<String> attrs = Arrays.asList(constituent.getConstituentAttributes().split(StringConstants.CUSTOM_FIELD_SEPARATOR));
 
         List<FieldRelationshipForm> relationships = new ArrayList<FieldRelationshipForm>();
         for (FieldDefinition thisField : fields) {
+        	
+        	if (!relationshipApplies(attrs, thisField)) continue;
+        	
             FieldRelationshipForm fieldRelationshipForm = new FieldRelationshipForm();
             relationships.add(fieldRelationshipForm);
             fieldRelationshipForm.setFieldLabel(thisField.getDefaultLabel());
             fieldRelationshipForm.setFieldName(thisField.getCustomFieldName());
             fieldRelationshipForm.setFieldDefinitionId(thisField.getId());
             fieldRelationshipForm.setRelationshipType(relationshipService.isIndividualOrganizationRelationship(thisField.getId()));
-
             String masterFieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitionId(thisField.getId());
             fieldRelationshipForm.setMasterFieldDefinitionId(masterFieldDefinitionId);
 
@@ -106,6 +109,15 @@ public class RelationshipsController extends SimpleFormController {
         request.setAttribute(StringConstants.CONSTITUENT, constituent);
 
         return relationships;
+    }
+    
+    private boolean relationshipApplies(List<String> constituentattrs, FieldDefinition fieldDefinition) {
+    	if (fieldDefinition.getEntityAttributes() == null) return true;
+        List<String> fieldattrs = Arrays.asList(fieldDefinition.getEntityAttributes().split(","));
+        for (String fieldattr: fieldattrs) {
+        	if (constituentattrs.contains(fieldattr)) return true;
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")

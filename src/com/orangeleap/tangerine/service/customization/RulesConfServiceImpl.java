@@ -24,6 +24,7 @@ import groovy.lang.GroovyObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -355,11 +356,23 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 
 	@Override
 	public void publishEventTypeRules(String ruleEventTypeNameId) {
-        RuleEventNameType rulesEventNameType = null;
-        for (RuleEventNameType r : RuleEventNameType.values()) {
-        	if (r.getType().equals(ruleEventTypeNameId)) rulesEventNameType = r;
-        }
+        RuleEventNameType rulesEventNameType = getRuleEventNameType(ruleEventTypeNameId);
         generateRulesEventScript(rulesEventNameType, false);
+	}
+
+	@Override
+	public Date getLastPublishedDate(String ruleEventTypeNameId) {
+        RuleEventNameType rulesEventNameType = getRuleEventNameType(ruleEventTypeNameId);
+        if (rulesEventNameType == null) return null;
+    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, false);
+    	return rgc == null ? null : rgc.getUpdateDate();
+	}
+	
+	private static RuleEventNameType getRuleEventNameType(String ruleEventTypeNameId) {
+        for (RuleEventNameType r : RuleEventNameType.values()) {
+        	if (r.getType().equals(ruleEventTypeNameId)) return r;
+        }
+        return null;
 	}
 
 }

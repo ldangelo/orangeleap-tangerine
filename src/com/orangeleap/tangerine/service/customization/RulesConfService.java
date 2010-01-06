@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,5 +35,7 @@ public interface RulesConfService {
 	public void fireRulesEvent(RuleEventNameType rulesEventNameType, boolean testMode, Map<String, Object> map);
 
 	public void publishEventTypeRules(String ruleEventTypeNameId);
+
+	public Date getLastPublishedDate(String ruleEventTypeNameId);
 
 }

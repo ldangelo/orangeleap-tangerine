@@ -84,6 +84,7 @@ public class ManageRuleEventTypeController extends SimpleFormController {
         ModelAndView mav = super.showForm(request, response, errors, controlModel);
         mav.addObject("ruleEventTypes", ruleEventTypeDao.readAllRuleEventTypes());
         mav.addObject("message", message);
+        mav.addObject("lastPublishedDate", rulesConfService.getLastPublishedDate(ruleEventType));
         return mav;
     }
 

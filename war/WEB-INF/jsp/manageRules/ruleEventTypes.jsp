@@ -14,7 +14,7 @@
                 
                
                 
-                <select  id="ruleEventType" name="ruleEventType">
+                <select  id="ruleEventType" name="ruleEventType" onchange="window.location.href='ruleEventTypes.htm?ruleEventType='+$('#ruleEventType').val(); " >
                    <c:forEach var="ruleEventType" items="${ruleEventTypes}">
                      <option <c:if test='${param.ruleEventType == ruleEventType.ruleEventTypeNameId}'>selected</c:if>  value="<c:out value='${ruleEventType.ruleEventTypeNameId}'/>" > <c:out value='${ruleEventType.ruleEventTypeDesc}'/></option>
                    </c:forEach>
@@ -26,7 +26,11 @@
                 
                 <a href="#" onclick="window.location = 'rules.htm?ruleEventType=' + $('#ruleEventType').val();  ">Edit Rules</a>&nbsp;&nbsp;
 
-                <a href="#"  onclick="window.location = 'ruleEventTypes.htm?action=publish&ruleEventType=' + $('#ruleEventType').val();  " >Publish Rules</a><br/>
+                <a href="#"  onclick="window.location = 'ruleEventTypes.htm?action=publish&ruleEventType=' + $('#ruleEventType').val();  " >Publish Rules</a>&nbsp;&nbsp;
+                
+                Last Published Date: <c:out value="${lastPublishedDate}"/>
+                <br/>
+                <br/>
                 
              </form>
             

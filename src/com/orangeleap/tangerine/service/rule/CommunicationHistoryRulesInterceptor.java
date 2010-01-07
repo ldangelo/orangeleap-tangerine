@@ -39,8 +39,9 @@ public class CommunicationHistoryRulesInterceptor implements ApplicationContextA
 		olWorkingMemory.put(RuleObjectType.TOUCHPOINT, communicationHistory);
 		
 		Constituent constituent = communicationHistory.getConstituent();
-		if (constituent == null && communicationHistory.getConstituentId() != null) {
-			constituent = ((ConstituentService)applicationContext.getBean("constituentService")).readConstituentById(communicationHistory.getConstituentId());
+		if (constituent != null || communicationHistory.getConstituentId() != null) {
+			// Populate sub-entities
+			constituent = ((ConstituentService)applicationContext.getBean("constituentService")).readConstituentById(constituent != null?constituent.getId():communicationHistory.getConstituentId());
 		}
 		olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
 		

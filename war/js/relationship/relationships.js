@@ -35,14 +35,6 @@ $(function() {
 			$(elem).parents("tr.row").next("tr.hiddenRow").addClass("noDisplay");
 		}
 	};
-	
-	$("input.date").each(function() {
-		var df = new Ext.form.DateField({
-	        applyTo: this.id,
-	        id: name + "-wrapper",
-	        format: ('m/d/Y')
-	    });
-	});
 });
 
 var Relationships = function() {

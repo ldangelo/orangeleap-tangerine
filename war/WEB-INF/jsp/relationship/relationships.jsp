@@ -163,6 +163,14 @@
 												value="<c:out value="${customField.displayStartDate}"/>" 
 												class="date <c:if test='${not empty requestScope.validationErrors[validationKey]}'> textError</c:if>" 
 												type="text" size="10" maxlength="10" />
+                                            <script type="text/javascript">
+                                                var name = 'startDt-${status.count}-<c:out value="${fieldRelationship.fieldName}"/>';
+                                                var df = new Ext.form.DateField({
+                                                    applyTo: name,
+                                                    id: name + "-wrapper",
+                                                    format: ('m/d/Y')
+                                                });
+                                            </script>
 										</td>
 										<td>
 											<c:set var="validationKey" scope="page" value="${fieldRelationship.fieldName}-${customField.endDate}"/>
@@ -170,6 +178,14 @@
 												value="<c:out value="${customField.displayEndDate}"/>" 
 												class="date <c:if test='${not empty requestScope.validationErrors[validationKey]}'> textError</c:if>" 
 												type="text" size="10" maxlength="10" />
+                                            <script type="text/javascript">
+                                                var name = 'endDt-${status.count}-<c:out value="${fieldRelationship.fieldName}"/>';
+                                                var df = new Ext.form.DateField({
+                                                    applyTo: name,
+                                                    id: name + "-wrapper",
+                                                    format: ('m/d/Y')
+                                                });
+                                            </script>
 										</td>
 										<td>
 											<a href="javascript:void(0)" onclick="Relationships.deleteRow(this)" class="deleteButton <c:if test="${empty customField.fieldValue && empty customField.startDate && empty customField.endDate}">noDisplay</c:if>"><img src="images/icons/deleteRow.png" title="<spring:message code='removeThisRow'/>" alt="<spring:message code='removeThisRow'/>"/></a>

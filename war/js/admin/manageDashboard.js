@@ -1,25 +1,19 @@
 Ext.onReady(function() {
    
-	Ext.QuickTips.init();
+  Ext.QuickTips.init();
     
-    var availableRolesStore = [];
-    
-    $.ajax({
-        type: "GET",
-        url: "manageDashboard.json",
-        data: "availableRoles=true",
-        success: function(html){
+  $.ajax({
+      type: "GET",
+      url: "manageDashboard.json",
+      data: "availableRoles=true",
+      success: function(html){
     		html = eval("(" + html + ")");
     		html = html.availableRoles;
     		onReadyContinue(html.split(","));
-        	return false;
-        }
-
-    });
+      }
+  });
     
-}); 
-
-function onReadyContinue(availableRolesStore) {    
+  function onReadyContinue(availableRolesStore) {    
 	
     var proxy = new Ext.data.HttpProxy({
         api: {
@@ -343,4 +337,6 @@ function onReadyContinue(availableRolesStore) {
         }
     });
     
-}
+  }
+  
+}); 

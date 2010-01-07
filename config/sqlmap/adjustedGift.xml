@@ -15,6 +15,7 @@
 		<result property="checkNumber" column="ADJUSTED_CHECK_NUMBER" jdbcType="VARCHAR" />
         <result property="checkAccountNumber" column="ADJUSTED_CHECK_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
         <result property="checkRoutingNumber" column="ADJUSTED_CHECK_ROUTING_NUMBER" jdbcType="VARCHAR" />
+        <result property="checkDate" column="ADJUSTED_CHECK_DATE" jdbcType="TIMESTAMP" />
 		<result property="comments" column="ADJUSTED_COMMENTS" jdbcType="VARCHAR" />
 		<result property="currencyCode" column="ADJUSTED_CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="originalAmount" column="ORIGINAL_AMOUNT" jdbcType="BIGINT" />
@@ -52,7 +53,7 @@
 		ag.ADJUSTED_GIFT_ID, ag.ADJUSTED_AMOUNT as ADJUSTED_GIFT_ADJUSTED_AMOUNT, ag.ADJUSTED_REASON, ag.ADJUSTED_STATUS, ag.ADJUSTED_TRANSACTION_DATE, ag.ADJUSTED_TYPE, 
 		ag.ADJUSTED_PAYMENT_REQUIRED, ag.ADJUSTED_PAYMENT_TO, 
 		ag.AUTH_CODE as ADJUSTED_AUTH_CODE,
-		ag.CHECK_NUMBER as ADJUSTED_CHECK_NUMBER, ag.CHECK_ACCOUNT_NUMBER as ADJUSTED_CHECK_ACCOUNT_NUMBER, ag.CHECK_ROUTING_NUMBER as ADJUSTED_CHECK_ROUTING_NUMBER,
+		ag.CHECK_NUMBER as ADJUSTED_CHECK_NUMBER, ag.CHECK_ACCOUNT_NUMBER as ADJUSTED_CHECK_ACCOUNT_NUMBER, ag.CHECK_ROUTING_NUMBER as ADJUSTED_CHECK_ROUTING_NUMBER, ag.CHECK_DATE as ADJUSTED_CHECK_DATE, 
 		ag.COMMENTS as ADJUSTED_COMMENTS, ag.GIFT_ID as ORIGINAL_GIFT_ID, ag.PAYMENT_MESSAGE as ADJUSTED_PAYMENT_MESSAGE,
 		ag.PAYMENT_STATUS as ADJUSTED_PAYMENT_STATUS, ag.PAYMENT_TXREFNUM as ADJUSTED_PAYMENT_TXREFNUM, ag.PAYMENT_TYPE as ADJUSTED_PAYMENT_TYPE,
 		ag.POSTED as ADJUSTED_POSTED, ag.POSTED_DATE as ADJUSTED_POSTED_DATE,  
@@ -336,7 +337,7 @@
 	<insert id="INSERT_ADJUSTED_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift">
 		insert into ADJUSTED_GIFT (ADJUSTED_AMOUNT, ADJUSTED_REASON, ADJUSTED_STATUS, ADJUSTED_TRANSACTION_DATE, ADJUSTED_TYPE, 
 		ADJUSTED_PAYMENT_REQUIRED, ADJUSTED_PAYMENT_TO,   
-		AUTH_CODE, CHECK_NUMBER, CHECK_ACCOUNT_NUMBER, CHECK_ROUTING_NUMBER,  
+		AUTH_CODE, CHECK_NUMBER, CHECK_ACCOUNT_NUMBER, CHECK_ROUTING_NUMBER, CHECK_DATE,
 		COMMENTS, GIFT_ID, PAYMENT_MESSAGE, 
 		PAYMENT_STATUS, PAYMENT_TXREFNUM, PAYMENT_TYPE, 
 		POSTED, POSTED_DATE, 
@@ -345,7 +346,7 @@
 		)
 		values (#adjustedAmount#, #adjustedReason#, #adjustedStatus#, #adjustedTransactionDate#, #adjustedType#, 
 		#adjustedPaymentRequired#, #adjustedPaymentTo#, 
-		#authCode#,	#checkNumber#, #checkAccountNumber#, #checkRoutingNumber#, 
+		#authCode#,	#checkNumber#, #checkAccountNumber#, #checkRoutingNumber#, #checkDate#,  
 		#comments#, #originalGiftId#, #paymentMessage#,
 		#paymentStatus#, #txRefNum#, #paymentType#,
 		#posted#, #postedDate#, 
@@ -370,6 +371,7 @@
 		ag.CHECK_NUMBER = #checkNumber#,
 		ag.CHECK_ACCOUNT_NUMBER = #checkAccountNumber#,
 		ag.CHECK_ROUTING_NUMBER = #checkRoutingNumber#, 
+		ag.CHECK_DATE = #checkDate#,
 		ag.COMMENTS = #comments#,
 		ag.GIFT_ID = #originalGiftId#,
 		ag.PAYMENT_MESSAGE = #paymentMessage#,

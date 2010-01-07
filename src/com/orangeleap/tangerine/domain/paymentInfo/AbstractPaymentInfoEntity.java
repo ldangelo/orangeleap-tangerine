@@ -33,6 +33,7 @@ import org.springframework.core.style.ToStringCreator;
 
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
@@ -45,6 +46,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected String checkNumber;
     protected String checkAccountNumber;
     protected String checkRoutingNumber;
+    protected Date checkDate;
     protected Long constituentId; // This variable is used by webservices instead of passing the entire constituent object
     protected Constituent constituent;
 
@@ -133,6 +135,14 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public void setCheckRoutingNumber(String checkRoutingNumber) {
         this.checkRoutingNumber = checkRoutingNumber;
+    }
+
+    public Date getCheckDate() {
+        return checkDate;
+    }
+
+    public void setCheckDate(Date checkDate) {
+        this.checkDate = checkDate;
     }
 
     public List<DistributionLine> getDistributionLines() {

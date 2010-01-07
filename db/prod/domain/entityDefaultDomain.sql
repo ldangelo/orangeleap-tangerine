@@ -69,3 +69,6 @@ values ('', 'customFieldMap[recurringGiftName]', 'recurringGift');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('', 'customFieldMap[pledgeName]', 'pledge');
+
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+values ('bean:donationDate', 'checkDate', 'gift');

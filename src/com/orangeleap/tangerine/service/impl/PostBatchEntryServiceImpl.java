@@ -253,7 +253,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
                 journal.setAdjustmentDate(adjustedGift.getAdjustedTransactionDate());
                 journal.setDescription(TangerineMessageAccessor.getMessage("journalAdjustedGiftDescription", gift.getId().toString(), gift.getConstituent().getRecognitionName()));
             }
-            updateJournalCodes(journal, bankCodeMap, journal.getCode(), isGift ? gift : adjustedGift);
+            setJournalCodes(journal, bankCodeMap, journal.getCode(), isGift ? gift : adjustedGift);
         }
         else {
             // Distribution lines
@@ -277,7 +277,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
                 journal.setOrigEntity(StringConstants.GIFT);
                 journal.setOrigEntityId(gift.getId());
             }
-            updateJournalCodes(journal, projectCodeMap, journal.getCode(), isGift ? gift : adjustedGift);
+            setJournalCodes(journal, projectCodeMap, journal.getCode(), isGift ? gift : adjustedGift);
         }
         journalDao.maintainJournal(journal);
     }
@@ -315,7 +315,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
         return projectCode;
     }
 
-    private void updateJournalCodes(Journal journal, Map<String, String> map, String code, AbstractCustomizableEntity entity) {
+    private void setJournalCodes(Journal journal, Map<String, String> map, String code, AbstractCustomizableEntity entity) {
         String glAccount1 = map.get(getKey(code, StringConstants.ACCOUNT_STRING_1));
         if (glAccount1 == null) {
             addBatchErrorToEntity(entity, "invalidAccountString1", code);

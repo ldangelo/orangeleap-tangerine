@@ -51,7 +51,7 @@ public class ExecuteBatchController extends TangerineJsonListController {
             logger.trace("executeBatch: batchId = " + batchId);
         }
         checkAccess(request, PageType.executeBatch);
-        final PostBatch batch = postBatchService.readBatch(batchId);
+        PostBatch batch = postBatchService.readBatch(batchId);
 
         final ModelMap model = new ModelMap();
 
@@ -66,7 +66,9 @@ public class ExecuteBatchController extends TangerineJsonListController {
         }
 
         if (errorMsgs.isEmpty()) {
-            postBatchService.updateBatchCurrentlyExecutingTrue(batch);
+            batch.setCurrentlyExecuting(true);
+            batch = postBatchService.maintainBatch(batch);
+
             // allow execution of the batch if no errors are found
             PostBatch executedBatch = postBatchService.executeBatch(batch);
             if (executedBatch.getErrorBatchId() != null && executedBatch.getErrorBatchId() > 0) {

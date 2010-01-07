@@ -170,14 +170,6 @@
         	UPDATE_DATE = now()
         where POST_BATCH_ID = #id#
     </update>
-
-    <update id="UPDATE_POST_BATCH_CURRENTLY_EXECUTING" parameterClass="com.orangeleap.tangerine.domain.PostBatch">
-        update POST_BATCH
-        SET
-            IS_CURRENTLY_EXECUTING = #currentlyExecuting# ,
-        	UPDATE_DATE = now()
-        where POST_BATCH_ID = #id#
-    </update>
     
 </sqlMap>
 

@@ -256,15 +256,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    public void updateBatchCurrentlyExecutingTrue(PostBatch batch) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("updateBatchCurrentlyExecutingTrue: batchId = " + batch.getId());
-        }
-        batch.setCurrentlyExecuting(true);
-        postBatchDao.updateBatchCurrentlyExecuting(batch);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public PostBatch executeBatch(PostBatch batch) {
         if (logger.isTraceEnabled()) {

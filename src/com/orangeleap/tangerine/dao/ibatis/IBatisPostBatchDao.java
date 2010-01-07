@@ -144,14 +144,6 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         return batch;
 	}
 
-    @Override
-    public void updateBatchCurrentlyExecuting(PostBatch batch) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("updateBatchCurrentlyExecuting: batchId = " + batch.getId());
-        }
-        getSqlMapClientTemplate().update("UPDATE_POST_BATCH_CURRENTLY_EXECUTING", batch);
-    }
-
     /**
      * Delete the existing PostBatchEntries if any, and insert again
      * @param batch batch that contains the entries

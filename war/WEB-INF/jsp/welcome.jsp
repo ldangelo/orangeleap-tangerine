@@ -13,9 +13,7 @@
             <div class="content760 mainForm welcomePage">
                 <h1><spring:message code="myDashboard"/></h1>
                 <div id="dashboard"></div>
-                    <!--
-            <%= com.orangeleap.tangerine.util.DiagUtil.getMemoryStats() %>
-                     -->
+                    
             </div>
         </body>
     </html>

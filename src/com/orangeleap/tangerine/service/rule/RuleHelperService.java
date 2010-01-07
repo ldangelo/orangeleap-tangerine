@@ -30,16 +30,19 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class RuleHelperService {
 
+	protected final static Log logger = OLLogger.getLog(RuleHelperService.class);
 	private static TangerineUserHelper userHelper;
 	private static ConstituentService constituentService;
 	private static EmailService emailService;
@@ -374,5 +377,73 @@ public class RuleHelperService {
     public static void sendMail(Constituent p, Gift g, String subject, String templateName) {
     	emailService.sendMail(p,  g,  null, null, new HashMap<String, String>(), subject,  templateName);
     }
+
+
+    /**
+     * Determines if a constituent is a Major Donor based on total donations made over a specific time interval.
+     * (i.e. Gave $8000+ over past 6 MONTHS/1 YEAR/2 FISCALYEARS etc.)
+     * If the timeAmount and timeUnit are -1/null then it will return the total for all gifts a constituent has given.
+     * @param constituent
+     * @param timeAmount
+     * @param timeUnits
+     * @param fiscalYearStartingMonth
+     * @return
+     *
+     */
+    public static Boolean isMajorDonor(Constituent constituent) {
+    	Boolean isMajorDonor = false;
+    	try {
+    		BigDecimal majorDonorThreshold = BigDecimal.valueOf(Double.parseDouble((userHelper.getSiteOptionByName("major.donor.threshold"))));
+        	int majorDonorTimeAmount =  Integer.parseInt(userHelper.getSiteOptionByName("major.donor.interval"));
+        	String majorDonorTimeUnit =  userHelper.getSiteOptionByName("major.donor.units");
+    		if (totalDonationAmountPerTimeFrame(constituent, majorDonorTimeAmount, majorDonorTimeUnit ).compareTo(majorDonorThreshold) == 1)
+        		isMajorDonor = true;
+
+    	} catch (Exception e) {
+    		logger.error("Can not evaluate RuleHelperService.isMajorDonor : Make sure the following site options are set major.donor.threshold, major.donor.interval, major.donor.units .  " + e.getMessage());
+    	}
+
+    	return isMajorDonor;
+    }
+
+    /**
+     * Takes a constituent and returns the total donations made over a specific time interval.
+     * (i.e. Gave $8000+ over past 6 MONTHS/1 YEAR/2 FISCALYEARS etc.)
+     * If the timeAmount and timeUnit are -1/null then it will return the total for all gifts a constituent has given.
+     * @param constituent
+     * @param timeAmount
+     * @param timeUnits
+     * @param fiscalYearStartingMonth
+     * @return
+     *
+     */
+    public static BigDecimal totalDonationAmountPerTimeFrame(Constituent constituent, int timeAmount, String timeUnit ) {
+    	BigDecimal totalDonations = BigDecimal.valueOf(0);
+        int fiscalYearStartingMonth = -1;
+    	List<Gift> gifts = constituent.getGifts();
+
+        if ( (timeAmount == -1) || (timeUnit == null)){
+        	Iterator<Gift> itGifts = gifts.iterator();
+        	while (itGifts.hasNext()) {
+    			Gift gift = (Gift)itGifts.next();
+    			totalDonations = totalDonations.add(gift.getAmount());
+    		}
+        	return totalDonations;
+        }
+
+    	if(timeUnit.equalsIgnoreCase("FISCALYEAR") || timeUnit.equalsIgnoreCase("FISCALYEARS")){
+    		fiscalYearStartingMonth = Integer.parseInt(userHelper.getSiteOptionByName("fiscal.year.starting.month"));
+    	}
+
+        // Cycle through the gifts
+        for (Gift g : gifts) {
+            // If there is a gift given after the beginning date add it to the running total.
+            if ((g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
+            	totalDonations = totalDonations.add(g.getAmount());
+            }
+        }
+        return totalDonations;
+    }
+
 
 }

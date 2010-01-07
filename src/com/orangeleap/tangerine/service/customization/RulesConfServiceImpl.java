@@ -32,6 +32,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
@@ -158,14 +159,13 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 		    GroovyObject groovyObject;
 		    synchronized (groovyObjectCache) {
 		    	groovyObject = groovyObjectCache.get(key);
-		    	// TODO Enable when DSL is done
-	//	    	if (groovyObject == null) {
+		    	if (groovyObject == null) {
 		    		String script = readRulesEventScript(rulesEventNameType, testMode);
 					Class groovyClass = compileScript(script);
 					groovyObject = (GroovyObject) groovyClass.newInstance();
-	//	    	} else {
-	//	        	orangeleapJmxNotificationBean.incrementStatCount(tangerineUserHelper.lookupUserSiteName(), OrangeleapJmxNotificationBean.RULE_CACHE_HITS);
-	//	    	}
+		    	} else {
+		        	orangeleapJmxNotificationBean.incrementStatCount(tangerineUserHelper.lookupUserSiteName(), OrangeleapJmxNotificationBean.RULE_CACHE_HITS);
+		    	}
 		    	groovyObjectCache.put(key, groovyObject); // This will update the position in the cache to MRU.
 		    }
 			groovyObject.invokeMethod("run", new Object[]{map});
@@ -196,17 +196,14 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 
     	RuleGeneratedCode rgc = null;
     	
-		// TODO Remove when DSL is done
-		generateRulesEventScript(rulesEventNameType, testMode);  
-    	// TODO Enable when DSL is done
-//		String key = buildCacheKey(rulesEventNameType, testMode);
-//		Element ele = ruleGeneratedCodeCache.get(key);
-//		if (ele == null) {
+		String key = buildCacheKey(rulesEventNameType, testMode);
+		Element ele = ruleGeneratedCodeCache.get(key);
+		if (ele == null) {
 		    rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
-//			ruleGeneratedCodeCache.put(new Element(key, ruleGeneratedCodeCache));
-//		} else {
-//			rgc = (RuleGeneratedCode) ele.getValue();
-//		}
+			ruleGeneratedCodeCache.put(new Element(key, ruleGeneratedCodeCache));
+		} else {
+			rgc = (RuleGeneratedCode) ele.getValue();
+		}
     	
     	return rgc == null ? "" : rgc.getGeneratedCodeText();
     	

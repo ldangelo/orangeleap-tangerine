@@ -226,7 +226,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     	
     	try {
     		
-			script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule Event: "+rulesEventType.getType()+"\");\n"); 
+			script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"================================================\");\n"); 
+			script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule Event ["+rulesEventType.getType()+"]\");\n"); 
 			script.append("boolean b;\n"); 
 			script.append("boolean lastb;\n\n"); 
 
@@ -238,7 +239,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 	    			String desc = whiteList(rule.getRuleDesc());
     				script.append("// ").append(desc).append("\n");
     				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"------------------------------------------------\");\n"); 
-    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule: "+desc+"\");\n"); 
+    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule: \\\""+desc+"\\\"\");\n"); 
   
     				List<String> conditions = new ArrayList<String>();
 	    			List<String> conditionstext = new ArrayList<String>();
@@ -270,16 +271,16 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     				script.append("lastb = true;\n"); 
     				for (int i = 0; i < conditions.size();i++) {
         				script.append("b = b && (" + conditions.get(i) + ");\n"); 
-        				script.append("if (lastb) map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Condition: "+conditionstext.get(i)+" = \" + b);\n"); 
+        				script.append("if (lastb) map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"   Condition: "+conditionstext.get(i)+" = \" + b);\n"); 
         				script.append("lastb = b;\n"); 
     				}
-    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule evaluates to \" + b);\n"); 
+    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"---> Rule evaluates to \" + b);\n"); 
     				
     				// Consequences
     				script.append("if (b) { \n");
     				for (int i = 0; i < consequences.size();i++) {
     					if (!testMode) script.append(consequences.get(i)).append("; \n");
-        				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Consequence: "+consequencestext.get(i)+"\");\n"); 
+        				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"   Consequence: "+consequencestext.get(i)+"\");\n"); 
     				}
     				script.append("} \n");
     				
@@ -287,6 +288,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     				script.append("\n");
 	    		}
 	    	}
+	    	
+			script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"================================================\");\n"); 
 	    	
 	    	result = script.toString();
 

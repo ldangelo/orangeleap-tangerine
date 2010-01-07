@@ -96,6 +96,7 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
                 for (String userrole : roles) {
                     if (itemroles.contains(userrole)) {
                         ok = true;
+                        di.setUrl(userrole+"/"+di.getUrl()); // This allows having a different directory permission on the role-specific reports in the guru.
                         break;
                     }
                 }

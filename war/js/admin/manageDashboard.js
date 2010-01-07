@@ -1,5 +1,26 @@
 Ext.onReady(function() {
-    Ext.QuickTips.init(); 
+   
+	Ext.QuickTips.init();
+    
+    var availableRolesStore = [];
+    
+    $.ajax({
+        type: "GET",
+        url: "manageDashboard.json",
+        data: "availableRoles=true",
+        success: function(html){
+    		html = eval("(" + html + ")");
+    		html = html.availableRoles;
+    		onReadyContinue(html.split(","));
+        	return false;
+        }
+
+    });
+    
+}); 
+
+function onReadyContinue(availableRolesStore) {    
+	
     var proxy = new Ext.data.HttpProxy({
         api: {
             read: {url: 'manageDashboard.json', method: 'GET'},
@@ -37,7 +58,7 @@ Ext.onReady(function() {
         saveError();
     });
     
-    var availableRolesStore = ['All','ROLE_ADMIN','ROLE_SUPER_ADMIN'];
+   
     
     var writer = new Ext.data.JsonWriter({ listful: true, writeAllFields: true });
 
@@ -84,12 +105,6 @@ Ext.onReady(function() {
     });
     store.on('load', function(store, records, index) {
 
-    	// First returned row just has the template values
-//    	if (store.data && store.data.items && store.data.items.length > 0) {
-//        	availableRolesStore = store.data.items[0].roles.split[','];
-//            store.data.items.splice(0,1); // remove first template row
-//        }
-        
         // unescape urls
         if (store.data && store.data.items) {
             var len = store.data.items.length;
@@ -328,4 +343,4 @@ Ext.onReady(function() {
         }
     });
     
-});
+}

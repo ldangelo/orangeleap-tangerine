@@ -75,36 +75,44 @@ public class ManageDashboardController {
     @RequestMapping(method = RequestMethod.GET)
     @SuppressWarnings("unchecked")
     public ModelMap getDashboardItems(HttpServletRequest request) throws Exception {
-        checkAccess(request);
+        
+    	checkAccess(request);
+        
         ModelMap modelMap = new ModelMap();
+
+        boolean getAvailableRoles = "true".equals(request.getParameter("availableRoles"));
+        if (getAvailableRoles) {
+
+        	modelMap.put("availableRoles", getAvailableRoles());
+        	
+        } else {
         
-        // Gets either site-customized dashboard or default (legacy) one.
-        List<DashboardItem> items = dashboardService.getAllDashboardItems(); 
-        // Cannot edit default items - this editor can be used to point to guru reports only - don't allow custom SQL report creation in tangerine.
+	
+	        // Gets either site-customized dashboard or default (legacy) one.
+	        List<DashboardItem> items = dashboardService.getAllDashboardItems(); 
+	        // Cannot edit default items - this editor can be used to point to guru reports only - don't allow custom SQL report creation in tangerine.
+	        
+	        // If there are no dashboard items set up, copy from defaults.
+	    	Iterator<DashboardItem> it = items.iterator();
+	    	while (it.hasNext()) {
+	    		DashboardItem item = it.next();
+	    		if (isAllowedType(item.getType())) {
+	    			if (item.getSiteName() == null) {
+		    			item.setId(0L);
+		    			item.setSiteName(tangerineUserHelper.lookupUserSiteName());
+	    			}
+	    		} else {
+	    			it.remove();
+	    		}
+	    	}
+	        
+	        List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+	        addItems(items, returnList);
+	        modelMap.put(StringConstants.ROWS, returnList);
+	        modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
         
-        // If there are no dashboard items set up, copy from defaults.
-    	Iterator<DashboardItem> it = items.iterator();
-    	while (it.hasNext()) {
-    		DashboardItem item = it.next();
-    		if (isAllowedType(item.getType())) {
-    			if (item.getSiteName() == null) {
-	    			item.setId(0L);
-	    			item.setSiteName(tangerineUserHelper.lookupUserSiteName());
-    			}
-    		} else {
-    			it.remove();
-    		}
-    	}
+        }
         
-    	// First returned item is a template row for available roles
-//    	DashboardItem availableRolesTemplate = new DashboardItem();
-//    	availableRolesTemplate.setRoles(getAvailableRoles());
-//    	items.add(0,availableRolesTemplate);
-    	
-        List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
-        addItems(items, returnList);
-        modelMap.put(StringConstants.ROWS, returnList);
-        modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
         return modelMap;
     }
     

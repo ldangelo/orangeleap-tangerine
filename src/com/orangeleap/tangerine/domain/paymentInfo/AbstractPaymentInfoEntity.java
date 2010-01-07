@@ -18,13 +18,6 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlType;
-
-import org.springframework.core.style.ToStringCreator;
-
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.AddressAware;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -36,6 +29,11 @@ import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.rollup.RollupValueSource;
+import org.springframework.core.style.ToStringCreator;
+
+import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, MutableGrid, RollupValueSource  {
@@ -45,6 +43,8 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected String currencyCode;
     protected String paymentType;
     protected String checkNumber;
+    protected String checkAccountNumber;
+    protected String checkRoutingNumber;
     protected Long constituentId; // This variable is used by webservices instead of passing the entire constituent object
     protected Constituent constituent;
 
@@ -117,6 +117,22 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public String getCheckNumber() {
         return checkNumber;
+    }
+
+    public String getCheckAccountNumber() {
+        return checkAccountNumber;
+    }
+
+    public void setCheckAccountNumber(String checkAccountNumber) {
+        this.checkAccountNumber = checkAccountNumber;
+    }
+
+    public String getCheckRoutingNumber() {
+        return checkRoutingNumber;
+    }
+
+    public void setCheckRoutingNumber(String checkRoutingNumber) {
+        this.checkRoutingNumber = checkRoutingNumber;
     }
 
     public List<DistributionLine> getDistributionLines() {

@@ -12,6 +12,8 @@
 		<result property="authCode" column="GIFT_AUTH_CODE" jdbcType="VARCHAR" />
 		<result property="avsMessage" column="GIFT_AVS_MESSAGE" jdbcType="VARCHAR" />
 		<result property="checkNumber" column="GIFT_CHECK_NUMBER" jdbcType="VARCHAR" />
+        <result property="checkAccountNumber" column="GIFT_CHECK_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
+        <result property="checkRoutingNumber" column="GIFT_CHECK_ROUTING_NUMBER" jdbcType="VARCHAR" />
 		<result property="comments" column="GIFT_COMMENTS" jdbcType="VARCHAR" />
 		<result property="currencyCode" column="GIFT_CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="deductibleAmount" column="GIFT_DEDUCTIBLE_AMOUNT" jdbcType="DECIMAL" />
@@ -59,7 +61,8 @@
 
 	<sql id="GIFT_COLS_FRAGMENT">
 		g.GIFT_ID, g.GIFT_STATUS, g.GIFT_TYPE, g.AMOUNT as GIFT_AMOUNT, g.ADJUSTED_AMOUNT as GIFT_ADJUSTED_AMOUNT, g.AUTH_CODE as GIFT_AUTH_CODE, g.AVS_MESSAGE as GIFT_AVS_MESSAGE,  
-		g.CHECK_NUMBER as GIFT_CHECK_NUMBER, g.COMMENTS as GIFT_COMMENTS, g.CURRENCY_CODE as GIFT_CURRENCY_CODE,
+		g.CHECK_NUMBER as GIFT_CHECK_NUMBER, g.CHECK_ACCOUNT_NUMBER as GIFT_CHECK_ACCOUNT_NUMBER, g.CHECK_ROUTING_NUMBER as GIFT_CHECK_ROUTING_NUMBER,
+		g.COMMENTS as GIFT_COMMENTS, g.CURRENCY_CODE as GIFT_CURRENCY_CODE,
 		g.DEDUCTIBLE_AMOUNT as GIFT_DEDUCTIBLE_AMOUNT, g.DONATION_DATE as GIFT_DONATION_DATE, g.ENTRY_TYPE as GIFT_ENTRY_TYPE,
 		g.PAYMENT_MESSAGE as GIFT_PAYMENT_MESSAGE, g.PAYMENT_STATUS as GIFT_PAYMENT_STATUS, g.PAYMENT_TYPE as GIFT_PAYMENT_TYPE, 
 		g.POSTED as GIFT_POSTED, g.POSTED_DATE as GIFT_POSTED_DATE, g.POSTMARK_DATE as GIFT_POSTMARK_DATE,
@@ -546,7 +549,7 @@
 
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		insert into GIFT (GIFT_STATUS, GIFT_TYPE, AMOUNT, ADJUSTED_AMOUNT, AUTH_CODE, AVS_MESSAGE, 
-		CHECK_NUMBER, COMMENTS,
+		CHECK_NUMBER, CHECK_ACCOUNT_NUMBER, CHECK_ROUTING_NUMBER, COMMENTS,
 		CURRENCY_CODE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE,
 		PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, 
 		POSTED, POSTED_DATE, POSTMARK_DATE,  
@@ -555,9 +558,9 @@
 		CREATE_DATE, UPDATE_DATE
 		)
 		values (#giftStatus#, #giftType#, #amount#, #adjustedAmount#, #authCode#, #avsMessage#, 
-		#checkNumber#, #comments#, 
+		#checkNumber#, #checkAccountNumber#, #checkRoutingNumber#, #comments#, 
 		#currencyCode#,	#deductibleAmount#, #donationDate#, #entryType#,
-		#paymentMessage#, #paymentStatus#, #paymentType#, 
+		#paymentMessage#, #paymentStatus#, #paymentType#,
 		#posted#, #postedDate#, #postmarkDate#,
 		#transactionDate#, #txRefNum#, 
 		#address.id#, #paymentSource.id#, #constituent.id#, #phone.id#,
@@ -577,6 +580,8 @@
 		g.AUTH_CODE = #authCode#,
 		g.AVS_MESSAGE = #avsMessage#, 
 		g.CHECK_NUMBER = #checkNumber#,
+		g.CHECK_ACCOUNT_NUMBER = #checkAccountNumber#,
+		g.CHECK_ROUTING_NUMBER = #checkRoutingNumber#, 
 		g.COMMENTS = #comments#,
 		g.CURRENCY_CODE = #currencyCode#,
 		g.DEDUCTIBLE_AMOUNT = #deductibleAmount#,

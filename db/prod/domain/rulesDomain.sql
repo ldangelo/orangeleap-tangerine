@@ -14,16 +14,8 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_E
 INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (12,'email-scheduled-monthly', 'Email Scheduled Monthly');
 
 -- RULE_SEGMENT_TYPE and RULE_SEGMENT_TYPE_PARM (code function definitions for rule text phrases)
-
--- TODO replace with actual list
--- INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (1,'condition','Constituent is a login user','map.constituent.getCustomFieldValue("constituentIndividualRoles").contains("user")');
--- INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES (2,'condition','Constituent is not a login user','!map.constituent.getCustomFieldValue("constituentIndividualRoles").contains("user")');
-
 -- RULE_EVENT_TYPE_X_SEGMENT_TYPE (what segment types can be used for what event types)
 
--- TODO replace with actual list
--- INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES (1,1);
--- INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES (1,2);
 
 -- ********************************************************************************************************************************
 -- ********************************** Conditions **********************************************************************************
@@ -420,6 +412,19 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
 -- The reference to a picklist id is for the rules UI
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','entryType');
+
+
+-- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Touchpoint is a new touchpoint';
+SET @CODE_CD = 'map.touchpoint.createDate.equals(map.touchpoint.updateDate)';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'touchpoint-save'),@RULE_SEGMENT_TYPE_ID);
+
 
 
 

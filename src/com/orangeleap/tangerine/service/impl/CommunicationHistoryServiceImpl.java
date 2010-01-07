@@ -104,6 +104,8 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
         CommunicationHistory savedHistory = communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
         auditService.auditObject(savedHistory, communicationHistory.getConstituent());
         
+        savedHistory = communicationHistoryDao.readCommunicationHistoryById(savedHistory.getId()); // populate update/create date in object
+        
         routeCommunicationHistory(savedHistory);
         
         return savedHistory;

@@ -1951,13 +1951,13 @@ Ext.onReady(function() {
                 }
             },
             'beforeshow': function() {
-                $(this).bind('keydown', function(e) {
+                $('#editBatchWin').bind('keydown', function(e) {
                     hideEditOnEscape(e);
                 });
             },
             'beforehide': function() {
                 resetEditBatchWin();
-                $(this).unbind('keydown', hideEditOnEscape);
+                $('#editBatchWin').unbind('keydown', hideEditOnEscape);
             }
         },
         items:[{
@@ -2438,13 +2438,13 @@ Ext.onReady(function() {
         closeAction: 'hide',
         listeners: {
             'beforeshow': function() {
-                $(this).bind('keydown', function(e) {
+                $('#reviewBatchWin').bind('keydown', function(e) {
                     hideReviewOnEscape(e);
                 });
             },
             'beforehide': function() {
                 resetReviewBatchWin();
-                $(this).unbind('keydown', hideReviewOnEscape);
+                $('#reviewBatchWin').unbind('keydown', hideReviewOnEscape);
             }
         },
         items:[{
@@ -3020,13 +3020,13 @@ Ext.onReady(function() {
         closeAction: 'hide',
         listeners: {
             'beforeshow': function() {
-                $(this).bind('keydown', function(e) {
+                $('#errorBatchWin').bind('keydown', function(e) {
                     hideErrorOnEscape(e);
                 });
             },
             'beforehide': function() {
                 resetErrorBatchWin();
-                $(this).unbind('keydown', hideErrorOnEscape);
+                $('#errorBatchWin').unbind('keydown', hideErrorOnEscape);
             }
         },
         items:[{

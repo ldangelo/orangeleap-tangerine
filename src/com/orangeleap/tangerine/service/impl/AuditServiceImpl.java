@@ -31,6 +31,8 @@ import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.relationship.RelationshipUtil;
 import com.orangeleap.tangerine.type.AuditType;
+import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -132,19 +134,21 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
             if (logger.isDebugEnabled()) {
                 logger.debug("audit Site " + siteName + ": added " + getClassName(entity) + " " + entity.getId());
             }
-        } else {
+        }
+        else {
             Map<String, String> fieldLabels = entity.getFieldLabelMap();
             for (String key : fieldLabels.keySet()) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("key = " + key);
                 }
                 Object originalBeanProperty = entity.getFieldValueMap().get(key);
+                originalBeanProperty = decryptMaskEncryptedField(entity, key, originalBeanProperty);
                 String fieldName = key;
                 if (bean.isReadableProperty(fieldName) && this.isAuditable(bean, fieldName)) {
-                    Object beanProperty = bean.getPropertyValue(fieldName);
+                    Object beanProperty = bean.getPropertyValue(fieldName); 
                     if (beanProperty instanceof CustomField) {
                         fieldName = key + ".value";
-                        beanProperty = bean.getPropertyValue(fieldName);
+                        beanProperty = getBeanPropertyValue(bean, entity, fieldName);
                         if (entity instanceof Constituent) {
                             FieldDefinition fd = ((Constituent) entity).getFieldTypeMap().get(key);
                             if (relationshipService.isRelationship(fd)) {
@@ -157,15 +161,20 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                             }
                         }
                     }
+                    else {
+                        beanProperty = getBeanPropertyValue(bean, entity, fieldName);
+                    }
                     if (beanProperty instanceof String) {
                         beanProperty = StringUtils.trimToNull((String) beanProperty);
-                    } else if (beanProperty instanceof Constituent) {
+                    }
+                    else if (beanProperty instanceof Constituent) {
                         fieldName = key + ".displayValue";
-                        beanProperty = bean.getPropertyValue(fieldName);
+                        beanProperty = bean.getPropertyValue(fieldName); 
                     }
                     if (originalBeanProperty == null && beanProperty == null) {
                         continue;
-                    } else if (originalBeanProperty == null && beanProperty != null) {
+                    }
+                    else if (originalBeanProperty == null && beanProperty != null) {
                         audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Add " + fieldLabels.get(key) + " " + replaceCustomFieldSeparatorWithComma(beanProperty.toString()),
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
@@ -302,7 +311,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                     }
                     Object oldFieldValue = null;
                     if (oldBean.isReadableProperty(fieldName)) {
-                        oldFieldValue = oldBean.getPropertyValue(fieldName);
+                        oldFieldValue = oldBean.getPropertyValue(fieldName);  
                     }
                     if (newFieldValue == null && oldFieldValue == null) {
                         continue;
@@ -329,6 +338,25 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
             }
         }
         return audits;
+    }
+
+    private Object getBeanPropertyValue(BeanWrapper bean, AbstractEntity entity, String fieldName) {
+        Object value = bean.getPropertyValue(fieldName);
+        return decryptMaskEncryptedField(entity, fieldName, value);
+    }
+
+    private Object decryptMaskEncryptedField(AbstractEntity entity, String fieldName, Object value) {
+        FieldDefinition fieldDef = entity.getFieldTypeMap().get(fieldName.replaceFirst(StringConstants.DOT_VALUE, StringConstants.EMPTY));
+
+        if (fieldDef != null && FieldType.ENCRYPTED.equals(fieldDef.getFieldType()) && value != null) {
+            try {
+                value = AES.decryptAndMask(value.toString());
+            }
+            catch (Exception ex) {
+                logger.warn("decryptMaskEncryptedField: could not decrypt & mask fieldName = " + fieldName + " value = " + AES.mask(value.toString()));
+            }
+        }
+        return value;
     }
 
     @Override
@@ -405,11 +433,13 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
             AbstractEntity entity = (AbstractEntity) object;
             String user = tangerineUserHelper.lookupUserName();
             audit = new Audit(AuditType.UPDATE, user, date, "Inactivated " + getClassName(entity) + " " + entity.getId(), siteName, getClassName(entity), entity.getId(), userId);
-        } else if (object instanceof Auditable) {
+        }
+        else if (object instanceof Auditable) {
             Auditable auditable = (Auditable) object;
             String user = tangerineUserHelper.lookupUserName();
             audit = new Audit(AuditType.UPDATE, user, date, "Inactivated " + getClassName(auditable) + " " + auditable.getId(), siteName, getClassName(auditable), auditable.getId(), userId);
-        } else {
+        }
+        else {
             if (logger.isInfoEnabled()) {
                 logger.info("don't know how to audit object " + (object == null ? null : object.getClass().getName()));
             }

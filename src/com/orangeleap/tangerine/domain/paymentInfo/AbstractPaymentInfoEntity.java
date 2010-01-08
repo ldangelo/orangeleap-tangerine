@@ -26,9 +26,11 @@ import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.annotation.NotAuditable;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.rollup.RollupValueSource;
+import com.orangeleap.tangerine.util.AES;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.xml.bind.annotation.XmlType;
@@ -44,7 +46,11 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected String currencyCode;
     protected String paymentType;
     protected String checkNumber;
+    @NotAuditable
     protected String checkAccountNumber;
+    @NotAuditable
+    private String checkAccountNumberEncrypted;
+
     protected String checkRoutingNumber;
     protected Date checkDate;
     protected Long constituentId; // This variable is used by webservices instead of passing the entire constituent object
@@ -122,11 +128,36 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     public String getCheckAccountNumber() {
-        return checkAccountNumber;
+        if (checkAccountNumberEncrypted != null) {
+            return AES.decrypt(checkAccountNumberEncrypted);
+        }
+        return null;
     }
 
     public void setCheckAccountNumber(String checkAccountNumber) {
         this.checkAccountNumber = checkAccountNumber;
+        if (checkAccountNumber != null) {
+            checkAccountNumberEncrypted = AES.encrypt(checkAccountNumber);
+        }
+        else {
+            checkAccountNumberEncrypted = null;
+        }
+    }
+
+    public String getCheckAccountNumberEncrypted() {
+        return checkAccountNumberEncrypted;
+    }
+
+    public void setCheckAccountNumberEncrypted(String checkAccountNumberEncrypted) {
+        this.checkAccountNumberEncrypted = checkAccountNumberEncrypted;
+    }
+
+    public String getCheckAccountNumberReadOnly() {
+        return PaymentSource.decryptAndMask(checkAccountNumberEncrypted);
+    }
+
+    public void setCheckAccountNumberReadOnly(String str) {
+        // no-op
     }
 
     public String getCheckRoutingNumber() {
@@ -212,18 +243,33 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         return constituent != null ? constituent.getSite() : null;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("paymentType", paymentType).append("currencyCode", currencyCode).
-                append("checkNumber", checkNumber).append("comments", comments).
-                toString();
-    }
-
     public void setConstituentId(Long Id) {
         constituentId = id;
     }
 
     public Long getConstituentId() {
         return constituentId;
+    }
+
+    public void clearCheck() {
+        setCheckNumber(null);
+        setCheckDate(null);
+        setCheckRoutingNumber(null);
+        setCheckAccountNumber(null);
+    }
+
+    @Override
+    public void prePersist() {
+        super.prePersist();
+        if ( ! PaymentSource.CHECK.equals(paymentType)) {
+            clearCheck();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append(super.toString()).append("paymentType", paymentType).append("currencyCode", currencyCode).
+                append("checkNumber", checkNumber).append("comments", comments).
+                toString();
     }
 }

@@ -18,7 +18,13 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.domain.*;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.PaymentSourceAware;
+import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -29,12 +35,14 @@ import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 
 public abstract class AbstractPaymentService extends AbstractTangerineService {
 
@@ -178,6 +186,12 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
             sb.append(TangerineMessageAccessor.getMessage("checkNumberColon"));
             sb.append(" ");
             sb.append(entity.getCheckNumber());
+            if (entity.getCheckDate() != null) {
+                sb.append(" ").append(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(entity.getCheckDate())); // TODO: the right date format based on locale
+            }
+            if (StringUtils.isNotBlank(entity.getCheckAccountNumberReadOnly())) {
+                sb.append(" ").append(entity.getCheckAccountNumberReadOnly());
+            }
         }
 	    if (entity.getAddress() != null && !entity.getAddress().isNew()) {
 		    Address address = entity.getAddress();

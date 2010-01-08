@@ -74,7 +74,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 ('gift.checkAccountNumber', 'gift', 'checkAccountNumber', 'Account Number', '', 'TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
-('gift.checkAccountNumberReadOnly', 'gift', 'checkAccountNumber', 'Account Number', '', 'READ_ONLY_TEXT');
+('gift.checkAccountNumberReadOnly', 'gift', 'checkAccountNumberReadOnly', 'Account Number', '', 'READ_ONLY_TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
 ('gift.checkRoutingNumber', 'gift', 'checkRoutingNumber', 'Routing Number', '', 'TEXT');
@@ -88,7 +88,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 ('adjustedGift.checkAccountNumber', 'adjustedGift', 'checkAccountNumber', 'Account Number', '', 'TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES 
-('adjustedGift.checkAccountNumberReadOnly', 'adjustedGift', 'checkAccountNumber', 'Account Number', '', 'READ_ONLY_TEXT');
+('adjustedGift.checkAccountNumberReadOnly', 'adjustedGift', 'checkAccountNumberReadOnly', 'Account Number', '', 'READ_ONLY_TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
 ('adjustedGift.checkRoutingNumber', 'adjustedGift', 'checkRoutingNumber', 'Routing Number', '', 'TEXT');

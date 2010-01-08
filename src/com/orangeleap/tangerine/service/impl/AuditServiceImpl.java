@@ -230,6 +230,20 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                 auditable = field.getAnnotation(NotAuditable.class).auditValue();
             }
         }
+        catch (NoSuchFieldException nex) {
+            Class superClass = bean.getWrappedClass().getSuperclass();
+            if (superClass != null) {
+                try {
+                    Field field = superClass.getDeclaredField(fieldName);
+                    if (field.isAnnotationPresent(NotAuditable.class)) {
+                        auditable = field.getAnnotation(NotAuditable.class).auditValue();
+                    }
+                }
+                catch (Exception exp) {
+                    // ignore
+                }
+            }
+        }
         catch (Exception ex) {
             if (logger.isDebugEnabled()) {
                 logger.debug("isAuditable: Not able to determine if fieldName = " + fieldName + " is auditable, assuming it is");

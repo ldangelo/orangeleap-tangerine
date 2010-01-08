@@ -413,11 +413,11 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         }
     }
 
-    private String findLastFourDigits(String number) {
+    public static String findLastFourDigits(String number) {
         return number == null ? "" : (number.length() > 4 ? number.substring(number.length() - 4, number.length()) : number);
     }
 
-    private String decryptAndMask(String encryptedString) {
+    public static String decryptAndMask(String encryptedString) {
         String clear = null;
         if (encryptedString != null) {
             clear = AES.decrypt(encryptedString);
@@ -426,7 +426,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         return clear;
     }
 
-    private String mask(String clear) {
+    public static String mask(String clear) {
         if (clear != null && clear.length() >= 4) {
             return "****" + clear.substring(clear.length() - 4);
         }

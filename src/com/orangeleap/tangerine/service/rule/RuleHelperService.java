@@ -18,18 +18,6 @@
 
 package com.orangeleap.tangerine.service.rule;
 
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.communication.Email;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.communication.EmailService;
-import com.orangeleap.tangerine.web.common.SortInfo;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +27,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.communication.EmailService;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public class RuleHelperService {
 
@@ -445,5 +445,18 @@ public class RuleHelperService {
         return totalDonations;
     }
 
+    public static void setCustomFieldToAgeInYearsOfDateCustomField(String customField, String dateCustomField, Constituent constituent) {
+    	int age = 0;
+    	try {
+    		Date d = constituent.getCustomFieldAsDate(dateCustomField);
+    		Calendar cal = Calendar.getInstance();
+    		cal.setTime(d);
+    		age =  Calendar.getInstance().get(Calendar.YEAR) - cal.get(Calendar.YEAR);
+    	} catch (Exception e) {
+    		// for missing or invalid date values, set result to 0
+    		logger.debug(e);
+    	}
+		constituent.setCustomFieldValue(customField, ""+age);
+    }
 
 }

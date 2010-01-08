@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.service.rule;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -446,29 +447,38 @@ public class RuleHelperService {
     }
 
     public static void setCustomFieldToAgeInYearsOfDateCustomField(String customField, String dateCustomField, Constituent constituent) {
-    	int age = 0;
+    	BigDecimal age = new BigDecimal(0);
     	try {
     		Date d = constituent.getCustomFieldAsDate(dateCustomField);
-    		age =  age(d);
+    		age =  age(d, new Date());
     	} catch (Exception e) {
     		// for missing or invalid date values, set result to 0
     		logger.debug(e);
     	}
-		constituent.setCustomFieldValue(customField, ""+age);
+		constituent.setCustomFieldAsBigDecimal(customField, age);
     }
     
-    public static int age(Date d) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
-        Calendar now = Calendar.getInstance();
-        int res = now.get(Calendar.YEAR) - cal.get(Calendar.YEAR);
-        if((cal.get(Calendar.MONTH) > now.get(Calendar.MONTH))
-          || (cal.get(Calendar.MONTH) == now.get(Calendar.MONTH)
-          && cal.get(Calendar.DAY_OF_MONTH) > now.get(Calendar.DAY_OF_MONTH)))
-        {
-           res--;
-        }
-        return res;
+    // Date d1 before d2
+    public static BigDecimal age(Date d1, Date d2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(d1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(d2);
+
+        BigDecimal result = new BigDecimal(cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR));
+        
+        // Add fractional part.
+        cal1.set(Calendar.YEAR, cal2.get(Calendar.YEAR)); // same day of year should result in 0 difference, so leap years must match later year.
+        BigDecimal daydelta = new BigDecimal(cal2.get(Calendar.DAY_OF_YEAR) - cal1.get(Calendar.DAY_OF_YEAR));
+        daydelta = daydelta.setScale(2);
+        BigDecimal frac = daydelta.divide(new BigDecimal("365.25"), RoundingMode.FLOOR); // Do not round up or will increment age before anniversary date!
+        result = result.add(frac);
+        
+        return result;
     }
+    
+//    public static void main(String[] args) {
+//    	System.out.print(age(new Date("02/29/1966"), new Date("03/01/1967")));
+//    }
 
 }

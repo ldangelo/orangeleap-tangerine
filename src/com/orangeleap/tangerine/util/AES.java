@@ -124,7 +124,7 @@ public class AES {
 
     /**
      * Decrypt the bytes using a key in the <code>KEY_FILE_PATH</code>
-     * @param encryptedBytes the encrypted text to decrypt
+     * @param encryptedString the encrypted text to decrypt
      * @return the decrypted <code>byte</code>[]
      * @throws AESException
      */
@@ -162,6 +162,26 @@ public class AES {
             throw new AESException("Exception while decrypting", e);
         }
         return clearBytes;
+    }
+
+    public static String findLastFourDigits(String number) {
+        return number == null ? "" : (number.length() > 4 ? number.substring(number.length() - 4, number.length()) : number);
+    }
+
+    public static String decryptAndMask(String encryptedString) {
+        String clear = null;
+        if (encryptedString != null) {
+            clear = decrypt(encryptedString);
+            clear = mask(clear);
+        }
+        return clear;
+    }
+
+    public static String mask(String clear) {
+        if (clear != null && clear.length() >= 4) {
+            return new StringBuilder(StringConstants.MASK_START).append(clear.substring(clear.length() - 4)).toString();
+        }
+        return clear;
     }
 
     public static void main(String[] args) throws Exception {

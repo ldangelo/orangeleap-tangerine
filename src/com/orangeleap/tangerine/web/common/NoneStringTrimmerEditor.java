@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.controller;
+package com.orangeleap.tangerine.web.common;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import com.orangeleap.tangerine.util.StringConstants;

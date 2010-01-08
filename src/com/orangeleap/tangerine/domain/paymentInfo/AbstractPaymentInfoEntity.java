@@ -48,8 +48,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected String checkNumber;
     @NotAuditable
     protected String checkAccountNumber;
-    @NotAuditable
-    private String checkAccountNumberEncrypted;
 
     protected String checkRoutingNumber;
     protected Date checkDate;
@@ -128,36 +126,11 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     public String getCheckAccountNumber() {
-        if (checkAccountNumberEncrypted != null) {
-            return AES.decrypt(checkAccountNumberEncrypted);
-        }
-        return null;
+        return checkAccountNumber;
     }
 
     public void setCheckAccountNumber(String checkAccountNumber) {
         this.checkAccountNumber = checkAccountNumber;
-        if (checkAccountNumber != null) {
-            checkAccountNumberEncrypted = AES.encrypt(checkAccountNumber);
-        }
-        else {
-            checkAccountNumberEncrypted = null;
-        }
-    }
-
-    public String getCheckAccountNumberEncrypted() {
-        return checkAccountNumberEncrypted;
-    }
-
-    public void setCheckAccountNumberEncrypted(String checkAccountNumberEncrypted) {
-        this.checkAccountNumberEncrypted = checkAccountNumberEncrypted;
-    }
-
-    public String getCheckAccountNumberReadOnly() {
-        return PaymentSource.decryptAndMask(checkAccountNumberEncrypted);
-    }
-
-    public void setCheckAccountNumberReadOnly(String str) {
-        // no-op
     }
 
     public String getCheckRoutingNumber() {

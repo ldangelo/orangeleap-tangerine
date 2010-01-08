@@ -18,7 +18,7 @@
 
 package com.orangeleap.tangerine.controller.gift;
 
-import com.orangeleap.tangerine.controller.NoneStringTrimmerEditor;
+import com.orangeleap.tangerine.web.common.NoneStringTrimmerEditor;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;

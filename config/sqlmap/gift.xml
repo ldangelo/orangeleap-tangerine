@@ -12,7 +12,7 @@
 		<result property="authCode" column="GIFT_AUTH_CODE" jdbcType="VARCHAR" />
 		<result property="avsMessage" column="GIFT_AVS_MESSAGE" jdbcType="VARCHAR" />
 		<result property="checkNumber" column="GIFT_CHECK_NUMBER" jdbcType="VARCHAR" />
-        <result property="checkAccountNumberEncrypted" column="GIFT_CHECK_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
+        <result property="checkAccountNumber" column="GIFT_CHECK_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
         <result property="checkRoutingNumber" column="GIFT_CHECK_ROUTING_NUMBER" jdbcType="VARCHAR" />
         <result property="checkDate" column="GIFT_CHECK_DATE" jdbcType="TIMESTAMP" />
 		<result property="comments" column="GIFT_COMMENTS" jdbcType="VARCHAR" />
@@ -559,7 +559,7 @@
 		CREATE_DATE, UPDATE_DATE
 		)
 		values (#giftStatus#, #giftType#, #amount#, #adjustedAmount#, #authCode#, #avsMessage#, 
-		#checkNumber#, #checkAccountNumberEncrypted#, #checkRoutingNumber#, #checkDate#, #comments#,
+		#checkNumber#, #checkAccountNumber#, #checkRoutingNumber#, #checkDate#, #comments#,
 		#currencyCode#,	#deductibleAmount#, #donationDate#, #entryType#,
 		#paymentMessage#, #paymentStatus#, #paymentType#,
 		#posted#, #postedDate#, #postmarkDate#,
@@ -581,7 +581,7 @@
 		g.AUTH_CODE = #authCode#,
 		g.AVS_MESSAGE = #avsMessage#, 
 		g.CHECK_NUMBER = #checkNumber#,
-		g.CHECK_ACCOUNT_NUMBER = #checkAccountNumberEncrypted#,
+		g.CHECK_ACCOUNT_NUMBER = #checkAccountNumber#,
 		g.CHECK_ROUTING_NUMBER = #checkRoutingNumber#, 
 		g.CHECK_DATE = #checkDate#,
 		g.COMMENTS = #comments#,

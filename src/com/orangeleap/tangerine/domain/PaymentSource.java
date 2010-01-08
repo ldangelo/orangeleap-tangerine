@@ -182,7 +182,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     }
 
     public String getCreditCardNumberDisplay() {
-        return decryptAndMask(creditCardNumberEncrypted);
+        return AES.decryptAndMask(creditCardNumberEncrypted);
     }
 
     public void setCreditCardNumberDisplay(String str) {
@@ -214,7 +214,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     }
 
     public String getAchRoutingNumberDisplay() {
-        return mask(achRoutingNumber);
+        return AES.mask(achRoutingNumber);
     }
 
     public void setAchRoutingNumberDisplay(String str) {
@@ -254,7 +254,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     }
 
     public String getAchAccountNumberDisplay() {
-        return decryptAndMask(achAccountNumberEncrypted);
+        return AES.decryptAndMask(achAccountNumberEncrypted);
     }
 
     public void setAchAccountNumberDisplay(String str) {
@@ -413,26 +413,6 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         }
     }
 
-    public static String findLastFourDigits(String number) {
-        return number == null ? "" : (number.length() > 4 ? number.substring(number.length() - 4, number.length()) : number);
-    }
-
-    public static String decryptAndMask(String encryptedString) {
-        String clear = null;
-        if (encryptedString != null) {
-            clear = AES.decrypt(encryptedString);
-            clear = mask(clear);
-        }
-        return clear;
-    }
-
-    public static String mask(String clear) {
-        if (clear != null && clear.length() >= 4) {
-            return "****" + clear.substring(clear.length() - 4);
-        }
-        return clear;
-    }
-
     /**
      * Check if this is a dummy object; This is not a dummy object all required fields are populated
      *
@@ -460,12 +440,12 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
             if (ACH.equals(paymentType)) {
                 clearCredit();
                 if (getLastFourDigits() == null) {
-                    setLastFourDigits(findLastFourDigits(getAchAccountNumber()));
+                    setLastFourDigits(AES.findLastFourDigits(getAchAccountNumber()));
                 }
             } else if (CREDIT_CARD.equals(paymentType)) {
                 clearACH();
                 if (getLastFourDigits() == null) {
-                    setLastFourDigits(findLastFourDigits(getCreditCardNumber()));
+                    setLastFourDigits(AES.findLastFourDigits(getCreditCardNumber()));
                 }
             } else if (CHECK.equals(paymentType) || CASH.equals(paymentType)) {
                 clearCredit();

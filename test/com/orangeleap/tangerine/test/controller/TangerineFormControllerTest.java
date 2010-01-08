@@ -18,12 +18,13 @@
 
 package com.orangeleap.tangerine.test.controller;
 
-import com.orangeleap.tangerine.controller.TangerineFormController;
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.controller.TangerineFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.test.dataprovider.TangerineFormDataProvider;
+import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.StringConstants;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -65,6 +66,8 @@ public class TangerineFormControllerTest extends BaseTest {
 		Assert.assertEquals(gift.getCustomFieldValue("reference"), "Joe Blow", "customFieldMap[reference].value = " + gift.getCustomFieldValue("reference"));
 		Assert.assertEquals(gift.getCustomFieldValue("daddyo"), "787", "customFieldMap[daddyo].value = " + gift.getCustomFieldValue("daddyo"));
 		Assert.assertEquals(gift.getCustomFieldValue("momma"), "Yo Mama", "customFieldMap[momma].value = " + gift.getCustomFieldValue("momma"));
+        Assert.assertEquals(gift.getCustomFieldValue("checkAccountNumber"), AES.encrypt("911911"));
+        Assert.assertEquals(gift.getCheckRoutingNumber(), AES.encrypt("abcdefghijk"));
 	}
 
 	@Test(dataProvider = "setupTestArrayForm", dataProviderClass = TangerineFormDataProvider.class)

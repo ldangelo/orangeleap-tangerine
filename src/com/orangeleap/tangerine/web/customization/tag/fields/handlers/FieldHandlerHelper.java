@@ -6,6 +6,7 @@ import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.displ
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.CodeOtherDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.CreditCardExpirationDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.DateDisplayHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.EncryptedDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.MultiPicklistAdditionalDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.PicklistDisplayHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.display.QueryLookupDisplayHandler;
@@ -16,6 +17,7 @@ import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.CreditCardExpirationHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.DateHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.DateTimeHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.EncryptedHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.HiddenHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.NumberHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.form.PercentageHandler;
@@ -95,7 +97,8 @@ public class FieldHandlerHelper implements ApplicationContextAware {
 	    initCommunicationPicklistHandlers(appContext);
 
 	    initAdjustedPicklistHandler(appContext);
-	    
+
+        initEncryptedHandler(appContext);
 	    initDisplayHandlers(appContext);
     }
 
@@ -105,6 +108,11 @@ public class FieldHandlerHelper implements ApplicationContextAware {
 		fieldTypeToHandlerMap.put(FieldType.ADDRESS, textHandler);
 		fieldTypeToHandlerMap.put(FieldType.PHONE, textHandler);
 	}
+
+    private void initEncryptedHandler(ApplicationContext appContext) {
+        FieldHandler encryptedHandler = new EncryptedHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.ENCRYPTED, encryptedHandler);
+    }
 
 	private void initNumberHandler(ApplicationContext appContext) {
 		FieldHandler numberHandler = new NumberHandler(appContext);
@@ -252,6 +260,8 @@ public class FieldHandlerHelper implements ApplicationContextAware {
 
 		FieldHandler selectionDisplayHandler = new SelectionDisplayHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.SELECTION_DISPLAY, selectionDisplayHandler);
-	}
 
+        FieldHandler encryptedDisplayHandler = new EncryptedDisplayHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.ENCRYPTED_DISPLAY, encryptedDisplayHandler);
+	}
 }

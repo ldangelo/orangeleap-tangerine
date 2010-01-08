@@ -36,8 +36,6 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.orangeleap.tangerine.controller.NoneStringTrimmerEditor;
-import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.SiteService;
@@ -73,7 +71,7 @@ public class MembershipFormController extends SimpleFormController {
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
-        binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
+        binder.registerCustomEditor(String.class, new com.orangeleap.tangerine.web.common.NoneStringTrimmerEditor(true));
 //        binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, request.getParameter("constituentId")));
     }
 

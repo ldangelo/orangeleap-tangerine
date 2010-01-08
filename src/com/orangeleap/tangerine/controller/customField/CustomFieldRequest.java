@@ -104,5 +104,4 @@ public class CustomFieldRequest {
     public String getReferenceConstituentType() {
         return referenceConstituentType;
     }
-
 }

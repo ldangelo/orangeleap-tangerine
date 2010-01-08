@@ -236,4 +236,6 @@ public final class StringConstants {
     public static final String OPEN = "open";
     public static final String ERRORS = "errors";
     public static final String EXECUTED = "executed";
+
+    public static final String MASK_START = "****";
 }

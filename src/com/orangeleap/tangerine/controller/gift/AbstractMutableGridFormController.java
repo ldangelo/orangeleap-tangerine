@@ -22,7 +22,9 @@ import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormCon
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.MutableGrid;
 import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,6 +90,7 @@ public abstract class AbstractMutableGridFormController extends TangerineConstit
 
 			ServletRequestDataBinder binder = new ServletRequestDataBinder(form.getDomainObject());
 			initBinder(request, binder);
+            BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(form.getDomainObject());
 
 			/*
 			 * Grid row indexes will be in ascending order but could skip numbers (i.e, 1, 3, 9, 15).
@@ -135,10 +138,15 @@ public abstract class AbstractMutableGridFormController extends TangerineConstit
 					String newRowKey = mutableGridEntry.getKey().replaceFirst(TangerineForm.TANG_START_BRACKET + "(\\d+)" + TangerineForm.TANG_END_BRACKET,
 							TangerineForm.TANG_START_BRACKET + newIndex + TangerineForm.TANG_END_BRACKET);
 
-					/* Add the re-indexed property back to the form in case an error occurs and we need to re-display */
-					form.addField(newRowKey, mutableGridEntry.getValue());
+                    Object value = mutableGridEntry.getValue();
+                    if (isEncryptedField(form, TangerineForm.unescapeFieldName(mutableGridEntry.getKey()), value)) {
+                        value = handleEncryptedValue(value, beanWrapper, TangerineForm.unescapeFieldName(newRowKey));
+                    }
 
-					propertyValues.addPropertyValue(TangerineForm.unescapeFieldName(newRowKey), mutableGridEntry.getValue());
+					/* Add the re-indexed property back to the form in case an error occurs and we need to re-display */
+					form.addField(newRowKey, value);
+
+					propertyValues.addPropertyValue(TangerineForm.unescapeFieldName(newRowKey), value);
 				}
 			}
 

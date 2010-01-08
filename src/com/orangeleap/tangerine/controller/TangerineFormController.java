@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.controller;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.ConstituentService;
@@ -27,7 +28,9 @@ import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -159,17 +162,69 @@ public abstract class TangerineFormController extends SimpleFormController {
 			else {
 				val = request.getParameter(escapedFormFieldName);
 			}
-			form.addField(escapedFormFieldName, val);
-			propertyValues.addPropertyValue(fieldName, val);
+            val = handleValueIfEncryptedField(form, beanWrapper, fieldName, val);
+            form.addField(escapedFormFieldName, val);
+            propertyValues.addPropertyValue(fieldName, val);
 		}
 		binder.bind(propertyValues);
 	}
+
+    protected Object handleValueIfEncryptedField(TangerineForm form, BeanWrapper beanWrapper, String fieldName, Object val) {
+        if (isEncryptedField(form, fieldName, val)) {
+            val = handleEncryptedValue(val, beanWrapper, fieldName);
+        }
+        return val;
+    }
+
+    protected boolean isEncryptedField(TangerineForm form, String fieldName, Object val) {
+        boolean isEncrypted = false;
+        Object domainObject = form.getDomainObject();
+        if (domainObject instanceof AbstractEntity) {
+            AbstractEntity entity = (AbstractEntity) form.getDomainObject();
+            if (entity.getFieldTypeMap() != null) {
+                FieldDefinition fieldDef = entity.getFieldTypeMap().get(fieldName.replaceFirst(StringConstants.DOT_VALUE, StringConstants.EMPTY)); // remove '.value' from customFieldMap[foo].value
+
+                if (fieldDef != null && FieldType.ENCRYPTED.equals(fieldDef.getFieldType())) {
+                    isEncrypted = true;
+                }
+            }
+        }
+        return isEncrypted;
+    }
+
+    /**
+     * Only encrypt the parameter value if it doesn't start with the mask string (****), otherwise use the original encrypted value
+     * @param val
+     * @param beanWrapper
+     * @param fieldName
+     * @return val, encrypted, if not already
+     */
+    protected Object handleEncryptedValue(Object val, BeanWrapper beanWrapper, String fieldName) {
+        if (val != null) {
+            if ( ! StringUtils.hasText(val.toString())) {
+                val = null;
+            }
+            else if (val.toString().startsWith(StringConstants.MASK_START)) {
+                // get the original encrypted value from the bean
+                if (beanWrapper.isReadableProperty(fieldName)) {
+                    val = beanWrapper.getPropertyValue(fieldName);
+                }
+                else {
+                    val = null;
+                }
+            }
+            else {
+                val = AES.encrypt(val.toString());
+            }
+        }
+        return val;
+    }
 
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
         binder.registerCustomEditor(Date.class, new TangerineCustomDateEditor(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT), true)); 
-		binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
+		binder.registerCustomEditor(String.class, new com.orangeleap.tangerine.web.common.NoneStringTrimmerEditor(true));
     }
 
     @Override

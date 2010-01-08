@@ -174,6 +174,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
                 }
 			}
 			else {
+                paramValue = handleValueIfEncryptedField(form, beanWrapper, fieldName, paramValue);
 				form.addField(escapedFormFieldName, paramValue);
 				propertyValues.addPropertyValue(fieldName, paramValue);
 			}

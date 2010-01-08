@@ -21,8 +21,12 @@ package com.orangeleap.tangerine.test.dataprovider;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.test.controller.FakeTestArray;
+import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.AES;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.validation.BindException;
 import org.testng.annotations.DataProvider;
@@ -62,6 +66,18 @@ public class TangerineFormDataProvider {
 		gift.setPaymentSource(paymentSource);
 		gift.addCustomFieldValue("reference", "3");
 		gift.addCustomFieldValue("momma", "Yo Mama");
+        gift.setCheckRoutingNumber(AES.encrypt("abcdefghijk"));
+        gift.addCustomFieldValue("checkAccountNumber", AES.encrypt("123456789"));
+
+        Map<String, FieldDefinition> typeMap = new HashMap<String, FieldDefinition>();
+        FieldDefinition fieldDef = new FieldDefinition("customFieldMap[checkAccountNumber]");
+        fieldDef.setFieldType(FieldType.ENCRYPTED);
+        typeMap.put("customFieldMap[checkAccountNumber]", fieldDef);
+        fieldDef = new FieldDefinition("checkRoutingNumber");
+        fieldDef.setFieldType(FieldType.ENCRYPTED);
+        typeMap.put("checkRoutingNumber", fieldDef);
+
+        gift.setFieldTypeMap(typeMap);
 
 		TangerineForm form = new TangerineForm();
 		form.setDomainObject(gift);
@@ -75,6 +91,8 @@ public class TangerineFormDataProvider {
 		addToMap(request, paramMap, "checkNumber", "111");
 		addToMap(request, paramMap, "customFieldMap[reference].value", "Joe Blow");
 		addToMap(request, paramMap, "customFieldMap[daddyo].value", "787");
+        addToMap(request, paramMap, "customFieldMap[checkAccountNumber].value", "911911");
+        addToMap(request, paramMap, "checkRoutingNumber", StringConstants.MASK_START + "shooty");
 
 		return new Object[][] { new Object[] { request, form, paramMap } };
 	}

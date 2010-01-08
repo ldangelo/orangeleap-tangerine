@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.PhoneService;
+import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -189,8 +190,8 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
             if (entity.getCheckDate() != null) {
                 sb.append(" ").append(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(entity.getCheckDate())); // TODO: the right date format based on locale
             }
-            if (StringUtils.isNotBlank(entity.getCheckAccountNumberReadOnly())) {
-                sb.append(" ").append(entity.getCheckAccountNumberReadOnly());
+            if (StringUtils.isNotBlank(entity.getCheckAccountNumber())) {
+                sb.append(" ").append(AES.decryptAndMask(entity.getCheckAccountNumber()));
             }
         }
 	    if (entity.getAddress() != null && !entity.getAddress().isNew()) {

@@ -137,6 +137,31 @@ $(document).ready(function() {
 		}
 		target.prevAll("label.desc").removeClass("inFocus");
 	});
+    $('input.encrypted').focus(function(event) {
+        var $elem = $(this);
+        if ($elem.val().indexOf('****') == 0) {
+            // force selection of the whole value if masked
+            $elem.select();
+        }
+    });
+    $('input.encrypted').keydown(function(event) {
+        var $elem = $(this);
+        /* if the user tries to change a masked encrypted value, wipe out the existing value to make them type in the whole field again */
+        if ($elem.val().indexOf('****') == 0 &&
+                (event.keyCode == Ext.EventObject.BACKSPACE || event.keyCode == Ext.EventObject.DELETE ||
+                     event.keyCode == 32 || // space
+                     event.keyCode == 188 || // ,
+                     event.keyCode == 109 || // -
+                     event.keyCode == 61 || // +
+                     event.keyCode == 59 || // ;
+                    (event.keyCode >= 190 && event.keyCode <= 192) || // . / `
+                    (event.keyCode >= 219 && event.keyCode <= 222) || // [ ] \ '
+                    (event.keyCode >= Ext.EventObject.ZERO && event.keyCode <= Ext.EventObject.NINE) ||
+                    (event.keyCode >= Ext.EventObject.A && event.keyCode <= Ext.EventObject.Z) ||
+                    (event.keyCode >= Ext.EventObject.NUM_ZERO && event.keyCode <= Ext.EventObject.NUM_NINE))) {
+            $elem.val('');
+        }
+    });
 
     $("div.mainForm form").submit(function() {
         var submitted = false;

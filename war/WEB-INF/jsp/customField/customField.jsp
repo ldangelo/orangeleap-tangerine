@@ -78,6 +78,7 @@
 			    <option value="MULTI_PICKLIST" >Multiple Selection Picklist</option>
 			    <option value="QUERY_LOOKUP" >Constituent Lookup</option>
 			    <option value="MULTI_QUERY_LOOKUP" >Multiple Selection Constituent Lookup</option>
+                <option value="ENCRYPTED">Encrypted</option>
 		   </select>
 		   <br/>
 

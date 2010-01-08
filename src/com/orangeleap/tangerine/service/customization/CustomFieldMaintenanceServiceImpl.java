@@ -255,7 +255,12 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     
     private FieldType getFieldType(boolean readOnly, FieldType fieldType) {
     	if (readOnly) {
-    		if (fieldType.equals(FieldType.TEXT)) return FieldType.READ_ONLY_TEXT;
+    		if (fieldType.equals(FieldType.TEXT)) {
+                return FieldType.READ_ONLY_TEXT;
+            }
+            else if (FieldType.ENCRYPTED.equals(fieldType)) {
+                return FieldType.ENCRYPTED_DISPLAY;
+            }
     	}
     	return fieldType;
     }

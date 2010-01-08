@@ -95,7 +95,7 @@ public class ManageRuleSegmentsController extends SimpleFormController {
         String ruleEventTypeName = request.getParameter("ruleEventType"); 
         
         Rule rule = ruleDao.readRuleById(id);
-        RuleVersion ruleVersion = rule.getRuleVersions().get(0);
+        RuleVersion ruleVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
         
         List<RuleSegment> segments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
         List<SegmentView> segmentViews = new ArrayList<SegmentView>();
@@ -183,7 +183,7 @@ public class ManageRuleSegmentsController extends SimpleFormController {
         boolean changeRuleSegmentType = CHANGE_RULE_SEGMENT_TYPE.equals(action);
         
         Rule rule = ruleDao.readRuleById(id);
-        RuleVersion ruleVersion = rule.getRuleVersions().get(0);
+        RuleVersion ruleVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
         List<RuleSegment> segments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
         long maxSeq = segments.get(segments.size()-1).getRuleSegmentSeq();
         

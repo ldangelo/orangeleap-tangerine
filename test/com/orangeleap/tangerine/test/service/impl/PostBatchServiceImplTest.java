@@ -349,7 +349,6 @@ public class PostBatchServiceImplTest extends BaseTest {
                 Assert.assertEquals(gift.getCustomFieldValue("source"), "Online");
                 Assert.assertEquals(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(gift.getDonationDate()), "12/31/2000");
                 Assert.assertEquals(gift.getGiftStatus(), "Not Paid");
-                Assert.assertEquals(gift.getCheckNumber(), "15");
                 Assert.assertEquals(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(gift.getPostmarkDate()), "06/30/2000");
 
                 if (gift.getId() == 6001L) {

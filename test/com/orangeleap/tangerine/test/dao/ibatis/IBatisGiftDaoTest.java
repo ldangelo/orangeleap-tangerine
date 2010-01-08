@@ -314,7 +314,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert StringConstants.EMPTY.equals(readGift.getAuthCode());
         assert readGift.getPaymentStatus().isEmpty();
         assert "Hi mom".equals(readGift.getPaymentMessage());
-        assert readGift.getCheckNumber().equals("111");
+        assert readGift.getCheckNumber() == null;
 
         for (DistributionLine line : readGift.getDistributionLines()) {
             assert readGift.getId().equals(line.getGiftId());

@@ -35,6 +35,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,9 @@ import com.orangeleap.tangerine.dao.RuleDao;
 import com.orangeleap.tangerine.dao.RuleEventTypeDao;
 import com.orangeleap.tangerine.dao.RuleGeneratedCodeDao;
 import com.orangeleap.tangerine.dao.RuleSegmentDao;
+import com.orangeleap.tangerine.dao.RuleSegmentParmDao;
 import com.orangeleap.tangerine.dao.RuleSegmentTypeDao;
+import com.orangeleap.tangerine.dao.RuleVersionDao;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.domain.customization.rule.RuleEventType;
 import com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType;
@@ -90,8 +93,14 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "ruleDAO")
     private RuleDao ruleDao;
 
+    @Resource(name = "ruleVersionDAO")
+    private RuleVersionDao ruleVersionDao;
+
     @Resource(name = "ruleSegmentDAO")
     private RuleSegmentDao ruleSegmentDao;
+
+    @Resource(name = "ruleSegmentParmDAO")
+    private RuleSegmentParmDao ruleSegmentParmDao;
 
     @Resource(name = "ruleSegmentTypeDAO")
     private RuleSegmentTypeDao ruleSegmentTypeDao;
@@ -148,6 +157,46 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
         ruleGeneratedCodeCache.removeAll();
         resetGroovyObjectCache();
         cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
+        if (!testMode) incrementVersions(rulesEventNameType);
+    }
+    
+    private synchronized void incrementVersions(RuleEventNameType rulesEventNameType) {
+    	List<Rule> rules =  ruleDao.readByRuleEventTypeNameId(rulesEventNameType.getType(), false);
+    	for (Rule rule: rules) {
+    		RuleVersion lastVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
+    		copyVersion(lastVersion);
+    	}
+    }
+    
+    private void copyVersion(RuleVersion oldRuleVersion) {
+    	RuleVersion newRuleVersion = new RuleVersion();
+    	BeanUtils.copyProperties(oldRuleVersion, newRuleVersion);
+    	newRuleVersion.setRuleVersionSeq(oldRuleVersion.getRuleVersionSeq() + 1);
+    	newRuleVersion.setId(0L);
+    	ruleVersionDao.maintainRuleVersion(newRuleVersion);
+    	List<RuleSegment> segments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(oldRuleVersion.getId());
+    	for (RuleSegment segment: segments) {
+    		copyRuleSegment(segment, newRuleVersion);
+    	}
+    }
+    
+    private void copyRuleSegment(RuleSegment oldRuleSegment, RuleVersion newRuleVersion) {
+    	RuleSegment newRuleSegment = new RuleSegment();
+    	BeanUtils.copyProperties(oldRuleSegment, newRuleSegment);
+    	newRuleSegment.setRuleVersionId(newRuleVersion.getId());
+    	newRuleSegment.setId(0L);
+    	ruleSegmentDao.maintainRuleSegment(newRuleSegment);
+    	for (RuleSegmentParm oldRuleSegmentParm: oldRuleSegment.getRuleSegmentParms()) {
+    		copyRuleSegmentParm(oldRuleSegmentParm, newRuleSegment);
+    	}
+    }
+    
+    private void copyRuleSegmentParm(RuleSegmentParm oldRuleSegmentParm, RuleSegment newRuleSegment) {
+    	RuleSegmentParm newRuleSegmentParm = new RuleSegmentParm();
+    	BeanUtils.copyProperties(oldRuleSegmentParm, newRuleSegmentParm);
+    	newRuleSegmentParm.setRuleSegmentId(newRuleSegment.getId());
+    	newRuleSegmentParm.setId(0L);
+    	ruleSegmentParmDao.maintainRuleSegmentParm(newRuleSegmentParm);
     }
     
     @SuppressWarnings("unchecked")

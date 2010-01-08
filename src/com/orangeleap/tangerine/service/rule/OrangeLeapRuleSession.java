@@ -16,7 +16,7 @@ import com.orangeleap.tangerine.util.RulesStack;
 public class OrangeLeapRuleSession {
 
 		protected final Log logger = OLLogger.getLog(getClass());
-		
+
 		private OrangeLeapRuleBase orangeLeapRuleBase;
 
 		private Map<String, Object> map = new TreeMap<String, Object>();
@@ -30,7 +30,7 @@ public class OrangeLeapRuleSession {
 		}
 
 		public void executeRules() {
-			
+
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
 			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventNameType();
 	        boolean reentrant = RulesStack.push(operation);
@@ -91,6 +91,7 @@ public class OrangeLeapRuleSession {
 			map.put("mailService", applicationContext.getBean("mailService"));
 			map.put("errorLogService", applicationContext.getBean("errorLogService"));
 			map.put("ruleHelperService", applicationContext.getBean("ruleHelperService"));
+			map.put("paymentGateway", applicationContext.getBean("paymentGateway"));
 		}
 
 }

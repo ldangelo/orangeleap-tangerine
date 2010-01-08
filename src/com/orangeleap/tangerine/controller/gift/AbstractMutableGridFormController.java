@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.controller.gift;
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.MutableGrid;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.MutablePropertyValues;
@@ -139,7 +140,8 @@ public abstract class AbstractMutableGridFormController extends TangerineConstit
 							TangerineForm.TANG_START_BRACKET + newIndex + TangerineForm.TANG_END_BRACKET);
 
                     Object value = mutableGridEntry.getValue();
-                    if (isEncryptedField(form, TangerineForm.unescapeFieldName(mutableGridEntry.getKey()), value)) {
+                    if (isEncryptedField(form, TangerineForm.unescapeFieldName(mutableGridEntry.getKey().replaceFirst(TangerineForm.TANG_START_BRACKET + newIndex + TangerineForm.TANG_END_BRACKET,
+                            StringConstants.EMPTY)), value)) {
                         value = handleEncryptedValue(value, beanWrapper, TangerineForm.unescapeFieldName(newRowKey));
                     }
 

@@ -490,7 +490,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Set the constituent custom field ? to the age in years of the date custom field ?';
+SET @PHRASE_CD = 'Set the constituent custom field ? to the duration in years from the date custom field ?';
 SET @CODE_CD = 'map.ruleHelperService.setCustomFieldToAgeInYearsOfDateCustomField(?, ?, map.constituent); map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code

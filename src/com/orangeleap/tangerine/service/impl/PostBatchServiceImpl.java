@@ -34,6 +34,8 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.theguru.client.GetSegmentationCountByTypeRequest;
+import com.orangeleap.theguru.client.GetSegmentationCountByTypeResponse;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeRequest;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
 import com.orangeleap.theguru.client.ObjectFactory;
@@ -200,21 +202,20 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         if (logger.isTraceEnabled()) {
             logger.trace("findTotalSegmentations: batchType = " + batchType);
         }
-//        final Theguru theGuru = new WSClient().getTheGuru();
-//        final ObjectFactory objFactory = new ObjectFactory();
-//        final GetSegmentationCountByTypeRequest req = objFactory.createGetSegmentationCountByTypeRequest();
-//
-//        final String resolvedType = resolveGuruSegmentationType(batchType);
-//
-//        long count = 0;
-//        if (resolvedType != null) {
-//            final GetSegmentationCountByTypeResponse resp = theGuru.getSegmentationCountByType(req);
-//            if (resp != null) {
-//                count = resp.getCount();
-//            }
-//        }
-//        return count;
-        return 2; // TODO: put back code above when Leo has fixed the web service request
+        final Theguru theGuru = new WSClient().getTheGuru();
+        final ObjectFactory objFactory = new ObjectFactory();
+        final GetSegmentationCountByTypeRequest req = objFactory.createGetSegmentationCountByTypeRequest();
+
+        final String resolvedType = resolveGuruSegmentationType(batchType);
+
+        long count = 0;
+        if (resolvedType != null) {
+            final GetSegmentationCountByTypeResponse resp = theGuru.getSegmentationCountByType(req);
+            if (resp != null) {
+                count = resp.getCount();
+            }
+        }
+        return count;
     }
 
     @Override

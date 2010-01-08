@@ -449,14 +449,26 @@ public class RuleHelperService {
     	int age = 0;
     	try {
     		Date d = constituent.getCustomFieldAsDate(dateCustomField);
-    		Calendar cal = Calendar.getInstance();
-    		cal.setTime(d);
-    		age =  Calendar.getInstance().get(Calendar.YEAR) - cal.get(Calendar.YEAR);
+    		age =  age(d);
     	} catch (Exception e) {
     		// for missing or invalid date values, set result to 0
     		logger.debug(e);
     	}
 		constituent.setCustomFieldValue(customField, ""+age);
+    }
+    
+    public static int age(Date d) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        Calendar now = Calendar.getInstance();
+        int res = now.get(Calendar.YEAR) - cal.get(Calendar.YEAR);
+        if((cal.get(Calendar.MONTH) > now.get(Calendar.MONTH))
+          || (cal.get(Calendar.MONTH) == now.get(Calendar.MONTH)
+          && cal.get(Calendar.DAY_OF_MONTH) > now.get(Calendar.DAY_OF_MONTH)))
+        {
+           res--;
+        }
+        return res;
     }
 
 }

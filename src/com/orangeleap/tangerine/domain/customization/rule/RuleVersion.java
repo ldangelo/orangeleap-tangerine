@@ -16,7 +16,6 @@ public class RuleVersion implements GeneratedId, Serializable {
     private Long id;
     private Long ruleId;
     private Long ruleVersionSeq;
-    private boolean ruleVersionIsTestOnly;
     private String updatedBy;
     private Date createDate;
     private Date updateDate;
@@ -48,15 +47,6 @@ public class RuleVersion implements GeneratedId, Serializable {
 
     public void setRuleVersionSeq(Long ruleVersionSeq) {
         this.ruleVersionSeq = ruleVersionSeq;
-    }
-
-    
-    public boolean getRuleVersionIsTestOnly() {
-        return ruleVersionIsTestOnly;
-    }
-
-    public void setRuleVersionIsTestOnly(boolean ruleVersionIsTestOnly) {
-        this.ruleVersionIsTestOnly = ruleVersionIsTestOnly;
     }
 
     
@@ -98,7 +88,6 @@ public class RuleVersion implements GeneratedId, Serializable {
         .append(id, a.getId())
         .append(ruleId, a.getRuleId())
         .append(ruleVersionSeq, a.getRuleVersionSeq())
-        .append(ruleVersionIsTestOnly, a.getRuleVersionIsTestOnly())
         .append(updatedBy, a.getUpdatedBy())
 		;
         return eb.isEquals();
@@ -111,7 +100,6 @@ public class RuleVersion implements GeneratedId, Serializable {
         .append(""+id)
         .append(""+ruleId)
         .append(""+ruleVersionSeq)
-        .append(""+ruleVersionIsTestOnly)
         .append(""+updatedBy)
 		;
         return hcb.hashCode();
@@ -124,7 +112,6 @@ public class RuleVersion implements GeneratedId, Serializable {
         .append("id", ""+id)
         .append("ruleId", ""+ruleId)
         .append("ruleVersionSeq", ""+ruleVersionSeq)
-        .append("ruleVersionIsTestOnly", ""+ruleVersionIsTestOnly)
         .append("updatedBy", ""+updatedBy)
         .toString();
     }

@@ -255,7 +255,6 @@ CREATE TABLE `RULE_VERSION` (
 `RULE_VERSION_ID` bigint(20) NOT NULL auto_increment,
 `RULE_ID` bigint(20) NOT NULL,
 `RULE_VERSION_SEQ` bigint(20) NOT NULL,
-`RULE_VERSION_IS_TEST_ONLY` char(1) default 'N' NOT NULL, -- Y only for VERSION_ID = 0
 `UPDATED_BY` varchar(255) NOT NULL, 
 `CREATE_DATE` datetime default NULL,
 `UPDATE_DATE` datetime default NULL,

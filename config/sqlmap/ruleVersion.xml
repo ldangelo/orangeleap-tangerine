@@ -6,7 +6,6 @@
         <result property="id" column="RULE_VERSION_RULE_VERSION_ID" />
         <result property="ruleId" column="RULE_VERSION_RULE_ID" />
         <result property="ruleVersionSeq" column="RULE_VERSION_RULE_VERSION_SEQ" />
-        <result property="ruleVersionIsTestOnly" column="RULE_VERSION_RULE_VERSION_IS_TEST_ONLY" />
         <result property="updatedBy" column="RULE_VERSION_UPDATED_BY" />
         <result property="createDate" column="RULE_VERSION_CREATE_DATE" />
         <result property="updateDate" column="RULE_VERSION_UPDATE_DATE" />
@@ -16,7 +15,6 @@
         rule_version.RULE_VERSION_ID as RULE_VERSION_RULE_VERSION_ID,
         rule_version.RULE_ID as RULE_VERSION_RULE_ID,
         rule_version.RULE_VERSION_SEQ as RULE_VERSION_RULE_VERSION_SEQ,
-        rule_version.RULE_VERSION_IS_TEST_ONLY as RULE_VERSION_RULE_VERSION_IS_TEST_ONLY,
         rule_version.UPDATED_BY as RULE_VERSION_UPDATED_BY,
         rule_version.CREATE_DATE as RULE_VERSION_CREATE_DATE,
         rule_version.UPDATE_DATE as RULE_VERSION_UPDATE_DATE    
@@ -39,7 +37,6 @@
         	RULE_VERSION_ID,
         	RULE_ID,
         	RULE_VERSION_SEQ,
-        	RULE_VERSION_IS_TEST_ONLY,
         	UPDATED_BY,
         	CREATE_DATE,
         	UPDATE_DATE        )
@@ -47,7 +44,6 @@
         	#id# ,
         	#ruleId# ,
         	#ruleVersionSeq# ,
-        	#ruleVersionIsTestOnly# ,
         	#updatedBy# ,
         	now(),
         	now()        )
@@ -62,7 +58,6 @@
         	RULE_VERSION_ID = #id# ,
         	RULE_ID = #ruleId# ,
         	RULE_VERSION_SEQ = #ruleVersionSeq# ,
-        	RULE_VERSION_IS_TEST_ONLY = #ruleVersionIsTestOnly# ,
         	UPDATED_BY = #updatedBy# ,
         	UPDATE_DATE = now()        
         where RULE_VERSION_ID = #id#

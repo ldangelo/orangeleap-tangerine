@@ -83,7 +83,7 @@ public class CreateRuleController extends SimpleFormController {
         if (!ManageRuleEventTypeController.accessAllowed(request)) return null;
         
         String ruleEventType = request.getParameter("ruleEventType"); 
-        List<Rule> rules = ruleDao.readByRuleEventTypeNameId(ruleEventType, false);
+        List<Rule> rules = ruleDao.readByRuleEventTypeNameId(ruleEventType);
         
         Rule rule = new Rule();
         rule.setRuleIsActive(false);
@@ -94,7 +94,6 @@ public class CreateRuleController extends SimpleFormController {
         
         RuleVersion ruleVersion = new RuleVersion();
         ruleVersion.setRuleId(rule.getId());
-        ruleVersion.setRuleVersionIsTestOnly(false);
         ruleVersion.setRuleVersionSeq(0L);
         ruleVersion.setUpdatedBy(tangerineUserHelper.lookupUserName());
         ruleVersionDao.maintainRuleVersion(ruleVersion);

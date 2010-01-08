@@ -77,7 +77,7 @@ public class ManageRuleController extends SimpleFormController {
     private List<Rule> getSelectionList(HttpServletRequest request) {
     	String ruleEventType = request.getParameter("ruleEventType");
     	if (ruleEventType == null || ruleEventType.length() == 0) ruleEventType = "";
-        return ruleDao.readByRuleEventTypeNameId(ruleEventType, false);
+        return ruleDao.readByRuleEventTypeNameId(ruleEventType);
     }
     
 }

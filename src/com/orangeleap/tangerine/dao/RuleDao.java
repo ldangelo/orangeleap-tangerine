@@ -10,6 +10,6 @@ public interface RuleDao {
 
     public Rule maintainRule(Rule rule);
 
-    public List<Rule> readByRuleEventTypeNameId(String ruleEventTypeNameId, boolean testMode);
+    public List<Rule> readByRuleEventTypeNameId(String ruleEventTypeNameId);
 
 }

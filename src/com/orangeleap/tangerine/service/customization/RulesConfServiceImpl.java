@@ -161,7 +161,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     }
     
     private synchronized void incrementVersions(RuleEventNameType rulesEventNameType) {
-    	List<Rule> rules =  ruleDao.readByRuleEventTypeNameId(rulesEventNameType.getType(), false);
+    	List<Rule> rules =  ruleDao.readByRuleEventTypeNameId(rulesEventNameType.getType());
     	for (Rule rule: rules) {
     		RuleVersion lastVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
     		copyVersion(lastVersion);
@@ -277,7 +277,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 			script.append("boolean b;\n"); 
 			script.append("boolean lastb;\n\n"); 
 
-    		List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType(), testMode);
+    		List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType());
 	    	for (Rule rule: rules) {
 	    		if (rule.getRuleIsActive() && rule.getRuleVersions().size() > 0) {
 	    			

@@ -48,13 +48,12 @@ public class IBatisRuleDao extends AbstractIBatisDao implements RuleDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Rule> readByRuleEventTypeNameId(String ruleEventTypeNameId, boolean testMode) {
+	public List<Rule> readByRuleEventTypeNameId(String ruleEventTypeNameId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readByRuleEventTypeNameId: id = " + ruleEventTypeNameId);
         }
         Map<String, Object> params = setupParams();
         params.put("ruleEventTypeNameId", ruleEventTypeNameId);
-        params.put("testMode", testMode);
         return getSqlMapClientTemplate().queryForList("SELECT_RULES_BY_RULE_EVENT_TYPE_NAME_ID", params);
 	}
     

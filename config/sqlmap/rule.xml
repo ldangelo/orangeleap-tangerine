@@ -39,7 +39,6 @@
     <select id="SELECT_RULES_BY_RULE_EVENT_TYPE_NAME_ID" resultMap="RULE_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_FRAGMENT"/>
         and rule.RULE_EVENT_TYPE_NAME_ID = #ruleEventTypeNameId#
-        and rule_version.RULE_VERSION_IS_TEST_ONLY = #testMode#
         order by rule.RULE_SEQ, rule_version.RULE_VERSION_SEQ
     </select>
 

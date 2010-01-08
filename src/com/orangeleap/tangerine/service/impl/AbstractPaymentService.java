@@ -190,11 +190,11 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
             if (entity.getCheckDate() != null) {
                 sb.append(" ");
                 sb.append(TangerineMessageAccessor.getMessage("checkDateColon"));
-                sb.append(" ");
-                sb.append(TangerineMessageAccessor.getMessage("checkAccountNumberColon"));
                 sb.append(" ").append(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(entity.getCheckDate())); // TODO: the right date format based on locale
             }
             if (StringUtils.isNotBlank(entity.getCheckAccountNumber())) {
+                sb.append(" ");
+                sb.append(TangerineMessageAccessor.getMessage("checkAccountNumberColon"));
                 sb.append(" ").append(AES.decryptAndMask(entity.getCheckAccountNumber()));
             }
         }

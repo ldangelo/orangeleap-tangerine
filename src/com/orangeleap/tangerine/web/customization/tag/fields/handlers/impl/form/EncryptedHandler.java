@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,18 +45,29 @@ public class EncryptedHandler extends TextHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                                  SectionDefinition sectionDefinition, List<SectionField> sectionFields,
 	                     SectionField currentField, TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
+        fieldValue = decryptMask(fieldValue, formFieldName);
+        super.doHandler(request, response, pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
+	}
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
+        fieldValue = decryptMask(fieldValue, currentField.getFieldDefinition().getFieldName());
+        return fieldValue;
+    }
+
+    protected Object decryptMask(Object fieldValue, String formFieldName) {
         if (fieldValue != null) {
             try {
                 fieldValue = AES.decryptAndMask(fieldValue.toString());
             }
             catch (Exception ex) {
                 if (logger.isWarnEnabled()) {
-                    logger.warn("doHandler: could not decrypt fieldName = " + formFieldName + " value = " + AES.mask(fieldValue.toString()));
+                    logger.warn("decryptMask: could not decrypt fieldName = " + formFieldName + " value = " + AES.mask(fieldValue.toString()));
                 }
             }
         }
-        super.doHandler(request, response, pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
-	}
+        return fieldValue;
+    }
 
     @Override
     protected String getCssClass() {

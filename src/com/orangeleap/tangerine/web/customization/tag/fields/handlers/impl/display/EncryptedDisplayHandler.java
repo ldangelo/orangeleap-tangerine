@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,16 +44,26 @@ public class EncryptedDisplayHandler extends ReadOnlyTextHandler {
     protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
                              SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
                              TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
+        fieldValue = decryptAndMask(form, formFieldName);
+        super.doHandler(request, response, pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
+    }
+
+    protected Object decryptAndMask(Object fieldValue, String formFieldName) {
         if (fieldValue != null) {
             try {
                 fieldValue = AES.decryptAndMask(fieldValue.toString());
             }
             catch (Exception ex) {
                 if (logger.isWarnEnabled()) {
-                    logger.warn("doHandler: could not decrypt fieldName = " + formFieldName + " value = " + AES.mask(fieldValue.toString()));
+                    logger.warn("decryptAndMask: could not decrypt fieldName = " + formFieldName + " value = " + AES.mask(fieldValue.toString()));
                 }
             }
         }
-        super.doHandler(request, response, pageContext, sectionDefinition, sectionFields, currentField, form, formFieldName, fieldValue, sb);
+        return fieldValue;
+    }
+
+    @Override
+    public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
+        return decryptAndMask(fieldValue, currentField.getFieldDefinition().getFieldName());
     }
 }

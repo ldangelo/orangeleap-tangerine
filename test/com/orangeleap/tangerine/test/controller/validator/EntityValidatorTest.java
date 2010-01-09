@@ -69,6 +69,8 @@ public class EntityValidatorTest extends BaseTest {
         Assert.assertTrue(errors.hasFieldErrors("distributionLines[2].amount"));
         Assert.assertFalse(errors.hasFieldErrors("distributionLines[2].motivationCode"));
         Assert.assertFalse(errors.hasFieldErrors("distributionLines[2].other_motivationCode"));
+        Assert.assertFalse(errors.hasFieldErrors("customFieldMap[checkAccountNumber]"));
+        Assert.assertTrue(errors.hasFieldErrors("customFieldMap[checkRoutingNumber]"));
     }
 
     private Object invokeValidateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
@@ -106,6 +108,8 @@ public class EntityValidatorTest extends BaseTest {
         Assert.assertFalse(errors.hasFieldErrors("distributionLines[0].customFieldMap[dueDate]"));
         Assert.assertFalse(errors.hasFieldErrors("distributionLines[1].customFieldMap[dueDate]"));
         Assert.assertTrue(errors.hasFieldErrors("distributionLines[2].customFieldMap[dueDate]"));
+        Assert.assertTrue(errors.hasFieldErrors("customFieldMap[checkNumber]"));
+        Assert.assertFalse(errors.hasFieldErrors("customFieldMap[checkNumber2]"));
     }
 
     private Object invokeValidateRegex(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,

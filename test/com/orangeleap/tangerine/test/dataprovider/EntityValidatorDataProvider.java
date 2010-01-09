@@ -106,6 +106,11 @@ public class EntityValidatorDataProvider {
         otherMotivationConditionsList.add(otherMotivationCondition);
         unresolvedFieldMap.put("distributionLines.other_motivationCode", new FieldRequired(true, otherMotivationConditionsList));
 
+        FieldCondition checksCondition = new FieldCondition(new FieldDefinition("customFieldMap[checkAccountNumber]"), null, null);
+        List<FieldCondition> checksConditionsList = new ArrayList<FieldCondition>();
+        checksConditionsList.add(checksCondition);
+        unresolvedFieldMap.put("customFieldMap[checkRoutingNumber]", new FieldRequired(true, checksConditionsList));
+
         Map<String, String> fieldLabelMap = new HashMap<String, String>();
         fieldLabelMap.put("amount", "Amount");
         fieldLabelMap.put("address.addressLine1", "Address Line 1");
@@ -113,6 +118,8 @@ public class EntityValidatorDataProvider {
         fieldLabelMap.put("distributionLines.amount", "Distro Line Amount");
         fieldLabelMap.put("distributionLines.motivationCode", "Motivation Code");
         fieldLabelMap.put("distributionLines.other_motivationCode", "Motivation Code");
+        fieldLabelMap.put("customFieldMap[checkAccountNumber]", "Check Account Number");
+        fieldLabelMap.put("customFieldMap[checkRoutingNumber]", "Check Routing Number");
 
         BindException errors = new BindException(gift, "gift");
         Map<String, Object> fieldValueMap = new HashMap<String, Object>();
@@ -177,6 +184,10 @@ public class EntityValidatorDataProvider {
         gift.addCustomFieldValue("companyCost", "abcd");
         gift.addCustomFieldValue("clientCost", "#@$@#$");
         gift.addCustomFieldValue("employeeCost", "#@$@#$");
+        gift.addCustomFieldValue("checkAccountNumber", AES.encrypt("999000"));
+        gift.addCustomFieldValue("checkAccountNumber2", AES.encrypt("111333"));
+        gift.addCustomFieldValue("checkNumber", "abba");
+        gift.addCustomFieldValue("checkNumber2", "abba");
 
         DistributionLine distroLine = new DistributionLine(new BigDecimal("15"));
         distroLine.addCustomFieldValue("bakery", "Bairds");
@@ -192,6 +203,15 @@ public class EntityValidatorDataProvider {
         distroLine.addCustomFieldValue("bakery", "Orowheat");
         distroLine.addCustomFieldValue("dueDate", "08-08-09");
         gift.addDistributionLine(distroLine);
+
+        Map<String, FieldDefinition> typeMap = new HashMap<String, FieldDefinition>();
+        FieldDefinition fieldDef = new FieldDefinition("customFieldMap[checkAccountNumber]");
+        fieldDef.setFieldType(FieldType.ENCRYPTED);
+        typeMap.put("customFieldMap[checkAccountNumber]", fieldDef);
+        fieldDef = new FieldDefinition("customFieldMap[checkAccountNumber2]");
+        fieldDef.setFieldType(FieldType.ENCRYPTED);
+        typeMap.put("customFieldMap[checkAccountNumber2]", fieldDef);
+        gift.setFieldTypeMap(typeMap);
 
         Map<String, FieldValidation> unresolvedFieldMap = new HashMap<String, FieldValidation>();
         unresolvedFieldMap.put("customFieldMap[companyCost]", new FieldValidation("extensions:isDouble"));
@@ -211,11 +231,25 @@ public class EntityValidatorDataProvider {
         dueDateConditionsList.add(dueDateCondition);
         unresolvedFieldMap.put("distributionLines.customFieldMap[dueDate]", new FieldValidation("^\\d{2}\\-\\d{2}-\\d{4}$", dueDateConditionsList));
 
+        FieldCondition checksCondition1 = new FieldCondition(new FieldDefinition("customFieldMap[checkAccountNumber]"), null, "999000");
+        List<FieldCondition> checksCondition1List = new ArrayList<FieldCondition>();
+        checksCondition1List.add(checksCondition1);
+        unresolvedFieldMap.put("customFieldMap[checkNumber]", new FieldValidation("^[0-9]*$", checksCondition1List));
+
+        FieldCondition checksCondition2 = new FieldCondition(new FieldDefinition("customFieldMap[checkAccountNumber2]"), null, "999000");
+        List<FieldCondition> checksCondition2List = new ArrayList<FieldCondition>();
+        checksCondition2List.add(checksCondition2);
+        unresolvedFieldMap.put("customFieldMap[checkNumber2]", new FieldValidation("^[0-9]*$", checksCondition2List));
+
         Map<String, String> fieldLabelMap = new HashMap<String, String>();
         fieldLabelMap.put("customFieldMap[companyCost]", "Company Cost");
         fieldLabelMap.put("customFieldMap[clientCost]", "Client Cost");
         fieldLabelMap.put("customFieldMap[employeeCost]", "Employee Cost");
         fieldLabelMap.put("distributionLines.customFieldMap[dueDate]", "Distro Line Due Date");
+        fieldLabelMap.put("customFieldMap[checkAccountNumber]", "Check Account Number");
+        fieldLabelMap.put("customFieldMap[checkAccountNumber2]", "Check Account Number 2");
+        fieldLabelMap.put("customFieldMap[checkNumber]", "Check Number");
+        fieldLabelMap.put("customFieldMap[checkNumber2]", "Check Number 2");
 
         BindException errors = new BindException(gift, "gift");
         Map<String, Object> fieldValueMap = new HashMap<String, Object>();

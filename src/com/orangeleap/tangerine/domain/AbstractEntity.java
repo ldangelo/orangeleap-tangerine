@@ -19,6 +19,8 @@
 package com.orangeleap.tangerine.domain;
 
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.ToSearchTextStringBuilder;
 import org.springframework.core.style.ToStringCreator;
 
@@ -168,6 +170,22 @@ public abstract class AbstractEntity implements Entity {
      */
     public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
         this.fieldTypeMap = fieldTypeMap;
+    }
+
+    /**
+     * Check if the specified field name is of Encrypted FieldType
+     * @param fieldName the field name to check
+     * @return true if Encrypted FieldType
+     */
+    public boolean isEncryptedFieldType(String fieldName) {
+        boolean isEncrypted = false;
+        if (fieldTypeMap != null) {
+            final FieldDefinition fieldDef = fieldTypeMap.get(fieldName.replaceFirst(StringConstants.DOT_VALUE, StringConstants.EMPTY)); // remove '.value' from customFieldMap[foo].value
+            if (fieldDef != null && FieldType.ENCRYPTED.equals(fieldDef.getFieldType())) {
+                isEncrypted = true;
+            }
+        }
+        return isEncrypted;
     }
 
     /**

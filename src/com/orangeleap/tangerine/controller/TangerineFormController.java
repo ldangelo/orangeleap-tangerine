@@ -181,13 +181,7 @@ public abstract class TangerineFormController extends SimpleFormController {
         Object domainObject = form.getDomainObject();
         if (domainObject instanceof AbstractEntity) {
             AbstractEntity entity = (AbstractEntity) form.getDomainObject();
-            if (entity.getFieldTypeMap() != null) {
-                FieldDefinition fieldDef = entity.getFieldTypeMap().get(fieldName.replaceFirst(StringConstants.DOT_VALUE, StringConstants.EMPTY)); // remove '.value' from customFieldMap[foo].value
-
-                if (fieldDef != null && FieldType.ENCRYPTED.equals(fieldDef.getFieldType())) {
-                    isEncrypted = true;
-                }
-            }
+            isEncrypted = entity.isEncryptedFieldType(fieldName);
         }
         return isEncrypted;
     }

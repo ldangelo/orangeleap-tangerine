@@ -18,7 +18,14 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import com.orangeleap.tangerine.domain.*;
+import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.PaymentSourceAware;
+import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -30,12 +37,13 @@ import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.collections.map.ListOrderedMap;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.validation.Errors;
@@ -43,7 +51,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -311,7 +325,11 @@ public class EntityValidator implements Validator {
                 
                 if (!valid && !errorSet.contains(key)) {
                     String errorKey = key.replaceAll("\\[\\d+\\]", StringConstants.EMPTY);
-                    errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(errorKey), propertyString }, "no message provided for the validation error: fieldValidationFailure");
+
+                    propertyString = entity.isEncryptedFieldType(key) ? AES.mask(propertyString) : propertyString; // For encrypted values, make sure to not display the decrypted value but the mask instead
+
+                    errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(errorKey),
+                            propertyString }, "no message provided for the validation error: fieldValidationFailure");
                 }
             }
         }
@@ -326,12 +344,20 @@ public class EntityValidator implements Validator {
                 if (property instanceof CustomField) {
                     property = ((CustomField) property).getValue();
                 }
+                if (entity.isEncryptedFieldType(key) && property != null) {
+                    try {
+                        property = AES.decrypt(property.toString());
+                    }
+                    catch (Exception ex) {
+                        logger.warn("getProperty: could not decrypt property = " + key + " value = " + AES.mask(property.toString()));
+                    }
+                }
                 fieldValueMap.put(key, property);
             }
         }
         return property;
     }
-    
+
     protected String getPropertyString(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
         Object property = getProperty(key, entity, fieldValueMap);
         return property == null ? StringConstants.EMPTY : property.toString();

@@ -1,18 +1,25 @@
 package com.orangeleap.tangerine.test.dataprovider;
 
-import org.testng.annotations.DataProvider;
-import org.springframework.validation.BindException;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.customization.FieldRequired;
-import com.orangeleap.tangerine.domain.customization.FieldCondition;
-import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.customization.FieldCondition;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
+import com.orangeleap.tangerine.domain.customization.FieldValidation;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.AES;
+import org.springframework.validation.BindException;
+import org.testng.annotations.DataProvider;
 
-import java.util.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class EntityValidatorDataProvider {
 
@@ -40,18 +47,32 @@ public class EntityValidatorDataProvider {
         gift.addDistributionLine(new DistributionLine());
         gift.addDistributionLine(new DistributionLine(new BigDecimal(15)));
         gift.addDistributionLine(new DistributionLine());
+        gift.addCustomFieldValue("checkAccountNumber", AES.encrypt("1234567890"));
+
+        Map<String, FieldDefinition> typeMap = new HashMap<String, FieldDefinition>();
+        FieldDefinition fieldDef = new FieldDefinition("customFieldMap[checkAccountNumber]");
+        fieldDef.setFieldType(FieldType.ENCRYPTED);
+        typeMap.put("customFieldMap[checkAccountNumber]", fieldDef);
+        fieldDef = new FieldDefinition("customFieldMap[checkRoutingNumber]");
+        fieldDef.setFieldType(FieldType.ENCRYPTED);
+        typeMap.put("customFieldMap[checkRoutingNumber]", fieldDef);
+        gift.setFieldTypeMap(typeMap);
 
         Map<String, FieldRequired> unresolvedFieldMap = new HashMap<String, FieldRequired>();
         unresolvedFieldMap.put("amount", new FieldRequired(true));
         unresolvedFieldMap.put("address.addressLine1", new FieldRequired(true));
         unresolvedFieldMap.put("phone.number", new FieldRequired(true));
         unresolvedFieldMap.put("distributionLines.amount", new FieldRequired(true));
+        unresolvedFieldMap.put("customFieldMap[checkAccountNumber]", new FieldRequired(true));
+        unresolvedFieldMap.put("customFieldMap[checkRoutingNumber]", new FieldRequired(true));
 
         Map<String, String> fieldLabelMap = new HashMap<String, String>();
         fieldLabelMap.put("amount", "Amount");
         fieldLabelMap.put("address.addressLine1", "Address Line 1");
         fieldLabelMap.put("phone.number", "Phone Number");
         fieldLabelMap.put("distributionLines.amount", "Distro Line Amount");
+        fieldLabelMap.put("customFieldMap[checkAccountNumber]", "Check Account Number");
+        fieldLabelMap.put("customFieldMap[checkRoutingNumber]", "Check Routing Number");
 
         BindException errors = new BindException(gift, "gift");
         Map<String, Object> fieldValueMap = new HashMap<String, Object>();
@@ -105,6 +126,8 @@ public class EntityValidatorDataProvider {
         Gift gift = new Gift();
         gift.addCustomFieldValue("companyCost", "abcd");
         gift.addCustomFieldValue("clientCost", "5000");
+        gift.addCustomFieldValue("checkAccountNumber", AES.encrypt("abcdefghijk"));
+        gift.addCustomFieldValue("checkRoutingNumber", AES.encrypt("9100234"));
 
         DistributionLine distroLine = new DistributionLine();
         distroLine.addCustomFieldValue("dueDate", "asfasd");
@@ -118,15 +141,28 @@ public class EntityValidatorDataProvider {
         distroLine.addCustomFieldValue("dueDate", "08-08-09");
         gift.addDistributionLine(distroLine);
 
+        Map<String, FieldDefinition> typeMap = new HashMap<String, FieldDefinition>();
+        FieldDefinition fieldDef = new FieldDefinition("customFieldMap[checkAccountNumber]");
+        fieldDef.setFieldType(FieldType.ENCRYPTED);
+        typeMap.put("customFieldMap[checkAccountNumber]", fieldDef);
+        fieldDef = new FieldDefinition("customFieldMap[checkRoutingNumber]");
+        fieldDef.setFieldType(FieldType.ENCRYPTED);
+        typeMap.put("customFieldMap[checkRoutingNumber]", fieldDef);
+        gift.setFieldTypeMap(typeMap);
+        
         Map<String, FieldValidation> unresolvedFieldMap = new HashMap<String, FieldValidation>();
         unresolvedFieldMap.put("customFieldMap[companyCost]", new FieldValidation("extensions:isDouble"));
         unresolvedFieldMap.put("customFieldMap[clientCost]", new FieldValidation("extensions:isDouble"));
         unresolvedFieldMap.put("distributionLines.customFieldMap[dueDate]", new FieldValidation("^\\d{2}\\-\\d{2}-\\d{4}$"));
+        unresolvedFieldMap.put("customFieldMap[checkAccountNumber]", new FieldValidation("^[0-9]*$"));
+        unresolvedFieldMap.put("customFieldMap[checkRoutingNumber]", new FieldValidation("^[0-9]*$"));
 
         Map<String, String> fieldLabelMap = new HashMap<String, String>();
         fieldLabelMap.put("customFieldMap[companyCost]", "Company Cost");
         fieldLabelMap.put("customFieldMap[clientCost]", "Client Cost");
         fieldLabelMap.put("distributionLines.customFieldMap[dueDate]", "Distro Line Due Date");
+        fieldLabelMap.put("customFieldMap[checkAccountNumber]", "Check Account Number");
+        fieldLabelMap.put("customFieldMap[checkRoutingNumber]", "Check Routing Number");
 
         BindException errors = new BindException(gift, "gift");
         Map<String, Object> fieldValueMap = new HashMap<String, Object>();

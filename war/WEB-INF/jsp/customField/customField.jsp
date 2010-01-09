@@ -63,7 +63,7 @@
 
 		   <script>
 		   function changeFieldType(selectedValue) {
-			   if (selectedValue == 'TEXT') { $('#selectValidation').show(); } else { $('#selectValidation').hide();  }
+			   if (selectedValue == 'TEXT' || selectedValue == 'ENCRYPTED') { $('#selectValidation').show(); } else { $('#selectValidation').hide();  }
 			   if (selectedValue == 'QUERY_LOOKUP' || selectedValue == 'MULTI_QUERY_LOOKUP') { $('#selectReferenceConstituentType').show(); } else { $('#selectReferenceConstituentType').hide();  }
 		   }
 		   </script>

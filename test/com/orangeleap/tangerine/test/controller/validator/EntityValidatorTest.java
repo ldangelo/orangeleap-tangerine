@@ -1,22 +1,18 @@
 package com.orangeleap.tangerine.test.controller.validator;
 
-import com.orangeleap.tangerine.test.BaseTest;
-import com.orangeleap.tangerine.test.dataprovider.EntityValidatorDataProvider;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.service.impl.AuditServiceImpl;
-import org.testng.annotations.Test;
-import org.testng.Assert;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
+import com.orangeleap.tangerine.test.BaseTest;
+import com.orangeleap.tangerine.test.dataprovider.EntityValidatorDataProvider;
 import org.springframework.validation.Errors;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
-import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
-import java.lang.reflect.Method;
 
 public class EntityValidatorTest extends BaseTest {
 
@@ -52,6 +48,8 @@ public class EntityValidatorTest extends BaseTest {
         Assert.assertTrue(errors.hasFieldErrors("distributionLines[0].amount"));
         Assert.assertFalse(errors.hasFieldErrors("distributionLines[1].amount"));
         Assert.assertTrue(errors.hasFieldErrors("distributionLines[2].amount"));
+        Assert.assertFalse(errors.hasFieldErrors("customFieldMap[checkAccountNumber]"));
+        Assert.assertTrue(errors.hasFieldErrors("customFieldMap[checkRoutingNumber]"));
     }
 
     @Test(dataProvider = "setupEntityValidatorRequiredFieldsHasConditions", dataProviderClass = EntityValidatorDataProvider.class)
@@ -93,6 +91,8 @@ public class EntityValidatorTest extends BaseTest {
         Assert.assertTrue(errors.hasFieldErrors("distributionLines[0].customFieldMap[dueDate]"));
         Assert.assertFalse(errors.hasFieldErrors("distributionLines[1].customFieldMap[dueDate]"));
         Assert.assertTrue(errors.hasFieldErrors("distributionLines[2].customFieldMap[dueDate]"));
+        Assert.assertTrue(errors.hasFieldErrors("customFieldMap[checkAccountNumber]"));
+        Assert.assertFalse(errors.hasFieldErrors("customFieldMap[checkRoutingNumber]"));
     }
 
     @Test(dataProvider = "setupEntityValidatorRegexpFieldsHasConditions", dataProviderClass = EntityValidatorDataProvider.class)

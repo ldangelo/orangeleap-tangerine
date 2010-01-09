@@ -31,7 +31,6 @@ import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.relationship.RelationshipUtil;
 import com.orangeleap.tangerine.type.AuditType;
-import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -346,9 +345,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     }
 
     private Object decryptMaskEncryptedField(AbstractEntity entity, String fieldName, Object value) {
-        FieldDefinition fieldDef = entity.getFieldTypeMap().get(fieldName.replaceFirst(StringConstants.DOT_VALUE, StringConstants.EMPTY));
-
-        if (fieldDef != null && FieldType.ENCRYPTED.equals(fieldDef.getFieldType()) && value != null) {
+        if (entity.isEncryptedFieldType(fieldName) && value != null) {
             try {
                 value = AES.decryptAndMask(value.toString());
             }

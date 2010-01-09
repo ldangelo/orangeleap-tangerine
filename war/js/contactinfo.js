@@ -7,7 +7,44 @@ Ext.onReady(function() {
 	    Ext.form.Field.prototype.msgTarget = 'side';
 	    Ext.QuickTips.init();
 	    Contacts.constituentId = pId[1];
-	
+
+        /******************************************************
+         * Common Renderers                                   *
+         ******************************************************/
+
+        var addressRenderer = function(val, meta, record) {
+            return Contacts.addressTemplate.apply(record.data);
+        };
+
+        var phoneRenderer = function(val, meta, record) {
+            return Contacts.phoneTemplate.apply(record.data);
+        };
+
+        var emailRenderer = function(val, meta, record) {
+            return Contacts.emailTemplate.apply(record.data);
+        };
+
+        // renders a Star in the first column if the element is the
+        // primary entity
+        var primaryRenderer = function(val, meta, record) {
+            if (record.data.primary) {
+                meta.css = "yellow-star";
+                meta.attr = "ext:qtip='Preferred'";
+            }
+        };
+
+        // renders a green ball in the second column is the element
+        // is active, otherwise a gray gall
+        var activeRenderer = function(val, meta, record) {
+            if (record.data.active) {
+                meta.css = "green-dot";
+                meta.attr = "ext:qtip='Active'";
+            } else {
+                meta.css = "grey-dot";
+                meta.attr = "ext:qtip='Inactive'";
+            }
+        };
+
 	    /******************************************************
 	     * Configuration for the Address Information          *
 	     ******************************************************/
@@ -33,9 +70,9 @@ Ext.onReady(function() {
 	        title: 'Mailing Addresses',
 	        store: Contacts.addressStore,
 	        columns:[
-	            {header: 'Primary', width: 20, renderer: Contacts.primaryRenderer},
-	            {header: 'Active', width: 20, renderer: Contacts.activeRenderer},
-	            {id: 'streetAddress', header: 'Address', renderer: Contacts.addressRenderer}
+	            {header: 'Primary', width: 20, renderer: primaryRenderer},
+	            {header: 'Active', width: 20, renderer: activeRenderer},
+	            {id: 'streetAddress', header: 'Address', renderer: addressRenderer}
 	        ],
 	        sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 	        autoExpandColumn: "streetAddress",
@@ -87,9 +124,9 @@ Ext.onReady(function() {
 	        title: 'Phone Numbers',
 	        store: Contacts.phoneStore,
 	        columns:[
-	            {width: 20, sortable: true, renderer: Contacts.primaryRenderer},
-	            {width: 20, sortable: true, renderer: Contacts.activeRenderer},
-	            {id: 'phoneNumbers', renderer: Contacts.phoneRenderer}
+	            {width: 20, sortable: true, renderer: primaryRenderer},
+	            {width: 20, sortable: true, renderer: activeRenderer},
+	            {id: 'phoneNumbers', renderer: phoneRenderer}
 	        ],
 	        sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 	        autoExpandColumn: "phoneNumbers",
@@ -137,9 +174,9 @@ Ext.onReady(function() {
 	        title: 'Email Addresses',
 	        store: Contacts.emailStore,
 	        columns:[
-	            {width: 20, sortable: true, renderer: Contacts.primaryRenderer},
-	            {width: 20, sortable: true, renderer: Contacts.activeRenderer},
-	            {id: 'emailAddresses', renderer: Contacts.emailRenderer}
+	            {width: 20, sortable: true, renderer: primaryRenderer},
+	            {width: 20, sortable: true, renderer: activeRenderer},
+	            {id: 'emailAddresses', renderer: emailRenderer}
 	        ],
 	        sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 	        autoExpandColumn: "emailAddresses",
@@ -200,43 +237,5 @@ Ext.onReady(function() {
 	    Contacts.phoneStore.load({params: {id: Contacts.constituentId}});
 	    Contacts.emailStore.load({params: {id: Contacts.constituentId}});
 	}
+
 });
-
-/******************************************************
- * Common Renderers                                   *
- ******************************************************/
-
-Contacts.addressRenderer = function(val, meta, record) {
-    return Contacts.addressTemplate.apply(record.data);
-};
-
-Contacts.phoneRenderer = function(val, meta, record) {
-    return Contacts.phoneTemplate.apply(record.data);
-};
-
-Contacts.emailRenderer = function(val, meta, record) {
-    return Contacts.emailTemplate.apply(record.data);
-};
-
-// renders a Star in the first column if the element is the
-// primary entity
-Contacts.primaryRenderer = function(val, meta, record) {
-
-    if (record.data.primary) {
-        meta.css = "yellow-star";
-        meta.attr = "ext:qtip='Preferred'";
-    }
-};
-
-// renders a green ball in the second column is the element
-// is active, otherwise a gray gall
-Contacts.activeRenderer = function(val, meta, record) {
-
-    if (record.data.active) {
-        meta.css = "green-dot";
-        meta.attr = "ext:qtip='Active'";
-    } else {
-        meta.css = "grey-dot";
-        meta.attr = "ext:qtip='Inactive'";
-    }
-};

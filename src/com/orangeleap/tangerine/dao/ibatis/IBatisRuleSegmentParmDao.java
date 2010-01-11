@@ -43,5 +43,15 @@ public class IBatisRuleSegmentParmDao extends AbstractIBatisDao implements RuleS
         params.put("id", id);
         return (RuleSegmentParm)getSqlMapClientTemplate().queryForObject("SELECT_RULE_SEGMENT_PARM_BY_ID", params);
     }
+
+	@Override
+	public void deleteSegmentParms(Long segmentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteSegmentParms: segmentId = " + segmentId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", segmentId);
+        getSqlMapClientTemplate().delete("DELETE_RULE_SEGMENT_PARMS_BY_RULE_SEGMENT_ID", params);
+	}
     
 }

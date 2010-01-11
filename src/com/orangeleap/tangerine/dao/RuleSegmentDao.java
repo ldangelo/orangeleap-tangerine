@@ -12,4 +12,6 @@ public interface RuleSegmentDao {
 
     public RuleSegment maintainRuleSegment(RuleSegment ruleSegment);
 
+	public void deleteSegment(Long id);
+
 }

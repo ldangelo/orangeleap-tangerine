@@ -31,6 +31,10 @@
         <include refid="SELECT_RULE_SEGMENT_PARM_FRAGMENT"/>
         and rule_segment_parm.RULE_SEGMENT_PARM_ID = #id#
     </select>
+    
+    <delete id="DELETE_RULE_SEGMENT_PARMS_BY_RULE_SEGMENT_ID" parameterClass="map" >
+        delete from RULE_SEGMENT_PARM where RULE_SEGMENT_ID = #id#  
+    </delete>
 
     <insert id="INSERT_RULE_SEGMENT_PARM" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleSegmentParm">
         insert into RULE_SEGMENT_PARM (

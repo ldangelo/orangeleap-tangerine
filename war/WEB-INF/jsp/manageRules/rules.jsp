@@ -31,6 +31,7 @@
 	
 	            <a href="#" onclick="window.location = 'ruleDesc.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " >Edit Description / Active Status</a>&nbsp;&nbsp;&nbsp;
 	            <a href="#" onclick="window.location = 'editRuleSegments.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " >Edit Conditions and Consequences</a>&nbsp;&nbsp;&nbsp;
+	            <a href="#" onclick="window.location = 'revertRuleVersion.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " >Revert to Prior Version</a>&nbsp;&nbsp;&nbsp;
 
             </c:if>
             

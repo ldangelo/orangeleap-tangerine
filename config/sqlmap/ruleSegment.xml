@@ -31,6 +31,10 @@
         order by rule_segment_parm.RULE_SEGMENT_PARM_SEQ
     </select>
 
+    <delete id="DELETE_RULE_SEGMENT_BY_ID" parameterClass="map" >
+        delete from RULE_SEGMENT where RULE_SEGMENT_ID = #id#  
+    </delete>
+    
     <select id="SELECT_RULE_SEGMENTS_BY_RULE_VERSION_ID" resultMap="RULE_SEGMENT_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_SEGMENT_FRAGMENT"/>
         where rule_segment.RULE_VERSION_ID = #id#

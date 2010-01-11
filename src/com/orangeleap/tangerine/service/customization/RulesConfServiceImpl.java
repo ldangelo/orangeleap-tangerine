@@ -424,4 +424,27 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
         return null;
 	}
 
+	@Override
+	public void revertRuleToVersion(Long ruleId, Long ruleVersionId) {
+		Rule rule = ruleDao.readRuleById(ruleId);
+		RuleVersion target = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
+		for (RuleVersion ruleVersion: rule.getRuleVersions()) {
+			if (ruleVersion.getId().equals(ruleVersionId)) {
+				revertRuleVersion(ruleVersion, target);
+			}
+		}
+	}
+	
+	private void revertRuleVersion(RuleVersion from, RuleVersion to) {
+    	List<RuleSegment> segments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(to.getId());
+    	for (RuleSegment segment: segments) {
+    		ruleSegmentParmDao.deleteSegmentParms(segment.getId());
+    		ruleSegmentDao.deleteSegment(segment.getId());
+    	}
+    	segments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(from.getId());
+    	for (RuleSegment segment: segments) {
+    		copyRuleSegment(segment, to);
+    	}
+	}
+
 }

@@ -7,5 +7,8 @@ public interface RuleSegmentParmDao {
     public RuleSegmentParm readRuleSegmentParmById(Long id);
 
     public RuleSegmentParm maintainRuleSegmentParm(RuleSegmentParm ruleSegmentParm);
+    
+	public void deleteSegmentParms(Long segmentId);
+
 
 }

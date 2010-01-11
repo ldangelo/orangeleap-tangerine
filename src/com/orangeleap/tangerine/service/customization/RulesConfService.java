@@ -38,4 +38,6 @@ public interface RulesConfService {
 
 	public Date getLastPublishedDate(String ruleEventTypeNameId);
 
+	public void revertRuleToVersion(Long ruleId, Long ruleVersionId);
+
 }

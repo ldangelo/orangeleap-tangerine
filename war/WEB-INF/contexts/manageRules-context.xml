@@ -20,6 +20,11 @@
         <property name="successView" value="manageRules/editRuleSegments" />
     </bean>
 
+	<bean id="revertRuleVersion" class="com.orangeleap.tangerine.controller.manageRules.RevertRuleVersionController">
+        <property name="formView" value="manageRules/revertRuleVersion" />
+        <property name="successView" value="manageRules/revertRuleVersion" />
+    </bean>
+
 	<bean id="createRule" class="com.orangeleap.tangerine.controller.manageRules.CreateRuleController">
         <property name="formView" value="manageRules/createRule" />
         <property name="successView" value="manageRules/createRule" />
@@ -37,6 +42,7 @@
                 <prop key="/ruleEventTypes.htm">ruleEventTypes</prop>
                 <prop key="/rules.htm">rules</prop>
                 <prop key="/editRuleSegments.htm">editRuleSegments</prop>
+                <prop key="/revertRuleVersion.htm">revertRuleVersion</prop>
                 <prop key="/createRule.htm">createRule</prop>
                 <prop key="/ruleDesc.htm">ruleDesc</prop>
 			</props>

@@ -81,6 +81,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	}
 
 	private static String REINDEX_FULLTEXT = "nightly.reindex.fulltext";
+	private static String RESAVE_CONSTITUENT = "nightly.resave.constituent";
 
 	public void executeRules(String schedule, Date compareDate) {
 
@@ -99,6 +100,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
 			boolean reindexFullText = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(REINDEX_FULLTEXT));
+			boolean resaveConstituent = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(RESAVE_CONSTITUENT));
 
 			int totalContituentCount = constituentService.getConstituentCountBySite();
 			for (int start = 0; start <= totalContituentCount; start += 100) {
@@ -120,6 +122,11 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 						if (reindexFullText) {
 							ps.updateFullTextSearchIndex(p.getId());
 						}
+						
+						if (resaveConstituent) {
+							constituentService.maintainConstituent(constituentService.readConstituentById(p.getId()));
+						}
+						
 
 					} catch (Throwable t) {
 						t.printStackTrace();

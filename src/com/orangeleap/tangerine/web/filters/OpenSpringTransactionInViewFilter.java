@@ -76,6 +76,8 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
             RulesStack.getStack().clear();
         }
 
+        TaskStack.clear();
+
         PlatformTransactionManager txManager = (PlatformTransactionManager) getBean(request, "transactionManager");
         logger.debug(request.getRequestURL() + ", txManager = " + txManager);
 
@@ -103,6 +105,7 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
             if ((ex.getMessage() + "").toLowerCase().contains("timeout")) {
             	((ErrorLogDao)getBean(request, "errorLogDAO")).logDbStatus();
             }
+            TaskStack.clear();
             throw new RuntimeException(ex);
         }
 
@@ -117,6 +120,8 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
             logger.error(e);
         }
 
+        TaskStack.clear();
+        
     }
 
 

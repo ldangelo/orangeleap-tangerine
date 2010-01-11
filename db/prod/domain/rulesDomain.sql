@@ -306,7 +306,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'who has donated at least ? dollars over the past ? ?';
+SET @PHRASE_CD = 'Constituent has donated at least ? dollars over the past ? ?';
 SET @CODE_CD = 'BigDecimal.valueOf(?.doubleValue()) <= map.ruleHelperService.totalDonationAmountPerTimeFrame(map.constituent, ?.intValue(), ? )';
 
 -- Insert code
@@ -501,7 +501,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'remove custom field named ? with value of ?';
+SET @PHRASE_CD = 'Remove custom field named ? with value of ?';
 SET @CODE_CD = 'map.constituent.removeCustomFieldValue(?,?); map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -615,7 +615,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'remove donor profile of ?';
+SET @PHRASE_CD = 'Remove donor profile of ?';
 SET @CODE_CD = 'map.constituent.removeCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES,?);map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -720,7 +720,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- *****************************************Payment Processing Consquences********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'authorize payment';
+SET @PHRASE_CD = 'Authorize payment';
 SET @CODE_CD = 'map.paymentGateway.Capture(map.gift)';
 
 -- Insert code
@@ -732,7 +732,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'authorizeandcapture payment';
+SET @PHRASE_CD = 'Authorize and Capture payment';
 SET @CODE_CD = 'map.paymentGateway.AuthorizeAndCapture(map.gift)';
 
 -- Insert code
@@ -743,7 +743,7 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'process payment';
+SET @PHRASE_CD = 'Process payment';
 SET @CODE_CD = 'map.paymentGateway.Process(map.gift)';
 
 -- Insert code

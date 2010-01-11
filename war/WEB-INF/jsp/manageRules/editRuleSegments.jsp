@@ -16,7 +16,6 @@
                 <table>
                 	<tr>
                 	<th>Condition or Consequence</th>
-                	<th>Move Up</th>
                 	</tr>
                     <c:forEach var="ruleSegment" items="${ruleSegmentList}">
 		                <tr>
@@ -46,7 +45,10 @@
 		                    <input id="parm3" name="parm3" value="<c:out value='${ruleSegment.parms[3]}'/>"  onchange="update('${ruleSegment.id}','changeparm-3', this);" />
 		                </td>
 		                <td>
-		                	<a href="#" onclick="update('${ruleSegment.id}','moveup');" >^</a>
+		                	&nbsp;&nbsp;<a href="#" onclick="update('${ruleSegment.id}','moveup');" >Move Up</a>&nbsp;&nbsp;
+		                </td>
+		                <td>
+		                	&nbsp;&nbsp;<a href="#" onclick="update('${ruleSegment.id}','delete');" >Delete</a>&nbsp;&nbsp;
 		                </td>
 		                </tr>
 		                
@@ -76,7 +78,7 @@
                  	   url: "editRuleSegments.htm",
                  	   data: data,
                  	   success: function(msg){
-                 	     if (action == 'moveup' || action == 'add') {
+                 	     if (action == 'moveup' || action == 'delete' || action == 'add') {
                      	     window.location = "editRuleSegments.htm?"+parms;
                  	     }
                  	   },

@@ -162,6 +162,7 @@ public class ManageRuleSegmentsController extends SimpleFormController {
    
     private static final String MOVE_UP = "moveup";
     private static final String ADD = "add";
+    private static final String DELETE = "delete";
     private static final String CHANGE_PARM = "changeparm";
     private static final String CHANGE_RULE_SEGMENT_TYPE = "changeRuleSegmentType";
     
@@ -179,13 +180,14 @@ public class ManageRuleSegmentsController extends SimpleFormController {
         String action = ""+request.getParameter("action"); 
         boolean moveUp = MOVE_UP.equals(action);
         boolean add = ADD.equals(action);
+        boolean delete = DELETE.equals(action);
         boolean changeParm = action.startsWith(CHANGE_PARM);
         boolean changeRuleSegmentType = CHANGE_RULE_SEGMENT_TYPE.equals(action);
         
         Rule rule = ruleDao.readRuleById(id);
         RuleVersion ruleVersion = rule.getRuleVersions().get(rule.getRuleVersions().size()-1);
         List<RuleSegment> segments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(ruleVersion.getId());
-        long maxSeq = segments.get(segments.size()-1).getRuleSegmentSeq();
+        long maxSeq = segments.size() == 0 ? -1 : segments.get(segments.size()-1).getRuleSegmentSeq();
         
         RuleSegment ruleSegment = getRuleSegment(ruleSegmentId, segments);
         
@@ -202,6 +204,9 @@ public class ManageRuleSegmentsController extends SimpleFormController {
         			break;
         		}
         	}
+        } else if (delete) {
+            ruleSegmentParmDao.deleteSegmentParms(ruleSegmentId);
+            ruleSegmentDao.deleteSegment(ruleSegmentId);
         } else if (add) {
         	
             List<RuleSegmentType> availableSegmentTypes = rulesConfService.getAvailableRuleSegmentTypes(ruleEventTypeName);

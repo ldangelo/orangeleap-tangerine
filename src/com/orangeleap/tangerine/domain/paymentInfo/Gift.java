@@ -39,7 +39,10 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 	private static final long serialVersionUID = 1L;
 	public static final String STATUS_PAID = "Paid";
 	public static final String STATUS_NOT_PAID = "Not Paid";
+	public static final String STATUS_PENDING = "Pending";
+	public static final String STATUS_CANCELLED = "Cancelled";
 	public static final String PAY_STATUS_APPROVED = "Approved";
+	public static final String PAY_STATUS_AUTHORIZED = "Authorized";
 	public static final String PAY_STATUS_DECLINED = "Declined";
 	public static final String PAY_STATUS_ERROR = "Error";
 	private String giftStatus;
@@ -79,9 +82,9 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 		this();
 		setGiftForRecurringGift(recurringGift, giftAmount);
 	}
-	
-	
-	
+
+
+
 	public String getGiftStatus() {
 		return giftStatus;
 	}
@@ -267,27 +270,34 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 	public void setAdjustedGifts(List<AdjustedGift> adjustedGifts) {
 		this.adjustedGifts = adjustedGifts;
 	}
-	
+
 	public Boolean getIsAuthorized() {
-		return !StringUtils.trimToEmpty(authCode).equals("");
+		return (!StringUtils.trimToEmpty(authCode).equals("")
+				&& StringUtils.equals(this.getPaymentStatus(),Gift.PAY_STATUS_AUTHORIZED)
+				&& StringUtils.equals(this.getPaymentStatus(),Gift.STATUS_PENDING));
 	}
 
 	public Boolean getIsCaptured() {
-		return !StringUtils.trimToEmpty(txRefNum).equals("");
+		return (!StringUtils.trimToEmpty(txRefNum).equals("")
+				&& StringUtils.equals(this.getPaymentStatus(),Gift.PAY_STATUS_APPROVED)
+				&& StringUtils.equals(this.getGiftStatus(),Gift.STATUS_PAID));
 	}
 
 	public Boolean getIsProcessed() {
-		return !StringUtils.trimToEmpty(txRefNum).equals("");
+		return (!StringUtils.trimToEmpty(txRefNum).equals("")
+				&& StringUtils.equals(this.getPaymentStatus(),Gift.PAY_STATUS_APPROVED)
+				&& StringUtils.equals(this.getGiftStatus(),Gift.STATUS_PAID));
+
 	}
 
 	public Boolean getIsDeclined() {
-		return !StringUtils.trimToEmpty(paymentStatus).equals("");
+		return StringUtils.equals(this.getPaymentStatus(),Gift.PAY_STATUS_DECLINED);
 	}
 
     public Boolean getIsError() {
-        return StringUtils.equals(this.getPaymentStatus(),"Error");
+        return StringUtils.equals(this.getPaymentStatus(),Gift.PAY_STATUS_ERROR);
     }
-    
+
     public void clearPaymentStatusInfo() {
     	setPaymentMessage(null);
     	setPaymentStatus(null);
@@ -295,7 +305,7 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
     	setAuthCode(null);
     	setTxRefNum(null);
     }
-    
+
 	public void setGiftForGiftInKind(GiftInKind giftInKind) {
 		this.giftType = GiftType.GIFT_IN_KIND;
 		this.currencyCode = giftInKind.getCurrencyCode();
@@ -309,11 +319,11 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 		this.addAssociatedRecurringGiftId(recurringGift.getId());
 
 		this.setComments(recurringGift.getComments());
-		
+
 		// The amounts may be changed in the recurring gift's payment schedule, so don't set using the default amount of the recurring gift.
 		// Nightly recurring gifts processing looks up the next scheduled payment and uses that amount.
 		this.setAmount(giftAmount);
-		
+
 		this.setPaymentType(recurringGift.getPaymentType());
 		this.setGiftType(GiftType.MONETARY_GIFT);
 		this.setEntryType(GiftEntryType.AUTO);
@@ -328,14 +338,14 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 			this.setDistributionLines(list);
 			normalizeAmounts();
 		}
-		
+
 		this.setCurrencyCode(recurringGift.getCurrencyCode());
 
 		this.setPaymentSource(recurringGift.getPaymentSource());
 		this.setAddress(recurringGift.getAddress());
 		this.setPhone(recurringGift.getPhone());
 	}
-	
+
 	// Set amounts on distributions lines to total amount
 	private void normalizeAmounts() {
 		if (getDistributionLines() == null || getDistributionLines().size() == 0) return;

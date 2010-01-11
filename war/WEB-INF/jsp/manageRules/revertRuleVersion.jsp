@@ -24,7 +24,7 @@
 	                <table cellspacing=5 >
 	                	<tr>
 	                	<th>Select</th>
-	                	<th>Version</th>
+	                	<th>Version Id</th>
 	                	<th>Date</th>
 	                	</tr>
 	                    <c:forEach var="ruleVersion" items="${ruleVersions}">

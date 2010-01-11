@@ -21,6 +21,7 @@
     <select id="SELECT_RULE_SEGMENT_TYPE_X_RULE_EVENT_TYPE_BY_RULE_EVENT_TYPE_ID" resultMap="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_FRAGMENT"/>
         where rule_event_type_x_rule_segment_type.RULE_EVENT_TYPE_ID = #ruleEventTypeId#
+        order by rule_event_type_x_rule_segment_type.RULE_SEGMENT_TYPE_ID
     </select>
 
     <insert id="INSERT_RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.rule.RuleEventTypeXRuleSegmentType">

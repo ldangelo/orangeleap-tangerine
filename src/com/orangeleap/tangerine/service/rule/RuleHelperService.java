@@ -427,7 +427,8 @@ public class RuleHelperService {
         	Iterator<Gift> itGifts = gifts.iterator();
         	while (itGifts.hasNext()) {
     			Gift gift = (Gift)itGifts.next();
-    			totalDonations = totalDonations.add(gift.getAmount());
+    			if (StringUtils.equals(gift.getGiftStatus(),Gift.STATUS_PAID))
+    				totalDonations = totalDonations.add(gift.getAmount());
     		}
         	return totalDonations;
         }
@@ -440,7 +441,8 @@ public class RuleHelperService {
         for (Gift g : gifts) {
             // If there is a gift given after the beginning date add it to the running total.
             if ((g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
-            	totalDonations = totalDonations.add(g.getAmount());
+    			if (StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID))
+    				totalDonations = totalDonations.add(g.getAmount());
             }
         }
         return totalDonations;
@@ -457,7 +459,7 @@ public class RuleHelperService {
     	}
 		constituent.setCustomFieldAsBigDecimal(customField, age);
     }
-    
+
     // Date d1 before d2
     public static BigDecimal age(Date d1, Date d2) {
         Calendar cal1 = Calendar.getInstance();
@@ -466,17 +468,17 @@ public class RuleHelperService {
         cal2.setTime(d2);
 
         BigDecimal result = new BigDecimal(cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR));
-        
+
         // Add fractional part.
         cal1.set(Calendar.YEAR, cal2.get(Calendar.YEAR)); // same day of year should result in 0 difference, so leap years must match later year.
         BigDecimal daydelta = new BigDecimal(cal2.get(Calendar.DAY_OF_YEAR) - cal1.get(Calendar.DAY_OF_YEAR));
         daydelta = daydelta.setScale(2);
         BigDecimal frac = daydelta.divide(new BigDecimal("365.25"), RoundingMode.FLOOR); // Do not round up or will increment age before anniversary date!
         result = result.add(frac);
-        
+
         return result;
     }
-    
+
 //    public static void main(String[] args) {
 //    	System.out.print(age(new Date("02/29/1966"), new Date("03/01/1967")));
 //    }

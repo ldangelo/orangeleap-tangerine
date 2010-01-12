@@ -22,7 +22,7 @@
             <table cellspacing=10 cellpadding=10 >
 	        <c:forEach var="rule" items="${rules}">
 			<tr>
-				<td><c:out value='${rule.ruleDesc}'/></td>
+				<td><c:out value='${rule.ruleDesc}'/> <c:if test="${!rule.ruleIsActive}">&nbsp;(Inactive)</c:if></td>
 	            <td><a href="#" onclick="window.location = 'ruleDesc.htm?ruleEventType=${ruleEventType}&id=${rule.id}' ;  " >Description / Activate</a></td>
 	            <td><a href="#" onclick="window.location = 'editRuleSegments.htm?ruleEventType=${ruleEventType}&id=${rule.id}';  " >Conditions / Consequences</a></td>
 	            <td><a href="#" onclick="window.location = 'revertRuleVersion.htm?ruleEventType=${ruleEventType}&id=${rule.id}';  " >Revert to Prior Version</a></td>

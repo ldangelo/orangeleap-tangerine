@@ -25,7 +25,7 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 		 paymentGateway.setConfigFile("/usr/local/paymentech/config/linehandler.properties");
 	 }
 
-    
+   /* 
 	 
 	 @Test(groups = { "authorizeTest" }, dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)
 	 public void authorizeTest(Site site, Constituent constituent, Gift gift)
@@ -64,5 +64,7 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 		 assert gift.getIsAuthorized() == true;
 		 assert gift.getIsCaptured() == true;
 	 }
+	 
+	 */
 	 
 }

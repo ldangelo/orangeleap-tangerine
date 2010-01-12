@@ -9,7 +9,6 @@ import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.test.BaseTest;
-import com.orangeleap.tangerine.web.flow.BatchSelectionAction;
 import com.orangeleap.tangerine.ws.schema.v2.ActivationType;
 import com.orangeleap.tangerine.ws.schema.v2.PaymentType;
 import com.orangeleap.tangerine.ws.util.v2.ObjectConverter;
@@ -17,13 +16,11 @@ import com.orangeleap.tangerine.ws.util.v2.ObjectConverter;
 
 public class ObjectConverterTest extends BaseTest {
     private RequestContext mockRequestContext;
-    private BatchSelectionAction action;
     private PostBatch batch;
 
     @BeforeMethod
     public void setupMocks() {
         mockRequestContext = new MockRequestContext();
-        action = new BatchSelectionAction();
         batch = new PostBatch();
     }
 

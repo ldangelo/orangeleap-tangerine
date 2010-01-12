@@ -381,30 +381,73 @@ public class RuleHelperService {
 
 
     /**
-     * Determines if a constituent is a Major Donor based on total donations made over a specific time interval.
-     * (i.e. Gave $8000+ over past 6 MONTHS/1 YEAR/2 FISCALYEARS etc.)
-     * If the timeAmount and timeUnit are -1/null then it will return the total for all gifts a constituent has given.
+     * Takes a constituent and a threshold amount and evaluates if the constituents total donations are greater than
+     * or equal to the threshold amount.
+     * (i.e. Gave $8000+ )
      * @param constituent
-     * @param timeAmount
-     * @param timeUnits
-     * @param fiscalYearStartingMonth
+     * @param threshold
      * @return
      *
      */
-    public static Boolean isMajorDonor(Constituent constituent) {
-    	Boolean isMajorDonor = false;
-    	try {
-    		BigDecimal majorDonorThreshold = BigDecimal.valueOf(Double.parseDouble((userHelper.getSiteOptionByName("major.donor.threshold"))));
-        	int majorDonorTimeAmount =  Integer.parseInt(userHelper.getSiteOptionByName("major.donor.interval"));
-        	String majorDonorTimeUnit =  userHelper.getSiteOptionByName("major.donor.units");
-    		if (totalDonationAmountPerTimeFrame(constituent, majorDonorTimeAmount, majorDonorTimeUnit ).compareTo(majorDonorThreshold) == 1)
-        		isMajorDonor = true;
+    public static Boolean evaluateTotalDonations(Constituent constituent, BigDecimal threshold) {
+    	if (totalDonationsPerTimeFrame(constituent, -1, null ).compareTo(threshold) >= 0)
+    		return true;
+    	else
+    		return false;
+    }
 
-    	} catch (Exception e) {
-    		logger.error("Can not evaluate RuleHelperService.isMajorDonor : Make sure the following site options are set major.donor.threshold, major.donor.interval, major.donor.units .  " + e.getMessage());
-    	}
+    /**
+     * Takes a constituent, threshold amount, and time interval and evaluates if the constituents total donations are greater than
+     * or equal to the threshold amount.
+     * (i.e. Gave $8000+ over past 6 MONTHS/1 YEAR/2 FISCALYEARS etc.)
+     * @param constituent
+     * @param threshold
+     * @param timeAmount
+     * @param timeUnits
+     * @return
+     *
+     */
+    public static Boolean evaluateTotalDonations(Constituent constituent, BigDecimal threshold, int timeAmount, String timeUnit  ) {
+    	if (totalDonationsPerTimeFrame(constituent, timeAmount, timeUnit ).compareTo(threshold) >= 0)
+    		return true;
+    	else
+    		return false;
+    }
 
-    	return isMajorDonor;
+
+    /**
+     * Takes a constituent and a range and evaluates if the constituents total donations are within that range.
+     * (i.e. Gave between $1000 and $2000)
+     * @param constituent
+     * @param minRange
+     * @param maxRange
+     * @return
+     *
+     */
+    public static Boolean evaluateTotalDonations(Constituent constituent, BigDecimal minRange, BigDecimal maxRange) {
+    	BigDecimal totalDonations = totalDonationsPerTimeFrame(constituent, -1, null );
+    	if (totalDonations.compareTo(minRange) >= 0 && totalDonations.compareTo(maxRange) <= 0)
+    		return true;
+    	else
+    		return false;
+    }
+
+    /**
+     * Takes a constituent, threshold amount, and time interval and evaluates if the constituents total donations are within that range.
+     * (i.e. Gave between $1000 and $2000 over past 6 MONTHS/1 YEAR/2 FISCALYEARS etc.)
+     * @param constituent
+     * @param threshold
+     * @param timeAmount
+     * @param timeUnits
+     * @return
+     *
+     */
+    public static Boolean evaluateTotalDonations(Constituent constituent, BigDecimal minRange, BigDecimal maxRange, int timeAmount, String timeUnit ) {
+    	BigDecimal totalDonations = totalDonationsPerTimeFrame(constituent, timeAmount, timeUnit );
+    	if (totalDonations.compareTo(minRange) >= 0 && totalDonations.compareTo(maxRange) <= 0)
+    		return true;
+    	else
+    		return false;
     }
 
     /**
@@ -414,11 +457,10 @@ public class RuleHelperService {
      * @param constituent
      * @param timeAmount
      * @param timeUnits
-     * @param fiscalYearStartingMonth
      * @return
      *
      */
-    public static BigDecimal totalDonationAmountPerTimeFrame(Constituent constituent, int timeAmount, String timeUnit ) {
+    public static BigDecimal totalDonationsPerTimeFrame(Constituent constituent, int timeAmount, String timeUnit ) {
     	BigDecimal totalDonations = BigDecimal.valueOf(0);
         int fiscalYearStartingMonth = -1;
     	List<Gift> gifts = constituent.getGifts();

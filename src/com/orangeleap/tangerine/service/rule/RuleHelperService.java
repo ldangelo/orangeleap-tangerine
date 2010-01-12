@@ -149,7 +149,7 @@ public class RuleHelperService {
             // For each gift
             for (Gift g : gifts) {
                 // If there is a gift in month x, add to number of matches
-                if ((g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i)))) {
+                if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i)))) {
                     numMatches += 1;
                     if (numberOfMatches == numMatches) {
                         return true;
@@ -242,8 +242,8 @@ public class RuleHelperService {
 
         // Cycle through the gifts
         for (Gift g : gifts) {
-            // If there is a gift given after the beginning date add it to the number of matches.
-            if ((g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
+            // If there is a gift given after the beginning date  and it has a gift status of paid add it to the number of matches.
+            if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
             	numberOfMatches++;
             }
         }
@@ -261,8 +261,8 @@ public class RuleHelperService {
     	for (int i = 0; i < numberOfMonths; i++) {
     		// For each gift
     		for (Gift g : gifts) {
-    			// If there is a gift in month x, add to number of matches
-    			if((g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i)))) {
+    			// If there is a gift with a status of paid in month x, add to number of matches
+    			if((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i)))) {
     				numMatches += 1;
     				if(numberOfMatches == numMatches) {
     					return true;

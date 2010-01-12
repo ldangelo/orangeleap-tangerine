@@ -20,7 +20,6 @@ package com.orangeleap.tangerine.controller.manageRules;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -33,9 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.RuleDao;
-import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.rule.Rule;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.customization.RulesConfService;
 import com.orangeleap.tangerine.util.OLLogger;
 
@@ -51,7 +48,8 @@ public class ManageRuleController extends SimpleFormController {
 
     @Resource(name = "rulesConfService")
     private RulesConfService rulesConfService;
-  
+    
+    private static final String MOVEUP = "moveup";
 
     @SuppressWarnings("unchecked")
 	@Override
@@ -60,7 +58,24 @@ public class ManageRuleController extends SimpleFormController {
         if (!ManageRuleEventTypeController.accessAllowed(request)) return null;
         
         String ruleEventType = request.getParameter("ruleEventType"); 
+        String action = request.getParameter("action"); 
+        String id = request.getParameter("id"); 
         
+        if (MOVEUP.equals(action)) {
+        	Long ruleId = new Long(id);
+        	List<Rule> rules = getSelectionList(request);
+        	
+        	for (int i = 0; i < rules.size(); i++) {
+        		Rule rule = rules.get(i);
+        		if (i > 0 && rule.getId().equals(ruleId)) {
+        			Long lastseq = rules.get(i-1).getRuleSeq();
+        			rules.get(i-1).setRuleSeq(rule.getRuleSeq());
+        			rule.setRuleSeq(lastseq);
+        			ruleDao.maintainRule(rules.get(i-1));
+        			ruleDao.maintainRule(rule);
+        		}
+        	}
+        }
  
         ModelAndView mav = new ModelAndView(getSuccessView());
         mav.addObject("ruleEventType", ruleEventType);

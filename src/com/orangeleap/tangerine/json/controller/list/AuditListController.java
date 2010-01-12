@@ -129,7 +129,7 @@ public class AuditListController {
         map.put("date", formatter.format(audit.getDate()) );
         map.put("user", audit.getUser());
         map.put("type", audit.getAuditType().name());
-        map.put("description", HttpUtil.jsEscape(audit.getDescription()));
+        map.put("description", HttpUtil.escapeDoubleQuoteReturns(audit.getDescription()));
         map.put("objectType", "communicationhistory".equals(audit.getEntityType()) ? "touch point" : audit.getEntityType());
         map.put("objectId", audit.getObjectId());
         map.put("constituentId", audit.getConstituentId());

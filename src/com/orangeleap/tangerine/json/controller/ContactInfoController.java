@@ -128,7 +128,7 @@ public class ContactInfoController {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", email.getId());
             map.put("address", email.getEmailAddress());
-            map.put("comment", (email.getComments() == null ? "None" : HttpUtil.jsEscape(email.getComments())));
+            map.put("comment", (email.getComments() == null ? "None" : HttpUtil.escapeDoubleQuoteReturns(email.getComments())));
             map.put("active", !email.isInactive());
             map.put("primary", email.isPrimary());
             map.put("type", email.getCustomFieldValue("emailType"));

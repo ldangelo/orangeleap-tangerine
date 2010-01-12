@@ -107,7 +107,7 @@ public class TangerineListHelper {
                             }
                         }
                         if (displayValue instanceof String) {
-                            displayValue = HttpUtil.jsEscape((String) displayValue);
+                            displayValue = HttpUtil.escapeDoubleQuoteReturns((String) displayValue);
 
                             String extType = ExtTypeHandler.findExtType(beanWrapper.getPropertyType(field.getFieldPropertyName()));
                             if (ExtTypeHandler.EXT_BOOLEAN.equals(extType) && ("Y".equalsIgnoreCase((String) displayValue) ||

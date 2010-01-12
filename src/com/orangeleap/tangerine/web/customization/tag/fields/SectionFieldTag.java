@@ -512,13 +512,13 @@ public class SectionFieldTag extends AbstractTag {
                             String searchFieldValue = pageContext.getRequest().getParameter(StringConstants.SEARCH_FIELD);
                             if (StringUtils.hasText(searchFieldValue)) {
                                 if (StringConstants.CONSTITUENT.equals(searchTypeValue)) {
-                                    sb.append(", \"").append(StringConstants.LAST_NAME).append("\": '").append(HttpUtil.escapeSingleQuote(searchFieldValue)).append("' ");
+                                    sb.append(", \"").append(StringConstants.LAST_NAME).append("\": '").append(HttpUtil.escapeSingleQuoteReturns(searchFieldValue)).append("' ");
                                 }
                                 else if (StringConstants.GIFT.equals(searchTypeValue)) {
-                                    sb.append(", \"amount\": '").append(HttpUtil.escapeSingleQuote(searchFieldValue)).append("' ");
+                                    sb.append(", \"amount\": '").append(HttpUtil.escapeSingleQuoteReturns(searchFieldValue)).append("' ");
                                 }
                                 else if (StringConstants.FULLTEXT.equals(searchTypeValue)) {
-                                    sb.append(", \"").append(StringConstants.FULLTEXT).append("\": '").append(HttpUtil.escapeSingleQuote(searchFieldValue)).append("' ");
+                                    sb.append(", \"").append(StringConstants.FULLTEXT).append("\": '").append(HttpUtil.escapeSingleQuoteReturns(searchFieldValue)).append("' ");
                                 }
                             }
                             sb.append("}});\n");

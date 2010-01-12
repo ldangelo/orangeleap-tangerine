@@ -67,16 +67,16 @@ public class HttpUtil {
     	return s;
     }
 
-	public static String escapeSingleQuote(String s) {
+	public static String escapeSingleQuoteReturns(String s) {
 		if (s != null) {
-			s = s.replace("\'", "\\\'");
+			s = s.replace("\'", "\\\'").replace("\r", " ").replace("\n", " ");
 		}
 		return s;
 	}
 
-	public static String escapeDoubleQuote(String s) {
+	public static String escapeDoubleQuoteReturns(String s) {
 		if (s != null) {
-			s = s.replace("\\", "\\\\");
+			s = s.replace("\\", "\\\\").replace("\r", " ").replace("\n", " ");
 		}
 		return s;
 	}

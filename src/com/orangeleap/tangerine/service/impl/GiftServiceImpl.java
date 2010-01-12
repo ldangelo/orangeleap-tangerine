@@ -296,10 +296,18 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
 			validateGift(gift, doValidateDistributionLines);
 
+            Gift oldGift = null;
+            if (!gift.isNew()) oldGift = giftDao.readGiftById(gift.getId());
+
             gift = saveAuditGift(gift);
 
             if (!reentrant) {
                 routeGift(gift);
+            	Gift newGift = giftDao.readGiftById(gift.getId());
+            	
+            	if ( logPaymentHistory(oldGift, newGift) ) {
+            		paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+            	}
             }
 
             return gift;

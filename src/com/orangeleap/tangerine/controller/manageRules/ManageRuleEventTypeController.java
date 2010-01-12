@@ -64,7 +64,7 @@ public class ManageRuleEventTypeController extends SimpleFormController {
     
     @SuppressWarnings("unchecked")
     @Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
+    protected synchronized ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
         if (!accessAllowed(request)) return null;
         String ruleEventType = request.getParameter("ruleEventType"); 
@@ -74,6 +74,7 @@ public class ManageRuleEventTypeController extends SimpleFormController {
         try {
         	if ("publish".equals(action)) {
         		rulesConfService.publishEventTypeRules(ruleEventType);
+        		rulesConfService.clearCache();
         		message = "Rule set published for "+ruleEventType;
         	}
         } catch(Exception e) {

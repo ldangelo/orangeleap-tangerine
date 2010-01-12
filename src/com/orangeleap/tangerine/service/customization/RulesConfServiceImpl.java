@@ -78,9 +78,6 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
 
-    @Resource(name = "ruleGeneratedCodeCache")
-    private Cache ruleGeneratedCodeCache;
-
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
 
@@ -143,22 +140,6 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
          }
          return availableSegmentTypes;
 	}
-    
-    @Override
-    public void generateRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
-    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
-    	if (rgc == null) {
-    		rgc = new RuleGeneratedCode();
-    		rgc.setIsTestOnly(testMode);
-    		rgc.setRuleEventTypeNameId(rulesEventNameType.getType());
-    	}
-    	rgc.setGeneratedCodeText(generateCode(rulesEventNameType, testMode));
-    	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
-        ruleGeneratedCodeCache.removeAll();
-        resetGroovyObjectCache();
-        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
-        if (!testMode) incrementVersions(rulesEventNameType);
-    }
     
     private synchronized void incrementVersions(RuleEventNameType rulesEventNameType) {
     	List<Rule> rules =  ruleDao.readByRuleEventTypeNameId(rulesEventNameType.getType());
@@ -243,17 +224,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     
     private String readRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode) {
 
-    	RuleGeneratedCode rgc = null;
-    	
 		String key = buildCacheKey(rulesEventNameType, testMode);
-		Element ele = ruleGeneratedCodeCache.get(key);
-		if (ele == null) {
-		    rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
-			ruleGeneratedCodeCache.put(new Element(key, ruleGeneratedCodeCache));
-		} else {
-			rgc = (RuleGeneratedCode) ele.getValue();
-		}
-    	
+		RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
     	return rgc == null ? "" : rgc.getGeneratedCodeText();
     	
     }
@@ -405,8 +377,24 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 
 	@Override
 	public void publishEventTypeRules(String ruleEventTypeNameId) {
+		boolean testMode = false; // not implemented yet
         RuleEventNameType rulesEventNameType = getRuleEventNameType(ruleEventTypeNameId);
-        generateRulesEventScript(rulesEventNameType, false);
+    	RuleGeneratedCode rgc = ruleGeneratedCodeDao.readRuleGeneratedCodeByTypeMode(rulesEventNameType, testMode);
+    	if (rgc == null) {
+    		rgc = new RuleGeneratedCode();
+    		rgc.setIsTestOnly(testMode);
+    		rgc.setRuleEventTypeNameId(rulesEventNameType.getType());
+    	}
+    	rgc.setGeneratedCodeText(generateCode(rulesEventNameType, testMode));
+    	ruleGeneratedCodeDao.maintainRuleGeneratedCode(rgc);
+        if (!testMode) incrementVersions(rulesEventNameType);
+    }
+	
+	// Needs to be done after publish rules transaction commits.
+	@Override
+	public void clearCache() {
+        resetGroovyObjectCache();
+        cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.RULE_GENERATED_CODE);
 	}
 
 	@Override

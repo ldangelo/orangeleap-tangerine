@@ -30,8 +30,6 @@ public interface RulesConfService {
 
 	public List<RuleSegmentType> getAvailableRuleSegmentTypes(String ruleEventTypeName);
 
-    public void generateRulesEventScript(RuleEventNameType rulesEventNameType, boolean testMode);
-
 	public void fireRulesEvent(RuleEventNameType rulesEventNameType, boolean testMode, Map<String, Object> map);
 
 	public void publishEventTypeRules(String ruleEventTypeNameId);
@@ -39,5 +37,7 @@ public interface RulesConfService {
 	public Date getLastPublishedDate(String ruleEventTypeNameId);
 
 	public void revertRuleToVersion(Long ruleId, Long ruleVersionId);
+
+	public void clearCache();
 
 }

@@ -19,22 +19,18 @@
             
             </c:if>
             
-            <c:if test="${fn:length(rules) != 0}" >
-
-	            <select  id="id" name="id"  onchange="hideShowEditButton();">
-	               <c:forEach var="rule" items="${rules}">
-	                 <option <c:if test='${param.id == rule.id}'>selected</c:if> value="<c:out value='${rule.id}'/>" > <c:out value='${rule.ruleDesc}'/></option>
-	               </c:forEach>
-	            </select>
-	            
-	            <br/><br/>
-	
-	            <a href="#" onclick="window.location = 'ruleDesc.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " >Edit Description / Active Status</a>&nbsp;&nbsp;&nbsp;
-	            <a href="#" onclick="window.location = 'editRuleSegments.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " >Edit Conditions and Consequences</a>&nbsp;&nbsp;&nbsp;
-	            <a href="#" onclick="window.location = 'revertRuleVersion.htm?ruleEventType=${ruleEventType}&id='+$('#id').val() ;  " >Revert to Prior Version</a>&nbsp;&nbsp;&nbsp;
-
-            </c:if>
+            <table cellspacing=10 cellpadding=10 >
+	        <c:forEach var="rule" items="${rules}">
+			<tr>
+				<td><c:out value='${rule.ruleDesc}'/></td>
+	            <td><a href="#" onclick="window.location = 'ruleDesc.htm?ruleEventType=${ruleEventType}&id=${rule.id}' ;  " >Description / Activate</a></td>
+	            <td><a href="#" onclick="window.location = 'editRuleSegments.htm?ruleEventType=${ruleEventType}&id=${rule.id}';  " >Conditions / Consequences</a></td>
+	            <td><a href="#" onclick="window.location = 'revertRuleVersion.htm?ruleEventType=${ruleEventType}&id=${rule.id}';  " >Revert to Prior Version</a></td>
+			</tr>
+            </c:forEach>
+            </table>
             
+            <br/><br/>
             <a href="#" onclick="createRule();  " >Create New Rule</a><br/>
            
             </form>

@@ -29,9 +29,12 @@ import org.springframework.beans.InvalidPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
@@ -111,14 +114,7 @@ public class ObjectConverter {
                     // need to provide date conversions...
                     XMLGregorianCalendar xmlDate = (XMLGregorianCalendar) readMethod.invoke(from);
                     if (xmlDate != null) {
-                        GregorianCalendar cal = new GregorianCalendar();
-
-                        cal.set(GregorianCalendar.SECOND,xmlDate.getSecond());
-                        cal.set(GregorianCalendar.MINUTE,xmlDate.getMinute());
-                        cal.set(GregorianCalendar.HOUR_OF_DAY,xmlDate.getHour());
-                        cal.set(GregorianCalendar.DAY_OF_MONTH,xmlDate.getDay());
-                        cal.set(GregorianCalendar.MONTH,xmlDate.getMonth());
-                        cal.set(GregorianCalendar.YEAR,xmlDate.getYear());
+                        GregorianCalendar cal = xmlDate.toGregorianCalendar();
 
                         writeMethod.invoke(to, cal.getTime());
                     }
@@ -127,13 +123,32 @@ public class ObjectConverter {
                     //
                     // handle custom field map
                     ConvertCustomFieldMapFromJAXB((com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) from,  (com.orangeleap.tangerine.domain.AbstractCustomizableEntity)to);
+                } else if (propertyType.isEnum()) {
+                	if (domainClass.isEnum()) {
+                		Enum fromEnum = (Enum) readMethod.invoke(from);
+                		if (fromEnum == null) continue;
+                		Method valueMethod = fromEnum.getClass().getDeclaredMethod("value");
+                		String value = (String) valueMethod.invoke(fromEnum);
+                		Enum newObject = Enum.valueOf(domainClass, value);
+                		writeMethod.invoke(to, newObject);
+                	} else {
+                		// assume the domainClass is a String
+                		Enum fromEnum = (Enum) readMethod.invoke(from);
+                		if (fromEnum == null) continue;
+                		//
+                		// axis adds a value() method to the generated enum
+                		// lets... call this method through reflection to get the value
+                		Method valueMethod = fromEnum.getClass().getDeclaredMethod("value");
+                		String value = (String) valueMethod.invoke(fromEnum);
+                		writeMethod.invoke(to, value);
+                	}
                 } else if (writeMethod != null && readMethod != null)
                     writeMethod.invoke(to, readMethod.invoke(from));
 
             } catch (IllegalArgumentException iae) {
                 logger.info(iae.getMessage());
             } catch (InvalidPropertyException ipe) {
-                logger.debug(ipe.getMessage());
+                logger.info(ipe.getMessage());
             } catch (IllegalAccessException e) {
                 logger.info(e.getMessage());
             } catch (InvocationTargetException e) {
@@ -142,14 +157,24 @@ public class ObjectConverter {
                 logger.info(e.getMessage());
             } catch (ClassNotFoundException e) {
             	logger.info(e.getMessage());
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 
         }
     }
 
-    public void ConvertToJAXB(Object from, Object to) {
+    @SuppressWarnings("unchecked")
+	public void ConvertToJAXB(Object from, Object to) {
         Class propertyType = null;
+         
+        if (from == null || to == null) return;
+        
         BeanWrapper bwFrom = new BeanWrapperImpl(from);
         BeanWrapper bwTo = new BeanWrapperImpl(to);
 
@@ -175,7 +200,38 @@ public class ObjectConverter {
                     schemaClass = null;
                 }
 
-                if (schemaClass != null) {
+                //
+                // if we are trying to set an enum
+                if (propertyType.isEnum()) {
+                	Class fromClass = pdFrom[i].getPropertyType();
+                	if (fromClass.isEnum()) {
+                		//
+                		// we are going from an enum to a enum
+                		Enum fromEnum = (Enum) readMethod.invoke(from);
+                		if (fromEnum == null) continue;
+                		String value = fromEnum.toString();
+                		
+                		Class param[] = new Class[1];
+                		param[0] = String.class;
+						Method fromValueMethod = propertyType.getDeclaredMethod("fromValue",param);
+
+						Enum toEnum = (Enum) fromValueMethod.invoke(null,value);                		
+                		
+                		writeMethod.invoke(to, toEnum);
+
+                	} else if (fromClass == String.class) {
+                		//
+                		// we are going from a string to an xml enum
+                		// axis generates constructors for all enums that take a string as an argument.
+                		String value = (String) readMethod.invoke(from);
+                		Class param[] = new Class[1];
+                		param[0] = String.class;
+						Method fromValueMethod = propertyType.getDeclaredMethod("fromValue",param);
+						Enum e = (Enum) fromValueMethod.invoke(null,value);                		
+
+                		writeMethod.invoke(to, e);
+                	}
+                } else if (schemaClass != null) {
                     Object newObject = schemaClass.newInstance();
                     ConvertToJAXB(readMethod.invoke(from), newObject);
                     writeMethod.invoke(to, newObject);
@@ -220,14 +276,7 @@ public class ObjectConverter {
                         GregorianCalendar cal = new GregorianCalendar();
 
                         cal.setTime(d);
-
-                        XMLGregorianCalendar xmlDate = new XMLGregorianCalendarImpl();
-                        xmlDate.setSecond(cal.get(GregorianCalendar.SECOND));
-                        xmlDate.setMinute(cal.get(GregorianCalendar.MINUTE));
-                        xmlDate.setHour(cal.get(GregorianCalendar.HOUR_OF_DAY));
-                        xmlDate.setDay(cal.get(GregorianCalendar.DAY_OF_MONTH));
-                        xmlDate.setMonth(cal.get(GregorianCalendar.MONTH));
-                        xmlDate.setYear(cal.get(GregorianCalendar.YEAR));
+                        XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
 
                         writeMethod.invoke(to, xmlDate);
                     }
@@ -245,14 +294,22 @@ public class ObjectConverter {
             } catch (IllegalArgumentException iae) {
                 logger.info(iae.getMessage());
             } catch (InvalidPropertyException ipe) {
-                logger.debug(ipe.getMessage());
+                logger.info(ipe.getMessage());
             } catch (IllegalAccessException e) {
                 logger.info(e.getMessage());
             } catch (InvocationTargetException e) {
                 logger.info(e.getMessage());
             } catch (InstantiationException e) {
                 logger.info(e.getMessage());
-            }
+            } catch (DatatypeConfigurationException e) {
+				logger.error(e.getMessage());
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 
         }
@@ -326,9 +383,11 @@ public class ObjectConverter {
      * @param to   schema AbstractCustomizableEntity
      */
     static private void ConvertCustomFieldMapFromJAXB(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity from, com.orangeleap.tangerine.domain.AbstractCustomizableEntity to) {
+    	if (from == null || to == null) return;
         //
         // now copy the customFieldMap
         com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity.CustomFieldMap customFieldMap= from.getCustomFieldMap();
+        if (customFieldMap == null) return;
         Iterator it = customFieldMap.getEntry().iterator();
 
         Map<String, CustomField> cMap = new HashMap<String,CustomField>();

@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.SiteOption;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
@@ -138,8 +139,21 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			logger.error(t);
 			t.printStackTrace();
 		}
+		
+		resetRecalcSiteOption();
+		
 		long time2 = System.currentTimeMillis();
 		logger.info("Rules Processing Took: " + (time2 - time) + " ms.  Complete on " + new java.util.Date());
+	}
+
+	private void resetRecalcSiteOption() {
+		List<SiteOption> list = siteService.getSiteOptions();
+		for (SiteOption siteOption: list) {
+			if (siteOption.getOptionName().equals(RESAVE_CONSTITUENT)) {
+				siteOption.setOptionValue("false");
+				siteService.maintainSiteOption(siteOption);
+			}
+		}
 	}
 
 	private void executeMailRules(String schedule) {

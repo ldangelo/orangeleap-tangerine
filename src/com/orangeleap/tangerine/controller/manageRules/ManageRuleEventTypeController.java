@@ -18,6 +18,9 @@
 
 package com.orangeleap.tangerine.controller.manageRules;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -32,6 +35,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.dao.RuleEventTypeDao;
+import com.orangeleap.tangerine.domain.customization.rule.RuleEventType;
 import com.orangeleap.tangerine.service.customization.RulesConfService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -83,10 +87,43 @@ public class ManageRuleEventTypeController extends SimpleFormController {
         }
 
         ModelAndView mav = super.showForm(request, response, errors, controlModel);
-        mav.addObject("ruleEventTypes", ruleEventTypeDao.readAllRuleEventTypes());
+        List<RuleEventTypeDisplay> types = new ArrayList<RuleEventTypeDisplay>();
+        List<RuleEventType> eventTypes = ruleEventTypeDao.readAllRuleEventTypes();
+        for (RuleEventType type: eventTypes) {
+        	types.add(new RuleEventTypeDisplay(type, rulesConfService.getLastPublishedDate(type.getRuleEventTypeNameId())));
+        }
+        mav.addObject("ruleEventTypes", types);
         mav.addObject("message", message);
-        mav.addObject("lastPublishedDate", rulesConfService.getLastPublishedDate(ruleEventType));
         return mav;
+    }
+    
+    public static final class RuleEventTypeDisplay {
+		private String ruleEventTypeNameId;
+    	private String ruleEventTypeDesc;
+    	private Date lastPublishedDate;
+    	public RuleEventTypeDisplay(RuleEventType ruleEventType, Date lastPublishedDate) {
+    		this.setRuleEventTypeNameId(ruleEventType.getRuleEventTypeNameId());
+    		this.setRuleEventTypeDesc(ruleEventType.getRuleEventTypeDesc());
+    		this.setLastPublishedDate(lastPublishedDate);
+    	}
+    	public void setRuleEventTypeNameId(String ruleEventTypeNameId) {
+			this.ruleEventTypeNameId = ruleEventTypeNameId;
+		}
+		public String getRuleEventTypeNameId() {
+			return ruleEventTypeNameId;
+		}
+		public void setRuleEventTypeDesc(String ruleEventTypeDesc) {
+			this.ruleEventTypeDesc = ruleEventTypeDesc;
+		}
+		public String getRuleEventTypeDesc() {
+			return ruleEventTypeDesc;
+		}
+		public void setLastPublishedDate(Date lastPublishedDate) {
+			this.lastPublishedDate = lastPublishedDate;
+		}
+		public Date getLastPublishedDate() {
+			return lastPublishedDate;
+		}
     }
 
   

@@ -12,26 +12,19 @@
            
                 <h4>Select Event Type Rules to Manage</h4><br/>
                 
-               
-                
-                <select  id="ruleEventType" name="ruleEventType" onchange="window.location.href='ruleEventTypes.htm?ruleEventType='+$('#ruleEventType').val(); " >
-                   <c:forEach var="ruleEventType" items="${ruleEventTypes}">
-                     <option <c:if test='${param.ruleEventType == ruleEventType.ruleEventTypeNameId}'>selected</c:if>  value="<c:out value='${ruleEventType.ruleEventTypeNameId}'/>" > <c:out value='${ruleEventType.ruleEventTypeDesc}'/></option>
-                   </c:forEach>
-                </select>
+                <table cellspacing=10 cellpadding=10 >
+                <c:forEach var="ruleEventType" items="${ruleEventTypes}">
+                <tr>
+                <td><c:out value='${ruleEventType.ruleEventTypeDesc}'/></td>
+                <td><a href="#" onclick="window.location = 'rules.htm?ruleEventType=${ruleEventType.ruleEventTypeNameId}';  ">Edit Rules</a></td>
+                <td><a href="#"  onclick="window.location = 'ruleEventTypes.htm?action=publish&ruleEventType=${ruleEventType.ruleEventTypeNameId}';" >Publish Rules</a></td>
+                <td>Published Date: <c:out value="${ruleEventType.lastPublishedDate}"/></td>
+                </tr>
+          	    </c:forEach>
+          	    </table>
                 
                 <b><c:out value="${message}"/></b><br/>
-                <br/>
-                <br/>
-                
-                <a href="#" onclick="window.location = 'rules.htm?ruleEventType=' + $('#ruleEventType').val();  ">Edit Rules</a>&nbsp;&nbsp;
 
-                <a href="#"  onclick="window.location = 'ruleEventTypes.htm?action=publish&ruleEventType=' + $('#ruleEventType').val();  " >Publish Rules</a>&nbsp;&nbsp;
-                
-                Last Published Date: <c:out value="${lastPublishedDate}"/>
-                <br/>
-                <br/>
-                
              </form>
             
             </div>

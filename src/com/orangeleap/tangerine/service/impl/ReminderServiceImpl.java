@@ -330,8 +330,11 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 
 		map.put("GiftAmount", scheduledPayment.getScheduledItemAmount().toString());
     	
-		String subject = "Thank you for your commitment!";
-		String template = "recurringGiftReminder";
+		Map<String, String> siteOptions = siteService.getSiteOptionsMap();
+		String subject = getWithDefault(siteOptions, "recurring.gift.reminder.subject", "Thank you for your commitment!");
+		String template = getWithDefault(siteOptions, "recurring.gift.reminder.template", "recurringGiftReminder");
+		String body = getWithDefault(siteOptions, "recurring.gift.reminder.body", null);
+		if (body != null) map.put(EmailService.EMAIL_BODY, body);
 		
 		Constituent constituent = constituentService.readConstituentById(recurringGift.getConstituentId());
 		constituent.setSite(siteService.readSite(constituent.getSite().getName()));
@@ -339,6 +342,11 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		
 		return "Complete";
 		
+	}
+	
+	private String getWithDefault(Map<String, String> map, String key, String defaultValue) {
+		String result = map.get(key);
+		return result == null ? defaultValue : result;
 	}
 
 	private String processPledgeReminder(Pledge pledge, ScheduledItem scheduledPayment) {
@@ -349,9 +357,12 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 
 		map.put("GiftAmount", scheduledPayment.getScheduledItemAmount().toString());
     	
-		String subject = "Thank you for your pledge!";
-		String template = "pledgeReminder";
-		
+		Map<String, String> siteOptions = siteService.getSiteOptionsMap();
+		String subject = getWithDefault(siteOptions, "pledge.reminder.subject", "Thank you for your pledge!");
+		String template = getWithDefault(siteOptions, "pledge.reminder.template", "pledgeReminder");
+		String body = getWithDefault(siteOptions, "pledge.reminder.body", null);
+		if (body != null) map.put(EmailService.EMAIL_BODY, body);
+
 		Constituent constituent = constituentService.readConstituentById(pledge.getConstituentId());
 		constituent.setSite(siteService.readSite(constituent.getSite().getName()));
 		emailService.sendMail(constituent, null, null, pledge, map, subject, template);

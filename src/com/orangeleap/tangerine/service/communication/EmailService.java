@@ -63,6 +63,7 @@ import com.orangeleap.tangerine.util.OLLogger;
 public class EmailService  {
 	protected final Log logger = OLLogger.getLog(getClass());
 
+	public final static String EMAIL_BODY = "_email_body";
 
 	private String baseUri = null;
 	private String repositoryUri = null;
@@ -166,7 +167,8 @@ public class EmailService  {
 					if (pledge != null)
 						itemName = "pledge";
 
-					helper.setText("Thank you for your " + itemName + "!");
+					String emailBody = reportParams.get(EMAIL_BODY);
+					helper.setText(emailBody == null ? "Thank you for your " + itemName + "!" : emailBody);
 					helper.setSubject(subject);
 					helper.setFrom(s.getSmtpFromAddress());
 

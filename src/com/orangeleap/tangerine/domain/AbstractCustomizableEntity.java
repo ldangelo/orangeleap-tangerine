@@ -233,7 +233,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity implemen
         //
         // if the custom field value does not contain the value
         // we are removing simply return
-        if (!existingValue.contains(value)) {
+        if (existingValue == null || !existingValue.contains(value)) {
             return;
         }
 

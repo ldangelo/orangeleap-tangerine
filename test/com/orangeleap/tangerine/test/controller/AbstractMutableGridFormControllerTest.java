@@ -59,7 +59,8 @@ public class AbstractMutableGridFormControllerTest extends BaseTest {
 		Assert.assertEquals(gift.getConstituent().getFirstName(), "firstname", "FirstName = " + gift.getConstituent().getFirstName());
 		Assert.assertEquals(gift.getConstituent().getLastName(), "lastname", "LastName = " + gift.getConstituent().getLastName());
 		Assert.assertEquals(gift.getPaymentType(), "Check", "PaymentType = " + gift.getPaymentType());
-		Assert.assertNull(gift.getPaymentSource(), "PaymentSource != null");
+		Assert.assertNotNull(gift.getPaymentSource());
+		Assert.assertEquals(gift.getPaymentSource().getPaymentType(), "Check");
 		Assert.assertEquals(format.format(gift.getPostedDate()), "01/01/1999", "PostedDate = " + gift.getPostedDate());
 		Assert.assertTrue(gift.isPosted(), "Posted = false");
 		Assert.assertFalse(gift.isDeductible(), "Deductible = true");

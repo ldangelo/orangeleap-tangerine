@@ -41,6 +41,8 @@ public interface PaymentSourceDao {
 
     public List<PaymentSource> readExistingAchAccounts(String achAccountNum, String achRoutingNum);
 
+	List<PaymentSource> readExistingCheckAccounts(String checkAccountNum, String checkRoutingNum);
+
     List<PaymentSource> readAllPaymentSourcesByConstituentId(Long constituentId, String sortPropertyName, String direction,
                                                          int start, int limit, Locale locale);
 

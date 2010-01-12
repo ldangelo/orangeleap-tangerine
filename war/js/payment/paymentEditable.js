@@ -8,6 +8,9 @@ $(document).ready(function() {
 	$("#creditCard-paymentSource-td-id").bind("change", function() {
 		PaymentEditable.filterCreditCardPaymentSources($(this), false);
 	});
+	$("#check-paymentSource-td-id").bind("change", function() {
+		PaymentEditable.filterCheckPaymentSources($(this), false);
+	});
 	PaymentEditable.filterPaymentTypes($("#paymentType"), true);
 });
 var PaymentEditable = {
@@ -15,13 +18,16 @@ var PaymentEditable = {
 	
 	filterPaymentTypes: function($paymentTypeElem, isLoad) {
 		var paymentTypeVal = $paymentTypeElem.val();
-		if (paymentTypeVal == "Cash" || paymentTypeVal == "Check") {
+		if (paymentTypeVal == "Cash") {
 			$("#" + PaymentEditable.commandObject + "_ach").hide();
 			$("#" + PaymentEditable.commandObject + "_creditCard").hide();
-		} 
+			$("#" + PaymentEditable.commandObject + "_check").hide();
+		}
 		else if (paymentTypeVal == "Credit Card") {
 			$("#ach-paymentSource-td-id").hide();
+			$("#check-paymentSource-td-id").hide();
 			$("#" + PaymentEditable.commandObject + "_ach").hide();
+			$("#" + PaymentEditable.commandObject + "_check").hide();
 			$("#" + PaymentEditable.commandObject + "_creditCard").show();
 
 			PaymentEditable.filterCreditCardPaymentSources($("#creditCard-paymentSource-td-id"), isLoad);
@@ -29,15 +35,28 @@ var PaymentEditable = {
 		}
 		else if (paymentTypeVal == "ACH") {
 			$("#creditCard-paymentSource-td-id").hide();
+			$("#check-paymentSource-td-id").hide();
 			$("#" + PaymentEditable.commandObject + "_creditCard").hide();
+			$("#" + PaymentEditable.commandObject + "_check").hide();
 			$("#" + PaymentEditable.commandObject + "_ach").show();
 
 			PaymentEditable.filterAchPaymentSources($("#ach-paymentSource-td-id"), isLoad);
 			$("#ach-paymentSource-td-id").show();
 		}
+		else if (paymentTypeVal == "Check") {
+			$("#ach-paymentSource-td-id").hide();
+			$("#creditCard-paymentSource-td-id").hide();
+			$("#" + PaymentEditable.commandObject + "_creditCard").hide();
+			$("#" + PaymentEditable.commandObject + "_ach").hide();
+			$("#" + PaymentEditable.commandObject + "_check").show();
+
+			PaymentEditable.filterCheckPaymentSources($("#check-paymentSource-td-id"), isLoad);
+			$("#check-paymentSource-td-id").show();
+		}
 		else {
 			$("#" + PaymentEditable.commandObject + "_ach").hide();
 			$("#" + PaymentEditable.commandObject + "_creditCard").hide();
+			$("#" + PaymentEditable.commandObject + "_check").hide();
 		}
 	},
 		
@@ -72,6 +91,21 @@ var PaymentEditable = {
 		}
 	},
 		
+	filterCheckPaymentSources: function($checkPaymentSourceElem, isLoad) {
+		var $option = $checkPaymentSourceElem.find('option:selected');
+		var optionVal = $option.val();
+		$("#paymentSource-td-id").val(optionVal);
+		if (optionVal == "0") { // 0 is new
+			$("li:has(.ea-existingCheck)").hide();
+			$("li:has(.ea-newCheck)").show();
+		}
+		else if (PaymentEditable.hasId(optionVal)) {
+			$("li:has(.ea-newCheck)").hide();
+			$("li:has(.ea-existingCheck)").show();
+			PaymentEditable.populatePaymentSourceAttributes($option, isLoad);
+		}
+	},
+
 	populatePaymentSourceAttributes: function($option, isLoad) {
 		if ($option.length && PaymentEditable.hasId($option.val())) {
 
@@ -80,13 +114,13 @@ var PaymentEditable = {
 			if (achholder) {
 				$("#" + PaymentEditable.commandObject + "-paymentSource-achHolderNameReadOnly div#paymentSource-td-achHolderName", "form").text(achholder);
 			}
-			var routing = $option.attr("routing");
-			if (routing) {
-				$("#" + PaymentEditable.commandObject + "-paymentSource-achRoutingNumberReadOnly div#paymentSource-td-achRoutingNumberDisplay", "form").text(routing);
+			var achRouting = $option.attr("routing");
+			if (achRouting) {
+				$("#" + PaymentEditable.commandObject + "-paymentSource-achRoutingNumberReadOnly div#paymentSource-td-achRoutingNumberDisplay", "form").text(achRouting);
 			}
-			var acct = $option.attr("acct");
-			if (acct) {
-				$("#" + PaymentEditable.commandObject + "-paymentSource-achAccountNumberReadOnly div#paymentSource-td-achAccountNumberDisplay", "form").text(acct);
+			var achAcct = $option.attr("acct");
+			if (achAcct) {
+				$("#" + PaymentEditable.commandObject + "-paymentSource-achAccountNumberReadOnly div#paymentSource-td-achAccountNumberDisplay", "form").text(achAcct);
 			}
 
 			// Credit Card
@@ -105,6 +139,20 @@ var PaymentEditable = {
 			var exp = $option.attr("exp");
 			if (exp) {
 				$("#" + PaymentEditable.commandObject + "-paymentSource-creditCardExpirationDisplay div#paymentSource-td-creditCardExpiration", "form").text(exp);
+			}
+
+			// Check
+			var checkholder = $option.attr("checkholder");
+			if (checkholder) {
+				$("#" + PaymentEditable.commandObject + "-paymentSource-checkHolderNameReadOnly div#paymentSource-td-checkHolderName", "form").text(checkholder);
+			}
+			var checkRouting = $option.attr("routing");
+			if (checkRouting) {
+				$("#" + PaymentEditable.commandObject + "-paymentSource-checkRoutingNumberReadOnly div#paymentSource-td-checkRoutingNumberDisplay", "form").text(checkRouting);
+			}
+			var checkAcct = $option.attr("acct");
+			if (checkAcct) {
+				$("#" + PaymentEditable.commandObject + "-paymentSource-checkAccountNumberReadOnly div#paymentSource-td-checkAccountNumberDisplay", "form").text(checkAcct);
 			}
 
 			if (!isLoad) {

@@ -45,7 +45,7 @@ public class PaymentManagerFormController extends TangerineConstituentAttributes
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
-		List<PaymentSource> paymentSources = paymentSourceService.readAllPaymentSourcesACHCreditCard(this.getConstituentId(request));
+		List<PaymentSource> paymentSources = paymentSourceService.readAllPaymentSourcesACHCreditCardCheck(this.getConstituentId(request));
 		refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
 	}
 

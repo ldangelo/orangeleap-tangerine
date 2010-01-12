@@ -116,14 +116,16 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     }
 
     @Override
-    public List<PaymentSource> readAllPaymentSourcesACHCreditCard(Long constituentId) {
+    public List<PaymentSource> readAllPaymentSourcesACHCreditCardCheck(Long constituentId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readAllPaymentSourcesACHCreditCard: constituentId = " + constituentId);
+            logger.trace("readAllPaymentSourcesACHCreditCardCheck: constituentId = " + constituentId);
         }
         List<PaymentSource> sources = paymentSourceDao.readAllPaymentSources(constituentId);
         List<PaymentSource> filteredSources = new ArrayList<PaymentSource>();
         for (PaymentSource src : sources) {
-            if (PaymentSource.ACH.equals(src.getPaymentType()) || PaymentSource.CREDIT_CARD.equals(src.getPaymentType())) {
+            if (PaymentSource.ACH.equals(src.getPaymentType()) ||
+		            PaymentSource.CREDIT_CARD.equals(src.getPaymentType()) || 
+		            PaymentSource.CHECK.equals(src.getPaymentType())) {
                 filteredSources.add(src);
             }
         }
@@ -212,17 +214,30 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
             PaymentSource existingSource = isSameCreditCard(paymentSource, sources);
             if (existingSource != null) {
                 returnMap.put("existingSource", existingSource);
-            } else {
-                returnMap.put("names", checkAccountNamesPaymentSources(paymentSource, sources));
-                returnMap.put("dates", checkCreditCardDatesPaymentSource(paymentSource, sources));
             }
-        } else if (PaymentSource.ACH.equals(paymentSource.getPaymentType())) {
+            else {
+                returnMap.put(StringConstants.NAMES, checkAccountNamesPaymentSources(paymentSource, sources));
+                returnMap.put(StringConstants.DATES, checkCreditCardDatesPaymentSource(paymentSource, sources));
+            }
+        }
+        else if (PaymentSource.ACH.equals(paymentSource.getPaymentType())) {
             List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts(paymentSource.getAchAccountNumberEncrypted(), paymentSource.getAchRoutingNumber());
             PaymentSource existingSource = isSameACH(paymentSource, sources);
             if (existingSource != null) {
                 returnMap.put("existingSource", existingSource);
-            } else {
-                returnMap.put("names", checkAccountNamesPaymentSources(paymentSource, sources));
+            }
+            else {
+                returnMap.put(StringConstants.NAMES, checkAccountNamesPaymentSources(paymentSource, sources));
+            }
+        }
+        else if (PaymentSource.CHECK.equals(paymentSource.getPaymentType())) {
+            List<PaymentSource> sources = paymentSourceDao.readExistingCheckAccounts(paymentSource.getCheckAccountNumberEncrypted(), paymentSource.getCheckRoutingNumber());
+            PaymentSource existingSource = isSameCheck(paymentSource, sources);
+            if (existingSource != null) {
+                returnMap.put("existingSource", existingSource);
+            }
+            else {
+                returnMap.put(StringConstants.NAMES, checkAccountNamesPaymentSources(paymentSource, sources));
             }
         }
         return returnMap;
@@ -237,14 +252,21 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         if (PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) {
             List<PaymentSource> sources = paymentSourceDao.readExistingCreditCards(paymentSourceAware.getPaymentSource().getCreditCardNumberEncrypted());
             if ( ! isSame(paymentSourceAware, sources)) {
-                conflictingPaymentSources.put("names", checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
-                conflictingPaymentSources.put("dates", checkCreditCardDatesPaymentSource(paymentSourceAware.getPaymentSource(), sources));
+                conflictingPaymentSources.put(StringConstants.NAMES, checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
+                conflictingPaymentSources.put(StringConstants.DATES, checkCreditCardDatesPaymentSource(paymentSourceAware.getPaymentSource(), sources));
             }
-        } else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType())) {
+        }
+        else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType())) {
             List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts(paymentSourceAware.getPaymentSource().getAchAccountNumberEncrypted(), paymentSourceAware.getPaymentSource().getAchRoutingNumber());
             if ( ! isSame(paymentSourceAware, sources)) {
-                conflictingPaymentSources.put("names", checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
+                conflictingPaymentSources.put(StringConstants.NAMES, checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
             }
+        }
+        else if (PaymentSource.CHECK.equals(paymentSourceAware.getPaymentType())) {
+	        List<PaymentSource> sources = paymentSourceDao.readExistingCheckAccounts(paymentSourceAware.getPaymentSource().getCheckAccountNumberEncrypted(), paymentSourceAware.getPaymentSource().getCheckRoutingNumber());
+	        if ( ! isSame(paymentSourceAware, sources)) {
+	            conflictingPaymentSources.put(StringConstants.NAMES, checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
+	        }
         }
         return conflictingPaymentSources;
     }
@@ -252,7 +274,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     private boolean isSame(PaymentSourceAware aware, List<PaymentSource> sources) {
         boolean foundSame = false;
         if (sources != null) {
-            PaymentSource existingSource = PaymentSource.CREDIT_CARD.equals(aware.getPaymentType()) ? isSameCreditCard(aware.getPaymentSource(), sources) : isSameACH(aware.getPaymentSource(), sources);
+            PaymentSource existingSource = (PaymentSource.CREDIT_CARD.equals(aware.getPaymentType()) ? isSameCreditCard(aware.getPaymentSource(), sources) :
+		            (PaymentSource.ACH.equals(aware.getPaymentType()) ? isSameACH(aware.getPaymentSource(), sources) : isSameCheck(aware.getPaymentSource(), sources)));
 
             if (existingSource != null) {
                 foundSame = true;
@@ -290,6 +313,19 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         return null;
     }
 
+	private PaymentSource isSameCheck(PaymentSource newSource, List<PaymentSource> sources) {
+	    if (sources != null) {
+	        for (PaymentSource src : sources) {
+	            if (src.getCheckHolderName().equals(newSource.getCheckHolderName()) &&
+			            src.getCheckAccountNumberEncrypted().equals(newSource.getCheckAccountNumberEncrypted()) &&
+	                    src.getCheckRoutingNumber().equals(newSource.getCheckRoutingNumber())) {
+	                return src;
+	            }
+	        }
+	    }
+	    return null;
+	}
+
     private Set<String> checkAccountNamesPaymentSources(PaymentSource paymentSource, List<PaymentSource> sources) {
         if (logger.isTraceEnabled()) {
             logger.trace("checkAccountNamesPaymentSources: paymentSource type = " + paymentSource.getPaymentType());
@@ -299,11 +335,14 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         if (sources != null) {
             for (PaymentSource thisSource : sources) {
                 if ((PaymentSource.ACH.equals(paymentSource.getPaymentType()) && thisSource.getAchHolderName().equals(paymentSource.getAchHolderName())) ||
-                        (PaymentSource.CREDIT_CARD.equals(paymentSource.getPaymentType())) && thisSource.getCreditCardHolderName().equals(paymentSource.getCreditCardHolderName())) {
+                        (PaymentSource.CREDIT_CARD.equals(paymentSource.getPaymentType())) && thisSource.getCreditCardHolderName().equals(paymentSource.getCreditCardHolderName()) ||
+		                (PaymentSource.CHECK.equals(paymentSource.getPaymentType())) && thisSource.getCheckHolderName().equals(paymentSource.getCheckHolderName())) {
                     hasName = true;
                     break;
-                } else {
-                    names.add(PaymentSource.ACH.equals(paymentSource.getPaymentType()) ? thisSource.getAchHolderName() : thisSource.getCreditCardHolderName());
+                }
+                else {
+                    names.add(PaymentSource.ACH.equals(paymentSource.getPaymentType()) ? thisSource.getAchHolderName() :
+		                    (PaymentSource.CHECK.equals(paymentSource.getPaymentType()) ? thisSource.getCheckHolderName() : thisSource.getCreditCardHolderName()));
                 }
             }
         }

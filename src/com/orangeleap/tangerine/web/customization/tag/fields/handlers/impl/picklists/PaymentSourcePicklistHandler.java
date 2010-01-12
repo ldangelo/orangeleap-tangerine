@@ -29,6 +29,7 @@ public class PaymentSourcePicklistHandler extends AbstractPicklistHandler {
 		createHiddenField(formFieldName, fieldValue, sb);
 		createAchSelectField(request, currentField, formFieldName, fieldValue, sb);
 		createCreditCardSelectField(request, currentField, formFieldName, fieldValue, sb);
+		createCheckSelectField(request, currentField, formFieldName, fieldValue, sb);
 	}
 
 	@Override
@@ -89,6 +90,47 @@ public class PaymentSourcePicklistHandler extends AbstractPicklistHandler {
         createEndOptGroup(achSources, sb);
         sb.append("</select>");
     }
+
+	@SuppressWarnings("unchecked")
+	protected void createCheckSelectField(HttpServletRequest request, SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {
+	    sb.append("<select name=\"check-").append(formFieldName).append("\" id=\"check-").append(formFieldName).append("\" ");
+	    writeTabIndex(currentField, sb);
+	    sb.append("class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\" style=\"display:none\">");
+
+	    createNewOption(fieldValue, null, sb);
+
+	    Map<String, List<PaymentSource>> paymentSources = (Map<String, List<PaymentSource>>) request.getAttribute(StringConstants.PAYMENT_SOURCES);
+	    List<PaymentSource> checkSources = getSources(paymentSources, PaymentSource.CHECK);
+	    createBeginOptGroup(checkSources, sb);
+
+	    if (checkSources != null) {
+	        for (PaymentSource thisCheckSrc : checkSources) {
+	            sb.append("<option value=\"").append(thisCheckSrc.getId()).append("\" address=\"");
+		        if (thisCheckSrc.getAddress() != null) {
+		            sb.append(checkForNull(thisCheckSrc.getAddress().getId()));
+		        }
+		        sb.append("\" phone=\"");
+		        if (thisCheckSrc.getPhone() != null) {
+			        sb.append(checkForNull(thisCheckSrc.getPhone().getId()));
+		        }
+		        sb.append("\" checkholder=\"").append(checkForNull(thisCheckSrc.getCheckHolderName()));
+		        sb.append("\" routing=\"").append(checkForNull(thisCheckSrc.getCheckRoutingNumberDisplay()));
+		        sb.append("\" acct=\"").append(checkForNull(thisCheckSrc.getCheckAccountNumberReadOnly())).append("\" ");
+	            if (fieldValue != null && thisCheckSrc.getId().toString().equals(fieldValue.toString())) {
+	                sb.append("selected=\"selected\"");
+	            }
+	            sb.append(">");
+	            sb.append(thisCheckSrc.getProfile());
+	            if (thisCheckSrc.isInactive()) {
+	                sb.append("&nbsp;").append(getMessage("inactive"));
+	            }
+	            sb.append("</option>");
+	        }
+	    }
+
+	    createEndOptGroup(checkSources, sb);
+	    sb.append("</select>");
+	}
 
     @SuppressWarnings("unchecked")
     protected void createCreditCardSelectField(HttpServletRequest request, SectionField currentField, String formFieldName, Object fieldValue, StringBuilder sb) {

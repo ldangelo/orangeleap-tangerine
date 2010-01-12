@@ -364,7 +364,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 	protected void convertPaymentSource(HttpServletRequest request, TangerineForm form) {
 		if (bindPaymentSource) {
 			String paymentType = request.getParameter(StringConstants.PAYMENT_TYPE);
-			if (PaymentSource.CREDIT_CARD.equals(paymentType) || PaymentSource.ACH.equals(paymentType)) {
+			if (PaymentSource.CREDIT_CARD.equals(paymentType) || PaymentSource.ACH.equals(paymentType) || PaymentSource.CHECK.equals(paymentType)) {
 				final String escapedFormFieldName = TangerineForm.escapeFieldName("paymentSource.id");
 				final String paymentSourceId = request.getParameter(escapedFormFieldName);
 				form.addField(escapedFormFieldName, paymentSourceId);

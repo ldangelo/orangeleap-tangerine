@@ -66,16 +66,16 @@ public class TangerineFormDataProvider {
 		gift.setPaymentSource(paymentSource);
 		gift.addCustomFieldValue("reference", "3");
 		gift.addCustomFieldValue("momma", "Yo Mama");
-        gift.setCheckRoutingNumber(AES.encrypt("abcdefghijk"));
+        gift.addCustomFieldValue("checkRoutingNumber", AES.encrypt("abcdefghijk"));
         gift.addCustomFieldValue("checkAccountNumber", AES.encrypt("123456789"));
 
         Map<String, FieldDefinition> typeMap = new HashMap<String, FieldDefinition>();
         FieldDefinition fieldDef = new FieldDefinition("customFieldMap[checkAccountNumber]");
         fieldDef.setFieldType(FieldType.ENCRYPTED);
         typeMap.put("customFieldMap[checkAccountNumber]", fieldDef);
-        fieldDef = new FieldDefinition("checkRoutingNumber");
+        fieldDef = new FieldDefinition("customFieldMap[checkRoutingNumber]");
         fieldDef.setFieldType(FieldType.ENCRYPTED);
-        typeMap.put("checkRoutingNumber", fieldDef);
+        typeMap.put("customFieldMap[checkRoutingNumber]", fieldDef);
 
         gift.setFieldTypeMap(typeMap);
 
@@ -92,7 +92,7 @@ public class TangerineFormDataProvider {
 		addToMap(request, paramMap, "customFieldMap[reference].value", "Joe Blow");
 		addToMap(request, paramMap, "customFieldMap[daddyo].value", "787");
         addToMap(request, paramMap, "customFieldMap[checkAccountNumber].value", "911911");
-        addToMap(request, paramMap, "checkRoutingNumber", StringConstants.MASK_START + "shooty");
+        addToMap(request, paramMap, "customFieldMap[checkRoutingNumber]", StringConstants.MASK_START + "shooty");
 
 		return new Object[][] { new Object[] { request, form, paramMap } };
 	}

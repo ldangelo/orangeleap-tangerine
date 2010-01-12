@@ -46,10 +46,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected String currencyCode;
     protected String paymentType;
     protected String checkNumber;
-    @NotAuditable
-    protected String checkAccountNumber;
-
-    protected String checkRoutingNumber;
     protected Date checkDate;
     protected Long constituentId; // This variable is used by webservices instead of passing the entire constituent object
     protected Constituent constituent;
@@ -123,22 +119,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public String getCheckNumber() {
         return checkNumber;
-    }
-
-    public String getCheckAccountNumber() {
-        return checkAccountNumber;
-    }
-
-    public void setCheckAccountNumber(String checkAccountNumber) {
-        this.checkAccountNumber = checkAccountNumber;
-    }
-
-    public String getCheckRoutingNumber() {
-        return checkRoutingNumber;
-    }
-
-    public void setCheckRoutingNumber(String checkRoutingNumber) {
-        this.checkRoutingNumber = checkRoutingNumber;
     }
 
     public Date getCheckDate() {
@@ -227,8 +207,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     public void clearCheck() {
         setCheckNumber(null);
         setCheckDate(null);
-        setCheckRoutingNumber(null);
-        setCheckAccountNumber(null);
     }
 
     @Override

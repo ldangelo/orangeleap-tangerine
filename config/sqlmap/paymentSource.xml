@@ -11,6 +11,9 @@
 		<result property="creditCardHolderName" column="PAYMENT_SRC_CREDIT_CARD_HOLDER_NAME" jdbcType="VARCHAR" />
 		<result property="creditCardNumberEncrypted" column="PAYMENT_SRC_CREDIT_CARD_NUMBER" jdbcType="VARCHAR" />
 		<result property="creditCardType" column="PAYMENT_SRC_CREDIT_CARD_TYPE" jdbcType="VARCHAR" />
+		<result property="checkHolderName" column="PAYMENT_SRC_CHECK_HOLDER_NAME" jdbcType="VARCHAR" />
+		<result property="checkAccountNumberEncrypted" column="PAYMENT_SRC_CHECK_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
+		<result property="checkRoutingNumber" column="PAYMENT_SRC_CHECK_ROUTING_NUMBER" jdbcType="VARCHAR" />
 		<result property="inactive" column="PAYMENT_SRC_INACTIVE" jdbcType="CHAR" />
 		<result property="lastFourDigits" column="PAYMENT_SRC_LAST_FOUR_DIGITS" jdbcType="VARCHAR" />
 		<result property="profile" column="PAYMENT_SRC_PROFILE" jdbcType="VARCHAR" />
@@ -26,17 +29,22 @@
     </resultMap>
 
     <resultMap id="PAYMENT_SOURCE_LIST_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id" extends="MIN_PAYMENT_SOURCE_RESULT">
+	    <!-- The following mappings are for sorting only -->
         <result property="achRoutingNumberDisplay" column="PAYMENT_SRC_ACH_ROUTING_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
         <result property="achAccountNumberDisplay" column="PAYMENT_SRC_ACH_ACCOUNT_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
         <result property="creditCardNumberDisplay" column="PAYMENT_SRC_CREDIT_CARD_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
+	    <result property="checkRoutingNumberDisplay" column="PAYMENT_SRC_CHECK_ROUTING_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
+	    <result property="checkAccountNumberDisplay" column="PAYMENT_SRC_CHECK_ACCOUNT_NUMBER_READ_ONLY" jdbcType="VARCHAR" />
     </resultMap>
 
     <sql id="PAYMENT_SRC_COLS_FRAGMENT">
 		ps.PAYMENT_SOURCE_ID, ps.ACH_ACCOUNT_NUMBER as PAYMENT_SRC_ACH_ACCOUNT_NUMBER, 
 		ps.ACH_HOLDER_NAME as PAYMENT_SRC_ACH_HOLDER_NAME, ps.ACH_ROUTING_NUMBER as PAYMENT_SRC_ACH_ROUTING_NUMBER,
-		ps.CREDIT_CARD_EXPIRATION as PAYMENT_SRC_CREDIT_CARD_EXPIRATION, ps.CREDIT_CARD_HOLDER_NAME as PAYMENT_SRC_CREDIT_CARD_HOLDER_NAME, 
+		ps.CREDIT_CARD_EXPIRATION as PAYMENT_SRC_CREDIT_CARD_EXPIRATION, ps.CREDIT_CARD_HOLDER_NAME as PAYMENT_SRC_CREDIT_CARD_HOLDER_NAME,
 		ps.CREDIT_CARD_NUMBER as PAYMENT_SRC_CREDIT_CARD_NUMBER, ps.CREDIT_CARD_TYPE as PAYMENT_SRC_CREDIT_CARD_TYPE,
-		ps.INACTIVE as PAYMENT_SRC_INACTIVE, ps.PAYMENT_PROFILE as PAYMENT_SRC_PROFILE, ps.PAYMENT_TYPE as PAYMENT_SRC_TYPE,
+	    ps.CHECK_HOLDER_NAME as PAYMENT_SRC_CHECK_HOLDER_NAME,
+	    ps.CHECK_ACCOUNT_NUMBER as PAYMENT_SRC_CHECK_ACCOUNT_NUMBER, ps.CHECK_ROUTING_NUMBER as PAYMENT_SRC_CHECK_ROUTING_NUMBER,
+	    ps.INACTIVE as PAYMENT_SRC_INACTIVE, ps.PAYMENT_PROFILE as PAYMENT_SRC_PROFILE, ps.PAYMENT_TYPE as PAYMENT_SRC_TYPE,
 		ps.LAST_FOUR_DIGITS as PAYMENT_SRC_LAST_FOUR_DIGITS,
 		ps.UPDATE_DATE as PAYMENT_SRC_UPDATE_DATE, ps.CREATE_DATE as PAYMENT_SRC_CREATE_DATE
     </sql>
@@ -90,6 +98,12 @@
 		and ps.ACH_ACCOUNT_NUMBER = #achAccountNumberEncrypted#
 	</select>
 	
+	<select id="SELECT_BY_CHECK_NUM" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
+		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
+		and ps.CHECK_ROUTING_NUMBER = #checkRoutingNumber#
+		and ps.CHECK_ACCOUNT_NUMBER = #checkAccountNumberEncrypted#
+	</select>
+
 	<select id="SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID_TYPES" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
 		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
 		and ps.CONSTITUENT_ID = #constituentId#
@@ -107,6 +121,8 @@
         ps.CREDIT_CARD_NUMBER as PAYMENT_SRC_CREDIT_CARD_NUMBER_READ_ONLY,
         ps.ACH_ACCOUNT_NUMBER as PAYMENT_SRC_ACH_ACCOUNT_NUMBER_READ_ONLY,
         ps.ACH_ROUTING_NUMBER as PAYMENT_SRC_ACH_ROUTING_NUMBER_READ_ONLY,
+	    ps.CHECK_ROUTING_NUMBER as PAYMENT_SRC_CHECK_ROUTING_NUMBER_READ_ONLY,
+	    ps.CHECK_ACCOUNT_NUMBER as PAYMENT_SRC_CHECK_ACCOUNT_NUMBER_READ_ONLY, 
       	<include refid="CONSTITUENT_COLS_FRAGMENT"/>
 
         <dynamic prepend=",">
@@ -146,15 +162,18 @@
 
 	<insert id="INSERT_PAYMENT_SOURCE" parameterClass="com.orangeleap.tangerine.domain.PaymentSource">
 		insert into PAYMENT_SOURCE (ACH_ACCOUNT_NUMBER,
-		ACH_HOLDER_NAME,
-		ACH_ROUTING_NUMBER, CREDIT_CARD_EXPIRATION, CREDIT_CARD_HOLDER_NAME, CREDIT_CARD_NUMBER,
-		CREDIT_CARD_TYPE, INACTIVE, LAST_FOUR_DIGITS, PAYMENT_PROFILE, PAYMENT_TYPE, ADDRESS_ID,
+		ACH_HOLDER_NAME, ACH_ROUTING_NUMBER,
+		CREDIT_CARD_EXPIRATION, CREDIT_CARD_HOLDER_NAME, CREDIT_CARD_NUMBER, CREDIT_CARD_TYPE,
+		CHECK_HOLDER_NAME, CHECK_ACCOUNT_NUMBER, CHECK_ROUTING_NUMBER,
+		INACTIVE, LAST_FOUR_DIGITS, PAYMENT_PROFILE, PAYMENT_TYPE, ADDRESS_ID,
 		CONSTITUENT_ID, PHONE_ID,
 		CREATE_DATE, UPDATE_DATE
 		)
 		values (#achAccountNumberEncrypted#, #achHolderName#,
 		#achRoutingNumber#, #creditCardExpiration#, #creditCardHolderName#,
-		#creditCardNumberEncrypted#, #creditCardType#, #inactive#, #lastFourDigits#, 
+		#creditCardNumberEncrypted#, #creditCardType#,
+		#checkHolderName#, #checkAccountNumberEncrypted#, #checkRoutingNumber#, 
+		#inactive#, #lastFourDigits#,
 		#profile#, #paymentType#, #address.id#, #constituent.id#,
 		#phone.id#, now(), now())
         <selectKey keyProperty="id" resultClass="long">
@@ -171,6 +190,9 @@
 		CREDIT_CARD_HOLDER_NAME = #creditCardHolderName#,
 		CREDIT_CARD_NUMBER = #creditCardNumberEncrypted#,
 		CREDIT_CARD_TYPE = #creditCardType#,
+		CHECK_HOLDER_NAME = #checkHolderName#, 
+		CHECK_ACCOUNT_NUMBER = #checkAccountNumberEncrypted#,
+		CHECK_ROUTING_NUMBER = #checkRoutingNumber#,
 		INACTIVE = #inactive#,
 		LAST_FOUR_DIGITS = #lastFourDigits#, 
 		PAYMENT_PROFILE = #profile#,

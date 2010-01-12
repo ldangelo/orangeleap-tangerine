@@ -131,6 +131,18 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
         return getSqlMapClientTemplate().queryForList("SELECT_BY_ACH_NUM", params);
     }
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PaymentSource> readExistingCheckAccounts(String checkAccountNum, String checkRoutingNum) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readExistingCheckAccounts: checkAccountNum = " + checkAccountNum + " checkRoutingNum = " + checkRoutingNum);
+	    }
+	    Map<String, Object> params = setupParams();
+	    params.put("checkAccountNumberEncrypted", checkAccountNum);
+	    params.put("checkRoutingNum", checkRoutingNum);
+	    return getSqlMapClientTemplate().queryForList("SELECT_BY_CHECK_NUM", params);
+	}
+
     @SuppressWarnings("unchecked")
     @Override
     public List<PaymentSource> readAllPaymentSourcesByConstituentId(Long constituentId, String sortPropertyName, String direction,

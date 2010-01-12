@@ -67,7 +67,7 @@ public class TangerineFormControllerTest extends BaseTest {
 		Assert.assertEquals(gift.getCustomFieldValue("daddyo"), "787", "customFieldMap[daddyo].value = " + gift.getCustomFieldValue("daddyo"));
 		Assert.assertEquals(gift.getCustomFieldValue("momma"), "Yo Mama", "customFieldMap[momma].value = " + gift.getCustomFieldValue("momma"));
         Assert.assertEquals(gift.getCustomFieldValue("checkAccountNumber"), AES.encrypt("911911"));
-        Assert.assertEquals(gift.getCheckRoutingNumber(), AES.encrypt("abcdefghijk"));
+        Assert.assertEquals(gift.getCustomFieldValue("checkRoutingNumber"), AES.encrypt("abcdefghijk"));
 	}
 
 	@Test(dataProvider = "setupTestArrayForm", dataProviderClass = TangerineFormDataProvider.class)

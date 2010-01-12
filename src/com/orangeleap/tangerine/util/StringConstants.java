@@ -238,4 +238,6 @@ public final class StringConstants {
     public static final String EXECUTED = "executed";
 
     public static final String MASK_START = "****";
+	public static final String NAMES = "names";
+	public static final String DATES = "dates";
 }

@@ -34,7 +34,6 @@ import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.PhoneService;
-import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -139,11 +138,12 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
     private void maintainPaymentSourceChild(AbstractEntity entity, Constituent constituent) throws BindException {
         PaymentSourceAware paymentSourceAware = (PaymentSourceAware) entity;
         if (PaymentSource.CASH.equals(paymentSourceAware.getPaymentType()) ||
-                PaymentSource.CHECK.equals(paymentSourceAware.getPaymentType())) {
+                PaymentSource.OTHER.equals(paymentSourceAware.getPaymentType())) {
             paymentSourceAware.setPaymentSource(null);
         }
         else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType()) ||
-                PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) {
+                PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())||
+                PaymentSource.CHECK.equals(paymentSourceAware.getPaymentType())) {
             if (paymentSourceAware.getPaymentSource() != null) {
 
 	            paymentSourceAware.setPaymentType(paymentSourceAware.getPaymentSource().getPaymentType());
@@ -184,18 +184,27 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         }
         else if (PaymentSource.CHECK.equals(entity.getPaymentType())) {
             sb.append("\n");
-            sb.append(TangerineMessageAccessor.getMessage("checkNumberColon"));
-            sb.append(" ");
-            sb.append(entity.getCheckNumber());
+	        if (entity.getCheckNumber() != null) {
+				sb.append(TangerineMessageAccessor.getMessage("checkNumberColon"));
+				sb.append(" ");
+				sb.append(entity.getCheckNumber());
+	        }
             if (entity.getCheckDate() != null) {
                 sb.append(" ");
                 sb.append(TangerineMessageAccessor.getMessage("checkDateColon"));
                 sb.append(" ").append(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(entity.getCheckDate())); // TODO: the right date format based on locale
             }
-            if (StringUtils.isNotBlank(entity.getCheckAccountNumber())) {
+            if (StringUtils.isNotBlank(entity.getPaymentSource().getCheckAccountNumber())) {
                 sb.append(" ");
                 sb.append(TangerineMessageAccessor.getMessage("checkAccountNumberColon"));
-                sb.append(" ").append(AES.decryptAndMask(entity.getCheckAccountNumber()));
+
+	            String checkAcctNum = entity.getPaymentSource().getCheckAccountNumberReadOnly();
+	            if (StringUtils.isNotBlank(checkAcctNum)) {
+                    sb.append(" ").append(checkAcctNum);
+	            }
+	            if (StringUtils.isNotBlank(entity.getPaymentSource().getCheckHolderName())) {
+                    sb.append(" ").append(entity.getPaymentSource().getCheckHolderName());
+	            }
             }
         }
 	    if (entity.getAddress() != null && !entity.getAddress().isNew()) {

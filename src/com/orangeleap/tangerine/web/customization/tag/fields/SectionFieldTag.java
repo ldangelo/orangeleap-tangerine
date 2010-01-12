@@ -250,7 +250,7 @@ public class SectionFieldTag extends AbstractTag {
 
                     int z = 0;
                     for (SectionField sectionFld : fields) {
-                        String escapedFieldName = TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName());
+                        String escapedFieldName = TangerineForm.escapeFieldName(appendDotValueForCustomFields(sectionFld.getFieldPropertyName()));
 
                         sb.append("{name: '").append(escapedFieldName).append("', ");
                         sb.append("mapping: '").append(escapedFieldName).append("', ");
@@ -375,7 +375,7 @@ public class SectionFieldTag extends AbstractTag {
                     int y = 0;
                     for (SectionField sectionFld : fields) {
                         sb.append("{header: '").append(sectionFld.getFieldDefinition().getDefaultLabel()).append("', ");
-                        sb.append("dataIndex: '").append(TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName())).append("', sortable: ");
+                        sb.append("dataIndex: '").append(TangerineForm.escapeFieldName(appendDotValueForCustomFields(sectionFld.getFieldPropertyName()))).append("', sortable: ");
                         sb.append( ! isListGrid && StringConstants.FULLTEXT.equals(searchTypeValue) ? Boolean.FALSE.toString() : Boolean.TRUE.toString());
 
                         String extType = findExtType(bw, sectionFld);
@@ -415,7 +415,7 @@ public class SectionFieldTag extends AbstractTag {
                     }
                     sb.append("],\n");
                     sb.append("sm: new Ext.grid.RowSelectionModel({singleSelect: true}),\n");
-                    sb.append("viewConfig: { forceFit: true },\n");
+                    sb.append("viewConfig: { autoFill: true },\n");
                     sb.append("height: ").append(isListGrid ? "600" : (StringConstants.FULLTEXT.equals(searchTypeValue) ? "600" : "400")).append(",\n");
                     sb.append("width: 780,\n");
                     sb.append("frame: true,\n");
@@ -464,7 +464,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("});\n");
                     if (isListGrid) {
                         sb.append("var sortDir = '").append(direction).append("';\n");
-                        sb.append("var sortProp = '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("';\n");
+                        sb.append("var sortProp = '").append(TangerineForm.escapeFieldName(appendDotValueForCustomFields(fields.get(0).getFieldPropertyName()))).append("';\n");
                         sb.append("var pageStart = 0;\n");
                         sb.append("var pageLimit = 100;\n");
                         sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams) {\n");
@@ -492,7 +492,7 @@ public class SectionFieldTag extends AbstractTag {
                         if (Boolean.TRUE.toString().equalsIgnoreCase(pageContext.getRequest().getParameter("autoLoad"))) {
 
                             sb.append("var sortDir = '").append(direction).append("';\n");
-                            sb.append("var sortProp = '").append(TangerineForm.escapeFieldName(fields.get(0).getFieldPropertyName())).append("';\n");
+                            sb.append("var sortProp = '").append(TangerineForm.escapeFieldName(appendDotValueForCustomFields(fields.get(0).getFieldPropertyName()))).append("';\n");
                             sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams) {\n");
                             sb.append("if (OrangeLeap.").append(gridName).append(".grid.sortParams.direction) {\n");
                             sb.append("sortDir = OrangeLeap.").append(gridName).append(".grid.sortParams.direction;\n");
@@ -531,7 +531,7 @@ public class SectionFieldTag extends AbstractTag {
 
                             y = 0;
                             for (SectionField sectionFld : fields) {
-                                String escapedFieldName = TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName());
+                                String escapedFieldName = TangerineForm.escapeFieldName(appendDotValueForCustomFields(sectionFld.getFieldPropertyName()));
                                 sb.append("\"").append(escapedFieldName).append("\"").append(": $(\"#").append(escapedFieldName).append("\").val() ");
                                 if (++y < fields.size()) {
                                     sb.append(", ");
@@ -765,7 +765,7 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("emptyMsg: '").append(TangerineMessageAccessor.getMessage("emptyMsg")).append("'\n");
                     sb.append("}),\n");
                     sb.append("sm: new Ext.grid.RowSelectionModel({singleSelect: true}),\n");
-                    sb.append("viewConfig: { forceFit: true },\n");
+                    sb.append("viewConfig: { autoFill: true },\n");
                     sb.append("height: 600,\n");
                     sb.append("width: 760,\n");
                     sb.append("frame: true,\n");
@@ -1085,4 +1085,11 @@ public class SectionFieldTag extends AbstractTag {
 	private TangerineForm getTangerineForm() {
 		return (TangerineForm) getRequestAttribute(StringConstants.FORM);
 	}
+
+    private String appendDotValueForCustomFields(String fieldPropertyName) {
+        if (fieldPropertyName.startsWith(StringConstants.CUSTOM_FIELD_MAP_START) && fieldPropertyName.endsWith(StringConstants.FIELD_MAP_END)) {
+            fieldPropertyName = new StringBuilder(fieldPropertyName).append(StringConstants.DOT_VALUE).toString();
+        }
+        return fieldPropertyName;
+    }
 }

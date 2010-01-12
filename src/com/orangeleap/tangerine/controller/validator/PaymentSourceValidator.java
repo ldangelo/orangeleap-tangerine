@@ -18,7 +18,6 @@
 
 package com.orangeleap.tangerine.controller.validator;
 
-import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.service.PaymentSourceService;
@@ -68,12 +67,22 @@ public class PaymentSourceValidator implements Validator {
             errors.setNestedPath("paymentSource");
         }
 
-        if (source != null && PaymentSource.CREDIT_CARD.equals(source.getPaymentType())) {
-            Date expirationDate = source.getCreditCardExpiration();
-            Calendar today = CalendarUtils.getToday(false);
-            if (expirationDate == null || today.getTime().after(expirationDate)) {
-                errors.rejectValue("creditCardExpiration", "invalidCreditCardExpiration");
-            }
+        if (source != null) {
+	        if (PaymentSource.CREDIT_CARD.equals(source.getPaymentType())) {
+				Date expirationDate = source.getCreditCardExpiration();
+				Calendar today = CalendarUtils.getToday(false);
+				if (expirationDate == null || today.getTime().after(expirationDate)) {
+					errors.rejectValue("creditCardExpiration", "invalidCreditCardExpiration");
+				}
+	        }
+	        else if (PaymentSource.CHECK.equals(source.getPaymentType())) {
+				if (StringUtils.hasText(source.getCheckRoutingNumber()) && ! StringUtils.hasText(source.getCheckAccountNumber())) {
+					errors.rejectValue("checkAccountNumber", "invalidCheckAccountNumber");
+				}
+				else if (StringUtils.hasText(source.getCheckAccountNumber()) && ! StringUtils.hasText(source.getCheckRoutingNumber())) {
+					errors.rejectValue("checkRoutingNumber", "invalidCheckRoutingNumber");
+				}
+	        }
         }
         errors.setNestedPath(inPath);
     }

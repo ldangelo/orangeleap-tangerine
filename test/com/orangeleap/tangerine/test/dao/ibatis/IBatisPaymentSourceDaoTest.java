@@ -72,6 +72,8 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
         src.setAddress(addr);
         
         src.setPaymentType(PaymentSource.CHECK);
+	    src.setCheckAccountNumber("123456");
+	    src.setCheckRoutingNumber("1111");
         src.setInactive(false);
         
         src = paymentSourceDao.maintainPaymentSource(src);
@@ -84,17 +86,20 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
         assert readSource.getCreditCardExpiration() == null;
         assert readSource.getCreditCardNumber() == null;
         assert readSource.getCreditCardType() == null;
-        assert readSource.getProfile() == null;
+        Assert.assertNotNull(readSource.getProfile());
+	    Assert.assertEquals("123456", readSource.getCheckAccountNumber());
+	    Assert.assertEquals("1111", readSource.getCheckRoutingNumber());
         assert readSource.getConstituent() != null && 200 == readSource.getConstituent().getId();
         assert readSource.getAddress() != null && 100 == readSource.getAddress().getId();
         assert readSource.getPhone() == null;
         
         // Update
+	    src.setLastFourDigits(null);
         src.setPaymentType(PaymentSource.CREDIT_CARD);
         src.setInactive(true);
         src.setCreditCardExpiration(new Date());
         src.setCreditCardHolderName("Big Bird");
-        src.setCreditCardNumber("6011008400223068");
+        src.setCreditCardNumber("6011008400223068");                                                                                
         src.setCreditCardType("Discover");
         src.setProfile("Big Bird Discover");
         src.setAddress(null);
@@ -111,7 +116,7 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
         assert readSource.getAchRoutingNumber() == null;
         assert readSource.getCreditCardExpiration() != null;
         assert "6011008400223068".equals(readSource.getCreditCardNumber());
-        assert "3068".equals(readSource.getLastFourDigits());
+        Assert.assertEquals("3068", readSource.getLastFourDigits());
         assert "Big Bird".equals(readSource.getCreditCardHolderName());
         assert "Discover".equals(readSource.getCreditCardType());
         assert "Big Bird Discover".equals(readSource.getProfile());

@@ -56,6 +56,9 @@ public class AdjustedGiftPaymentSourcePicklistHandler extends PaymentSourcePickl
 				else if (PaymentSource.CREDIT_CARD.equals(selectedPaymentSource.getPaymentType())) {
 					createCreditCardSelectField(currentField, selectedPaymentSource, formFieldName, sb);
 				}
+				else if (PaymentSource.CHECK.equals(selectedPaymentSource.getPaymentType())) {
+					createCheckSelectField(currentField, selectedPaymentSource, formFieldName, sb);
+				}
 			}
 		}
 	}
@@ -115,4 +118,30 @@ public class AdjustedGiftPaymentSourcePicklistHandler extends PaymentSourcePickl
 	    sb.append("</option>");
         sb.append("</select>");
     }
+
+	protected void createCheckSelectField(SectionField currentField, PaymentSource selectedPaymentSource,
+	                                    String formFieldName, StringBuilder sb) {
+		sb.append("<select name=\"check-").append(formFieldName).append("\" ");
+	    writeTabIndex(currentField, sb);
+	    sb.append("id=\"check-").append(formFieldName).append("\" class=\"picklist ").append(resolveEntityAttributes(currentField)).append("\">");
+		sb.append("<option value=\"").append(selectedPaymentSource.getId()).append("\" address=\"");
+		if (selectedPaymentSource.getAddress() != null) {
+			sb.append(checkForNull(selectedPaymentSource.getAddress().getId()));
+		}
+		sb.append("\" phone=\"");
+		if (selectedPaymentSource.getPhone() != null) {
+			sb.append(checkForNull(selectedPaymentSource.getPhone().getId()));
+		}
+		sb.append("\" checkholder=\"").append(checkForNull(selectedPaymentSource.getCheckHolderName()));
+		sb.append("\" routing=\"").append(checkForNull(selectedPaymentSource.getCheckRoutingNumberDisplay()));
+		sb.append("\" acct=\"").append(checkForNull(selectedPaymentSource.getAchAccountNumberReadOnly())).append("\" ");
+		sb.append("selected=\"selected\"");
+		sb.append(">");
+		sb.append(selectedPaymentSource.getProfile());
+		if (selectedPaymentSource.isInactive()) {
+		    sb.append("&nbsp;").append(getMessage("inactive"));
+		}
+		sb.append("</option>");
+	    sb.append("</select>");
+	}
 }

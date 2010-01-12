@@ -65,6 +65,7 @@
 
      <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
          <property name="schema" value="/orangeleap.xsd"/>
+         <property name="addValidationErrorDetail" value="true"/>
          <property name="validateRequest" value="true"/>
          <property name="validateResponse" value="true"/>
      </bean>

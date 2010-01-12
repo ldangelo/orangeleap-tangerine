@@ -7,7 +7,7 @@
 
 	<xs:complexType name="site">
 		<xs:sequence>
-			<xs:element name="name" type="xs:string" minOccurs="0" />
+			<xs:element name="name" type="xs:string" minOccurs="1" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -229,8 +229,8 @@
 			<xs:element name="lastFourDigits" type="xs:string"
 				minOccurs="0" />
 			<xs:element name="paymentType" type="tns:PaymentType"
-				minOccurs="0" />
-			<xs:element name="constituentId" type="xs:long" minOccurs="0" />
+				minOccurs="1" />
+			<xs:element name="constituentId" type="xs:long" minOccurs="1" />
 			<xs:element name="phone" type="tns:phone" minOccurs="0" />
 			<xs:element name="profile" type="xs:string" minOccurs="0" />
 			<xs:element name="userCreated" type="xs:boolean" />
@@ -256,14 +256,14 @@
 					<xs:element name="checkNumber" type="xs:int" minOccurs="0" />
 					<xs:element name="comments" type="xs:string" minOccurs="0" />
 					<xs:element name="currencyCode" type="xs:string"
-						minOccurs="0" />
+						minOccurs="1" />
 					<xs:element name="distributionLines" type="tns:distributionLine"
-						nillable="true" minOccurs="0" maxOccurs="unbounded" />
+						minOccurs="1" maxOccurs="unbounded" />
 					<xs:element name="email" type="tns:email" minOccurs="0" />
 					<xs:element name="paymentSource" type="tns:paymentSource"
-						minOccurs="0" />
-					<xs:element name="paymentType" type="xs:string"
-						minOccurs="0" />
+						minOccurs="1" />
+					<xs:element name="paymentType" type="tns:PaymentType"
+						minOccurs="1" />
 					<xs:element name="constituentId" type="xs:long"
 						minOccurs="1" maxOccurs="1" />
 					<xs:element name="phone" type="tns:phone" minOccurs="0" />
@@ -291,9 +291,9 @@
 				<xs:sequence>
 					<xs:element name="amount" type="xs:decimal" minOccurs="1" />
 					<xs:element name="authCode" type="xs:string" minOccurs="0" />
-					<xs:element name="deductible" type="xs:boolean" />
+					<xs:element name="deductible" type="xs:boolean" minOccurs="1"/>
 					<xs:element name="deductibleAmount" type="xs:decimal"
-						minOccurs="0" />
+						minOccurs="1"/>
 					<xs:element name="donationDate" type="xs:dateTime"
 						minOccurs="0" />
 					<xs:element name="giftStatus" type="xs:string"
@@ -381,6 +381,7 @@
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="firstName" type="xs:string" minOccurs="1"
 						maxOccurs="1" />
+					<xs:element name="middleName" type="xs:string" minOccurs="0"/>
 					<xs:element name="lastName" type="xs:string" minOccurs="1"
 						maxOccurs="1" />
 					<xs:element name="title" type="xs:string" minOccurs="0"
@@ -391,12 +392,14 @@
 						minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="phones" type="tns:phone" nillable="true"
 						minOccurs="0" maxOccurs="unbounded" />
+						<!-- 
 					<xs:element name="primaryAddress" type="tns:address"
 						minOccurs="0" />
 					<xs:element name="primaryEmail" type="tns:email"
 						minOccurs="0" />
 					<xs:element name="primaryPhone" type="tns:phone"
 						minOccurs="0" />
+						-->
 					<xs:element name="organizationName" type="xs:string"
 						minOccurs="0" />
 					<xs:element name="constituentAttributes" type="xs:string"

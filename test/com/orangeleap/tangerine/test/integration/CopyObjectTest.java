@@ -38,10 +38,12 @@ import com.orangeleap.tangerine.ws.util.ObjectConverter;
 public class CopyObjectTest extends BaseTest
 {
     private ObjectConverter converter;
-
+    private com.orangeleap.tangerine.ws.util.v2.ObjectConverter v2converter;
+    
     @BeforeClass
     void setup() {
         converter = new ObjectConverter();
+        v2converter = new com.orangeleap.tangerine.ws.util.v2.ObjectConverter();
     }
 
     @Test(groups = {"copyToJAXBConstituentTest"},dataProvider="setupCreateConstituent", dataProviderClass= ConstituentDataProvider.class)
@@ -53,9 +55,22 @@ public class CopyObjectTest extends BaseTest
         System.out.println(jaxConstituent.getFirstName());
         System.out.println(jaxConstituent.getFirstName());
         assert(jaxConstituent.getFirstName() == constituent.getFirstName());
-
         com.orangeleap.tangerine.domain.Constituent newconstituent = new com.orangeleap.tangerine.domain.Constituent();
         converter.ConvertFromJAXB(constituent,newconstituent);
+        assert(newconstituent.getFirstName() == constituent.getFirstName());
+    }
+
+    @Test(groups = {"copyToJAXBConstituentTest"},dataProvider="setupCreateConstituent", dataProviderClass= ConstituentDataProvider.class)
+    public void copyToJAXBConstituentV2Test(Site site, com.orangeleap.tangerine.domain.Constituent constituent)
+    {
+        com.orangeleap.tangerine.ws.schema.v2.Constituent jaxConstituent = new com.orangeleap.tangerine.ws.schema.v2.Constituent();
+        
+        v2converter.ConvertToJAXB(constituent,jaxConstituent);
+        System.out.println(jaxConstituent.getFirstName());
+        System.out.println(jaxConstituent.getFirstName());
+        assert(jaxConstituent.getFirstName() == constituent.getFirstName());
+        com.orangeleap.tangerine.domain.Constituent newconstituent = new com.orangeleap.tangerine.domain.Constituent();
+        v2converter.ConvertFromJAXB(constituent,newconstituent);
         assert(newconstituent.getFirstName() == constituent.getFirstName());
     }
 
@@ -63,13 +78,21 @@ public class CopyObjectTest extends BaseTest
     public void copyToJAXBGiftTest(Site site, com.orangeleap.tangerine.domain.Constituent constituent, Gift gift)
     {
         com.orangeleap.tangerine.ws.schema.Gift jaxbGift = new com.orangeleap.tangerine.ws.schema.Gift();
-
         converter.ConvertToJAXB(gift,jaxbGift);
-
         assert(gift.getAmount() == jaxbGift.getAmount());
-
         Gift newgift = new Gift();
         converter.ConvertFromJAXB(jaxbGift,newgift);
         assert(gift.getAmount() == jaxbGift.getAmount());
     }
+    
+    @Test(groups = {"copyToJAXBGiftTest"},dataProvider="setupGift", dataProviderClass= GiftDataProvider.class)
+    public void copyToJAXBGiftV2Test(Site site, com.orangeleap.tangerine.domain.Constituent constituent, Gift gift)
+    {
+        com.orangeleap.tangerine.ws.schema.v2.Gift jaxbGift = new com.orangeleap.tangerine.ws.schema.v2.Gift();
+        v2converter.ConvertToJAXB(gift,jaxbGift);
+        assert(gift.getAmount() == jaxbGift.getAmount());
+        Gift newgift = new Gift();
+        v2converter.ConvertFromJAXB(jaxbGift,newgift);
+        assert(gift.getAmount() == jaxbGift.getAmount());
+    }    
 }

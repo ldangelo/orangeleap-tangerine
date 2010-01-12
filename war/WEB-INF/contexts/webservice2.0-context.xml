@@ -19,7 +19,7 @@
 				<property name="schema" value="/orangeleapv2.xsd" />
 				<property name="portTypeName" value="OrangeLeap" />
 				<property name="locationUri" value="/services2.0/" />
-				<property name="targetNamespace" value="http://www.orangeleap.com/orangeleap/services2.0"/>
+				<property name="targetNamespace" value="http://www.orangeleap.com/orangeleap/services2.0/"/>
 			</bean>
 		</property>	
 	</bean>
@@ -57,13 +57,17 @@
 
      <sws:marshalling-endpoints/>
  
+ 	<bean id="unmarshallingListener" class="com.orangeleap.tangerine.ws.listener.OrangeLeapUnmarshallerListener"/>
+ 	
     <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="com.orangeleap.tangerine.ws.schema.v2"/>
+        <property name="unmarshallerListener" ref="unmarshallingListener"/>
      </bean>
 
 
      <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
          <property name="schema" value="/orangeleapv2.xsd"/>
+         <property name="addValidationErrorDetail" value="true"/>
          <property name="validateRequest" value="true"/>
          <property name="validateResponse" value="true"/>
      </bean>

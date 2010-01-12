@@ -28,6 +28,7 @@ import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.tangerine.service.ws.exception.*;
 import com.orangeleap.tangerine.ws.schema.v2.AddCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.BulkAddCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.CommunicationHistory;
@@ -61,6 +62,8 @@ import com.orangeleap.tangerine.ws.schema.v2.SearchConstituentsResponse;
 import com.orangeleap.tangerine.ws.util.v2.ObjectConverter;
 import com.orangeleap.theguru.client.GetSegmentationByNameRequest;
 import com.orangeleap.theguru.client.GetSegmentationByNameResponse;
+import com.orangeleap.theguru.client.PaymentSource;
+import com.orangeleap.theguru.client.PaymentType;
 import com.orangeleap.theguru.client.Segmentation;
 import com.orangeleap.theguru.client.Theguru;
 import com.orangeleap.theguru.client.WSClient;
@@ -72,10 +75,13 @@ public class OrangeLeapWSV2 {
 
 	ApplicationContext applicationContext;
 
+	@Autowired
 	private GiftService giftService;
 
+	@Autowired
 	private PledgeService pledgeService;
 
+	@Autowired
 	private ConstituentService cs;
 
 	@Autowired
@@ -161,10 +167,30 @@ public class OrangeLeapWSV2 {
 		return cr;
 	}
 
+	void validateConstituentInformation(SaveOrUpdateConstituentRequest request) throws ConstituentValidationException {
+		Constituent c = request.getConstituent();
+		
+		if (c == null) throw new ConstituentValidationException("Invalid request constituent can not be null");
+		if (c.getSite() == null || c.getSite().getName().equals(""))
+			throw new ConstituentValidationException("Constituent must contain a valid site object");
+		if (c.getConstituentType() == null || (!c.getConstituentType().equals("individual") && !c.getConstituentType().equals("organization")))
+			throw new ConstituentValidationException("Constituent must have constituentType of 'individual' or 'organization'");
+		if (c.getConstituentType().equals("individual")) {
+			if ((c.getFirstName() == null || c.getFirstName().equals("")) && (c.getLastName() == null || c.getLastName().equals("")))
+				throw new ConstituentValidationException("Constituent's of type 'individual' must contain a valid firstName and/or lastName");
+		} else {
+			if (c.getOrganizationName() == null || c.getOrganizationName().equals("")) {
+				throw new ConstituentValidationException("Constituent's of type 'organization' must contain a valid organizationName");
+			}
+		}
+	}
 	@PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public SaveOrUpdateConstituentResponse maintainConstituent(
 			SaveOrUpdateConstituentRequest p)
 			throws ConstituentValidationException, BindException {
+		
+		validateConstituentInformation(p);
+		
 		com.orangeleap.tangerine.domain.Constituent c = cs
 				.createDefaultConstituent();
 		ObjectConverter converter = new ObjectConverter();
@@ -183,7 +209,7 @@ public class OrangeLeapWSV2 {
 
 	@PayloadRoot(localPart = "FindConstituentsRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public FindConstituentsResponse findConstituent(
-			FindConstituentsRequest request) {
+			FindConstituentsRequest request) throws InvalidRequestException {
 		FindConstituentsResponse cr = new FindConstituentsResponse();
 		ObjectConverter converter = new ObjectConverter();
 
@@ -195,21 +221,27 @@ public class OrangeLeapWSV2 {
 		if (request.getPrimaryAddress() != null) {
 			com.orangeleap.tangerine.ws.schema.v2.Address primaryAddress = request
 					.getPrimaryAddress();
-			if (!primaryAddress.getAddressLine1().isEmpty())
+			if (primaryAddress.getAddressLine1() != null
+					&& !primaryAddress.getAddressLine1().isEmpty())
 				params.put("primaryAddress.addressLine1", primaryAddress
 						.getAddressLine1());
-			if (!primaryAddress.getAddressLine2().isEmpty())
+			if (primaryAddress.getAddressLine2() != null
+					&& !primaryAddress.getAddressLine2().isEmpty())
 				params.put("primaryAddress.addressLine2", primaryAddress
 						.getAddressLine2());
-			if (!primaryAddress.getAddressLine3().isEmpty())
+			if (primaryAddress.getAddressLine3() != null
+					&& !primaryAddress.getAddressLine3().isEmpty())
 				params.put("primaryAddress.addressLine3", primaryAddress
 						.getAddressLine3());
-			if (!primaryAddress.getCity().isEmpty())
+			if (primaryAddress.getCity() != null
+					&& !primaryAddress.getCity().isEmpty())
 				params.put("primaryAddress.city", primaryAddress.getCity());
-			if (!primaryAddress.getStateProvince().isEmpty())
+			if (primaryAddress.getStateProvince() != null
+					&& !primaryAddress.getStateProvince().isEmpty())
 				params.put("primaryAddress.state", primaryAddress
 						.getStateProvince());
-			if (!primaryAddress.getCountry().isEmpty())
+			if (primaryAddress.getCountry() != null
+					&& !primaryAddress.getCountry().isEmpty())
 				params.put("primaryAddress.country", primaryAddress
 						.getCountry());
 		}
@@ -217,7 +249,8 @@ public class OrangeLeapWSV2 {
 		if (request.getPrimaryEmail() != null) {
 			com.orangeleap.tangerine.ws.schema.v2.Email primaryEmail = request
 					.getPrimaryEmail();
-			if (!primaryEmail.getEmailAddress().isEmpty())
+			if (primaryEmail.getEmailAddress() != null
+					&& !primaryEmail.getEmailAddress().isEmpty())
 				params.put("primaryEmail.emailAddress", primaryEmail
 						.getEmailAddress());
 		}
@@ -225,10 +258,16 @@ public class OrangeLeapWSV2 {
 		if (request.getPrimaryPhone() != null) {
 			com.orangeleap.tangerine.ws.schema.v2.Phone primaryPhone = request
 					.getPrimaryPhone();
-			if (!primaryPhone.getNumber().isEmpty())
+			if (primaryPhone.getNumber() != null
+					&& !primaryPhone.getNumber().isEmpty())
 				params.put("primaryPhone.number", primaryPhone.getNumber());
 		}
 
+		if (params.size() == 0 ) {
+			// no parameters where defined for the search throw an exception
+			throw new InvalidRequestException("Must supply paramaters for findRequest");
+		}
+		
 		List<com.orangeleap.tangerine.domain.Constituent> constituents = cs
 				.findConstituents(params, null);
 		for (com.orangeleap.tangerine.domain.Constituent co : constituents) {
@@ -254,21 +293,27 @@ public class OrangeLeapWSV2 {
 		if (request.getPrimaryAddress() != null) {
 			com.orangeleap.tangerine.ws.schema.v2.Address primaryAddress = request
 					.getPrimaryAddress();
-			if (!primaryAddress.getAddressLine1().isEmpty())
+			if (primaryAddress.getAddressLine1() != null
+					&& !primaryAddress.getAddressLine1().isEmpty())
 				params.put("primaryAddress.addressLine1", primaryAddress
 						.getAddressLine1());
-			if (!primaryAddress.getAddressLine2().isEmpty())
+			if (primaryAddress.getAddressLine2() != null
+					&& !primaryAddress.getAddressLine2().isEmpty())
 				params.put("primaryAddress.addressLine2", primaryAddress
 						.getAddressLine2());
-			if (!primaryAddress.getAddressLine3().isEmpty())
+			if (primaryAddress.getAddressLine3() != null
+					&& !primaryAddress.getAddressLine3().isEmpty())
 				params.put("primaryAddress.addressLine3", primaryAddress
 						.getAddressLine3());
-			if (!primaryAddress.getCity().isEmpty())
+			if (primaryAddress.getCity() != null
+					&& !primaryAddress.getCity().isEmpty())
 				params.put("primaryAddress.city", primaryAddress.getCity());
-			if (!primaryAddress.getStateProvince().isEmpty())
+			if (primaryAddress.getStateProvince() != null
+					&& !primaryAddress.getStateProvince().isEmpty())
 				params.put("primaryAddress.state", primaryAddress
 						.getStateProvince());
-			if (!primaryAddress.getCountry().isEmpty())
+			if (primaryAddress.getCountry() != null
+					&& !primaryAddress.getCountry().isEmpty())
 				params.put("primaryAddress.country", primaryAddress
 						.getCountry());
 		}
@@ -276,7 +321,8 @@ public class OrangeLeapWSV2 {
 		if (request.getPrimaryEmail() != null) {
 			com.orangeleap.tangerine.ws.schema.v2.Email primaryEmail = request
 					.getPrimaryEmail();
-			if (!primaryEmail.getEmailAddress().isEmpty())
+			if (primaryEmail.getEmailAddress() != null
+					&& !primaryEmail.getEmailAddress().isEmpty())
 				params.put("primaryEmail.emailAddress", primaryEmail
 						.getEmailAddress());
 		}
@@ -284,7 +330,8 @@ public class OrangeLeapWSV2 {
 		if (request.getPrimaryPhone() != null) {
 			com.orangeleap.tangerine.ws.schema.v2.Phone primaryPhone = request
 					.getPrimaryPhone();
-			if (!primaryPhone.getNumber().isEmpty())
+			if (primaryPhone.getNumber() != null
+					&& !primaryPhone.getNumber().isEmpty())
 				params.put("primaryPhone.number", primaryPhone.getNumber());
 		}
 
@@ -301,9 +348,10 @@ public class OrangeLeapWSV2 {
 
 	@PayloadRoot(localPart = "SaveOrUpdatePledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public SaveOrUpdatePledgeResponse maintainPledge(
-			SaveOrUpdatePledgeRequest request) {
+			SaveOrUpdatePledgeRequest request) throws InvalidRequestException {
 		com.orangeleap.tangerine.domain.Constituent c = cs
 				.readConstituentById(request.getConstituentId());
+		if (c == null) throw new InvalidRequestException("Unable to locate constituent by id");
 		com.orangeleap.tangerine.domain.paymentInfo.Pledge p = pledgeService
 				.createDefaultPledge(c);
 
@@ -324,31 +372,120 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
+	private void validatePaymentInformation(SaveOrUpdateGiftRequest request)
+			throws InvalidRequestException {
+		Gift g = request.getGift();
+		
+		if (g == null)
+			throw new InvalidRequestException("Invalid request gift can not be null!");
+		com.orangeleap.tangerine.ws.schema.v2.PaymentSource paymentSource = g
+				.getPaymentSource();
+
+		if (paymentSource == null)
+			throw new InvalidRequestException(
+					"Payment Source is required!");
+		if (paymentSource.getConstituentId() <= 0)
+			throw new InvalidRequestException(
+					"Constituent id is required for Payment Source");
+		if (paymentSource.getPaymentType() == null)
+			throw new InvalidRequestException("Payment type is required");
+		if (paymentSource.getPaymentType() == com.orangeleap.tangerine.ws.schema.v2.PaymentType.CREDIT_CARD) {
+			// Validate Credit Card infomation
+			if (paymentSource.getCreditCardExpirationMonth() == null
+					|| paymentSource.getCreditCardExpirationMonth() == 0)
+				throw new InvalidRequestException(
+						"Credit Card Expiration Month is required for PaymentType CREDIT_CARD");
+			if (paymentSource.getCreditCardExpirationYear() == null
+					|| paymentSource.getCreditCardExpirationYear() == 0)
+				throw new InvalidRequestException(
+						"Credit Card Expiration Year is required for PaymentType CREDIT_CARD");
+			if (paymentSource.getCreditCardHolderName() == null
+					|| paymentSource.getCreditCardHolderName().equals(""))
+				throw new InvalidRequestException(
+						"Credit Card Holder Name is required for PaymentType CREDIT_CARD");
+			if (paymentSource.getCreditCardNumber() == null
+					|| paymentSource.getCreditCardNumber().equals(""))
+				throw new InvalidRequestException(
+						"Credit Card Number is required for PaymentType CREDIT_CARD");
+			if ((paymentSource.getCreditCardType() == null || paymentSource.getCreditCardType().equals("")))
+				throw new InvalidRequestException(
+						"Credit Card type is required for PaymentType CREDIT_CARD");
+			if (!paymentSource.getCreditCardType().equals("Visa") && !paymentSource.getCreditCardType().equals("AMEX") && !paymentSource.getCreditCardType().equals("Master Card"))
+				throw new InvalidRequestException(
+						"Invalid Credit Card type for PaymentType CREDIT_CARD");
+		} else if (paymentSource.getPaymentType() == com.orangeleap.tangerine.ws.schema.v2.PaymentType.ACH) {
+			// Validate ACH Information
+			if (paymentSource.getAchAccountNumber() == null
+					|| paymentSource.getAchAccountNumber().equals(""))
+				throw new InvalidRequestException(
+						"ACH Account Number is required for PaymentType ACH");
+			if (paymentSource.getAchHolderName() == null
+					|| paymentSource.getAchHolderName().equals(""))
+				throw new InvalidRequestException(
+						"ACH Holder Name is required for PaymentType ACH");
+			if (paymentSource.getAchRoutingNumber() == null
+					|| paymentSource.getAchRoutingNumber().equals(""))
+				throw new InvalidRequestException(
+						"ACH Routing Number is required for PaymentType ACH");
+		} else if (paymentSource.getPaymentType() == com.orangeleap.tangerine.ws.schema.v2.PaymentType.CHECK) {
+			throw new InvalidRequestException(
+					"CHECK PaymentType is not supported by OrangeLeap API");
+		} else if (paymentSource.getPaymentType() == com.orangeleap.tangerine.ws.schema.v2.PaymentType.CASH) {
+			throw new InvalidRequestException(
+					"CASH PaymentType is not supported by OrangeLeap API");
+		} else {
+			throw new InvalidRequestException(
+					"Invalid Payment Type supplied for PaymentSource");
+		}
+	}
+
+	void validateGiftInformation(SaveOrUpdateGiftRequest request) throws InvalidRequestException {
+		Gift g = request.getGift();
+		Long id = request.getConstituentId();
+
+		if (g.getAmount().doubleValue() <= 0.0) throw new InvalidRequestException("Gift amount must be greater than 0.0");
+		if (id == 0) throw new InvalidRequestException("SaveOrUpdateGiftRequest must contain a valid constituentId");		
+		if (g.getPaymentType() != com.orangeleap.tangerine.ws.schema.v2.PaymentType.CREDIT_CARD &&
+			g.getPaymentType() != com.orangeleap.tangerine.ws.schema.v2.PaymentType.ACH) throw new InvalidRequestException("Gift contains invalid PaymentType");
+	}
+	
 	@PayloadRoot(localPart = "SaveOrUpdateGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
-	public SaveOrUpdateGiftResponse maintainGift(SaveOrUpdateGiftRequest request) {
+	public SaveOrUpdateGiftResponse maintainGift(SaveOrUpdateGiftRequest request)
+			throws InvalidRequestException {
+		SaveOrUpdateGiftResponse response = new SaveOrUpdateGiftResponse();
+
+		validatePaymentInformation(request);
+		validateGiftInformation(request);
+		
 		com.orangeleap.tangerine.domain.Constituent c = cs
 				.readConstituentById(request.getConstituentId());
-		com.orangeleap.tangerine.domain.paymentInfo.Gift g = giftService
-				.createDefaultGift(c);
 
-		ObjectConverter converter = new ObjectConverter();
+		if (c != null) {
+			com.orangeleap.tangerine.domain.paymentInfo.Gift g = giftService
+					.createDefaultGift(c);
 
-		converter.ConvertFromJAXB(request.getGift(), g);
-		g.setConstituent(c);
+			ObjectConverter converter = new ObjectConverter();
 
-		try {
-			giftService.maintainGift(g);
-		} catch (BindException e) {
-			logger.error(e.getMessage());
+			converter.ConvertFromJAXB(request.getGift(), g);
+			g.setConstituent(c);
+
+			try {
+				g = giftService.maintainGift(g);
+			} catch (BindException e) {
+				logger.error(e.getMessage());
+			}
+
+			Gift responseGift = new Gift();
+			converter.ConvertToJAXB(g, responseGift);
+			if (responseGift.getPaymentSource() != null) {
+				responseGift.getPaymentSource().setCreditCardNumber("");
+				responseGift.getPaymentSource().setAchAccountNumber("");
+				responseGift.getPaymentSource().setAchRoutingNumber("");
+			}
+			response.setGift(responseGift);
+		} else {
+			throw new InvalidRequestException("Unable to locate constituent by constituentId");
 		}
-
-		SaveOrUpdateGiftResponse response = new SaveOrUpdateGiftResponse();
-		Gift responseGift = new Gift();
-		converter.ConvertToJAXB(g, responseGift);
-		if (responseGift.getPaymentSource() != null)
-			responseGift.getPaymentSource().setCreditCardNumber("");
-		response.setGift(responseGift);
-
 		return response;
 	}
 
@@ -471,7 +608,7 @@ public class OrangeLeapWSV2 {
 			segmentation.setExecutionCount(seg.getExecutionCount());
 			segmentation.setExecutionDate(seg.getExecutionDate());
 			segmentation.setExecutionUser(seg.getExecutionUser());
-
+			segmentation.setType(seg.getType());
 			response.getSegmentation().add(segmentation);
 		}
 
@@ -505,7 +642,7 @@ public class OrangeLeapWSV2 {
 			segmentation.setExecutionCount(seg.getExecutionCount());
 			segmentation.setExecutionDate(seg.getExecutionDate());
 			segmentation.setExecutionUser(seg.getExecutionUser());
-
+			segmentation.setType(seg.getType());
 			response.getSegmentation().add(segmentation);
 		}
 
@@ -513,11 +650,13 @@ public class OrangeLeapWSV2 {
 	}
 
 	@PayloadRoot(localPart = "AddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
-	public void addCommunicationHistory(AddCommunicationHistoryRequest req) {
+	public void addCommunicationHistory(AddCommunicationHistoryRequest req) throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
 
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
 
+		if (req.getConstituentId() <= 0) throw new InvalidRequestException("Invalid constituentid in addCommunicationHistory");
+		
 		converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
 		ch.setConstituent(cs.readConstituentById(req.getConstituentId()));
 
@@ -525,13 +664,14 @@ public class OrangeLeapWSV2 {
 			communicationHistory.maintainCommunicationHistory(ch);
 		} catch (BindException ex) {
 			logger.error(ex.getMessage());
+			throw new InvalidRequestException(ex.getMessage());
 		}
 
 	}
 
 	@PayloadRoot(localPart = "BulkAddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public void bulkAddCommunicationHistory(
-			BulkAddCommunicationHistoryRequest req) {
+			BulkAddCommunicationHistoryRequest req) throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
 
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
@@ -541,22 +681,26 @@ public class OrangeLeapWSV2 {
 		Iterator<Long> it = req.getConstituentId().iterator();
 		while (it.hasNext()) {
 			Long Id = (Long) it.next();
+			if (Id <= 0) throw new InvalidRequestException("Invalid constituentid in BulkAddCommunicationHistory");
 			ch.setConstituent(cs.readConstituentById(Id));
 
 			try {
 				communicationHistory.maintainCommunicationHistory(ch);
 			} catch (BindException ex) {
 				logger.error(ex.getMessage());
+				throw new InvalidRequestException(ex.getMessage());
 			}
 		}
 	}
 
 	@PayloadRoot(localPart = "GetCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetCommunicationHistoryResponse getCommunicationHistory(
-			GetCommunicationHistoryRequest req) {
+			GetCommunicationHistoryRequest req) throws InvalidRequestException {
 		SortInfo sortInfo = new SortInfo();
 		sortInfo.setSort("ch.COMMUNICATION_HISTORY_ID");
 
+		if (req.getConstituentId() <= 0) throw new InvalidRequestException("Invalid constituentid in getCommunicationHistory");
+		
 		PaginatedResult result = communicationHistory
 				.readCommunicationHistoryByConstituent(req.getConstituentId(),
 						sortInfo);
@@ -593,7 +737,7 @@ public class OrangeLeapWSV2 {
 
 	@PayloadRoot(localPart = "GetPickListByNameRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetPickListByNameResponse getPickListByName(
-			GetPickListByNameRequest request) {
+			GetPickListByNameRequest request) throws InvalidRequestException {
 		GetPickListByNameResponse response = new GetPickListByNameResponse();
 		Picklist pl = picklistItemService.getPicklist(request.getName());
 
@@ -604,6 +748,8 @@ public class OrangeLeapWSV2 {
 
 			converter.ConvertToJAXB(pl, plist);
 			response.setPicklist(plist);
+		} else {
+			throw new InvalidRequestException("Unable to locate picklist by name");
 		}
 		return response;
 	}

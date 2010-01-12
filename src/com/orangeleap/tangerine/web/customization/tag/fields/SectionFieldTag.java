@@ -29,6 +29,7 @@ import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -511,13 +512,13 @@ public class SectionFieldTag extends AbstractTag {
                             String searchFieldValue = pageContext.getRequest().getParameter(StringConstants.SEARCH_FIELD);
                             if (StringUtils.hasText(searchFieldValue)) {
                                 if (StringConstants.CONSTITUENT.equals(searchTypeValue)) {
-                                    sb.append(", \"").append(StringConstants.LAST_NAME).append("\": '").append(searchFieldValue).append("' ");
+                                    sb.append(", \"").append(StringConstants.LAST_NAME).append("\": '").append(HttpUtil.escapeSingleQuote(searchFieldValue)).append("' ");
                                 }
                                 else if (StringConstants.GIFT.equals(searchTypeValue)) {
-                                    sb.append(", \"amount\": '").append(searchFieldValue).append("' ");
+                                    sb.append(", \"amount\": '").append(HttpUtil.escapeSingleQuote(searchFieldValue)).append("' ");
                                 }
                                 else if (StringConstants.FULLTEXT.equals(searchTypeValue)) {
-                                    sb.append(", \"").append(StringConstants.FULLTEXT).append("\": '").append(searchFieldValue).append("' ");
+                                    sb.append(", \"").append(StringConstants.FULLTEXT).append("\": '").append(HttpUtil.escapeSingleQuote(searchFieldValue)).append("' ");
                                 }
                             }
                             sb.append("}});\n");

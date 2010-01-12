@@ -66,4 +66,18 @@ public class HttpUtil {
     	}
     	return s;
     }
+
+	public static String escapeSingleQuote(String s) {
+		if (s != null) {
+			s = s.replace("\'", "\\\'");
+		}
+		return s;
+	}
+
+	public static String escapeDoubleQuote(String s) {
+		if (s != null) {
+			s = s.replace("\\", "\\\\");
+		}
+		return s;
+	}
 }

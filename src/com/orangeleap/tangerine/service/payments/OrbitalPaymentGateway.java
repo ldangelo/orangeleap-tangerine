@@ -377,7 +377,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         if (response.isApproved()) {
             gift.setAuthCode(response.getAuthCode());
             gift.setTxRefNum(response.getTxRefNum());
-//			gift.setGiftStatus(Gift.STATUS_PAID);
+			gift.setGiftStatus(Gift.STATUS_PENDING);
             gift.setPaymentStatus(Gift.PAY_STATUS_AUTHORIZED);
             gift.setPaymentMessage(response.getMessage());
         } else {

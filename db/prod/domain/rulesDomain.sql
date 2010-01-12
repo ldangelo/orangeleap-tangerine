@@ -757,7 +757,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- *****************************************Touchpoints, Communication Consequences********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Send email with subject ? and template ?';
+SET @PHRASE_CD = 'Send email to constituent with subject ? and template ?';
 SET @CODE_CD = 'map.ruleHelperService.sendMail(map.constituent,map.gift,map.userHelper.getSiteOptionByName(?),map.userHelper.getSiteOptionByName(?));';
 
 -- Insert code

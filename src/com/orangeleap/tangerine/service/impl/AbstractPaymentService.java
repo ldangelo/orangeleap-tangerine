@@ -194,18 +194,20 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
                 sb.append(TangerineMessageAccessor.getMessage("checkDateColon"));
                 sb.append(" ").append(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(entity.getCheckDate())); // TODO: the right date format based on locale
             }
-            if (StringUtils.isNotBlank(entity.getPaymentSource().getCheckAccountNumber())) {
-                sb.append(" ");
-                sb.append(TangerineMessageAccessor.getMessage("checkAccountNumberColon"));
+	        if (entity.getPaymentSource() != null) {
+				if (StringUtils.isNotBlank(entity.getPaymentSource().getCheckAccountNumber())) {
+					sb.append(" ");
+					sb.append(TangerineMessageAccessor.getMessage("checkAccountNumberColon"));
 
-	            String checkAcctNum = entity.getPaymentSource().getCheckAccountNumberReadOnly();
-	            if (StringUtils.isNotBlank(checkAcctNum)) {
-                    sb.append(" ").append(checkAcctNum);
-	            }
-	            if (StringUtils.isNotBlank(entity.getPaymentSource().getCheckHolderName())) {
-                    sb.append(" ").append(entity.getPaymentSource().getCheckHolderName());
-	            }
-            }
+					String checkAcctNum = entity.getPaymentSource().getCheckAccountNumberReadOnly();
+					if (StringUtils.isNotBlank(checkAcctNum)) {
+						sb.append(" ").append(checkAcctNum);
+					}
+				}
+		        if (StringUtils.isNotBlank(entity.getPaymentSource().getCheckHolderName())) {
+			        sb.append(" ").append(entity.getPaymentSource().getCheckHolderName());
+		        }
+	        }
         }
 	    if (entity.getAddress() != null && !entity.getAddress().isNew()) {
 		    Address address = entity.getAddress();

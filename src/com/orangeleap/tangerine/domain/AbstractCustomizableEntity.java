@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.util.CustomFieldFunction;
 import com.orangeleap.tangerine.util.StringConstants;
 
 /**
@@ -56,6 +57,19 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity implemen
         return new TreeMap<String, CustomField>() {
             @Override
             public CustomField get(Object key) {
+            	
+            	// Supports read-only functions like "age:fieldname"
+            	String stringkey = key == null ? "" : key.toString();
+        		int i = stringkey.indexOf(":");
+        		if (i > -1) {
+        			String function = stringkey.substring(0,i);
+        			String fieldname = stringkey.substring(i+1);
+        			String fieldvalue = get(fieldname).getValue();
+        			CustomField cf = new CustomField(fieldname);
+        			cf.setValue(CustomFieldFunction.function(function, fieldvalue));
+        			return cf;
+        		}
+            	
                 CustomField field = super.get(key);
                 if (field == null) {
                     field = new CustomField((String) key);

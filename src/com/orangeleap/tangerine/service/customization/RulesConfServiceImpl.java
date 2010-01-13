@@ -363,7 +363,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     }
     
     // These characters are allowed in groovy script text or picklist value parms - no backslashes, quotes, parens, or semicolons.
-    private static String WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.-_ <=>";
+    private static String WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,-_ <=>";
     
     private String whiteList(String s) {
     	StringBuilder sb = new StringBuilder();

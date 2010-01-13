@@ -62,6 +62,8 @@ public class GiftExporter extends EntityExporter {
                 || fd.getId().toLowerCase().contains("creditCardSecurityCode".toLowerCase())
                 || fd.getId().toLowerCase().contains("achRoutingNumber".toLowerCase())
                 || fd.getId().toLowerCase().contains("achAccountNumber".toLowerCase())
+		        || fd.getId().toLowerCase().contains("checkRoutingNumber".toLowerCase())
+		        || fd.getId().toLowerCase().contains("checkAccountNumber".toLowerCase())
                 || fd.getId().toLowerCase().contains("distributionLines".toLowerCase())
                 ;
     }

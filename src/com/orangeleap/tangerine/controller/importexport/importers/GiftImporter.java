@@ -18,14 +18,6 @@
 
 package com.orangeleap.tangerine.controller.importexport.importers;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.springframework.context.ApplicationContext;
-import org.springframework.validation.BindException;
-
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -40,6 +32,13 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
+import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 
 public class GiftImporter extends EntityImporter {
@@ -92,6 +91,10 @@ public class GiftImporter extends EntityImporter {
         list.add(new FieldDescriptor("paymentSource.achRoutingNumber", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.achRoutingNumber")));
         list.add(new FieldDescriptor("paymentSource.achAccountNumber", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.achAccountNumber")));
 
+	    list.add(new FieldDescriptor("paymentSource.checkHolderName", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.checkHolderName")));
+	    list.add(new FieldDescriptor("paymentSource.checkRoutingNumber", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.checkRoutingNumber")));
+	    list.add(new FieldDescriptor("paymentSource.checkAccountNumber", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.checkAccountNumber")));
+
         return list;
     }
 
@@ -107,6 +110,7 @@ public class GiftImporter extends EntityImporter {
                 && !PaymentSource.CHECK.equals(paymentType)
                 && !PaymentSource.CREDIT_CARD.equals(paymentType)
                 && !PaymentSource.ACH.equals(paymentType)
+		        && !PaymentSource.OTHER.equals(paymentType)
                 ) {
             throw new RuntimeException("Invalid Gift payment type for import: " + paymentType);
         }
@@ -126,14 +130,16 @@ public class GiftImporter extends EntityImporter {
         values.remove(getIdField());
         mapValuesToObject(values, gift);
 
-        if (
-                PaymentSource.CASH.equals(paymentType) ||
-                        PaymentSource.CHECK.equals(paymentType)
-                ) {
+        if (PaymentSource.CASH.equals(paymentType) || PaymentSource.CHECK.equals(paymentType) || PaymentSource.OTHER.equals(paymentType)) {
             if (gift.getGiftStatus() == null || gift.getGiftStatus().length() == 0) {
                 gift.setGiftStatus(Gift.STATUS_PAID);
             }
         }
+	    if (PaymentSource.CHECK.equals(paymentType) || PaymentSource.CREDIT_CARD.equals(paymentType) || PaymentSource.ACH.equals(paymentType)) {
+		    if (gift.getPaymentSource() != null) {
+			    gift.getPaymentSource().setPaymentType(paymentType);
+		    }
+	    }
 
         DistributionLine dl = new DistributionLine(0L, constituent);
         dl.setProjectCode(defaultProjectCode);

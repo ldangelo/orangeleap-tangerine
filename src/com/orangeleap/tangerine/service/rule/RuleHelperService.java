@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.service.rule;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,6 +33,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -490,18 +492,6 @@ public class RuleHelperService {
         return totalDonations;
     }
 
-    public static void setCustomFieldToAgeInYearsOfDateCustomField(String customField, String dateCustomField, Constituent constituent) {
-    	BigDecimal age = new BigDecimal(0);
-    	try {
-    		Date d = constituent.getCustomFieldAsDate(dateCustomField);
-    		age =  age(d, new Date());
-    	} catch (Exception e) {
-    		// for missing or invalid date values, set result to 0
-    		logger.debug(e);
-    	}
-		constituent.setCustomFieldAsBigDecimal(customField, age);
-    }
-
     // Date d1 before d2
     public static BigDecimal age(Date d1, Date d2) {
         Calendar cal1 = Calendar.getInstance();
@@ -514,7 +504,7 @@ public class RuleHelperService {
         // Add fractional part.
         cal1.set(Calendar.YEAR, cal2.get(Calendar.YEAR)); // same day of year should result in 0 difference, so leap years must match later year.
         BigDecimal daydelta = new BigDecimal(cal2.get(Calendar.DAY_OF_YEAR) - cal1.get(Calendar.DAY_OF_YEAR));
-        daydelta = daydelta.setScale(2);
+        daydelta = daydelta.setScale(3);
         BigDecimal frac = daydelta.divide(new BigDecimal("365.25"), RoundingMode.FLOOR); // Do not round up or will increment age before anniversary date!
         result = result.add(frac);
 
@@ -524,5 +514,105 @@ public class RuleHelperService {
 //    public static void main(String[] args) {
 //    	System.out.print(age(new Date("02/29/1966"), new Date("03/01/1967")));
 //    }
+    
+    private static String OPERATOR_EQUALS = "=";
+    private static String OPERATOR_LESS_THAN = "<";
+    private static String OPERATOR_GREATER_THAN = ">";
+    private static String OPERATOR_LESS_THAN_OR_EQUAL_TO = "<=";
+    private static String OPERATOR_GREATER_THAN_OR_EQUAL_TO = ">=";
+    
+    private static boolean compareOperator(String operator, int compare) {
+    	if (OPERATOR_EQUALS.equals(operator)) {
+    		return compare == 0;
+    	}
+    	if (OPERATOR_LESS_THAN.equals(operator)) {
+    		return compare < 0;
+    	}
+    	if (OPERATOR_GREATER_THAN.equals(operator)) {
+    		return compare > 0;
+    	}
+    	if (OPERATOR_LESS_THAN_OR_EQUAL_TO.equals(operator)) {
+    		return compare <= 0;
+    	}
+    	if (OPERATOR_GREATER_THAN_OR_EQUAL_TO.equals(operator)) {
+    		return compare >= 0;
+    	}
+    	return false;
+    }
+    
+    private static boolean isNumberConstant(String s) {
+    	char c = s.charAt(0);
+    	return Character.isDigit(c) || c == '-';
+    }
+
+    public static boolean getCustomFieldNumericCompare(AbstractCustomizableEntity entity, String fieldname, String operator, String compareTo) {
+    
+    	try {
+    		
+	    	BigDecimal fieldValue = entity.getCustomFieldAsBigDecimal(fieldname);
+	    	
+	    	BigDecimal compareValue;
+	    	if (isNumberConstant(compareTo)) {
+	    		compareValue = new BigDecimal(compareTo);
+	    	} else {
+	    		compareValue = entity.getCustomFieldAsBigDecimal(compareTo);
+	    	}
+	    	
+	    	if (fieldValue == null || compareValue == null) return false;
+	    	return compareOperator(operator, fieldValue.compareTo(compareValue));
+	    	
+    	} catch (Exception e) {
+    		return false;
+    	}
+    		
+    }
+    
+
+    public static boolean getCustomFieldDateCompare(AbstractCustomizableEntity entity, String fieldname, String operator, String compareTo) {
+        
+    	try {
+    		
+	    	Date fieldValue = entity.getCustomFieldAsDate(fieldname);
+	    	
+	    	Date compareValue;
+	    	if (isNumberConstant(compareTo)) {
+	    		SimpleDateFormat sdf = new SimpleDateFormat(AbstractCustomizableEntity.FMT);
+	    		compareValue = sdf.parse(compareTo);
+	    	} else {
+	    		compareValue = entity.getCustomFieldAsDate(compareTo);
+	    	}
+	    	
+	    	if (fieldValue == null || compareValue == null) return false;
+	    	return compareOperator(operator, fieldValue.compareTo(compareValue));
+    	
+    	} catch (Exception e) {
+    		return false;
+    	}
+    		
+    }
+
+    public static boolean getCustomFieldDateAgeCompare(AbstractCustomizableEntity entity, String fieldname, String operator, String compareTo) {
+        
+    	try {
+    		
+    		Date now = new Date();
+    		
+	    	BigDecimal fieldValue = age(entity.getCustomFieldAsDate(fieldname), now);
+	    	
+	    	BigDecimal compareValue;
+	    	if (isNumberConstant(compareTo)) {
+	    		compareValue = new BigDecimal(compareTo);
+	    	} else {
+	    		compareValue = age(entity.getCustomFieldAsDate(compareTo), now);
+	    	}
+	    	
+	    	if (fieldValue == null || compareValue == null) return false;
+	    	return compareOperator(operator, fieldValue.compareTo(compareValue));
+    	
+    	} catch (Exception e) {
+    		return false;
+    	}
+    		
+    }
 
 }

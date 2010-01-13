@@ -34,6 +34,7 @@ import javax.annotation.Resource;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -275,6 +276,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 	    				String code = replaceParms(ruleSegmentType.getRuleSegmentTypeText(), rule, ruleVersion, ruleSegment, ruleSegmentType, true);
 	    				String text = replaceParms(ruleSegmentType.getRuleSegmentTypePhrase(), rule, ruleVersion, ruleSegment, ruleSegmentType, false);
 	    				if (RuleSegmentType.CONDITION_TYPE.equals(ruleSegmentType.getRuleSegmentTypeType())) {
+	    					if (code.trim().contains(";")) throw new RuntimeException("Condition cannot contain ';' : "+code);
 	    					conditions.add(code);
 	    					conditionstext.add(text);
 	    				} else {
@@ -342,7 +344,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     		RuleSegmentTypeParmType type = RuleSegmentTypeParmType.valueOf(ruleSegmentTypeParm.getRuleSegmentTypeParmType());
     		
     		if (type.equals(RuleSegmentTypeParmType.STRING) || type.equals(RuleSegmentTypeParmType.PICKLIST) || type.equals(RuleSegmentTypeParmType.SITE_VARIABLE)) {
-        		String parmvalue = ruleSegmentParm.getRuleSegmentParmStringValue();
+        		String parmvalue = StringUtils.trimToEmpty(ruleSegmentParm.getRuleSegmentParmStringValue());
         		parmvalue = whiteList(parmvalue); 
     			text = replaceNextParm(text, quot + parmvalue + quot);
     		} else if (type.equals(RuleSegmentTypeParmType.NUMBER)) {
@@ -360,7 +362,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     }
     
     // These characters are allowed in groovy script text or picklist value parms - no backslashes, quotes, parens, or semicolons.
-    private static String WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.-_ ";
+    private static String WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.-_ <=>";
     
     private String whiteList(String s) {
     	StringBuilder sb = new StringBuilder();

@@ -74,6 +74,7 @@ import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
+import com.orangeleap.tangerine.service.rule.OrangeLeapConsequenceRuntimeException;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
 import com.orangeleap.tangerine.type.PageType;

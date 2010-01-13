@@ -5,6 +5,7 @@ public class OrangeLeapConsequenceRuntimeException extends RuntimeException {
 	private Exception cause;
 	
 	public OrangeLeapConsequenceRuntimeException(Exception cause) {
+		super(cause.getMessage());
 		this.cause = cause;
 	}
 	public Exception getCause() {return cause;}

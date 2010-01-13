@@ -39,6 +39,7 @@ import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.communication.EmailService;
+import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -614,5 +615,11 @@ public class RuleHelperService {
     	}
     		
     }
-
+    
+    public static void throwConstituentValidationException(String message) {
+    	ConstituentValidationException cve = new ConstituentValidationException(message);
+    	cve.addValidationResult(message);
+    	throw new OrangeLeapConsequenceRuntimeException(cve);
+    }
+    
 }

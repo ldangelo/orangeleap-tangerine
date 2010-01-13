@@ -31,11 +31,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+import org.codehaus.groovy.runtime.InvokerInvocationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -200,8 +198,11 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 		    	groovyObjectCache.put(key, groovyObject); // This will update the position in the cache to MRU.
 		    }
 			groovyObject.invokeMethod("run", new Object[]{map});
-		} catch (OrangeLeapConsequenceRuntimeException e) {
-			throw e;
+		} catch (InvokerInvocationException e) {
+			if (e.getCause() instanceof OrangeLeapConsequenceRuntimeException) {
+				throw (OrangeLeapConsequenceRuntimeException)e.getCause();
+			}
+			throw new RuntimeException(e.getCause());
 		} catch (InstantiationException e) { 
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) { 

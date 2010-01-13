@@ -47,7 +47,6 @@ public class OrangeLeapRuleSession {
 						rulesConfService.fireRulesEvent(orangeLeapRuleBase.getRuleEventNameType(), orangeLeapRuleBase.isTestMode(), map);
 
 					} catch (OrangeLeapConsequenceRuntimeException e) {
-						logger.error(e.getMessage());
 						throw e;
 					} catch (Exception e) {
 						logger.error(e.getMessage());

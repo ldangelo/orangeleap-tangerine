@@ -11,7 +11,7 @@
             <form>
            
            	<input type="hidden" id="ruleEventType" name="ruleEventType" value="${ruleEventType}" />
-	        <h4>Rules Definition to Manage</h4><br/>
+	        <h4>Rules Definitions to Manage for ${ruleEventType}</h4><br/>
            	
             <c:if test="${fn:length(rules) == 0}" >
             

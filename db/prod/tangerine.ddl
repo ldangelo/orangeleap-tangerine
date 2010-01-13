@@ -998,6 +998,7 @@ CREATE TABLE `POST_BATCH` (
 `POSTED_BY_ID` bigint(20) default NULL,
 `POSTED_DATE` datetime default NULL,
 `SITE_NAME` varchar(255) NOT NULL,
+`IS_FOR_TOUCH_POINTS` char(1) NOT NULL default '0',
 `IS_ERROR_BATCH` char(1) NOT NULL default '0',
 `IS_CURRENTLY_EXECUTING` char(1) NOT NULL default '0',
 `ERROR_BATCH_ID` bigint(20) default NULL,

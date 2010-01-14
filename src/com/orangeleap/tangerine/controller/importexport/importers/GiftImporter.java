@@ -18,10 +18,20 @@
 
 package com.orangeleap.tangerine.controller.importexport.importers;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
+
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
+import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -32,13 +42,6 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
-import org.apache.commons.logging.Log;
-import org.springframework.context.ApplicationContext;
-import org.springframework.validation.BindException;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 
 
 public class GiftImporter extends EntityImporter {
@@ -48,6 +51,7 @@ public class GiftImporter extends EntityImporter {
     private final ConstituentService constituentService;
     private final GiftService giftservice;
     private final PicklistItemService picklistItemService;
+    private final FieldDao fieldDao;
     private String defaultProjectCode;
 
     public GiftImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
@@ -55,7 +59,10 @@ public class GiftImporter extends EntityImporter {
         constituentService = (ConstituentService) applicationContext.getBean("constituentService");
         giftservice = (GiftService) applicationContext.getBean("giftService");
         picklistItemService = (PicklistItemService) applicationContext.getBean("picklistItemService");
+        fieldDao = (FieldDao) applicationContext.getBean("fieldDAO");
         defaultProjectCode = getDefaultProjectCode();
+        FieldRequired fr = fieldDao.readFieldRequired("gift.distribution", "gift.distributionLines.projectCode", "distributionLines.projectCode");
+        if (fr == null || !fr.isRequired()) defaultProjectCode = null;
     }
     
     private String getDefaultProjectCode() {

@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -569,7 +570,8 @@ public class RuleHelperService {
 
     }
 
-
+    private static final String TODAY = "TODAY";
+    
     public static boolean getCustomFieldDateCompare(AbstractCustomizableEntity entity, String fieldname, String operator, String compareTo) {
 
     	try {
@@ -577,7 +579,10 @@ public class RuleHelperService {
 	    	Date fieldValue = entity.getCustomFieldAsDate(fieldname);
 
 	    	Date compareValue;
-	    	if (isNumberConstant(compareTo)) {
+	    	if (compareTo.equals(TODAY)) {
+	    		compareValue = new java.util.Date();
+	    		compareValue = DateUtils.truncate(compareValue, Calendar.DATE);
+	    	} else if (isNumberConstant(compareTo)) {
 	    		SimpleDateFormat sdf = new SimpleDateFormat(AbstractCustomizableEntity.FMT);
 	    		compareValue = sdf.parse(compareTo);
 	    	} else {

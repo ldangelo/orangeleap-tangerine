@@ -40,6 +40,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.communication.EmailService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -313,7 +314,7 @@ public class RuleHelperService {
            }
 
         }
-		/* TODO: Implement match on account number and email address
+		/* TODO: Implement match on account number
           if ( criteria.equalsIgnoreCase("accountNumber"))
            		params.put(criteria, p.getAccountNumber().ToString().substring(0,numCharactersToMatch));
 		*/
@@ -515,13 +516,13 @@ public class RuleHelperService {
 //    public static void main(String[] args) {
 //    	System.out.print(age(new Date("02/29/1966"), new Date("03/01/1967")));
 //    }
-    
+
     private static String OPERATOR_EQUALS = "=";
     private static String OPERATOR_LESS_THAN = "<";
     private static String OPERATOR_GREATER_THAN = ">";
     private static String OPERATOR_LESS_THAN_OR_EQUAL_TO = "<=";
     private static String OPERATOR_GREATER_THAN_OR_EQUAL_TO = ">=";
-    
+
     private static boolean compareOperator(String operator, int compare) {
     	if (OPERATOR_EQUALS.equals(operator)) {
     		return compare == 0;
@@ -540,41 +541,41 @@ public class RuleHelperService {
     	}
     	return false;
     }
-    
+
     private static boolean isNumberConstant(String s) {
     	char c = s.charAt(0);
     	return Character.isDigit(c) || c == '-';
     }
 
     public static boolean getCustomFieldNumericCompare(AbstractCustomizableEntity entity, String fieldname, String operator, String compareTo) {
-    
+
     	try {
-    		
+
 	    	BigDecimal fieldValue = entity.getCustomFieldAsBigDecimal(fieldname);
-	    	
+
 	    	BigDecimal compareValue;
 	    	if (isNumberConstant(compareTo)) {
 	    		compareValue = new BigDecimal(compareTo);
 	    	} else {
 	    		compareValue = entity.getCustomFieldAsBigDecimal(compareTo);
 	    	}
-	    	
+
 	    	if (fieldValue == null || compareValue == null) return false;
 	    	return compareOperator(operator, fieldValue.compareTo(compareValue));
-	    	
+
     	} catch (Exception e) {
     		return false;
     	}
-    		
+
     }
-    
+
 
     public static boolean getCustomFieldDateCompare(AbstractCustomizableEntity entity, String fieldname, String operator, String compareTo) {
-        
+
     	try {
-    		
+
 	    	Date fieldValue = entity.getCustomFieldAsDate(fieldname);
-	    	
+
 	    	Date compareValue;
 	    	if (isNumberConstant(compareTo)) {
 	    		SimpleDateFormat sdf = new SimpleDateFormat(AbstractCustomizableEntity.FMT);
@@ -582,44 +583,48 @@ public class RuleHelperService {
 	    	} else {
 	    		compareValue = entity.getCustomFieldAsDate(compareTo);
 	    	}
-	    	
+
 	    	if (fieldValue == null || compareValue == null) return false;
 	    	return compareOperator(operator, fieldValue.compareTo(compareValue));
-    	
+
     	} catch (Exception e) {
     		return false;
     	}
-    		
+
     }
 
     public static boolean getCustomFieldDateAgeCompare(AbstractCustomizableEntity entity, String fieldname, String operator, String compareTo) {
-        
+
     	try {
-    		
+
     		Date now = new Date();
-    		
+
 	    	BigDecimal fieldValue = age(entity.getCustomFieldAsDate(fieldname), now);
-	    	
+
 	    	BigDecimal compareValue;
 	    	if (isNumberConstant(compareTo)) {
 	    		compareValue = new BigDecimal(compareTo);
 	    	} else {
 	    		compareValue = age(entity.getCustomFieldAsDate(compareTo), now);
 	    	}
-	    	
+
 	    	if (fieldValue == null || compareValue == null) return false;
 	    	return compareOperator(operator, fieldValue.compareTo(compareValue));
-    	
+
     	} catch (Exception e) {
     		return false;
     	}
-    		
+
     }
-    
+
     public static void throwConstituentValidationException(String message) {
     	ConstituentValidationException cve = new ConstituentValidationException(message);
     	cve.addValidationResult(message);
     	throw new OrangeLeapConsequenceRuntimeException(cve);
     }
-    
+
+    public static void throwDuplicateConstituentException() {
+    	DuplicateConstituentException cve = new DuplicateConstituentException();
+    	throw new OrangeLeapConsequenceRuntimeException(cve);
+    }
 }

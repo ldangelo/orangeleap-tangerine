@@ -52,6 +52,28 @@ public class ObjectConverter {
 
     }
 
+    @SuppressWarnings("unchecked")
+	public Class findClass(String className) {
+    	Class clazz = null;
+    	
+       	try {
+			clazz = Class.forName("com.orangeleap.tangerine.domain." + className);
+		} catch (ClassNotFoundException e) {
+			try {
+				clazz = Class.forName("com.orangeleap.tangerine.domain.paymentInfo." + className);
+			} catch (ClassNotFoundException e1) {
+				try {
+					clazz = Class.forName("com.orangeleap.tangerine.domain.communication." + className);
+				} catch (ClassNotFoundException e2) {
+					logger.info("Unable to find class for name " + className);
+				}
+			}
+		}
+    	
+    	return clazz;
+    }
+
+    @SuppressWarnings("unchecked")
     public void ConvertFromJAXB(Object from, Object to) {
         Class propertyType = null;
         if (from == null) return;
@@ -90,21 +112,16 @@ public class ObjectConverter {
                     if (l != null) {
                         for (Object o : l) {
                             String className = o.getClass().getSimpleName();
-                            Class newClass;
-                            try {
-                            	newClass = Class.forName("com.orangeleap.tangerine.domain." + className);
-                            } catch (ClassNotFoundException e) {
+                            Class newClass = findClass(className);
 
-                            	logger.info(e.getMessage());
-                            	newClass = Class.forName("com.orangeleap.tangerine.domain.paymentInfo." + className);                            	
+                            if (newClass != null) {
+                            	Object newObject = newClass.newInstance();
+                            	ConvertFromJAXB(o, newObject);
+                            	List newList = (List) pdTo.getReadMethod().invoke(to);
+                            	newList.clear();
+                            	newList.add(newObject);
+                            	pdTo.getWriteMethod().invoke(to,newList);
                             }
-
-                            Object newObject = newClass.newInstance();
-                            ConvertFromJAXB(o, newObject);
-                            List newList = (List) pdTo.getReadMethod().invoke(to);
-                            newList.clear();
-                            newList.add(newObject);
-                            pdTo.getWriteMethod().invoke(to,newList);
                         }
                     }
 
@@ -155,8 +172,6 @@ public class ObjectConverter {
                 logger.info(e.getMessage());
             } catch (InstantiationException e) {
                 logger.info(e.getMessage());
-            } catch (ClassNotFoundException e) {
-            	logger.info(e.getMessage());
 			} catch (SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

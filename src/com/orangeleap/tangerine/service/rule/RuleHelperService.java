@@ -579,7 +579,7 @@ public class RuleHelperService {
 	    	Date fieldValue = entity.getCustomFieldAsDate(fieldname);
 
 	    	Date compareValue;
-	    	if (compareTo.equals(TODAY)) {
+	    	if (compareTo.equalsIgnoreCase(TODAY)) {
 	    		compareValue = new java.util.Date();
 	    		compareValue = DateUtils.truncate(compareValue, Calendar.DATE);
 	    	} else if (isNumberConstant(compareTo)) {

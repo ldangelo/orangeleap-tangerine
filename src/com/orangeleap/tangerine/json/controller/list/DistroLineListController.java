@@ -51,7 +51,7 @@ public class DistroLineListController extends TangerineJsonListController {
     
     @RequestMapping("/softGiftList.json")
     public ModelMap getSoftGiftList(HttpServletRequest request, SortInfo sort) {
-    	return getDistroLineList(request, sort, "onBehalfOf", "softGift");
+    	return getDistroLineList(request, sort, "onBehalfOf", "softGift", "softAdjustedGift");
     }
     
 //    @RequestMapping("/tributeGiftList.json")
@@ -63,7 +63,7 @@ public class DistroLineListController extends TangerineJsonListController {
     
     // Use for distro-line type-lists
     @SuppressWarnings("unchecked")
-	private ModelMap getDistroLineList(HttpServletRequest request, SortInfo sort, String constituentReferenceCustomField, String pageNamePrefix) {
+	private ModelMap getDistroLineList(HttpServletRequest request, SortInfo sort, String constituentReferenceCustomField, String pageNamePrefix, String adjustedPageNamePrefix) {
 
     	Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         
@@ -78,18 +78,18 @@ public class DistroLineListController extends TangerineJsonListController {
             // Multiple lines with same gift id may be returned since this is by distro line id, not gift id.
             List<Gift> gifts = giftService.readGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, sort, request.getLocale()); 
             
-            Map<Long,Long> adjustGiftCountMap = new HashMap<Long,Long>(); //TODO add adjusted gifts: adjustedGiftService.countAdjustedGiftDistroLinesByOriginalGiftId(gifts, constituentReferenceCustomField);
+            Map<Long,Long> adjustGiftCountMap = adjustedGiftService.countAdjustedGiftDistroLinesByOriginalGiftId(gifts, constituentReferenceCustomField);
             addListFieldsToMap(request, sectionFields, gifts, list, true, true);
             setParentNodeAttributes(list, adjustGiftCountMap, StringConstants.GIFT);
             count = giftService.readGiftDistroLinesCountByConstituentId(constituentId, constituentReferenceCustomField);
         }
         else {
-//            List<SectionField> sectionFields = findSectionFields(pageNamePrefix+"AdjustmentList");
-//            resolveSortFieldName(sectionFields, sort);
-//            List<AdjustedGift> adjustedGifts = adjustedGiftService.readAllAdjustedGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, giftId, sort, request.getLocale());
-//            addListFieldsToMap(request, sectionFields, adjustedGifts, list, true, true);
-//            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT);
-//            count = adjustedGiftService.readAdjustedGiftDistroLinesCountByConstituentGiftId(constituentId, constituentReferenceCustomField, giftId);
+            List<SectionField> sectionFields = findSectionFields(adjustedPageNamePrefix+"List");
+            resolveSortFieldName(sectionFields, sort);
+            List<AdjustedGift> adjustedGifts = adjustedGiftService.readAllAdjustedGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, giftId, sort, request.getLocale());
+            addListFieldsToMap(request, sectionFields, adjustedGifts, list, true, true);
+            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT);
+            count = adjustedGiftService.readAdjustedGiftDistroLinesCountByConstituentGiftId(constituentId, constituentReferenceCustomField, giftId);
         }
 
         sort.setSort(unresolvedSortField);

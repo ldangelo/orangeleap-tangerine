@@ -22,7 +22,7 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_E
 
 -- *****************************************Duplicate Detect conditions********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'That is a duplicate constituent matching on ?';
+SET @PHRASE_CD = 'Constituent is a duplicate matching on ?';
 SET @CODE_CD = 'map.ruleHelperService.isDuplicate(map.constituent, ?) == true';
 
 -- Insert code
@@ -37,7 +37,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'without bypass duplicate donor detection';
+SET @PHRASE_CD = 'Constituent does not have bypass duplicate donor detection set';
 SET @CODE_CD = 'map.constituent.getByPassDuplicateDetection() == false';
 
 -- Insert code
@@ -52,7 +52,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 
 -- *****************************************Custom Fields conditions***************************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent has a custom field named ? that has a value of ?';
+SET @PHRASE_CD = 'Constituent has a custom field named ? with a value of ?';
 SET @CODE_CD = 'map.constituent.getCustomFieldValue(?) == ?';
 
 -- Insert code
@@ -93,7 +93,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- e.g.  <=  10    or   >  numericCustomFieldName2
-SET @PHRASE_CD = 'Constituent has a numeric custom field named ? that ? ?';
+SET @PHRASE_CD = 'Constituent has a numeric custom field named ? that is ? ?';
 SET @CODE_CD = 'map.ruleHelperService.getCustomFieldNumericCompare(map.constituent, ?, ?, ?)';
 
 -- Insert code
@@ -115,7 +115,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent has a date custom field named ? that ? ?';
+SET @PHRASE_CD = 'Constituent has a date custom field named ? that is ? ?';
 SET @CODE_CD = 'map.ruleHelperService.getCustomFieldDateCompare(map.constituent, ?, ?, ?)';
 
 -- Insert code
@@ -136,7 +136,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent has a date custom field named ? whose age ? ?';
+SET @PHRASE_CD = 'Constituent has a date custom field named ? whose age is ? ?';
 SET @CODE_CD = 'map.ruleHelperService.getCustomFieldDateAgeCompare(map.constituent, ?, ?, ?)';
 
 -- Insert code
@@ -158,7 +158,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Gift has a custom field named ? that has a value of ?';
+SET @PHRASE_CD = 'Gift has a custom field named ? with a value of ?';
 SET @CODE_CD = 'map.gift.getCustomFieldValue(?) == ?';
 
 -- Insert code
@@ -166,7 +166,6 @@ INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE,
 SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
 
@@ -186,7 +185,6 @@ INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE,
 SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
 
@@ -217,6 +215,78 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','constituentType');
 
+
+
+-- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Constituent is an individual with profile type of ?';
+SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().indexOf(?) != -1';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[constituentIndividualRoles]');
+
+-- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Constituent is an individual without a profile type of ?';
+SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().indexOf(?) == -1';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[constituentIndividualRoles]');
+
+
+
+-- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Constituent is an organization with a profile type of ?';
+SET @CODE_CD = 'map.constituent.getConstituentOrganizationRoles() == null || map.constituent.getConstituentOrganizationRoles().indexOf(?) != -1';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[constituentOrganizationRoles]');
+
+
+-- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Constituent is an organization without profile type of ?';
+SET @CODE_CD = 'map.constituent.getConstituentOrganizationRoles() == null || map.constituent.getConstituentOrganizationRoles().indexOf(?) == -1';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[constituentOrganizationRoles]');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Constituent has a donor profile of ?';
@@ -251,93 +321,6 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 -- Insert the parameters for the condition
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[donorProfiles]');
-
-
--- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent is not a donor';
-SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().contains("donor") == false';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
-
--- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent is a individual of type ?';
-SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().indexOf(?) != -1';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
-SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[constituentIndividualRoles]');
-
--- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent is not a individual of type ?';
-SET @CODE_CD = 'map.constituent.getConstituentIndividualRoles() == null || map.constituent.getConstituentIndividualRoles().indexOf(?) == -1';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
-SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[constituentIndividualRoles]');
-
-
-
--- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent is a organization of type ?';
-SET @CODE_CD = 'map.constituent.getConstituentOrganizationRoles() == null || map.constituent.getConstituentOrganizationRoles().indexOf(?) != -1';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
-SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[constituentOrganizationRoles]');
-
-
--- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent is not a organization of type ?';
-SET @CODE_CD = 'map.constituent.getConstituentOrganizationRoles() == null || map.constituent.getConstituentOrganizationRoles().indexOf(?) == -1';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
-SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','customFieldMap[constituentOrganizationRoles]');
 
 
 
@@ -523,6 +506,24 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'NUMBER');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Constituent has not donated at least ? dollars';
+SET @CODE_CD = 'map.ruleHelperService.evaluateTotalDonations(map.constituent, BigDecimal.valueOf(?.doubleValue())) == false';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'NUMBER');
+
+
+-- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Constituent has donated at least ? dollars over the past ? ?';
 SET @CODE_CD = 'map.ruleHelperService.evaluateTotalDonations(map.constituent, BigDecimal.valueOf(?.doubleValue()),?.intValue(), ?) == true';
 
@@ -589,6 +590,27 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'NUMBER');
 
+-- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Constituent has not donated between ? dollars and ? dollars';
+SET @CODE_CD = 'map.ruleHelperService.evaluateTotalDonations(map.constituent, BigDecimal.valueOf(?.doubleValue()), BigDecimal.valueOf(?.doubleValue())) == false';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'NUMBER');
+
+SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'NUMBER');
+
+
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Constituent has donated between ? dollars and ? dollars over the past ? ?';
@@ -610,10 +632,9 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'NUMBER');
 
-
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent has donated at least ? dollars over the past ? ?';
-SET @CODE_CD = 'BigDecimal.valueOf(?.doubleValue()) <= map.ruleHelperService.totalDonationsPerTimeFrame(map.constituent, ?.intValue(), ? )';
+SET @PHRASE_CD = 'Constituent has not donated between ? dollars and ? dollars over the past ? ?';
+SET @CODE_CD = 'map.ruleHelperService.evaluateTotalDonations(map.constituent, BigDecimal.valueOf(?.doubleValue()), BigDecimal.valueOf(?.doubleValue()),?.intValue(), ?) == false';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
@@ -631,9 +652,6 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'NUMBER');
 
-SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
-
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Gift status is ?';
@@ -645,6 +663,7 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
 
 -- Insert the parameters for the condition
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
@@ -660,6 +679,7 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
 
 -- Insert the parameters for the condition
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
@@ -667,7 +687,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 
--- *****************************************Touchpoints, Communication conditions********************************************************
+-- *****************************************Touchpoints & Communication conditions********************************************************
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Constituent can receive mail';
@@ -722,6 +742,7 @@ INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE,
 SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'touchpoint-save'),@RULE_SEGMENT_TYPE_ID);
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
 
 -- Insert the parameters for the condition
@@ -738,6 +759,7 @@ INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE,
 SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'touchpoint-save'),@RULE_SEGMENT_TYPE_ID);
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
 
 -- Insert the parameters for the condition
@@ -782,7 +804,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 
 -- *****************************************Payment Processing Conditions********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Payment method of ?';
+SET @PHRASE_CD = 'Payment method is ?';
 SET @CODE_CD = 'map.gift.getPaymentType() == ?';
 
 -- Insert code
@@ -798,7 +820,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Payment is declined';
+SET @PHRASE_CD = 'Payment status is declined';
 SET @CODE_CD = 'map.gift.getIsDeclined() == true';
 
 -- Insert code
@@ -810,7 +832,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 -- Insert the parameters for the condition
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Payment that errored during processing';
+SET @PHRASE_CD = 'Payment status is error';
 SET @CODE_CD = 'map.gift.getIsError() == true';
 
 -- Insert code
@@ -823,7 +845,21 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 -- Insert the parameters for the condition
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Payment that has been processed';
+SET @PHRASE_CD = 'Payment has been authorized';
+SET @CODE_CD = 'map.gift.getIsAuthorized() == true';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+
+
+-- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Payment has been processed';
 SET @CODE_CD = 'map.gift.getIsProcessed() == true';
 
 -- Insert code
@@ -838,32 +874,6 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Payment has not been processed';
 SET @CODE_CD = 'map.gift.getIsProcessed() == false';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
-
--- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Payment that has been authorized';
-SET @CODE_CD = 'map.gift.getIsAuthorized() == true';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
-
--- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Payment that has not been captured';
-SET @CODE_CD = 'map.gift.getIsCaptured() == false';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
@@ -911,7 +921,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 
 -- *****************************************Custom Fields Consequences********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Set the constituent custom field ? to ?';
+SET @PHRASE_CD = 'Set constituent custom field named ? to ?';
 SET @CODE_CD = 'map.constituent.setCustomFieldValue(?,?); map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -931,7 +941,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Remove constituent custom field named ? with value of ?';
+SET @PHRASE_CD = 'Remove from constituent custom field named ? the value of ?';
 SET @CODE_CD = 'map.constituent.removeCustomFieldValue(?,?); map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -950,7 +960,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Set the gift custom field ? to ?';
+SET @PHRASE_CD = 'Set the gift custom field named ? to ?';
 SET @CODE_CD = 'map.gift.setCustomFieldValue(?,?); map.giftService.maintainGift(map.gift);';
 
 -- Insert code
@@ -958,7 +968,6 @@ INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE,
 SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
 
 -- Insert the parameters for the condition
@@ -970,7 +979,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Remove gift custom field named ? with value of ?';
+SET @PHRASE_CD = 'Remove from gift custom field named ? the value of ?';
 SET @CODE_CD = 'map.gift.removeCustomFieldValue(?,?); map.giftService.maintainGift(map.gift);';
 
 -- Insert code
@@ -992,7 +1001,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- *****************************************Roles, Profiles, Profile Types Consequences********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Set the individual as a ?';
+SET @PHRASE_CD = 'Set the individual profile type to ?';
 SET @CODE_CD = 'map.constituent.addConstituentIndividualRoles(?);map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -1008,7 +1017,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Unset the individual as a ?';
+SET @PHRASE_CD = 'Remove the individual profile type of ?';
 SET @CODE_CD = 'map.constituent.removeConstituentIndividualRoles(?); map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -1024,7 +1033,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Set the organization as a ?';
+SET @PHRASE_CD = 'Set the organization profile type to ?';
 SET @CODE_CD = 'map.constituent.addConstituentOrganizationRoles(?);map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -1040,7 +1049,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Unset the organization as a ?';
+SET @PHRASE_CD = 'Remove the organization profile type of ?';
 SET @CODE_CD = 'map.constituent.removeConstituentOrganizationRoles(?);map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -1055,22 +1064,9 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
--- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Set the constituent as a donor';
-SET @CODE_CD = 'map.constituent.addConstituentIndividualRoles("donor"); map.constituentService.maintainConstituent(map.constituent);';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Add constituent donor profile of ?';
+SET @PHRASE_CD = 'Set constituent donor profile to ?';
 SET @CODE_CD = 'map.constituent.addCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES,?);map.constituentService.maintainConstituent(map.constituent);';
 
 -- Insert code
@@ -1103,7 +1099,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- *****************************************Touchpoints, Communication Consequences********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Send email to constituent with subject ? and template ?';
+SET @PHRASE_CD = 'Send email to constituent with subject of ? and using template ?';
 SET @CODE_CD = 'map.ruleHelperService.sendMail(map.constituent,map.gift,map.userHelper.getSiteOptionByName(?),map.userHelper.getSiteOptionByName(?));';
 
 -- Insert code
@@ -1123,7 +1119,7 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'SITE_VARIABLE');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Send email to ? with subject ? and template ?';
+SET @PHRASE_CD = 'Send email to addresses ? with a subject of ? and using template ?';
 SET @CODE_CD = 'map.ruleHelperService.sendMail(?,map.constituent,map.gift,?,?, null);';
 
 -- Insert code
@@ -1145,28 +1141,6 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Send email using addresses contained in site option ? with subject ? and template ?';
-SET @CODE_CD = 'map.ruleHelperService.sendMail(map.userHelper.getSiteOptionByName(?),map.constituent,map.gift,map.userHelper.getSiteOptionByName(?),map.userHelper.getSiteOptionByName(?),null);';
-
--- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);
-SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
-
--- Insert what segment types can be used for what event types (this is for the UI piece)
--- INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'email'),@RULE_SEGMENT_TYPE_ID);
-
--- Insert the parameters for the condition
-SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'SITE_VARIABLE');
-
-SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'SITE_VARIABLE');
-
-SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'SITE_VARIABLE');
-
--- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Generate mail from segment ? using label template ? and mail template ?';
 SET @CODE_CD = 'map.mailService.generateMail(Long.parseLong(map.userHelper.getSiteOptionByName(?)), map.userHelper.getSiteOptionByName(?), map.userHelper.getSiteOptionByName(?));';
 
@@ -1176,7 +1150,7 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
 -- INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'constituent-save'),@RULE_SEGMENT_TYPE_ID);
-INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+-- INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
 
 -- Insert the parameters for the condition
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
@@ -1224,7 +1198,7 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Process payment';
+SET @PHRASE_CD = 'Process ach payment';
 SET @CODE_CD = 'map.paymentGateway.Process(map.gift)';
 
 -- Insert code

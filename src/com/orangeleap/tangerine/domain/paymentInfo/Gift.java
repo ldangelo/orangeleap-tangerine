@@ -284,8 +284,7 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 	}
 
 	public Boolean getIsProcessed() {
-		return (!StringUtils.trimToEmpty(txRefNum).equals("")
-				&& StringUtils.equals(this.getPaymentStatus(),Gift.PAY_STATUS_APPROVED)
+		return (StringUtils.equals(this.getPaymentStatus(),Gift.PAY_STATUS_APPROVED)
 				&& StringUtils.equals(this.getGiftStatus(),Gift.STATUS_PAID));
 
 	}

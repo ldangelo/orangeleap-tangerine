@@ -51,7 +51,6 @@ public class GiftImporter extends EntityImporter {
     private final ConstituentService constituentService;
     private final GiftService giftservice;
     private final PicklistItemService picklistItemService;
-    private final FieldDao fieldDao;
     private String defaultProjectCode;
 
     public GiftImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
@@ -59,7 +58,6 @@ public class GiftImporter extends EntityImporter {
         constituentService = (ConstituentService) applicationContext.getBean("constituentService");
         giftservice = (GiftService) applicationContext.getBean("giftService");
         picklistItemService = (PicklistItemService) applicationContext.getBean("picklistItemService");
-        fieldDao = (FieldDao) applicationContext.getBean("fieldDAO");
         defaultProjectCode = getDefaultProjectCode();
         FieldRequired fr = fieldDao.readFieldRequired("gift.distribution", "gift.distributionLines.projectCode", "distributionLines.projectCode");
         if (fr == null || !fr.isRequired()) defaultProjectCode = null;

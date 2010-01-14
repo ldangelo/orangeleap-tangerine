@@ -18,9 +18,12 @@
 
 package com.orangeleap.tangerine.service.ws;
 
+import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.ws.exception.InvalidRequestException;
@@ -80,6 +83,15 @@ public class OrangeLeapWS {
 	@Autowired
 	private ConstituentService cs;
 
+	@Autowired
+	private EmailService emailService;
+
+	@Autowired
+	private AddressService addressService;
+	
+	@Autowired
+	private PhoneService phoneService;
+	
 	@Resource(name = "communicationHistoryService")
 	private CommunicationHistoryService communicationHistory;
 
@@ -177,7 +189,7 @@ public class OrangeLeapWS {
 			}
 		}
 	}
-	@PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
+	@PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
 	public SaveOrUpdateConstituentResponse maintainConstituent(
 			SaveOrUpdateConstituentRequest p)
 			throws ConstituentValidationException, BindException {
@@ -190,8 +202,35 @@ public class OrangeLeapWS {
 
 		converter.ConvertFromJAXB(p.getConstituent(), c);
 
-		cs.maintainConstituent(c);
-
+		c = cs.maintainConstituent(c);
+		
+		//
+		// if we have e-mail's then we should save them as well
+		Iterator<com.orangeleap.tangerine.domain.communication.Email> emailIt = c.getEmails().iterator();
+		while(emailIt.hasNext()) {
+			com.orangeleap.tangerine.domain.communication.Email email = emailIt.next();
+			email.setConstituentId(c.getConstituentId());
+			emailService.save(email);
+		}
+		
+		//
+		// if we have addresses then we should save them as well
+		Iterator<com.orangeleap.tangerine.domain.communication.Address> addressIt = c.getAddresses().iterator();
+		while (addressIt.hasNext()) {
+			com.orangeleap.tangerine.domain.communication.Address address = addressIt.next();
+			address.setConstituentId(c.getConstituentId());
+			addressService.save(address);
+		}
+		
+		//
+		// if we have phoneNumbers then we should save them as well
+		Iterator<com.orangeleap.tangerine.domain.communication.Phone> phoneIt = c.getPhones().iterator();
+		while (phoneIt.hasNext()) {
+			com.orangeleap.tangerine.domain.communication.Phone phone = phoneIt.next();
+			phone.setConstituentId(c.getConstituentId());
+			phoneService.save(phone);
+		}
+		
 		Constituent responseConstituent = new Constituent();
 		SaveOrUpdateConstituentResponse response = new SaveOrUpdateConstituentResponse();
 		converter.ConvertToJAXB(c, responseConstituent);
@@ -408,11 +447,11 @@ public class OrangeLeapWS {
 				throw new InvalidRequestException(
 						"ACH Account Number is required for PaymentType ACH");
 			if (paymentSource.getAchHolderName() == null
-					|| paymentSource.getAchHolderName() == "")
+					|| paymentSource.getAchHolderName().isEmpty())
 				throw new InvalidRequestException(
 						"ACH Holder Name is required for PaymentType ACH");
 			if (paymentSource.getAchRoutingNumber() == null
-					|| paymentSource.getAchRoutingNumber() == "")
+					|| paymentSource.getAchRoutingNumber().isEmpty())
 				throw new InvalidRequestException(
 						"ACH Routing Number is required for PaymentType ACH");
 		} else if (paymentSource.getPaymentType() == com.orangeleap.tangerine.ws.schema.PaymentType.CHECK) {
@@ -434,8 +473,8 @@ public class OrangeLeapWS {
 
 		if (g.getAmount().doubleValue() <= 0.0) throw new InvalidRequestException("Gift amount must be greater than 0.0");
 		if (id == 0) throw new InvalidRequestException("Gift must contain a valid constituentId");
-		if (g.getPaymentType() != "Credit Card"
-				&& g.getPaymentType() != "ACH")
+		if (!g.getPaymentType().equals("Credit Card")
+				&& !g.getPaymentType().equals("ACH"))
 			throw new InvalidRequestException(
 					"Gift contains invalid PaymentType valid values are 'Credit Card' or 'ACH'");
 	}

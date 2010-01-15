@@ -244,8 +244,8 @@ public class RollupServiceImpl extends AbstractTangerineService implements Rollu
     }
 	
 	@Override
-	public void insertRollupDimensionValues(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate) {
-		rollupValueDao.insertRollupDimensionValues(groupByValue, ra, rs, deleteStartDate, deleteEndDate);
+	public void insertRollupDimensionValues(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate, Long groupByRange1, Long groupByRange2) {
+		rollupValueDao.insertRollupDimensionValues(groupByValue, ra, rs, deleteStartDate, deleteEndDate, groupByRange1, groupByRange2);
     }
 	
 	// Create date range templates for series types

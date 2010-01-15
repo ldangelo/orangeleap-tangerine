@@ -55,7 +55,7 @@ public interface RollupService {
     public Map<RollupAttribute, Map<RollupSeries, List<RollupValue>>> readGiftViewRollupValuesByConstituentId(Long constituentId);
 
 	public void deleteRollupValuesForAttributeSeries(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate);
-	public void insertRollupDimensionValues(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate);
+	public void insertRollupDimensionValues(Object groupByValue, RollupAttribute ra, RollupSeries rs, Date deleteStartDate, Date deleteEndDate, Long groupByRange1, Long groupByRange2);
 
     public Gift readGiftViewFirstOrLastByConstituentId(Long constituentId, GiftType giftType, String giftStatus, boolean first);
 	public Gift readGiftViewLargestByConstituentId(Long constituentId, GiftType giftType, String giftStatus);

@@ -66,6 +66,10 @@
             group by 
         		g.CONSTITUENT_ID,
         		g.CURRENCY_CODE
+			<isNotNull property="groupByRange1"> 
+			having g.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
+        		
     </insert>
 
 	<!-- e.g. fieldName = FAIR_MARKET_VALUE  -->
@@ -87,6 +91,9 @@
             group by 
         		gik.CONSTITUENT_ID,
         		gik.CURRENCY_CODE
+			<isNotNull property="groupByRange1"> 
+			having gik.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
     </insert>
 
 	<!-- 
@@ -94,7 +101,7 @@
 	-->
     <insert id="ROLLUP_GIFT_DISTRO_LINE_AMOUNT_BY_CF_CONSTITUENT" parameterClass="java.util.Map">
         <include refid="SELECT_INTO_RV_FRAG"/>
-        		cf.FIELD_VALUE,
+        		cf.FIELD_NUMERIC_VALUE,
         		g.CURRENCY_CODE,
             	COUNT(dl.AMOUNT),
             	SUM(dl.AMOUNT),
@@ -107,13 +114,16 @@
         		and g.GIFT_ID = dl.GIFT_ID
         		and cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.ENTITY_TYPE='distributionline' and cf.FIELD_NAME= #customFieldName#  
         		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
-        		and cf.FIELD_VALUE is not null
+        		and cf.FIELD_NUMERIC_VALUE is not null
 			<isNotNull property="groupByValue"> 
-	        	and cf.FIELD_VALUE = #groupByValue#
+	        	and cf.FIELD_NUMERIC_VALUE = #groupByValue#
 			</isNotNull> 
             group by 
-        		cf.FIELD_VALUE,
+        		cf.FIELD_NUMERIC_VALUE,
         		g.CURRENCY_CODE
+			<isNotNull property="groupByRange1"> 
+			having cf.FIELD_NUMERIC_VALUE between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
     </insert>
    
    
@@ -137,6 +147,9 @@
             group by 
         		p.CONSTITUENT_ID,
         		p.CURRENCY_CODE
+			<isNotNull property="groupByRange1"> 
+			having p.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
     </insert>
     
     <insert id="ROLLUP_RECURRING_GIFT_SCHEDULED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
@@ -159,6 +172,9 @@
             group by 
         		rg.CONSTITUENT_ID,
         		rg.CURRENCY_CODE
+			<isNotNull property="groupByRange1"> 
+			having rg.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
     </insert>
    
    

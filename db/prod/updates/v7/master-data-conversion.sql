@@ -218,13 +218,13 @@ SELECT SECTION_DEFINITION_ID, 'adjustedGift.paymentSource.checkAccountNumberRead
 
 
 
-UPDATE PICKLIST_ITEM set REFERENCE_VALUE = 'li:has(#paymentSource-td-id)' WHERE ITEM_NAME = 'Check' AND PICKLIST_ID =
+UPDATE PICKLIST_ITEM set REFERENCE_VALUE = 'li:has(#paymentSource-td-id)' WHERE ITEM_NAME = 'Check' AND PICKLIST_ID IN
 (SELECT PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'gift.paymentType' AND PICKLIST_NAME = 'paymentType');
 
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER)
 SELECT PICKLIST_ID, 'Check', 'Check', '.paymentSource_check', 3 FROM PICKLIST WHERE PICKLIST_NAME_ID = 'paymentSource.paymentType' AND PICKLIST_NAME = 'paymentType'; 
 
-UPDATE PICKLIST_ITEM set REFERENCE_VALUE = 'li:has(#paymentSource-td-id),.adjustedGift_check' WHERE ITEM_NAME = 'Check' AND PICKLIST_ID =
+UPDATE PICKLIST_ITEM set REFERENCE_VALUE = 'li:has(#paymentSource-td-id),.adjustedGift_check' WHERE ITEM_NAME = 'Check' AND PICKLIST_ID IN
 (SELECT PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'adjustedGift.paymentType' AND PICKLIST_NAME = 'paymentType');
 
 

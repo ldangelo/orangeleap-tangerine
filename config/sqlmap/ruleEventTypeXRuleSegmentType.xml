@@ -16,11 +16,13 @@
         select 
         <include refid="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_COLS_FRAGMENT"/>
         from RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE rule_event_type_x_rule_segment_type 
+        inner join RULE_SEGMENT_TYPE rule_segment_type on rule_segment_type.RULE_SEGMENT_TYPE_ID = rule_event_type_x_rule_segment_type.RULE_SEGMENT_TYPE_ID
+        where (rule_segment_type.SITE_NAME = #siteName# or rule_segment_type.SITE_NAME is null)
     </sql>
 
     <select id="SELECT_RULE_SEGMENT_TYPE_X_RULE_EVENT_TYPE_BY_RULE_EVENT_TYPE_ID" resultMap="RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE_FRAGMENT"/>
-        where rule_event_type_x_rule_segment_type.RULE_EVENT_TYPE_ID = #ruleEventTypeId#
+        and rule_event_type_x_rule_segment_type.RULE_EVENT_TYPE_ID = #ruleEventTypeId#
         order by rule_event_type_x_rule_segment_type.RULE_SEGMENT_TYPE_ID
     </select>
 

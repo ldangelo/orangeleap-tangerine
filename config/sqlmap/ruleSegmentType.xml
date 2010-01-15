@@ -23,11 +23,13 @@
         <include refid="RULE_SEGMENT_TYPE_PARM_COLS_FRAGMENT"/>
         from RULE_SEGMENT_TYPE rule_segment_type
         left outer join RULE_SEGMENT_TYPE_PARM rule_segment_type_parm on rule_segment_type.RULE_SEGMENT_TYPE_ID = rule_segment_type_parm.RULE_SEGMENT_TYPE_ID
+        where
+        (rule_segment_type.SITE_NAME = #siteName# or rule_segment_type.SITE_NAME is null)
      </sql>
 
     <select id="SELECT_RULE_SEGMENT_TYPE_BY_ID" resultMap="RULE_SEGMENT_TYPE_RESULT" parameterClass="map" >
         <include refid="SELECT_RULE_SEGMENT_TYPE_FRAGMENT"/>
-         where rule_segment_type.RULE_SEGMENT_TYPE_ID = #id#
+         and rule_segment_type.RULE_SEGMENT_TYPE_ID = #id#
          order by rule_segment_type_parm.RULE_SEGMENT_TYPE_PARM_SEQ
     </select>
 

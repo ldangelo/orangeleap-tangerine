@@ -78,14 +78,14 @@
 		</property>
 	</bean>
 
-	<bean id="webappRoot"
+	<bean id="appRoot"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject"><ref local="sysProps" /></property>
 		<property name="targetMethod"><value>setProperty</value></property>
 		<property name="arguments">
 			<list>
-				<value>webapp.root</value>
-				<value>${webapp.root}</value>
+				<value>app.root</value>
+				<value>${app.root}</value>
 			</list>
 		</property>
 	</bean>

@@ -15,6 +15,7 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
+	
     <!-- Beans defined here will override those with the same IDs in the regular applicationContext.xml --> 
     <bean id="appPropertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="order" value="1" />
@@ -54,5 +55,21 @@
         <property name="password" value="${ldap.password}"/>
         <property name="url" value="ldap://${ldap.host}:${ldap.port}/${ldap.root}"/>
     </bean>
+    
+	<bean id="soapConstituentValidator" class="com.orangeleap.tangerine.ws.validation.ConstituentValidator"/>
+	<bean id="soapSaveOrUpdateConstituentRequestValidator" class="com.orangeleap.tangerine.ws.validation.SaveOrUpdateConstituentRequestValidator"/>
+	<bean id="soapSiteValidator" class="com.orangeleap.tangerine.ws.validation.SoapSiteValidator"/>	
+	<bean id="soapListValidator" class="com.orangeleap.tangerine.ws.validation.SoapListValidator"/>	
+	<bean id="validationManager" class="com.orangeleap.tangerine.ws.validation.SoapValidationManager">
+
+		<property name="validators">
+			<list>
+				<ref bean="soapConstituentValidator"/>
+				<ref bean="soapSaveOrUpdateConstituentRequestValidator"/>
+				<ref bean="soapSiteValidator"/>
+				<ref bean="soapListValidator"/>
+			</list>
+		</property>
+	</bean>    
 	
 </beans>

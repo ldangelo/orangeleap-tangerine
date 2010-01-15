@@ -78,6 +78,18 @@
 		</property>
 	</bean>
 
+	<bean id="webappRoot"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject"><ref local="sysProps" /></property>
+		<property name="targetMethod"><value>setProperty</value></property>
+		<property name="arguments">
+			<list>
+				<value>webapp.root</value>
+				<value>${webapp.root}</value>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="splitDatabases"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject"><ref local="sysProps" /></property>

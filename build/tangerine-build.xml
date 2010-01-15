@@ -74,7 +74,8 @@
 	</target>
 	
 	<target name="xjc.generate">
-		<xjc schema="war/WEB-INF/orangeleap.xsd" destdir="src" package="com.orangeleap.tangerine.ws.schema"/>
+		<xjc schema="war/orangeleap.xsd" destdir="src" package="com.orangeleap.tangerine.ws.schema"/>
+		<xjc schema="war/orangeleapv2.xsd" destdir="src" package="com.orangeleap.tangerine.ws.schema.v2"/>
 	</target>
 			
 	<target name="setup-war">
@@ -159,7 +160,7 @@
 	</target>
 
 	<target name="build-integrated-war">
-		<copy file="${src.dir}/log4j.properties" todir="${stage.dir}/war/WEB-INF"/>
+		<copy file="${src.dir}/log4j.properties" todir="${stage.dir}/war/WEB-INF/classes"/>
 
 		<war destfile="${stage.dir}/${war.name}.war" basedir="${stage.dir}/war">
 			<include name="**/*.*" />

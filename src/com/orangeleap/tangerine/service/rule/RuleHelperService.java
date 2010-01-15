@@ -37,8 +37,12 @@ import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.communication.EmailService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
@@ -52,8 +56,18 @@ public class RuleHelperService {
 	private static TangerineUserHelper userHelper;
 	private static ConstituentService constituentService;
 	private static EmailService emailService;
+	private static PicklistItemService picklistItemService;
 
-    public  EmailService getEmailService() {
+    public PicklistItemService getPicklistItemService() {
+		return picklistItemService;
+	}
+
+	public void setPicklistItemService(
+			PicklistItemService picklistItemService) {
+		this.picklistItemService = picklistItemService;
+	}
+
+	public  EmailService getEmailService() {
 		return emailService;
 	}
 
@@ -320,7 +334,7 @@ public class RuleHelperService {
            		params.put(criteria, p.getAccountNumber().ToString().substring(0,numCharactersToMatch));
 		*/
 			//Primary Email Info
-           if ( criteria.equalsIgnoreCase("emailAddress")){
+           if ( criteria.equalsIgnoreCase("emailAddress") && p.getPrimaryEmail().getEmailAddress() != null){
            		params.put("primaryEmail." + criteria, p.getPrimaryEmail().getEmailAddress().substring(0, ((numCharactersToMatch > p.getPrimaryEmail().getEmailAddress().length()) ? p.getPrimaryEmail().getEmailAddress().length() : numCharactersToMatch)));
          		paramCount++;
          	}
@@ -621,6 +635,81 @@ public class RuleHelperService {
     	}
 
     }
+
+    public static Boolean isDesignationCodeContainedInDistroLines(Gift g, String designationCode) {
+		List<DistributionLine> distroLines = g.getDistributionLines();
+		for (DistributionLine distroLine : distroLines ){
+			if (distroLine.getProjectCode() != null && distroLine.getProjectCode().compareToIgnoreCase(designationCode) == 0)
+				return true;
+		}
+	    return false;
+	}
+
+    public static Boolean isMotivationCodeInFirstDistroLine(Gift g, String motivationCode) {
+    		DistributionLine distroLine = g.getDistributionLines().get(0);
+    		if (distroLine.getMotivationCode() != null && distroLine.getMotivationCode().compareToIgnoreCase(motivationCode) == 0)
+    				return true;
+    	    return false;
+    	}
+
+    public static Boolean isMotivationCodeContainedInDistroLines(Gift g, String motivationCode) {
+		List<DistributionLine> distroLines = g.getDistributionLines();
+		for (DistributionLine distroLine : distroLines ){
+			if (distroLine.getMotivationCode() != null && distroLine.getMotivationCode().compareToIgnoreCase(motivationCode) == 0)
+				return true;
+		}
+	    return false;
+	}
+
+    public static Boolean isDesignationCodeInFirstDistroLine(Gift g, String designationCode) {
+    		DistributionLine distroLine = g.getDistributionLines().get(0);
+    		if (distroLine.getProjectCode() != null && distroLine.getProjectCode().compareToIgnoreCase(designationCode) == 0)
+    				return true;
+    	    return false;
+    	}
+
+    public static Boolean distroLinesCustomFieldHasAnyValue(Gift g, String customField) {
+		List<DistributionLine> distroLines = g.getDistributionLines();
+		for (DistributionLine distroLine : distroLines ){
+			if (distroLine.getCustomFieldValue(customField) != null)
+				return true;
+		}
+	    return false;
+	}
+
+    public static Boolean isCustomFieldValueContainedInDistroLines(Gift g, String customField, String value) {
+		List<DistributionLine> distroLines = g.getDistributionLines();
+		for (DistributionLine distroLine : distroLines ){
+			if (distroLine.getCustomFieldValue(customField) != null && distroLine.getCustomFieldValue(customField).contains(value))
+				return true;
+		}
+	    return false;
+	}
+
+    public static void addDistroLineCustomFieldConstituentValueToPickList(Gift g, String customField, String picklist) {
+		List<DistributionLine> distroLines = g.getDistributionLines();
+		Picklist pl = picklistItemService.getPicklist(picklist);
+
+		for (DistributionLine distroLine : distroLines ){
+			if (distroLine.getCustomFieldValue(customField) != null){
+				Constituent relatedConstituent = constituentService.readConstituentById(Long.parseLong(distroLine.getCustomFieldValue(customField)));
+				if (relatedConstituent != null){
+					PicklistItem pli = new PicklistItem();
+					pli.setPicklistId(picklistItemService.getPicklist(picklist).getId());
+					pli.setItemName(relatedConstituent.getAccountNumber().toString());
+					pli.setInactive(false);
+					pli.setLongDescription(relatedConstituent.getFullName() + " - " + relatedConstituent.getAccountNumber());
+					pli.setDefaultDisplayValue(relatedConstituent.getFullName() + " - " + relatedConstituent.getAccountNumber());
+					pli.setDetail(relatedConstituent.getFullName() + " - " + relatedConstituent.getAccountNumber());
+					pl.getPicklistItems().add(pli);
+					picklistItemService.maintainPicklist(pl);
+				}
+
+			}
+		}
+
+	}
+
 
     public static void throwConstituentValidationException(String message) {
     	ConstituentValidationException cve = new ConstituentValidationException(message);

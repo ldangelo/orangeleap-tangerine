@@ -16,12 +16,10 @@ import com.orangeleap.tangerine.ws.util.v2.ObjectConverter;
 
 public class ObjectConverterTest extends BaseTest {
     private RequestContext mockRequestContext;
-    private PostBatch batch;
 
     @BeforeMethod
     public void setupMocks() {
         mockRequestContext = new MockRequestContext();
-        batch = new PostBatch();
     }
 
 	@Test

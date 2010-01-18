@@ -69,7 +69,9 @@ public class WSTest extends BaseTest {
 				response = constituentEndpointV2.maintainConstituent(request);
 			} catch (ConstituentValidationException e) {
 				//
-				// This test should throw an error
+				// We should not get here
+				Assert.assertTrue(false);
+			} catch (InvalidRequestException e) {
 				Assert.assertTrue(true);
 			}
 
@@ -83,11 +85,17 @@ public class WSTest extends BaseTest {
 				//
 				// Should not get here
 				Assert.assertTrue(false);
+			} catch (InvalidRequestException e) {
+				//
+				// Should not get here either
+				Assert.assertTrue(false);
 			}
 			
 			//
 			// Test to make sure I got back a constituent id
+			Assert.assertNotNull(response);
 			Constituent returned = response.getConstituent();
+			Assert.assertNotNull(returned);
 			Assert.assertTrue(returned.getId() != null && returned.getId() > 0);
 		} catch (BindException e) {
 			//

@@ -2,34 +2,88 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://www.orangeleap.com/orangeleap/services2.0/"
 	xmlns:tns="http://www.orangeleap.com/orangeleap/services2.0/"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.0"
 	elementFormDefault="qualified">
 
 
 	<xs:complexType name="site">
-		<xs:sequence>
-			<xs:element name="name" type="xs:string" minOccurs="1" />
-		</xs:sequence>
+		<xs:annotation>
+			<xs:appinfo xml:lang="en">
+				<jxb:class>
+					<jxb:javadoc>
+						Orange Leap uses the Site object to specify which "organizations" data
+						model you are accessing. For example
+						if you use site.name="sandbox" you will access the data model
+						associated with our sandbox. One important note is
+						that the site.name is validated against the credentials that you log
+						in
+						as... So if you authenticate with demo@sandbox your site
+						name must be sandbox or you will receive a SoapFault.
+				</jxb:javadoc>
+				</jxb:class>
+			</xs:appinfo>
+		</xs:annotation>
+
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:appinfo>
+					<jxb:property>
+						<jxb:javadoc>
+							The name of the site that you wish to connect too. This will
+							generate an Exception
+							if your authentication credentials do not match your sitename.
+
+							For example if you try to connect to demo@sandbox and use "demo" as
+							your site name.
+							You will receive a SoapFault exception with a reason "Site name
+							does not match supplied credentials"
+							</jxb:javadoc>
+					</jxb:property>
+				</xs:appinfo>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 
 
 	<xs:complexType name="communicationHistory">
+		<xs:annotation>
+			<xs:appinfo xml:lang="en">
+				<jxb:class>
+					<jxb:javadoc>
+						CommunicationHistory is used to update/add any type of communication with a
+						constituent. It will map to the
+						"touch points" screen within the orange leap API. Because orange leap is
+						extensible you can track much more
+						than just e-mails and calls with our CommunicationHistory.
+
+						Some examples of implementations we have done track things like
+						events, website visits, volunteer hours, etc... using
+						"touch points"/Communication History.
+
+						CommunicationHistory objects are tied to constituents but can alternately reference
+						Gifts, Pledges, etc...
+
+						Like all entities on orange leap CommunicationHistory can be
+						customized. For example an EventName could be added to all
+						"touch points" that have a type of "Event". These custom fields are
+						accessed through the customFieldMap of the
+						abstractCustomizableEntity
+						that we inherit from.
+				</jxb:javadoc>
+				</jxb:class>
+			</xs:appinfo>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="tns:abstractCustomizableEntity">
-				<xs:sequence>
-					<xs:element name="comments" type="xs:string" minOccurs="0" />
-					<xs:element name="communicationHistoryType" type="xs:string"
-						minOccurs="1" />
-					<xs:element name="entryType" type="xs:string" minOccurs="1" />
-					<xs:element name="giftId" type="xs:long" minOccurs="0" />
-					<xs:element name="constituentId" type="xs:long"
-						minOccurs="1" />
-					<xs:element name="pledgeId" type="xs:long" minOccurs="0" />
-					<xs:element name="recordDate" type="xs:dateTime"
-						minOccurs="1" />
-					<xs:element name="recurringGiftId" type="xs:long"
-						minOccurs="0" />
-					<xs:element name="systemGenerated" type="xs:boolean" />
-				</xs:sequence>
+					<xs:attribute name="comments" type="xs:string" use="optional" />
+					<xs:attribute name="communicationHistoryType" type="xs:string" use="required"/>
+					<xs:attribute name="entryType" type="xs:string" use="optional" />
+					<xs:attribute name="giftId" type="xs:long" use="optional" />
+					<xs:attribute name="constituentId" type="xs:long"	use="required" />
+					<xs:attribute name="pledgeId" type="xs:long" use="optional" />
+					<xs:attribute name="recordDate" type="xs:dateTime"	use="required" />
+					<xs:attribute name="recurringGiftId" type="xs:long" use="optional" />
+					<xs:attribute name="systemGenerated" type="xs:boolean" use="prohibited"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -135,8 +189,10 @@
 					<xs:element name="effectiveDate" type="xs:dateTime"
 						minOccurs="0" />
 					<xs:element name="inactive" type="xs:boolean" />
-<!-- 					<xs:element name="constituentId" type="xs:long"
-						minOccurs="1" maxOccurs="1" /> -->
+					<!--
+						<xs:element name="constituentId" type="xs:long" minOccurs="1"
+						maxOccurs="1" />
+					-->
 					<xs:element name="primary" type="xs:boolean" />
 					<xs:element name="receiveCorrespondence" type="xs:boolean" />
 					<xs:element name="seasonalEndDate" type="xs:dateTime"
@@ -291,9 +347,10 @@
 				<xs:sequence>
 					<xs:element name="amount" type="xs:decimal" minOccurs="1" />
 					<xs:element name="authCode" type="xs:string" minOccurs="0" />
-					<xs:element name="deductible" type="xs:boolean" minOccurs="1"/>
+					<xs:element name="deductible" type="xs:boolean"
+						minOccurs="1" />
 					<xs:element name="deductibleAmount" type="xs:decimal"
-						minOccurs="1"/>
+						minOccurs="1" />
 					<xs:element name="donationDate" type="xs:dateTime"
 						minOccurs="0" />
 					<xs:element name="giftStatus" type="xs:string"
@@ -381,7 +438,8 @@
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="firstName" type="xs:string" minOccurs="1"
 						maxOccurs="1" />
-					<xs:element name="middleName" type="xs:string" minOccurs="0"/>
+					<xs:element name="middleName" type="xs:string"
+						minOccurs="0" />
 					<xs:element name="lastName" type="xs:string" minOccurs="1"
 						maxOccurs="1" />
 					<xs:element name="title" type="xs:string" minOccurs="0"
@@ -392,14 +450,12 @@
 						minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="phones" type="tns:phone" nillable="true"
 						minOccurs="0" maxOccurs="unbounded" />
-						<!-- 
-					<xs:element name="primaryAddress" type="tns:address"
-						minOccurs="0" />
-					<xs:element name="primaryEmail" type="tns:email"
-						minOccurs="0" />
-					<xs:element name="primaryPhone" type="tns:phone"
-						minOccurs="0" />
-						-->
+					<!--
+						<xs:element name="primaryAddress" type="tns:address" minOccurs="0"
+						/> <xs:element name="primaryEmail" type="tns:email" minOccurs="0"
+						/> <xs:element name="primaryPhone" type="tns:phone" minOccurs="0"
+						/>
+					-->
 					<xs:element name="organizationName" type="xs:string"
 						minOccurs="0" />
 					<xs:element name="constituentAttributes" type="xs:string"
@@ -435,35 +491,50 @@
 		<xs:complexContent>
 			<xs:extension base="tns:abstractCustomizableEntity">
 				<xs:sequence>
-				<xs:element name="itemName" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="defaultDisplayValue" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="longDescription" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="detail" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="referenceValue" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="itemOrder" type="xs:integer" minOccurs="1" maxOccurs="1"/>																								
-				<xs:element name="inactive" type="xs:boolean" minOccurs="1" maxOccurs="1"/>																								
-				<xs:element name="readOnly" type="xs:boolean" minOccurs="1" maxOccurs="1"/>																								
-				<xs:element name="picklistId" type="xs:long" minOccurs="1" maxOccurs="1"/>																																				
+					<xs:element name="itemName" type="xs:string" minOccurs="1"
+						maxOccurs="1" />
+					<xs:element name="defaultDisplayValue" type="xs:string"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="longDescription" type="xs:string"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="detail" type="xs:string" minOccurs="1"
+						maxOccurs="1" />
+					<xs:element name="referenceValue" type="xs:string"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="itemOrder" type="xs:integer"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="inactive" type="xs:boolean" minOccurs="1"
+						maxOccurs="1" />
+					<xs:element name="readOnly" type="xs:boolean" minOccurs="1"
+						maxOccurs="1" />
+					<xs:element name="picklistId" type="xs:long" minOccurs="1"
+						maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
-		<xs:complexType name="picklist">
+
+	<xs:complexType name="picklist">
 		<xs:complexContent>
 			<xs:extension base="tns:abstractCustomizableEntity">
 				<xs:sequence>
-				<xs:element name="picklistNameId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="picklistName" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="picklistDesc" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="site" type="tns:site" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="multiselect" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="picklistItems" type="tns:picklistItem" minOccurs="0" maxOccurs="unbounded"/>																								
+					<xs:element name="picklistNameId" type="xs:string"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="picklistName" type="xs:string"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="picklistDesc" type="xs:string"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="site" type="tns:site" minOccurs="1"
+						maxOccurs="1" />
+					<xs:element name="multiselect" type="xs:boolean"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="picklistItems" type="tns:picklistItem"
+						minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:element name="GetConstituentByIdRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -751,39 +822,41 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	
- 	<xs:element name="GetPickListsRequest">
- 			<xs:complexType>
+
+	<xs:element name="GetPickListsRequest">
+		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="dummy" type="xs:string" />
 			</xs:sequence>
 		</xs:complexType>
- 	
- 	</xs:element>
- 	
- 	<xs:element name="GetPickListsResponse">
- 			<xs:complexType>
+
+	</xs:element>
+
+	<xs:element name="GetPickListsResponse">
+		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="picklist" type="tns:picklist" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="picklist" type="tns:picklist"
+					minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
- 	</xs:element>
- 	
- 	 	<xs:element name="GetPickListByNameRequest">
- 			<xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetPickListByNameRequest">
+		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="name" type="xs:string" />
 			</xs:sequence>
 		</xs:complexType>
- 	
- 	</xs:element>
- 	
- 	<xs:element name="GetPickListByNameResponse">
- 			<xs:complexType>
+
+	</xs:element>
+
+	<xs:element name="GetPickListByNameResponse">
+		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="picklist" type="tns:picklist" minOccurs="0" maxOccurs="1" />
+				<xs:element name="picklist" type="tns:picklist"
+					minOccurs="0" maxOccurs="1" />
 			</xs:sequence>
 		</xs:complexType>
- 	</xs:element>
+	</xs:element>
 </xs:schema>
         

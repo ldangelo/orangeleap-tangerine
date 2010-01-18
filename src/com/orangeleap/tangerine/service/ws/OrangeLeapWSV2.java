@@ -20,9 +20,12 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 
 import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
@@ -60,6 +63,7 @@ import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdatePledgeResponse;
 import com.orangeleap.tangerine.ws.schema.v2.SearchConstituentsRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SearchConstituentsResponse;
 import com.orangeleap.tangerine.ws.util.v2.ObjectConverter;
+import com.orangeleap.tangerine.ws.validation.SoapValidationManager;
 import com.orangeleap.theguru.client.GetSegmentationByNameRequest;
 import com.orangeleap.theguru.client.GetSegmentationByNameResponse;
 import com.orangeleap.theguru.client.PaymentSource;
@@ -85,11 +89,23 @@ public class OrangeLeapWSV2 {
 	private ConstituentService cs;
 
 	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private AddressService addressService;
+	
+	@Autowired
+	private PhoneService phoneService;
+
+	@Autowired
 	PicklistItemService picklistItemService;
 
 	@Resource(name = "communicationHistoryService")
 	private CommunicationHistoryService communicationHistory;
 
+	@Autowired
+	private SoapValidationManager validationManager;
+	
 	/**
 	 * Creates a new <code>OrangeLeapWS</code> instance.
 	 */
@@ -167,29 +183,13 @@ public class OrangeLeapWSV2 {
 		return cr;
 	}
 
-	void validateConstituentInformation(SaveOrUpdateConstituentRequest request) throws ConstituentValidationException {
-		Constituent c = request.getConstituent();
-		
-		if (c == null) throw new ConstituentValidationException("Invalid request constituent can not be null");
-		if (c.getSite() == null || c.getSite().getName().equals(""))
-			throw new ConstituentValidationException("Constituent must contain a valid site object");
-		if (c.getConstituentType() == null || (!c.getConstituentType().equals("individual") && !c.getConstituentType().equals("organization")))
-			throw new ConstituentValidationException("Constituent must have constituentType of 'individual' or 'organization'");
-		if (c.getConstituentType().equals("individual")) {
-			if ((c.getFirstName() == null || c.getFirstName().equals("")) && (c.getLastName() == null || c.getLastName().equals("")))
-				throw new ConstituentValidationException("Constituent's of type 'individual' must contain a valid firstName and/or lastName");
-		} else {
-			if (c.getOrganizationName() == null || c.getOrganizationName().equals("")) {
-				throw new ConstituentValidationException("Constituent's of type 'organization' must contain a valid organizationName");
-			}
-		}
-	}
 	@PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public SaveOrUpdateConstituentResponse maintainConstituent(
 			SaveOrUpdateConstituentRequest p)
-			throws ConstituentValidationException, BindException {
+			throws BindException, InvalidRequestException, ConstituentValidationException {
 		
-		validateConstituentInformation(p);
+		validationManager.validate(p);
+		
 		
 		com.orangeleap.tangerine.domain.Constituent c = cs
 				.createDefaultConstituent();
@@ -199,6 +199,33 @@ public class OrangeLeapWSV2 {
 
 		cs.maintainConstituent(c);
 
+		//
+		// if we have e-mail's then we should save them as well
+		Iterator<com.orangeleap.tangerine.domain.communication.Email> emailIt = c.getEmails().iterator();
+		while(emailIt.hasNext()) {
+			com.orangeleap.tangerine.domain.communication.Email email = emailIt.next();
+			email.setConstituentId(c.getConstituentId());
+			emailService.save(email);
+		}
+		
+		//
+		// if we have addresses then we should save them as well
+		Iterator<com.orangeleap.tangerine.domain.communication.Address> addressIt = c.getAddresses().iterator();
+		while (addressIt.hasNext()) {
+			com.orangeleap.tangerine.domain.communication.Address address = addressIt.next();
+			address.setConstituentId(c.getConstituentId());
+			addressService.save(address);
+		}
+		
+		//
+		// if we have phoneNumbers then we should save them as well
+		Iterator<com.orangeleap.tangerine.domain.communication.Phone> phoneIt = c.getPhones().iterator();
+		while (phoneIt.hasNext()) {
+			com.orangeleap.tangerine.domain.communication.Phone phone = phoneIt.next();
+			phone.setConstituentId(c.getConstituentId());
+			phoneService.save(phone);
+		}
+		
 		Constituent responseConstituent = new Constituent();
 		SaveOrUpdateConstituentResponse response = new SaveOrUpdateConstituentResponse();
 		converter.ConvertToJAXB(c, responseConstituent);

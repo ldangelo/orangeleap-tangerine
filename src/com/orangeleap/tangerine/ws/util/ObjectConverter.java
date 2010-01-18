@@ -165,7 +165,7 @@ public class ObjectConverter {
             } catch (IllegalArgumentException iae) {
                 logger.info(iae.getMessage());
             } catch (InvalidPropertyException ipe) {
-                logger.info(ipe.getMessage());
+                logger.debug(ipe.getMessage());
             } catch (IllegalAccessException e) {
                 logger.info(e.getMessage());
             } catch (InvocationTargetException e) {
@@ -309,7 +309,7 @@ public class ObjectConverter {
             } catch (IllegalArgumentException iae) {
                 logger.info(iae.getMessage());
             } catch (InvalidPropertyException ipe) {
-                logger.info(ipe.getMessage());
+                logger.debug(ipe.getMessage());
             } catch (IllegalAccessException e) {
                 logger.info(e.getMessage());
             } catch (InvocationTargetException e) {

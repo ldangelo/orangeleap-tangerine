@@ -2,6 +2,7 @@
 V7 Schema changes
 *********************************************************************
 */
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 
 ALTER TABLE CUSTOM_FIELD 
     MODIFY COLUMN `FIELD_VALUE` text NOT NULL;
@@ -285,6 +286,7 @@ PRIMARY KEY  (`RULE_SEGMENT_PARM_ID`)
 
 
 ----- END RULES TABLES -----
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 
 
 

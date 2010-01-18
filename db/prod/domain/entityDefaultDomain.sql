@@ -72,3 +72,9 @@ values ('', 'customFieldMap[pledgeName]', 'pledge');
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('bean:donationDate', 'checkDate', 'gift');
+
+INSERT INTO `ENTITY_DEFAULT` (`DEFAULT_VALUE`,`ENTITY_FIELD_NAME`,`ENTITY_TYPE`,`CONDITION_EXP`,`SITE_NAME`)
+VALUES ('bean:constituent.firstLast', 'checkHolderName', 'paymentSource', NULL, NULL);
+
+insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
+values ('bean:donationDate', 'checkDate', 'gift');

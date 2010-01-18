@@ -138,7 +138,8 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
     private void maintainPaymentSourceChild(AbstractEntity entity, Constituent constituent) throws BindException {
         PaymentSourceAware paymentSourceAware = (PaymentSourceAware) entity;
         if (PaymentSource.CASH.equals(paymentSourceAware.getPaymentType()) ||
-                PaymentSource.OTHER.equals(paymentSourceAware.getPaymentType())) {
+                PaymentSource.OTHER.equals(paymentSourceAware.getPaymentType()) ||
+		        (paymentSourceAware.getPaymentSource() != null && ! paymentSourceAware.getPaymentSource().isValid())) {
             paymentSourceAware.setPaymentSource(null);
         }
         else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType()) ||

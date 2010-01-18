@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import javax.management.Notification;
 
+import org.apache.commons.logging.Log;
 import org.springframework.jmx.export.notification.NotificationPublisher;
 import org.springframework.jmx.export.notification.NotificationPublisherAware;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,12 @@ import edu.emory.mathcs.backport.java.util.Collections;
 @SuppressWarnings("unchecked")
 @Service("OrangeleapJmxNotificationBean")
 public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificationBean, NotificationPublisherAware {
-	
-	private NotificationPublisher publisher;
-	private Map<String, Map<String, Long>> counts = Collections.synchronizedMap(new TreeMap<String, Map<String, Long>>());
-	private List<Long> measurements = new ArrayList<Long>();
+
+	protected static final Log logger = OLLogger.getLog(OrangeleapJmxNotificationBeanImpl.class);
+
+	private static NotificationPublisher publisher;
+	private static Map<String, Map<String, Long>> counts = Collections.synchronizedMap(new TreeMap<String, Map<String, Long>>());
+	private static List<Long> measurements = Collections.synchronizedList(new ArrayList<Long>());
 	
 	@Override
 	public void setNotificationPublisher(NotificationPublisher notificationPublisher) {
@@ -50,19 +53,23 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 	}
 
 	private synchronized void adjustStat(String sitename, String statname, Long amount, boolean set) {
-		Map<String, Long> map = counts.get(sitename);
-		if (map == null) {
-			map = Collections.synchronizedMap(new TreeMap<String, Long>());
-			counts.put(sitename, map);
+		try {
+			Map<String, Long> map = counts.get(sitename);
+			if (map == null) {
+				map = Collections.synchronizedMap(new TreeMap<String, Long>());
+				counts.put(sitename, map);
+			}
+			Long count = map.get(statname);
+			if (count == null) count = new Long(0);
+			if (set) {
+				map.put(statname, amount); 
+			} else {
+				map.put(statname, count + amount);
+			}
+			if (!TOTAL.equals(sitename)) adjustStat(TOTAL, statname, amount, set);
+		} catch (Exception e) {
+			logger.debug(e);
 		}
-		Long count = map.get(statname);
-		if (count == null) count = new Long(0);
-		if (set) {
-			map.put(statname, amount); 
-		} else {
-			map.put(statname, count + amount);
-		}
-		if (!TOTAL.equals(sitename)) adjustStat(TOTAL, statname, amount, set);
 	}
 
 	@Override

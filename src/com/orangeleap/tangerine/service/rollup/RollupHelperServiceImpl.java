@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 
+import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.RollupSeriesDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
@@ -53,6 +54,9 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
     
     @Resource(name = "rollupSeriesDAO")
     private RollupSeriesDao rollupSeriesDao;
+
+    @Resource(name = "constituentDAO")
+    private ConstituentDao constituentDao;
 
 	// Rollup values updaters
 	
@@ -93,11 +97,13 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 	    updateRollups(ras, null);
 	}
 	
-	// TODO may replace with actual constituent key ranges
+	// Process this many constituents at at time
 	private static final Long KEY_RANGE_INTERVAL = 100000L;  // 100k
-	private static final Long KEY_RANGE_MAX = 10000000L; // 10 mil
 
 	private void updateRollups(List<RollupAttribute> ras, Object groupByValue) {
+		
+		Long[] range = constituentDao.getConstituentIdRange();
+		
 	    for (RollupAttribute ra : ras) {
 	    	
 			boolean isIterateConstituentStat = groupByValue == null && (ra.getRollupStatType().endsWith("_CONSTITUENT"));
@@ -117,7 +123,7 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 	    		}
 	    		for (RollupValue rv : rvs) {
 	    			if (isIterateConstituentStat) {
-		    			for (long groupByRange1 = 0; groupByRange1 < KEY_RANGE_MAX; groupByRange1 += KEY_RANGE_INTERVAL) {
+		    			for (long groupByRange1 = range[0]; groupByRange1 < range[1]; groupByRange1 += KEY_RANGE_INTERVAL) {
 		    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), groupByRange1, groupByRange1 + KEY_RANGE_INTERVAL - 1);
 		    			}
 	    			} else {

@@ -162,5 +162,17 @@
 	<classpathentry kind="lib" path="lib/orangeleap-common-security-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/spring-webflow-2.0.8.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="lib/spring-webflow-2.0.8.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/drools-api-5.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/drools-compiler-5.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/drools-core-5.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-all-1.5.8-sources.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-all-1.5.8.jar"/>
+	<classpathentry kind="lib" path="lib/jsonView-1.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/mvel2-2.0.10.jar"/>
+	<classpathentry kind="lib" path="lib/ognl-2.6.9.jar"/>
+	<classpathentry kind="lib" path="lib/spring-binding-2.0.8.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="lib/spring-binding-2.0.8.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-js-2.0.8.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="lib/spring-js-2.0.8.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

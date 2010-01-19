@@ -74,6 +74,8 @@ Ext.onReady(function() {
         bbar: GiftSummary.pagingBar,
         renderTo: 'giftSummaryGrid'
     });
+    
+    var defaultAttributeList = '|First Gift|Last Gift|Largest Gift|Gift Amount|';
 
     
     var tabs = new Ext.TabPanel({
@@ -85,7 +87,7 @@ Ext.onReady(function() {
     	         {
     	            title:'Hard Gifts',
     	            html : '',
-    	            attributeList : '|First Gift|Last Gift|Largest Gift|Gift Amount|'
+    	            attributeList : defaultAttributeList
     	         },
     	         {
       	            title:'Soft Gifts',
@@ -124,7 +126,7 @@ Ext.onReady(function() {
 		GiftSummary.store.load({params: {start: 0, limit: 1000, sort: 'id', dir: 'ASC', attributeList: this.activeTab.attributeList }});
     });
 
-    GiftSummary.store.load({params: {start: 0, limit: 1000, sort: 'id', dir: 'ASC', attributeList: '|First Gift|Last Gift|Gift Amount|' }});
+    GiftSummary.store.load({params: {start: 0, limit: 1000, sort: 'id', dir: 'ASC', attributeList: defaultAttributeList }});
     
 
 });

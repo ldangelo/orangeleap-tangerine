@@ -288,10 +288,11 @@
 		<isNotNull property="toDate">
 		and c.PLEDGE_DATE &lt;= #toDate#
 		</isNotNull>
-		order by c.PLEDGE_DATE, c.CREATE_DATE 
+		order by c.PLEDGE_DATE 
 		<isNull property="first">
 		desc
 		</isNull>
+		, c.CREATE_DATE
 		limit 1
 	</select>
 	

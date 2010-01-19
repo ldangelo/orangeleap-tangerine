@@ -300,10 +300,11 @@
 		<isNotNull property="toDate">
 		and rg.START_DATE &lt;= #toDate#
 		</isNotNull>
-		order by rg.START_DATE, rg.CREATE_DATE 
+		order by rg.START_DATE 
 		<isNull property="first">
 		desc
 		</isNull>
+		, rg.CREATE_DATE
 		limit 1
 	</select>
 	

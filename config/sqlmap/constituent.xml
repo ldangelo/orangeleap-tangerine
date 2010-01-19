@@ -114,6 +114,14 @@
         select count(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #value#
     </select>
 
+    <select id="SELECT_CONSTITUENT_MIN_ID" parameterClass="string" resultClass="long">
+        select min(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #siteName#
+    </select>
+
+    <select id="SELECT_CONSTITUENT_MAX_ID" parameterClass="string" resultClass="long">
+        select max(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #siteName#
+    </select>
+
 	<select id="SELECT_CONSTITUENT_BY_LOGIN_ID_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
 		and p.LOGIN_ID = #loginId#

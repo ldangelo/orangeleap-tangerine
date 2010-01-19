@@ -55,5 +55,6 @@ public interface ConstituentDao {
 	
     public List<Constituent> fullTextSearchConstituents(String searchText);
 
+    public Long[] getConstituentIdRange();
 
 }

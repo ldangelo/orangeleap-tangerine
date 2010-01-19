@@ -18,6 +18,17 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
@@ -27,16 +38,6 @@ import com.orangeleap.tangerine.domain.EntitySearch;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Corresponds to the CONSTITUENT tables
@@ -214,6 +215,14 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	for (EntitySearch es: list) constituents.add(this.readConstituentById(es.getEntityId()));
     	return constituents;
     }
+
+	@Override
+	public Long[] getConstituentIdRange() {
+    	Map<String, Object> params = setupParams();
+    	Long min = (Long)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_MIN_ID", params);
+    	Long max = (Long)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_MAX_ID", params);
+    	return new Long[] {min, max};
+	}
 
 
 }

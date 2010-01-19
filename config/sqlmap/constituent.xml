@@ -114,11 +114,11 @@
         select count(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #value#
     </select>
 
-    <select id="SELECT_CONSTITUENT_MIN_ID" parameterClass="string" resultClass="long">
+    <select id="SELECT_CONSTITUENT_MIN_ID" parameterClass="map" resultClass="long">
         select min(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #siteName#
     </select>
 
-    <select id="SELECT_CONSTITUENT_MAX_ID" parameterClass="string" resultClass="long">
+    <select id="SELECT_CONSTITUENT_MAX_ID" parameterClass="map" resultClass="long">
         select max(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #siteName#
     </select>
 

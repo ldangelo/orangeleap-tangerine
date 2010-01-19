@@ -104,7 +104,6 @@ public class GiftSummaryController {
         
     }
     
-    // Updates hard gifts only
     private void refreshData(Long constituentId) {
     	rollupHelperService.refreshByConstituent(constituentId);
     }

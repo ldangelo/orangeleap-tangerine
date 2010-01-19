@@ -59,7 +59,7 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 	@Override
     public void updateRollupsForConstituentRollupValueSource(RollupValueSource rvs) {
 		
-		if (!enableLiveRollups) return;  // Enabling this can cause mysql lock contention on the GIFT table.
+		if (!enableLiveRollups) return;  // Enabling this can cause mysql lock contention on the GIFT table.  TODO need to configure read committed selects
 		
 		List<RollupAttribute> ras = rollupService.readAllRollupAttributesByType("constituent"); 
 		
@@ -75,6 +75,12 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 		updateRollups(ras, constituentId);
 	}
 
+	@Override
+    public void refreshByConstituent(Long constituentId) {
+		List<RollupAttribute> ras = rollupService.readAllRollupAttributesByType("constituent"); 
+		updateRollups(ras, constituentId);
+	}
+	
    @Override
     public void updateAllRollupsForSite() {
 	    List<RollupAttribute> ras = rollupService.getAllRollupAttributes(); 

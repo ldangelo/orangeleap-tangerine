@@ -45,6 +45,7 @@ import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.service.rollup.RollupService;
 import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -79,6 +80,9 @@ public class GiftSummaryController {
     
     private final static String ON_BEHALF_OF = "onBehalfOf";
 
+    @Resource(name = "rollupHelperService")
+    private RollupHelperService rollupHelperService;
+
 
     @RequestMapping(method = RequestMethod.POST)
     @SuppressWarnings("unchecked")
@@ -89,6 +93,8 @@ public class GiftSummaryController {
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         if (null == constituentService.readConstituentById(constituentId)) return null; // checks constituent id is in site.
         String attributeList = StringUtils.trimToEmpty(request.getParameter("attributeList"));
+        
+        //refreshData(constituentId);
 
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         addViewData(constituentId, attributeList, returnList);
@@ -96,6 +102,11 @@ public class GiftSummaryController {
         modelMap.put(StringConstants.TOTAL_ROWS, returnList.size());
         return modelMap;
         
+    }
+    
+    // Updates hard gifts only
+    private void refreshData(Long constituentId) {
+    	rollupHelperService.refreshByConstituent(constituentId);
     }
     
     // blank attributeList means retrieve all available

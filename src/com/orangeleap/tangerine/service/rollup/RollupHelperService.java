@@ -26,6 +26,7 @@ public interface RollupHelperService {
     public void updateAllRollupsForSite();
     public void updateSummaryRollupsForSite();
     public void updateRollupsForConstituentRollupValueSource(RollupValueSource rvs);
+    public void refreshByConstituent(Long constituentId);
 
 
 }

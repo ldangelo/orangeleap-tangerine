@@ -107,6 +107,7 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 	    for (RollupAttribute ra : ras) {
 	    	
 			boolean isIterateConstituentStat = groupByValue == null && (ra.getRollupStatType().endsWith("_CONSTITUENT"));
+			isIterateConstituentStat = false; // disable for now - issue with having
 	    	
 	    	List<RollupSeriesXAttribute> rsxas = rollupService.selectRollupSeriesForAttribute(ra.getId());
 	    	for (RollupSeriesXAttribute rsxa : rsxas) {

@@ -314,6 +314,9 @@
             group by 
         		rv.GROUP_BY_VALUE,
         		rv.CURRENCY_CODE
+			<isNotNull property="groupByRange1"> 
+			having CONVERT(rv.GROUP_BY_VALUE, decimal(19,2)) between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
     </insert>
 
     <insert id="ROLLUP_PROJECTEDS_BY_CONSTITUENT" parameterClass="java.util.Map">
@@ -322,6 +325,9 @@
             group by 
         		rv.GROUP_BY_VALUE,
         		rv.CURRENCY_CODE
+ 			<isNotNull property="groupByRange1"> 
+			having CONVERT(rv.GROUP_BY_VALUE, decimal(19,2)) between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
     </insert>
 
 </sqlMap>

@@ -833,6 +833,7 @@ CREATE TABLE `COMMUNICATION_HISTORY` (
 `PLEDGE_ID` bigint(20) default NULL,
 `RECURRING_GIFT_ID` bigint(20) default NULL,
 `GIFT_ID` bigint(20) default NULL,
+`ADJUSTED_GIFT_ID` bigint(20) default NULL,
 `CONSTITUENT_ID` bigint(20) default NULL,
 `ADDRESS_ID` bigint(20) default NULL,
 `PHONE_ID` bigint(20) default NULL,

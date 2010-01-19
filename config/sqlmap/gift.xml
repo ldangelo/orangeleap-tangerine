@@ -138,10 +138,11 @@
 		<isNotNull property="giftType">
 		and g.GIFT_TYPE = #giftType#
 		</isNotNull>
-		order by g.DONATION_DATE, g.TRANSACTION_DATE 
+		order by g.DONATION_DATE 
 		<isNull property="first">
 		desc
 		</isNull>
+		, g.TRANSACTION_DATE
 		limit 1
 	</select>
 	

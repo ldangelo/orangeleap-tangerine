@@ -93,5 +93,7 @@ public interface GiftService {
 	List<Gift> readGiftDistroLinesByConstituentId(Long constituentId, String constituentReferenceCustomField, SortInfo sort, Locale locale);
 
 	int readGiftDistroLinesCountByConstituentId(Long constituentId, String constituentReferenceCustomField);
+
+	void reprocessGifts();
 	
 }

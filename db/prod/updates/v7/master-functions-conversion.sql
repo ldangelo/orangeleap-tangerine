@@ -40,3 +40,17 @@ BEGIN
 
 END$$
 
+
+-- Mass update constituent time-dependent flags
+DROP FUNCTION IF EXISTS SET_CONSTITUENT_FLAGS$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `SET_CONSTITUENT_FLAGS`()
+        RETURNS int
+BEGIN
+
+        -- TODO set or unset flags for items that can change due to passage of time without any transactions occurring, based on site options.
+        -- Update CONSTITUENT.UPDATE_DATE for any changed records.
+                
+        RETURN 0;
+        
+END$$
+

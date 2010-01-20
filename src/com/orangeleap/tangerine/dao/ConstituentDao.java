@@ -18,11 +18,11 @@
 
 package com.orangeleap.tangerine.dao;
 
-import com.orangeleap.tangerine.domain.Constituent;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import com.orangeleap.tangerine.domain.Constituent;
 
 public interface ConstituentDao {
 
@@ -58,5 +58,7 @@ public interface ConstituentDao {
     public List<Constituent> fullTextSearchConstituents(String searchText);
 
     public Long[] getConstituentIdRange();
-
+    
+	public void setConstituentFlags();
+	
 }

@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.service.impl;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -667,6 +668,15 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 				workingMemory.dispose();
 		}
     }
+    
+    
+    public void setConstituentFlags() {
+    	logger.info("setConstituentFlags started.");
+    	long t0 = System.currentTimeMillis();
+    	constituentDao.setConstituentFlags();
+    	long t1 = System.currentTimeMillis();
+    	logger.info("setConstituentFlags took " + (t1-t0)/1000f + " sec.");
+    }
 
-
+    
 }

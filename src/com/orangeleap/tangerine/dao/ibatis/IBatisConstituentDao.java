@@ -190,6 +190,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         }
     }
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Constituent> findConstituents(Map<String, Object> findparams,
 			List<Long> ignoreIds) {
@@ -232,6 +233,14 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	Long min = (Long)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_MIN_ID", params);
     	Long max = (Long)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_MAX_ID", params);
     	return new Long[] {min, max};
+	}
+
+	@Override
+	public void setConstituentFlags() {
+        if (logger.isInfoEnabled()) {
+            logger.info("setConstituentFlags");
+        }
+        getSqlMapClientTemplate().queryForObject("SET_CONSTITUENT_FLAGS");
 	}
 
 

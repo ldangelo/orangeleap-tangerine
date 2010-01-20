@@ -30,7 +30,7 @@
 		        <prop key="job-001">addressService.inactivateEntities</prop>
 		    	<prop key="job-002">phoneService.inactivateEntities</prop>
 		        <prop key="job-003">emailService.inactivateEntities</prop>
-		        <prop key="job-004">giftService.reprocessGifts</prop>
+		        <prop key="job-004">rulesService.reprocessGifts</prop>
 		        <prop key="job-005">nightlyBatchService.processRecurringGifts</prop>
 		        <prop key="job-006">constituentService.setConstituentFlags</prop>
 		        <prop key="job-007">rulesService.executeDailyJobRules</prop>

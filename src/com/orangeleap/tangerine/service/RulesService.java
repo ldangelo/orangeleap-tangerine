@@ -27,4 +27,6 @@ public interface RulesService {
 
     public void executeWeeklyJobRules();
 
+	void reprocessGifts();
+
 }

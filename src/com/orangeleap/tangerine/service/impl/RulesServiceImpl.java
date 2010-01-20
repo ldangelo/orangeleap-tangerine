@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Service;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.SiteOption;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
@@ -68,6 +70,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 	@Resource(name = "constituentService")
 	private ConstituentService constituentService;
+	
+	@Resource(name = "giftService")
+	private GiftService giftService;
 	
     @Resource(name = "OrangeLeapRuleAgent")
     private OrangeLeapRuleAgent orangeLeapRuleAgent;
@@ -306,6 +311,24 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		//or gift being inserted into working memory.)
 		executeMailRules("mailscheduledaily");
 
+	}
+
+	@Override
+	public void reprocessGifts() {
+		
+		
+//		Calendar today = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);
+//		List<Gift> gifts = giftService.readAllGiftsByDateRange(today.getTime(), today.getTime());  // TODO need to page thru gifts and filter by failed status
+//		
+//		for (Gift gift : gifts) {
+//			try {
+//				giftService.dailyReprocessGift(gift);
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		}
+//		
+		
 	}
 
 }

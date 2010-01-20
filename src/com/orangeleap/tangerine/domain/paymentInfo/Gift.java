@@ -274,7 +274,7 @@ public class Gift extends AbstractPaymentInfoEntity implements Postable {
 	public Boolean getIsAuthorized() {
 		return (!StringUtils.trimToEmpty(authCode).equals("")
 				&& StringUtils.equals(this.getPaymentStatus(),Gift.PAY_STATUS_AUTHORIZED)
-				&& StringUtils.equals(this.getPaymentStatus(),Gift.STATUS_PENDING));
+				&& StringUtils.equals(this.getGiftStatus(),Gift.STATUS_PENDING));
 	}
 
 	public Boolean getIsCaptured() {

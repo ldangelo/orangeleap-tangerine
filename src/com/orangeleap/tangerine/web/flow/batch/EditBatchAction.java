@@ -279,11 +279,11 @@ public class EditBatchAction extends AbstractAction {
 
         Set<Long> pickedSegmentationIds = batch.getEntrySegmentationIds(); 
         model.put("pickedSegmentationsCount", pickedSegmentationIds == null ? 0 : pickedSegmentationIds.size());
-	    List segmentations = postBatchService.findSegmentationsForBatchType(batch, pickedSegmentationIds, batch.getBatchType(),
+
+        model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, pickedSegmentationIds, batch.getBatchType(),
                 resolveSegmentationFieldName(sortInfo.getSort()), sortInfo.getDir(),
-                sortInfo.getStart(), sortInfo.getLimit());
-        model.put(StringConstants.ROWS, segmentations);
-        model.put(StringConstants.TOTAL_ROWS, segmentations == null ? 0 : segmentations.size()); 
+                sortInfo.getStart(), sortInfo.getLimit()));
+        model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batch.getBatchType()));
 
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;

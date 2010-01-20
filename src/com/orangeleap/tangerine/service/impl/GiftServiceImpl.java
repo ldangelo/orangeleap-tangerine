@@ -787,9 +787,21 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         return giftDao.readGiftDistroLinesCountByConstituentId(constituentId, constituentReferenceCustomField);
     }
     
-    @Override
-    public void reprocessGifts() {
-    	// TODO loop thru today's failed gifts to send to reprocess-payment rules
-    }
+	@Override
+	public void dailyReprocessGift(Gift gift) {
+		routeGift(gift);
+	}
+
+	@Override
+	public int getGiftReprocessCount() {
+		// TODO nightly reprocess
+		return 0;
+	}
+
+	@Override
+	public List<Gift> readGiftsToReprocess(SortInfo sortInfo) {
+		// TODO nightly reprocess
+		return new ArrayList<Gift>();
+	}
 
 }

@@ -94,6 +94,10 @@ public interface GiftService {
 
 	int readGiftDistroLinesCountByConstituentId(Long constituentId, String constituentReferenceCustomField);
 
-	void reprocessGifts();
+	public int getGiftReprocessCount();
+
+	public List<Gift> readGiftsToReprocess(SortInfo sortInfo);
+
+	public void dailyReprocessGift(Gift gift);
 	
 }

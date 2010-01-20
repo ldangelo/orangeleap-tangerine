@@ -316,18 +316,24 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	@Override
 	public void reprocessGifts() {
 		
+		int totalGiftReprocessCount = giftService.getGiftReprocessCount();
+		for (int start = 0; start <= totalGiftReprocessCount; start += 100) {
+
+			SortInfo sortInfo = new SortInfo();
+			sortInfo.setSort("id"); 
+			sortInfo.setStart(start);
+
+			List<Gift> gifts = giftService.readGiftsToReprocess(sortInfo);  
+			for (Gift gift : gifts) {
+				try {
+					giftService.dailyReprocessGift(gift);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			}
+			
+		}
 		
-//		Calendar today = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);
-//		List<Gift> gifts = giftService.readAllGiftsByDateRange(today.getTime(), today.getTime());  // TODO need to page thru gifts and filter by failed status
-//		
-//		for (Gift gift : gifts) {
-//			try {
-//				giftService.dailyReprocessGift(gift);
-//			} catch (Exception e) {
-//				logger.error(e);
-//			}
-//		}
-//		
 		
 	}
 

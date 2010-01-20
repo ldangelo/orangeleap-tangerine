@@ -34,6 +34,8 @@ public interface ConstituentDao {
 
     public List<Constituent> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit, Locale locale);
 
+    public List<Constituent> readAllUpdatedConstituentsBySite(String sortPropertyName, String direction, int start, int limit, Locale locale, int recentDays);
+
     public int getConstituentCountBySite();
 
     public Constituent readConstituentByLoginId(String loginId);

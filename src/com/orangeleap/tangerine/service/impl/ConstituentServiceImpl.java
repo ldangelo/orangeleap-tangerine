@@ -74,7 +74,6 @@ import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
-import com.orangeleap.tangerine.service.rule.OrangeLeapConsequenceRuntimeException;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
 import com.orangeleap.tangerine.type.PageType;
@@ -477,6 +476,15 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+    public List<Constituent> readAllUpdatedConstituentsBySite(SortInfo sort, Locale locale, int recentDays) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllUpdatedConstituentsBySite:" + sort);
+        }
+        return constituentDao.readAllUpdatedConstituentsBySite(sort.getSort(), sort.getDir(), sort.getStart(), sort.getLimit(), locale, recentDays);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public int getConstituentCountBySite() {
 
         return constituentDao.getConstituentCountBySite();
@@ -659,4 +667,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 				workingMemory.dispose();
 		}
     }
+
+
 }

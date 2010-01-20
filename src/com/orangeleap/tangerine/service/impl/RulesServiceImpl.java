@@ -106,13 +106,13 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			int totalContituentCount = constituentService.getConstituentCountBySite();
 			for (int start = 0; start <= totalContituentCount; start += 100) {
 
-				logger.debug("Processing rules for constituent "+start+" out of "+totalContituentCount);
-
 				SortInfo sortInfo = new SortInfo();
 				sortInfo.setSort("id"); // sort by id so that new inserts will not throw off pages.
 				sortInfo.setStart(start);
 
-				List<Constituent> peopleList = constituentService.readAllConstituentsBySite(sortInfo, Locale.getDefault());
+				// Retrieve only constituents that have been updated in the last 3 days.
+				List<Constituent> peopleList = constituentService.readAllUpdatedConstituentsBySite(sortInfo, Locale.getDefault(), 3);
+				if (peopleList.size() == 0) break;
 
 				for (Constituent p : peopleList) {
 					try {

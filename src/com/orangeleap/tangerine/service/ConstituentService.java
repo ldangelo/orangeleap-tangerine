@@ -78,5 +78,7 @@ public interface ConstituentService {
 			SiteService ss, TangerineUserHelper uh,
 			Constituent p, PicklistItemService plis);
 
+	public List<Constituent> readAllUpdatedConstituentsBySite(SortInfo sortInfo, Locale locale, int recentDays);
+
 
 }

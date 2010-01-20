@@ -87,7 +87,12 @@
             </isNotNull>
         </isNotNull>
 
-        WHERE p.SITE_NAME = #siteName#
+        WHERE 
+        	p.SITE_NAME = #siteName#
+        <isNotNull property="recentDays" >
+       		and p.UPDATE_DATE &gt;= now() - #recentDays#
+        </isNotNull>
+        
         ORDER BY
 
         <isNotEqual property="sortColumn" compareValue="majorDonor">

@@ -104,13 +104,23 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_CONSTITUENTS_BY_SITE", getSiteName());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Constituent> readAllConstituentsBySite(String sortPropertyName, String direction, int start, int limit, Locale locale) {
+        return readAllConstituentsBySite(sortPropertyName, direction, start, limit, locale, 0);
+    }
+    
+    @Override
+    public List<Constituent> readAllUpdatedConstituentsBySite(String sortPropertyName, String direction, int start, int limit, Locale locale, int recentDays) {
+        return readAllConstituentsBySite(sortPropertyName, direction, start, limit, locale, recentDays);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private List<Constituent> readAllConstituentsBySite(String sortPropertyName, String direction, int start, int limit, Locale locale, int recentDays) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite: sortPropertyName = " + sortPropertyName + " direction = " + direction + " start = " + start + " limit = " + limit);
         }
         Map<String,Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_RESULT", sortPropertyName, direction, start, limit, locale);
+        if (recentDays > 0) params.put("recentDays", recentDays);
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_SITE", params);
     }
 

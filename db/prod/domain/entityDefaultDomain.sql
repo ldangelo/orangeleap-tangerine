@@ -78,3 +78,7 @@ VALUES ('bean:constituent.firstLast', 'checkHolderName', 'paymentSource', NULL, 
 
 insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('bean:donationDate', 'checkDate', 'gift');
+
+INSERT INTO `ENTITY_DEFAULT` (`DEFAULT_VALUE`,`ENTITY_FIELD_NAME`,`ENTITY_TYPE`)
+VALUES ('now:', 'customFieldMap[eventDate]', 'communicationHistory');
+

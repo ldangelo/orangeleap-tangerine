@@ -71,16 +71,17 @@ $(document).ready(function() {
 				var $elem = $(this);
 				var thisName = $elem.val();
 				var isPledge = false;
+				var amt = OrangeLeap.isNum($("#amount").val()) ? $("#amount").val() : $("#amount").text();
 				if ($elem.attr("id") == "thisAssociatedPledge") {
 					var thisId = $elem.attr("pledgeId");
-					var queryString = "selectedPledgeIds=" + thisId + "&amount=" + $("#amount").val();
+					var queryString = "selectedPledgeIds=" + thisId + "&amount=" + amt;
 					var $associatedIdsElem = $("#associatedPledgeIds");
 					PledgeRecurringGiftSelector.disable($('#associatedRecurringGiftIds'));
 					isPledge = true;
 				}
 				else {
 					var thisId = $elem.attr("recurringGiftId");
-					var queryString = "selectedRecurringGiftIds=" + thisId + "&amount=" + $("#amount").val();
+					var queryString = "selectedRecurringGiftIds=" + thisId + "&amount=" + amt;
 					var $associatedIdsElem = $("#associatedRecurringGiftIds");
 					PledgeRecurringGiftSelector.disable($('#associatedPledgeIds'));
 					isPledge = false;
@@ -98,7 +99,7 @@ $(document).ready(function() {
 
 var PledgeRecurringGiftSelector = {
 	loadSelector: function(elem) {
-        if (OrangeLeap.isNum($("#amount").val())) {
+        if (OrangeLeap.isNum($("#amount").val()) || OrangeLeap.isNum($("#amount").text())) {
             this.lookupCaller = $(elem).siblings(".lookupScrollContainer").children(".multiLookupField");
             var queryString = "constituentId=" + $("#thisConstituentId").val();
             if (this.lookupCaller.hasClass("ea-pledge")) {
@@ -167,7 +168,8 @@ var PledgeRecurringGiftSelector = {
 			else {
 				queryString += "&selectedRecurringGiftIds=";
 			}
-			queryString += idsStr + "&amount=" + $("#amount").val();
+			var amt = OrangeLeap.isNum($("#amount").val()) ? $("#amount").val() : $("#amount").text();
+			queryString += idsStr + "&amount=" + amt;
 			
 			PledgeRecurringGiftSelector.updateDistribution(queryString);
 			PledgeRecurringGiftSelector.lookupCaller.siblings("input[type=hidden]").eq(0).val(idsStr);
@@ -199,7 +201,8 @@ var PledgeRecurringGiftSelector = {
 	},
 	
 	updateDistribution: function(queryString) {
-		var giftDistElem = Ext.get("giftDistributionLinesDiv");
+		var linesDivId = $('#giftDistributionLinesDiv').length ? 'giftDistributionLinesDiv' : 'giftPaidDistributionLinesDiv';
+		var giftDistElem = Ext.get(linesDivId);
 		giftDistElem.mask("Updating Distribution Lines...");
 		
 		$.ajax({
@@ -207,7 +210,7 @@ var PledgeRecurringGiftSelector = {
 			url: "giftCombinedDistributionLines.htm?constituentId=" + $("#thisConstituentId").val(),
 			data: queryString,
 			success: function(html) {
-				var $giftDistributionLinesDiv = $("#giftDistributionLinesDiv");
+				var $giftDistributionLinesDiv = $("#" + linesDivId);
 				$giftDistributionLinesDiv.empty();
 				Distribution.amtPctMap = {};
 				$giftDistributionLinesDiv.append(html);
@@ -273,7 +276,7 @@ var PledgeRecurringGiftSelector = {
 			$associatedIdsElem.siblings(".multiLookupField").children(".multiOption").each(function() {
 				var $elem = $(this);
 				if ($elem.attr("selectedId") == id) {
-					Lookup.removeSelectedVal($associatedIdsElem, id);
+					Lookup.removeSelectedVal($associatedIdsElem, id, ',');
 					$elem.fadeOut("fast", function() {
 						$(this).remove();
 						if (thisType == 'recurringGift') {
@@ -306,7 +309,7 @@ var PledgeRecurringGiftSelector = {
 				var thisClass = 'ea-recurringGift';
 				var otherId = '#associatedPledgeIds';
 			}
-			Lookup.removeSelectedVal($("#" + multiIdsElem), thisId);
+			Lookup.removeSelectedVal($("#" + multiIdsElem), thisId, ',');
 
 			$("div." + thisClass + " div.queryLookupOption", $("tr.hiddenRow")).each(function() {
 				var $elem = $(this);

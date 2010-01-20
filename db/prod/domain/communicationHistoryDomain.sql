@@ -24,3 +24,5 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('communicationHistory.email.emailAddressReadOnly', 'communicationHistory', 'email', 'Email', 'email', 'READ_ONLY_TEXT');
 
 
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('communicationHistory.customFieldMap[correspondenceFor]', 'communicationHistory', 'customFieldMap[correspondenceFor]', 'Correspondence For', 'PICKLIST');
+

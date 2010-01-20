@@ -13,6 +13,15 @@
 			<title><c:out value="${titleText} - ${requestScope.constituent.firstLast}"/></title>
 		</head>
 		<body>
+			<c:choose>
+				<c:when test="${requestScope.associatedPledge != null}">
+					<input type="hidden" id="thisAssociatedPledge" name="thisAssociatedPledge" value="<c:out value='${requestScope.associatedPledge.shortDescription}'/>" pledgeId="<c:out value='${requestScope.associatedPledge.id}'/>"/>
+				</c:when>
+				<c:when test="${requestScope.associatedRecurringGift != null}">
+					<input type="hidden" id="thisAssociatedRecurringGift" name="thisAssociatedRecurringGift" value="<c:out value='${requestScope.associatedRecurringGift.shortDescription}'/>" recurringGiftId="<c:out value='${requestScope.associatedRecurringGift.id}'/>"/>
+				</c:when>
+			</c:choose>
+
 			<form:form method="post" commandName="${requestScope.commandObject}" cssClass="disableForm">
 				<c:set var="topButtons" scope="request">
                     <table cellspacing="2">
@@ -38,6 +47,7 @@
 				<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
 				<script type="text/javascript">PaymentTypeCommandObject = '<c:out value="${requestScope.domainObjectName}"/>';</script>
                 <script type="text/javascript" src="js/gift/distribution.js"></script>
+				<script type="text/javascript" src="js/gift/pledgeRecurringGiftSelector.js"></script>
                 <script type="text/javascript">
                     $(function() {
                         $("#cancelButton").click(function() {

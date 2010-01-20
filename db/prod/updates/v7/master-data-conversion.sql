@@ -305,6 +305,26 @@ insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE)
 values ('bean:donationDate', 'checkDate', 'gift');
 
 
+/* TANGERINE-1583 */
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('communicationHistory.customFieldMap[correspondenceFor]', 'communicationHistory', 'customFieldMap[correspondenceFor]', 'Correspondence For', 'PICKLIST');
+
+
+
+/* TANGERINE-1526 */
+UPDATE SECTION_FIELD SET FIELD_DEFINITION_ID = 'gift.associatedPledgeIds' WHERE FIELD_DEFINITION_ID = 'gift.associatedPledgeIdsReadOnly'
+AND SECTION_DEFINITION_ID = (SELECT SECTION_DEFINITION_ID FROM SECTION_DEFINITION WHERE SECTION_NAME='gift.donation' AND PAGE_TYPE='giftPaid');
+
+UPDATE SECTION_FIELD SET FIELD_DEFINITION_ID = 'gift.associatedRecurringGiftIds' WHERE FIELD_DEFINITION_ID = 'gift.associatedRecurringGiftIdsReadOnly'
+AND SECTION_DEFINITION_ID = (SELECT SECTION_DEFINITION_ID FROM SECTION_DEFINITION WHERE SECTION_NAME='gift.donation' AND PAGE_TYPE='giftPaid');
+
+
+UPDATE SECTION_FIELD SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedPledgeId]', SECONDARY_FIELD_DEFINITION_ID = 'distributionLines.customFieldMap[associatedPledgeId]'
+WHERE FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]' AND SECONDARY_FIELD_DEFINITION_ID = 'distributionLines.customFieldMap[associatedPledgeIdReadOnly]'
+AND SECTION_DEFINITION_ID = (SELECT SECTION_DEFINITION_ID FROM SECTION_DEFINITION WHERE SECTION_NAME='gift.extendedDistribution' AND PAGE_TYPE='giftPaid');
+
+UPDATE SECTION_FIELD SET FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedRecurringGiftId]', SECONDARY_FIELD_DEFINITION_ID = 'distributionLines.customFieldMap[associatedRecurringGiftId]'
+WHERE FIELD_DEFINITION_ID = 'gift.distributionLines.customFieldMap[associatedRecurringGiftIdReadOnly]' AND SECONDARY_FIELD_DEFINITION_ID = 'distributionLines.customFieldMap[associatedRecurringGiftIdReadOnly]'
+AND SECTION_DEFINITION_ID = (SELECT SECTION_DEFINITION_ID FROM SECTION_DEFINITION WHERE SECTION_NAME='gift.extendedDistribution' AND PAGE_TYPE='giftPaid');
 
 -- BEGIN ROLLUPS --
 

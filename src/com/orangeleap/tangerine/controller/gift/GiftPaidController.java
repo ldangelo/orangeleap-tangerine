@@ -3,19 +3,23 @@ package com.orangeleap.tangerine.controller.gift;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 public class GiftPaidController extends AbstractMutableGridFormController {
 
@@ -25,6 +29,12 @@ public class GiftPaidController extends AbstractMutableGridFormController {
     @Resource(name="giftService")
     protected GiftService giftService;
 
+	@Resource(name = "pledgeService")
+	protected PledgeService pledgeService;
+
+	@Resource(name = "recurringGiftService")
+	protected RecurringGiftService recurringGiftService;
+	
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
 
@@ -32,22 +42,6 @@ public class GiftPaidController extends AbstractMutableGridFormController {
 
     public void setGiftControllerHelper(GiftControllerHelper giftControllerHelper) {
         this.giftControllerHelper = giftControllerHelper;
-    }
-
-    @Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
-        ModelAndView mav = super.showForm(request, response, errors);
-        TangerineForm form = (TangerineForm) formBackingObject(request);
-        Gift gift = (Gift) form.getDomainObject();
-
-        if (giftControllerHelper.showGiftPostedView(gift)) {
-            String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPostedUrl(), gift, getConstituentId(request));
-            if (Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
-                redirectUrl = appendSaved(redirectUrl);
-            }
-            mav = new ModelAndView(redirectUrl);
-        }
-        return mav;
     }
 
 	@Override
@@ -61,10 +55,38 @@ public class GiftPaidController extends AbstractMutableGridFormController {
         return gift;
     }
 
+	@Override
+	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+	    ModelAndView mav = super.showForm(request, response, errors);
+	    TangerineForm form = (TangerineForm) formBackingObject(request);
+	    Gift gift = (Gift) form.getDomainObject();
+
+	    if (giftControllerHelper.showGiftPostedView(gift)) {
+	        String redirectUrl = giftControllerHelper.appendGiftParameters(giftControllerHelper.getGiftPostedUrl(), gift, getConstituentId(request));
+	        if (Boolean.TRUE.toString().equalsIgnoreCase(request.getParameter(StringConstants.SAVED))) {
+	            redirectUrl = appendSaved(redirectUrl);
+	        }
+	        mav = new ModelAndView(redirectUrl);
+	    }
+	    return mav;
+	}
+
     @SuppressWarnings("unchecked")
     @Override
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refMap = super.referenceData(request, command, errors);
+
+	    String selectedPledgeId = request.getParameter("selectedPledgeId");
+	    String selectedRecurringGiftId = request.getParameter("selectedRecurringGiftId");
+	    if (NumberUtils.isDigits(selectedPledgeId)) {
+	        Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
+	        refMap.put("associatedPledge", pledge);
+	    }
+	    else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
+	        RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
+	        refMap.put("associatedRecurringGift", recurringGift);
+	    }
+
 	    TangerineForm form = (TangerineForm) command;
 		Gift gift = (Gift) form.getDomainObject();
         refMap.put(StringConstants.HIDE_ADJUST_GIFT_BUTTON, adjustedGiftService.isAdjustedAmountEqualGiftAmount(gift));
@@ -75,6 +97,8 @@ public class GiftPaidController extends AbstractMutableGridFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 	    TangerineForm form = (TangerineForm) command;
 	    Gift gift = (Gift) form.getDomainObject();
+	    giftService.checkAssociatedPledgeIds(gift);
+	    giftService.checkAssociatedRecurringGiftIds(gift);
         giftControllerHelper.validateGiftStatusChange(gift);
 
         ModelAndView mav;

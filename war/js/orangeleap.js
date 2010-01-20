@@ -849,6 +849,15 @@ var OrangeLeap = {
 		return idString.replace(".", "\\.").replace("[", "\\[").replace("]", "\\]"); // for jQuery selection, escape common characters
 	},
 
+    extElementFocus: function(fld) {
+		$('#' + fld.getId()).parents('div.x-form-element').prev('label').addClass('inFocus');
+	},
+
+	extElementBlur: function(fld) {
+		$('#' + fld.getId()).parents('div.x-form-element').prev('label').removeClass('inFocus');
+	},
+
+
     getQueryParams: function() {
         var argList = new Object();
 
@@ -1609,13 +1618,16 @@ var Lookup = {
 		});
 	},
 	
-	removeSelectedVal: function($elem, valueToCompare) {
-		var vals = $elem.val().split(OrangeLeap.customFieldSeparator);
+	removeSelectedVal: function($elem, valueToCompare, separator) {
+		if ( ! separator) {
+			separator = OrangeLeap.customFieldSeparator;
+		}
+		var vals = $elem.val().split(separator);
 		var valsLen = vals.length;
 		var newVals = "";
 		for (var x = 0; x < valsLen; x++) {
 			if (vals[x] != valueToCompare) {
-				newVals += vals[x] + OrangeLeap.customFieldSeparator;
+				newVals += vals[x] + separator;
 			}
 		}
 		if (newVals.length > 0) {

@@ -110,17 +110,8 @@ public class GiftFormController extends AbstractMutableGridFormController {
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refMap = super.referenceData(request, command, errors);
 
-        String selectedPledgeId = request.getParameter("selectedPledgeId");
-        String selectedRecurringGiftId = request.getParameter("selectedRecurringGiftId");
-        if (NumberUtils.isDigits(selectedPledgeId)) {
-            Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
-            refMap.put("associatedPledge", pledge);
-        }
-        else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
-            RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
-            refMap.put("associatedRecurringGift", recurringGift);
-        }
-
+        addSelectedPledgeRecurringGiftRefData(request, refMap);
+	    
         TangerineForm form = (TangerineForm) command;
 	    Gift gift = (Gift) form.getDomainObject();
         if (canReprocessGift(gift)) {
@@ -134,6 +125,20 @@ public class GiftFormController extends AbstractMutableGridFormController {
         }
         return refMap;
     }
+
+	@SuppressWarnings("unchecked")
+	protected void addSelectedPledgeRecurringGiftRefData(final HttpServletRequest request, final Map refMap) {
+		String selectedPledgeId = request.getParameter("selectedPledgeId");
+		String selectedRecurringGiftId = request.getParameter("selectedRecurringGiftId");
+		if (NumberUtils.isDigits(selectedPledgeId)) {
+		    Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
+		    refMap.put("associatedPledge", pledge);
+		}
+		else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
+		    RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
+		    refMap.put("associatedRecurringGift", recurringGift);
+		}
+	}
 
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {

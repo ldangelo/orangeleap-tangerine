@@ -38,7 +38,17 @@ import com.orangeleap.theguru.client.GetSegmentationCountByTypeRequest;
 import com.orangeleap.theguru.client.GetSegmentationCountByTypeResponse;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeRequest;
 import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
+import com.orangeleap.theguru.client.ObjectFactory;
+import com.orangeleap.theguru.client.Theguru;
 import com.orangeleap.theguru.client.WSClient;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
+
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,13 +57,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Resource;
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindException;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
@@ -194,13 +197,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         return resolvedType;
     }
 
-	private WSClient getClient() {
-		WSClient client = new WSClient();
-		client.setUserName(tangerineUserHelper.lookupUserName());
-		client.setPassword(tangerineUserHelper.lookupUserPassword());
-		return client;
-	}
-
     @Override
     public long findTotalSegmentations(final String batchType) {
         if (logger.isTraceEnabled()) {
@@ -210,12 +206,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         long count = 0;
         if (resolvedType != null) {
-	        final WSClient client = getClient();
+	        final Theguru theGuru = new WSClient().getTheGuru();
+	        final ObjectFactory objFactory = new ObjectFactory();
+	        final GetSegmentationCountByTypeRequest req = objFactory.createGetSegmentationCountByTypeRequest();
 
-		    GetSegmentationCountByTypeRequest request = new GetSegmentationCountByTypeRequest();
-		    request.setType(resolveGuruSegmentationType(batchType));
-
-		    final GetSegmentationCountByTypeResponse resp = client.getTheGuru().getSegmentationCountByType(request);
+	        req.setType(resolvedType);
+            final GetSegmentationCountByTypeResponse resp = theGuru.getSegmentationCountByType(req);
             if (resp != null) {
                 count = resp.getCount();
             }
@@ -229,18 +225,20 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             logger.trace("findSegmentations: batchType = " + batchType + " sortField = " + sortField +
                     " sortDirection = " + sortDirection + " startIndex = " + startIndex + " resultCount = " + resultCount);
         }
+
         final List<Segmentation> returnSegmentations = new ArrayList<Segmentation>();
         final String resolvedType = resolveGuruSegmentationType(batchType);
         if (resolvedType != null) {
-	        GetSegmentationListByTypeRequest req = new GetSegmentationListByTypeRequest();
+	        final Theguru theGuru = new WSClient().getTheGuru();
+	        final ObjectFactory objFactory = new ObjectFactory();
+	        final GetSegmentationListByTypeRequest req = objFactory.createGetSegmentationListByTypeRequest();
             req.setType(resolvedType);
             req.setSortField(sortField);
             req.setSortDirection(sortDirection);
             req.setStartIndex(startIndex);
             req.setResultCount(resultCount);
 
-	        final WSClient client = getClient();
-            GetSegmentationListByTypeResponse resp = client.getTheGuru().getSegmentationListByType(req);
+            GetSegmentationListByTypeResponse resp = theGuru.getSegmentationListByType(req);
             if (resp != null) {
                 List<com.orangeleap.theguru.client.Segmentation> wsSegmentations = resp.getSegmentation();
                 if (wsSegmentations != null) {

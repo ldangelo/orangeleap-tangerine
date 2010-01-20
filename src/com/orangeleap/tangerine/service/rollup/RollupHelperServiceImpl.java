@@ -107,7 +107,6 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 	    for (RollupAttribute ra : ras) {
 	    	
 			boolean isIterateConstituentStat = groupByValue == null && (ra.getRollupStatType().endsWith("_CONSTITUENT"));
-			isIterateConstituentStat = false; // disable for now - issue with having
 	    	
 	    	List<RollupSeriesXAttribute> rsxas = rollupService.selectRollupSeriesForAttribute(ra.getId());
 	    	for (RollupSeriesXAttribute rsxa : rsxas) {
@@ -124,11 +123,11 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 	    		}
 	    		for (RollupValue rv : rvs) {
 	    			if (isIterateConstituentStat) {
-		    			for (long groupByRange1 = range[0]; groupByRange1 < range[1]; groupByRange1 += KEY_RANGE_INTERVAL) {
+		    			if (range[0] != null) for (long groupByRange1 = range[0]; groupByRange1 < range[1]; groupByRange1 += KEY_RANGE_INTERVAL) {
 		    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), groupByRange1, groupByRange1 + KEY_RANGE_INTERVAL - 1);
 		    			}
 	    			} else {
-	    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), -1L, Long.MAX_VALUE);
+	    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), 0L, Long.MAX_VALUE);
 	    			}
 	    		}
 	    	}

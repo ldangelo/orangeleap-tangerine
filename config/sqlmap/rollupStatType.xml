@@ -60,15 +60,15 @@
         	where
         		g.DONATION_DATE &gt;= #startDate# and g.DONATION_DATE &lt;= #endDate#
         		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
+			<isNotNull property="groupByRange1"> 
+				and g.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
 			<isNotNull property="groupByValue"> 
 	        	and g.CONSTITUENT_ID = #groupByValue#
 			</isNotNull> 
             group by 
         		g.CONSTITUENT_ID,
         		g.CURRENCY_CODE
-			<isNotNull property="groupByRange1"> 
-			having g.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
-			</isNotNull> 
         		
     </insert>
 
@@ -85,15 +85,15 @@
             	GIFT_IN_KIND gik	
         	where
         		gik.DONATION_DATE &gt;= #startDate# and gik.DONATION_DATE &lt;= #endDate#
+			<isNotNull property="groupByRange1"> 
+				and gik.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
 			<isNotNull property="groupByValue"> 
 	        	and gik.CONSTITUENT_ID = #groupByValue#
 			</isNotNull> 
             group by 
         		gik.CONSTITUENT_ID,
         		gik.CURRENCY_CODE
-			<isNotNull property="groupByRange1"> 
-			having gik.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
-			</isNotNull> 
     </insert>
 
 	<!-- 
@@ -101,7 +101,7 @@
 	-->
     <insert id="ROLLUP_GIFT_DISTRO_LINE_AMOUNT_BY_CF_CONSTITUENT" parameterClass="java.util.Map">
         <include refid="SELECT_INTO_RV_FRAG"/>
-        		cf.FIELD_NUMERIC_VALUE,
+        		cf.FIELD_VALUE,
         		g.CURRENCY_CODE,
             	COUNT(dl.AMOUNT),
             	SUM(dl.AMOUNT),
@@ -114,16 +114,16 @@
         		and g.GIFT_ID = dl.GIFT_ID
         		and cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.ENTITY_TYPE='distributionline' and cf.FIELD_NAME= #customFieldName#  
         		and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE = 'MONETARY_GIFT'
-        		and cf.FIELD_NUMERIC_VALUE is not null
+        		and cf.FIELD_VALUE is not null
+			<isNotNull property="groupByRange1"> 
+				and cf.FIELD_VALUE between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
 			<isNotNull property="groupByValue"> 
-	        	and cf.FIELD_NUMERIC_VALUE = #groupByValue#
+	        	and cf.FIELD_VALUE = #groupByValue#
 			</isNotNull> 
             group by 
-        		cf.FIELD_NUMERIC_VALUE,
+        		cf.FIELD_VALUE,
         		g.CURRENCY_CODE
-			<isNotNull property="groupByRange1"> 
-			having cf.FIELD_NUMERIC_VALUE between #groupByRange1# and #groupByRange2#
-			</isNotNull> 
     </insert>
    
    
@@ -141,15 +141,15 @@
         		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
         		and p.PLEDGE_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'pledge'
         		and it.COMPLETION_DATE is null 
+			<isNotNull property="groupByRange1"> 
+				and p.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
 			<isNotNull property="groupByValue"> 
 	        	and p.CONSTITUENT_ID = #groupByValue#
 			</isNotNull> 
             group by 
         		p.CONSTITUENT_ID,
         		p.CURRENCY_CODE
-			<isNotNull property="groupByRange1"> 
-			having p.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
-			</isNotNull> 
     </insert>
     
     <insert id="ROLLUP_RECURRING_GIFT_SCHEDULED_PAYMENTS_BY_CONSTITUENT" parameterClass="java.util.Map">
@@ -166,15 +166,15 @@
         		it.ACTUAL_SCHEDULED_DATE &gt;= #startDate# and it.ACTUAL_SCHEDULED_DATE &lt;= #endDate#
         		and rg.RECURRING_GIFT_ID = it.SOURCE_ENTITY_ID and it.SOURCE_ENTITY = 'recurringgift'
         		and it.COMPLETION_DATE is null 
+			<isNotNull property="groupByRange1"> 
+				and rg.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
 			<isNotNull property="groupByValue"> 
 	        	and rg.CONSTITUENT_ID = #groupByValue#
 			</isNotNull> 
             group by 
         		rg.CONSTITUENT_ID,
         		rg.CURRENCY_CODE
-			<isNotNull property="groupByRange1"> 
-			having rg.CONSTITUENT_ID between #groupByRange1# and #groupByRange2#
-			</isNotNull> 
     </insert>
    
    
@@ -311,23 +311,23 @@
     <insert id="ROLLUP_ACTUALS_BY_CONSTITUENT" parameterClass="java.util.Map">
         <include refid="SELECT_SECOND_LEVEL_INTO_RV_FRAG"/>
         		and ra.ATTRIBUTE_NAME_ID in ('Gift Amount','Gift In Kind Amount','Soft Gift Amount')
+			<isNotNull property="groupByRange1"> 
+				and CONVERT(rv.GROUP_BY_VALUE, decimal(19,2)) between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
             group by 
         		rv.GROUP_BY_VALUE,
         		rv.CURRENCY_CODE
-			<isNotNull property="groupByRange1"> 
-			having CONVERT(rv.GROUP_BY_VALUE, decimal(19,2)) between #groupByRange1# and #groupByRange2#
-			</isNotNull> 
     </insert>
 
     <insert id="ROLLUP_PROJECTEDS_BY_CONSTITUENT" parameterClass="java.util.Map">
         <include refid="SELECT_SECOND_LEVEL_INTO_RV_FRAG"/>
         		and ra.ATTRIBUTE_NAME_ID in ('Projected Pledge Amount','Projected Recurring Gift Amount')
+ 			<isNotNull property="groupByRange1"> 
+				and CONVERT(rv.GROUP_BY_VALUE, decimal(19,2)) between #groupByRange1# and #groupByRange2#
+			</isNotNull> 
             group by 
         		rv.GROUP_BY_VALUE,
         		rv.CURRENCY_CODE
- 			<isNotNull property="groupByRange1"> 
-			having CONVERT(rv.GROUP_BY_VALUE, decimal(19,2)) between #groupByRange1# and #groupByRange2#
-			</isNotNull> 
     </insert>
 
 </sqlMap>

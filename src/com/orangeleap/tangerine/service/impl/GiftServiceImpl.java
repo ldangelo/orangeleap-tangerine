@@ -795,6 +795,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	@Override
 	public int getGiftReprocessCount() {
 		// TODO nightly reprocess
+		// Gift Payment Status = Blank, Pending, Authorized or Error,   and either ACH or CC
 		return 0;
 	}
 

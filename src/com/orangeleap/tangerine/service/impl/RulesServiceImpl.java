@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -88,6 +87,8 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 	private static String REINDEX_FULLTEXT = "nightly.reindex.fulltext";
 	private static String RESAVE_CONSTITUENT = "nightly.resave.constituent";
+	private static String SUPPRESS_GIFT_REPROCESS = "suppress.gift.reprocess";
+	
 
 	public void executeRules(String schedule, Date compareDate) {
 
@@ -316,25 +317,45 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	@Override
 	public void reprocessGifts() {
 		
-		int totalGiftReprocessCount = giftService.getGiftReprocessCount();
-		for (int start = 0; start <= totalGiftReprocessCount; start += 100) {
-
-			SortInfo sortInfo = new SortInfo();
-			sortInfo.setSort("id"); 
-			sortInfo.setStart(start);
-
-			List<Gift> gifts = giftService.readGiftsToReprocess(sortInfo);  
-			for (Gift gift : gifts) {
-				try {
-					giftService.dailyReprocessGift(gift);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			}
-			
+		boolean suppressGiftReprocess = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(SUPPRESS_GIFT_REPROCESS));
+		if (suppressGiftReprocess) {
+			logger.info("Suppressing gift reprocess.");
+			return;
 		}
 		
+		long time = System.currentTimeMillis();
+		try {
+
+			logger.info("Reprocessing gifts.  Started on " + new java.util.Date());
 		
+			int totalGiftReprocessCount = giftService.getGiftReprocessCount();
+			logger.info("totalGiftReprocessCount = " + totalGiftReprocessCount);
+			
+			for (int start = 0; start <= totalGiftReprocessCount; start += 100) {
+	
+				SortInfo sortInfo = new SortInfo();
+				sortInfo.setSort("id"); 
+				sortInfo.setStart(start);
+	
+				List<Gift> gifts = giftService.readGiftsToReprocess(sortInfo);  
+				for (Gift gift : gifts) {
+					try {
+						gift = giftService.readGiftById(gift.getId()); // fully populate sub-entities
+						giftService.dailyReprocessGift(gift);
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				}
+				
+			}
+		
+		} catch (Throwable t) {
+			logger.error(t);
+			t.printStackTrace();
+		}
+		
+		long time2 = System.currentTimeMillis();
+		logger.info("Gift reprocessing Took: " + (time2 - time) + " ms.  Complete on " + new java.util.Date());
 	}
 
 }

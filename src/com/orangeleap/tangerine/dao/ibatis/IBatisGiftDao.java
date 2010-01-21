@@ -431,5 +431,25 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         params.put("constituentReferenceCustomField", constituentReferenceCustomField);
         return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_GIFT_DISTRO_LINES_COUNT_BY_CONSTITUENT_ID", params);
 	}
+	
+    @SuppressWarnings("unchecked")
+    @Override
+    public PaginatedResult readGiftsToReprocess(SortInfo sortinfo) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsToReprocess");
+        }
+        Map<String, Object> params = setupParams();
+        sortinfo.addParams(params);
+
+		// Returns all (minimally populated) gifts with Payment Status = Blank, Pending, Authorized or Error,   and either ACH or CC
+
+        List rows = getSqlMapClientTemplate().queryForList("SELECT_GIFTS_TO_REPROCESS", params);
+        Long count = (Long) getSqlMapClientTemplate().queryForObject("SELECT_GIFTS_TO_REPROCESS_COUNT", params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
+    }
+
 
 }

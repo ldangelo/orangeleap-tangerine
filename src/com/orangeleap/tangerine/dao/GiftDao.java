@@ -85,5 +85,8 @@ public interface GiftDao {
 	Gift readFirstOrLastIndirectGiftByConstituent(Long constituentId,
 			Date fromDate, Date toDate, GiftType giftType, String giftStatus,
 			boolean first, String constituentReferenceCustomField);
+	
+    PaginatedResult readGiftsToReprocess(SortInfo sortinfo);
+
 
 }

@@ -794,15 +794,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
 	@Override
 	public int getGiftReprocessCount() {
-		// TODO nightly reprocess
-		// Gift Payment Status = Blank, Pending, Authorized or Error,   and either ACH or CC
-		return 0;
+		SortInfo sortInfo = new SortInfo();
+		sortInfo.setSort("id"); 
+		return (int)giftDao.readGiftsToReprocess(sortInfo).getRowCount();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Gift> readGiftsToReprocess(SortInfo sortInfo) {
-		// TODO nightly reprocess
-		return new ArrayList<Gift>();
+		return giftDao.readGiftsToReprocess(sortInfo).getRows();
 	}
 
 }

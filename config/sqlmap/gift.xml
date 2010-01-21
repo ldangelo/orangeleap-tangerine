@@ -547,6 +547,31 @@
             #reportIds[]#
         </iterate>
     </select>
+    
+    
+	<sql id="GIFTS_TO_REPROCESS">
+        from GIFT g
+        inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+        and g.GIFT_TYPE != 'GIFT_IN_KIND'
+        and ( g.PAYMENT_STATUS in ('Error','Pending','Authorized','')  or g.PAYMENT_STATUS is null )
+        and g.PAYMENT_TYPE in ('Credit Card','ACH')
+        order by g.GIFT_ID
+        limit $offset$,$limit$
+	</sql>
+    
+    <select id="SELECT_GIFTS_TO_REPROCESS" resultMap="MIN_GIFT_RESULT_NO_DISTRO_LINES" parameterClass="map">
+        select
+        <include refid="GIFT_COLS_FRAGMENT" />,
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />
+        <include refid="GIFTS_TO_REPROCESS" />
+    </select>
+
+    <select id="SELECT_GIFTS_TO_REPROCESS_COUNT" resultClass="long" parameterClass="map">
+        select count(*)
+        <include refid="GIFTS_TO_REPROCESS" />
+    </select>
+
 
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		insert into GIFT (GIFT_STATUS, GIFT_TYPE, AMOUNT, ADJUSTED_AMOUNT, AUTH_CODE, AVS_MESSAGE, 

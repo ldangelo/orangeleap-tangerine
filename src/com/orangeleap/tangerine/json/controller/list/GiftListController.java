@@ -60,7 +60,7 @@ public class GiftListController extends TangerineJsonListController {
             addListFieldsToMap(request, sectionFields, gifts, list, true, false);
 
             Map<Long,Long> adjustGiftCountMap = adjustedGiftService.countAdjustedGiftsByOriginalGiftId(gifts);
-            setParentNodeAttributes(list, adjustGiftCountMap, StringConstants.GIFT);
+            setParentNodeAttributes(list, adjustGiftCountMap, StringConstants.GIFT, false);
             count = giftService.readCountByConstituentId(constituentId);
         }
         else {
@@ -68,7 +68,7 @@ public class GiftListController extends TangerineJsonListController {
             resolveSortFieldName(sectionFields, sort);
             List<AdjustedGift> adjustedGifts = adjustedGiftService.readAllAdjustedGiftsByConstituentGiftId(constituentId, giftId, sort, request.getLocale());
             addListFieldsToMap(request, sectionFields, adjustedGifts, list, true, false);
-            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT);
+            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT, false);
             count = adjustedGiftService.readCountByConstituentGiftId(constituentId, giftId);
         }
 

@@ -193,7 +193,10 @@
         select
         <include refid="ADJUSTED_GIFT_COLS_FRAGMENT" />,
         <include refid="CONSTITUENT_COLS_FRAGMENT" />,
-        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />
+	    <include refid="ADDRESS_COLS_FRAGMENT" />,
+	    <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+	    <include refid="DISTRO_LINE_COLS_FRAGMENT" />
 
         <dynamic prepend=",">
             <isEqual property="sortColumn" compareValue="FIELD_VALUE">
@@ -202,10 +205,12 @@
         </dynamic>
 
         from ADJUSTED_GIFT ag
-        inner join DISTRO_LINE dl on ag.GIFT_ID = dl.GIFT_ID
         inner join GIFT g2 on ag.GIFT_ID = g2.GIFT_ID
         inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+	    left outer join ADDRESS addr on ag.ADDRESS_ID = addr.ADDRESS_ID
+	    left outer join PHONE ph on ag.PHONE_ID = ph.PHONE_ID
         left outer join PAYMENT_SOURCE ps on ag.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+	    inner join DISTRO_LINE dl on ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID
 
         <isNotNull property="entityType">
             <isNotNull property="fieldName">
@@ -218,8 +223,8 @@
         </isNotNull>
 
         where p.SITE_NAME = #siteName#
-        and ag.CONSTITUENT_ID = #constituentId#
         and ag.GIFT_ID = #giftId#
+		and ag.CONSTITUENT_ID = #constituentId#
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
@@ -235,7 +240,7 @@
         and ag.GIFT_ID = #giftId#
     </select>
 
-    <select id="SELECT_ADJUSTED_GIFT_DSITRO_LINES_COUNT_BY_CONSTITUENT_GIFT_ID" parameterClass="map" resultClass="int">
+    <select id="SELECT_ADJUSTED_GIFT_DISTRO_LINES_COUNT_BY_CONSTITUENT_GIFT_ID" parameterClass="map" resultClass="int">
         select count(ag.ADJUSTED_GIFT_ID)
         from ADJUSTED_GIFT ag
         inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID

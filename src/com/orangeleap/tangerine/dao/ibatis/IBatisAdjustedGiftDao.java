@@ -219,7 +219,7 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
 			Long constituentId, long giftId, String constituentReferenceCustomField, String sort, String dir,
 			int start, int limit, Locale locale) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readAllAdjustedGiftsByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId + " sortPropertyName = " + sort +
+            logger.trace("readAllAdjustedGiftDistroLinesByConstituentGiftId: constituentId = " + constituentId + " giftId = " + giftId + " sortPropertyName = " + sort +
                     " direction = " + dir + " start = " + start + " limit = " + limit);
         }
         Map<String, Object> params = setupSortParams(StringConstants.ADJUSTED_GIFT, "ADJUSTED_GIFT.ADJUSTED_GIFT_LIST_RESULT",

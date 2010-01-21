@@ -52,7 +52,7 @@ public class ConstituentSearchResultsListController extends TangerineJsonSearchR
         }
 
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(new Constituent());
-        List<Constituent> constituents = constituentService.searchConstituents(findSearchParameters(request, bw), sort, request.getLocale());
+        List<Constituent> constituents = constituentService.searchConstituents(findSearchParameters(request, bw, sectionFields), sort, request.getLocale());
 
         addListFieldsToMap(request, sectionFields, constituents, list, false, false);
 

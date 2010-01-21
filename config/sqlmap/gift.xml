@@ -343,12 +343,12 @@
         left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
         left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
         inner join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
-        <isNotNull property="constituentReferenceCustomField" >
-        inner join CUSTOM_FIELD cf on
-          cf.ENTITY_ID = dl.DISTRO_LINE_ID
-          and cf.ENTITY_TYPE = 'distributionline' 
-          and cf.FIELD_NAME = #constituentReferenceCustomField#
-          and cf.FIELD_VALUE = #constituentId#
+
+        <isNotNull property="constituentReferenceCustomField">
+            inner join CUSTOM_FIELD cf on cf.ENTITY_ID = dl.DISTRO_LINE_ID
+			and cf.ENTITY_TYPE = 'distributionline'
+			and cf.FIELD_NAME = #constituentReferenceCustomField#
+			and cf.FIELD_VALUE = #constituentId#
         </isNotNull>
 
         <isNotNull property="entityType">
@@ -363,8 +363,8 @@
 
         where p.SITE_NAME = #siteName#
         and g.GIFT_TYPE != 'GIFT_IN_KIND'
-        <isNull property="constituentReferenceCustomField" >
-        and g.CONSTITUENT_ID = #constituentId#
+        <isNull property="constituentReferenceCustomField">
+            and g.CONSTITUENT_ID = #constituentId#
         </isNull>
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
@@ -430,17 +430,20 @@
         from GIFT g
         inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
         inner join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
-        <isNotNull property="constituentReferenceCustomField" >
-        inner join CUSTOM_FIELD cf on
-          cf.ENTITY_ID = dl.DISTRO_LINE_ID
-          and cf.ENTITY_TYPE = 'distributionline' 
-          and cf.FIELD_NAME = #constituentReferenceCustomField#
-          and cf.FIELD_VALUE = #constituentId#
+
+        <isNotNull property="constituentReferenceCustomField">
+            inner join CUSTOM_FIELD cf on
+			cf.ENTITY_ID = dl.DISTRO_LINE_ID
+			and cf.ENTITY_TYPE = 'distributionline'
+			and cf.FIELD_NAME = #constituentReferenceCustomField#
+			and cf.FIELD_VALUE = #constituentId#
         </isNotNull>
-        where p.SITE_NAME = #siteName#
+
+	    where p.SITE_NAME = #siteName#
         and g.GIFT_TYPE != 'GIFT_IN_KIND'
-        <isNull property="constituentReferenceCustomField" >
-        and g.CONSTITUENT_ID = #constituentId#
+
+	    <isNull property="constituentReferenceCustomField">
+            and g.CONSTITUENT_ID = #constituentId#
         </isNull>
     </select>
 
@@ -571,6 +574,7 @@
         select count(*)
         <include refid="GIFTS_TO_REPROCESS" />
     </select>
+
 
 
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">

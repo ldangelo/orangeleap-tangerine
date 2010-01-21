@@ -18,18 +18,6 @@
 
 package com.orangeleap.tangerine.json.controller.list;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -37,6 +25,14 @@ import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class DistroLineListController extends TangerineJsonListController {
@@ -72,7 +68,7 @@ public class DistroLineListController extends TangerineJsonListController {
         String unresolvedSortField = sort.getSort();
         int count = 0;
         if (giftId == 0) {
-            List<SectionField> sectionFields = findSectionFields(pageNamePrefix+"List");
+            List<SectionField> sectionFields = findSectionFields(pageNamePrefix + "List");
             resolveSortFieldName(sectionFields, sort);
             // Returns gifts with one and only one filtered matching distro line of interest (where custom field constituentReferenceCustomField = constituent id)
             // Multiple lines with same gift id may be returned since this is by distro line id, not gift id.
@@ -80,15 +76,15 @@ public class DistroLineListController extends TangerineJsonListController {
             
             Map<Long,Long> adjustGiftCountMap = adjustedGiftService.countAdjustedGiftDistroLinesByOriginalGiftId(gifts, constituentReferenceCustomField);
             addListFieldsToMap(request, sectionFields, gifts, list, true, true);
-            setParentNodeAttributes(list, adjustGiftCountMap, StringConstants.GIFT);
+            setParentNodeAttributes(list, adjustGiftCountMap, StringConstants.GIFT, true);
             count = giftService.readGiftDistroLinesCountByConstituentId(constituentId, constituentReferenceCustomField);
         }
         else {
-            List<SectionField> sectionFields = findSectionFields(adjustedPageNamePrefix+"List");
+            List<SectionField> sectionFields = findSectionFields(adjustedPageNamePrefix + "List");
             resolveSortFieldName(sectionFields, sort);
             List<AdjustedGift> adjustedGifts = adjustedGiftService.readAllAdjustedGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, giftId, sort, request.getLocale());
             addListFieldsToMap(request, sectionFields, adjustedGifts, list, true, true);
-            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT);
+            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT, true);
             count = adjustedGiftService.readAdjustedGiftDistroLinesCountByConstituentGiftId(constituentId, constituentReferenceCustomField, giftId);
         }
 

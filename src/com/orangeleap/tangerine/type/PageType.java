@@ -29,6 +29,7 @@ public enum PageType {
     gift("/gift.htm"),
     giftList("/giftList.htm"),
     softGiftList("/softGiftList.htm"),
+	softAdjustedGiftList("/softAdjustedGiftList.htm"),
     giftSearch("/giftSearch.htm"),
     giftSearchResults("/giftSearchResults.htm"),
 	giftCombinedDistributionLines("/giftCombinedDistributionLines.htm"),

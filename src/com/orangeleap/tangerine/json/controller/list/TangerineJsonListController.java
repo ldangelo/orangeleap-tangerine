@@ -21,18 +21,15 @@ package com.orangeleap.tangerine.json.controller.list;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
-import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.common.TangerineListHelper;
-import org.apache.commons.lang.math.NumberUtils;
-import org.springframework.web.util.WebUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang.math.NumberUtils;
 
 public abstract class TangerineJsonListController {
 
@@ -63,27 +60,29 @@ public abstract class TangerineJsonListController {
         return tangerineListHelper.findSectionFields(listPageName);
     }
 
-    protected void setParentNodeAttributes(List<Map<String, Object>> list, Map<Long,Long> parentToChildNodeCountMap, String parentPrefix) {
+    protected void setParentNodeAttributes(List<Map<String, Object>> list, Map<Long, Long> parentToChildNodeCountMap, String parentPrefix, boolean useAliasName) {
         for (Map<String, Object> objectMap : list) {
             if ( ! objectMap.isEmpty()) {
+	            Long thisId = getIdProperty(objectMap, useAliasName);
+
                 objectMap.put(PARENT_NODE, null);
-                if (parentToChildNodeCountMap.get((Long) objectMap.get(StringConstants.ID)) == null || parentToChildNodeCountMap.get((Long) objectMap.get(StringConstants.ID)) == 0) {
+                if (parentToChildNodeCountMap.get(thisId) == null || parentToChildNodeCountMap.get(thisId) == 0) {
                     objectMap.put(LEAF_NODE, true);
                 }
                 else {
                     objectMap.put(LEAF_NODE, false);
                 }
-                objectMap.put(StringConstants.ID, new StringBuilder(parentPrefix).append("-").append(objectMap.get(StringConstants.ID)).toString());
+                objectMap.put(StringConstants.ID, new StringBuilder(parentPrefix).append("-").append(thisId).toString());
             }
         }
     }
 
-    protected void setChildNodeAttributes(List<Map<String, Object>> list, Long parentId, String parentPrefix, String childPrefix) {
+    protected void setChildNodeAttributes(List<Map<String, Object>> list, Long parentId, String parentPrefix, String childPrefix, boolean useAliasName) {
         for (Map<String, Object> objectMap : list) {
             if ( ! objectMap.isEmpty()) {
                 objectMap.put(PARENT_NODE, new StringBuilder(parentPrefix).append("-").append(parentId).toString());
                 objectMap.put(LEAF_NODE, true);
-                objectMap.put(StringConstants.ID, new StringBuilder(childPrefix).append("-").append(objectMap.get(StringConstants.ID)).toString());
+                objectMap.put(StringConstants.ID, new StringBuilder(childPrefix).append("-").append(getIdProperty(objectMap, useAliasName)).toString());
             }
         }        
     }
@@ -115,4 +114,9 @@ public abstract class TangerineJsonListController {
         }
         return id;
     }
+
+	private Long getIdProperty(final Map<String, Object> objectMap, final boolean useAliasName) {
+		String idProperty = (useAliasName ? StringConstants.ALIAS_ID : StringConstants.ID);
+		return (Long) objectMap.get(idProperty);
+	}
 }

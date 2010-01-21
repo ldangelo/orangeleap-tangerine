@@ -242,10 +242,11 @@ BEGIN
 	  select OPTION_VALUE from SITE_OPTION WHERE OPTION_NAME = 'lapsed.donor.days' INTO cutoffAmt;
 	  IF cutoffAmt is not null THEN
 		  SET cutOffDate = DATE_SUB(now(), INTERVAL cutoffAmt DAY); 
-	  END IF;
-	  select OPTION_VALUE from SITE_OPTION WHERE OPTION_NAME = 'lapsed.donor.months' INTO cutoffAmt;
-	  IF cutoffAmt is not null THEN
-		  SET cutOffDate = DATE_SUB(now(), INTERVAL cutoffAmt MONTH); 
+	  ELSE
+	  	  select OPTION_VALUE from SITE_OPTION WHERE OPTION_NAME = 'lapsed.donor.months' INTO cutoffAmt;
+		  IF cutoffAmt is not null THEN
+			  SET cutOffDate = DATE_SUB(now(), INTERVAL cutoffAmt MONTH); 
+	  	  END IF;
 	  END IF;
 	  
 	  IF cutOffDate is NULL THEN

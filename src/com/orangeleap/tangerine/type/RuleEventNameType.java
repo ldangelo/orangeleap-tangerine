@@ -13,8 +13,7 @@ public enum RuleEventNameType {
 	SCHEDULED_MONTHLY("scheduled-monthly"),
 	EMAIL_SCHEDULED_DAILY("email-scheduled-daily"),
 	EMAIL_SCHEDULED_WEEKLY("email-scheduled-weekly"),
-	EMAIL_SCHEDULED_MONTHLY("email-scheduled-monthly"),
-	DAILY_REPROCESS_PAYMENT("daily-reprocess-payment")
+	EMAIL_SCHEDULED_MONTHLY("email-scheduled-monthly")
 	;
 	
 	private String type;

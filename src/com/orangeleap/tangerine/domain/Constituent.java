@@ -113,6 +113,7 @@ public class Constituent extends AbstractCommunicatorEntity implements FullTextS
     private String loginId;
     private Long accountNumber;
     private Boolean byPassDuplicateDetection = false;
+    private Boolean recentGift = false;
 
     private List<Gift> gifts;
     private List<RecurringGift> recurringGifts;
@@ -631,4 +632,12 @@ public class Constituent extends AbstractCommunicatorEntity implements FullTextS
     
     public Long getConstituentId() { return this.getId(); }
     public void setConstituentId(Long id) { this.setId(id); }
+
+	public void setRecentGift(Boolean recentGift) {
+		this.recentGift = recentGift;
+	}
+
+	public Boolean getRecentGift() {
+		return recentGift;
+	}
 }

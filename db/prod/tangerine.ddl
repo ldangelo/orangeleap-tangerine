@@ -76,6 +76,7 @@ CREATE TABLE `CONSTITUENT` (
 `RECOGNITION_NAME` varchar(255) default NULL,
 `SUFFIX` varchar(255) default NULL,
 `TITLE` varchar(255) default NULL,
+`RECENT_GIFT` char(1) NOT NULL default '0',
 `SITE_NAME` varchar(255) default NULL,
 `CREATE_DATE` datetime default NULL,
 `UPDATE_DATE` datetime default NULL,

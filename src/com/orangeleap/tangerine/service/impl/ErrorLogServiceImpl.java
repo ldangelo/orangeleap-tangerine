@@ -50,7 +50,7 @@ public class ErrorLogServiceImpl extends AbstractTangerineService implements Err
 	public void addErrorMessage(String message, String context) {
     	try {
         	Long constituentId = tangerineUserHelper.lookupUserId();
-    		errorLogDao.addErrorMessage(message, tangerineUserHelper.lookupUserName() + (" " + context).trim(), constituentId);
+    		errorLogDao.addErrorMessage(message, (tangerineUserHelper.lookupUserName() + " " + context).trim(), constituentId);
     	} catch (Exception e) {
     		try {logger.error("Unable to log error message to ERROR_LOG: "+message, e);} catch (Exception e1) {}
     	}

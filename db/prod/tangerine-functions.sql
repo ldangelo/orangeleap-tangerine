@@ -258,7 +258,7 @@ BEGIN
 	  REPEAT
 	    FETCH cur1 INTO constituentId, recentGift;
 	    IF NOT done THEN
-	       select count(*) INTO cnt from GIFT g where g.CONSTITUENT_ID = id and g.DONATION_DATE >= cutOffDate;
+	       select count(*) INTO cnt from GIFT g where g.CONSTITUENT_ID = constituentId and g.DONATION_DATE >= cutOffDate;
 	       IF cnt > 0 THEN
 	          IF recentGift = '0' THEN
 		          UPDATE CONSTITUENT set RECENT_GIFT = '1', UPDATE_DATE = now() where CONSTITUENT_ID = constituentId;

@@ -43,8 +43,6 @@ public class DistroLineListController extends TangerineJsonListController {
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
 
-    
-    
     @RequestMapping("/softGiftList.json")
     public ModelMap getSoftGiftList(HttpServletRequest request, SortInfo sort) {
     	return getDistroLineList(request, sort, "onBehalfOf", "softGift", "softAdjustedGift");
@@ -55,8 +53,6 @@ public class DistroLineListController extends TangerineJsonListController {
 //    	return getDistroLineList(request, sort, "tributeReference", "tributeGift");
 //    }
     
-    
-    
     // Use for distro-line type-lists
     @SuppressWarnings("unchecked")
 	private ModelMap getDistroLineList(HttpServletRequest request, SortInfo sort, String constituentReferenceCustomField, String pageNamePrefix, String adjustedPageNamePrefix) {
@@ -64,7 +60,7 @@ public class DistroLineListController extends TangerineJsonListController {
     	Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
         
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        long giftId = getNodeId(request);
+        long giftId = getNodeId(request, StringConstants.GIFT, true);
         String unresolvedSortField = sort.getSort();
         int count = 0;
         if (giftId == 0) {
@@ -80,11 +76,12 @@ public class DistroLineListController extends TangerineJsonListController {
             count = giftService.readGiftDistroLinesCountByConstituentId(constituentId, constituentReferenceCustomField);
         }
         else {
+	        final String parentPrefix = getPrefix(request);
             List<SectionField> sectionFields = findSectionFields(adjustedPageNamePrefix + "List");
             resolveSortFieldName(sectionFields, sort);
             List<AdjustedGift> adjustedGifts = adjustedGiftService.readAllAdjustedGiftDistroLinesByConstituentId(constituentId, constituentReferenceCustomField, giftId, sort, request.getLocale());
             addListFieldsToMap(request, sectionFields, adjustedGifts, list, true, true);
-            setChildNodeAttributes(list, giftId, StringConstants.GIFT, StringConstants.ADJUSTED_GIFT, true);
+            setChildNodeAttributes(list, giftId, parentPrefix, StringConstants.ADJUSTED_GIFT, true);
             count = adjustedGiftService.readAdjustedGiftDistroLinesCountByConstituentGiftId(constituentId, constituentReferenceCustomField, giftId);
         }
 

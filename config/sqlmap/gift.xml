@@ -51,7 +51,7 @@
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 
-	<resultMap id="GIFT_DISTRO_LINES_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
+	<resultMap id="GIFT_DISTRO_LINES_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
         <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
         <result property="phone" resultMap="PHONE.PHONE_RESULT" />
         <result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />

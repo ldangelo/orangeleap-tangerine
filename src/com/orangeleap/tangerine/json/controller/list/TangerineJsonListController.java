@@ -60,10 +60,11 @@ public abstract class TangerineJsonListController {
         return tangerineListHelper.findSectionFields(listPageName);
     }
 
-    protected void setParentNodeAttributes(List<Map<String, Object>> list, Map<Long, Long> parentToChildNodeCountMap, String parentPrefix, boolean useAliasName) {
+    protected void setParentNodeAttributes(List<Map<String, Object>> list, Map<Long, Long> parentToChildNodeCountMap, String parentPrefix, boolean useAliasId) {
+	    int sequence = 0;
         for (Map<String, Object> objectMap : list) {
             if ( ! objectMap.isEmpty()) {
-	            Long thisId = getIdProperty(objectMap, useAliasName);
+	            Long thisId = getIdProperty(objectMap, useAliasId);
 
                 objectMap.put(PARENT_NODE, null);
                 if (parentToChildNodeCountMap.get(thisId) == null || parentToChildNodeCountMap.get(thisId) == 0) {
@@ -72,19 +73,38 @@ public abstract class TangerineJsonListController {
                 else {
                     objectMap.put(LEAF_NODE, false);
                 }
-                objectMap.put(StringConstants.ID, new StringBuilder(parentPrefix).append("-").append(thisId).toString());
+	            String idValue;
+	            if (useAliasId) {
+		            idValue = new StringBuilder(parentPrefix).append(":").append(sequence).append("-").append(thisId).toString();
+	            }
+	            else {
+		            idValue = new StringBuilder(parentPrefix).append("-").append(thisId).toString();
+	            }
+                objectMap.put(StringConstants.ID, idValue);
             }
+	        sequence++;
         }
     }
 
-    protected void setChildNodeAttributes(List<Map<String, Object>> list, Long parentId, String parentPrefix, String childPrefix, boolean useAliasName) {
+    protected void setChildNodeAttributes(List<Map<String, Object>> list, Long parentId, String parentPrefix, String childPrefix, boolean useAliasId) {
+	    int sequence = 0;
         for (Map<String, Object> objectMap : list) {
             if ( ! objectMap.isEmpty()) {
                 objectMap.put(PARENT_NODE, new StringBuilder(parentPrefix).append("-").append(parentId).toString());
                 objectMap.put(LEAF_NODE, true);
-                objectMap.put(StringConstants.ID, new StringBuilder(childPrefix).append("-").append(getIdProperty(objectMap, useAliasName)).toString());
+
+	            Long thisId = getIdProperty(objectMap, useAliasId);
+	            String idValue;
+	            if (useAliasId) {
+		            idValue = new StringBuilder(parentPrefix).append("-").append(childPrefix).append(":").append(sequence).append("-").append(thisId).toString();
+	            }
+	            else {
+		            idValue = new StringBuilder(childPrefix).append("-").append(thisId).toString();
+	            }
+                objectMap.put(StringConstants.ID, idValue);
             }
-        }        
+	        sequence++;
+        }
     }
 
     protected void resolveSortFieldName(List<SectionField> allFields, SortInfo sort) {
@@ -103,17 +123,34 @@ public abstract class TangerineJsonListController {
         }
     }
 
-    protected long getNodeId(HttpServletRequest request) {
+    protected long getNodeId(HttpServletRequest request, String prefix, boolean useAliasId) {
         String aNode = request.getParameter("anode");
         long id = 0;
         if (aNode != null) {
-            String aNodeID = aNode.replaceAll(StringConstants.GIFT + "-", StringConstants.EMPTY);
+	        String regEx;
+	        if (useAliasId) {
+		        regEx = new StringBuilder(prefix).append("\\:\\d+").append("-").toString();
+	        }
+	        else {
+		        regEx = new StringBuilder(prefix).append("-").toString();
+	        }
+            String aNodeID = aNode.replaceAll(regEx, StringConstants.EMPTY);
             if (NumberUtils.isNumber(aNodeID)) {
                 id = Long.parseLong(aNodeID);
             }
         }
         return id;
     }
+
+	protected String getPrefix(HttpServletRequest request) {
+		String prefix = null;
+		String aNode = request.getParameter("anode");
+		int index = aNode.indexOf("-");
+		if (index > -1) {
+			prefix = aNode.substring(0, index);
+		}
+		return prefix;
+	}
 
 	private Long getIdProperty(final Map<String, Object> objectMap, final boolean useAliasName) {
 		String idProperty = (useAliasName ? StringConstants.ALIAS_ID : StringConstants.ID);

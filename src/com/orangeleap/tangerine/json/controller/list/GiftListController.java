@@ -50,7 +50,7 @@ public class GiftListController extends TangerineJsonListController {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Long constituentId = new Long(request.getParameter(StringConstants.CONSTITUENT_ID));
 
-        long giftId = getNodeId(request);
+        long giftId = getNodeId(request, StringConstants.GIFT, false);
         String unresolvedSortField = sort.getSort();
         int count;
         if (giftId == 0) {

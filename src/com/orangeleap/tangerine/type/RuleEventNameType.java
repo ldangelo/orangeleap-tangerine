@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.type;
 
 public enum RuleEventNameType {
-	
+
 	CONSTITUENT_SAVE("constituent-save"),
 	GIFT_SAVE("gift-save"),
 	TOUCHPOINT_SAVE("touchpoint-save"),
@@ -11,6 +11,7 @@ public enum RuleEventNameType {
 	SCHEDULED_DAILY("scheduled-daily"),
 	SCHEDULED_WEEKLY("scheduled-weekly"),
 	SCHEDULED_MONTHLY("scheduled-monthly"),
+	SCHEDULED_REPROCESS_GIFT_DAILY("scheduled-reprocess-gift-daily"),
 	EMAIL_SCHEDULED_DAILY("email-scheduled-daily"),
 	EMAIL_SCHEDULED_WEEKLY("email-scheduled-weekly"),
 	EMAIL_SCHEDULED_MONTHLY("email-scheduled-monthly")
@@ -21,9 +22,9 @@ public enum RuleEventNameType {
 	private RuleEventNameType(String type) {
 		this.type = type;
 	}
-	
+
 	public String getType() {
 		return type;
 	}
-	
+
 }

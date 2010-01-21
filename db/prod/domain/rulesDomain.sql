@@ -11,6 +11,7 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_E
 INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (9,'email-scheduled-daily', 'Email Scheduled Daily');
 INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (10,'email-scheduled-weekly', 'Email Scheduled Weekly');
 INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (11,'email-scheduled-monthly', 'Email Scheduled Monthly');
+INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (12,'scheduled-reprocess-gift-daily', 'Reprocess payments');
 
 -- RULE_SEGMENT_TYPE and RULE_SEGMENT_TYPE_PARM (code function definitions for rule text phrases)
 -- RULE_EVENT_TYPE_X_SEGMENT_TYPE (what segment types can be used for what event types)
@@ -1293,6 +1294,7 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'scheduled-reprocess-gift-daily'),@RULE_SEGMENT_TYPE_ID);
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Capture payment';
@@ -1304,6 +1306,7 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'scheduled-reprocess-gift-daily'),@RULE_SEGMENT_TYPE_ID);
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Authorize and Capture payment';
@@ -1315,6 +1318,7 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'scheduled-reprocess-gift-daily'),@RULE_SEGMENT_TYPE_ID);
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Process ach payment';
@@ -1326,5 +1330,6 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'scheduled-reprocess-gift-daily'),@RULE_SEGMENT_TYPE_ID);
 
 

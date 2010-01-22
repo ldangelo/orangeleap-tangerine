@@ -71,7 +71,7 @@
             <li>
                 <a href="#"><spring:message code="viewMenu"/></a>
                 <ul>
-                <li><a href="constituentList.htm"><spring:message code="viewMenu.constituentList"/></a></li>
+                <%--<li><a href="constituentList.htm"><spring:message code="viewMenu.constituentList"/></a></li>--%>
                 <c:if test="${requestScope.constituent.id != null}">
 					<li class="sectionTitle"><spring:message code='for'/> <c:out value="${constituent.firstLast}"/>...</li>
                     <li><a href="addressList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.addressList"/></a></li>
@@ -203,7 +203,7 @@
 	<div class="searchBar">
         <c:choose>
             <c:when test="${requestScope.searchType eq 'gift'}"><c:set var="thisSearchType" value="gift"/></c:when>
-            <c:when test="${requestScope.searchType eq 'constituent'}"><c:set var="thisSearchType" value="constituent"/></c:when>
+            <%--<c:when test="${requestScope.searchType eq 'constituent'}"><c:set var="thisSearchType" value="constituent"/></c:when>--%>
             <c:otherwise><c:set var="thisSearchType" value="fullText"/></c:otherwise>
         </c:choose>
 		<form method="POST" action="<c:out value='${thisSearchType}'/>Search.htm" id="searchForm" name="searchForm">
@@ -212,7 +212,7 @@
 			<select name="type" id="typeSearch">
 
                 <option value="fullText" <c:if test="${requestScope.searchType eq 'fullText'}">selected="selected"</c:if>><spring:message code="searchFullText"/></option>
-				<option value="people" <c:if test="${requestScope.searchType eq 'constituent'}">selected="selected"</c:if>><spring:message code="constituents"/></option>
+				<%--<option value="people" <c:if test="${requestScope.searchType eq 'constituent'}">selected="selected"</c:if>><spring:message code="constituents"/></option>--%>
 				<option value="gifts" <c:if test="${requestScope.searchType eq 'gift'}">selected="selected"</c:if>><spring:message code="gifts"/></option>
 			</select>
 			<input type="submit" value="<spring:message code='search'/>" class="button" />

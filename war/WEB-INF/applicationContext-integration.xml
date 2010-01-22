@@ -73,6 +73,7 @@
 
     <!--<thread-local-channel id="constituent_route_channel"/>-->
     <beans:bean id="constituent_route_channel" class="org.springframework.integration.channel.DirectChannel"/>
+    <beans:bean id="gift_route_channel" class="org.springframework.integration.channel.DirectChannel"/>
 
     <channel id="channel_dev_null"/>
 
@@ -122,7 +123,7 @@
     <transformer input-channel="constituent_marshalling_transformer" output-channel="constituent_route_channel"
                  ref="marshallingTransformer">
     </transformer>
-    <transformer input-channel="gift_marshalling_transformer" output-channel="gift_jms_channel"
+    <transformer input-channel="gift_marshalling_transformer" output-channel="gift_route_channel"
                  ref="marshallingTransformer"/>
 
     <beans:bean id="AbstractRulesInterceptor" class="com.orangeleap.tangerine.service.rule.RulesInterceptor"
@@ -176,10 +177,28 @@
                 </beans:property>
                 <beans:property name="ignoreChannelNameResolutionFailures" value="true"/>
             </beans:bean>
-
         </beans:constructor-arg>
-
-
+    </beans:bean>
+    
+    <beans:bean id="giftJMSRouter" class="org.springframework.integration.endpoint.EventDrivenConsumer">
+        <beans:constructor-arg ref="gift_route_channel"/>
+        <beans:constructor-arg>
+            <beans:bean class="org.springframework.integration.xml.router.XPathMultiChannelRouter">
+                <beans:constructor-arg value="/gift/ns2:site/ns2:name"/>
+                <beans:constructor-arg value="ns2"/>
+                <beans:constructor-arg value="http://www.orangeleap.com/orangeleap/services/1.0"/>
+                <beans:property name="channelResolver">
+                    <beans:bean class="org.springframework.integration.channel.MapBasedChannelResolver">
+                        <beans:property name="channelMap">
+                            <beans:map>
+                                <beans:entry key="company1" value-ref="gift_jms_channel"/>
+                            </beans:map>
+                        </beans:property>
+                    </beans:bean>
+                </beans:property>
+                <beans:property name="ignoreChannelNameResolutionFailures" value="true"/>
+            </beans:bean>
+        </beans:constructor-arg>
     </beans:bean>
 
     <jms:outbound-channel-adapter id="Company1ConstituentJms" channel="constituent_jms_channel"

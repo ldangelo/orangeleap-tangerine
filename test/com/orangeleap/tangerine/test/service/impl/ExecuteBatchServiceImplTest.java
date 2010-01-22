@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.ExecuteBatchService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchService;
@@ -34,10 +35,6 @@ import com.orangeleap.tangerine.test.dataprovider.BatchProvider;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.common.SortInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,11 +43,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
-public class PostBatchServiceImplTest extends BaseTest {
+public class ExecuteBatchServiceImplTest extends BaseTest {
 
     @Autowired
-    private PostBatchService postBatchService;
+    private ExecuteBatchService executeBatchService;
+
+	@Autowired
+	private PostBatchService postBatchService;
 
     @Autowired
     private GiftService giftService;
@@ -64,7 +67,7 @@ public class PostBatchServiceImplTest extends BaseTest {
     @Autowired
     private SiteService siteService;
 
-    private void checkUneditedGiftValues(Gift gift) throws Exception {
+	private void checkUneditedGiftValues(Gift gift) throws Exception {
         if (gift.getId() == 5000L) {
             Assert.assertEquals(gift.getAmount().floatValue(), new BigDecimal("35").floatValue());
             Assert.assertTrue(gift.isPosted());
@@ -107,9 +110,8 @@ public class PostBatchServiceImplTest extends BaseTest {
 
     @Test(dataProvider = "setupBatchForGiftsWithInvalidPostedDate", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsA" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch" })
     public void testExecuteBatchForGiftsWithInvalidPostedDate(PostBatch batch) throws Exception {
-        batch.setCurrentlyExecuting(true);
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
-        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        PostBatch savedBatch = executeBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
@@ -153,9 +155,8 @@ public class PostBatchServiceImplTest extends BaseTest {
 
     @Test(dataProvider = "setupBatchForGiftsWithPostedGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsB" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsA" })
     public void testExecuteBatchForGiftsWithPostedGifts(PostBatch batch) throws Exception {
-        batch.setCurrentlyExecuting(true);
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
-        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        PostBatch savedBatch = executeBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
@@ -214,9 +215,8 @@ public class PostBatchServiceImplTest extends BaseTest {
 
     @Test(dataProvider = "setupBatchForGiftsWithInvalidAmountsDates", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsC" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsA" })
     public void testExecuteBatchForGiftsWithInvalidAmountsDates(PostBatch batch) throws Exception {
-        batch.setCurrentlyExecuting(true);
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
-        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        PostBatch savedBatch = executeBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
@@ -259,9 +259,8 @@ public class PostBatchServiceImplTest extends BaseTest {
      */
     @Test(dataProvider = "setupBatchForGiftsWithInvalidJournalGLAccounts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchErrorsD" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsC" })
     public void testExecuteBatchForGiftsWithInvalidJournalGLAccounts(PostBatch batch) throws Exception {
-        batch.setCurrentlyExecuting(true);
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
-        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        PostBatch savedBatch = executeBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
@@ -302,9 +301,8 @@ public class PostBatchServiceImplTest extends BaseTest {
     @Test(dataProvider = "setupBatchForGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
     public void testExecuteBatchForGifts(PostBatch batch) throws Exception {
         setupBankProjectCodePicklists();
-        batch.setCurrentlyExecuting(true);
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
-        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        PostBatch savedBatch = executeBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
@@ -382,9 +380,8 @@ public class PostBatchServiceImplTest extends BaseTest {
 
     @Test(dataProvider = "setupBatchForGiftsNoPosting", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
     public void testExecuteBatchForGiftsNoPosting(PostBatch batch) throws Exception {
-        batch.setCurrentlyExecuting(true);
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
-        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        PostBatch savedBatch = executeBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
@@ -427,9 +424,8 @@ public class PostBatchServiceImplTest extends BaseTest {
 
     @Test(dataProvider = "setupGiftBatchWithGiftIdsNoSegmentationIds", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
     public void testExecuteBatchWithGiftIdsNoSegmentationIds(PostBatch batch) throws Exception {
-        batch.setCurrentlyExecuting(true);
         batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
-        PostBatch savedBatch = postBatchService.executeBatch(batch);
+        PostBatch savedBatch = executeBatchService.executeBatch(batch);
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());

@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.service;
 
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.domain.PostBatchEntryError;
 import com.orangeleap.tangerine.domain.Segmentation;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -33,8 +34,6 @@ public interface PostBatchService {
     void checkPreExecuteBatchErrors(PostBatch batch);
     
     PostBatch maintainBatch(PostBatch postbatch);
-
-	PostBatch executeBatch(PostBatch postbatch);
 
 	void deleteBatch(PostBatch postbatch);
 
@@ -55,4 +54,6 @@ public interface PostBatchService {
     List<Map<String, Object>> readPostBatchEntryErrorsByBatchId(Long postBatchId, SortInfo sortInfo);
 
     int countPostBatchEntryErrorsByBatchId(Long postBatchId);
+
+	PostBatch createErrorBatch(PostBatch originalBatch, List<PostBatchEntry> entries);
 }

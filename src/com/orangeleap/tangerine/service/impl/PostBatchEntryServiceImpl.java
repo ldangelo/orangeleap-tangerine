@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service("postBatchEntryService")
-@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {BindException.class})
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
 public class PostBatchEntryServiceImpl extends AbstractTangerineService implements PostBatchEntryService {
 
     protected final Log logger = OLLogger.getLog(getClass());

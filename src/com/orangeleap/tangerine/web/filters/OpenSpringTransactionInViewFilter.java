@@ -58,6 +58,7 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 
         return FilterUtil.isResourceRequest(request)
                 || url.endsWith("/import.htm")
+		        || url.endsWith("/executeBatch.json")
                 ;
     }
 

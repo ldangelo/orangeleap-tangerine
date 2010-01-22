@@ -19,12 +19,9 @@
 package com.orangeleap.tangerine.service.impl;
 
 import com.orangeleap.tangerine.dao.PostBatchDao;
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.domain.Segmentation;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PostBatchEntryService;
@@ -41,14 +38,6 @@ import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
 import com.orangeleap.theguru.client.ObjectFactory;
 import com.orangeleap.theguru.client.Theguru;
 import com.orangeleap.theguru.client.WSClient;
-import org.apache.commons.logging.Log;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindException;
-
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +46,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Resource;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
@@ -258,81 +254,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public PostBatch executeBatch(PostBatch batch) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("executeBatch: batchId = " + batch.getId());
-        }
-        List<? extends AbstractCustomizableEntity> entries = null;
-        Set<Long> segmentationIds = batch.getEntrySegmentationIds();
-        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            // Get by giftIds if segmentationIds do not exist
-            if ( ! segmentationIds.isEmpty()) {
-                entries = giftService.readAllGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
-            }
-            else {
-                entries = giftService.readGiftsByIds(batch.getEntryGiftIds());
-            }
-        }
-        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-            // Get by giftIds if segmentationIds do not exist
-            if ( ! segmentationIds.isEmpty()) {
-                entries = adjustedGiftService.readAllAdjustedGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
-            }
-            else {
-                entries = adjustedGiftService.readAdjustedGiftsByIds(batch.getEntryAdjustedGiftIds());
-            }
-        }
-        final List<PostBatchEntry> errorEntries = new ArrayList<PostBatchEntry>();
-        final List<PostBatchEntry> executedEntries = new ArrayList<PostBatchEntry>();
-        if (entries != null) {
-            for (AbstractCustomizableEntity entity : entries) {
-                boolean executed;
-                try {
-                    executed = postBatchEntryService.executeBatchEntry(batch, entity);
-                }
-                catch (Exception e) {
-                    executed = false;
-                    logger.warn("executeBatch: exception occurred during saving of entity", e);
-                }
-                if (executed) {
-                    PostBatchEntry entry = new PostBatchEntry();
-                    if (entity instanceof Gift) {
-                        entry.setGiftId(entity.getId());
-                    }
-                    else if (entity instanceof AdjustedGift) {
-                        entry.setAdjustedGiftId(entity.getId());
-                    }
-                    executedEntries.add(entry);
-                }
-                else {
-                    if (postBatchEntryService.hasBatchErrorsInEntity(entity)) {
-                        errorEntries.add(copyEntityBatchErrorsToEntryErrors(entity));
-                    }
-                }
-            }
-        }
-        if ( ! errorEntries.isEmpty()) {
-            PostBatch errorBatch = createErrorBatch(batch, errorEntries);
-            if (errorBatch != null && errorBatch.getId() != null) {
-                batch.setErrorBatchId(errorBatch.getId());
-            }
-        }
-        batch.setPostBatchEntries(executedEntries); // this should contain just the executed gifts/adjustedGifts/etc
-
-        Long thisUserId = tangerineUserHelper.lookupUserId();
-        if (StringUtils.hasText(batch.getUpdateFieldValue(StringConstants.POSTED_DATE)) &&
-                postBatchEntryService.isValidPostedDate(batch.getUpdateFieldValue(StringConstants.POSTED_DATE))) {
-            batch.setPostedFields(thisUserId);
-        }
-        batch.setAnErrorBatch(false);  // if this was an error batch, just set to an executed batch instead
-        batch.setExecutionFields(thisUserId);
-
-        batch.setCurrentlyExecuting(false); // reset to not executing anymore
-        return postBatchDao.maintainPostBatch(batch);
-    }
-
-    @Override
     public void checkPreExecuteBatchErrors(PostBatch batch) {
         if (logger.isTraceEnabled()) {
             logger.trace("checkPreExecuteBatchErrors: batchId = " + batch.getId());
@@ -369,28 +290,21 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
     }
 
-    private PostBatchEntry copyEntityBatchErrorsToEntryErrors(AbstractCustomizableEntity entity) {
-        final PostBatchEntry entry = new PostBatchEntry();
-
-        if (entity instanceof Gift) {
-            entry.setGiftId(entity.getId());
-        }
-        else if (entity instanceof AdjustedGift) {
-            entry.setAdjustedGiftId(entity.getId());
-        }
-
-        final String errors = postBatchEntryService.getBatchErrorsInEntity(entity);
-        final String[] errorsSet = StringUtils.delimitedListToStringArray(errors, StringConstants.CUSTOM_FIELD_SEPARATOR);
-        if (errorsSet != null) {
-            for (String s : errorsSet) {
-                entry.addError(s);
-            }
-        }
-        return entry;
-    }
-
+    @Override
     public PostBatch createErrorBatch(PostBatch originalBatch, List<PostBatchEntry> entries) {
-        PostBatch batchForErrors = new PostBatch(TangerineMessageAccessor.getMessage("errorBatch"), originalBatch.getBatchType());
+	    String description;
+	    if (StringUtils.hasText(originalBatch.getBatchDesc())) {
+		    if (originalBatch.getBatchDesc().indexOf(TangerineMessageAccessor.getMessage("errorBatch")) == -1) {
+			    description = new StringBuilder(originalBatch.getBatchDesc()).append(" - ").append(TangerineMessageAccessor.getMessage("errorBatch")).toString();
+		    }
+		    else {
+			    description = originalBatch.getBatchDesc();
+		    }
+	    }
+	    else {
+		    description = TangerineMessageAccessor.getMessage("errorBatch");
+	    }
+        PostBatch batchForErrors = new PostBatch(description, originalBatch.getBatchType());
         batchForErrors.setAnErrorBatch(true);
         batchForErrors.setPostBatchEntries(entries);
         batchForErrors.setUpdateFields(originalBatch.getUpdateFields()); // Copy the update fields from the original batch to the error batch

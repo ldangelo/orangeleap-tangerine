@@ -20,20 +20,20 @@ package com.orangeleap.tangerine.json.controller.batch;
 
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.json.controller.list.TangerineJsonListController;
+import com.orangeleap.tangerine.service.ExecuteBatchService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
-import java.util.TreeSet;
 
 @Controller
 public class ExecuteBatchController extends TangerineJsonListController {
@@ -41,8 +41,11 @@ public class ExecuteBatchController extends TangerineJsonListController {
     protected final Log logger = OLLogger.getLog(getClass());
     public static final String HAS_BATCH_ERRORS = "hasBatchErrors";
 
-    @Resource(name = "postBatchService")
-    private PostBatchService postBatchService;
+    @Resource(name = "executeBatchService")
+    private ExecuteBatchService executeBatchService;
+
+	@Resource(name = "postBatchService")
+	private PostBatchService postBatchService;
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/executeBatch.json")
@@ -66,11 +69,8 @@ public class ExecuteBatchController extends TangerineJsonListController {
         }
 
         if (errorMsgs.isEmpty()) {
-            batch.setCurrentlyExecuting(true);
-            batch = postBatchService.maintainBatch(batch);
-
             // allow execution of the batch if no errors are found
-            PostBatch executedBatch = postBatchService.executeBatch(batch);
+            PostBatch executedBatch = executeBatchService.executeBatch(batch);
             if (executedBatch.getErrorBatchId() != null && executedBatch.getErrorBatchId() > 0) {
                 model.put("errorBatchId", executedBatch.getErrorBatchId());
             }

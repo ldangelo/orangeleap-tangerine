@@ -256,7 +256,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("{name: '").append(escapedFieldName).append("', ");
                         sb.append("mapping: '").append(escapedFieldName).append("', ");
 
-                        String extType = findExtType(bw, sectionFld);
+                        String extType = findExtDataType(bw, sectionFld);
                         sb.append("type: '").append(extType).append("'");
                         if (StringConstants.DATE.equals(extType)) {
                             sb.append(", dateFormat: '");
@@ -379,7 +379,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("dataIndex: '").append(TangerineForm.escapeFieldName(appendDotValueForCustomFields(sectionFld.getFieldPropertyName()))).append("', sortable: ");
                         sb.append( ! isListGrid && StringConstants.FULLTEXT.equals(searchTypeValue) ? Boolean.FALSE.toString() : Boolean.TRUE.toString());
 
-                        String extType = findExtType(bw, sectionFld);
+                        String extType = findExtDataType(bw, sectionFld);
                         if (ExtTypeHandler.EXT_FLOAT.equals(extType) || ExtTypeHandler.EXT_BOOLEAN.equals(extType) ||
                                 ExtTypeHandler.EXT_DATE.equals(extType) || ExtTypeHandler.EXT_STRING.equals(extType)) {
                             sb.append(", renderer: ");
@@ -601,7 +601,7 @@ public class SectionFieldTag extends AbstractTag {
                     for (SectionField sectionFld : fields) {
                         sb.append("{name: 'a").append(z).append("', ");
                         sb.append("mapping: 'a").append(z).append("', ");
-                        String extType = findExtType(bw, sectionFld);
+                        String extType = findExtDataType(bw, sectionFld);
                         sb.append("type: '").append(extType).append("'");
                         if ("date".equals(extType)) {
                             sb.append(", dateFormat: '");
@@ -696,7 +696,7 @@ public class SectionFieldTag extends AbstractTag {
                         sb.append("{header: '").append(sectionFld.getFieldDefinition().getDefaultLabel()).append("', ");
                         sb.append("dataIndex: 'a").append(y).append("', sortable: true");
 
-                        String extType = findExtType(bw, sectionFld);
+                        String extType = findExtDataType(bw, sectionFld);
                         if (ExtTypeHandler.EXT_FLOAT.equals(extType) || ExtTypeHandler.EXT_BOOLEAN.equals(extType) ||
                                 ExtTypeHandler.EXT_DATE.equals(extType) || ExtTypeHandler.EXT_STRING.equals(extType)) {
                             sb.append(", renderer: ");
@@ -1068,12 +1068,12 @@ public class SectionFieldTag extends AbstractTag {
         writeConstituentId(bw, sb);
     }
 
-    private String findExtType(BeanWrapper bw, SectionField sectionFld) {
+    private String findExtDataType(BeanWrapper bw, SectionField sectionFld) {
         Class clazz = bw.getPropertyType(sectionFld.getFieldPropertyName());
         if (clazz == null) {
-            logger.warn("findExtType: no Class able to be resolved for field = " + sectionFld.getFieldPropertyName());
+            logger.warn("findExtDataType: no Class able to be resolved for field = " + sectionFld.getFieldPropertyName());
         }
-        return ExtTypeHandler.findExtType(clazz);
+        return ExtTypeHandler.findExtDataType(clazz);
     }
 
     private void addIds(BeanWrapper bw, StringBuilder sb) {

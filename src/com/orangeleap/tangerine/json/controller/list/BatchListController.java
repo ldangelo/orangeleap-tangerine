@@ -173,6 +173,7 @@ public class BatchListController extends TangerineJsonListController {
 
     private void setupFields(final Map<String, Object> metaDataMap, final String showBatchStatus) {
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
+	    final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(new PostBatch());
 
         final Set<String> fieldNames = findFieldNamesByStatus(showBatchStatus);
         for (String thisFieldName : fieldNames) {
@@ -181,18 +182,12 @@ public class BatchListController extends TangerineJsonListController {
             fieldMap.put(StringConstants.NAME, thisFieldName);
             fieldMap.put(StringConstants.MAPPING, thisFieldName);
 
-            String extType = ExtTypeHandler.EXT_STRING;
-            if (StringConstants.ID.equals(thisFieldName)) {
-                extType = ExtTypeHandler.EXT_INT;
-            }
-            else if (EXECUTED.equals(thisFieldName) ||
-		            CURRENTLY_EXECUTING.equals(thisFieldName) || 
-		            FOR_TOUCH_POINTS.equals(thisFieldName)) {
-                extType = ExtTypeHandler.EXT_BOOLEAN;
-            }
-            else if (EXECUTED_DATE.equals(thisFieldName) || CREATE_DATE.equals(thisFieldName)) {
-                extType = ExtTypeHandler.EXT_DATE;
-                fieldMap.put(StringConstants.DATE_FORMAT, "Y-m-d H:i:s");
+            String extType = ExtTypeHandler.EXT_AUTO;
+	        if (bw.isReadableProperty(thisFieldName)) {
+		        extType = ExtTypeHandler.findExtDataType(bw.getPropertyType(thisFieldName));
+	        }
+            if (ExtTypeHandler.EXT_DATE.equals(extType)) {
+                fieldMap.put(StringConstants.DATE_FORMAT, StringConstants.EXT_DATE_TIME_FORMAT);
             }
 
             fieldMap.put(StringConstants.TYPE, extType);

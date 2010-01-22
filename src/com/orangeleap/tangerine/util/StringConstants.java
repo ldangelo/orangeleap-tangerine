@@ -180,6 +180,7 @@ public final class StringConstants {
     public static final String YYYY_MM_DD_HH_MM_SS_FORMAT_2 = "yyyy/MM/dd HH:mm:ss";
     public static final String MM_DD_YYYY_HH_MM_SS_FORMAT_1 = "MM/dd/yyyy HH:mm:ss";
     public static final String MM_DD_YYYY_HH_MM_SS_FORMAT_2 = "MM-dd-yyyy HH:mm:ss";
+	public static final String EXT_DATE_TIME_FORMAT = "Y-m-d H:i:s";
 
     public static final String NAME = "name";
     public static final String GROUP = "group";

@@ -109,7 +109,7 @@ public class TangerineListHelper {
                         if (displayValue instanceof String) {
                             displayValue = HttpUtil.escapeDoubleQuoteReturns((String) displayValue);
 
-                            String extType = ExtTypeHandler.findExtType(beanWrapper.getPropertyType(field.getFieldPropertyName()));
+                            String extType = ExtTypeHandler.findExtDataType(beanWrapper.getPropertyType(field.getFieldPropertyName()));
                             if (ExtTypeHandler.EXT_BOOLEAN.equals(extType) && ("Y".equalsIgnoreCase((String) displayValue) ||
                                     "yes".equalsIgnoreCase((String) displayValue) ||
                                     "T".equalsIgnoreCase((String) displayValue) ||

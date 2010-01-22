@@ -89,7 +89,7 @@ OrangeLeap.msgBundle = {
     mustDoStep2: 'You must pick Segmentations (Step 2) first.',
     noUpdatableRows: 'There are no updatable rows based on the Segmentation you chose.  Choose a different segmentation (Step 2).',
     mustDoStep3: 'You must complete Step 3 first.',
-    mustDoStep4TouchPointFields: 'You must create Touch Points (Step 4) first.',
+    mustDoStep4TouchPointFields: 'You must create Touch Point Fields (Step 4) first.',
     mustDoStep4FieldUpdateCriteria: 'You must create Field Update Criteria (Step 4) first.',
     loading: 'Loading...',
     loadingSegmentations: 'Loading Segmentations...',
@@ -721,6 +721,14 @@ Ext.onReady(function() {
         return isCriteriaValid;
     }
 
+    function touchPointFieldsValid(entryTypeId) {
+        var isValid = true;
+        if (Ext.isEmpty(Ext.getCmp(entryTypeId).getValue())) {
+            isValid = false;
+        }
+        return isValid;
+    }
+
     function showErrorMsg(errorMsg) {
         Ext.MessageBox.show.defer(1, Ext.MessageBox,
             [{ title: msgs.error, icon: Ext.MessageBox.ERROR,
@@ -801,7 +809,7 @@ Ext.onReady(function() {
 						accessibleSteps[accessibleSteps.length] = 'step5Grp';
 					}
 				}
-                else if (Ext.isEmpty(Ext.getCmp('entryType').getValue())) {
+                else if ( ! touchPointFieldsValid('entryType')) {
                     isValid = false;
                     invalidateAccessibleSteps('step4Grp');
                     showErrorMsg(msgs.mustDoStep4TouchPointFields);
@@ -937,40 +945,38 @@ Ext.onReady(function() {
         return { 'pickedIds': pickedIds, 'notPickedIds': notPickedIds };
     }
 
-    function initTabSaveParams(groupTabPanel, newGroup, currentGroup) {
+    function initTabSaveParams(currentGroupId) {
         var saveParams = {};
-        if (currentGroup) {
-            if (currentGroup.mainItem.id == 'step1Grp') {
-                saveParams = { 'batchType': getBatchTypeValue(), 'batchDesc': Ext.getCmp('batchDesc').getValue(),
-                    'criteriaFields': Ext.getCmp('criteriaFields').getValue(), 'previousStep': 'step1Grp' };
-                $('#step1Num').addClass('complete');
-            }
-            else if (currentGroup.mainItem.id == 'step2Grp') {
-                var theseSegs = findPickedSegmentations();
-                saveParams = { 'pickedIds': theseSegs.pickedIds.toString(), 'notPickedIds': theseSegs.notPickedIds.toString(), 'previousStep': 'step2Grp' };
-                $('#step2Num').addClass('complete');
-            }
-            else if (currentGroup.mainItem.id == 'step3Grp') {
-                // nothing to save for step3 - view only
-                saveParams = { 'previousStep': 'step3Grp' };
-                $('#step3Num').addClass('complete');
-            }
-            else if (currentGroup.mainItem.id == 'step4Grp') {
-                if ( ! isForTouchPoints()) {
-                    findUpdateFields(step4UpdatableFieldsForm.store, saveParams);
-                }
-                else {
-                    findTouchPointFields(step4TouchPointFieldsForm.getForm(), saveParams);
-                }
-                saveParams['previousStep'] = 'step4Grp';
-                $('#step4Num').addClass('complete');
-            }
-            else if (currentGroup.mainItem.id == 'step5Grp') {
-                // nothing to save for step5 - view only
-                saveParams = { 'previousStep': 'step5Grp' };
-                $('#step5Num').addClass('complete');
-            }
-        }
+		if (currentGroupId == 'step1Grp') {
+			saveParams = { 'batchType': getBatchTypeValue(), 'batchDesc': Ext.getCmp('batchDesc').getValue(),
+				'criteriaFields': Ext.getCmp('criteriaFields').getValue(), 'previousStep': 'step1Grp' };
+			$('#step1Num').addClass('complete');
+		}
+		else if (currentGroupId == 'step2Grp') {
+			var theseSegs = findPickedSegmentations();
+			saveParams = { 'pickedIds': theseSegs.pickedIds.toString(), 'notPickedIds': theseSegs.notPickedIds.toString(), 'previousStep': 'step2Grp' };
+			$('#step2Num').addClass('complete');
+		}
+		else if (currentGroupId == 'step3Grp') {
+			// nothing to save for step3 - view only
+			saveParams = { 'previousStep': 'step3Grp' };
+			$('#step3Num').addClass('complete');
+		}
+		else if (currentGroupId == 'step4Grp') {
+			if ( ! isForTouchPoints()) {
+				findUpdateFields(step4UpdatableFieldsForm.store, saveParams);
+			}
+			else {
+				findTouchPointFields(step4TouchPointFieldsForm.getForm(), saveParams);
+			}
+			saveParams['previousStep'] = 'step4Grp';
+			$('#step4Num').addClass('complete');
+		}
+		else if (currentGroupId == 'step5Grp') {
+			// nothing to save for step5 - view only
+			saveParams = { 'previousStep': 'step5Grp' };
+			$('#step5Num').addClass('complete');
+		}
         return saveParams;
     }
 
@@ -1005,7 +1011,7 @@ Ext.onReady(function() {
         if ( ! startNum) {
             startNum = 0;
         }
-        var saveParams = initTabSaveParams(groupTabPanel, newGroup, currentGroup);
+        var saveParams = (currentGroup && currentGroup.mainItem.id ? initTabSaveParams(currentGroup.mainItem.id) : {} );
         var params = {};
         if (newGroup.mainItem.id == 'step1Grp') {
             editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
@@ -1065,6 +1071,13 @@ Ext.onReady(function() {
 					'success': function(form, action) {
 						flowExecutionKey = action.result.flowExecutionKey;
 						accessibleSteps = action.result.accessibleSteps;
+                        toggleStep4TouchPointFields(Ext.getCmp('entryType').getValue());
+						if (touchPointFieldsValid('entryType')) {
+							step4TouchPointFieldsForm.saveButton.enable();
+						}
+						else {
+							step4TouchPointFieldsForm.saveButton.disable();
+						}
 		                unmaskStep('step4Grp');
 						setTimeout(function() {
 							OrangeLeap.extFocusFirstFormElem(step4TouchPointFieldsForm.getForm());
@@ -1241,6 +1254,9 @@ Ext.onReady(function() {
                 }
                 if (hasPickedRows()) {
                     step2Form.nextButton.enable();
+                }
+                else {
+                    step2Form.nextButton.disable();
                 }
                 unmaskStep('step2Grp');
             },
@@ -1701,9 +1717,15 @@ Ext.onReady(function() {
                 cls: 'saveButton',
                 ref: '../saveButton',
                 formBind: true,
+                disabled: true,
                 disabledClass: 'disabledButton',
                 handler: function(button, event) {
-                    saveBatch('doBatch.htm', getFlowExecutionKey(), cancelEditBatch, 'open');
+                    if (touchPointFieldsValid('entryType')) {
+	                    saveBatch('doBatch.htm', getFlowExecutionKey(), cancelEditBatch, 'open', initTabSaveParams('step4Grp'));
+                    }
+                    else {
+	                    showErrorMsg(msgs.mustDoStep4TouchPointFields);
+                    }
                 }
             },
             {
@@ -1732,31 +1754,15 @@ Ext.onReady(function() {
                     'focus': OrangeLeap.extElementFocus,
                     'blur': OrangeLeap.extElementBlur,
                     'beforeselect': function(combo, record, index) {
-                        var newVal = record.get('itemName');
-                        if (newVal == 'Mail' || newVal == 'MailingLabel' || newVal == 'Email' || newVal == 'Call' || newVal == 'Other') {
-                            Ext.select(".ea-template").each(showFormItem);
-                        }
-                        else {
-                            Ext.select(".ea-template").each(hideFormItem);
-                        }
-                        if (newVal == 'Mail' || newVal == 'MailingLabel' || newVal == 'Email' || newVal == 'Call') {
-                            Ext.select(".ea-correspondence").each(showFormItem);
-                        }
-                        else {
-                            Ext.select(".ea-correspondence").each(hideFormItem);
-                        }
-                        if (newVal == 'Note') {
-                            Ext.select(".ea-noteType").each(showFormItem);
-                        }
-                        else {
-                            Ext.select(".ea-noteType").each(hideFormItem);
-                        }
-                        if (newVal == 'Event') {
-                            Ext.select(".ea-event").each(showFormItem);
-                        }
-                        else {
-                            Ext.select(".ea-event").each(hideFormItem);
-                        }
+                        toggleStep4TouchPointFields(record.get('itemName'));
+                    },
+                    'change': function(combo, newVal, oldVal) {
+						if (touchPointFieldsValid('entryType')) {
+							step4TouchPointFieldsForm.saveButton.enable();							
+						}
+						else {
+							step4TouchPointFieldsForm.saveButton.disable();							
+						}
                     },
                     scope: this
                 }
@@ -1941,6 +1947,33 @@ Ext.onReady(function() {
 			};
 		}
 	});
+
+	function toggleStep4TouchPointFields(value) {
+		if (value == 'Mail' || value == 'MailingLabel' || value == 'Email' || value == 'Call' || value == 'Other') {
+			Ext.select(".ea-template").each(showFormItem);
+		}
+		else {
+			Ext.select(".ea-template").each(hideFormItem);
+		}
+		if (value == 'Mail' || value == 'MailingLabel' || value == 'Email' || value == 'Call') {
+			Ext.select(".ea-correspondence").each(showFormItem);
+		}
+		else {
+			Ext.select(".ea-correspondence").each(hideFormItem);
+		}
+		if (value == 'Note') {
+			Ext.select(".ea-noteType").each(showFormItem);
+		}
+		else {
+			Ext.select(".ea-noteType").each(hideFormItem);
+		}
+		if (value == 'Event') {
+			Ext.select(".ea-event").each(showFormItem);
+		}
+		else {
+			Ext.select(".ea-event").each(hideFormItem);
+		}
+	}
 
 	function loadTouchPointFormFields(response) {
 		var obj = Ext.decode(response.responseText);
@@ -2359,11 +2392,12 @@ Ext.onReady(function() {
         tbar: step5Toolbar
     });
 
-    function saveBatch(saveUrl, executionKey, cancelFunc, batchStatusToShow) {
+    function saveBatch(saveUrl, executionKey, cancelFunc, batchStatusToShow, params) {
+        var saveParams = jQuery.extend({ '_eventId_save': 'save', 'execution': executionKey }, params); // copy properties from params
         Ext.Ajax.request({
             url: saveUrl,
             method: 'POST',
-            params: { '_eventId_save': 'save', 'execution': executionKey },
+            params: saveParams,
             success: function(response, options) {
                 var responseText = response.responseText;
                 // reload the main batch window to see the new batch

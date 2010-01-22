@@ -42,20 +42,28 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 
 	@Override
     public void doApplyRules(Gift gift) {
-        String site = null;
-        site =gift.getSite().getName();
-
-        RuleAgent agent = (RuleAgent) ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site);
-        OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
         
-		RuleBase ruleBase = agent.getRuleBase();
-		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.GIFT_SAVE, site, false);
-
-		StatefulSession workingMemory = ruleBase.newStatefulSession();
-		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
+		String site = gift.getSite().getName();
 		
-		try{
-			if (logger.isDebugEnabled()) {
+		SiteService siteService = (SiteService)applicationContext.getBean("siteService");
+		boolean useDrools = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(RulesInterceptor.USE_DROOLS));
+
+		StatefulSession workingMemory = null;
+		OrangeLeapRuleSession olWorkingMemory = null;
+		
+		if (useDrools) {
+			RuleAgent agent = (RuleAgent) ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site);
+			RuleBase ruleBase = agent.getRuleBase();
+			workingMemory = ruleBase.newStatefulSession();
+		} else {
+			OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
+			OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.GIFT_SAVE, site, false);
+			olWorkingMemory = olRuleBase.newRuleSession();
+		}
+		
+		try {
+			
+			if (logger.isDebugEnabled() && useDrools ) {
 				workingMemory.addEventListener (new DebugAgendaEventListener());
 				workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
 			}
@@ -70,65 +78,55 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 	        EmailService es = (EmailService) applicationContext.getBean("emailService");
 			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
+			try {
+				
+				ss.populateDefaultEntityEditorMaps(gift);
+				Constituent constituent = gift.getConstituent();
+				constituent.setGifts(gs.readMonetaryGifts(constituent));
+				constituent.setSite(ss.readSite(constituent.getSite().getName()));
+				constituent.setEmails(es.readByConstituentId(constituent.getId()));
+				ss.populateDefaultEntityEditorMaps(constituent);
+				constituent.setSuppressValidation(true);
+				TaskStack.push(new RuleTask(applicationContext, site + "email",constituent,gift));
 
-
-				try {
-
+				if (useDrools) {
 					workingMemory.setFocus(site+"gift");
 					workingMemory.setGlobal("applicationContext", applicationContext);
 					workingMemory.setGlobal("constituentService", ps);
 					workingMemory.setGlobal("giftService",gs);
 					workingMemory.setGlobal("picklistItemService",plis);
 					workingMemory.setGlobal("userHelper",uh);
-
 					workingMemory.insert(ss.readSite(site));
-					
-					olWorkingMemory.put(RuleObjectType.SITE, ss.readSite(site));
-
-					ss.populateDefaultEntityEditorMaps(gift);
 					workingMemory.insert(gift);
-					
-					olWorkingMemory.put(RuleObjectType.GIFT, gift);
-
-					Constituent constituent = gift.getConstituent();
-
-					constituent.setGifts(gs.readMonetaryGifts(constituent));
-					constituent.setSite(ss.readSite(constituent.getSite().getName()));
-					constituent.setEmails(es.readByConstituentId(constituent.getId()));
-					ss.populateDefaultEntityEditorMaps(constituent);
-					constituent.setSuppressValidation(true);
-
-					TaskStack.push(new RuleTask(applicationContext,site + "email",constituent,gift));
-
 					workingMemory.insert(constituent);
-					
+				} else {					
+					olWorkingMemory.put(RuleObjectType.SITE, ss.readSite(site));
+					olWorkingMemory.put(RuleObjectType.GIFT, gift);
 					olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
-
-				} catch (Exception ex) {
-					logger.error(ex.getMessage());
-					errorLogService.addErrorMessage(ex.getMessage(), "gift.rule.setup");
 				}
 
-				if (site == null) {
-					site =gift.getSite().getName();
-				}
+			} catch (Exception ex) {
+				logger.error(ex.getMessage());
+				errorLogService.addErrorMessage(ex.getMessage(), "gift.rule.setup");
+			}
 
 			try {
+				
 				logger.debug("*** firing all rules");
 
-				workingMemory.fireAllRules();
-				
-				olWorkingMemory.executeRules(); 
+				if (useDrools) {
+					workingMemory.fireAllRules();
+				} else {
+					olWorkingMemory.executeRules(); 
+				}
 				
 			} catch (Exception e) {
-				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
-				logger.error(e);
+				logger.error("*** Exception firing rules: "+e.getMessage(), e);
 				errorLogService.addErrorMessage(e.getMessage(), "gift.rule.fire");
 			}
 
-		}finally{
-			if (workingMemory != null)
-				workingMemory.dispose();
+		} finally {
+			if (useDrools && workingMemory != null) workingMemory.dispose();
 		}
 
 	}

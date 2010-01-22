@@ -1,18 +1,10 @@
 package com.orangeleap.tangerine.service.rule;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
-
-import com.orangeleap.tangerine.type.RuleEventNameType;
-import com.orangeleap.tangerine.type.RuleObjectType;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.agent.RuleAgent;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
@@ -27,15 +19,18 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.OrangeLeapRuleAgent;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.util.RuleTask;
+import com.orangeleap.tangerine.type.RuleEventNameType;
+import com.orangeleap.tangerine.type.RuleObjectType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.util.TaskStack;
 
 
 
 public abstract class RulesInterceptor implements ApplicationContextAware, ApplicationListener {
 
 	private static final Log logger = OLLogger.getLog(RulesInterceptor.class);
+	
+	public final static String USE_DROOLS = "use.drools";
 
 	private ApplicationContext applicationContext;
 	private String agendaGroup;
@@ -64,17 +59,26 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
     }
 
     public void doApplyRules(Gift gift) {
+    	
+    	String site = gift.getSite().getName();
 
-		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(gift.getSite().getName()).getRuleBase();
+		SiteService siteService = (SiteService)applicationContext.getBean("siteService");
+		boolean useDrools = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(RulesInterceptor.USE_DROOLS));
 
-		OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
-		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.EMAIL, gift.getSite().getName(), false);
-
-		StatefulSession workingMemory = ruleBase.newStatefulSession();
-		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
+		StatefulSession workingMemory = null;
+		OrangeLeapRuleSession olWorkingMemory = null;
+		
+		if (useDrools) {
+			RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(gift.getSite().getName()).getRuleBase();
+			workingMemory = ruleBase.newStatefulSession();
+		} else {
+			OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
+			OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.EMAIL, gift.getSite().getName(), false);
+			olWorkingMemory = olRuleBase.newRuleSession();
+		}
 
 		try{
-			if (logger.isDebugEnabled()) {
+			if (logger.isDebugEnabled() && useDrools) {
 				workingMemory.addEventListener (new DebugAgendaEventListener());
 				workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
 			}
@@ -87,55 +91,40 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 			TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
 
-			String site = null;
+			Constituent constituent = gift.getConstituent();
 
-			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setGlobal("constituentService", ps);
-			workingMemory.setGlobal("giftService",gs);
-			workingMemory.setGlobal("picklistItemService",plis);
-			workingMemory.setGlobal("userHelper",uh);
+			constituent.setGifts(gs.readMonetaryGifts(constituent));
+			constituent.setSite(ss.readSite(constituent.getSite().getName()));
 
-				try {
-					if (site == null) {
-						site =gift.getSite().getName();
-					}
-					workingMemory.setFocus(site+"email");
-
-					workingMemory.insert(gift);
-					olWorkingMemory.put(RuleObjectType.GIFT, gift);
-
-					Constituent constituent = gift.getConstituent();
-
-					constituent.setGifts(gs.readMonetaryGifts(constituent));
-					constituent.setSite(ss.readSite(constituent.getSite().getName()));
-
-					workingMemory.insert(constituent);
-					olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
-
-				} catch (Exception ex) {
-					logger.error(ex.getMessage());
-				}
-
-				if (site == null) {
-					site =gift.getSite().getName();
-				}
-
+			if (useDrools) {
+				workingMemory.setGlobal("applicationContext", applicationContext);
+				workingMemory.setGlobal("constituentService", ps);
+				workingMemory.setGlobal("giftService",gs);
+				workingMemory.setGlobal("picklistItemService",plis);
+				workingMemory.setGlobal("userHelper",uh);
+				workingMemory.setFocus(site+"email");
+				workingMemory.insert(gift);
+				workingMemory.insert(constituent);
+			} else {
+				olWorkingMemory.put(RuleObjectType.GIFT, gift);
+				olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
+			}
+			
 			try {
 
 				logger.debug("*** firing all rules");
-
-				workingMemory.fireAllRules();
-
-				olWorkingMemory.executeRules(); 
-
+				if (useDrools) {
+					workingMemory.fireAllRules();
+				} else {
+					olWorkingMemory.executeRules(); 
+				}
 			} catch (Exception e) {
 				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
 				logger.error(e);
 			}
 
-		}finally{
-			if(workingMemory != null)
-				workingMemory.dispose();
+		} finally {
+			if (useDrools && workingMemory != null) workingMemory.dispose();
 		}
 
 	}

@@ -52,6 +52,7 @@ import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
+import com.orangeleap.tangerine.service.rule.RulesInterceptor;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.type.RuleObjectType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -187,55 +188,58 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			ErrorLogService errorLogService = (ErrorLogService) applicationContext
 					.getBean("errorLogService");
 
-			boolean reindexFullText = "true".equalsIgnoreCase(siteService
-					.getSiteOptionsMap().get(REINDEX_FULLTEXT));
 
 			try {
 				TaskStack.clear();
 
 				Site site = ss.readSite(uh.lookupUserSiteName());
+				boolean useDrools = "true".equalsIgnoreCase(ss.getSiteOptionsMap().get(RulesInterceptor.USE_DROOLS));
 
-				RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
+				StatefulSession workingMemory = null;
+				OrangeLeapRuleSession olWorkingMemory = null;
+				
+				if (useDrools) {
+					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
 						.getBean("DroolsRuleAgent")).getRuleAgent(
 						uh.lookupUserSiteName()).getRuleBase();
+					workingMemory = ruleBase.newStatefulSession();
+				} else {
+					RuleEventNameType ruleEventNameType = null;
+					if (schedule.contains("daily")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_DAILY;
+					if (schedule.contains("weekly")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_WEEKLY;
+					if (schedule.contains("monthly")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_MONTHLY;
+					OrangeLeapRuleBase olRuleBase = orangeLeapRuleAgent.getOrangeLeapRuleBase(ruleEventNameType, site.getName(), false);
+					olWorkingMemory = olRuleBase.newRuleSession();
+				}
 				
-				RuleEventNameType ruleEventNameType = null;
-				if (schedule.contains("daily")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_DAILY;
-				if (schedule.contains("weekly")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_WEEKLY;
-				if (schedule.contains("monthly")) ruleEventNameType = RuleEventNameType.EMAIL_SCHEDULED_MONTHLY;
-
-				OrangeLeapRuleBase olRuleBase = orangeLeapRuleAgent.getOrangeLeapRuleBase(ruleEventNameType, site.getName(), false);
-				OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
-
-				StatefulSession workingMemory = ruleBase.newStatefulSession();
 				try {
-					if (logger.isInfoEnabled()) {
+					if (logger.isInfoEnabled() && useDrools) {
 						workingMemory
 								.addEventListener(new DebugAgendaEventListener());
 						workingMemory
 								.addEventListener(new DebugWorkingMemoryEventListener());
 					}
 
-					workingMemory.setFocus(getSiteName() + schedule);
-					workingMemory.setGlobal("applicationContext",
-							applicationContext);
-					workingMemory.setGlobal("constituentService", ps);
-					workingMemory.setGlobal("giftService", gs);
-					workingMemory.setGlobal("picklistItemService", plis);
-					workingMemory.setGlobal("userHelper", uh);
-
-					workingMemory.insert(site);
-					olWorkingMemory.put(RuleObjectType.SITE, site);
-
-					workingMemory.fireAllRules();
-					olWorkingMemory.executeRules(); 
+					if (useDrools) {
+						workingMemory.setFocus(getSiteName() + schedule);
+						workingMemory.setGlobal("applicationContext",
+								applicationContext);
+						workingMemory.setGlobal("constituentService", ps);
+						workingMemory.setGlobal("giftService", gs);
+						workingMemory.setGlobal("picklistItemService", plis);
+						workingMemory.setGlobal("userHelper", uh);
+						workingMemory.insert(site);
+						workingMemory.fireAllRules();
+					} else {
+						olWorkingMemory.put(RuleObjectType.SITE, site);
+						olWorkingMemory.executeRules(); 
+					}
 
 					TaskStack.execute();
 					TaskStack.clear();
 
 				} finally {
-					if (workingMemory != null)
-						workingMemory.dispose();
+					if (useDrools && workingMemory != null) workingMemory.dispose();
 				}
 
 			} catch (Throwable t) {

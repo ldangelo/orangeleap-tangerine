@@ -52,16 +52,24 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 
     public void doApplyRules(Gift gift) {
         String site = gift.getSite().getName();
-        RuleBase ruleBase = ((DroolsRuleAgent) applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
 
-        OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
-		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.PAYMENT_PROCESSING, site, false);
-
-        StatefulSession workingMemory = ruleBase.newStatefulSession();
-		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
+		SiteService siteService = (SiteService)applicationContext.getBean("siteService");
+		boolean useDrools = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(RulesInterceptor.USE_DROOLS));
+        
+		StatefulSession workingMemory = null;
+		OrangeLeapRuleSession olWorkingMemory = null;
+		
+		if (useDrools) {
+	        RuleBase ruleBase = ((DroolsRuleAgent) applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
+	        workingMemory = ruleBase.newStatefulSession();
+		} else {
+	        OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
+			OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.PAYMENT_PROCESSING, site, false);
+			olWorkingMemory = olRuleBase.newRuleSession();
+		}
 
 		try{
-        	if (logger.isDebugEnabled()) {
+        	if (logger.isDebugEnabled() && useDrools) {
                 workingMemory.addEventListener(new DebugAgendaEventListener());
                 workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
             }
@@ -75,31 +83,25 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
             try {
-                workingMemory.setFocus(site + "processpayment");
-				workingMemory.setGlobal("applicationContext", applicationContext);
-				workingMemory.setGlobal("constituentService", ps);
-				workingMemory.setGlobal("giftService",gs);
-				workingMemory.setGlobal("picklistItemService",plis);
-				workingMemory.setGlobal("userHelper",uh);
+            	
+		        Constituent constituent = gift.getConstituent();
+		        constituent.setGifts(gs.readMonetaryGifts(constituent));
 
-
-                workingMemory.insert(gift.getSite());
-				olWorkingMemory.put(RuleObjectType.SITE, ss.readSite(site));
-                workingMemory.insert(gift);
-				olWorkingMemory.put(RuleObjectType.GIFT, gift);
-
-    /*			List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift
-    					.getConstituent().getId());
-    			Iterator<Gift> giftsIter = gifts.iterator();
-    			while (giftsIter.hasNext()) {
-    				workingMemory.insert(giftsIter.next());
-    			}*/
-
-                Constituent constituent = gift.getConstituent();
-                constituent.setGifts(gs.readMonetaryGifts(constituent));
-
-                workingMemory.insert(constituent);
-				olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
+        		if (useDrools) {
+	                workingMemory.setFocus(site + "processpayment");
+					workingMemory.setGlobal("applicationContext", applicationContext);
+					workingMemory.setGlobal("constituentService", ps);
+					workingMemory.setGlobal("giftService",gs);
+					workingMemory.setGlobal("picklistItemService",plis);
+					workingMemory.setGlobal("userHelper",uh);
+	                workingMemory.insert(gift.getSite());
+	                workingMemory.insert(gift);
+	                workingMemory.insert(constituent);
+        		} else {
+	                olWorkingMemory.put(RuleObjectType.SITE, ss.readSite(site));
+					olWorkingMemory.put(RuleObjectType.GIFT, gift);
+					olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
+        		}
 
             } catch (Exception ex) {
                 logger.info(ex.getMessage());
@@ -109,20 +111,18 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
             try {
 
                 logger.debug("*** firing all rules");
-
-                workingMemory.fireAllRules();
-
-				olWorkingMemory.executeRules(); 
-				
+                if (useDrools) {
+                	workingMemory.fireAllRules();
+                } else {
+                	olWorkingMemory.executeRules(); 
+                }
+                
             } catch (Exception e) {
-                logger
-                        .info("*** exception firing rules - make sure rule base exists and global variable is set: ");
-                logger.info(e);
+                logger.info("*** exception firing rules: "+e.getMessage(), e);
                 errorLogService.addErrorMessage(e.getMessage(), "payment.rule.fire");
             }
-        }finally{
-        	if (workingMemory != null)
-                workingMemory.dispose();
+        } finally {
+        	if (useDrools && workingMemory != null) workingMemory.dispose();
         }
     }
 

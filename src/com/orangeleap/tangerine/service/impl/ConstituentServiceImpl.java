@@ -79,6 +79,7 @@ import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
+import com.orangeleap.tangerine.service.rule.RulesInterceptor;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.type.RuleObjectType;
@@ -626,38 +627,45 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
 		Site site = ss.readSite(uh.lookupUserSiteName());
 
-		RuleBase ruleBase = ((DroolsRuleAgent) context
-				.getBean("DroolsRuleAgent")).getRuleAgent(uh.lookupUserSiteName())
-				.getRuleBase();
+		boolean useDrools = "true".equalsIgnoreCase(ss.getSiteOptionsMap().get(RulesInterceptor.USE_DROOLS));
+
+		StatefulSession workingMemory = null;
+		OrangeLeapRuleSession olWorkingMemory = null;
 		
-		
-		RuleEventNameType ruleEventNameType = null;
-		if (schedule.contains("daily")) ruleEventNameType = RuleEventNameType.SCHEDULED_DAILY;
-		if (schedule.contains("weekly")) ruleEventNameType = RuleEventNameType.SCHEDULED_WEEKLY;
-		if (schedule.contains("monthly")) ruleEventNameType = RuleEventNameType.SCHEDULED_MONTHLY;
+		if (useDrools) {
+			RuleBase ruleBase = ((DroolsRuleAgent) context
+					.getBean("DroolsRuleAgent")).getRuleAgent(uh.lookupUserSiteName())
+					.getRuleBase();
+			workingMemory = ruleBase.newStatefulSession();
+		} else {
+			RuleEventNameType ruleEventNameType = null;
+			if (schedule.contains("daily")) ruleEventNameType = RuleEventNameType.SCHEDULED_DAILY;
+			if (schedule.contains("weekly")) ruleEventNameType = RuleEventNameType.SCHEDULED_WEEKLY;
+			if (schedule.contains("monthly")) ruleEventNameType = RuleEventNameType.SCHEDULED_MONTHLY;
+			OrangeLeapRuleBase olRuleBase = orangeLeapRuleAgent.getOrangeLeapRuleBase(ruleEventNameType, site.getName(), false);
+			olWorkingMemory = olRuleBase.newRuleSession();
+		}
 
-		OrangeLeapRuleBase olRuleBase = orangeLeapRuleAgent.getOrangeLeapRuleBase(ruleEventNameType, site.getName(), false);
-		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
-
-
-		StatefulSession workingMemory = ruleBase.newStatefulSession();
 		try{
-			if (logger.isInfoEnabled()) {
+			if (logger.isInfoEnabled() && useDrools) {
 				workingMemory.addEventListener(new DebugAgendaEventListener());
 				workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
 			}
 
-			workingMemory.setFocus(getSiteName() + schedule);
-			workingMemory.setGlobal("applicationContext", context);
-			workingMemory.setGlobal("constituentService", ps);
-			workingMemory.setGlobal("giftService",gs);
-			workingMemory.setGlobal("picklistItemService",plis);
-			workingMemory.setGlobal("userHelper",uh);
-
-		
-			workingMemory.insert(site);
-			olWorkingMemory.put(RuleObjectType.SITE, site);
-
+			if (useDrools) {
+				workingMemory.setFocus(getSiteName() + schedule);
+				workingMemory.setGlobal("applicationContext", context);
+				workingMemory.setGlobal("constituentService", ps);
+				workingMemory.setGlobal("giftService",gs);
+				workingMemory.setGlobal("picklistItemService",plis);
+				workingMemory.setGlobal("userHelper",uh);
+	
+			
+				workingMemory.insert(site);
+			} else {
+				olWorkingMemory.put(RuleObjectType.SITE, site);
+			}
+			
 			Boolean updated = false;
 
 			//
@@ -673,7 +681,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 			for (Gift g : giftList) {
 				if (g.getUpdateDate() != null && g.getUpdateDate().compareTo(compareDate) > 0) {
 					updated = true;
-					workingMemory.insert(g);
+					if (useDrools) workingMemory.insert(g);
 				}
 
 			}
@@ -681,23 +689,26 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 				p.setGifts(giftList);
 				ss.populateDefaultEntityEditorMaps(p);
 				p.setSite(site);
-				FactHandle pfh = workingMemory.insert(p);
-				olWorkingMemory.put(RuleObjectType.CONSTITUENT, p);
-				olWorkingMemory.put(RuleObjectType.AS_OF_DATE, compareDate);
+				if (useDrools) {
+	                workingMemory.insert(p);
+				} else {
+					olWorkingMemory.put(RuleObjectType.CONSTITUENT, p);
+					olWorkingMemory.put(RuleObjectType.AS_OF_DATE, compareDate);
+				}
 			}
 
-			workingMemory.fireAllRules();
-			
-			if (updated) olWorkingMemory.executeRules(); 
-
+			if (useDrools) {
+				workingMemory.fireAllRules();
+			} else {
+				if (updated) olWorkingMemory.executeRules(); 
+			}
 
 			TaskStack.execute();
 			TaskStack.clear();
 
 		}
 		finally{
-			if (workingMemory != null)
-				workingMemory.dispose();
+			if (useDrools && workingMemory != null) workingMemory.dispose();
 		}
     }
     

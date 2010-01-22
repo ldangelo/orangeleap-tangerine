@@ -35,18 +35,25 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 
 	private ApplicationContext applicationContext;
 	private String ruleFlowName;
-	private Class  eventClass;
 
 	public void doApplyRules(Constituent constituent) throws DuplicateConstituentException, ConstituentValidationException {
 
 		String site = constituent.getSite().getName();
-		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
-       
-		OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
-		OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.CONSTITUENT_SAVE, site, false);
+		
+		SiteService siteService = (SiteService)applicationContext.getBean("siteService");
+		boolean useDrools = "true".equalsIgnoreCase(siteService.getSiteOptionsMap().get(RulesInterceptor.USE_DROOLS));
 
-		StatefulSession workingMemory = ruleBase.newStatefulSession();
-		OrangeLeapRuleSession olWorkingMemory = olRuleBase.newRuleSession();
+		StatefulSession workingMemory = null;
+		OrangeLeapRuleSession olWorkingMemory = null;
+		
+		if (useDrools) {
+			RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
+			workingMemory = ruleBase.newStatefulSession();
+		} else {       
+			OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
+			OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.CONSTITUENT_SAVE, site, false);
+			olWorkingMemory = olRuleBase.newRuleSession();
+		}
 		
 		try{
 			@SuppressWarnings("unused")
@@ -57,36 +64,39 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 			ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
 
-			workingMemory.setFocus(site+"constituent");
-			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setGlobal("constituentService", ps);
-			workingMemory.setGlobal("giftService",gs);
-			workingMemory.setGlobal("picklistItemService",plis);
-			workingMemory.setGlobal("userHelper",uh);
-
-
 			constituent.setGifts(gs.readMonetaryGifts(constituent));
 			constituent.setSite(ss.readSite(constituent.getSite().getName()));
-			workingMemory.insert(constituent);
-			olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
 
-			try {
-				List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(constituent.getId());
-				Iterator<Gift> giftsIter = gifts.iterator();
-				while (giftsIter.hasNext()) {
-					workingMemory.insert(giftsIter.next());
+			if (useDrools) {
+				workingMemory.setFocus(site+"constituent");
+				workingMemory.setGlobal("applicationContext", applicationContext);
+				workingMemory.setGlobal("constituentService", ps);
+				workingMemory.setGlobal("giftService",gs);
+				workingMemory.setGlobal("picklistItemService",plis);
+				workingMemory.setGlobal("userHelper",uh);
+				workingMemory.insert(constituent);
+				try {
+					List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(constituent.getId());
+					Iterator<Gift> giftsIter = gifts.iterator();
+					while (giftsIter.hasNext()) {
+						workingMemory.insert(giftsIter.next());
+					}
+				} catch (Exception ex) {
+					logger.info(ex.getMessage());
 				}
-			} catch (Exception ex) {
-				logger.info(ex.getMessage());
+			} else {
+				olWorkingMemory.put(RuleObjectType.CONSTITUENT, constituent);
 			}
 
 			try {
 				logger.debug("*** firing all rules");
-
-				workingMemory.fireAllRules();
-
-				olWorkingMemory.executeRules(); 
-
+				
+				if (useDrools) {
+					workingMemory.fireAllRules();
+				} else {
+					olWorkingMemory.executeRules(); 
+				}
+				
 			} catch (ConsequenceException ce) {
 				if (ce.getCause() instanceof DuplicateConstituentException) {
 					DuplicateConstituentException dce = (DuplicateConstituentException) ce.getCause();
@@ -112,11 +122,11 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 				logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
 				logger.error(e);
 			}
-		}finally{
-			if (workingMemory != null)
-				workingMemory.dispose();
+		} finally {
+			if (useDrools && workingMemory != null) workingMemory.dispose();
 		}
-}
+	
+	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

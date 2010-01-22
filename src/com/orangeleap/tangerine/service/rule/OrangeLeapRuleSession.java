@@ -62,13 +62,19 @@ public class OrangeLeapRuleSession {
 
 		@SuppressWarnings("unchecked")
 		private void printRulesExecutionSummary() {
+			
+			try {
 
-			StringBuilder sb = new StringBuilder();
-			sb.append("Rules Execution Summary:\n");
-			List<String> summary = (List<String>)map.get(RULE_EXECUTION_SUMMARY);
-			for (String s: summary) sb.append(s).append("\n");
-
-			logger.info(sb.toString()); // TODO change to debug
+				StringBuilder sb = new StringBuilder();
+				sb.append("Rules Execution Summary:\n");
+				List<String> summary = (List<String>)map.get(RULE_EXECUTION_SUMMARY);
+				if (summary != null) for (String s: summary) sb.append(s).append("\n");
+	
+				logger.info(sb.toString()); // TODO change to debug
+			
+			} catch (Exception e) {
+				logger.error(e);
+			}
 
 		}
 

@@ -55,11 +55,14 @@ public class TangerineDataSource implements DataSource {
     	
     	
         Connection conn = dataSource.getConnection();
+        conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
         if (logger.isTraceEnabled()) {
             count++;
             logger.trace("getConnection() called, count = " + (int) count);
             //new Exception().fillInStackTrace().printStackTrace();
         }
+        
 
         String siteName = tangerineUserHelper.lookupUserSiteName();
         boolean hasSite = siteName != null && siteName.trim().length() > 0;

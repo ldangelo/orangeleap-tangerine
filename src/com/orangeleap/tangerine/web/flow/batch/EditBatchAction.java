@@ -355,7 +355,7 @@ public class EditBatchAction extends AbstractAction {
             String escapedFieldName = TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName());
             fieldMap.put(StringConstants.NAME, escapedFieldName);
             fieldMap.put(StringConstants.MAPPING, escapedFieldName);
-            String extType = ExtTypeHandler.findExtDataType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
+            String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
             fieldMap.put(StringConstants.TYPE, extType);
             fieldMap.put(StringConstants.HEADER, sectionFld.getFieldDefinition().getDefaultLabel());
 
@@ -711,7 +711,7 @@ public class EditBatchAction extends AbstractAction {
                     extType = ExtTypeHandler.EXT_STRING;
                 }
                 else {
-                    extType = ExtTypeHandler.findExtDataType(bean.getPropertyType(propertyName));
+                    extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
                 }
                 fieldMap.put(StringConstants.TYPE, extType);
                 fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());

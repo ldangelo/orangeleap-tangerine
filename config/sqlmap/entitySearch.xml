@@ -36,7 +36,7 @@
         SITE_NAME as ENTITY_SEARCH_SITE_NAME,
         SEARCH_TEXT as ENTITY_SEARCH_SEARCH_TEXT,
     	MATCH( SEARCH_TEXT )   
-    	AGAINST (#searchText#) as relevance 
+    	AGAINST (#searchText# IN BOOLEAN MODE) as relevance 
     	from `ENTITY_SEARCH` 
     	where 
     	SITE_NAME = #siteName#

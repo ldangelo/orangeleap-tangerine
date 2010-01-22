@@ -18,17 +18,6 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
@@ -38,6 +27,16 @@ import com.orangeleap.tangerine.domain.EntitySearch;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 /**
  * Corresponds to the CONSTITUENT tables
@@ -108,12 +107,12 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     public List<Constituent> readAllConstituentsBySite(String sortPropertyName, String direction, int start, int limit, Locale locale) {
         return readAllConstituentsBySite(sortPropertyName, direction, start, limit, locale, 0);
     }
-    
+
     @Override
     public List<Constituent> readAllUpdatedConstituentsBySite(String sortPropertyName, String direction, int start, int limit, Locale locale, int recentDays) {
         return readAllConstituentsBySite(sortPropertyName, direction, start, limit, locale, recentDays);
     }
-    
+
     @SuppressWarnings("unchecked")
     private List<Constituent> readAllConstituentsBySite(String sortPropertyName, String direction, int start, int limit, Locale locale, int recentDays) {
         if (logger.isTraceEnabled()) {
@@ -242,6 +241,54 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         }
         getSqlMapClientTemplate().queryForObject("SET_CONSTITUENT_FLAGS");
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Constituent> readConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds, String sortPropertyName,
+						String direction, int start, int limit, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readConstituentsByGiftSegmentationReportIds: reportIds = " + reportIds + " sortPropertyName = " + sortPropertyName +
+	                " direction = " + direction + " start = " + start + " limit = " + limit);
+	    }
+	    Map<String, Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_RESULT",
+	            sortPropertyName, direction, start, limit, locale);
+	    params.put("reportIds", new ArrayList<Long>(reportIds));
 
+	    return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENTS_BY_GIFT_SEGMENTATION_REPORT_ID", params);
+	}
 
+	@Override
+	public int readCountConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCountConstituentsByGiftSegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    Map<String,Object> params = setupParams();
+	    params.put("reportIds", new ArrayList<Long>(reportIds));
+	    return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_CONSTITUENTS_BY_GIFT_SEGMENTATION_REPORT_ID", params);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Constituent> readConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds, String sortPropertyName,
+						String direction, int start, int limit, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readConstituentsByAdjustedGiftSegmentationReportIds: reportIds = " + reportIds + " sortPropertyName = " + sortPropertyName +
+	                " direction = " + direction + " start = " + start + " limit = " + limit);
+	    }
+	    Map<String, Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_RESULT",
+	            sortPropertyName, direction, start, limit, locale);
+	    params.put("reportIds", new ArrayList<Long>(reportIds));
+
+	    return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENTS_BY_ADJUSTED_GIFT_SEGMENTATION_REPORT_ID", params);
+	}
+
+	@Override
+	public int readCountConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCountConstituentsByAdjustedGiftSegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    Map<String,Object> params = setupParams();
+	    params.put("reportIds", new ArrayList<Long>(reportIds));
+	    return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_CONSTITUENTS_BY_ADJUSTED_GIFT_SEGMENTATION_REPORT_ID", params);
+	}
 }

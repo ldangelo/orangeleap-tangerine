@@ -64,8 +64,8 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	@Override
 	@SuppressWarnings("unchecked")
 	public PostBatch executeBatch(PostBatch batch) {
-	    if (logger.isTraceEnabled()) {
-	        logger.trace("executeBatch: batchId = " + batch.getId());
+	    if (logger.isInfoEnabled()) {
+	        logger.info("executeBatch: Executing batchId = " + batch.getId());
 	    }
 		batch.setCurrentlyExecuting(true);
 		batch = postBatchService.maintainBatch(batch);

@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.dao;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import com.orangeleap.tangerine.domain.Constituent;
 
@@ -61,4 +62,13 @@ public interface ConstituentDao {
     
 	public void setConstituentFlags();
 	
+	List<Constituent> readConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds, String sortPropertyName,
+						String direction, int start, int limit, Locale locale);
+
+	List<Constituent> readConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds, String sortPropertyName,
+						String direction, int start, int limit, Locale locale);
+
+	int readCountConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds);
+
+	int readCountConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds);
 }

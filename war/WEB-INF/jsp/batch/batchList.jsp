@@ -15,6 +15,7 @@
         <script type="text/javascript" src="js/extjs/ux/grid/DynamicPropertyGrid.js"></script>
         <script type="text/javascript" src="js/extjs/ux/group/GroupTab.js"></script>
         <script type="text/javascript" src="js/extjs/ux/group/GroupTabPanel.js"></script>
+        <script type="text/javascript" src="js/extjs/ux/form/QueryLookup.js"></script>
         <script type="text/javascript" src="js/lists/batchList.js"></script>
     </page:param>
 </page:applyDecorator>

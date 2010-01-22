@@ -52,6 +52,7 @@
         <transition on="step4" to="batchStep4"/>
         <transition on="step5" to="batchStep5"/>
         <transition on="cancel" to="batchCompleted"/>
+	    <transition on="save" to="batchSave"/>
     </view-state>
 
     <view-state id="batchStep5">

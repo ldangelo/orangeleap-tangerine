@@ -60,6 +60,7 @@ public class BatchListController extends TangerineJsonListController {
     public static final String EXECUTED_BY_USER = "executedByUser";
     public static final String CREATE_DATE = "createDate";
     public static final String ERROR_BATCH_ID = "errorBatchId";
+	public static final String FOR_TOUCH_POINTS = "forTouchPoints";
 
     private final Set<String> openBatchFields;
     private final Set<String> executedBatchFields;
@@ -71,6 +72,7 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(StringConstants.ID);
         fields.add(BATCH_TYPE);
         fields.add(BATCH_DESC);
+	    fields.add(FOR_TOUCH_POINTS);
         fields.add(CREATE_DATE);
         fields.add(CURRENTLY_EXECUTING); // must be 2nd to last
         fields.add(EXECUTED); // must be last
@@ -80,6 +82,7 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(StringConstants.ID);
         fields.add(BATCH_TYPE);
         fields.add(BATCH_DESC);
+	    fields.add(FOR_TOUCH_POINTS);
         fields.add(CREATE_DATE);
         fields.add(EXECUTED_DATE);
         fields.add(EXECUTED_BY_USER);
@@ -91,6 +94,7 @@ public class BatchListController extends TangerineJsonListController {
         fields.add(StringConstants.ID);
         fields.add(BATCH_TYPE);
         fields.add(BATCH_DESC);
+	    fields.add(FOR_TOUCH_POINTS);
         fields.add(CREATE_DATE);
         fields.add(CURRENTLY_EXECUTING); // must be 2nd to last
         fields.add(EXECUTED); // must be last
@@ -181,7 +185,9 @@ public class BatchListController extends TangerineJsonListController {
             if (StringConstants.ID.equals(thisFieldName)) {
                 extType = ExtTypeHandler.EXT_INT;
             }
-            else if (EXECUTED.equals(thisFieldName) || CURRENTLY_EXECUTING.equals(thisFieldName)) {
+            else if (EXECUTED.equals(thisFieldName) ||
+		            CURRENTLY_EXECUTING.equals(thisFieldName) || 
+		            FOR_TOUCH_POINTS.equals(thisFieldName)) {
                 extType = ExtTypeHandler.EXT_BOOLEAN;
             }
             else if (EXECUTED_DATE.equals(thisFieldName) || CREATE_DATE.equals(thisFieldName)) {

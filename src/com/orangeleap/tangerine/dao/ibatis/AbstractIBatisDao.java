@@ -133,10 +133,12 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
                     searchColumnMap.put("columnName", beanPropertyColumnMap.get(propertyName));
                     boolean useLike = String.class.equals(beanWrapper.getPropertyType(propertyName));
                     searchColumnMap.put("columnClause", useLike ? "LIKE" : "=");
-                    if (parametersStartWith)
-                    	searchColumnMap.put("columnValue", useLike ? entry.getValue() + "%" : entry.getValue());
-                    else
+                    if (parametersStartWith) {
+	                    searchColumnMap.put("columnValue", useLike ? entry.getValue() + "%" : entry.getValue());
+                    }
+                    else {
                     	searchColumnMap.put("columnValue", useLike ? "%" + entry.getValue() + "%" : entry.getValue());
+                    }
                     searchColumnList.add(searchColumnMap);
                 }
                 else if ( ! beanWrapper.isReadableProperty(propertyName) || beanPropertyColumnMap.get(propertyName) == null) {

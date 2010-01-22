@@ -15,6 +15,7 @@
         <result property="posted" column="POST_BATCH_POSTED" />
         <result property="postedById" column="POST_BATCH_POSTED_BY_ID" />
         <result property="postedDate" column="POST_BATCH_POSTED_DATE" />
+	    <result property="forTouchPoints" column="POST_BATCH_IS_FOR_TOUCH_POINTS" />
         <result property="anErrorBatch" column="POST_BATCH_IS_ERROR_BATCH" />
         <result property="errorBatchId" column="POST_BATCH_ERROR_BATCH_ID" />
         <result property="siteName" column="POST_BATCH_SITE_NAME" />
@@ -39,7 +40,8 @@
         post_batch.POSTED as POST_BATCH_POSTED,
         post_batch.POSTED_BY_ID as POST_BATCH_POSTED_BY_ID,
         post_batch.POSTED_DATE as POST_BATCH_POSTED_DATE,
-        post_batch.IS_ERROR_BATCH as POST_BATCH_IS_ERROR_BATCH,
+	    post_batch.IS_FOR_TOUCH_POINTS as POST_BATCH_IS_FOR_TOUCH_POINTS,
+	    post_batch.IS_ERROR_BATCH as POST_BATCH_IS_ERROR_BATCH,
         post_batch.ERROR_BATCH_ID as POST_BATCH_ERROR_BATCH_ID,
         post_batch.SITE_NAME as POST_BATCH_SITE_NAME,
         post_batch.IS_CURRENTLY_EXECUTING as POST_BATCH_IS_CURRENTLY_EXECUTING,
@@ -120,6 +122,7 @@
         	POSTED,
         	POSTED_BY_ID,
         	POSTED_DATE,
+	        IS_FOR_TOUCH_POINTS,
             IS_ERROR_BATCH,
             ERROR_BATCH_ID,
         	SITE_NAME,
@@ -138,6 +141,7 @@
         	#posted# ,
         	#postedById# ,
         	#postedDate# ,
+	        #forTouchPoints# ,
             #anErrorBatch# ,
             #errorBatchId# ,
         	#siteName# ,
@@ -163,6 +167,7 @@
         	POSTED = #posted# ,
         	POSTED_BY_ID = #postedById# ,
         	POSTED_DATE = #postedDate# ,
+	        IS_FOR_TOUCH_POINTS = #forTouchPoints# ,
             IS_ERROR_BATCH = #anErrorBatch# ,
             ERROR_BATCH_ID = #errorBatchId# ,
             IS_CURRENTLY_EXECUTING = #currentlyExecuting# ,

@@ -356,4 +356,9 @@ public abstract class AbstractFieldHandler implements FieldHandler {
         }
         return displayValue;
     }
+
+	@Override
+	public Object resolveExtData(final SectionField currentField, Object fieldValue) {
+		return null;
+	}
 }

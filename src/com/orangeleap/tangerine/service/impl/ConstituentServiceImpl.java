@@ -18,12 +18,14 @@
 
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -366,7 +368,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
     }
 
-
     @Override
     public Constituent readConstituentByLoginId(String loginId) {
         if (logger.isTraceEnabled()) {
@@ -406,8 +407,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
     }
 
-
-
     @Override
     public List<Constituent> findConstituents(Map<String, Object> params, List<Long> ignoreIds) {
         if (logger.isTraceEnabled()) {
@@ -424,6 +423,39 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituentDao.readAllConstituentsByAccountRange(fromId, toId);
     }
 
+	@Override
+	public List<Constituent> readConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds, SortInfo sortInfo, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readConstituentsByGiftSegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    return constituentDao.readConstituentsByGiftSegmentationReportIds(reportIds, sortInfo.getSort(), sortInfo.getDir(),
+			    sortInfo.getStart(), sortInfo.getLimit(), locale);
+	}
+
+	@Override
+	public int readCountConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCountConstituentsByGiftSegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    return constituentDao.readCountConstituentsByGiftSegmentationReportIds(reportIds);
+	}
+
+	@Override
+	public List<Constituent> readConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds, SortInfo sortInfo, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readConstituentsByAdjustedGiftSegmentationReportIds: reportIds = " + reportIds);
+	    }
+		return constituentDao.readConstituentsByAdjustedGiftSegmentationReportIds(reportIds, sortInfo.getSort(), sortInfo.getDir(),
+				sortInfo.getStart(), sortInfo.getLimit(), locale);
+	}
+
+	@Override
+	public int readCountConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCountConstituentsByAdjustedGiftSegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    return constituentDao.readCountConstituentsByAdjustedGiftSegmentationReportIds(reportIds);
+	}
 
     @Override
     public Constituent createDefaultConstituent() {

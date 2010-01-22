@@ -22,7 +22,7 @@ public class AbstractIBatisDaoTest extends AbstractIBatisTest {
         Assert.assertTrue(map.containsKey("paymentSource.creditCardHolderName"));
         Assert.assertTrue("PAYMENT_SRC_CREDIT_CARD_HOLDER_NAME".equals(map.get("paymentSource.creditCardHolderName")));
         Assert.assertTrue(map.containsKey("constituent.lastName"));
-        Assert.assertTrue("LAST_NAME".equals(map.get("constituent.lastName")));
+        Assert.assertTrue("CONSTITUENT_LAST_NAME".equals(map.get("constituent.lastName")));
         Assert.assertTrue(map.containsKey("address.addressLine1"));
         Assert.assertTrue("ADDRESS_LINE_1".equals(map.get("address.addressLine1")));
         Assert.assertTrue(map.containsKey("phone.number"));

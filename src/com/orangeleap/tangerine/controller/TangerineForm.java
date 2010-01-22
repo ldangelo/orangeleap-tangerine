@@ -66,7 +66,14 @@ public class TangerineForm {
 	public static String unescapeFieldName(String key) {
 		return key.replaceAll(TANG_DOT, DOT).replaceAll(TANG_START_BRACKET, START_BRACKET).replaceAll(TANG_END_BRACKET, END_BRACKET);
 	}
-	
+
+	public static String appendDotValueForCustomFields(String fieldPropertyName) {
+	    if (fieldPropertyName.startsWith(StringConstants.CUSTOM_FIELD_MAP_START) && fieldPropertyName.endsWith(StringConstants.FIELD_MAP_END)) {
+	        fieldPropertyName = new StringBuilder(fieldPropertyName).append(StringConstants.DOT_VALUE).toString();
+	    }
+	    return fieldPropertyName;
+	}
+
 	public void clearFieldMap() {
 		if (fieldMap != null) {
 			fieldMap.clear();

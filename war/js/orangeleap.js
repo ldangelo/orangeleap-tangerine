@@ -857,6 +857,15 @@ var OrangeLeap = {
 		$('#' + fld.getId()).parents('div.x-form-element').prev('label').removeClass('inFocus');
 	},
 
+	extFocusFirstFormElem: function(form) {
+		var item = form.items.find(function(item) {
+			if (item instanceof Ext.form.Field && !item.hidden && !item.disabled) {
+				item.focus(false, 50); // delayed focus by 50 ms
+				return true;
+			}
+			return false;
+		});
+	},
 
     getQueryParams: function() {
         var argList = new Object();

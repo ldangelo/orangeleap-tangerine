@@ -222,6 +222,9 @@ public final class StringConstants {
     public static final String BATCH_DESC = "batchDesc";
     public static final String BATCH_TYPE = "batchType";
     public static final String BATCH_ERROR = "batchError";
+	public static final String CRITERIA_FIELDS = "criteriaFields";
+	public static final String NOT_TOUCH_POINT = "notTouchPoint";
+	public static final String TOUCH_POINT = "touchPoint";
 
     public static final String POSTED_DATE = "postedDate";
     public static final String POSTED = "posted";
@@ -240,4 +243,7 @@ public final class StringConstants {
     public static final String MASK_START = "****";
 	public static final String NAMES = "names";
 	public static final String DATES = "dates";
+
+	public static final String CORRESPONDENCE_FOR = "correspondenceFor";	
+	public static final String CORRESPONDENCE_FOR_CUSTOM_FIELD = "customFieldMap[correspondenceFor]";
 }

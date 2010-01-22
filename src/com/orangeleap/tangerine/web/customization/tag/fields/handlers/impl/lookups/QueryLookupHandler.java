@@ -33,17 +33,18 @@ import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.context.ApplicationContext;
-import org.springframework.util.StringUtils;
-import org.springframework.beans.BeanWrapper;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-import java.util.List;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 public class QueryLookupHandler extends AbstractFieldHandler {
 
@@ -263,4 +264,12 @@ public class QueryLookupHandler extends AbstractFieldHandler {
         }
         return displayValue;
     }
+
+	@Override
+	public Object resolveExtData(final SectionField currentField, Object fieldValue) {
+		final Map<String, Object> extData = new HashMap<String, Object>();
+		extData.put("referenceType", currentField.getFieldDefinition().getReferenceType().toString());
+		extData.put("displayValue", resolveDisplayValue(null, null, currentField, fieldValue));
+		return extData;
+	}
 }

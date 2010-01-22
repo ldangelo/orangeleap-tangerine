@@ -18,6 +18,7 @@
 package com.orangeleap.tangerine.web.flow.batch;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PostBatch;
@@ -27,10 +28,11 @@ import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchService;
@@ -45,19 +47,9 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.common.TangerineListHelper;
 import com.orangeleap.tangerine.web.customization.tag.fields.SectionFieldTag;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
 import com.orangeleap.tangerine.web.flow.AbstractAction;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
-import org.springframework.webflow.execution.RequestContext;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -67,6 +59,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
+import org.springframework.webflow.execution.RequestContext;
 
 @Component("editBatchAction")
 public class EditBatchAction extends AbstractAction {
@@ -86,6 +89,9 @@ public class EditBatchAction extends AbstractAction {
     @Resource(name = "postBatchService")
     protected PostBatchService postBatchService;
 
+	@Resource(name = "constituentService")
+	protected ConstituentService constituentService;
+
     @Resource(name = "giftService")
     protected GiftService giftService;
 
@@ -103,6 +109,9 @@ public class EditBatchAction extends AbstractAction {
 
     @Resource(name = "fieldService")
     protected FieldService fieldService;
+
+	@Resource(name = "fieldHandlerHelper")
+	private FieldHandlerHelper fieldHandlerHelper;
 
     protected PostBatch getBatchFromFlowScope(final RequestContext flowRequestContext) {
         return (PostBatch) getFlowScopeAttribute(flowRequestContext, StringConstants.BATCH);
@@ -131,7 +140,7 @@ public class EditBatchAction extends AbstractAction {
     private void determineStepToSave(final RequestContext flowRequestContext) {
         final String previousStep = getRequestParameter(flowRequestContext, PREVIOUS_STEP);
         if (STEP_1_GRP.equals(previousStep)) {
-            saveBatchDescType(flowRequestContext);
+            saveBatchInfo(flowRequestContext);
         }
         else if (STEP_2_GRP.equals(previousStep)) {
             savePickedSegmentationIds(flowRequestContext);
@@ -141,13 +150,12 @@ public class EditBatchAction extends AbstractAction {
         }
     }
 
-    private void saveBatchDescType(final RequestContext flowRequestContext) {
+    private void saveBatchInfo(final RequestContext flowRequestContext) {
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        final String batchDesc = getRequestParameter(flowRequestContext, "batchDesc");
-        final String batchType = getRequestParameter(flowRequestContext, "batchType");
-        batch.setBatchDesc(batchDesc);
-        batch.setBatchType(batchType);
-        
+        final String batchDesc = getRequestParameter(flowRequestContext, StringConstants.BATCH_DESC);
+        final String batchType = getRequestParameter(flowRequestContext, StringConstants.BATCH_TYPE);
+	    final boolean isForTouchPoints = StringConstants.TOUCH_POINT.equals(getRequestParameter(flowRequestContext, StringConstants.CRITERIA_FIELDS));
+
         /**
          * Check if the batchType is different from what was previously entered during the flow - if so, reset the previously selected segmentation IDs and
          * the updated fields
@@ -157,6 +165,13 @@ public class EditBatchAction extends AbstractAction {
             batch.clearPostBatchEntries();
             batch.clearUpdateFields();
         }
+	    if (isForTouchPoints != batch.isForTouchPoints()) {
+		    batch.clearUpdateFields();
+	    }
+
+		batch.setBatchDesc(batchDesc);
+		batch.setBatchType(batchType);
+	    batch.setForTouchPoints(isForTouchPoints);
     }
 
     private void savePickedSegmentationIds(final RequestContext flowRequestContext) {
@@ -174,14 +189,21 @@ public class EditBatchAction extends AbstractAction {
         BeanWrapper bean = createDefaultEntity(batch);
         batch.clearUpdateFields();
 
-        // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
         for (String thisKey : enteredParams.keySet()) {
-            String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
-            FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-            if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
-                // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
-                batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
-            }
+	        String fieldDefinitionId;
+	        if (batch.isForTouchPoints()) {
+		        // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'communicationHistory.recordDate'
+		        fieldDefinitionId = new StringBuilder(StringConstants.COMMUNICATION_HISTORY).append(".").append(thisKey).toString();
+	        }
+	        else {
+				// the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
+				fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
+	        }
+	        FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+	        if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
+		        // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
+		        batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
+	        }
         }
     }
 
@@ -211,7 +233,8 @@ public class EditBatchAction extends AbstractAction {
             
             if (batch.isNew()) {
                 batch.setBatchDesc(StringConstants.EMPTY);
-                batch.setBatchType(StringConstants.GIFT); // default is gift
+                batch.setBatchType(StringConstants.GIFT); // default batch type is gift
+	            batch.setForTouchPoints(false); // default criteria fields is NOT touch points
             }
 
             // add only the PostBatch to the view scope and remove from the returnMap
@@ -219,6 +242,7 @@ public class EditBatchAction extends AbstractAction {
         }
         dataMap.put(StringConstants.BATCH_DESC, batch.getBatchDesc());
         dataMap.put(StringConstants.BATCH_TYPE, batch.getBatchType());
+	    dataMap.put(StringConstants.CRITERIA_FIELDS, batch.isForTouchPoints() ? StringConstants.TOUCH_POINT : StringConstants.NOT_TOUCH_POINT);
 
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
@@ -279,11 +303,10 @@ public class EditBatchAction extends AbstractAction {
 
         Set<Long> pickedSegmentationIds = batch.getEntrySegmentationIds(); 
         model.put("pickedSegmentationsCount", pickedSegmentationIds == null ? 0 : pickedSegmentationIds.size());
-
         model.put(StringConstants.ROWS, postBatchService.findSegmentationsForBatchType(batch, pickedSegmentationIds, batch.getBatchType(),
                 resolveSegmentationFieldName(sortInfo.getSort()), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit()));
-        model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batch.getBatchType()));
+        model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batch.getBatchType())); 
 
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
@@ -320,7 +343,8 @@ public class EditBatchAction extends AbstractAction {
         final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sort.getStart(), sort.getLimit());
         metaDataMap.put(StringConstants.LIMIT, sort.getLimit());
 
-        final List<SectionField> allFields = tangerineListHelper.findSectionFields(batch.getBatchType() + "List");
+	    final String pageType = batch.isForTouchPoints() ? "constituentList" : batch.getBatchType() + "List";
+        final List<SectionField> allFields = tangerineListHelper.findSectionFields(pageType);
 
         final BeanWrapper bw = createDefaultEntity(batch);
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
@@ -331,7 +355,7 @@ public class EditBatchAction extends AbstractAction {
             String escapedFieldName = TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName());
             fieldMap.put(StringConstants.NAME, escapedFieldName);
             fieldMap.put(StringConstants.MAPPING, escapedFieldName);
-            String extType = ExtTypeHandler.findExtType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
+            String extType = ExtTypeHandler.findExtDataType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
             fieldMap.put(StringConstants.TYPE, extType);
             fieldMap.put(StringConstants.HEADER, sectionFld.getFieldDefinition().getDefaultLabel());
 
@@ -366,7 +390,20 @@ public class EditBatchAction extends AbstractAction {
         List rowObjects = null;
         int totalRows = 0;
         if ( ! reportIds.isEmpty()) {
-            if (StringConstants.GIFT.equals(batch.getBatchType())) {
+	        if (batch.isForTouchPoints() || StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+		        if (StringConstants.GIFT.equals(batch.getBatchType())) {
+			        totalRows = constituentService.readCountConstituentsByGiftSegmentationReportIds(reportIds);
+			        rowObjects = constituentService.readConstituentsByGiftSegmentationReportIds(reportIds, sort, request.getLocale());
+		        }
+		        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+			        totalRows = constituentService.readCountConstituentsByAdjustedGiftSegmentationReportIds(reportIds);
+			        rowObjects = constituentService.readConstituentsByAdjustedGiftSegmentationReportIds(reportIds, sort, request.getLocale());
+		        }
+		        else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+			        // TODO: constituents
+		        }
+	        }
+            else if (StringConstants.GIFT.equals(batch.getBatchType())) {
                 totalRows = giftService.readCountGiftsBySegmentationReportIds(reportIds);
                 rowObjects = giftService.readGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
             }
@@ -430,17 +467,27 @@ public class EditBatchAction extends AbstractAction {
      * @return a BeanWrapper of the mock entity object
      */
     protected BeanWrapper createDefaultEntity(PostBatch batch) {
-        AbstractPaymentInfoEntity entity = null;
-        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            entity = new Gift();
-        }
-        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-            entity = new AdjustedGift();
-        }
-        Constituent constituent = new Constituent(0L, new Site());
-        entity.setConstituent(constituent);
-        entity.setPaymentSource(new PaymentSource(constituent));
-        return PropertyAccessorFactory.forBeanPropertyAccess(entity);
+	    BeanWrapper bw;
+	    if (batch.isForTouchPoints()) {
+		    bw = PropertyAccessorFactory.forBeanPropertyAccess(new CommunicationHistory(new Constituent(0L, new Site())));
+	    }
+	    else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+		    bw = PropertyAccessorFactory.forBeanPropertyAccess(new Constituent(0L, new Site()));
+	    }
+	    else {
+		    AbstractPaymentInfoEntity entity = null;
+		    if (StringConstants.GIFT.equals(batch.getBatchType())) {
+				entity = new Gift();
+			}
+			else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+				entity = new AdjustedGift();
+			}
+			Constituent constituent = new Constituent(0L, new Site());
+			entity.setConstituent(constituent);
+			entity.setPaymentSource(new PaymentSource(constituent));
+		    bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
+	    }
+        return bw;
     }
 
     @SuppressWarnings("unchecked")
@@ -453,7 +500,13 @@ public class EditBatchAction extends AbstractAction {
 
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final ModelMap model = new ModelMap();
-        findBatchUpdateFields(batch, model);
+
+	    if (batch.isForTouchPoints()) {
+		    findTouchPointUpdateFields(batch, model);
+	    }
+	    else {
+            findBatchUpdateFields(batch, model);
+	    }
         
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
@@ -469,29 +522,22 @@ public class EditBatchAction extends AbstractAction {
                 // the defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
                 String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(item.getDefaultDisplayValue()).toString();
                 FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+	            if (fieldDef == null) {
+		            fieldDef = fieldService.readFieldDefinition(new StringBuilder(picklist.getSite().getName()).append("-").append(fieldDefinitionId).toString());
+	            }
                 if (fieldDef != null) {
-                    FieldType fieldType = fieldDef.getFieldType();
-                    if (fieldType.equals(FieldType.PICKLIST)) {  // TODO: MULTI_PICKLIST, CODE, etc?
-                        final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
-                        if (referencedPicklist != null) {
-                            final List<Map<String, String>> referencedItemList = new ArrayList<Map<String, String>>();
-                            for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {
-                                final Map<String, String> referencedItemMap = new HashMap<String, String>();
-                                referencedItemMap.put("itemName", referencedItem.getItemName());
-                                referencedItemMap.put("displayVal", referencedItem.getDefaultDisplayValue());
-                                referencedItemList.add(referencedItemMap);
-                            }
-                            model.put(new StringBuilder(item.getDefaultDisplayValue()).append("-Data").toString(), referencedItemList);
-                        }
-                    }
-                    final Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(StringConstants.NAME, item.getDefaultDisplayValue());
-                    map.put("desc", fieldDef.getDefaultLabel());
-                    map.put(StringConstants.TYPE, fieldType.name().toLowerCase());
+	                FieldType fieldType = fieldDef.getFieldType();
+	                if (FieldType.PICKLIST.equals(fieldType)) {  // TODO: MULTI_PICKLIST, CODE, etc?
+		                findPicklistData(fieldDef, model, item.getDefaultDisplayValue(), false);
+	                }
+	                final Map<String, Object> map = new HashMap<String, Object>();
+	                map.put(StringConstants.NAME, item.getDefaultDisplayValue());
+	                map.put("desc", fieldDef.getDefaultLabel());
+	                map.put(StringConstants.TYPE, fieldType.name().toLowerCase());
 
-                    String updateFieldValue = batch.getUpdateFieldValue(item.getDefaultDisplayValue());
-                    map.put(StringConstants.VALUE, updateFieldValue != null ? updateFieldValue : StringConstants.EMPTY);
-                    map.put(StringConstants.SELECTED, updateFieldValue != null);
+	                String updateFieldValue = batch.getUpdateFieldValue(item.getDefaultDisplayValue());
+	                map.put(StringConstants.VALUE, updateFieldValue != null ? updateFieldValue : StringConstants.EMPTY);
+                    map.put(StringConstants.SELECTED, batch.getUpdateFieldValue(item.getDefaultDisplayValue()) != null);
                     returnList.add(map);
                 }
             }
@@ -499,6 +545,54 @@ public class EditBatchAction extends AbstractAction {
         model.put(StringConstants.ROWS, returnList);
         model.put(StringConstants.TOTAL_ROWS, returnList.size());
     }
+
+	@SuppressWarnings("unchecked")
+	protected void findTouchPointUpdateFields(final PostBatch batch, final ModelMap model) {
+		final List<SectionField> allFields = tangerineListHelper.findSectionFields(StringConstants.COMMUNICATION_HISTORY);
+
+		final Map<String, String> dataMap = new HashMap<String, String>();
+		model.put(StringConstants.DATA, dataMap);
+		model.put(StringConstants.SUCCESS, Boolean.TRUE);
+
+		for (SectionField thisField : allFields) {
+			final FieldDefinition fieldDef = thisField.getFieldDefinition();
+			final FieldType fieldType = fieldDef.getFieldType();
+			if ( ! "address.id".equals(thisField.getFieldPropertyName()) &&
+					! "phone.id".equals(thisField.getFieldPropertyName()) &&
+			        ! "email.id".equals(thisField.getFieldPropertyName())) {
+				if (FieldType.PICKLIST.equals(fieldType)) {  // TODO: MULTI_PICKLIST, CODE, etc?
+					findPicklistData(fieldDef, model, fieldDef.getFieldName(), true);
+				}
+				else if (FieldType.QUERY_LOOKUP.equals(fieldType)) {
+					FieldHandler handler = fieldHandlerHelper.lookupFieldHandler(fieldType);
+					model.put(new StringBuilder(fieldDef.getFieldName()).append("-QueryLookup").toString(),
+							handler.resolveExtData(thisField, batch.getUpdateFieldValue(fieldDef.getFieldName())));
+				}
+				dataMap.put(fieldDef.getFieldName(), batch.getUpdateFieldValue(fieldDef.getFieldName()));
+			}
+			else if (dataMap.get(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD) == null) {
+				dataMap.put(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, batch.getUpdateFieldValue(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD));
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void findPicklistData(final FieldDefinition fieldDef, final ModelMap model, final String key, boolean addReferenceValue) {
+		final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
+		if (referencedPicklist != null) {
+			final List<Map<String, String>> referencedItemList = new ArrayList<Map<String, String>>();
+			for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {
+				final Map<String, String> referencedItemMap = new HashMap<String, String>();
+				referencedItemMap.put("itemName", referencedItem.getItemName());
+				referencedItemMap.put("displayVal", referencedItem.getDefaultDisplayValue());
+				if (addReferenceValue) {
+					referencedItemMap.put("refVal", referencedItem.getReferenceValue());
+				}
+				referencedItemList.add(referencedItemMap);
+			}
+			model.put(new StringBuilder(key).append("-Picklist").toString(), referencedItemList);
+		}
+	}
 
     @SuppressWarnings("unchecked")
     public ModelMap step5ReviewUpdates(final RequestContext flowRequestContext) {
@@ -510,6 +604,11 @@ public class EditBatchAction extends AbstractAction {
 
         final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
         final SortInfo sortInfo = getSortInfo(flowRequestContext);
+
+	    boolean wasDisplayedId = false;
+	    if (sortInfo.getSort().equals(StringConstants.DISPLAYED_ID)) {
+			wasDisplayedId = true;
+	    }
 
         final HttpServletRequest request = getRequest(flowRequestContext);
         final ModelMap model = new ModelMap();
@@ -523,14 +622,14 @@ public class EditBatchAction extends AbstractAction {
         int totalRows = 0;
 
         unescapeSortField(sortInfo);
-        
+
         if (StringConstants.GIFT.equals(batch.getBatchType())) {
             rows = giftService.readGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
-            totalRows = giftService.readCountGiftsBySegmentationReportIds(segmentationReportIds) * 2;
+            totalRows = giftService.readCountGiftsBySegmentationReportIds(segmentationReportIds);
         }
         else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
             rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
-            totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(segmentationReportIds) * 2;
+            totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(segmentationReportIds);
         }
         contrastUpdatedValues(batch, rows, rowValues, batch.getUpdateFields());
 
@@ -538,15 +637,22 @@ public class EditBatchAction extends AbstractAction {
         model.put(StringConstants.TOTAL_ROWS, totalRows);
 
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
+
+	    if (wasDisplayedId) {
+		    // Pretty ugly code to put back displayedId as the sort field
+		    ( (Map) ( (Map)model.get(StringConstants.META_DATA) ).
+				    get(StringConstants.SORT_INFO)).put(StringConstants.FIELD, StringConstants.DISPLAYED_ID);
+	    }
         return model;
     }
 
     @SuppressWarnings("unchecked")
     protected void initReviewUpdateFields(final PostBatch batch, final ModelMap model, final SortInfo sortInfo) {
         final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sortInfo.getStart(),
-                (sortInfo.getLimit() * 2)); // double the rows because of old & new values will be displayed
+                sortInfo.getLimit()); // double the rows because of old & new values will be displayed
 
         final BeanWrapper bean = createDefaultEntity(batch);
+
         initSortInfoMetaData(bean, sortInfo, metaDataMap);
 
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
@@ -605,7 +711,7 @@ public class EditBatchAction extends AbstractAction {
                     extType = ExtTypeHandler.EXT_STRING;
                 }
                 else {
-                    extType = ExtTypeHandler.findExtType(bean.getPropertyType(propertyName));
+                    extType = ExtTypeHandler.findExtDataType(bean.getPropertyType(propertyName));
                 }
                 fieldMap.put(StringConstants.TYPE, extType);
                 fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
@@ -737,7 +843,7 @@ public class EditBatchAction extends AbstractAction {
             accessibleSteps.add(STEP_4_GRP);
         }
 
-        if (accessibleSteps.contains(STEP_4_GRP) && ! batch.getUpdateFields().isEmpty()) {
+        if (accessibleSteps.contains(STEP_4_GRP) && ! batch.getUpdateFields().isEmpty() && ! batch.isForTouchPoints()) {
             accessibleSteps.add(STEP_5_GRP);
         }
         return new ArrayList<String>(accessibleSteps);

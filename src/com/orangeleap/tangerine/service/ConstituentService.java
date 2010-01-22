@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public interface ConstituentService {
 
@@ -71,7 +72,7 @@ public interface ConstituentService {
     public boolean hasReceivedCommunication(Long constituentId, String commType,
                                             int number, String timeUnits);
 
-        public void updateFullTextSearchIndex(Long constituentId);
+    public void updateFullTextSearchIndex(Long constituentId);
     
 	public void processConstituent(String schedule, Date compareDate,
 			ConstituentService ps, GiftService gs, MailService ms,
@@ -79,6 +80,12 @@ public interface ConstituentService {
 			Constituent p, PicklistItemService plis);
 
 	public List<Constituent> readAllUpdatedConstituentsBySite(SortInfo sortInfo, Locale locale, int recentDays);
+	
+	List<Constituent> readConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds, SortInfo sortInfo, Locale locale);
 
+	int readCountConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds);
 
+	List<Constituent> readConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds, SortInfo sortInfo, Locale locale);
+
+	int readCountConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds);
 }

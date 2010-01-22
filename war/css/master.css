@@ -147,6 +147,7 @@ ul.x-grouptabs-tab-strip-left li { padding: 10px 0; }
 .win li.x-grouptabs-strip-active { background-color: #FFF; }
 .win .x-tab-strip-wrap { text-align: left; }
 .win div.x-form-item { margin-bottom: 20px; font-family: arial; }
+.win div.x-form-item.x-hide-label { margin: 0; }
 .win div.x-form-item label { color: #173D5F; }
 .win div.x-form-item label.inFocus { color: #000; }
 .x-grouptabs-panel ul.x-grouptabs-sub .x-grouptabs-main-item { display: none; }
@@ -158,7 +159,9 @@ ul.x-grouptabs-tab-strip-left li { padding: 10px 0; }
 .x-tab-joint { background:#FFFFFF none repeat scroll 0 0; position:absolute; top:1px; width:3px; z-index:9999; }
 div.wizard span.required { font-size: inherit; padding-right: 3px; }
 
-div.grp div.x-panel-body { background-color: #CEDDEF; }
+div.grp div.x-panel-body, div.grp div.x-panel-footer { background-color: #CEDDEF; }
+form#step4TouchPointFieldsForm { padding: 10px 40px; text-align: left; overflow-y: auto; margin: 0 auto; }
+form#step4TouchPointFieldsForm .x-form-element { margin-left: 5px; }
 div#step5Grp div.x-grid3-row { cursor: default; }
 div#step5Grp div.x-grid3-row:nth-child(n) { border: 0; }
 div#step5Grp div.x-grid3-row:nth-child(4n+3) { background-color: #F9F9F9; margin-top: 5px; border-top: 1px solid #EFEFEF; border-right: 1px solid #EFEFEF; }

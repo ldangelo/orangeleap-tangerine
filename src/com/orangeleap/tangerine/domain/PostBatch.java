@@ -55,12 +55,13 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private boolean posted;
     private Long postedById;
     private Date postedDate;
-    private boolean anErrorBatch;
-    /** A pointer to a batch that contains the errored rows that used to be in this batch, if any */
+	private boolean forTouchPoints;
+	private boolean anErrorBatch;
+	/** A pointer to a batch that contains the errored rows that used to be in this batch, if any */
     private Long errorBatchId;
-    private String siteName;
-    private boolean currentlyExecuting;
-    private Date createDate;
+	private String siteName;
+	private boolean currentlyExecuting;
+	private Date createDate;
     private Date updateDate;
 
     private List<PostBatchEntry> postBatchEntries = new ArrayList<PostBatchEntry>();
@@ -167,7 +168,15 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.postedDate = postedDate;
     }
 
-    public boolean isAnErrorBatch() {
+	public boolean isForTouchPoints() {
+		return forTouchPoints;
+	}
+
+	public void setForTouchPoints(boolean forTouchPoints) {
+		this.forTouchPoints = forTouchPoints;
+	}
+
+	public boolean isAnErrorBatch() {
         return anErrorBatch;
     }
 

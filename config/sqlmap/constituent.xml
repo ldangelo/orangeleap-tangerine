@@ -3,25 +3,25 @@
 <sqlMap namespace="CONSTITUENT">
 
 	<resultMap id="CONSTITUENT_RESULT" class="com.orangeleap.tangerine.domain.Constituent" groupBy="id">
-		<result property="id" column="CONSTITUENT_ID" jdbcType="BIGINT" />
+		<result property="id" column="CONSTITUENT_CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="constituentType" column="CONSTITUENT_TYPE" jdbcType="VARCHAR" />
-		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="firstName" column="FIRST_NAME" jdbcType="VARCHAR" />
-		<result property="lastName" column="LAST_NAME" jdbcType="VARCHAR" />
-		<result property="legalName" column="LEGAL_NAME" jdbcType="VARCHAR" />
-		<result property="loginId" column="LOGIN_ID" jdbcType="VARCHAR" />
-		<result property="maritalStatus" column="MARITAL_STATUS" jdbcType="VARCHAR" />
-		<result property="middleName" column="MIDDLE_NAME" jdbcType="VARCHAR" />
-		<result property="naicsCode" column="NAICS_CODE" jdbcType="VARCHAR" />
-		<result property="organizationName" column="ORGANIZATION_NAME" jdbcType="VARCHAR" />
-		<result property="preferredPhoneType" column="PREFERRED_PHONE_TYPE" jdbcType="VARCHAR" />
-		<result property="recognitionName" column="RECOGNITION_NAME" jdbcType="VARCHAR" />
-		<result property="suffix" column="SUFFIX" jdbcType="VARCHAR" />
-		<result property="title" column="TITLE" jdbcType="VARCHAR" />
-		<result property="byPassDuplicateDetection" column="BYPASS_DUPLICATE" jdbcType="CHAR" />
-		<result property="recentGift" column="RECENT_GIFT" jdbcType="CHAR" />
-		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="accountNumber" column="ACCOUNT_NUMBER" jdbcType="BIGINT" />
+		<result property="createDate" column="CONSTITUENT_CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="firstName" column="CONSTITUENT_FIRST_NAME" jdbcType="VARCHAR" />
+		<result property="lastName" column="CONSTITUENT_LAST_NAME" jdbcType="VARCHAR" />
+		<result property="legalName" column="CONSTITUENT_LEGAL_NAME" jdbcType="VARCHAR" />
+		<result property="loginId" column="CONSTITUENT_LOGIN_ID" jdbcType="VARCHAR" />
+		<result property="maritalStatus" column="CONSTITUENT_MARITAL_STATUS" jdbcType="VARCHAR" />
+		<result property="middleName" column="CONSTITUENT_MIDDLE_NAME" jdbcType="VARCHAR" />
+		<result property="naicsCode" column="CONSTITUENT_NAICS_CODE" jdbcType="VARCHAR" />
+		<result property="organizationName" column="CONSTITUENT_ORGANIZATION_NAME" jdbcType="VARCHAR" />
+		<result property="preferredPhoneType" column="CONSTITUENT_PREFERRED_PHONE_TYPE" jdbcType="VARCHAR" />
+		<result property="recognitionName" column="CONSTITUENT_RECOGNITION_NAME" jdbcType="VARCHAR" />
+		<result property="suffix" column="CONSTITUENT_SUFFIX" jdbcType="VARCHAR" />
+		<result property="title" column="CONSTITUENT_TITLE" jdbcType="VARCHAR" />
+		<result property="byPassDuplicateDetection" column="CONSTITUENT_BYPASS_DUPLICATE" jdbcType="CHAR" />
+		<result property="recentGift" column="CONSTITUENT_RECENT_GIFT" jdbcType="CHAR" />
+		<result property="updateDate" column="CONSTITUENT_UPDATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="accountNumber" column="CONSTITUENT_ACCOUNT_NUMBER" jdbcType="BIGINT" />
         <result property="site" resultMap="SITE.SITE_NAME_RESULT" />
 	</resultMap>
 
@@ -32,11 +32,16 @@
     </resultMap>
 
     <sql id="CONSTITUENT_COLS_FRAGMENT">
-    	p.CONSTITUENT_ID, 
-		p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAST_NAME, p.LEGAL_NAME,
-		p.LOGIN_ID, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NAICS_CODE, p.ORGANIZATION_NAME,
-		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.BYPASS_DUPLICATE, p.RECENT_GIFT,  
-		p.UPDATE_DATE, p.SITE_NAME, p.ACCOUNT_NUMBER
+    	p.CONSTITUENT_ID AS CONSTITUENT_CONSTITUENT_ID, 
+		p.CONSTITUENT_TYPE, p.CREATE_DATE as CONSTITUENT_CREATE_DATE,
+	    p.FIRST_NAME as CONSTITUENT_FIRST_NAME, p.LAST_NAME as CONSTITUENT_LAST_NAME, p.LEGAL_NAME as CONSTITUENT_LEGAL_NAME,
+		p.LOGIN_ID as CONSTITUENT_LOGIN_ID, p.MARITAL_STATUS as CONSTITUENT_MARITAL_STATUS,
+	    p.MIDDLE_NAME as CONSTITUENT_MIDDLE_NAME, p.NAICS_CODE as CONSTITUENT_NAICS_CODE,
+	    p.ORGANIZATION_NAME as CONSTITUENT_ORGANIZATION_NAME,
+		p.PREFERRED_PHONE_TYPE as CONSTITUENT_PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME as CONSTITUENT_RECOGNITION_NAME,
+	    p.SUFFIX as CONSTITUENT_SUFFIX, p.TITLE as CONSTITUENT_TITLE, p.BYPASS_DUPLICATE as CONSTITUENT_BYPASS_DUPLICATE,
+	    p.RECENT_GIFT as CONSTITUENT_RECENT_GIFT,
+		p.UPDATE_DATE as CONSTITUENT_UPDATE_DATE, p.ACCOUNT_NUMBER as CONSTITUENT_ACCOUNT_NUMBER, p.SITE_NAME
     </sql>
     
 	<sql id="SELECT_CONSTITUENT_FRAGMENT">
@@ -61,9 +66,28 @@
 	
 	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>
-
 	</select>
 
+<!--
+    <select id="SELECT_CONSTITUENTS_BY_SEGMENTATION_RESULT_ID" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+        select
+        <include refid="CONSTITUENT_COLS_FRAGMENT" />
+
+        FROM CONSTITUENT p
+        inner join THEGURU_SEGMENTATION_RESULT res on p.CONSTITUENT_ID = res.ENTITY_ID
+
+        where p.SITE_NAME = #siteName#
+        and res.REPORT_ID in
+        <iterate property="reportIds" conjunction="," open="(" close=")">
+            #reportIds[]#
+        </iterate>
+        order by
+        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+-->
+    
     <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
         SELECT
 
@@ -181,6 +205,103 @@
         </isNull>
     </select>
 
+	<select id="SELECT_CONSTITUENTS_BY_GIFT_SEGMENTATION_REPORT_ID" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+		SELECT DISTINCT
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') AS majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') AS lapsedDonor
+
+		<dynamic prepend=",">
+		    <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+		        custFld.FIELD_VALUE
+		    </isEqual>
+		</dynamic>
+
+		FROM CONSTITUENT p
+		INNER JOIN GIFT g ON g.CONSTITUENT_ID = p.CONSTITUENT_ID AND g.GIFT_TYPE != 'GIFT_IN_KIND'
+		INNER JOIN THEGURU_SEGMENTATION_RESULT res ON g.GIFT_ID = res.ENTITY_ID AND res.REPORT_ID IN
+		<iterate property="reportIds" conjunction="," open="(" close=")">
+		    #reportIds[]#
+		</iterate>
+		
+		<isNotNull property="entityType">
+		    <isNotNull property="fieldName">
+		        <isNotNull property="asOfDate">
+		            left outer join CUSTOM_FIELD custFld on p.CONSTITUENT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+		                and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+		                and custFld.FIELD_NAME = #fieldName#
+		        </isNotNull>
+		    </isNotNull>
+		</isNotNull>
+
+		WHERE p.SITE_NAME = #siteName#
+		ORDER BY
+		CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+		limit $offset$,$limit$
+	</select>
+
+	<select id="COUNT_CONSTITUENTS_BY_GIFT_SEGMENTATION_REPORT_ID" resultClass="int" parameterClass="map">
+		SELECT count(DISTINCT p.CONSTITUENT_ID)
+
+		FROM CONSTITUENT p
+		INNER JOIN GIFT g ON g.CONSTITUENT_ID = p.CONSTITUENT_ID AND g.GIFT_TYPE != 'GIFT_IN_KIND'
+		INNER JOIN THEGURU_SEGMENTATION_RESULT res ON g.GIFT_ID = res.ENTITY_ID AND res.REPORT_ID IN
+		<iterate property="reportIds" conjunction="," open="(" close=")">
+		    #reportIds[]#
+		</iterate>
+
+		WHERE p.SITE_NAME = #siteName#
+	</select>
+
+	<select id="SELECT_CONSTITUENTS_BY_ADJUSTED_GIFT_SEGMENTATION_REPORT_ID" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+		SELECT DISTINCT
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') AS majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') AS lapsedDonor
+
+		<dynamic prepend=",">
+		    <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+		        custFld.FIELD_VALUE
+		    </isEqual>
+		</dynamic>
+
+		FROM CONSTITUENT p
+		INNER JOIN ADJUSTED_GIFT ag ON ag.CONSTITUENT_ID = p.CONSTITUENT_ID 
+		INNER JOIN THEGURU_SEGMENTATION_RESULT res ON ag.ADJUSTED_GIFT_ID = res.ENTITY_ID AND res.REPORT_ID IN
+		<iterate property="reportIds" conjunction="," open="(" close=")">
+		    #reportIds[]#
+		</iterate>
+
+		<isNotNull property="entityType">
+		    <isNotNull property="fieldName">
+		        <isNotNull property="asOfDate">
+		            left outer join CUSTOM_FIELD custFld on p.CONSTITUENT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+		                and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+		                and custFld.FIELD_NAME = #fieldName#
+		        </isNotNull>
+		    </isNotNull>
+		</isNotNull>
+
+		WHERE p.SITE_NAME = #siteName#
+		ORDER BY
+		CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+		limit $offset$,$limit$
+	</select>
+
+	<select id="COUNT_CONSTITUENTS_BY_ADJUSTED_GIFT_SEGMENTATION_REPORT_ID" resultClass="int" parameterClass="map">
+		SELECT count(DISTINCT p.CONSTITUENT_ID)
+
+		FROM CONSTITUENT p
+		INNER JOIN ADJUSTED_GIFT ag ON ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+		INNER JOIN THEGURU_SEGMENTATION_RESULT res ON ag.ADJUSTED_GIFT_ID = res.ENTITY_ID AND res.REPORT_ID IN
+		<iterate property="reportIds" conjunction="," open="(" close=")">
+		    #reportIds[]#
+		</iterate>
+
+		WHERE p.SITE_NAME = #siteName#
+	</select>
+
+
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Constituent">
 		insert into CONSTITUENT (
 		CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME, BYPASS_DUPLICATE, RECENT_GIFT,
@@ -213,7 +334,7 @@
 		SUFFIX = #suffix#,
 		TITLE = #title#,
 		BYPASS_DUPLICATE = #byPassDuplicateDetection#, 
-		RECENT_GIFT = #recentGift#, 
+		RECENT_GIFT = #recentGift#,
 		ACCOUNT_NUMBER = #accountNumber#,
 		UPDATE_DATE = now()
 		where CONSTITUENT_ID = #id# and SITE_NAME = #site.name#

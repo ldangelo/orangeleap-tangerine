@@ -80,7 +80,9 @@ Ext.ux.GroupTab = Ext.extend(Ext.Container, {
                 this.activeTab.fireEvent('deactivate', this.activeTab);
             }
             var el = this.getTabEl(item);
-            Ext.fly(el).addClass('x-grouptabs-strip-active');
+            if (el) {
+	            Ext.fly(el).addClass('x-grouptabs-strip-active');
+            }
             this.activeTab = item;
             this.stack.add(item);
 

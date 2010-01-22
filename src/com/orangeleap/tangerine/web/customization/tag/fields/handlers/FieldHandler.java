@@ -23,4 +23,6 @@ public interface FieldHandler {
 	String resolveLabelText(PageContext pageContext, SectionField sectionField);
 
     Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue);
+
+	Object resolveExtData(final SectionField currentField, Object fieldValue);
 }

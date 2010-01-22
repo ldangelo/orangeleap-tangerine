@@ -5,7 +5,7 @@ OrangeLeap.ListStore = Ext.extend(Ext.data.JsonStore, {
     sort: function(fieldName, dir) {
         if (this.lastOptions) {
             this.lastOptions.params['start'] = 0;
-            this.lastOptions.params['limit'] = 100;
+            this.lastOptions.params['limit'] = Ext.isNumber(this.lastOptions.params['limit']) ? this.lastOptions.params['limit'] : 100;
         }
         return OrangeLeap.ListStore.superclass.sort.call(this, fieldName, dir);
     }
@@ -38,7 +38,7 @@ OrangeLeap.msgBundle = {
     batchExecutionInProgressView: 'This batch is currently executing and can be viewed after execution completes.',
     id: 'ID',
     batchId: 'Batch ID',
-    type: 'Type',
+    batchType: 'Batch Type',
     size: 'Size',
     value: 'Value',
     description: 'Description',
@@ -61,25 +61,54 @@ OrangeLeap.msgBundle = {
     lastExecBy: 'Last Executed By',
     error: 'Error',
     info: 'Info',
-    mustDoStep1: 'You must choose a Batch Type (Step 1) first.',
+    criteriaFields: 'Criteria Fields',
+    touchPointFields: 'Touch Point Fields',
+    batchTypeFields: 'Fields of Selected Batch Type',
+    entryType: 'Entry Type',
+    mail: 'Mail',
+    mailingLabel: 'Mailing Label',
+    email: 'Email',
+    call: 'Call',
+    meeting: 'Meeting',
+    note: 'Note',
+    task: 'Task',
+    other: 'Other',
+    template: 'Template',
+    recordDate: 'Record Date',
+    assignedTo: 'Assigned To',
+	comments: 'Comments',
+	correspondenceFor: 'Correspondence For',
+	primary: 'Primary',
+	all: 'All',
+	noteType: 'Note Type',
+	event: 'Event',
+	eventParticipation: 'Event Participation',
+	eventDate: 'Event Date',
+	eventLocation: 'Event Location',
+    mustDoStep1: 'You must choose a Batch Type and Criteria Fields (Step 1) first.',
     mustDoStep2: 'You must pick Segmentations (Step 2) first.',
     noUpdatableRows: 'There are no updatable rows based on the Segmentation you chose.  Choose a different segmentation (Step 2).',
     mustDoStep3: 'You must complete Step 3 first.',
-    mustDoStep4: 'You must create Field Update Criteria (Step 4) first.',
+    mustDoStep4TouchPointFields: 'You must create Touch Points (Step 4) first.',
+    mustDoStep4FieldUpdateCriteria: 'You must create Field Update Criteria (Step 4) first.',
     loading: 'Loading...',
     loadingSegmentations: 'Loading Segmentations...',
     loadingRows: 'Loading Rows...',
     deletingBatch: 'Deleting Batch...',
     executingBatch: 'Executing Batch...',
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
+    followingHaveTouchPoints: 'The following constituents will have touch points applied to them. Click \'Next\' to continue or \'Prev\' to change segmentations',
     followingChangesApplied: 'The following changes will be applied when you execute the batch.',
     noSegmentationsFound: 'No Segmentations were found for the Type selected.  Please choose a different Type (Step 1).',
     noRowsFound: 'No rows were found for the Segmentations selected.  Please choose a different Segmentation (Step 2).',
     noFieldUpdates: 'You did not create any Field Update Criteria.  Please create Criteria first (Step 4).',
+    noTouchPointFields: 'You did not create any Touch Point Fields.  Please create Fields first (Step 4).',
+    createFieldUpdateCriteria: 'Create Field Update Criteria',
+    createTouchPointFields: 'Create Touch Point Fields',
     step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
     step2Title: '<span class="step"><span class="stepNum" id="step2Num">2</span><span class="stepTxt">Choose Segmentations</span>',
     step3Title: '<span class="step"><span class="stepNum" id="step3Num">3</span><span class="stepTxt">View Rows To Be Updated</span>',
-    step4Title: '<span class="step"><span class="stepNum" id="step4Num">4</span><span class="stepTxt">Create Field Update Criteria</span>',
+    step4Title: '<span class="step"><span class="stepNum" id="step4Num">4</span><span class="stepTxt">' + this.createFieldUpdateCriteria + '</span>',
     step5Title: '<span class="step"><span class="stepNum" id="step5Num">5</span><span class="stepTxt">Confirm Changes</span>',
     step1Tip: 'Step 1',
     step2Tip: 'Step 2',
@@ -156,7 +185,7 @@ Ext.onReady(function() {
                         cols[cols.length] = {
                             header: hdr, dataIndex: name, sortable: true,
                             renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                                return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                                return determineRenderer(this, value, metaData, record);
                             }
                         };
                     }
@@ -346,7 +375,7 @@ Ext.onReady(function() {
             { header: msgs.id, dataIndex: 'id', width: 40, sortable: true }
         ],
         sm: new Ext.grid.RowSelectionModel({ singleSelect: true }),
-//        viewConfig: { forceFit: true },
+        viewConfig: { autoFill: true },
         height: 600,
         width: 780,
         frame: true,
@@ -373,7 +402,8 @@ Ext.onReady(function() {
                             showModal(errorBatchWin);
                         }
                         else {
-                            batchID = rec.get('id');
+                            editBatchWin.batchID = rec.get('id');
+                            editBatchWin.forTouchPoints = rec.get('forTouchPoints');
                             showModal(editBatchWin);
                         }
                     }
@@ -417,7 +447,8 @@ Ext.onReady(function() {
         toolbar.addButton({ text: msgs.addNew, tooltip: msgs.addNewBatch,
             iconCls:'add', id: 'addButton', ref: '../addButton', disabled: prevShowBatchStatus != 'open',
             handler: function() {
-                batchID = null;
+                editBatchWin.batchID = null;
+                editBatchWin.forTouchPoints = false;
                 showModal(editBatchWin);
             }
         });
@@ -660,16 +691,20 @@ Ext.onReady(function() {
     });
 
     var flowExecutionKey = null;
-    var batchID = null;
     var accessibleSteps = ['step1Grp'];
 
     /* Following code to the end is for the edit/add batch modal */
-    function elementFocus(fld) {
-        $('#' + fld.getId()).parents('div.x-form-element').prev('label').addClass('inFocus');
-    }
-
-    function elementBlur(fld) {
-        $('#' + fld.getId()).parents('div.x-form-element').prev('label').removeClass('inFocus');
+    function determineRenderer(obj, value, metaData, record) {
+		var hdr = '';
+		if (obj.dataIndex && record.fields.map && record.fields.map[obj.dataIndex]) {
+			if (record.fields.map[obj.dataIndex].header) {
+				hdr = record.fields.map[obj.dataIndex].header;
+			}
+			if (record.fields.map[obj.dataIndex].type == 'boolean') {
+				return OrangeLeap.booleanRenderer(value, metaData, record);
+			}
+		}
+		return '<span ext:qtitle="' + hdr + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
     }
 
     function checkFieldCriteriaValid(form) {
@@ -724,13 +759,15 @@ Ext.onReady(function() {
             accessibleSteps.indexOf(groupToShow.mainItem.id) == -1) {
             if (currentGroup.mainItem.id == 'step1Grp') {
                 var batchType = getBatchTypeValue();
-                if ( ! batchType || Ext.isEmpty(batchType)) {
+                var criteriaFieldsVal = Ext.getCmp('criteriaFields').getValue();
+                if ( ! batchType || Ext.isEmpty(batchType) || ! criteriaFieldsVal || Ext.isEmpty(criteriaFieldsVal)) {
                     isValid = false;
+                    step1Form.nextButton.disable();
                     invalidateAccessibleSteps('step1Grp');
                     showErrorMsg(msgs.mustDoStep1);
                 }
-                else if (accessibleSteps.indexOf('step2Grp') == -1) {
-                    accessibleSteps[accessibleSteps.length] = 'step2Grp';
+                else {
+                    step1Form.nextButton.enable();
                 }
             }
             else if (currentGroup.mainItem.id == 'step2Grp') {
@@ -754,23 +791,62 @@ Ext.onReady(function() {
                 }
             }
             else if (currentGroup.mainItem.id == 'step4Grp') {
-                if (step4Form.store.getCount() == 0 || ! checkFieldCriteriaValid(step4Form)) {
+                if (! isForTouchPoints()) {
+	                if (step4UpdatableFieldsForm.store.getCount() == 0 || ! checkFieldCriteriaValid(step4UpdatableFieldsForm)) {
+						isValid = false;
+						invalidateAccessibleSteps('step4Grp');
+						showErrorMsg(msgs.mustDoStep4FieldUpdateCriteria);
+					}
+					else if (accessibleSteps.indexOf('step5Grp') == -1) {
+						accessibleSteps[accessibleSteps.length] = 'step5Grp';
+					}
+				}
+                else if (Ext.isEmpty(Ext.getCmp('entryType').getValue())) {
                     isValid = false;
                     invalidateAccessibleSteps('step4Grp');
-                    showErrorMsg(msgs.mustDoStep4);
-                }
-                else if (accessibleSteps.indexOf('step5Grp') == -1) {
-                    accessibleSteps[accessibleSteps.length] = 'step5Grp';
+                    showErrorMsg(msgs.mustDoStep4TouchPointFields);
                 }
             }
         }
+		if (isValid && currentGroup && currentGroup.mainItem.id) {
+            if (currentGroup.mainItem.id == 'step1Grp') {
+                if (isBatchTypeChanged) {
+                    isBatchTypeChanged = false;
+					resetEditSteps2Thru5(); // If the new batch type is different from the old batch type, they have to repeat steps 2-5 again
+                }
+                if (isFieldCriteriaDifferent) {
+                    isFieldCriteriaDifferent = false;
+					resetEditSteps3Thru5();
+                }
+				if ( ! isForTouchPoints()) {
+					setupEditWizardForFieldCriteria();
+				}
+				else {
+					setupEditWizardForTouchPoints();
+
+					// For touch points, not allowed to go to Step 5
+					if (groupToShow && groupToShow.mainItem.id &&
+						groupToShow.mainItem.id == 'step5Grp') {
+						isValid = false;						
+					}
+				}
+				if (accessibleSteps.indexOf('step2Grp') == -1) {
+					accessibleSteps[accessibleSteps.length] = 'step2Grp';
+				}
+			}
+		}
 
         // Then check if all previous conditions for the group to show have been fulfilled
         if (isValid) {
             if (accessibleSteps.indexOf(groupToShow.mainItem.id) == -1) { // the step requested (e.g. step 5) is not available, so find which step (e.g. step 2) is missing
                 isValid = false;
                 if (accessibleSteps.indexOf('step4Grp') > -1) {
-                    showErrorMsg(msgs.mustDoStep4);
+                    if (isForTouchPoints()) {
+                        showErrorMsg(msgs.mustDoStep4TouchPointFields);
+                    }
+                    else {
+	                    showErrorMsg(msgs.mustDoStep4FieldUpdateCriteria);
+                    }
                 }
                 else if (accessibleSteps.indexOf('step3Grp') > -1) {
                     showErrorMsg(msgs.mustDoStep3);
@@ -786,6 +862,18 @@ Ext.onReady(function() {
         return isValid;
     }
 
+    function setupEditWizardForTouchPoints() {
+		$('#step3MsgSpan').text(msgs.followingHaveTouchPoints);
+		$('#step4Num').next('.stepTxt').text(msgs.createTouchPointFields);
+		$('#step5Num').parents('.x-grouptabs-main').addClass('noDisplay');
+    }
+
+    function setupEditWizardForFieldCriteria() {
+		$('#step3MsgSpan').text(msgs.followingBeModified);
+		$('#step4Num').next('.stepTxt').text(msgs.createFieldUpdateCriteria);
+		$('#step5Num').parents('.x-grouptabs-main').removeClass('noDisplay');
+    }
+
     function maskStep1Form() {
         var step1GrpDivId = $('#step1Grp').parent('div').attr('id');
         if (step1GrpDivId) {
@@ -798,6 +886,10 @@ Ext.onReady(function() {
         if (step1GrpDivId) {
             Ext.get(step1GrpDivId).unmask();
         }
+    }
+
+    function isForTouchPoints() {
+        return Ext.getCmp('criteriaFields').getValue() == 'touchPoint';
     }
 
     function findStepId(stepName) {
@@ -849,7 +941,8 @@ Ext.onReady(function() {
         var saveParams = {};
         if (currentGroup) {
             if (currentGroup.mainItem.id == 'step1Grp') {
-                saveParams = { 'batchType': getBatchTypeValue(), 'batchDesc': Ext.getCmp('batchDesc').getValue(), 'previousStep': 'step1Grp' };
+                saveParams = { 'batchType': getBatchTypeValue(), 'batchDesc': Ext.getCmp('batchDesc').getValue(),
+                    'criteriaFields': Ext.getCmp('criteriaFields').getValue(), 'previousStep': 'step1Grp' };
                 $('#step1Num').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step2Grp') {
@@ -863,7 +956,12 @@ Ext.onReady(function() {
                 $('#step3Num').addClass('complete');
             }
             else if (currentGroup.mainItem.id == 'step4Grp') {
-                findUpdateFields(step4Form.store, saveParams);
+                if ( ! isForTouchPoints()) {
+                    findUpdateFields(step4UpdatableFieldsForm.store, saveParams);
+                }
+                else {
+                    findTouchPointFields(step4TouchPointFieldsForm.getForm(), saveParams);
+                }
                 saveParams['previousStep'] = 'step4Grp';
                 $('#step4Num').addClass('complete');
             }
@@ -887,6 +985,22 @@ Ext.onReady(function() {
         }
     }
 
+    function findTouchPointFields(form, saveParams) {
+		var obj = form.getFieldValues();
+		if (obj) {
+			for (var key in obj) {
+				var val = obj[key];
+				if (Ext.isArray(val)) {
+					val = val.join(); 
+				}
+				else if (form.items.map[key].xtype == 'datefield' && ! Ext.isEmpty(val)) {
+					val = new Date(val).format('m-d-Y'); // format the date value into MM/dd/yyyy format
+				}
+				saveParams['param-' + key] = val;
+			}
+		}
+    }
+
     function loadTab(groupTabPanel, newGroup, currentGroup, startNum) {
         if ( ! startNum) {
             startNum = 0;
@@ -897,7 +1011,7 @@ Ext.onReady(function() {
             editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
             maskStep1Form();
 
-            var step1LoadParams = { 'batchId': batchID, '_eventId_step1': 'step1', 'execution': getFlowExecutionKey() };
+            var step1LoadParams = { 'batchId': editBatchWin.batchID, '_eventId_step1': 'step1', 'execution': getFlowExecutionKey() };
             jQuery.extend(params, step1LoadParams, saveParams); // copy properties from step1LoadParams & saveParams to params
             
             step1Form.getForm().load({
@@ -930,7 +1044,7 @@ Ext.onReady(function() {
             editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
         }
         else if (newGroup.mainItem.id == 'step3Grp') {
-            var step3LoadParams = { '_eventId_step3': 'step3', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': 50 };
+            var step3LoadParams = { '_eventId_step3': 'step3', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': step3Bar.pageSize };
             jQuery.extend(params, step3LoadParams, saveParams); // copy properties from step3LoadParams & saveParams to params
 
             step3Store.load({ 'params': params });
@@ -940,11 +1054,34 @@ Ext.onReady(function() {
             var step4LoadParams = { '_eventId_step4': 'step4', 'execution': getFlowExecutionKey() };
             jQuery.extend(params, step4LoadParams, saveParams); // copy properties from step4LoadParams & saveParams to params
 
-            step4UpdatableFieldsStore.load({ 'params': params });
+			if ( ! isForTouchPoints()) {
+                step4UpdatableFieldsStore.load({ 'params': params });
+			}
+			else {
+                maskStep('step4Grp', msgs.loading);
+				step4TouchPointFieldsForm.getForm().load({
+					'url': 'doBatch.htm',
+					'params': params,
+					'success': function(form, action) {
+						flowExecutionKey = action.result.flowExecutionKey;
+						accessibleSteps = action.result.accessibleSteps;
+		                unmaskStep('step4Grp');
+						setTimeout(function() {
+							OrangeLeap.extFocusFirstFormElem(step4TouchPointFieldsForm.getForm());
+						}, 300);
+					},
+					'failure': function(form, action) {
+                        unmaskStep('step4Grp');
+						Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+							buttons: Ext.MessageBox.OK,
+							msg: msgs.errorStep4 });
+					}
+				});
+			}
             editBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
         }
         else if (newGroup.mainItem.id == 'step5Grp') {
-            var step5LoadParams = { '_eventId_step5': 'step5', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': 20, 'sort': 'id', 'dir': 'ASC' };
+            var step5LoadParams = { '_eventId_step5': 'step5', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': step5Bar.pageSize, 'sort': 'id', 'dir': 'ASC' };
             jQuery.extend(params, step5LoadParams, saveParams); // copy properties from step5LoadParams & saveParams to params
 
             step5Store.load({ 'params': params });
@@ -952,16 +1089,21 @@ Ext.onReady(function() {
         }
     }
 
-    var step1Form = new Ext.form.FormPanel({
+	var isBatchTypeChanged = false;
+	var isFieldCriteriaDifferent = false;
+
+	var commonEditFormConfig = {
         baseCls: 'x-plain',
         labelAlign: 'right',
         margins: '10 0',
-        formId: 'step1Form',
         ctCls: 'wizard',
         monitorValid: true,
-        layoutConfig: {
-            labelSeparator: '' 
-        },
+        layoutConfig: { labelSeparator: '' },
+        buttonAlign: 'center'
+	};
+
+    var step1Form = new Ext.form.FormPanel(jQuery.extend({
+        formId: 'step1Form',
         buttons: [
             {
                 text: msgs.next,
@@ -988,21 +1130,20 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center',
         items: [
-            // Textarea for description is first
+            // Textarea for description is 1st
             {
                 fieldLabel: msgs.description, name: 'batchDesc', id: 'batchDesc', xtype: 'textarea',
                 maxLength: 255, height: 60, width: 500, grow: true, growMin: 60, growMax: 400,
                 listeners: {
-                    'focus': elementFocus,
-                    'blur': elementBlur,
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
                     scope: this
                 }
             },
-            // Combobox for type is second
+            // Combobox for type is 2nd
             {
-                fieldLabel: '<span class="required">*</span>' + msgs.type, name: 'batchType', id: 'batchType', xtype: 'combo', 
+                fieldLabel: '<span class="required">*</span>' + msgs.batchType, name: 'batchType', id: 'batchType', xtype: 'combo',
                 store: new Ext.data.ArrayStore({
                     fields: [
                         'value',
@@ -1021,25 +1162,47 @@ Ext.onReady(function() {
                 minListWidth: 500,
                 width: 500,
                 listeners: {
-                    'focus': elementFocus,
-                    'blur': elementBlur,
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
                     'change': function(field, newVal, oldVal) {
-                        if (Ext.isEmpty(newVal)) {
-                            step1Form.nextButton.disable();
-                        }
-                        else {
-                            // If the new batch type is different from the old batch type, they have to repeat steps 2-5 again
-                            if (newVal != oldVal) {
-                                resetEditSteps2Thru5();
-                            }
-                            step1Form.nextButton.enable();
-                        }
+                        // If the new batch type is different from the old batch type, they have to repeat steps 2-5 again
+						isBatchTypeChanged = (newVal != oldVal); // TODO
+                    },
+                    scope: this
+                }
+            },
+            // Combo for either Touch Point or Gift/Adjusted Gift/Constituent, etc Criteria 3rd
+            {
+                fieldLabel: '<span class="required">*</span>' + msgs.criteriaFields,
+                name: 'criteriaFields', id: 'criteriaFields', xtype: 'combo',
+                store: new Ext.data.ArrayStore({
+                    fields: [
+                        'value',
+                        'desc'
+                    ],
+                    data: [['notTouchPoint', msgs.batchTypeFields], ['touchPoint', msgs.touchPointFields]]
+                }),
+                displayField: 'desc',
+                valueField: 'value',
+                typeAhead: false,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                        isFieldCriteriaDifferent = (newVal != oldVal); // TODO
                     },
                     scope: this
                 }
             }
         ]
-    });
+    }, commonEditFormConfig));
 
     function getBatchTypeValue() {
         return Ext.getCmp('batchType').getValue();
@@ -1167,7 +1330,7 @@ Ext.onReady(function() {
         border: false,
         selModel: step2RowSelModel,
         viewConfig: {
-//            forceFit: true,
+            autoFill: true,
             emptyText: msgs.noSegmentationsFound
         },
         plugins: [ checkColumn ],
@@ -1335,7 +1498,7 @@ Ext.onReady(function() {
                         cols[cols.length] = {
                             header: fields[x].header, dataIndex: name, sortable: true,
                             renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                                return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                                return determineRenderer(this, value, metaData, record);
                             }
                         };
                     }
@@ -1393,7 +1556,7 @@ Ext.onReady(function() {
 
     var step3Toolbar = new Ext.Toolbar({
         items: [
-            msgs.followingBeModified
+            '<span id=\"step3MsgSpan\">' + ( ( ! isForTouchPoints()) ? msgs.followingBeModified : msgs.followingHaveTouchPoints) + '</span>'
         ]
     });
     step3Toolbar.on('afterlayout', function(tb){
@@ -1419,7 +1582,7 @@ Ext.onReady(function() {
         border: false,
         selModel: step3RowSelect,
         viewConfig: {
-            forceFit: true,
+            autoFill: true,
             emptyText: msgs.noRowsFound
         },
         columns: [
@@ -1457,7 +1620,7 @@ Ext.onReady(function() {
                     var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(3)) { // check that all required fields entered and activeGroup is actually set to 3
                         var firstItem = panel.items.items[3];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
+                        firstItem.setActiveTab(firstItem.items.items[0].items.items[getStep4TabItemNumber()]);
                         $('#step3Num').addClass('complete');
                     }
                 }
@@ -1475,15 +1638,332 @@ Ext.onReady(function() {
         tbar: step3Toolbar
     });
     step3Form.on('rowdblclick', function(grid, rowIndex, event) {
-        var batchType = getBatchTypeValue();
+        var batchTypeVal = getBatchTypeValue();
+        var criteriaFieldsVal = Ext.getCmp('criteriaFields').getValue();
         var record = step3Store.getAt(rowIndex);
-        if (batchType && record) {
+        if (batchTypeVal && record && criteriaFieldsVal) {
             // open window to view record
-            var thisUrl = batchType + '.htm?' + batchType + 'Id=' + record.get('id') +
-                                  (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
-            window.open(thisUrl, batchType + 'Win');
+            var thisUrl;
+            if ('touchPoint' == criteriaFieldsVal) {
+				thisUrl = 'constituent.htm?constituentId=' + record.get('id');
+            }
+            else {
+				thisUrl = batchTypeVal + '.htm?' + batchTypeVal + 'Id=' + record.get('id') +
+									  (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
+            }
+            window.open(thisUrl, batchTypeVal + 'Win');
         }
     });
+
+    function getStep4TabItemNumber()  {
+		return ( (! isForTouchPoints()) ? 0 : 1);
+    }
+
+	/* Common configuration for both step 4 edit forms */
+    var commonStep4FormConfig = {
+        buttonAlign: 'center'
+    };
+
+    function showFormItem(elem, elems, index) {
+        Ext.getCmp(elem.dom.id).show();
+        var $elem = $('#' + OrangeLeap.escapeIdCharacters(elem.dom.id));
+        $elem.parents('div.x-form-item').removeClass('x-hide-label');
+        $elem.prev('label.x-form-item-label').removeClass('x-hide-label');
+    }
+
+    function hideFormItem(elem, elems, index) {
+        Ext.getCmp(elem.dom.id).hide();
+        var $elem = $('#' + OrangeLeap.escapeIdCharacters(elem.dom.id));
+        $elem.parents('div.x-form-item').addClass('x-hide-label');
+        $elem.parents('label.x-form-item-label').addClass('x-hide-label');
+    }
+
+    var step4TouchPointFieldsForm = new Ext.form.FormPanel(jQuery.extend({
+        formId: 'step4TouchPointFieldsForm',
+        ctCls: 'wizard',
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = editBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(2)) { // check that all required fields entered and activeGroup is actually set to 2
+                        var firstItem = panel.items.items[2];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.save,
+                cls: 'saveButton',
+                ref: '../saveButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    saveBatch('doBatch.htm', getFlowExecutionKey(), cancelEditBatch, 'open');
+                }
+            },
+            {
+                text: msgs.cancel,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+                    cancelEditBatch();
+                }
+            }
+        ],
+		items: [ // TODO: replace with dynamically created fields
+            {
+                fieldLabel: '<span class="required">*</span>' + msgs.entryType, name: 'entryType', id: 'entryType', xtype: 'combo',
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                typeAhead: false,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'beforeselect': function(combo, record, index) {
+                        var newVal = record.get('itemName');
+                        if (newVal == 'Mail' || newVal == 'MailingLabel' || newVal == 'Email' || newVal == 'Call' || newVal == 'Other') {
+                            Ext.select(".ea-template").each(showFormItem);
+                        }
+                        else {
+                            Ext.select(".ea-template").each(hideFormItem);
+                        }
+                        if (newVal == 'Mail' || newVal == 'MailingLabel' || newVal == 'Email' || newVal == 'Call') {
+                            Ext.select(".ea-correspondence").each(showFormItem);
+                        }
+                        else {
+                            Ext.select(".ea-correspondence").each(hideFormItem);
+                        }
+                        if (newVal == 'Note') {
+                            Ext.select(".ea-noteType").each(showFormItem);
+                        }
+                        else {
+                            Ext.select(".ea-noteType").each(hideFormItem);
+                        }
+                        if (newVal == 'Event') {
+                            Ext.select(".ea-event").each(showFormItem);
+                        }
+                        else {
+                            Ext.select(".ea-event").each(hideFormItem);
+                        }
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.correspondenceFor, name: 'customFieldMap[correspondenceFor]', id: 'customFieldMap[correspondenceFor]', xtype: 'combo',
+                cls: 'ea-correspondence',
+                store: new Ext.data.ArrayStore({
+                    fields: [
+                        'itemName',
+                        'displayVal'
+                    ],
+                    data: [['primary', msgs.primary], ['all', msgs.all]]
+                }),
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                typeAhead: false,
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.noteType, name: 'customFieldMap[noteType]', id: 'customFieldMap[noteType]', xtype: 'combo',
+                cls: 'ea-noteType',
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                typeAhead: false,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.event, name: 'customFieldMap[event]', id: 'customFieldMap[event]', xtype: 'combo',
+                cls: 'ea-event',
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                typeAhead: false,
+                mode: 'local',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.eventParticipation, name: 'customFieldMap[eventParticipation]', id: 'customFieldMap[eventParticipation]', xtype: 'combo',
+                cls: 'ea-event',
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                typeAhead: false,
+                mode: 'local',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.eventDate, name: 'customFieldMap[eventDate]', id: 'customFieldMap[eventDate]', xtype: 'datefield',
+                cls: 'ea-event',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.eventLocation, name: 'customFieldMap[eventLocation]', id: 'customFieldMap[eventLocation]', xtype: 'textfield',
+                cls: 'ea-event',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.template, name: 'customFieldMap[template]', id: 'customFieldMap[template]', xtype: 'textfield',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                width: 500,
+                cls: 'ea-template',
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.recordDate, name: 'recordDate', id: 'recordDate', xtype: 'datefield',
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            },
+			{
+				fieldLabel: msgs.assignedTo, name: 'customFieldMap[assignedTo]',
+				id: 'customFieldMap[assignedTo]',
+				fieldDef: 'communicationHistory.customFieldMap[assignedTo]',
+				width: 498,
+				xtype: 'querylookup'
+			},
+            {
+                fieldLabel: msgs.comments, name: 'comments', id: 'comments', xtype: 'textarea',
+                height: 60, width: 500, grow: true, growMin: 60, growMax: 400,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            }
+		]        
+	}, commonStep4FormConfig, commonEditFormConfig));
+
+	step4TouchPointFieldsForm.getForm().on('beforeaction', function(form, action) {
+		if (action.type == Ext.form.Action.Load.prototype.type) {
+			var originalHandleResponse = action.handleResponse;
+			/* Override the original Ext.form.Action.Load handleResponse function to invoke loadTouchPointFormFields function first */
+			action.handleResponse = function(response) {
+				loadTouchPointFormFields(response);
+				return originalHandleResponse.apply(step4TouchPointFieldsForm, arguments);
+			};
+		}
+	});
+
+	function loadTouchPointFormFields(response) {
+		var obj = Ext.decode(response.responseText);
+		if (obj && obj.data) {
+			for (var key in obj.data) {
+				var cmp = Ext.getCmp(key);
+				if (cmp) {
+					var picklistData = obj[key + '-Picklist'];
+					if (picklistData) { // look for picklist data to update
+						cmp.store = new Ext.data.JsonStore({
+							'fields': [ 'displayVal', 'itemName', 'refVal' ],
+							'data': picklistData
+						});
+					}
+					var queryLookupData = obj[key + '-QueryLookup'];
+					if (queryLookupData) {
+						cmp.referenceType = queryLookupData.referenceType;
+						cmp.displayValue = queryLookupData.displayValue; 
+					}
+				}
+			}
+		}
+	}
 
     function loadUpdatableFields(form, picklistData, store, records, options) {
         var len = records.length;
@@ -1537,7 +2017,7 @@ Ext.onReady(function() {
                 initValues[recName] = parseInt(0, 10);
             }
             else if (recType == 'picklist') {    // TODO: multi_picklist, code, code_other, query_lookup, query_lookup_other
-                var myPicklist = picklistData[recName + '-Data'];
+                var myPicklist = picklistData[recName + '-Picklist'];
                 if (myPicklist) {
                     var myStore = new Ext.data.JsonStore({
                         autoSave: false,
@@ -1603,16 +2083,9 @@ Ext.onReady(function() {
         autoSave: false,
         totalProperty: 'totalRows',
         root: 'rows',
-        fields: [
-            {name: 'name', type: 'string'},
-            {name: 'desc', type: 'string'},
-            {name: 'type', type: 'string'},
-            {name: 'value', type: 'string'},
-            {name: 'selected', type: 'boolean'}
-        ],
         listeners: {
             'load': function(store, records, options) {
-                loadUpdatableFields(step4Form, step4Picklists, store, records, options);
+                loadUpdatableFields(step4UpdatableFieldsForm, step4Picklists, store, records, options);
                 unmaskStep('step4Grp');
             },
             'beforeload': function(store, options) {
@@ -1624,8 +2097,16 @@ Ext.onReady(function() {
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep4 });
             }
-        }
+        },
+        fields: [
+            {name: 'name', type: 'string'},
+            {name: 'desc', type: 'string'},
+            {name: 'type', type: 'string'},
+            {name: 'value', type: 'string'},
+            {name: 'selected', type: 'boolean'}
+        ]
     });
+
     var step4Picklists = {};
 
     function proxyLoadUpdatableFields(obj, txn) {
@@ -1637,7 +2118,7 @@ Ext.onReady(function() {
             for (var x = 0; x < len; x++) {
                 if (rows[x].type == 'picklist') {
                     var name = rows[x].name;
-                    var picklistNameKey = name + '-Data'; // get the JSON itemName/displayVal data for the picklist
+                    var picklistNameKey = name + '-Picklist'; // get the JSON itemName/displayVal data for the picklist
                     if (txn.reader.jsonData[picklistNameKey]) {
                         obj[picklistNameKey] = txn.reader.jsonData[picklistNameKey];
                     }
@@ -1652,7 +2133,9 @@ Ext.onReady(function() {
         proxyLoadUpdatableFields(step4Picklists, txn);
     });
 
-    var step4Form = new OrangeLeap.DynamicPropertyGrid({
+    var step4UpdatableFieldsForm = new OrangeLeap.DynamicPropertyGrid(jQuery.extend({
+        updatableFieldsStore: step4UpdatableFieldsStore,
+        id: 'step4UpdatableFieldsForm',
         width: 726,
         height: 468,
         loadMask: true,
@@ -1660,10 +2143,9 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         forceLayout: true,
+        cls: 'grp',
         propertyNames: { },
         source: { },
-        viewConfig : { forceFit: true },
-        updatableFieldsStore: step4UpdatableFieldsStore,
         customEditors: { },
         buttons: [
             {
@@ -1703,19 +2185,18 @@ Ext.onReady(function() {
                     cancelEditBatch();
                 }
             }
-        ],
-        buttonAlign: 'center'
-    });
+        ]
+    }, commonStep4FormConfig));
 
     var checkStep4EnableButton = function(store) {
-        if (store.getCount() == 0 || ! checkFieldCriteriaValid(step4Form)) {
-            step4Form.nextButton.disable();
+        if (store.getCount() == 0 || ! checkFieldCriteriaValid(step4UpdatableFieldsForm)) {
+            step4UpdatableFieldsForm.nextButton.disable();
         }
         else {
-            step4Form.nextButton.enable();
+            step4UpdatableFieldsForm.nextButton.enable();
         }
     };
-    step4Form.store.addListener({
+    step4UpdatableFieldsForm.store.addListener({
         'add': checkStep4EnableButton,
         'update': checkStep4EnableButton,
         'remove': checkStep4EnableButton
@@ -1759,9 +2240,9 @@ Ext.onReady(function() {
             var name = fields[x].name;
             if (name && name != 'constituentId' && name != 'id') {
                 cols[cols.length] = {
-                    header: fields[x].header, dataIndex: name, sortable: (name != 'type' && name != 'displayedId'),
+                    header: fields[x].header, dataIndex: name, sortable: (name != 'type'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                        return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+						return determineRenderer(this, value, metaData, record);
                     }
                 };
             }
@@ -1776,7 +2257,7 @@ Ext.onReady(function() {
     });
 
     var step5Bar = new OrangeLeap.EditBatchWinToolbar({
-        pageSize: 50,
+        pageSize: 20,
         stateEvents: ['change'],
         stateId: 'step5Bar',
         stateful: true,
@@ -1830,7 +2311,7 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         selModel: step5RowSelect,
-//        viewConfig: { forceFit: true },
+        viewConfig: { autoFill: true },
         columns: [
             {
                 header: msgs.id,
@@ -1851,7 +2332,7 @@ Ext.onReady(function() {
                     var panel = editBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(3)) {
                         var thisItem = panel.items.items[3];
-                        thisItem.setActiveTab(thisItem.items.items[0]);
+                        thisItem.setActiveTab(thisItem.items.items[0].items.items[getStep4TabItemNumber()]);
                     }
                 }
             },
@@ -1942,12 +2423,21 @@ Ext.onReady(function() {
         closeAction: 'hide',
         listeners: {
             'show': function(win) {
-                if (batchID && Ext.isNumber(batchID) && batchID > 0) {
+				if (win.forTouchPoints) {
+                     setupEditWizardForTouchPoints();
+				}
+				else {
+					setupEditWizardForFieldCriteria();
+				}
+                if (win.batchID && Ext.isNumber(win.batchID) && win.batchID > 0) {
                     $('#step1Num').addClass('complete');
                     $('#step2Num').addClass('complete');
                     $('#step3Num').addClass('complete');
                     $('#step4Num').addClass('complete');
-                    $('#step5Num').addClass('complete');
+
+                    if ( ! win.forTouchPoints) {
+	                    $('#step5Num').addClass('complete');
+                    }
                 }
             },
             'beforeshow': function() {
@@ -2009,7 +2499,7 @@ Ext.onReady(function() {
                          cls: 'grp',
                          title: msgs.step4Title,
                          tabTip: msgs.step4Tip,
-                         items: [ step4Form ]
+                         items: [ step4UpdatableFieldsForm, step4TouchPointFieldsForm ]
                      }]
                  },
                  {
@@ -2024,6 +2514,31 @@ Ext.onReady(function() {
              ]
          }]
     });
+
+	/* onStripMouseDown function is overridden to set the correct active tab for step 4 */ 
+    editBatchWin.items.items[0].onStripMouseDown = function(e) {
+        if (e.button != 0) {
+            return;
+        }
+        e.preventDefault();
+        var t = this.findTargets(e);
+        if (t.expand) {
+            this.toggleGroup(t.el);
+        }
+        else if (t.item) {
+            if (t.isGroup) {
+                if (t.item.items.items[0].id == 'step4Grp') {
+	                t.item.setActiveTab(t.item.items.items[0].items.items[getStep4TabItemNumber()]);
+                }
+                else {
+	                t.item.setActiveTab(t.item.getMainItem());
+                }
+            }
+            else {
+                t.item.ownerCt.setActiveTab(t.item);
+            }
+        }
+    };
 
     var hideEditOnEscape = function(e) {
         if (e.keyCode == 27) {
@@ -2040,21 +2555,29 @@ Ext.onReady(function() {
         $('#step1Num').removeClass('complete');
         Ext.getCmp('batchDesc').setRawValue(''); // reset the batchDesc to empty string; use 'setRawValue()' to bypass form validation
         Ext.getCmp('batchType').setRawValue('gift'); // reset the batchDesc to 'gift'; use 'setRawValue()' to bypass form validation
+        Ext.getCmp('criteriaFields').setRawValue('notTouchPoint'); // reset the criteriaFields to 'notTouchPoint'; use 'setRawValue()' to bypass form validation
+        invalidateAccessibleSteps('step1Grp');
+        setupEditWizardForFieldCriteria();
         resetEditSteps2Thru5();
     }
 
     function resetEditSteps2Thru5() {
         pickedSegmentationsCount = 0;
-        accessibleSteps = ['step1Grp'];
         $('#step2Num').removeClass('complete');
+        step2Store.removeAll();
+        invalidateAccessibleSteps('step1Grp');
+        resetEditSteps3Thru5();
+    }
+
+    function resetEditSteps3Thru5() {
         $('#step3Num').removeClass('complete');
         $('#step4Num').removeClass('complete');
         $('#step5Num').removeClass('complete');
-        step2Store.removeAll();
         step3Store.removeAll();
         step4UpdatableFieldsStore.removeAll();
-        step4Form.store.removeAll();
+        step4UpdatableFieldsForm.store.removeAll();
         step5Store.removeAll();
+        invalidateAccessibleSteps('step2Grp');
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2100,7 +2623,7 @@ Ext.onReady(function() {
                 height: 60, width: 500
             },
             {
-                fieldLabel: msgs.type, name: 'reviewBatchType', id: 'reviewBatchType', xtype: 'displayfield', cls: 'displayElem',
+                fieldLabel: msgs.batchType, name: 'reviewBatchType', id: 'reviewBatchType', xtype: 'displayfield', cls: 'displayElem',
                 height: 60, width: 500
             },
             {
@@ -2239,7 +2762,7 @@ Ext.onReady(function() {
                 cols[cols.length] = {
                     header: fields[x].header, dataIndex: name, sortable: (name != 'type'),
                     renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                        return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+						return determineRenderer(this, value, metaData, record);
                     }
                 };
             }
@@ -2313,6 +2836,7 @@ Ext.onReady(function() {
         border: false,
         selModel: new Ext.grid.RowSelectionModel(),
         viewConfig: {
+            autoFill: true,
             emptyText: msgs.noRowsUpdated
         },
         columns: [
@@ -2405,7 +2929,7 @@ Ext.onReady(function() {
         }
         else if (newGroup.mainItem.id == 'step3Review') {
             reviewStep3Store.load({ 'params': { '_eventId_reviewStep3': 'reviewStep3',
-                'execution': reviewFlowExecutionKey, 'start': startNum, 'limit': 20,
+                'execution': reviewFlowExecutionKey, 'start': startNum, 'limit': reviewStep3Bar.pageSize,
                 'sort': 'id', 'dir': 'ASC' }
             });
             reviewBatchWin.setTitle(msgs.reviewBatch + ": " + msgs.step3Tip);
@@ -2551,13 +3075,13 @@ Ext.onReady(function() {
                 fieldLabel: msgs.description, name: 'errorBatchDesc', id: 'errorBatchDesc', xtype: 'textarea',
                 maxLength: 255, height: 60, width: 500, grow: true, growMin: 60, growMax: 400,
                 listeners: {
-                    'focus': elementFocus,
-                    'blur': elementBlur,
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
                     scope: this
                 }
             },
             {
-                fieldLabel: msgs.type, name: 'errorBatchType', id: 'errorBatchType', xtype: 'displayfield', cls: 'displayElem',
+                fieldLabel: msgs.batchType, name: 'errorBatchType', id: 'errorBatchType', xtype: 'displayfield', cls: 'displayElem',
                 height: 60, width: 500
             },
             {
@@ -2590,7 +3114,7 @@ Ext.onReady(function() {
                         cols[cols.length] = {
                             header: fields[x].header, dataIndex: name, sortable: true,
                             renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-                                return '<span ext:qtitle="' + (record.fields.items[colIndex] ? record.fields.items[colIndex].header : '') + '"ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
+                                return determineRenderer(this, value, metaData, record);
                             }
                         };
                     }
@@ -2679,7 +3203,7 @@ Ext.onReady(function() {
         height: 468,
         forceLayout: true,
         viewConfig: {
-            forceFit: true,
+            autoFill: true,
             emptyText: msgs.noRowsForErrorBatch
         },
         header: false,
@@ -2794,7 +3318,7 @@ Ext.onReady(function() {
         forceLayout: true,
         propertyNames: { },
         source: { },
-        viewConfig : { forceFit: true },
+        viewConfig : { autoFill: true },
         updatableFieldsStore: errorStep3UpdatableFieldsStore,
         customEditors: { },
         buttons: [
@@ -2822,7 +3346,7 @@ Ext.onReady(function() {
                     var panel = errorBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(3)) {
                         var firstItem = panel.items.items[3];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
+                        firstItem.setActiveTab(firstItem.items.items[0].items.items[getStep4TabItemNumber()]);
                     }
                 }
             },
@@ -2936,6 +3460,7 @@ Ext.onReady(function() {
         frame: false,
         border: false,
         selModel: errorStep4RowSelect,
+        viewConfig: { autoFill: true },
         columns: [
             {
                 header: msgs.id,
@@ -3156,7 +3681,7 @@ Ext.onReady(function() {
             });
         }
         else if (newGroup.mainItem.id == 'step2Error') {
-            jQuery.extend(params, { '_eventId_errorStep2': 'errorStep2', 'execution': errorFlowExecutionKey, 'start': startNum, 'limit': 50 }, saveParams);
+            jQuery.extend(params, { '_eventId_errorStep2': 'errorStep2', 'execution': errorFlowExecutionKey, 'start': startNum, 'limit': errorStep2Bar.pageSize }, saveParams);
             errorStep2Store.load({ 'params': params });
             errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step2Tip);
         }
@@ -3167,7 +3692,7 @@ Ext.onReady(function() {
         }
         else if (newGroup.mainItem.id == 'step4Error') {
             jQuery.extend(params, { '_eventId_errorStep4': 'errorStep4', 'execution': errorFlowExecutionKey, 'start': startNum,
-                'limit': 20, 'sort': 'id', 'dir': 'ASC' }, saveParams);
+                'limit': errorStep4Bar.pageSize, 'sort': 'id', 'dir': 'ASC' }, saveParams);
             errorStep4Store.load({ 'params': params });
             errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step4Tip);
         }

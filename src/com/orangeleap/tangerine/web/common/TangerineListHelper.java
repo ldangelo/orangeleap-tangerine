@@ -93,11 +93,13 @@ public class TangerineListHelper {
                     if (beanWrapper.isReadableProperty(fieldPropertyName)) {
                         FieldHandler handler = fieldHandlerHelper.lookupFieldHandler(field.getFieldType());
 
+	                    boolean isCustomField = false;
                         Object displayValue = StringConstants.EMPTY;
                         if (beanWrapper.isReadableProperty(field.getFieldPropertyName())) {
                             Object fieldValue = beanWrapper.getPropertyValue(field.getFieldPropertyName());
                             if (fieldValue instanceof CustomField) {
                                 fieldValue = ((CustomField) fieldValue).getValue();
+	                            isCustomField = true;
                             }
                             if (field.getFieldPropertyName().equals(StringConstants.ID) || field.getFieldPropertyName().equals(StringConstants.ALIAS_ID)) {
                                 displayValue = fieldValue;
@@ -117,8 +119,13 @@ public class TangerineListHelper {
                                 displayValue = "true";
                             }
                         }
-                        String key = useAliasName && ! StringConstants.ID.equals(fieldPropertyName) && ! StringConstants.ALIAS_ID.equals(fieldPropertyName)
-                                ? new StringBuilder(SORT_KEY_PREFIX).append(x++).toString() : TangerineForm.escapeFieldName(fieldPropertyName);
+                        String key;
+	                    if (useAliasName && ! StringConstants.ID.equals(fieldPropertyName) && ! StringConstants.ALIAS_ID.equals(fieldPropertyName)) {
+		                    key = new StringBuilder(SORT_KEY_PREFIX).append(x++).toString();
+	                    }
+	                    else {
+		                    key = TangerineForm.escapeFieldName(isCustomField ? fieldPropertyName + StringConstants.DOT_VALUE : fieldPropertyName);
+	                    }
                         paramMap.put(key, displayValue);
                     }
                 }

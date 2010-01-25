@@ -1231,6 +1231,19 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
+-- *****************************************Maintenance Consequences********************************************************
+-- --------------------------------------------------------------------------------------------------------------------------------
+-- This is may be used to normalize the data if they imported constituents via sql.  Daily scheduled rules require the UPDATE_DATE to be current to activate for a row.
+SET @PHRASE_CD = 'Update constituent dependencies';
+SET @CODE_CD = 'map.ruleHelperService.updateConstituentDependencies(map.constituent);';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'scheduled-daily'),@RULE_SEGMENT_TYPE_ID);
+
 -- *****************************************Touchpoints, Communication Consequences********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Send email to constituent with subject of ? and using template ?';

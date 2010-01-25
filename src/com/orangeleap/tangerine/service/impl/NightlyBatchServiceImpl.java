@@ -123,8 +123,8 @@ public class NightlyBatchServiceImpl implements NightlyBatchService
 	    	long t = System.currentTimeMillis();
 
 	    	if (!"true".equals(siteService.getSiteOptionsMap().get("disable.nightly.rollups"))) {
-		    	rollupHelperService.updateAllRollupsForSite();  // updating all stats for now until any legacy data is accounted for
-		    	//rollupHelperService.updateSummaryRollupsForSite();  // This would only do the summary totals
+		    	//rollupHelperService.updateAllRollupsForSite();  // updating all stats for now until any legacy data is accounted for
+		    	rollupHelperService.updateSummaryRollupsForSite();  // This would only do the summary totals
 	    	}
 	        
 	    	logger.info("Rollup processing took " + (System.currentTimeMillis() - t)/1000.0f + " sec.");

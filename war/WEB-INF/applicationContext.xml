@@ -221,6 +221,7 @@
 		<property name="constituentService" ref="constituentService"/>
 		<property name="emailService" ref="emailSendingService"/>
 		<property name="picklistItemService" ref="picklistItemService"/>
+		<property name="rollupHelperService" ref="rollupHelperService"/>
 	</bean>
     <bean id="tableLogger" class="com.orangeleap.tangerine.util.TableLoggerImpl"/>
 

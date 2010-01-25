@@ -46,6 +46,7 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.communication.EmailService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -57,6 +58,16 @@ public class RuleHelperService {
 	private static ConstituentService constituentService;
 	private static EmailService emailService;
 	private static PicklistItemService picklistItemService;
+	private static RollupHelperService rollupHelperService;
+
+	
+	public RollupHelperService getRollupHelperService() {
+		return rollupHelperService;
+	}
+
+	public void setRollupHelperService(RollupHelperService rollupHelperService) {
+		this.rollupHelperService = rollupHelperService;
+	}
 
     public PicklistItemService getPicklistItemService() {
 		return picklistItemService;
@@ -709,7 +720,16 @@ public class RuleHelperService {
 		}
 
 	}
-
+    
+    public Constituent updateConstituentDependencies(Constituent constituent) {
+    	try {
+    		constituent = constituentService.maintainConstituent(constituentService.readConstituentById(constituent.getId()));
+    		getRollupHelperService().refreshByConstituent(constituent.getId());
+    	} catch (Exception e) {
+    		logger.error(e);
+    	}
+    	return constituent;
+    }
 
     public static void throwConstituentValidationException(String message) {
     	ConstituentValidationException cve = new ConstituentValidationException(message);
@@ -721,4 +741,5 @@ public class RuleHelperService {
     	DuplicateConstituentException cve = new DuplicateConstituentException();
     	throw new OrangeLeapConsequenceRuntimeException(cve);
     }
+
 }

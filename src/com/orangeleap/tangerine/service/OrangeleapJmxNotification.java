@@ -15,6 +15,7 @@ public interface OrangeleapJmxNotification    {
 	public Long getTotalEchexStatus();
     
 	public Long getMemoryUsedPercent();
+	public Long getConnectionsInUse();
 
 
     public Map<String, Map<String, Long>> getAllSiteCounts();

@@ -22,6 +22,9 @@ public interface OrangeleapJmxNotificationBean extends OrangeleapJmxNotification
 
 	public final static String RULE_CACHE_ATTEMPTS = "ruleCacheAttempts";
 	public final static String RULE_CACHE_HITS = "ruleCacheHits";
+
+	public final static String DATABASE_CONNECTIONS_IN_USE = "databaseConnectionsInUse";
+	
 	
 	public void publishNotification(String type, String message);
 

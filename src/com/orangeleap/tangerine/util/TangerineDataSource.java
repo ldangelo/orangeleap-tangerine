@@ -28,8 +28,13 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-public class TangerineDataSource implements DataSource {
+import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
+
+public class TangerineDataSource implements DataSource, ApplicationContextAware {
 
     protected final Log logger = OLLogger.getLog(getClass());
 
@@ -39,31 +44,39 @@ public class TangerineDataSource implements DataSource {
     // The default schema should have no tables. Change to this first so in case something goes wrong, we don't want to still be pointing to the old database.
     private static final String TANGERINE_DEFAULT_SCHEMA = "orangeleap";
     private static final String USE_SQL = "USE ";
+    
+    private ApplicationContext applicationContext;
 
     private boolean splitDatabases = true;
     private DataSource dataSource;
     private TangerineUserHelper tangerineUserHelper;
     double count;
 
+    
     protected void logStatistics(BasicDataSource ds) {
-        if (logger.isInfoEnabled() && ds.getNumActive() > 0) {
-        	((OLLogger)logger).getBaseLogger().info("active: " + ds.getNumActive() + " (max: " + ds.getMaxActive() + ")   "
-                    + "idle: " + ds.getNumIdle() + "(max: " + ds.getMaxIdle() + ")");
+    	
+    	OrangeleapJmxNotificationBean onb = (OrangeleapJmxNotificationBean) applicationContext.getBean("OrangeleapJmxNotificationBean");
+    	onb.setStat(OrangeleapJmxNotificationBean.TOTAL, OrangeleapJmxNotificationBean.DATABASE_CONNECTIONS_IN_USE, new Long(ds.getNumActive()));
+
+        if (logger.isInfoEnabled() && ds.getNumActive() > 5) {
+        	((OLLogger)logger).getBaseLogger().info("db connections active: " + ds.getNumActive() + " (max: " + ds.getMaxActive() + ")   "
+                    + "idle: " + ds.getNumIdle() + " (max: " + ds.getMaxIdle() + ")");
         }
+        
     }
     
     @Override
     public Connection getConnection() throws SQLException {
 
-    	if (dataSource instanceof BasicDataSource) {
-    		logStatistics((BasicDataSource)dataSource);
-    	}
-    	
         Connection conn = dataSource.getConnection();
         if (useReadCommitted) {
         	conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
         }
 
+    	if (dataSource instanceof BasicDataSource) {
+    		logStatistics((BasicDataSource)dataSource);
+    	}
+    	
         if (logger.isTraceEnabled()) {
             count++;
             logger.trace("getConnection() called, count = " + (int) count);
@@ -188,5 +201,11 @@ public class TangerineDataSource implements DataSource {
     public boolean isSplitDatabases() {
         return splitDatabases;
     }
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 
 }

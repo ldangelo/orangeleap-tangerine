@@ -117,6 +117,12 @@ public class OrangeleapJmxNotificationBeanImpl implements OrangeleapJmxNotificat
 		return getTotalCount(ECHEX_PAYMENT_STATUS);
 	}
 	
+	public Long getConnectionsInUse() {
+		return getTotalCount(DATABASE_CONNECTIONS_IN_USE);
+	}
+	
+
+	
 	private static final int MAX_MEASUREMENTS = 5;
 	
 	@Override

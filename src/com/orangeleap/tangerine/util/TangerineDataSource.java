@@ -34,6 +34,8 @@ public class TangerineDataSource implements DataSource {
 
     protected final Log logger = OLLogger.getLog(getClass());
 
+    // Default to read-committed isolation level.
+    private static boolean useReadCommitted = !"false".equalsIgnoreCase(System.getProperty("use.read.committed"));
 
     // The default schema should have no tables. Change to this first so in case something goes wrong, we don't want to still be pointing to the old database.
     private static final String TANGERINE_DEFAULT_SCHEMA = "orangeleap";
@@ -55,7 +57,9 @@ public class TangerineDataSource implements DataSource {
     	
     	
         Connection conn = dataSource.getConnection();
-        conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        if (useReadCommitted) {
+        	conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        }
 
         if (logger.isTraceEnabled()) {
             count++;

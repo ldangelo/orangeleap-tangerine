@@ -18,6 +18,24 @@
 
 package com.orangeleap.tangerine.service.customization;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.PageAccessDao;
@@ -37,20 +55,6 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Transactional
 @Service("pageCustomizationService")
@@ -178,6 +182,16 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
                 }
             }
         }
+        
+        // remove all 0-order fields, even out of box ones.
+        Iterator<SectionField> it = returnFields.iterator();
+        while (it.hasNext()) {
+        	SectionField sf = it.next();
+        	if (ZERO.equals(sf.getFieldOrder())) {
+        		it.remove();
+        	}
+        }
+        
         Collections.sort(returnFields, new BeanComparator("fieldOrder"));
         return returnFields;
     }

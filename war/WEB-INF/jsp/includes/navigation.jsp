@@ -212,7 +212,7 @@
 			<select name="type" id="typeSearch">
 
                 <option value="fullText" <c:if test="${requestScope.searchType eq 'fullText'}">selected="selected"</c:if>><spring:message code="searchFullText"/></option>
-				<%--<option value="people" <c:if test="${requestScope.searchType eq 'constituent'}">selected="selected"</c:if>><spring:message code="constituents"/></option>--%>
+				<option value="people" <c:if test="${requestScope.searchType eq 'constituent'}">selected="selected"</c:if>><spring:message code="constituents"/></option>
 				<option value="gifts" <c:if test="${requestScope.searchType eq 'gift'}">selected="selected"</c:if>><spring:message code="gifts"/></option>
 			</select>
 			<input type="submit" value="<spring:message code='search'/>" class="button" />

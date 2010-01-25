@@ -94,7 +94,7 @@ public class GiftSummaryController {
         if (null == constituentService.readConstituentById(constituentId)) return null; // checks constituent id is in site.
         String attributeList = StringUtils.trimToEmpty(request.getParameter("attributeList"));
         
-        //refreshData(constituentId);
+        refreshData(constituentId);
 
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         addViewData(constituentId, attributeList, returnList);

@@ -237,8 +237,24 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         pledgeService.updatePledgeForGift(originalGift, gift);
         recurringGiftService.updateRecurringGiftForGift(originalGift, gift);
         auditService.auditObject(gift, gift.getConstituent());
-        rollupHelperService.updateRollupsForConstituentRollupValueSource(gift);
+        updateRollups(gift);
         return gift;
+    }
+    
+    private void updateRollups(Gift gift) {
+        rollupHelperService.updateRollupsForConstituentRollupValueSource(gift);
+        for (DistributionLine dl : gift.getDistributionLines()) {
+        	if (dl != null) {
+        		String refid = dl.getCustomFieldValue("onBehalfOf");
+        		if (refid != null) {
+        			try {
+        				rollupHelperService.refreshByConstituent(new Long(refid));
+        			} catch (Exception e) {
+        				logger.error(e);
+        			}
+        		}
+        	}
+        }
     }
     
     @Override

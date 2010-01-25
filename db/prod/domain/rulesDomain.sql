@@ -671,6 +671,20 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','giftStatus');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Gift has a positive amount';
+SET @CODE_CD = 'map.gift.getAmount() > 0';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+
+-- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Gift distribution lines contain a designation code of ?';
 SET @CODE_CD = 'map.ruleHelperService.isDesignationCodeContainedInDistroLines(map.gift, ?) == true';
 

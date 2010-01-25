@@ -203,13 +203,13 @@
 	<div class="searchBar">
         <c:choose>
             <c:when test="${requestScope.searchType eq 'gift'}"><c:set var="thisSearchType" value="gift"/></c:when>
-            <%--<c:when test="${requestScope.searchType eq 'constituent'}"><c:set var="thisSearchType" value="constituent"/></c:when>--%>
+            <c:when test="${requestScope.searchType eq 'constituent'}"><c:set var="thisSearchType" value="constituent"/></c:when>
             <c:otherwise><c:set var="thisSearchType" value="fullText"/></c:otherwise>
         </c:choose>
 		<form method="POST" action="<c:out value='${thisSearchType}'/>Search.htm" id="searchForm" name="searchForm">
             <input type="hidden" name="autoLoad" id="autoLoad" value="true"/>
 			<input size="30" name="searchField" id="searchField" type="text" value="<c:out value='${requestScope.searchField}'/>"/>
-			<select name="type" id="typeSearch">
+			<select name="type" id="typeSearch" onchange="if (this.value == 'people') window.location.href='constituentSearch.htm';">
 
                 <option value="fullText" <c:if test="${requestScope.searchType eq 'fullText'}">selected="selected"</c:if>><spring:message code="searchFullText"/></option>
 				<option value="people" <c:if test="${requestScope.searchType eq 'constituent'}">selected="selected"</c:if>><spring:message code="constituents"/></option>

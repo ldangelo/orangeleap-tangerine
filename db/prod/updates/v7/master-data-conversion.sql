@@ -543,22 +543,14 @@ INSERT INTO PAGE_ACCESS (PAGE_ACCESS_ID, ACCESS_TYPE, PAGE_TYPE, ROLE, SITE_NAME
 
 INSERT INTO CACHE_GROUP (CACHE_GROUP_ID, UPDATE_DATE) VALUES ('RULE_GENERATED_CODE', now());
 
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (1,'constituent-save', 'Save Constituent');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (2,'gift-save', 'Save Gift');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (3,'touchpoint-save', 'Save Touchpoint');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (4,'email', 'Email');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (5,'payment-processing', 'Payment Processing');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (6,'scheduled-one-time', 'Scheduled One Time');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (7,'scheduled-daily', 'Scheduled Daily');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (8,'scheduled-weekly', 'Scheduled Weekly');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (9,'scheduled-monthly', 'Scheduled Monthly');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (10,'email-scheduled-daily', 'Email Scheduled Daily');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (11,'email-scheduled-weekly', 'Email Scheduled Weekly');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (12,'email-scheduled-monthly', 'Email Scheduled Monthly');
-
+-- SEE rulesLibrary.sql 
 
 -- END RULES
 
+-- Remove (hide) non-indexed constituent search fields.  They are convered by fulltext search.
+update SECTION_FIELD sf, SECTION_DEFINITION sd set sf.FIELD_ORDER = 0 where sf.SECTION_DEFINITION_ID = sd.SECTION_DEFINITION_ID and 
+sd.PAGE_TYPE = 'constituentSearch' and
+sf.FIELD_DEFINITION_ID in ('constituent.primaryEmail.emailAddress','constituent.primaryAddress.postalCode','constituent.primaryAddress.addressLine1','constituent.primaryAddress.city','constituent.primaryAddress.stateProvince','constituent.primaryPhone.number');
 
 
 COMMIT;

@@ -392,7 +392,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     public List<Constituent> searchConstituents(Map<String, Object> params, SortInfo sort, Locale locale) {
-        return searchConstituents(params, false, sort, locale);    }
+        return searchConstituents(params, true, sort, locale);    }
 
     @Override
     public List<Constituent> searchConstituents(Map<String, Object> params, boolean parametersStartWith, SortInfo sort, Locale locale) {

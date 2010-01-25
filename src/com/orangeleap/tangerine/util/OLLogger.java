@@ -46,6 +46,10 @@ public class OLLogger implements Log, java.io.Serializable {
     private OLLogger(Class clazz) {
         logger = LogFactory.getLog(clazz);
     }
+    
+    public Log getBaseLogger() {
+    	return logger;
+    }
 
     @Override
     public boolean isDebugEnabled() {

@@ -41,7 +41,9 @@ public class TableLoggerImpl implements TableLogger, ApplicationContextAware, ja
     private ErrorLogService errorLogService;
 
     public void logToTable(String loglevel, Object o, Throwable t) {
-        errorLogService.addErrorMessage(loglevel + ": " + o + (t == null ? "" : ": " + t.getMessage()), "");
+    	try {
+    		errorLogService.addErrorMessage(loglevel + ": " + o + (t == null ? "" : ": " + t.getMessage()), "");
+    	} catch (Throwable e) {}
     }
 
 }

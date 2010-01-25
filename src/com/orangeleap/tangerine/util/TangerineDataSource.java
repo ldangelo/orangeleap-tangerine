@@ -25,10 +25,9 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class TangerineDataSource implements DataSource {
 
@@ -46,15 +45,19 @@ public class TangerineDataSource implements DataSource {
     private TangerineUserHelper tangerineUserHelper;
     double count;
 
+    protected void logStatistics(BasicDataSource ds) {
+        if (logger.isInfoEnabled() && ds.getNumActive() > 0) {
+        	((OLLogger)logger).getBaseLogger().info("active: " + ds.getNumActive() + " (max: " + ds.getMaxActive() + ")   "
+                    + "idle: " + ds.getNumIdle() + "(max: " + ds.getMaxIdle() + ")");
+        }
+    }
+    
     @Override
     public Connection getConnection() throws SQLException {
 
-    	
-    	// Avoid error: "Cannot convert value '0000-00-00 00:00:00' from column 11 to TIMESTAMP."
-    	if (dataSource instanceof MysqlDataSource) {
-    		((MysqlDataSource)dataSource).setZeroDateTimeBehavior("convertToNull"); 
+    	if (dataSource instanceof BasicDataSource) {
+    		logStatistics((BasicDataSource)dataSource);
     	}
-    	
     	
         Connection conn = dataSource.getConnection();
         if (useReadCommitted) {
@@ -93,7 +96,12 @@ public class TangerineDataSource implements DataSource {
             }
 
             //logger.debug("Setting schema for site = "+siteName + "...");
-            changeSchema(conn, siteName);
+            try  {
+            	changeSchema(conn, siteName);
+            } catch (RuntimeException e) {
+            	try { conn.close(); } catch (Exception ee) {}
+            	throw e;
+            }
             //logger.debug("Set schema for site = "+siteName + ".");
 
             return conn;

@@ -43,6 +43,7 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.common.TangerineListHelper;
 import com.orangeleap.tangerine.web.customization.tag.fields.SectionFieldTag;
@@ -199,7 +200,7 @@ public class EditBatchAction extends AbstractAction {
 				// the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
 				fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
 	        }
-	        FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+	        FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
 	        if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
 		        // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
 		        batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
@@ -343,7 +344,18 @@ public class EditBatchAction extends AbstractAction {
         final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sort.getStart(), sort.getLimit());
         metaDataMap.put(StringConstants.LIMIT, sort.getLimit());
 
-	    final String pageType = batch.isForTouchPoints() ? "constituentList" : batch.getBatchType() + "List";
+	    final String pageType;
+	    if (batch.isForTouchPoints()) {
+		    if (StringConstants.GIFT.equals(batch.getBatchType())) {
+		        pageType = "batchGiftConstituentList";
+		    }
+		    else {
+			    pageType = "batchAdjustedGiftConstituentList";
+		    }
+	    }
+	    else {
+		    pageType = batch.getBatchType() + "List";
+	    }
         final List<SectionField> allFields = tangerineListHelper.findSectionFields(pageType);
 
         final BeanWrapper bw = createDefaultEntity(batch);
@@ -365,7 +377,7 @@ public class EditBatchAction extends AbstractAction {
                     format = "m-d-Y";
                 }
                 else {
-                    format = "Y-m-d H:i:s";
+                    format = StringConstants.EXT_DATE_TIME_FORMAT;
                 }
                 fieldMap.put(StringConstants.DATE_FORMAT, format);
             }
@@ -374,7 +386,7 @@ public class EditBatchAction extends AbstractAction {
         metaDataMap.put(StringConstants.FIELDS, fieldList);
 
         final Map<String, String> sortInfoMap = new HashMap<String, String>();
-        if ( ! StringUtils.hasText(sort.getSort()) || ! bw.isReadableProperty(sort.getSort())) {
+        if ( ! StringUtils.hasText(sort.getSort()) || ! bw.isReadableProperty(TangerineForm.unescapeFieldName(sort.getSort()))) {
             final List<SectionField> fieldsExceptId = pageCustomizationService.getFieldsExceptId(allFields);
             sort.setSort(TangerineForm.escapeFieldName(fieldsExceptId.get(0).getFieldPropertyName()));
             sort.setDir(SectionFieldTag.getInitDirection(fieldsExceptId));
@@ -390,18 +402,8 @@ public class EditBatchAction extends AbstractAction {
         List rowObjects = null;
         int totalRows = 0;
         if ( ! reportIds.isEmpty()) {
-	        if (batch.isForTouchPoints() || StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
-		        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-			        totalRows = constituentService.readCountConstituentsByGiftSegmentationReportIds(reportIds);
-			        rowObjects = constituentService.readConstituentsByGiftSegmentationReportIds(reportIds, sort, request.getLocale());
-		        }
-		        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-			        totalRows = constituentService.readCountConstituentsByAdjustedGiftSegmentationReportIds(reportIds);
-			        rowObjects = constituentService.readConstituentsByAdjustedGiftSegmentationReportIds(reportIds, sort, request.getLocale());
-		        }
-		        else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
-			        // TODO: constituents
-		        }
+	        sort.setSort(TangerineForm.unescapeFieldName(sort.getSort())); // unescape for the DB
+	        if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
 	        }
             else if (StringConstants.GIFT.equals(batch.getBatchType())) {
                 totalRows = giftService.readCountGiftsBySegmentationReportIds(reportIds);
@@ -412,7 +414,6 @@ public class EditBatchAction extends AbstractAction {
                 rowObjects = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(reportIds, sort, request.getLocale());
             }
         }
-
         model.put(StringConstants.TOTAL_ROWS, totalRows);
 
         List<Map<String, Object>> rowList = new ArrayList<Map<String, Object>>();
@@ -521,10 +522,7 @@ public class EditBatchAction extends AbstractAction {
             for (PicklistItem item : picklist.getActivePicklistItems()) {
                 // the defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
                 String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(item.getDefaultDisplayValue()).toString();
-                FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-	            if (fieldDef == null) {
-		            fieldDef = fieldService.readFieldDefinition(new StringBuilder(picklist.getSite().getName()).append("-").append(fieldDefinitionId).toString());
-	            }
+	            FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
                 if (fieldDef != null) {
 	                FieldType fieldType = fieldDef.getFieldType();
 	                if (FieldType.PICKLIST.equals(fieldType)) {  // TODO: MULTI_PICKLIST, CODE, etc?
@@ -695,7 +693,7 @@ public class EditBatchAction extends AbstractAction {
         // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
         for (String thisKey : batch.getUpdateFields().keySet()) {
             String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
-            FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+            FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
             if (fieldDef != null) {
                 Map<String, Object> fieldMap = new HashMap<String, Object>();
                 String escapedFieldName = TangerineForm.escapeFieldName(fieldDef.getFieldName());
@@ -750,7 +748,7 @@ public class EditBatchAction extends AbstractAction {
                     String key = fieldEntry.getKey();
                     // the batchType + key is the fieldDefinitionId; we need to resolve the fieldName
                     String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(key).toString();
-                    FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+	                FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
                     String fieldName = fieldDef.getFieldName();
                     String propertyName = fieldName;
                     if (bw.getPropertyValue(propertyName) instanceof CustomField) {

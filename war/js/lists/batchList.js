@@ -103,6 +103,8 @@ OrangeLeap.msgBundle = {
     noRowsFound: 'No rows were found for the Segmentations selected.  Please choose a different Segmentation (Step 2).',
     noFieldUpdates: 'You did not create any Field Update Criteria.  Please create Criteria first (Step 4).',
     noTouchPointFields: 'You did not create any Touch Point Fields.  Please create Fields first (Step 4).',
+    viewRowsToBeUpdated: 'View Rows To Be Updated',
+    viewGiftsConstituents: 'View Gifts & Constituents',
     createFieldUpdateCriteria: 'Create Field Update Criteria',
     createTouchPointFields: 'Create Touch Point Fields',
     step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
@@ -872,12 +874,14 @@ Ext.onReady(function() {
 
     function setupEditWizardForTouchPoints() {
 		$('#step3MsgSpan').text(msgs.followingHaveTouchPoints);
+		$('#step3Num').next('.stepTxt').text(msgs.viewGiftsConstituents);
 		$('#step4Num').next('.stepTxt').text(msgs.createTouchPointFields);
 		$('#step5Num').parents('.x-grouptabs-main').addClass('noDisplay');
     }
 
     function setupEditWizardForFieldCriteria() {
 		$('#step3MsgSpan').text(msgs.followingBeModified);
+		$('#step3Num').next('.stepTxt').text(msgs.viewRowsToBeUpdated);
 		$('#step4Num').next('.stepTxt').text(msgs.createFieldUpdateCriteria);
 		$('#step5Num').parents('.x-grouptabs-main').removeClass('noDisplay');
     }
@@ -1655,18 +1659,12 @@ Ext.onReady(function() {
     });
     step3Form.on('rowdblclick', function(grid, rowIndex, event) {
         var batchTypeVal = getBatchTypeValue();
-        var criteriaFieldsVal = Ext.getCmp('criteriaFields').getValue();
         var record = step3Store.getAt(rowIndex);
-        if (batchTypeVal && record && criteriaFieldsVal) {
+        if (batchTypeVal && record) {
             // open window to view record
             var thisUrl;
-            if ('touchPoint' == criteriaFieldsVal) {
-				thisUrl = 'constituent.htm?constituentId=' + record.get('id');
-            }
-            else {
-				thisUrl = batchTypeVal + '.htm?' + batchTypeVal + 'Id=' + record.get('id') +
-									  (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
-            }
+			thisUrl = batchTypeVal + '.htm?' + batchTypeVal + 'Id=' + record.get('id') +
+								  (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
             window.open(thisUrl, batchTypeVal + 'Win');
         }
     });

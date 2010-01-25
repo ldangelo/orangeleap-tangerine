@@ -97,6 +97,18 @@ public class FieldServiceImpl implements FieldService {
     }
 
 	@Override
+	public FieldDefinition resolveFieldDefinition(String id) {
+		if (logger.isTraceEnabled()) {
+		    logger.trace("resolveFieldDefinition: id = " + id);
+		}
+		FieldDefinition fieldDef = readFieldDefinition(id);
+		if (fieldDef == null) {
+			fieldDef = readFieldDefinition(new StringBuilder(tangerineUserHelper.lookupUserSiteName()).append("-").append(id).toString());
+		}
+		return fieldDef;
+	}
+
+	@Override
 	public boolean isFieldRequired(SectionField currentField) {
 		if (logger.isTraceEnabled()) {
 		    logger.trace("isFieldRequired: currentField = " + currentField);

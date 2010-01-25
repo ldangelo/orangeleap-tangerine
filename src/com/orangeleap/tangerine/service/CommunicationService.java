@@ -55,4 +55,8 @@ public interface CommunicationService<T extends AbstractCommunicationEntity> {
     boolean isCurrent(final T entity);
 
     int readCountByConstituentId(Long constituentId);
+
+	List<T> filterByActive(List<T> entities);
+
+	List<T> filterByActive(Long constituentId);
 }

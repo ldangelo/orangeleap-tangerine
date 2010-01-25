@@ -87,7 +87,7 @@ public class ReviewBatchAction extends EditBatchAction {
         for (Map.Entry<String, String> updateFieldEntry : batch.getUpdateFields().entrySet()) {
             final Map<String, Object> fieldMap = new HashMap<String, Object>();
             String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(updateFieldEntry.getKey()).toString();
-            FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+            FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
             if (fieldDef != null) {
                 fieldMap.put(StringConstants.NAME, fieldDef.getDefaultLabel());
 
@@ -200,7 +200,7 @@ public class ReviewBatchAction extends EditBatchAction {
                     String key = fieldEntry.getKey();
                     // the batchType + key is the fieldDefinitionId; we need to resolve the fieldName
                     String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(key).toString();
-                    FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
+                    FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
                     String fieldName = fieldDef.getFieldName();
                     String propertyName = fieldName;
                     if (bw.getPropertyValue(propertyName) instanceof CustomField) {

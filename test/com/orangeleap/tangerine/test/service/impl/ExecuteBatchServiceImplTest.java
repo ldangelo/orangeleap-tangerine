@@ -119,6 +119,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(savedBatch.getExecutedDate());
 
         Assert.assertFalse(savedBatch.isPosted());
+	    Assert.assertFalse(savedBatch.isForTouchPoints());
         Assert.assertNull(savedBatch.getPostedById());
         Assert.assertNull(savedBatch.getPostedDate());
         Assert.assertNotNull(savedBatch.getErrorBatchId());
@@ -128,6 +129,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
         Assert.assertTrue(errorBatch.isAnErrorBatch());
+	    Assert.assertFalse(errorBatch.isForTouchPoints());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
         Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
@@ -160,6 +162,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
+	    Assert.assertFalse(savedBatch.isForTouchPoints());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
 
@@ -174,6 +177,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
         Assert.assertTrue(errorBatch.isAnErrorBatch());
+	    Assert.assertFalse(errorBatch.isForTouchPoints());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
         Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
@@ -220,10 +224,12 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
+	    Assert.assertFalse(savedBatch.isForTouchPoints());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
 
         Assert.assertFalse(savedBatch.isPosted());
+	    Assert.assertFalse(savedBatch.isForTouchPoints());
         Assert.assertNull(savedBatch.getPostedById());
         Assert.assertNull(savedBatch.getPostedDate());
 
@@ -234,6 +240,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
         Assert.assertTrue(errorBatch.isAnErrorBatch());
+	    Assert.assertFalse(errorBatch.isForTouchPoints());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
         Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
@@ -264,6 +271,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
+	    Assert.assertFalse(savedBatch.isForTouchPoints());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
 
@@ -278,6 +286,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
         Assert.assertTrue(errorBatch.isAnErrorBatch());
+	    Assert.assertFalse(errorBatch.isForTouchPoints());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
         Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
@@ -288,14 +297,14 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
 
         Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
         Assert.assertTrue(groupedMap.keySet().contains(5001L));
-        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidAccountString1", "Chase").trim()));
-        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidAccountString2", "Chase").trim()));
-        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidGLCode", "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidAccountString1", TangerineMessageAccessor.getMessage("bank"), "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidAccountString2", TangerineMessageAccessor.getMessage("bank"), "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5001L).contains(TangerineMessageAccessor.getMessage("invalidGLCode", TangerineMessageAccessor.getMessage("bank"), "Chase").trim()));
 
         Assert.assertTrue(groupedMap.keySet().contains(5002L));
-        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidAccountString1", "Chase").trim()));
-        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidAccountString2", "Chase").trim()));
-        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidGLCode", "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidAccountString1", TangerineMessageAccessor.getMessage("bank"), "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidAccountString2", TangerineMessageAccessor.getMessage("bank"), "Chase").trim()));
+        Assert.assertTrue(groupedMap.get(5002L).contains(TangerineMessageAccessor.getMessage("invalidGLCode", TangerineMessageAccessor.getMessage("bank"), "Chase").trim()));
     }
 
     @Test(dataProvider = "setupBatchForGifts", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatch" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchErrorsD" })
@@ -306,6 +315,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
+	    Assert.assertFalse(savedBatch.isForTouchPoints());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
 
@@ -319,6 +329,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(errorBatch);
         Assert.assertTrue(errorBatch.getId() > 0);
         Assert.assertTrue(errorBatch.isAnErrorBatch());
+	    Assert.assertFalse(errorBatch.isForTouchPoints());
         Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
         Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 2);
         Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
@@ -385,6 +396,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
+	    Assert.assertFalse(savedBatch.isForTouchPoints());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
 
@@ -429,6 +441,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
         Assert.assertNotNull(savedBatch);
         Assert.assertFalse(savedBatch.isAnErrorBatch());
         Assert.assertTrue(savedBatch.isExecuted());
+	    Assert.assertFalse(savedBatch.isForTouchPoints());
         Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
         Assert.assertNotNull(savedBatch.getExecutedDate());
 

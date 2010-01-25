@@ -154,3 +154,11 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.distributionLines.customFieldMap[taxDeductibleReadOnly]', 'gift', 'distributionLines', 'Tax Ded', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]', 'gift', 'pledge', 'distributionLines', 'Associated Pledge', 'pledge', 'ASSOCIATION_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.distributionLines.customFieldMap[associatedRecurringGiftIdReadOnly]', 'gift', 'recurringGift', 'distributionLines', 'Associated Recurring Gift', 'recurringGift', 'ASSOCIATION_DISPLAY');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.constituent.id', 'gift', 'constituent', 'Account Id', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.constituent.accountNumber', 'gift', 'constituent', 'Account Number', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.constituent.organizationName', 'gift', 'constituent', 'Organization Name', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.constituent.lastName', 'gift', 'constituent', 'Last Name', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.constituent.firstName', 'gift', 'constituent', 'First Name', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.constituent.primaryAddress', 'gift', 'constituent.primaryAddress', '', 'ADDRESS');
+

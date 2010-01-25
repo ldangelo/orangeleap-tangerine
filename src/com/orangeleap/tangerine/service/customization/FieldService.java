@@ -42,4 +42,6 @@ public interface FieldService {
 	Map<String,List<SectionField>> groupSectionFields(List<SectionField> sectionFields);
 
     FieldDefinition readFieldDefinition(String id);
+
+	FieldDefinition resolveFieldDefinition(String id);
 }

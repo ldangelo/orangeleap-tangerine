@@ -19,11 +19,13 @@
 package com.orangeleap.tangerine.service.impl;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.ExecuteBatchService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PostBatchEntryService;
@@ -57,6 +59,9 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	@Resource(name = "adjustedGiftService")
 	private AdjustedGiftService adjustedGiftService;
 
+	@Resource(name = "constituentService")
+	protected ConstituentService constituentService;
+
 	@Resource(name = "tangerineUserHelper")
 	protected TangerineUserHelper tangerineUserHelper;
 
@@ -65,31 +70,33 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	@SuppressWarnings("unchecked")
 	public PostBatch executeBatch(PostBatch batch) {
 	    if (logger.isInfoEnabled()) {
-	        logger.info("executeBatch: Executing batchId = " + batch.getId());
+	        logger.info("executeBatch: BEGINNING execution of batchId = " + batch.getId());
 	    }
 		batch.setCurrentlyExecuting(true);
 		batch = postBatchService.maintainBatch(batch);
 
 	    List<? extends AbstractCustomizableEntity> entries = null;
-	    Set<Long> segmentationIds = batch.getEntrySegmentationIds();
-	    if (StringConstants.GIFT.equals(batch.getBatchType())) {
-	        // Get by giftIds if segmentationIds do not exist
-	        if ( ! segmentationIds.isEmpty()) {
-	            entries = giftService.readAllGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
-	        }
-	        else {
-	            entries = giftService.readGiftsByIds(batch.getEntryGiftIds());
-	        }
-	    }
-	    else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-	        // Get by giftIds if segmentationIds do not exist
-	        if ( ! segmentationIds.isEmpty()) {
-	            entries = adjustedGiftService.readAllAdjustedGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
-	        }
-	        else {
-	            entries = adjustedGiftService.readAdjustedGiftsByIds(batch.getEntryAdjustedGiftIds());
-	        }
-	    }
+	    final Set<Long> segmentationIds = batch.getEntrySegmentationIds();
+
+		if (StringConstants.GIFT.equals(batch.getBatchType())) {
+			// Get by giftIds if segmentationIds do not exist
+			if ( ! segmentationIds.isEmpty()) {
+				entries = giftService.readAllGiftsBySegmentationReportIds(segmentationIds);
+			}
+			else {
+				entries = giftService.readGiftsByIds(batch.getEntryGiftIds());
+			}
+		}
+		else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+			// Get by giftIds if segmentationIds do not exist
+			if ( ! segmentationIds.isEmpty()) {
+				entries = adjustedGiftService.readAllAdjustedGiftsBySegmentationReportIds(segmentationIds);
+			}
+			else {
+				entries = adjustedGiftService.readAdjustedGiftsByIds(batch.getEntryAdjustedGiftIds());
+			}
+		}
+
 	    final List<PostBatchEntry> errorEntries = new ArrayList<PostBatchEntry>();
 	    final List<PostBatchEntry> executedEntries = new ArrayList<PostBatchEntry>();
 	    if (entries != null) {
@@ -104,12 +111,17 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	            }
 	            if (executed) {
 	                PostBatchEntry entry = new PostBatchEntry();
-	                if (entity instanceof Gift) {
-	                    entry.setGiftId(entity.getId());
-	                }
-	                else if (entity instanceof AdjustedGift) {
-	                    entry.setAdjustedGiftId(entity.getId());
-	                }
+		            if (batch.isForTouchPoints()) {
+						entry.setConstituentId(entity.getId());			            
+		            }
+		            else {
+			            if (entity instanceof Gift) {
+			                entry.setGiftId(entity.getId());
+			            }
+			            else if (entity instanceof AdjustedGift) {
+			                entry.setAdjustedGiftId(entity.getId());
+			            }
+		            }
 	                executedEntries.add(entry);
 	            }
 	            else {
@@ -136,7 +148,11 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	    batch.setExecutionFields(thisUserId);
 
 	    batch.setCurrentlyExecuting(false); // reset to not executing anymore
-	    return postBatchService.maintainBatch(batch);
+	    batch = postBatchService.maintainBatch(batch);
+		if (logger.isInfoEnabled()) {
+		    logger.info("executeBatch: FINISHED execution of batchId = " + batch.getId());
+		}
+		return batch;
 	}
 
 	private PostBatchEntry copyEntityBatchErrorsToEntryErrors(AbstractCustomizableEntity entity) {
@@ -147,6 +163,9 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	    }
 	    else if (entity instanceof AdjustedGift) {
 	        entry.setAdjustedGiftId(entity.getId());
+	    }
+		else if (entity instanceof Constituent) {
+		    entry.setConstituentId(entity.getId());
 	    }
 
 	    final String errors = postBatchEntryService.getBatchErrorsInEntity(entity);

@@ -20,17 +20,27 @@ package com.orangeleap.tangerine.service.impl;
 
 import com.orangeleap.tangerine.dao.JournalDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Journal;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.Postable;
+import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
+import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchEntryService;
 import com.orangeleap.tangerine.service.SiteService;
@@ -38,6 +48,13 @@ import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
@@ -48,14 +65,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service("postBatchEntryService")
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
@@ -84,6 +93,18 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
 
+	@Resource(name = "communicationHistoryService")
+	private CommunicationHistoryService communicationHistoryService;
+
+	@Resource(name = "addressService")
+	private AddressService addressService;
+
+	@Resource(name = "phoneService")
+	private PhoneService phoneService;
+
+	@Resource(name = "emailService")
+	private EmailService emailService;
+
     @Resource(name = "journalDAO")
     private JournalDao journalDao;
 
@@ -94,114 +115,206 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
         }
         boolean doPost = false;
         boolean executed = false;
-        final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
 
-        // Record previous values for audit trail
-        siteService.populateDefaultEntityEditorMaps(entity);
+	    // Record previous values for audit trail
+	    siteService.populateDefaultEntityEditorMaps(entity);
 
-        // for a new execution of an entity, clear out any existing batch errors
-        clearBatchErrorsInEntity(entity);
+	    // for a new execution of an entity, clear out any existing batch errors
+	    clearBatchErrorsInEntity(entity);
+	    
+	    if (batch.isForTouchPoints())  {
+		    Constituent constituent = (Constituent) entity;
+		    CommunicationHistory touchPoint = new CommunicationHistory(constituent); 
+		    updateEntityFields(batch, touchPoint, constituent, StringConstants.COMMUNICATION_HISTORY, StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD);
+		    if ( ! hasBatchErrorsInEntity(constituent)) {
+			    maintainCorrespondenceForTouchPoints(batch, touchPoint, constituent);
+		    }
+	    }
+	    else {
+			if (entity instanceof Postable) { // Gift and AdjustedGift are the only Postable objects
+				doPost = setPostableEntryFields(batch, entity);
+			}
+			if ( ! hasBatchErrorsInEntity(entity)) {
+				updateEntityFields(batch, entity, entity, batch.getBatchType(), StringConstants.POSTED_DATE);
+			}
+			if ( ! hasBatchErrorsInEntity(entity)) {
+				entity.setSuppressValidation(true);
 
-        if (entity instanceof Postable) { // Gift and AdjustedGift are the only Postable objects
-            final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
-
-            if (StringUtils.hasText(postedDateString)) {
-                Date postedDate = null;
-
-                if (isValidPostedDate(postedDateString)) {
-                    postedDate = parsePostedDate(postedDateString);
-                    doPost = true;
-                }
-                else {
-                    addBatchErrorToEntity(entity, "invalidPostedDate", postedDateString);
-                }
-                Boolean isPosted = ((Postable) entity).isPosted();
-                if (postedDate != null && isPosted) {
-                    // Don't allow double posting
-                    addBatchErrorToEntity(entity, "cannotRepost", TangerineMessageAccessor.getMessage(entity.getType()), StringConstants.EMPTY + entity.getId());
-                }
-                else {
-                    ((Postable) entity).setPostedDate(postedDate);
-                    ((Postable) entity).setPosted(true);
-                }
-            }
-        }
-        if ( ! hasBatchErrorsInEntity(entity)) {
-            for (Map.Entry<String, String> updateFldEntry : batch.getUpdateFields().entrySet()) {
-                if ( ! updateFldEntry.getKey().equals(StringConstants.POSTED_DATE)) { // posted date is handled above
-                    // the batchType + updateField key is the FieldDefinitionID; we need to resolve the FieldName from it
-                    String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(updateFldEntry.getKey()).toString();
-
-                    final FieldDefinition fieldDef = fieldService.readFieldDefinition(fieldDefinitionId);
-                    if (fieldDef != null && bw.isWritableProperty(fieldDef.getFieldName())) {
-                        String propertyName = fieldDef.getFieldName();
-                        if (propertyName.indexOf(StringConstants.CUSTOM_FIELD_MAP_START) > -1) {
-                            propertyName += StringConstants.DOT_VALUE;
-                        }
-                        Class clazz = bw.getPropertyType(propertyName);
-                        if (String.class.equals(clazz)) {
-                            bw.setPropertyValue(propertyName, updateFldEntry.getValue());
-                        }
-                        else if (Date.class.equals(clazz)) {
-                            try {
-                                Date date = DateUtils.parseDate(updateFldEntry.getValue(), new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
-                                        StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,
-                                        StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_1, StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_2,
-                                        StringConstants.MM_DD_YYYY_FORMAT});
-                                bw.setPropertyValue(propertyName, date);
-                            }
-                            catch (Exception exception) {
-                                addBatchErrorToEntity(entity, "invalidDateField", updateFldEntry.getValue(), fieldDef.getDefaultLabel());
-                            }
-                        }
-                        else if (Boolean.class.equals(clazz) || Boolean.TYPE.equals(clazz)) {
-                            bw.setPropertyValue(propertyName, Boolean.parseBoolean(updateFldEntry.getValue()));
-                        }
-                        else if (Byte.class.equals(clazz) || Integer.class.equals(clazz) || Short.class.equals(clazz) || Long.class.equals(clazz) ||
-                                Byte.TYPE.equals(clazz) || Integer.TYPE.equals(clazz) || Short.TYPE.equals(clazz) || Long.TYPE.equals(clazz) ||
-                                Double.class.equals(clazz) || Float.class.equals(clazz) || Double.TYPE.equals(clazz) || Float.TYPE.equals(clazz) ||
-                                BigDecimal.class.equals(clazz)) {
-                            if (NumberUtils.isNumber(updateFldEntry.getValue())) {
-                                if (BigDecimal.class.equals(clazz)) {
-                                    bw.setPropertyValue(propertyName, new BigDecimal(updateFldEntry.getValue()));
-                                }
-                                else {
-                                    bw.setPropertyValue(propertyName, NumberUtils.createNumber(updateFldEntry.getValue()));
-                                }
-                            }
-                            else {
-                                addBatchErrorToEntity(entity, "invalidField", updateFldEntry.getValue(), fieldDef.getDefaultLabel());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if ( ! hasBatchErrorsInEntity(entity)) {
-            entity.setSuppressValidation(true);
-
-            if (entity instanceof Gift) {
-                Gift gift = (Gift) entity;
-                gift = giftService.editGift(gift);
-                if (doPost) {
-                    createJournalEntries(gift, null, batch);
-                }
-            }
-            else if (entity instanceof AdjustedGift) {
-                AdjustedGift adjustedGift = (AdjustedGift) entity;
-                adjustedGift = adjustedGiftService.editAdjustedGift(adjustedGift);
-                if (doPost) {
-                    Gift gift = giftService.readGiftById(adjustedGift.getOriginalGiftId());
-                    createJournalEntries(gift, adjustedGift, batch);
-                }
-            }
-            executed = true;
-        }
+				if (entity instanceof Gift) {
+					Gift gift = (Gift) entity;
+					gift = giftService.editGift(gift);
+					if (doPost) {
+						createJournalEntries(gift, null, batch);
+					}
+				}
+				else if (entity instanceof AdjustedGift) {
+					AdjustedGift adjustedGift = (AdjustedGift) entity;
+					adjustedGift = adjustedGiftService.editAdjustedGift(adjustedGift);
+					if (doPost) {
+						Gift gift = giftService.readGiftById(adjustedGift.getOriginalGiftId());
+						createJournalEntries(gift, adjustedGift, batch);
+					}
+				}
+				executed = true;
+			}
+	    }
         if (hasBatchErrorsInEntity(entity)) {
             throw new PostBatchUpdateException(getBatchErrorsInEntity(entity));
         }
         return executed;
     }
+
+	private boolean setPostableEntryFields(final PostBatch batch, final AbstractCustomizableEntity entity) {
+		final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
+		boolean doPost = false;
+		if (StringUtils.hasText(postedDateString)) {
+		    Date postedDate = null;
+
+		    if (isValidPostedDate(postedDateString)) {
+		        postedDate = parsePostedDate(postedDateString);
+		        doPost = true;
+		    }
+		    else {
+		        addBatchErrorToEntity(entity, "invalidPostedDate", postedDateString);
+		    }
+		    Boolean isPosted = ((Postable) entity).isPosted();
+		    if (postedDate != null && isPosted) {
+		        // Don't allow double posting
+		        addBatchErrorToEntity(entity, "cannotRepost", TangerineMessageAccessor.getMessage(entity.getType()), StringConstants.EMPTY + entity.getId());
+		    }
+		    else {
+		        ((Postable) entity).setPostedDate(postedDate);
+		        ((Postable) entity).setPosted(true);
+		    }
+		}
+		return doPost;
+	}
+
+	private void updateEntityFields(PostBatch batch, AbstractCustomizableEntity entity, AbstractCustomizableEntity entityToAddErrorsTo,
+					String fieldPrefix, String keyToIgnore) {
+		final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
+	    for (Map.Entry<String, String> updateFldEntry : batch.getUpdateFields().entrySet()) {
+			if ( ! updateFldEntry.getKey().equals(keyToIgnore)) {
+				String fieldDefinitionId = new StringBuilder(fieldPrefix).append(".").append(updateFldEntry.getKey()).toString();
+
+				final FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
+				if (fieldDef != null && bw.isWritableProperty(fieldDef.getFieldName())) {
+					String propertyName = fieldDef.getFieldName();
+					if (propertyName.indexOf(StringConstants.CUSTOM_FIELD_MAP_START) > -1) {
+						propertyName += StringConstants.DOT_VALUE;
+					}
+					Class clazz = bw.getPropertyType(propertyName);
+					if (String.class.equals(clazz)) {
+						bw.setPropertyValue(propertyName, updateFldEntry.getValue());
+					}
+					else if (Date.class.equals(clazz)) {
+						try {
+							Date date = DateUtils.parseDate(updateFldEntry.getValue(), new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
+									StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,
+									StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_1, StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_2,
+									StringConstants.MM_DD_YYYY_FORMAT});
+							bw.setPropertyValue(propertyName, date);
+						}
+						catch (Exception exception) {
+							addBatchErrorToEntity(entityToAddErrorsTo, "invalidDateField", updateFldEntry.getValue(), fieldDef.getDefaultLabel());
+						}
+					}
+					else if (Boolean.class.equals(clazz) || Boolean.TYPE.equals(clazz)) {
+						bw.setPropertyValue(propertyName, Boolean.parseBoolean(updateFldEntry.getValue()));
+					}
+					else if (Byte.class.equals(clazz) || Integer.class.equals(clazz) || Short.class.equals(clazz) || Long.class.equals(clazz) ||
+							Byte.TYPE.equals(clazz) || Integer.TYPE.equals(clazz) || Short.TYPE.equals(clazz) || Long.TYPE.equals(clazz) ||
+							Double.class.equals(clazz) || Float.class.equals(clazz) || Double.TYPE.equals(clazz) || Float.TYPE.equals(clazz) ||
+							BigDecimal.class.equals(clazz)) {
+						if (NumberUtils.isNumber(updateFldEntry.getValue())) {
+							if (BigDecimal.class.equals(clazz)) {
+								bw.setPropertyValue(propertyName, new BigDecimal(updateFldEntry.getValue()));
+							}
+							else {
+								bw.setPropertyValue(propertyName, NumberUtils.createNumber(updateFldEntry.getValue()));
+							}
+						}
+						else {
+							addBatchErrorToEntity(entityToAddErrorsTo, "invalidField", updateFldEntry.getValue(), fieldDef.getDefaultLabel());
+						}
+					}
+				}
+			}
+	    }
+	}
+
+	private void maintainCorrespondenceForTouchPoints(PostBatch batch, CommunicationHistory touchPoint, Constituent constituent)
+			throws BindException {
+		final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(touchPoint);
+		final String correspondenceFor = batch.getUpdateFieldValue(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD);
+
+		if ( (StringConstants.PRIMARY.equals(correspondenceFor) || StringConstants.ALL.equals(correspondenceFor)) &&
+				(StringConstants.MAIL_CAMEL_CASE.equals(touchPoint.getEntryType()) ||
+						StringConstants.MAILING_LABEL_CAMEL_CASE.equals(touchPoint.getEntryType()) ||
+						StringConstants.CALL_CAMEL_CASE.equals(touchPoint.getEntryType()) ||
+						StringConstants.EMAIL_CAMEL_CASE.equals(touchPoint.getEntryType())) ) {
+			
+			if (StringConstants.ALL.equals(correspondenceFor)) {
+				if (StringConstants.MAIL_CAMEL_CASE.equals(touchPoint.getEntryType()) ||
+						StringConstants.MAILING_LABEL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
+					final List<Address> addresses = addressService.filterByActive(constituent.getId());
+					maintainAllCommunicationEntities(constituent, addresses, bw, StringConstants.ADDRESS);
+				}
+				else if (StringConstants.CALL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
+					final List<Phone> phones = phoneService.filterByActive(constituent.getId());
+					maintainAllCommunicationEntities(constituent, phones, bw, StringConstants.PHONES);
+				}
+				else if (StringConstants.EMAIL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
+					final List<Email> emails = emailService.filterByActive(constituent.getId());
+					maintainAllCommunicationEntities(constituent, emails, bw, StringConstants.EMAILS);
+				}
+			}
+			else {
+				// PRIMARY
+				if (StringConstants.MAIL_CAMEL_CASE.equals(touchPoint.getEntryType()) ||
+						StringConstants.MAILING_LABEL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
+					final Address address = addressService.getPrimary(constituent.getId());
+					maintainPrimaryCommunicationEntity(constituent, address, bw, StringConstants.ADDRESS, "invalidPrimary");
+				}
+				else if (StringConstants.CALL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
+					final Phone phone = phoneService.getPrimary(constituent.getId());
+					maintainPrimaryCommunicationEntity(constituent, phone, bw, StringConstants.PHONE, "invalidPrimary");
+				}
+				else if (StringConstants.EMAIL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
+					final Email email = emailService.getPrimary(constituent.getId());
+					maintainPrimaryCommunicationEntity(constituent, email, bw, StringConstants.EMAIL, "invalidPrimary");
+				}
+			}
+		}
+		else {
+			communicationHistoryService.maintainCommunicationHistory(touchPoint);
+		}
+	}
+
+	protected void maintainAllCommunicationEntities(Constituent constituent, List<? extends AbstractCommunicationEntity> entities,
+			BeanWrapper bw, String fieldName) throws BindException {
+		if (entities == null || entities.isEmpty()) {
+			addBatchErrorToEntity(constituent, "invalidCommunication", TangerineMessageAccessor.getMessage(fieldName));
+		}
+		else {
+			for (AbstractCommunicationEntity entity : entities) {
+				bw.setPropertyValue(fieldName, entity);
+				bw.setPropertyValue(StringConstants.ID, null); // reset the CommunicationHistory object's ID to null to insert into DB instead of update
+				communicationHistoryService.maintainCommunicationHistory( (CommunicationHistory) bw.getWrappedInstance());
+			}
+		}
+	}
+
+	protected void maintainPrimaryCommunicationEntity(Constituent constituent, AbstractCommunicationEntity entity,
+			BeanWrapper bw, String fieldName, String messageKey) throws BindException {
+		if (entity == null || entity.isNew()) {
+			addBatchErrorToEntity(constituent, messageKey, TangerineMessageAccessor.getMessage(fieldName));
+		}
+		else {
+			bw.setPropertyValue(fieldName, entity);
+			communicationHistoryService.maintainCommunicationHistory( (CommunicationHistory) bw.getWrappedInstance());
+		}
+	}
 
     private void createJournalEntries(Gift gift, AdjustedGift adjustedGift, PostBatch batch) {
         final Map<String, String> bankCodeMap = new HashMap<String, String>();
@@ -253,7 +366,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
                 journal.setAdjustmentDate(adjustedGift.getAdjustedTransactionDate());
                 journal.setDescription(TangerineMessageAccessor.getMessage("journalAdjustedGiftDescription", gift.getId().toString(), gift.getConstituent().getRecognitionName()));
             }
-            setJournalCodes(journal, bankCodeMap, journal.getCode(), isGift ? gift : adjustedGift);
+            setJournalCodes(journal, bankCodeMap, isGift ? gift : adjustedGift, "bank", journal.getCode());
         }
         else {
             // Distribution lines
@@ -277,7 +390,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
                 journal.setOrigEntity(StringConstants.GIFT);
                 journal.setOrigEntityId(gift.getId());
             }
-            setJournalCodes(journal, projectCodeMap, journal.getCode(), isGift ? gift : adjustedGift);
+            setJournalCodes(journal, projectCodeMap, isGift ? gift : adjustedGift, "designationCode", journal.getCode());
         }
         journalDao.maintainJournal(journal);
     }
@@ -315,22 +428,23 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
         return projectCode;
     }
 
-    private void setJournalCodes(Journal journal, Map<String, String> map, String code, AbstractCustomizableEntity entity) {
+    private void setJournalCodes(Journal journal, Map<String, String> map, AbstractCustomizableEntity entity,
+		    String codeType, String code) {
         String glAccount1 = map.get(getKey(code, StringConstants.ACCOUNT_STRING_1));
         if (glAccount1 == null) {
-            addBatchErrorToEntity(entity, "invalidAccountString1", code);
+            addBatchErrorToEntity(entity, "invalidAccountString1", TangerineMessageAccessor.getMessage(codeType), code);
         }
         journal.setGlAccount1(glAccount1);
 
         String glAccount2 = map.get(getKey(code, StringConstants.ACCOUNT_STRING_2));
         if (glAccount2 == null) {
-            addBatchErrorToEntity(entity, "invalidAccountString2", code);
+            addBatchErrorToEntity(entity, "invalidAccountString2", TangerineMessageAccessor.getMessage(codeType), code);
         }
         journal.setGlAccount2(glAccount2);
 
         String glCode = map.get(getKey(code, StringConstants.GL_ACCOUNT_CODE));
         if (glCode == null) {
-            addBatchErrorToEntity(entity, "invalidGLCode", code);
+            addBatchErrorToEntity(entity, "invalidGLCode", TangerineMessageAccessor.getMessage(codeType), code);
         }
         journal.setGlCode(glCode);
     }
@@ -420,7 +534,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
         }
     }
 
-    public final static class PostBatchUpdateException extends RuntimeException {
+	public final static class PostBatchUpdateException extends RuntimeException {
         private static final long serialVersionUID = 1L;
         private Collection<String> errors;
 

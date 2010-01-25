@@ -84,7 +84,9 @@ public final class StringConstants {
     public static final String ANY_CAMEL_CASE = "Any";
     public static final String EMAIL_CAMEL_CASE = "Email";
     public static final String MAIL_CAMEL_CASE = "Mail";
+	public static final String MAILING_LABEL_CAMEL_CASE = "Mailing Label";
     public static final String TEXT_CAMEL_CASE = "Text";
+	public static final String CALL_CAMEL_CASE = "Call";
     public static final String PHONE_CAMEL_CASE = "Phone";
     
     //Opt Out-All, Unknown, Any, Email, Mail, Text, Phone
@@ -247,4 +249,6 @@ public final class StringConstants {
 
 	public static final String CORRESPONDENCE_FOR = "correspondenceFor";	
 	public static final String CORRESPONDENCE_FOR_CUSTOM_FIELD = "customFieldMap[correspondenceFor]";
+	public static final String PRIMARY = "primary";
+	public static final String ALL = "all";	
 }

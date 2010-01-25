@@ -19,13 +19,16 @@
 package com.orangeleap.tangerine.service.impl;
 
 import com.orangeleap.tangerine.dao.PostBatchDao;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.domain.Segmentation;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PostBatchEntryService;
 import com.orangeleap.tangerine.service.PostBatchService;
+import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -38,6 +41,7 @@ import com.orangeleap.theguru.client.GetSegmentationListByTypeResponse;
 import com.orangeleap.theguru.client.ObjectFactory;
 import com.orangeleap.theguru.client.Theguru;
 import com.orangeleap.theguru.client.WSClient;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +51,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Resource;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +79,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
+
+	@Resource(name = "fieldService")
+	private FieldService fieldService;
 
     @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
@@ -268,7 +279,41 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 batch.addUpdateError(TangerineMessageAccessor.getMessage("errorBatchExecuted"));
             }
             else {
-                if (StringConstants.GIFT.equals(batch.getBatchType()) || StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+	            if (batch.isForTouchPoints()) {
+		            BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(new CommunicationHistory());
+		            for (Map.Entry<String, String> updateFldEntry : batch.getUpdateFields().entrySet()) {
+						String fieldDefinitionId = new StringBuilder(StringConstants.COMMUNICATION_HISTORY).append(".").append(updateFldEntry.getKey()).toString();
+
+						final FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
+						if (fieldDef != null && bw.isWritableProperty(fieldDef.getFieldName())) {
+							String propertyName = fieldDef.getFieldName();
+							if (propertyName.indexOf(StringConstants.CUSTOM_FIELD_MAP_START) > -1) {
+								propertyName += StringConstants.DOT_VALUE;
+							}
+							Class clazz = bw.getPropertyType(propertyName);
+							if (Date.class.equals(clazz)) {
+								try {
+									DateUtils.parseDate(updateFldEntry.getValue(), new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
+											StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,
+											StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_1, StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_2,
+											StringConstants.MM_DD_YYYY_FORMAT});
+								}
+								catch (Exception exception) {
+									batch.addUpdateError(TangerineMessageAccessor.getMessage("invalidDateField", updateFldEntry.getValue(), fieldDef.getDefaultLabel()));
+								}
+							}
+							else if (Byte.class.equals(clazz) || Integer.class.equals(clazz) || Short.class.equals(clazz) || Long.class.equals(clazz) ||
+									Byte.TYPE.equals(clazz) || Integer.TYPE.equals(clazz) || Short.TYPE.equals(clazz) || Long.TYPE.equals(clazz) ||
+									Double.class.equals(clazz) || Float.class.equals(clazz) || Double.TYPE.equals(clazz) || Float.TYPE.equals(clazz) ||
+									BigDecimal.class.equals(clazz)) {
+								if ( ! NumberUtils.isNumber(updateFldEntry.getValue())) {
+									batch.addUpdateError(TangerineMessageAccessor.getMessage("invalidField", updateFldEntry.getValue(), fieldDef.getDefaultLabel()));
+								}
+							}
+						}
+		            }
+	            }
+	            else if (StringConstants.GIFT.equals(batch.getBatchType()) || StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
                     final String postedDateString = batch.getUpdateFieldValue(StringConstants.POSTED_DATE);
 
                     final Map<String, String> bankCodeMap = new HashMap<String, String>();
@@ -308,6 +353,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         batchForErrors.setAnErrorBatch(true);
         batchForErrors.setPostBatchEntries(entries);
         batchForErrors.setUpdateFields(originalBatch.getUpdateFields()); // Copy the update fields from the original batch to the error batch
+	    batchForErrors.setForTouchPoints(originalBatch.isForTouchPoints());
         return maintainBatch(batchForErrors);
     }
 }

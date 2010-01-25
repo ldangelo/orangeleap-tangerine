@@ -290,7 +290,11 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
         resolveItemOrder(originalPicklist, modifiedItems);
         for (PicklistItem item : modifiedItems) {
             if ( ! org.springframework.util.StringUtils.hasText(item.getItemName())) {
-                item.setItemName(item.getDefaultDisplayValue().toLowerCase().replaceAll(" ", StringConstants.EMPTY));
+	            String itemName = item.getDefaultDisplayValue();
+	            if ( ! item.getDefaultDisplayValue().startsWith(StringConstants.CUSTOM_FIELD_MAP_START) || ! item.getDefaultDisplayValue().endsWith(StringConstants.FIELD_MAP_END)) {
+		            itemName = itemName.toLowerCase(); 
+	            }
+                item.setItemName(itemName.replaceAll(" ", StringConstants.EMPTY));
                 checkUnique(originalPicklist, item);
             }
             item = picklistDao.maintainPicklistItem(item);

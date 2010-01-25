@@ -271,6 +271,10 @@ public class PostBatch extends AbstractCustomizableEntity  {
         return getEntryByIdNames(StringConstants.PLEDGE_ID);
     }
 
+	public Set<Long> getEntryConstituentIds() {
+	    return getEntryByIdNames(StringConstants.CONSTITUENT_ID);
+	}
+
     private Set<Long> getEntryByIdNames(String idName) {
         final Set<Long> ids = new TreeSet<Long>();
         if (postBatchEntries != null) {

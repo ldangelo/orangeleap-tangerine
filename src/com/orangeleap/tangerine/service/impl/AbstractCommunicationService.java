@@ -66,7 +66,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         List<T> entities = readByConstituentId(entity.getConstituentId());
         T returnEntity = null;
         for (T existingEntity : entities) {
-            if (existingEntity.equals(entity) && existingEntity.getId().equals(entity.getId()) == false) {
+            if (existingEntity.equals(entity) && ! existingEntity.getId().equals(entity.getId())) {
                 returnEntity = existingEntity;
                 break;
             }
@@ -134,6 +134,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         return filterValid(readByConstituentId(constituentId));
     }
 
+	@Override
     public List<T> filterValid(List<T> entities) {
         if (logger.isTraceEnabled()) {
             logger.trace("filterValid:");
@@ -170,7 +171,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     public T filterByPrimary(List<T> entities, Long constituentId) {
         List<T> activeEntities = filterByActive(entities);
         for (T entity : activeEntities) {
-            if (entity.isPrimary() == true) {
+            if (entity.isPrimary()) {
                 return entity;
             }
         }
@@ -186,11 +187,20 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         List<T> entities = readByConstituentId(constituentId);
         return filterByPrimary(entities, constituentId);
     }
-    
-    protected List<T> filterByActive(List<T> entities) {
+
+	@Override
+	public List<T> filterByActive(Long constituentId) {
+		if (logger.isTraceEnabled()) {
+		    logger.trace("filterByActive: constituentId = " + constituentId);
+		}
+	    return filterByActive(readByConstituentId(constituentId));
+	}
+
+    @Override
+    public List<T> filterByActive(List<T> entities) {
         List<T> activeEntities = new ArrayList<T>();
         for (T entity : entities) {
-            if (entity.isInactive() == false) {
+            if ( ! entity.isInactive()) {
                 activeEntities.add(entity);
             }
         }

@@ -195,7 +195,7 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
         assert sources != null && sources.isEmpty();
         
         sources = paymentSourceDao.readActivePaymentSources(100L);
-        assert sources != null && sources.size() == 3;
+        assert sources != null && sources.size() >= 3;
         
         for (PaymentSource src : sources) {
             assert src.getId() == 200 || src.getId() == 300 || src.getId() == 500;

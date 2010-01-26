@@ -45,6 +45,7 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PostBatchEntryService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.FieldService;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -218,10 +219,9 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 						propertyName += StringConstants.DOT_VALUE;
 					}
 					Class clazz = bw.getPropertyType(propertyName);
-					if (String.class.equals(clazz)) {
-						bw.setPropertyValue(propertyName, updateFldEntry.getValue());
-					}
-					else if (Date.class.equals(clazz)) {
+					if (Date.class.equals(clazz)||
+								FieldType.DATE.equals(fieldDef.getFieldType()) ||
+								FieldType.DATE_TIME.equals(fieldDef.getFieldType())) {
 						try {
 							Date date = DateUtils.parseDate(updateFldEntry.getValue(), new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
 									StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,
@@ -233,13 +233,12 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 							addBatchErrorToEntity(entityToAddErrorsTo, "invalidDateField", updateFldEntry.getValue(), fieldDef.getDefaultLabel());
 						}
 					}
-					else if (Boolean.class.equals(clazz) || Boolean.TYPE.equals(clazz)) {
-						bw.setPropertyValue(propertyName, Boolean.parseBoolean(updateFldEntry.getValue()));
-					}
 					else if (Byte.class.equals(clazz) || Integer.class.equals(clazz) || Short.class.equals(clazz) || Long.class.equals(clazz) ||
-							Byte.TYPE.equals(clazz) || Integer.TYPE.equals(clazz) || Short.TYPE.equals(clazz) || Long.TYPE.equals(clazz) ||
-							Double.class.equals(clazz) || Float.class.equals(clazz) || Double.TYPE.equals(clazz) || Float.TYPE.equals(clazz) ||
-							BigDecimal.class.equals(clazz)) {
+								Byte.TYPE.equals(clazz) || Integer.TYPE.equals(clazz) || Short.TYPE.equals(clazz) || Long.TYPE.equals(clazz) ||
+								Double.class.equals(clazz) || Float.class.equals(clazz) || Double.TYPE.equals(clazz) || Float.TYPE.equals(clazz) ||
+								BigDecimal.class.equals(clazz) ||
+								FieldType.NUMBER.equals(fieldDef.getFieldType()) ||
+								FieldType.PERCENTAGE.equals(fieldDef.getFieldType())) {
 						if (NumberUtils.isNumber(updateFldEntry.getValue())) {
 							if (BigDecimal.class.equals(clazz)) {
 								bw.setPropertyValue(propertyName, new BigDecimal(updateFldEntry.getValue()));
@@ -251,6 +250,12 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 						else {
 							addBatchErrorToEntity(entityToAddErrorsTo, "invalidField", updateFldEntry.getValue(), fieldDef.getDefaultLabel());
 						}
+					}
+					else if (Boolean.class.equals(clazz) || Boolean.TYPE.equals(clazz)) {
+						bw.setPropertyValue(propertyName, Boolean.parseBoolean(updateFldEntry.getValue()));
+					}
+					else if (String.class.equals(clazz)) {
+						bw.setPropertyValue(propertyName, updateFldEntry.getValue());
 					}
 				}
 			}

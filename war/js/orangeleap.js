@@ -867,6 +867,11 @@ var OrangeLeap = {
 		});
 	},
 
+	extGridColExpand: function(grid) {
+		grid.view.fitColumns(true, true); // force columns to expand
+		grid.view.updateHeaders();
+	},
+
     getQueryParams: function() {
         var argList = new Object();
 

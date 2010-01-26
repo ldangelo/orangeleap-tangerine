@@ -29,6 +29,7 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PostBatchEntryService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.service.customization.FieldService;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -291,7 +292,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 								propertyName += StringConstants.DOT_VALUE;
 							}
 							Class clazz = bw.getPropertyType(propertyName);
-							if (Date.class.equals(clazz)) {
+							if (Date.class.equals(clazz) ||
+									FieldType.DATE.equals(fieldDef.getFieldType()) || 
+									FieldType.DATE_TIME.equals(fieldDef.getFieldType())) {
 								try {
 									DateUtils.parseDate(updateFldEntry.getValue(), new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
 											StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,
@@ -305,7 +308,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 							else if (Byte.class.equals(clazz) || Integer.class.equals(clazz) || Short.class.equals(clazz) || Long.class.equals(clazz) ||
 									Byte.TYPE.equals(clazz) || Integer.TYPE.equals(clazz) || Short.TYPE.equals(clazz) || Long.TYPE.equals(clazz) ||
 									Double.class.equals(clazz) || Float.class.equals(clazz) || Double.TYPE.equals(clazz) || Float.TYPE.equals(clazz) ||
-									BigDecimal.class.equals(clazz)) {
+									BigDecimal.class.equals(clazz) ||
+									FieldType.NUMBER.equals(fieldDef.getFieldType()) ||
+									FieldType.PERCENTAGE.equals(fieldDef.getFieldType())) {
 								if ( ! NumberUtils.isNumber(updateFldEntry.getValue())) {
 									batch.addUpdateError(TangerineMessageAccessor.getMessage("invalidField", updateFldEntry.getValue(), fieldDef.getDefaultLabel()));
 								}

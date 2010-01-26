@@ -135,12 +135,12 @@ public class BatchProvider {
     }
 
 
-	@DataProvider(name = "setupBatchForTouchPointGiftsWithConstituentInvalidDate")
-	public static Object[][] setupBatchForTouchPointGiftsWithConstituentInvalidDate() {
+	@DataProvider(name = "setupBatchForTouchPointGiftsWithConstituentInvalidDateNumber")
+	public static Object[][] setupBatchForTouchPointGiftsWithConstituentInvalidDateNumber() {
 	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
 	    batch.addPostBatchEntry(new PostBatchEntry(5000L));
 		batch.addUpdateField("entryType", "Note");
-		batch.addUpdateField("customFieldMap[template]", "blarg");
+		batch.addUpdateField("customFieldMap[rank]", "blarg");
 		batch.addUpdateField("customFieldMap[assignedTo]", "100");
 		batch.addUpdateField("recordDate", "01/01/blee");
 		batch.addUpdateField("comments", "hi mom");
@@ -217,6 +217,26 @@ public class BatchProvider {
 		batch.addUpdateField("customFieldMap[noteType]", "whiteboard");
 		batch.addUpdateField("recordDate", "03/04/2005");
 		batch.addUpdateField("comments", "hi kid");
+		batch.setForTouchPoints(true);
+
+	    return new Object[][] { new Object[] { batch } };
+	}
+
+	@DataProvider(name = "setupGiftBatchWithTouchPointGiftIdsNoSegmentationIds")
+	public static Object[][] createBatchWithTouchPointGiftIdsNoSegmentationIds() {
+	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+
+	    PostBatchEntry entry = new PostBatchEntry();
+	    entry.setGiftId(9000L);
+	    batch.addPostBatchEntry(entry);
+
+	    entry = new PostBatchEntry();
+	    entry.setGiftId(9001L);
+	    batch.addPostBatchEntry(entry);
+
+		batch.addUpdateField("entryType", "Event");
+	    batch.addUpdateField("customFieldMap[event]", "Juicer");
+		batch.addUpdateField("customFieldMap[eventParticipation]", "Attendee");
 		batch.setForTouchPoints(true);
 
 	    return new Object[][] { new Object[] { batch } };

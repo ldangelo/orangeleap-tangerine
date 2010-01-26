@@ -25,6 +25,7 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -32,6 +33,14 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Resource;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
@@ -40,18 +49,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.webflow.execution.RequestContext;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 @Component("reviewBatchAction")
 public class ReviewBatchAction extends EditBatchAction {
 
     protected final Log logger = OLLogger.getLog(getClass());
+
+	@Resource(name = "communicationHistoryService")
+	protected CommunicationHistoryService communicationHistoryService;
 
     @SuppressWarnings("unchecked")
     public ModelMap reviewStep1(final RequestContext flowRequestContext, final Long batchId) {
@@ -68,7 +72,8 @@ public class ReviewBatchAction extends EditBatchAction {
             final Map<String, String> dataMap = new HashMap<String, String>();
             dataMap.put("reviewBatchDesc", batch.getBatchDesc());
             dataMap.put("reviewBatchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
-            dataMap.put("hiddenBatchType", batch.getBatchType());
+	        dataMap.put("reviewCriteriaFields", batch.isForTouchPoints() ? TangerineMessageAccessor.getMessage("touchPointFields") : TangerineMessageAccessor.getMessage("batchTypeFields"));
+	        dataMap.put("hiddenBatchType", batch.getBatchType());
             model.put(StringConstants.DATA, dataMap);
         }
         return model;
@@ -175,20 +180,26 @@ public class ReviewBatchAction extends EditBatchAction {
         
         List<? extends AbstractCustomizableEntity> entities = null;
         int totalRows = 0;
-        if (StringConstants.GIFT.equals(batch.getBatchType())) {
-            Set<Long> giftIds = batch.getEntryGiftIds();
-            if ( ! giftIds.isEmpty()) {
-                entities = giftService.readLimitedGiftsByIds(giftIds, sortInfo, getRequest(flowRequestContext).getLocale());
-                totalRows = giftIds.size();
-            }
-        }
-        else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-            Set<Long> adjustedGiftIds = batch.getEntryAdjustedGiftIds();
-            if ( ! adjustedGiftIds.isEmpty()) {
-                entities = adjustedGiftService.readLimitedAdjustedGiftsByIds(adjustedGiftIds, sortInfo, getRequest(flowRequestContext).getLocale());
-                totalRows = adjustedGiftIds.size();
-            }
-        }
+	    if (batch.isForTouchPoints()) {
+		    entities = communicationHistoryService.readCommunicationHistoryByBatchId(batch.getId(), sortInfo, getRequest(flowRequestContext).getLocale());
+		    totalRows = communicationHistoryService.readCountByBatchId(batch.getId());
+	    }
+	    else {
+			if (StringConstants.GIFT.equals(batch.getBatchType())) {
+				Set<Long> giftIds = batch.getEntryGiftIds();
+				if ( ! giftIds.isEmpty()) {
+					entities = giftService.readLimitedGiftsByIds(giftIds, sortInfo, getRequest(flowRequestContext).getLocale());
+					totalRows = giftIds.size();
+				}
+			}
+			else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
+				Set<Long> adjustedGiftIds = batch.getEntryAdjustedGiftIds();
+				if ( ! adjustedGiftIds.isEmpty()) {
+					entities = adjustedGiftService.readLimitedAdjustedGiftsByIds(adjustedGiftIds, sortInfo, getRequest(flowRequestContext).getLocale());
+					totalRows = adjustedGiftIds.size();
+				}
+			}
+	    }
         if (entities != null && ! entities.isEmpty()) {
             for (AbstractCustomizableEntity entity : entities) {
                 final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);

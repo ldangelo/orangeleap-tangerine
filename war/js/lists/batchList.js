@@ -238,6 +238,7 @@ Ext.onReady(function() {
                     }
                 }
                 grid.reconfigure(store, new Ext.grid.ColumnModel(cols));
+                OrangeLeap.extGridColExpand(grid); // force columns to expand after update
                 bar.bindStore(store, true);
             },
             'exception': function(misc) {
@@ -1109,7 +1110,17 @@ Ext.onReady(function() {
 	var isBatchTypeChanged = false;
 	var isFieldCriteriaDifferent = false;
 
-	var commonEditFormConfig = {
+	var commonWinConfig = {
+        layout: 'fit',
+        width: 875,
+        height: 500,
+        cls: 'win',
+        modal: true,
+        closable: false,
+        closeAction: 'hide'
+	};
+	
+	var commonFormConfig = {
         baseCls: 'x-plain',
         labelAlign: 'right',
         margins: '10 0',
@@ -1118,6 +1129,68 @@ Ext.onReady(function() {
         layoutConfig: { labelSeparator: '' },
         buttonAlign: 'center'
 	};
+
+    var commonGridPanelConfig = {
+        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
+        stateful: true,
+        width: 726,
+        height: 468,
+        header: false,
+        frame: false,
+        border: false,
+        buttonAlign: 'center',
+        getState: function() {
+            var config = {};
+            var cm = this.getColumnModel();
+            var sortState = this.store.getSortState();
+            if (sortState) {
+                config.sf = sortState['field'];
+                config.sd = sortState['direction'];
+            }
+            config.ss = this.getView().getScrollState();
+            config.mc = [];
+            for (var i = 0; i < cm.config.length; i++) {
+                config.mc[i] = {};
+                config.mc[i].di = cm.config[i].dataIndex;
+                config.mc[i].h = cm.config[i].hidden;
+                config.mc[i].w = cm.config[i].width;
+            }
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.mc != null) {
+                var cm = this.getColumnModel();
+                var colCt = cm.getColumnCount();
+                for (var i = 0; i < state.mc.length; i++) {
+                    var colIndex = cm.findColumnIndex(state.mc[i].di);
+                    if (colIndex != -1 && i < colCt) {
+                        if (colIndex != i) {
+                            cm.moveColumn(colIndex, i);
+                        }
+                        cm.setHidden(i, state.mc[i].h);
+                        cm.setColumnWidth(i, state.mc[i].w);
+                    }
+                }
+            }
+            if (state.sf && state.sd) {
+                this.sortParams = { direction: state.sd, dataIndex: state.sf };
+            }
+            if (state.ss) {
+                this.getView().prevScrollState = state.ss;
+            }
+        }
+    };
+
+    var commonUnselectableRowConfig = {
+		selModel: new Ext.grid.RowSelectionModel({
+			singleSelect: false,
+			listeners: {
+				'beforerowselect': function() {
+					return false;
+				}
+			}
+		})
+    };
 
     var step1Form = new Ext.form.FormPanel(jQuery.extend({
         formId: 'step1Form',
@@ -1219,7 +1292,7 @@ Ext.onReady(function() {
                 }
             }
         ]
-    }, commonEditFormConfig));
+    }, commonFormConfig));
 
     function getBatchTypeValue() {
         return Ext.getCmp('batchType').getValue();
@@ -1327,28 +1400,10 @@ Ext.onReady(function() {
         }
     });
 
-    var step2RowSelModel = new Ext.grid.RowSelectionModel({
-        singleSelect: false,
-        listeners: {
-            'beforerowselect': function() {
-                return false; // disallow individual row selects; users must use the checkbox
-            }
-        }
-    });
-
-    var step2Form = new Ext.grid.EditorGridPanel({
+    var step2Form = new Ext.grid.EditorGridPanel(jQuery.extend({
         stateId: 'step2List',
-        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
-        stateful: true,
         store: step2Store,
         bbar: step2Bar,
-        width: 726,
-        height: 468,
-        forceLayout: true,
-        header: false,
-        frame: false,
-        border: false,
-        selModel: step2RowSelModel,
         viewConfig: {
             autoFill: true,
             emptyText: msgs.noSegmentationsFound
@@ -1394,7 +1449,6 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center',
         columns: [
             checkColumn,
             {
@@ -1447,48 +1501,8 @@ Ext.onReady(function() {
                     return '<span ext:qtitle="' + msgs.lastExecBy + '" ext:qwidth="250" ext:qtip="' + value + '">' + value + '</span>';
                 }
             }
-        ],
-        getState: function() {
-            var config = {};
-            var cm = this.getColumnModel();
-            var sortState = this.store.getSortState();
-            if (sortState) {
-                config.sf = sortState['field'];
-                config.sd = sortState['direction'];
-            }
-            config.ss = this.getView().getScrollState();
-            config.mc = [];
-            for (var i = 0; i < cm.config.length; i++) {
-                config.mc[i] = {};
-                config.mc[i].di = cm.config[i].dataIndex;
-                config.mc[i].h = cm.config[i].hidden;
-                config.mc[i].w = cm.config[i].width;
-            }
-            return config;
-        },
-        applyState: function(state, config) {
-            if (state.mc != null) {
-                var cm = this.getColumnModel();
-                var colCt = cm.getColumnCount();
-                for (var i = 0; i < state.mc.length; i++) {
-                    var colIndex = cm.findColumnIndex(state.mc[i].di);
-                    if (colIndex != -1 && i < colCt) {
-                        if (colIndex != i) {
-                            cm.moveColumn(colIndex, i);
-                        }
-                        cm.setHidden(i, state.mc[i].h);
-                        cm.setColumnWidth(i, state.mc[i].w);
-                    }
-                }
-            }
-            if (state.sf && state.sd) {
-                this.sortParams = { direction: state.sd, dataIndex: state.sf };
-            }
-            if (state.ss) {
-                this.getView().prevScrollState = state.ss;
-            }
-        }
-    });
+        ]
+    }, commonGridPanelConfig, commonUnselectableRowConfig));
 
     var step3Reader = new Ext.data.JsonReader();
 
@@ -1524,6 +1538,7 @@ Ext.onReady(function() {
                     }
                 }
                 step3Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+                OrangeLeap.extGridColExpand(step3Form); // force columns to expand after update
                 step3Bar.bindStore(store, true);
             },
             'beforeload': function(store, options) {
@@ -1572,8 +1587,6 @@ Ext.onReady(function() {
         emptyMsg: msgs.emptyMsg
     });
 
-    var step3RowSelect = new Ext.grid.RowSelectionModel();
-
     var step3Toolbar = new Ext.Toolbar({
         items: [
             '<span id=\"step3MsgSpan\">' + ( ( ! isForTouchPoints()) ? msgs.followingBeModified : msgs.followingHaveTouchPoints) + '</span>'
@@ -1588,23 +1601,16 @@ Ext.onReady(function() {
         t.wrap({tag: 'center'});
     }, null, {single: true});
 
-    var step3Form = new Ext.grid.GridPanel({
+    var step3Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'step3List',
-        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
-        stateful: true,
         store: step3Store,
         bbar: step3Bar,
-        width: 726,
-        height: 468,
-        forceLayout: true,
-        header: false,
-        frame: false,
-        border: false,
-        selModel: step3RowSelect,
         viewConfig: {
             autoFill: true,
             emptyText: msgs.noRowsFound
         },
+        selModel: new Ext.grid.RowSelectionModel(),
+        tbar: step3Toolbar,
         columns: [
             {
                 header: msgs.id,
@@ -1654,20 +1660,20 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center',
-        tbar: step3Toolbar
-    });
-    step3Form.on('rowdblclick', function(grid, rowIndex, event) {
-        var batchTypeVal = getBatchTypeValue();
-        var record = step3Store.getAt(rowIndex);
-        if (batchTypeVal && record) {
-            // open window to view record
-            var thisUrl;
-			thisUrl = batchTypeVal + '.htm?' + batchTypeVal + 'Id=' + record.get('id') +
-								  (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
-            window.open(thisUrl, batchTypeVal + 'Win');
+        listeners: {
+			'rowdblclick': function(grid, rowIndex, event) {
+				var batchTypeVal = getBatchTypeValue();
+				var record = step3Store.getAt(rowIndex);
+				if (batchTypeVal && record) {
+					// open window to view record
+					var thisUrl;
+					thisUrl = batchTypeVal + '.htm?' + batchTypeVal + 'Id=' + record.get('id') +
+										  (record.get('constituentId') ? '&constituentId=' + record.get('constituentId') : '');
+					window.open(thisUrl, batchTypeVal + 'Win');
+				}
+			}
         }
-    });
+    }, commonGridPanelConfig));
 
     function getStep4TabItemNumber()  {
 		return ( (! isForTouchPoints()) ? 0 : 1);
@@ -1933,7 +1939,7 @@ Ext.onReady(function() {
                 }
             }
 		]        
-	}, commonStep4FormConfig, commonEditFormConfig));
+	}, commonStep4FormConfig, commonFormConfig));
 
 	step4TouchPointFieldsForm.getForm().on('beforeaction', function(form, action) {
 		if (action.type == Ext.form.Action.Load.prototype.type) {
@@ -2279,6 +2285,7 @@ Ext.onReady(function() {
             }
         }
         form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+		OrangeLeap.extGridColExpand(form); // force columns to expand after update
         bar.bindStore(store, true);
     }
 
@@ -2308,12 +2315,6 @@ Ext.onReady(function() {
         emptyMsg: msgs.emptyMsg
     });
 
-    var step5RowSelect = new Ext.grid.RowSelectionModel({ listeners: {
-        'beforerowselect': function(selModel, rowIndex, keepExisting, record) {
-            return false;
-        } }
-    });
-
     var step5Toolbar = new Ext.Toolbar({
         items: [
             msgs.followingChangesApplied
@@ -2328,21 +2329,16 @@ Ext.onReady(function() {
         t.wrap({tag: 'center'});
     }, null, {single: true});
 
-    var step5Form = new Ext.grid.GridPanel({
+    var step5Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'step5List',
-        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
-        stateful: true,
         store: step5Store,
         bbar: step5Bar,
         stripeRows: false,
-        width: 726,
-        height: 468,
         loadMask: true,
-        header: false,
-        frame: false,
-        border: false,
-        selModel: step5RowSelect,
-        viewConfig: { autoFill: true },
+        tbar: step5Toolbar,
+        viewConfig: {
+            autoFill: true
+        },
         columns: [
             {
                 header: msgs.id,
@@ -2385,10 +2381,8 @@ Ext.onReady(function() {
                     cancelEditBatch();
                 }
             }
-        ],
-        buttonAlign: 'center',
-        tbar: step5Toolbar
-    });
+        ]
+    }, commonGridPanelConfig, commonUnselectableRowConfig));
 
     function saveBatch(saveUrl, executionKey, cancelFunc, batchStatusToShow, params) {
         var saveParams = jQuery.extend({ '_eventId_save': 'save', 'execution': executionKey }, params); // copy properties from params
@@ -2443,16 +2437,9 @@ Ext.onReady(function() {
         editBatchWin.hide(editBatchWin);
     }
 
-    var editBatchWin = new Ext.Window({
+    var editBatchWin = new Ext.Window(jQuery.extend({
         title: msgs.manageBatch,
-        layout: 'fit',
-        width: 875,
-        height: 500,
-        cls: 'win',
         id: 'editBatchWin',
-        modal: true,
-        closable: false,
-        closeAction: 'hide',
         listeners: {
             'show': function(win) {
 				if (win.forTouchPoints) {
@@ -2473,13 +2460,13 @@ Ext.onReady(function() {
                 }
             },
             'beforeshow': function() {
-                $('#editBatchWin').bind('keydown', function(e) {
+                $(window).bind('keydown', function(e) {
                     hideEditOnEscape(e);
                 });
             },
             'beforehide': function() {
                 resetEditBatchWin();
-                $('#editBatchWin').unbind('keydown', hideEditOnEscape);
+                $(window).unbind('keydown', hideEditOnEscape);
             }
         },
         items:[{
@@ -2545,7 +2532,7 @@ Ext.onReady(function() {
                  }
              ]
          }]
-    });
+    }, commonWinConfig));
 
 	/* onStripMouseDown function is overridden to set the correct active tab for step 4 */ 
     editBatchWin.items.items[0].onStripMouseDown = function(e) {
@@ -2616,15 +2603,8 @@ Ext.onReady(function() {
     /* The following below is for the read-only batch window */
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var reviewStep1Form = new Ext.form.FormPanel({
-        baseCls: 'x-plain',
-        labelAlign: 'right',
-        margins: '10 0',
+    var reviewStep1Form = new Ext.form.FormPanel(jQuery.extend({
         formId: 'reviewStep1Form',
-        ctCls: 'wizard',
-        layoutConfig: {
-            labelSeparator: ''
-        },
         buttons: [
             {
                 text: msgs.next,
@@ -2648,7 +2628,6 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center',
         items: [
             {
                 fieldLabel: msgs.description, name: 'reviewBatchDesc', id: 'reviewBatchDesc', xtype: 'displayfield', cls: 'displayElem',
@@ -2659,10 +2638,14 @@ Ext.onReady(function() {
                 height: 60, width: 500
             },
             {
+                fieldLabel: msgs.criteriaFields, name: 'reviewCriteriaFields', id: 'reviewCriteriaFields', xtype: 'displayfield', cls: 'displayElem',
+                height: 60, width: 500
+            },
+            {
                 name: 'hiddenBatchType', id: 'hiddenBatchType', xtype: 'hidden'
             }
         ]
-    });
+    }, commonFormConfig));
 
     var reviewStep2Store = new OrangeLeap.ListStore({
         url: 'reviewBatch.htm',
@@ -2695,28 +2678,16 @@ Ext.onReady(function() {
         return $( $('#step1Review').parent('div').siblings().get(0) ).attr('id');        
     }
 
-    var reviewStep2Grid = new Ext.grid.GridPanel({
+    var reviewStep2Grid = new Ext.grid.GridPanel(jQuery.extend({
         columns: [
             { header: msgs.name, dataIndex: 'name', sortable: true, width: 200 },
             { header: msgs.value, dataIndex: 'value', sortable: true, width: 520 }
         ],
-        width: 726,
-        height: 468,
-        header: false,
-        frame: false,
-        border: false,
         stateId: 'reviewStep2List',
-        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
-        stateful: true,
         store: reviewStep2Store,
-        selModel: new Ext.grid.RowSelectionModel({
-            singleSelect: false,
-            listeners: {
-                'beforerowselect': function() {
-                    return false; 
-                }
-            }
-        }),
+        viewConfig: {
+            autoFill: true
+        },
         buttons: [
             {
                 text: msgs.previous,
@@ -2752,8 +2723,7 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center'
-    });
+    }, commonGridPanelConfig, commonUnselectableRowConfig));
 
     var reviewStep3Store = new OrangeLeap.ListStore({
         url: 'reviewBatch.htm',
@@ -2777,7 +2747,25 @@ Ext.onReady(function() {
                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                     buttons: Ext.MessageBox.OK,
                     msg: msgs.errorStep3 });
-            }
+            },
+			'metachange': function(store, meta) {
+				var cols = [];
+				var fields = meta.fields;
+				for (var x = 0; x < fields.length; x++) {
+					var name = fields[x].name;
+					if (name && name != 'constituentId') {
+						cols[cols.length] = {
+							header: fields[x].header, dataIndex: name, sortable: (name != 'type'),
+							renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+								return determineRenderer(this, value, metaData, record);
+							}
+						};
+					}
+				}
+				reviewStep3Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+                OrangeLeap.extGridColExpand(reviewStep3Form); // force columns to expand after update
+				reviewStep3Bar.bindStore(store, true);
+			}
         }
     });
 
@@ -2785,23 +2773,6 @@ Ext.onReady(function() {
         return $( $('#step1Review').parent('div').siblings().get(1) ).attr('id');
     }
 
-    reviewStep3Store.on('metachange', function(store, meta) {
-        var cols = [];
-        var fields = meta.fields;
-        for (var x = 0; x < fields.length; x++) {
-            var name = fields[x].name;
-            if (name && name != 'constituentId') {
-                cols[cols.length] = {
-                    header: fields[x].header, dataIndex: name, sortable: (name != 'type'),
-                    renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-						return determineRenderer(this, value, metaData, record);
-                    }
-                };
-            }
-        }
-        reviewStep3Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
-        reviewStep3Bar.bindStore(store, true);
-    });
     reviewStep3Store.proxy.on('load', function(proxy, txn, options) {
         reviewFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
@@ -2853,24 +2824,17 @@ Ext.onReady(function() {
         t.wrap({tag: 'center'});
     }, null, {single: true});
 
-    var reviewStep3Form = new Ext.grid.GridPanel({
+    var reviewStep3Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'reviewStep3List',
-        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
-        stateful: true,
         store: reviewStep3Store,
         bbar: reviewStep3Bar,
         stripeRows: false,
-        width: 726,
-        height: 468,
         loadMask: true,
-        header: false,
-        frame: false,
-        border: false,
-        selModel: new Ext.grid.RowSelectionModel(),
         viewConfig: {
             autoFill: true,
             emptyText: msgs.noRowsUpdated
         },
+        selModel: new Ext.grid.RowSelectionModel(),
         columns: [
             {
                 header: msgs.id,
@@ -2902,7 +2866,6 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center',
         tbar: reviewStep3Toolbar,
         listeners: {
             'rowdblclick': function(grid, rowIndex, event) {
@@ -2916,7 +2879,7 @@ Ext.onReady(function() {
                 }
             }
         }
-    });
+    }, commonGridPanelConfig));
 
     var reviewBatchId = null;
     var reviewFlowExecutionKey = null;
@@ -2982,25 +2945,18 @@ Ext.onReady(function() {
         }
     }
 
-    var reviewBatchWin = new Ext.Window({
+    var reviewBatchWin = new Ext.Window(jQuery.extend(true,{
         title: msgs.reviewBatch,
-        layout: 'fit',
-        width: 875,
-        height: 500,
-        cls: 'win',
         id: 'reviewBatchWin',
-        modal: true,
-        closable: false,
-        closeAction: 'hide',
         listeners: {
             'beforeshow': function() {
-                $('#reviewBatchWin').bind('keydown', function(e) {
+                $(window).bind('keydown', function(e) {
                     hideReviewOnEscape(e);
                 });
             },
             'beforehide': function() {
                 resetReviewBatchWin();
-                $('#reviewBatchWin').unbind('keydown', hideReviewOnEscape);
+                $(window).unbind('keydown', hideReviewOnEscape);
             }
         },
         items:[{
@@ -3048,7 +3004,7 @@ Ext.onReady(function() {
                  }
              ]
          }]
-    });
+    }, commonWinConfig));
 
     var hideReviewOnEscape = function(e) {
         if (e.keyCode == 27) {
@@ -3069,15 +3025,8 @@ Ext.onReady(function() {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* The following below is for the errors-only batch window */
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    var errorStep1Form = new Ext.form.FormPanel({
-        baseCls: 'x-plain',
-        labelAlign: 'right',
-        margins: '10 0',
+    var errorStep1Form = new Ext.form.FormPanel(jQuery.extend({
         formId: 'errorStep1Form',
-        ctCls: 'wizard',
-        layoutConfig: {
-            labelSeparator: ''
-        },
         buttons: [
             {
                 text: msgs.next,
@@ -3101,7 +3050,6 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center',
         items: [
             {
                 fieldLabel: msgs.description, name: 'errorBatchDesc', id: 'errorBatchDesc', xtype: 'textarea',
@@ -3120,7 +3068,7 @@ Ext.onReady(function() {
                 name: 'hiddenErrorBatchType', id: 'hiddenErrorBatchType', xtype: 'hidden'
             }
         ]
-    });
+    }, commonFormConfig));
 
     function findStepErrorParentId(stepNum) {
         return $( $('#step1Error').parent('div').siblings().get(stepNum - 2) ).attr('id');
@@ -3152,6 +3100,7 @@ Ext.onReady(function() {
                     }
                 }
                 errorStep2Form.reconfigure(store, new Ext.grid.ColumnModel(cols));
+                OrangeLeap.extGridColExpand(errorStep2Form); // force columns to expand after update
                 errorStep2Bar.bindStore(store, true);
             },
             'beforeload': function(store, options) {
@@ -3225,22 +3174,14 @@ Ext.onReady(function() {
         t.wrap({tag: 'center'});
     }, null, {single: true});
 
-    var errorStep2Form = new Ext.grid.GridPanel({
+    var errorStep2Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'errorStep2List',
-        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
-        stateful: true,
         store: errorStep2Store,
         bbar: errorStep2Bar,
-        width: 726,
-        height: 468,
-        forceLayout: true,
         viewConfig: {
             autoFill: true,
             emptyText: msgs.noRowsForErrorBatch
         },
-        header: false,
-        frame: false,
-        border: false,
         selModel: new Ext.grid.RowSelectionModel(),
         columns: [
             {
@@ -3290,7 +3231,6 @@ Ext.onReady(function() {
                 }
             }
         ],
-        buttonAlign: 'center',
         tbar: errorStep2Toolbar,
         listeners: {
             'rowdblclick': function(grid, rowIndex, event) {
@@ -3304,7 +3244,7 @@ Ext.onReady(function() {
                 }
             }
         }
-    });
+    }, commonGridPanelConfig));
 
     var errorStep3UpdatableFieldsStore = new Ext.data.JsonStore({
         url: 'errorBatch.htm',
@@ -3378,7 +3318,7 @@ Ext.onReady(function() {
                     var panel = errorBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(3)) {
                         var firstItem = panel.items.items[3];
-                        firstItem.setActiveTab(firstItem.items.items[0].items.items[getStep4TabItemNumber()]);
+                        firstItem.setActiveTab(firstItem.items.items[0]);
                     }
                 }
             },
@@ -3458,11 +3398,6 @@ Ext.onReady(function() {
         displayMsg: msgs.displayMsg,
         emptyMsg: msgs.emptyMsg
     });
-    var errorStep4RowSelect = new Ext.grid.RowSelectionModel({ listeners: {
-        'beforerowselect': function(selModel, rowIndex, keepExisting, record) {
-            return false;
-        } }
-    });
 
     var errorStep4Toolbar = new Ext.Toolbar({
         items: [
@@ -3478,21 +3413,16 @@ Ext.onReady(function() {
         t.wrap({tag: 'center'});
     }, null, {single: true});
 
-    var errorStep4Form = new Ext.grid.GridPanel({
+    var errorStep4Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'errorStep4List',
-        stateEvents: ['columnmove', 'columnresize', 'sortchange', 'bodyscroll'],
-        stateful: true,
         store: errorStep4Store,
         bbar: errorStep4Bar,
         stripeRows: false,
-        width: 726,
-        height: 468,
         loadMask: true,
-        header: false,
-        frame: false,
-        border: false,
-        selModel: errorStep4RowSelect,
-        viewConfig: { autoFill: true },
+        tbar: errorStep4Toolbar,
+        viewConfig: {
+            autoFill: true
+        },
         columns: [
             {
                 header: msgs.id,
@@ -3535,10 +3465,8 @@ Ext.onReady(function() {
                     cancelErrorBatch(); 
                 }
             }
-        ],
-        buttonAlign: 'center',
-        tbar: errorStep4Toolbar
-    });
+        ]
+    }, commonGridPanelConfig, commonUnselectableRowConfig));
 
     var errorBatchId = null;
     var errorFlowExecutionKey = null;
@@ -3565,25 +3493,18 @@ Ext.onReady(function() {
         return isValid;
     }
 
-    var errorBatchWin = new Ext.Window({
+    var errorBatchWin = new Ext.Window(jQuery.extend({
         title: msgs.manageBatch,
-        layout: 'fit',
-        width: 875,
-        height: 500,
-        cls: 'win',
         id: 'errorBatchWin',
-        modal: true,
-        closable: false,
-        closeAction: 'hide',
         listeners: {
             'beforeshow': function() {
-                $('#errorBatchWin').bind('keydown', function(e) {
+                $(window).bind('keydown', function(e) {
                     hideErrorOnEscape(e);
                 });
             },
             'beforehide': function() {
                 resetErrorBatchWin();
-                $('#errorBatchWin').unbind('keydown', hideErrorOnEscape);
+                $(window).unbind('keydown', hideErrorOnEscape);
             }
         },
         items:[{
@@ -3640,7 +3561,7 @@ Ext.onReady(function() {
                  }
              ]
          }]
-    });
+    }, commonWinConfig));
 
     var hideErrorOnEscape = function(e) {
         if (e.keyCode == 27) {
@@ -3744,5 +3665,3 @@ Ext.onReady(function() {
         }
     }
 });
-
-

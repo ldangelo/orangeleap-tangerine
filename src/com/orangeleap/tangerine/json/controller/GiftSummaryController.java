@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
@@ -45,6 +46,7 @@ import com.orangeleap.tangerine.domain.rollup.RollupAttribute;
 import com.orangeleap.tangerine.domain.rollup.RollupSeries;
 import com.orangeleap.tangerine.domain.rollup.RollupValue;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.service.rollup.RollupService;
 import com.orangeleap.tangerine.type.GiftType;
@@ -62,6 +64,9 @@ public class GiftSummaryController {
 
     @Resource(name = "rollupService")
     private RollupService rollupService;
+
+    @Resource(name = "giftService")
+    private GiftService giftService;
 
     
     private final static String CLASS = "class";
@@ -166,17 +171,17 @@ public class GiftSummaryController {
     	// Soft Gift
     	if (requestedAttribute(FIRST_SOFT_GIFT, attributeList)) {
     		Gift firstSoftGift = rollupService.readIndirectGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", true, ON_BEHALF_OF);
-    		if (firstSoftGift != null) putGift(FIRST_SOFT_GIFT, firstSoftGift, returnList, index++);
+    		if (firstSoftGift != null) putSoftGift(FIRST_SOFT_GIFT, firstSoftGift, constituentId, ON_BEHALF_OF, returnList, index++);
     	}
     	
     	if (requestedAttribute(LAST_SOFT_GIFT, attributeList)) {
 	    	Gift lastSoftGift = rollupService.readIndirectGiftViewFirstOrLastByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", false, ON_BEHALF_OF);
-	    	if (lastSoftGift != null) putGift(LAST_SOFT_GIFT, lastSoftGift, returnList, index++);
+	    	if (lastSoftGift != null) putSoftGift(LAST_SOFT_GIFT, lastSoftGift, constituentId, ON_BEHALF_OF, returnList, index++);
     	}
     	
     	if (requestedAttribute(LARGEST_SOFT_GIFT, attributeList)) {
 	    	Gift largestSoftGift = rollupService.readIndirectGiftViewLargestByConstituentId(constituentId, GiftType.MONETARY_GIFT, "Paid", ON_BEHALF_OF);
-	    	if (largestSoftGift != null) putGift(LARGEST_SOFT_GIFT, largestSoftGift, returnList, index++);
+	    	if (largestSoftGift != null) putSoftGift(LARGEST_SOFT_GIFT, largestSoftGift, constituentId, ON_BEHALF_OF, returnList, index++);
     	}
     	
     	// Pledge
@@ -273,6 +278,41 @@ public class GiftSummaryController {
         map.put(AVG, gift.getAdjustedAmount());
     	
     	returnList.add(map);
+    }
+    
+    private void putSoftGift(String title, Gift gift, Long constituentId, String refcf, List<Map<String, Object>> returnList, int index) {
+    	
+    	gift = giftService.readGiftById(gift.getId());
+    	BigDecimal amt = getSoftAmount(gift, constituentId, refcf);
+    	
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(ID, "" + index);
+        map.put(CLASS, "string");
+        map.put(MAX_LEN, "255");
+
+        map.put(ATTRIBUTE, title);
+        map.put(SERIES, "Lifetime");
+        map.put(START_DATE, gift.getDonationDate());
+        map.put(END_DATE, gift.getDonationDate());
+        map.put(CURRENCY_CODE, gift.getCurrencyCode());
+        map.put(COUNT, 1);
+        map.put(SUM, amt);
+        map.put(MIN, amt);
+        map.put(MAX, amt);
+        map.put(AVG, amt);
+    	
+    	returnList.add(map);
+    }
+    
+    private BigDecimal getSoftAmount(Gift gift, Long constituentId, String refcf) {
+    	BigDecimal result = new BigDecimal(0);
+    	for (DistributionLine dl : gift.getDistributionLines()) {
+    		String cfvalue = dl.getCustomFieldValue(refcf);
+    		if (cfvalue != null && cfvalue.equals(constituentId.toString())) {
+    			result = result.add(dl.getAmount());
+    		}
+    	}
+    	return result;
     }
     
     private void putGiftInKind(String title, GiftInKind giftInKind, List<Map<String, Object>> returnList, int index) {

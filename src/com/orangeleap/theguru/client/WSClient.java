@@ -33,7 +33,7 @@ public class WSClient extends OrangeLeapAuthentication {
 
 		ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
 
-		CasUtil.populateOrageLeapAuthenticationWithCasCredentials(this, "http://" + System.getProperty("jasper.host") + ":" + System.getProperty("jasper.port") + "/" + System.getProperty("contextPrefix") + "clementine/j_spring_cas_security_check");
+//		CasUtil.populateOrageLeapAuthenticationWithCasCredentials(this, "http://" + System.getProperty("jasper.host") + ":" + System.getProperty("jasper.port") + "/" + System.getProperty("contextPrefix") + "clementine/j_spring_cas_security_check");
     	
         Map outProps = new HashMap();
 		Client client = org.apache.cxf.frontend.ClientProxy.getClient(guruPort);

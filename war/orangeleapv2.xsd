@@ -11,14 +11,20 @@
 			<xs:appinfo xml:lang="en">
 				<jxb:class>
 					<jxb:javadoc>
-						Orange Leap uses the Site object to specify which "organizations" data
+						Orange Leap uses the Site object to specify which
+						"organizations" data
 						model you are accessing. For example
-						if you use site.name="sandbox" you will access the data model
-						associated with our sandbox. One important note is
-						that the site.name is validated against the credentials that you log
+						if you use
+						site.name="sandbox" you will access the data model
+						associated with
+						our sandbox. One important note is
+						that the site.name is validated
+						against the credentials that you log
 						in
-						as... So if you authenticate with demo@sandbox your site
-						name must be sandbox or you will receive a SoapFault.
+						as... So if you authenticate
+						with demo@sandbox your site
+						name must be sandbox or you will
+						receive a SoapFault.
 				</jxb:javadoc>
 				</jxb:class>
 			</xs:appinfo>
@@ -29,14 +35,19 @@
 				<xs:appinfo>
 					<jxb:property>
 						<jxb:javadoc>
-							The name of the site that you wish to connect too. This will
+							The name of the site that you wish to connect too.
+							This will
 							generate an Exception
-							if your authentication credentials do not match your sitename.
+							if your authentication credentials
+							do not match your sitename.
 
-							For example if you try to connect to demo@sandbox and use "demo" as
+							For example if you try to connect to
+							demo@sandbox and use "demo" as
 							your site name.
-							You will receive a SoapFault exception with a reason "Site name
-							does not match supplied credentials"
+							You will receive a
+							SoapFault exception with a reason "Site name
+							does not match
+							supplied credentials"
 							</jxb:javadoc>
 					</jxb:property>
 				</xs:appinfo>
@@ -44,46 +55,61 @@
 		</xs:attribute>
 	</xs:complexType>
 
+    <xs:element name="Touchpoint" type="tns:communicationHistory"/>
 
 	<xs:complexType name="communicationHistory">
 		<xs:annotation>
 			<xs:appinfo xml:lang="en">
 				<jxb:class>
 					<jxb:javadoc>
-						CommunicationHistory is used to update/add any type of communication with a
+						CommunicationHistory is used to update/add any type of
+						communication with a
 						constituent. It will map to the
-						"touch points" screen within the orange leap API. Because orange leap is
+						"touch points"
+						screen within the orange leap API. Because orange leap is
 						extensible you can track much more
-						than just e-mails and calls with our CommunicationHistory.
+						than just e-mails and calls with
+						our CommunicationHistory.
 
-						Some examples of implementations we have done track things like
-						events, website visits, volunteer hours, etc... using
+						Some examples of implementations we have
+						done track things like
+						events, website visits, volunteer hours,
+						etc... using
 						"touch points"/Communication History.
 
-						CommunicationHistory objects are tied to constituents but can alternately reference
+						CommunicationHistory objects are tied to constituents but can
+						alternately reference
 						Gifts, Pledges, etc...
 
-						Like all entities on orange leap CommunicationHistory can be
-						customized. For example an EventName could be added to all
-						"touch points" that have a type of "Event". These custom fields are
-						accessed through the customFieldMap of the
+						Like all entities on
+						orange leap CommunicationHistory can be
+						customized. For example an
+						EventName could be added to all
+						"touch points" that have a type of
+						"Event". These custom fields are
+						accessed through the
+						customFieldMap of the
 						abstractCustomizableEntity
-						that we inherit from.
+						that we inherit
+						from.
 				</jxb:javadoc>
 				</jxb:class>
 			</xs:appinfo>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="tns:abstractCustomizableEntity">
-					<xs:attribute name="comments" type="xs:string" use="optional" />
-					<xs:attribute name="communicationHistoryType" type="xs:string" use="required"/>
-					<xs:attribute name="entryType" type="xs:string" use="optional" />
-					<xs:attribute name="giftId" type="xs:long" use="optional" />
-					<xs:attribute name="constituentId" type="xs:long"	use="required" />
-					<xs:attribute name="pledgeId" type="xs:long" use="optional" />
-					<xs:attribute name="recordDate" type="xs:dateTime"	use="required" />
-					<xs:attribute name="recurringGiftId" type="xs:long" use="optional" />
-					<xs:attribute name="systemGenerated" type="xs:boolean" use="prohibited"/>
+				<xs:attribute name="comments" type="xs:string" use="optional" />
+				<xs:attribute name="communicationHistoryType" type="xs:string"
+					use="required" />
+				<xs:attribute name="entryType" type="xs:string" use="optional" />
+				<xs:attribute name="giftId" type="xs:long" use="optional" />
+				<xs:attribute name="constituentId" type="xs:long" use="required" />
+				<xs:attribute name="pledgeId" type="xs:long" use="optional" />
+				<xs:attribute name="recordDate" type="xs:dateTime" use="required" />
+				<xs:attribute name="recurringGiftId" type="xs:long"
+					use="optional" />
+				<xs:attribute name="systemGenerated" type="xs:boolean"
+					use="prohibited" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -442,6 +468,7 @@
 						minOccurs="0" />
 					<xs:element name="lastName" type="xs:string" minOccurs="1"
 						maxOccurs="1" />
+					<xs:element name="suffix" type="xs:string"/>
 					<xs:element name="title" type="xs:string" minOccurs="0"
 						maxOccurs="1" />
 					<xs:element name="addresses" type="tns:address"
@@ -534,6 +561,18 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+  <xs:complexType name="recurringGift">
+    <xs:complexContent>
+      <xs:extension base="tns:commitment">
+        <xs:sequence>
+          <xs:element name="autoPay" type="xs:boolean" minOccurs="1"/>
+          <xs:element name="nextRunDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="recurringGiftStatus" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
 	<xs:element name="GetConstituentByIdRequest">
 		<xs:complexType>
@@ -677,7 +716,24 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="SaveOrUpdateRecurringGiftRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituentId" type="xs:long" />
+				<xs:element name="recurringgift" type="tns:recurringGift" minOccurs="1"
+					maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
+	<xs:element name="SaveOrUpdateRecurringGiftResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="recurringgift" type="tns:recurringGift" minOccurs="1"
+					maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
 	<xs:element name="GetConstituentPledgeRequest">
 		<xs:complexType>
@@ -691,6 +747,23 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="pledge" type="tns:pledge" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetConstituentRecurringGiftRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constituentId" type="xs:long" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="GetConstituentRecurringGiftResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="recurringgift" type="tns:recurringGift" minOccurs="0"
 					maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
@@ -858,5 +931,79 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+
+	<xs:complexType name="AddPickListItemByNameRequest">
+		<xs:annotation>
+			<xs:appinfo xml:lang="en">
+				<jxb:class>
+					<jxb:javadoc>
+					Request to add a picklist item to an existing picklist.
+					
+					Requires a name and picklist item.
+				</jxb:javadoc>
+				</jxb:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="picklistname" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<jxb:property>
+							<jxb:javadoc>
+								The name of the picklist that you want to add a value too.
+							</jxb:javadoc>
+						</jxb:property>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="picklistitem" type="tns:picklistItem">
+				<xs:annotation>
+					<xs:appinfo>
+						<jxb:property>
+							<jxb:javadoc>
+								The value you are wishing to add to the picklist.
+							</jxb:javadoc>
+						</jxb:property>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+
+	</xs:complexType>
+	
+	<xs:complexType name="AddPickListItemByNameResponse">
+	<xs:sequence>
+				<xs:element name="picklist" type="tns:picklist"	minOccurs="0" maxOccurs="1" />
+	</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="GetPaymentSourcesByConstituentIdRequest">
+		<xs:annotation>
+			<xs:appinfo xml:lang="en">
+				<jxb:class>
+					<jxb:javadoc>
+					Retrieve the list of existing payment sources for a given constituent id.
+					
+					Requires a valid constituentid.
+					
+					Returns the list of existing payment sources.
+					
+					The recommendation by the orange leap team is that before you try and add a payment source to a gift, you
+					first do a lookup of existing payment sources to determine it does not currently exist.  If it does currently
+					exist you would use this payment source instead of creating a new one.
+					
+					If you try and create a new payment source that already exists you will receive a SoapFault.
+				</jxb:javadoc>
+				</jxb:class>
+			</xs:appinfo>
+		</xs:annotation>
+			<xs:attribute name="constituentId"  use="required" type="xs:long"/>
+		</xs:complexType>
+		
+		<xs:complexType name="GetPaymentSourcesByConstituentIdResponse">
+		<xs:sequence>
+			<xs:element name="paymentsources" type="tns:paymentSource" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		</xs:complexType>
 </xs:schema>
         

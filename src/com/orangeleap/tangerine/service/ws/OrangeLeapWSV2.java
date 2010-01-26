@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -20,19 +21,25 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 
 import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.service.ws.exception.*;
 import com.orangeleap.tangerine.ws.schema.v2.AddCommunicationHistoryRequest;
+import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameRequest;
+import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameResponse;
+import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemResponse;
 import com.orangeleap.tangerine.ws.schema.v2.BulkAddCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.CommunicationHistory;
 import com.orangeleap.tangerine.ws.schema.v2.Constituent;
@@ -48,18 +55,25 @@ import com.orangeleap.tangerine.ws.schema.v2.GetConstituentGiftRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetConstituentGiftResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetConstituentPledgeRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetConstituentPledgeResponse;
+import com.orangeleap.tangerine.ws.schema.v2.GetConstituentRecurringGiftRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetConstituentRecurringGiftResponse;
+import com.orangeleap.tangerine.ws.schema.v2.GetPaymentSourcesByConstituentIdRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetPaymentSourcesByConstituentIdResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListByNameRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListByNameResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListsRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListsResponse;
 import com.orangeleap.tangerine.ws.schema.v2.Gift;
 import com.orangeleap.tangerine.ws.schema.v2.Pledge;
+import com.orangeleap.tangerine.ws.schema.v2.RecurringGift;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateConstituentRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateConstituentResponse;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateGiftRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateGiftResponse;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdatePledgeRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdatePledgeResponse;
+import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateRecurringGiftRequest;
+import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateRecurringGiftResponse;
 import com.orangeleap.tangerine.ws.schema.v2.SearchConstituentsRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SearchConstituentsResponse;
 import com.orangeleap.tangerine.ws.util.v2.ObjectConverter;
@@ -98,13 +112,19 @@ public class OrangeLeapWSV2 {
 	private PhoneService phoneService;
 
 	@Autowired
-	PicklistItemService picklistItemService;
+	private PicklistItemService picklistItemService;
 
+	@Autowired
+	private RecurringGiftService recurringGiftService;
+	
 	@Resource(name = "communicationHistoryService")
 	private CommunicationHistoryService communicationHistory;
 
 	@Autowired
 	private SoapValidationManager validationManager;
+	
+	@Autowired
+	private PaymentSourceService paymentSourceService;
 	
 	/**
 	 * Creates a new <code>OrangeLeapWS</code> instance.
@@ -172,8 +192,11 @@ public class OrangeLeapWSV2 {
 	 * @return a <code>CreateDefaultConstituentResponse</code> value
 	 */
 	public CreateDefaultConstituentResponse createDefaultConstituent(
-			CreateDefaultConstituentRequest cdcr) {
+			CreateDefaultConstituentRequest cdcr) throws InvalidRequestException {
 		CreateDefaultConstituentResponse cr = new CreateDefaultConstituentResponse();
+		
+		validationManager.validate(cdcr);
+		
 		com.orangeleap.tangerine.domain.Constituent p = cs
 				.createDefaultConstituent();
 		com.orangeleap.tangerine.ws.schema.v2.Constituent c = new com.orangeleap.tangerine.ws.schema.v2.Constituent();
@@ -191,8 +214,22 @@ public class OrangeLeapWSV2 {
 		validationManager.validate(p);
 		
 		
-		com.orangeleap.tangerine.domain.Constituent c = cs
-				.createDefaultConstituent();
+		com.orangeleap.tangerine.domain.Constituent c = null;
+		//
+		// if the request has a constituent id then get the constituent
+		// otherwise create a constituent
+		if (p.getConstituent().getId() == null || p.getConstituent().getId() == 0) {
+			c = cs.createDefaultConstituent();
+		} else {
+			c = cs.readConstituentById(p.getConstituent().getId());
+			
+			//
+			// we did not find a constituent so throw an error
+			if (c == null) {
+				throw new ConstituentValidationException("Could not find constituent with id = " + p.getConstituent().getId().toString());
+			}
+		}
+		
 		ObjectConverter converter = new ObjectConverter();
 
 		converter.ConvertFromJAXB(p.getConstituent(), c);
@@ -240,6 +277,8 @@ public class OrangeLeapWSV2 {
 		FindConstituentsResponse cr = new FindConstituentsResponse();
 		ObjectConverter converter = new ObjectConverter();
 
+		validationManager.validate(request);
+		
 		Map<String, Object> params = new HashMap<String, Object>();
 		if (request.getFirstName() != null && !request.getFirstName().isEmpty())
 			params.put("firstName", request.getFirstName());
@@ -308,10 +347,12 @@ public class OrangeLeapWSV2 {
 
 	@PayloadRoot(localPart = "SearchConstituentsRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public SearchConstituentsResponse searchConstituent(
-			SearchConstituentsRequest request) {
+			SearchConstituentsRequest request) throws InvalidRequestException {
 		SearchConstituentsResponse cr = new SearchConstituentsResponse();
 		ObjectConverter converter = new ObjectConverter();
 
+		validationManager.validate(request);
+		
 		Map<String, Object> params = new HashMap<String, Object>();
 		if (request.getFirstName() != null && !request.getFirstName().isEmpty())
 			params.put("firstName", request.getFirstName());
@@ -373,15 +414,83 @@ public class OrangeLeapWSV2 {
 		return cr;
 	}
 
-	@PayloadRoot(localPart = "SaveOrUpdatePledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
-	public SaveOrUpdatePledgeResponse maintainPledge(
-			SaveOrUpdatePledgeRequest request) throws InvalidRequestException {
+	void validateRecurringGiftInformation(SaveOrUpdateRecurringGiftRequest request) throws InvalidRequestException {
+		if (request.getConstituentId() == 0)
+			throw new InvalidRequestException("SaveOrUpdateRecurringGift requires a constituent id");
+		
+	}
+	
+	@PayloadRoot(localPart = "SaveOrUpdateRecurringGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
+	public SaveOrUpdateRecurringGiftResponse maintainRecurringGift(
+			SaveOrUpdateRecurringGiftRequest request) throws InvalidRequestException {
+		validateRecurringGiftInformation(request);
+		
+		validationManager.validate(request);
+		
 		com.orangeleap.tangerine.domain.Constituent c = cs
 				.readConstituentById(request.getConstituentId());
 		if (c == null) throw new InvalidRequestException("Unable to locate constituent by id");
-		com.orangeleap.tangerine.domain.paymentInfo.Pledge p = pledgeService
-				.createDefaultPledge(c);
+		
+		// 
+		// if we are updating a pledge we should get it first and then do the conversion...
+		// this way we don't clobber data by saving a new pledge on top of it..
+		com.orangeleap.tangerine.domain.paymentInfo.RecurringGift rg = null;
+		
+		if (request.getRecurringgift().getId() != null && request.getRecurringgift().getId() > 0) {
+			rg = recurringGiftService.readRecurringGiftById(request.getRecurringgift().getId());
+			
+			
+			if (rg == null)
+				throw new InvalidRequestException("Faild to locate pledge with id = " + request.getRecurringgift().getId().toString());
+		} else {
+			rg= recurringGiftService.createDefaultRecurringGift(c);
+		}
+		
+		ObjectConverter converter = new ObjectConverter();
 
+		converter.ConvertFromJAXB(request.getRecurringgift(), rg);
+
+		try {
+			recurringGiftService.maintainRecurringGift(rg);
+		} catch (BindException e) {
+			logger.error(e.getMessage());
+			throw new InvalidRequestException(e.getMessage());
+		}
+
+		rg.setConstituentId(rg.getConstituent().getId());
+		
+		SaveOrUpdateRecurringGiftResponse response = new SaveOrUpdateRecurringGiftResponse();
+		RecurringGift responceRGift = new RecurringGift();
+
+		converter.ConvertToJAXB(rg, responceRGift);
+		response.setRecurringgift(responceRGift);
+		return response;
+	}
+	
+	@PayloadRoot(localPart = "SaveOrUpdatePledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
+	public SaveOrUpdatePledgeResponse maintainPledge(
+			SaveOrUpdatePledgeRequest request) throws InvalidRequestException {
+		
+		validationManager.validate(request);
+		
+		com.orangeleap.tangerine.domain.Constituent c = cs
+				.readConstituentById(request.getConstituentId());
+		if (c == null) throw new InvalidRequestException("Unable to locate constituent by id");
+		
+		// 
+		// if we are updating a pledge we should get it first and then do the conversion...
+		// this way we don't clobber data by saving a new pledge on top of it..
+		com.orangeleap.tangerine.domain.paymentInfo.Pledge p = null;
+		
+		if (request.getPledge().getId() != null && request.getPledge().getId() > 0) {
+			p = pledgeService.readPledgeById(request.getPledge().getId());
+			
+			if (p == null)
+				throw new InvalidRequestException("Faild to locate pledge with id = " + request.getPledge().getId().toString());
+		} else {
+			p= pledgeService.createDefaultPledge(c);
+		}
+		
 		ObjectConverter converter = new ObjectConverter();
 
 		converter.ConvertFromJAXB(request.getPledge(), p);
@@ -481,6 +590,8 @@ public class OrangeLeapWSV2 {
 			throws InvalidRequestException {
 		SaveOrUpdateGiftResponse response = new SaveOrUpdateGiftResponse();
 
+		validationManager.validate(request);
+		
 		validatePaymentInformation(request);
 		validateGiftInformation(request);
 		
@@ -488,8 +599,23 @@ public class OrangeLeapWSV2 {
 				.readConstituentById(request.getConstituentId());
 
 		if (c != null) {
-			com.orangeleap.tangerine.domain.paymentInfo.Gift g = giftService
-					.createDefaultGift(c);
+			com.orangeleap.tangerine.domain.paymentInfo.Gift g = null;
+
+			//
+			// if this gift has an id already then we are doing an update
+			// we need to get the existing gift so we don't clobber data that
+			// is not exposed via the API
+			if (request.getGift().getId() != null && request.getGift().getId() > 0) {
+				g = giftService.readGiftById(request.getGift().getId());
+
+				if (g == null) {
+					throw new InvalidRequestException(
+							"Failed to find gift with id = "
+									+ request.getGift().getId().toString());
+				}
+			} else {
+				g = new com.orangeleap.tangerine.domain.paymentInfo.Gift();
+			}
 
 			ObjectConverter converter = new ObjectConverter();
 
@@ -518,7 +644,13 @@ public class OrangeLeapWSV2 {
 
 	@PayloadRoot(localPart = "GetConstituentPledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetConstituentPledgeResponse getConstituentsPledges(
-			GetConstituentPledgeRequest request) {
+			GetConstituentPledgeRequest request) throws InvalidRequestException {
+		
+		validationManager.validate(request);
+		
+		if (request.getConstituentId() == 0)
+			throw new InvalidRequestException("Must supply a valid constituent id");
+
 		List<com.orangeleap.tangerine.domain.paymentInfo.Pledge> pledges = pledgeService
 				.readPledgesForConstituent(request.getConstituentId());
 
@@ -535,17 +667,54 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 
+	@PayloadRoot(localPart = "GetConstituentRecurringGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
+	public GetConstituentRecurringGiftResponse getConstituentsRecurringGifts(
+			GetConstituentRecurringGiftRequest request) throws InvalidRequestException {
+		
+		validationManager.validate(request);
+		
+		if (request.getConstituentId() == 0)
+			throw new InvalidRequestException("Must supply a valid constituent id");
+		
+		List<com.orangeleap.tangerine.domain.paymentInfo.RecurringGift> rgifts = recurringGiftService.readRecurringGiftsForConstituent(request.getConstituentId());
+
+		GetConstituentRecurringGiftResponse response = new GetConstituentRecurringGiftResponse();
+		ObjectConverter converter = new ObjectConverter();
+
+		for (com.orangeleap.tangerine.domain.paymentInfo.RecurringGift rg : rgifts) {
+			RecurringGift srg = new RecurringGift();
+
+			converter.ConvertToJAXB(rg, srg);
+			response.getRecurringgift().add(srg);
+		}
+
+		return response;
+	}
+	
 	@PayloadRoot(localPart = "GetConstituentGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetConstituentGiftResponse getConstituentsGifts(
-			GetConstituentGiftRequest request) {
-		List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = giftService
-				.readMonetaryGifts(request.getConstituentId());
+			GetConstituentGiftRequest request) throws InvalidRequestException {
+		
+		validationManager.validate(request);
+		
+		
+				
+		List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = giftService.readMonetaryGifts(request.getConstituentId());
+
+
 
 		GetConstituentGiftResponse response = new GetConstituentGiftResponse();
 		ObjectConverter converter = new ObjectConverter();
 
 		for (com.orangeleap.tangerine.domain.paymentInfo.Gift g : gifts) {
+
 			Gift sg = new Gift();
+
+
+			//
+			// load the gift
+			// this loads distrubtion lines and customFieldMaps for all related objects...
+			g = giftService.readGiftById(g.getId());
 
 			converter.ConvertToJAXB(g, sg);
 
@@ -560,9 +729,12 @@ public class OrangeLeapWSV2 {
 
 	@PayloadRoot(localPart = "GetSegmentationByNameRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameResponse getSegmentationByName(
-			com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameRequest req) {
+			com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameRequest req) throws InvalidRequestException {
 		com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameResponse response = new com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByNameResponse();
-
+		
+		validationManager.validate(req);
+		
+		
 		WSClient wsClient = new WSClient();
 		Theguru guruPort = wsClient.getTheGuru();
 
@@ -611,8 +783,11 @@ public class OrangeLeapWSV2 {
 	@PayloadRoot(localPart = "GetSegmentationListRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListResponse getSegmentationList(
 			com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListRequest req)
-			throws MalformedURLException {
+			throws MalformedURLException, InvalidRequestException {
 		com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListResponse response = new com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListResponse();
+		
+		validationManager.validate(req);
+		
 		WSClient wsClient = new WSClient();
 		Theguru guruPort = wsClient.getTheGuru();
 
@@ -645,11 +820,13 @@ public class OrangeLeapWSV2 {
 	@PayloadRoot(localPart = "GetSegmentationListByTypeRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListByTypeResponse getSegmentationListByType(
 			com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListByTypeRequest req)
-			throws MalformedURLException {
+			throws MalformedURLException, InvalidRequestException {
 		com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListByTypeResponse response = new com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListByTypeResponse();
 		WSClient wsClient = new WSClient();
 		Theguru guruPort = wsClient.getTheGuru();
 
+		validationManager.validate(req);
+		
 		com.orangeleap.theguru.client.ObjectFactory of = new com.orangeleap.theguru.client.ObjectFactory();
 		com.orangeleap.theguru.client.GetSegmentationListByTypeRequest getSegmentationListRequest = of
 				.createGetSegmentationListByTypeRequest();
@@ -680,6 +857,8 @@ public class OrangeLeapWSV2 {
 	public void addCommunicationHistory(AddCommunicationHistoryRequest req) throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
 
+		validationManager.validate(req);
+		
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
 
 		if (req.getConstituentId() <= 0) throw new InvalidRequestException("Invalid constituentid in addCommunicationHistory");
@@ -701,6 +880,8 @@ public class OrangeLeapWSV2 {
 			BulkAddCommunicationHistoryRequest req) throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
 
+		validationManager.validate(req);
+		
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
 
 		converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
@@ -723,6 +904,9 @@ public class OrangeLeapWSV2 {
 	@PayloadRoot(localPart = "GetCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
 	public GetCommunicationHistoryResponse getCommunicationHistory(
 			GetCommunicationHistoryRequest req) throws InvalidRequestException {
+		
+		validationManager.validate(req);
+		
 		SortInfo sortInfo = new SortInfo();
 		sortInfo.setSort("ch.COMMUNICATION_HISTORY_ID");
 
@@ -766,6 +950,9 @@ public class OrangeLeapWSV2 {
 	public GetPickListByNameResponse getPickListByName(
 			GetPickListByNameRequest request) throws InvalidRequestException {
 		GetPickListByNameResponse response = new GetPickListByNameResponse();
+		
+		validationManager.validate(request);
+		
 		Picklist pl = picklistItemService.getPicklist(request.getName());
 
 		if (pl != null) {
@@ -777,6 +964,49 @@ public class OrangeLeapWSV2 {
 			response.setPicklist(plist);
 		} else {
 			throw new InvalidRequestException("Unable to locate picklist by name");
+		}
+		return response;
+	}
+	
+	@PayloadRoot(localPart = "AddPickListItemRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
+	public AddPickListItemByNameResponse addPickListItem(AddPickListItemByNameRequest request) throws InvalidRequestException
+	{
+		AddPickListItemByNameResponse response = new AddPickListItemByNameResponse();
+
+		validationManager.validate(request);
+		
+		Picklist pl = picklistItemService.getPicklist(request.getPicklistname());
+		
+		PicklistItem item = new PicklistItem();
+		ObjectConverter converter = new ObjectConverter();
+		converter.ConvertFromJAXB(request.getPicklistitem(), item);
+		
+		pl.getPicklistItems().add(item);
+		
+		pl = picklistItemService.maintainPicklist(pl);
+		
+		com.orangeleap.tangerine.ws.schema.v2.Picklist v2picklist = new com.orangeleap.tangerine.ws.schema.v2.Picklist();
+		converter.ConvertToJAXB(pl,v2picklist);
+		
+		response.setPicklist(v2picklist);
+		
+		return response;
+	}
+	
+	@PayloadRoot(localPart = "GetPaymentSourcesByConstituentIdRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
+	public GetPaymentSourcesByConstituentIdResponse getPaymentSources(GetPaymentSourcesByConstituentIdRequest request) throws InvalidRequestException {
+		GetPaymentSourcesByConstituentIdResponse response = new GetPaymentSourcesByConstituentIdResponse();
+		ObjectConverter converter = new ObjectConverter();
+		
+		if (request.getConstituentId() <= 0)
+			throw new InvalidRequestException("Invalid constituent id");
+		
+		List<com.orangeleap.tangerine.domain.PaymentSource> sources = paymentSourceService.readAllPaymentSourcesByConstituentId(request.getConstituentId(), null, null);
+		for (com.orangeleap.tangerine.domain.PaymentSource source : sources) {
+			com.orangeleap.tangerine.ws.schema.v2.PaymentSource xmlsource = new com.orangeleap.tangerine.ws.schema.v2.PaymentSource();
+			
+			converter.ConvertToJAXB(source,xmlsource);
+			response.getPaymentsources().add(xmlsource);
 		}
 		return response;
 	}

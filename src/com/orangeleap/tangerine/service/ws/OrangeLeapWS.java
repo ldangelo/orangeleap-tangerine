@@ -53,9 +53,9 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.springframework.transaction.annotation.Propagation;
-
 
 /**
  * Describe class <code>OrangeLeapWS</code> here.
@@ -88,10 +88,10 @@ public class OrangeLeapWS {
 
 	@Autowired
 	private AddressService addressService;
-	
+
 	@Autowired
 	private PhoneService phoneService;
-	
+
 	@Resource(name = "communicationHistoryService")
 	private CommunicationHistoryService communicationHistory;
 
@@ -172,65 +172,97 @@ public class OrangeLeapWS {
 		return cr;
 	}
 
-	void validateConstituentInformation(SaveOrUpdateConstituentRequest request) throws ConstituentValidationException {
+	void validateConstituentInformation(SaveOrUpdateConstituentRequest request)
+			throws ConstituentValidationException {
 		Constituent c = request.getConstituent();
-		
-		if (c == null) throw new ConstituentValidationException("Invalid request constituent can not be null");
+
+		if (c == null)
+			throw new ConstituentValidationException(
+					"Invalid request constituent can not be null");
 		if (c.getSite() == null || c.getSite().getName().equals(""))
-			throw new ConstituentValidationException("Constituent must contain a valid site object");
-		if (c.getConstituentType() == null && (!c.getConstituentType().equals("individual") || !c.getConstituentType().equals("organization")))
-			throw new ConstituentValidationException("Constituent must have constituentType of 'individual' or 'organization'");
+			throw new ConstituentValidationException(
+					"Constituent must contain a valid site object");
+		if (c.getConstituentType() == null
+				|| (!c.getConstituentType().equals("individual") && !c
+						.getConstituentType().equals("organization")))
+			throw new ConstituentValidationException(
+					"Constituent must have constituentType of 'individual' or 'organization'");
 		if (c.getConstituentType().equals("individual")) {
-			if ((c.getFirstName() == null || c.getFirstName().equals("")) && (c.getLastName() == null || c.getLastName().equals("")))
-				throw new ConstituentValidationException("Constituent's of type 'individual' must contain a valid firstName and/or lastName");
+			if ((c.getFirstName() == null || c.getFirstName().equals(""))
+					&& (c.getLastName() == null || c.getLastName().equals("")))
+				throw new ConstituentValidationException(
+						"Constituent's of type 'individual' must contain a valid firstName and/or lastName");
 		} else {
-			if (c.getOrganizationName() == null || c.getOrganizationName().equals("")) {
-				throw new ConstituentValidationException("Constituent's of type 'organization' must contain a valid organizationName");
+			if (c.getOrganizationName() == null
+					|| c.getOrganizationName().equals("")) {
+				throw new ConstituentValidationException(
+						"Constituent's of type 'organization' must contain a valid organizationName");
 			}
 		}
 	}
+
 	@PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
 	public SaveOrUpdateConstituentResponse maintainConstituent(
 			SaveOrUpdateConstituentRequest p)
 			throws ConstituentValidationException, BindException {
-		
+
 		validateConstituentInformation(p);
-		
-		com.orangeleap.tangerine.domain.Constituent c = cs
-				.createDefaultConstituent();
+		com.orangeleap.tangerine.domain.Constituent c = null;
+		//
+		// if the request has a constituent id then get the constituent
+		// otherwise create a constituent
+		if (p.getConstituent().getId() == null || p.getConstituent().getId() == 0) {
+			c = cs.createDefaultConstituent();
+		} else {
+			c = cs.readConstituentById(p.getConstituent().getId());
+
+			//
+			// we did not find a constituent so throw an error
+			if (c == null) {
+				throw new ConstituentValidationException(
+						"Could not find constituent with id = "
+								+ p.getConstituent().getId().toString());
+			}
+		}
 		ObjectConverter converter = new ObjectConverter();
 
 		converter.ConvertFromJAXB(p.getConstituent(), c);
 
 		c = cs.maintainConstituent(c);
-		
+
 		//
 		// if we have e-mail's then we should save them as well
-		Iterator<com.orangeleap.tangerine.domain.communication.Email> emailIt = c.getEmails().iterator();
-		while(emailIt.hasNext()) {
-			com.orangeleap.tangerine.domain.communication.Email email = emailIt.next();
+		Iterator<com.orangeleap.tangerine.domain.communication.Email> emailIt = c
+				.getEmails().iterator();
+		while (emailIt.hasNext()) {
+			com.orangeleap.tangerine.domain.communication.Email email = emailIt
+					.next();
 			email.setConstituentId(c.getConstituentId());
 			emailService.save(email);
 		}
-		
+
 		//
 		// if we have addresses then we should save them as well
-		Iterator<com.orangeleap.tangerine.domain.communication.Address> addressIt = c.getAddresses().iterator();
+		Iterator<com.orangeleap.tangerine.domain.communication.Address> addressIt = c
+				.getAddresses().iterator();
 		while (addressIt.hasNext()) {
-			com.orangeleap.tangerine.domain.communication.Address address = addressIt.next();
+			com.orangeleap.tangerine.domain.communication.Address address = addressIt
+					.next();
 			address.setConstituentId(c.getConstituentId());
 			addressService.save(address);
 		}
-		
+
 		//
 		// if we have phoneNumbers then we should save them as well
-		Iterator<com.orangeleap.tangerine.domain.communication.Phone> phoneIt = c.getPhones().iterator();
+		Iterator<com.orangeleap.tangerine.domain.communication.Phone> phoneIt = c
+				.getPhones().iterator();
 		while (phoneIt.hasNext()) {
-			com.orangeleap.tangerine.domain.communication.Phone phone = phoneIt.next();
+			com.orangeleap.tangerine.domain.communication.Phone phone = phoneIt
+					.next();
 			phone.setConstituentId(c.getConstituentId());
 			phoneService.save(phone);
 		}
-		
+
 		Constituent responseConstituent = new Constituent();
 		SaveOrUpdateConstituentResponse response = new SaveOrUpdateConstituentResponse();
 		converter.ConvertToJAXB(c, responseConstituent);
@@ -295,11 +327,12 @@ public class OrangeLeapWS {
 				params.put("primaryPhone.number", primaryPhone.getNumber());
 		}
 
-		if (params.size() == 0 ) {
+		if (params.size() == 0) {
 			// no parameters where defined for the search throw an exception
-			throw new InvalidRequestException("Must supply paramaters for findRequest");
+			throw new InvalidRequestException(
+					"Must supply paramaters for findRequest");
 		}
-		
+
 		List<com.orangeleap.tangerine.domain.Constituent> constituents = cs
 				.findConstituents(params, null);
 		for (com.orangeleap.tangerine.domain.Constituent co : constituents) {
@@ -383,9 +416,23 @@ public class OrangeLeapWS {
 			SaveOrUpdatePledgeRequest request) throws InvalidRequestException {
 		com.orangeleap.tangerine.domain.Constituent c = cs
 				.readConstituentById(request.getConstituentId());
-		if (c == null) throw new InvalidRequestException("Unable to locate constituent by id");
-		com.orangeleap.tangerine.domain.paymentInfo.Pledge p = pledgeService
-				.createDefaultPledge(c);
+		if (c == null)
+			throw new InvalidRequestException(
+					"Unable to locate constituent by id");
+		
+		// 
+		// if we are updating a pledge we should get it first and then do the conversion...
+		// this way we don't clobber data by saving a new pledge on top of it..
+		com.orangeleap.tangerine.domain.paymentInfo.Pledge p = null;
+		
+		if (request.getPledge().getId() != null && request.getPledge().getId() > 0) {
+			p = pledgeService.readPledgeById(request.getPledge().getId());
+			
+			if (p == null)
+				throw new InvalidRequestException("Faild to locate pledge with id = " + request.getPledge().getId().toString());
+		} else {
+			p= pledgeService.createDefaultPledge(c);
+		}
 
 		ObjectConverter converter = new ObjectConverter();
 
@@ -407,10 +454,12 @@ public class OrangeLeapWS {
 	private void validatePaymentInformation(SaveOrUpdateGiftRequest request)
 			throws InvalidRequestException {
 		Gift g = request.getGift();
-		
+
 		if (g == null)
-			throw new InvalidRequestException("Invalid request gift can not be null!");
-		com.orangeleap.tangerine.ws.schema.PaymentSource paymentSource = g.getPaymentSource();
+			throw new InvalidRequestException(
+					"Invalid request gift can not be null!");
+		com.orangeleap.tangerine.ws.schema.PaymentSource paymentSource = g
+				.getPaymentSource();
 
 		if (paymentSource == null)
 			throw new InvalidRequestException("Payment Source is required!");
@@ -437,7 +486,8 @@ public class OrangeLeapWS {
 					|| paymentSource.getCreditCardNumber().equals(""))
 				throw new InvalidRequestException(
 						"Credit Card Number is required for PaymentType CREDIT_CARD");
-			if ((paymentSource.getCreditCardType() == null || paymentSource.getCreditCardType().equals("")))
+			if ((paymentSource.getCreditCardType() == null || paymentSource
+					.getCreditCardType().equals("")))
 				throw new InvalidRequestException(
 						"Credit Card type is required for PaymentType CREDIT_CARD");
 		} else if (paymentSource.getPaymentType() == com.orangeleap.tangerine.ws.schema.PaymentType.ACH) {
@@ -471,8 +521,12 @@ public class OrangeLeapWS {
 		Gift g = request.getGift();
 		Long id = request.getConstituentId();
 
-		if (g.getAmount().doubleValue() <= 0.0) throw new InvalidRequestException("Gift amount must be greater than 0.0");
-		if (id == 0) throw new InvalidRequestException("Gift must contain a valid constituentId");
+		if (g.getAmount().doubleValue() <= 0.0)
+			throw new InvalidRequestException(
+					"Gift amount must be greater than 0.0");
+		if (id == 0)
+			throw new InvalidRequestException(
+					"Gift must contain a valid constituentId");
 		if (!g.getPaymentType().equals("Credit Card")
 				&& !g.getPaymentType().equals("ACH"))
 			throw new InvalidRequestException(
@@ -480,32 +534,55 @@ public class OrangeLeapWS {
 	}
 
 	@PayloadRoot(localPart = "SaveOrUpdateGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-	public SaveOrUpdateGiftResponse maintainGift(SaveOrUpdateGiftRequest request) throws InvalidRequestException {
+	public SaveOrUpdateGiftResponse maintainGift(SaveOrUpdateGiftRequest request)
+			throws InvalidRequestException {
 		validatePaymentInformation(request);
 		validateGiftInformation(request);
 
 		com.orangeleap.tangerine.domain.Constituent c = cs
 				.readConstituentById(request.getConstituentId());
-		com.orangeleap.tangerine.domain.paymentInfo.Gift g = new com.orangeleap.tangerine.domain.paymentInfo.Gift();
+
 		ObjectConverter converter = new ObjectConverter();
+		com.orangeleap.tangerine.domain.paymentInfo.Gift g = null;
+		if (c != null) {
 
-		converter.ConvertFromJAXB(request.getGift(), g);
-		g.setConstituent(c);
+			//
+			// if this gift has an id already then we are doing an update
+			// we need to get the existing gift so we don't clobber data that
+			// is not exposed via the API
+			if (request.getGift().getId() != null && request.getGift().getId() > 0) {
+				g = giftService.readGiftById(request.getGift().getId());
 
-		try {
-			g = giftService.maintainGift(g);
-		} catch (BindException e) {
-			logger.error(e.getMessage());
+				if (g == null) {
+					throw new InvalidRequestException(
+							"Failed to find gift with id = "
+									+ request.getGift().getId().toString());
+				}
+			} else {
+				g = new com.orangeleap.tangerine.domain.paymentInfo.Gift();
+			}
+
+			converter.ConvertFromJAXB(request.getGift(), g);
+			g.setConstituent(c);
+
+			try {
+				g = giftService.maintainGift(g);
+			} catch (BindException e) {
+				logger.error(e.getMessage());
+			}
+
+			SaveOrUpdateGiftResponse response = new SaveOrUpdateGiftResponse();
+			Gift responseGift = new Gift();
+			converter.ConvertToJAXB(g, responseGift);
+			if (responseGift.getPaymentSource() != null)
+				responseGift.getPaymentSource().setCreditCardNumber("");
+			response.setGift(responseGift);
+			return response;
+		} else {
+			throw new InvalidRequestException(
+					"Failed to find constituent with id = "
+							+ request.getConstituentId());
 		}
-
-		SaveOrUpdateGiftResponse response = new SaveOrUpdateGiftResponse();
-		Gift responseGift = new Gift();
-		converter.ConvertToJAXB(g, responseGift);
-		if (responseGift.getPaymentSource() != null)
-			responseGift.getPaymentSource().setCreditCardNumber("");
-		response.setGift(responseGift);
-
-		return response;
 	}
 
 	@PayloadRoot(localPart = "GetConstituentPledgeRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
@@ -530,14 +607,20 @@ public class OrangeLeapWS {
 	@PayloadRoot(localPart = "GetConstituentGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
 	public GetConstituentGiftResponse getConstituentsGifts(
 			GetConstituentGiftRequest request) {
-		List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = giftService
-				.readMonetaryGifts(request.getConstituentId());
+		SortInfo sort = new SortInfo();
+
+		List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = giftService.readGiftDistroLinesByConstituentId(request.getConstituentId(), null, sort, Locale.US);
 
 		GetConstituentGiftResponse response = new GetConstituentGiftResponse();
 		ObjectConverter converter = new ObjectConverter();
 
 		for (com.orangeleap.tangerine.domain.paymentInfo.Gift g : gifts) {
 			Gift sg = new Gift();
+
+			//
+			// load the gift
+			// this loads distrubtion lines and customFieldMaps for all related objects...
+			g = giftService.readGiftById(g.getId());
 
 			converter.ConvertToJAXB(g, sg);
 
@@ -669,13 +752,16 @@ public class OrangeLeapWS {
 	}
 
 	@PayloadRoot(localPart = "AddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-	public void addCommunicationHistory(AddCommunicationHistoryRequest req) throws InvalidRequestException {
+	public void addCommunicationHistory(AddCommunicationHistoryRequest req)
+			throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
 
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
 
-		if (req.getConstituentId() <= 0) throw new InvalidRequestException("Invalid constituentid in addCommunicationHistory");
-		
+		if (req.getConstituentId() <= 0)
+			throw new InvalidRequestException(
+					"Invalid constituentid in addCommunicationHistory");
+
 		converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
 		ch.setConstituent(cs.readConstituentById(req.getConstituentId()));
 
@@ -690,7 +776,8 @@ public class OrangeLeapWS {
 
 	@PayloadRoot(localPart = "BulkAddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
 	public void bulkAddCommunicationHistory(
-			BulkAddCommunicationHistoryRequest req) throws InvalidRequestException {
+			BulkAddCommunicationHistoryRequest req)
+			throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
 
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
@@ -700,7 +787,9 @@ public class OrangeLeapWS {
 		Iterator<Long> it = req.getConstituentId().iterator();
 		while (it.hasNext()) {
 			Long Id = (Long) it.next();
-			if (Id <= 0) throw new InvalidRequestException("Invalid constituentid in BulkAddCommunicationHistory");
+			if (Id <= 0)
+				throw new InvalidRequestException(
+						"Invalid constituentid in BulkAddCommunicationHistory");
 			ch.setConstituent(cs.readConstituentById(Id));
 
 			try {
@@ -718,8 +807,10 @@ public class OrangeLeapWS {
 		SortInfo sortInfo = new SortInfo();
 		sortInfo.setSort("ch.COMMUNICATION_HISTORY_ID");
 
-		if (req.getConstituentId() <= 0) throw new InvalidRequestException("Invalid constituentid in getCommunicationHistory");
-		
+		if (req.getConstituentId() <= 0)
+			throw new InvalidRequestException(
+					"Invalid constituentid in getCommunicationHistory");
+
 		PaginatedResult result = communicationHistory
 				.readCommunicationHistoryByConstituent(req.getConstituentId(),
 						sortInfo);

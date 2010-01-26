@@ -9,7 +9,19 @@
 	<property name="build.env" value="dev"/>
 
 
-	
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+	  <classpath>
+	    <fileset dir="${basedir}/lib" includes="jaxb-xjc-2.1.12.jar" />
+	    <fileset dir="${basedir}/lib" includes="jaxb-impl-2.1.12.jar" />	  	
+	  </classpath>
+	</taskdef>
+
+	<taskdef name="schemagen" classname="com.sun.tools.jxc.SchemaGenTask">
+	  <classpath>
+	    <fileset dir="${basedir}/lib" includes="*.jar" />
+	  </classpath>
+	</taskdef>
+
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
 			<pathelement location="${antcontrib.jar}" />
@@ -204,7 +216,7 @@
 		 <antcall target="generate.schema" />
 	</target>
 
-	<target name="9.6 Generate xjc.generate">
+	<target name="9.6 Generate Java From XSD">
 		 <antcall target="xjc.generate" />
 	</target>
 

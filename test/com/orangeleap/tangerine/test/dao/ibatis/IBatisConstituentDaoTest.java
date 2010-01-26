@@ -195,6 +195,13 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         constituents = constituentDao.searchConstituents(params, "firstName", "ASC", 0, 100, Locale.US);
         assert constituents != null && constituents.isEmpty();
 
+        params = new HashMap<String, Object>();
+        constituents = constituentDao.searchConstituents(params, "firstName", "ASC", 0, 100, Locale.US);
+        assert constituents != null && ! constituents.isEmpty();        
+
+        params = new HashMap<String, Object>();
+        constituents = constituentDao.searchConstituents(params);
+        assert constituents != null && ! constituents.isEmpty();
 
         params = new HashMap<String, Object>();
         params.put("firstName", "Pablo");

@@ -21,7 +21,6 @@ package com.orangeleap.tangerine.service.impl;
 import com.orangeleap.tangerine.dao.JournalDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Journal;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.Postable;
@@ -32,6 +31,7 @@ import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -123,11 +123,25 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 	    clearBatchErrorsInEntity(entity);
 	    
 	    if (batch.isForTouchPoints())  {
-		    Constituent constituent = (Constituent) entity;
-		    CommunicationHistory touchPoint = new CommunicationHistory(constituent); 
-		    updateEntityFields(batch, touchPoint, constituent, StringConstants.COMMUNICATION_HISTORY, StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD);
-		    if ( ! hasBatchErrorsInEntity(constituent)) {
-			    maintainCorrespondenceForTouchPoints(batch, touchPoint, constituent);
+		    CommunicationHistory touchPoint;
+		    if (entity instanceof Gift || entity instanceof AdjustedGift) {
+			    touchPoint = new CommunicationHistory(((AbstractPaymentInfoEntity)entity).getConstituent());
+			    if (entity instanceof Gift) {
+			        touchPoint.setGiftId(entity.getId());
+			    }
+			    else {
+				    touchPoint.setAdjustedGiftId(entity.getId());
+			    }
+		    }
+		    else {
+			    touchPoint = new CommunicationHistory();
+		    }
+		    touchPoint.setBatchId(batch.getId());
+		    updateEntityFields(batch, touchPoint, entity, StringConstants.COMMUNICATION_HISTORY, StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD);
+		    if ( ! hasBatchErrorsInEntity(entity)) {
+			    touchPoint.setSuppressValidation(true);
+			    maintainCorrespondenceForTouchPoints(batch, touchPoint, entity);
+			    executed = true;
 		    }
 	    }
 	    else {
@@ -243,7 +257,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 	    }
 	}
 
-	private void maintainCorrespondenceForTouchPoints(PostBatch batch, CommunicationHistory touchPoint, Constituent constituent)
+	private void maintainCorrespondenceForTouchPoints(PostBatch batch, CommunicationHistory touchPoint, AbstractCustomizableEntity entity)
 			throws BindException {
 		final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(touchPoint);
 		final String correspondenceFor = batch.getUpdateFieldValue(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD);
@@ -257,32 +271,32 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 			if (StringConstants.ALL.equals(correspondenceFor)) {
 				if (StringConstants.MAIL_CAMEL_CASE.equals(touchPoint.getEntryType()) ||
 						StringConstants.MAILING_LABEL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
-					final List<Address> addresses = addressService.filterByActive(constituent.getId());
-					maintainAllCommunicationEntities(constituent, addresses, bw, StringConstants.ADDRESS);
+					final List<Address> addresses = addressService.filterByActive(touchPoint.getConstituentId());
+					maintainAllCommunicationEntities(entity, addresses, bw, StringConstants.ADDRESS);
 				}
 				else if (StringConstants.CALL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
-					final List<Phone> phones = phoneService.filterByActive(constituent.getId());
-					maintainAllCommunicationEntities(constituent, phones, bw, StringConstants.PHONES);
+					final List<Phone> phones = phoneService.filterByActive(touchPoint.getConstituentId());
+					maintainAllCommunicationEntities(entity, phones, bw, StringConstants.PHONE);
 				}
 				else if (StringConstants.EMAIL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
-					final List<Email> emails = emailService.filterByActive(constituent.getId());
-					maintainAllCommunicationEntities(constituent, emails, bw, StringConstants.EMAILS);
+					final List<Email> emails = emailService.filterByActive(touchPoint.getConstituentId());
+					maintainAllCommunicationEntities(entity, emails, bw, StringConstants.EMAIL);
 				}
 			}
 			else {
 				// PRIMARY
 				if (StringConstants.MAIL_CAMEL_CASE.equals(touchPoint.getEntryType()) ||
 						StringConstants.MAILING_LABEL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
-					final Address address = addressService.getPrimary(constituent.getId());
-					maintainPrimaryCommunicationEntity(constituent, address, bw, StringConstants.ADDRESS, "invalidPrimary");
+					final Address address = addressService.getPrimary(touchPoint.getConstituentId());
+					maintainPrimaryCommunicationEntity(entity, address, bw, StringConstants.ADDRESS, "invalidPrimary");
 				}
 				else if (StringConstants.CALL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
-					final Phone phone = phoneService.getPrimary(constituent.getId());
-					maintainPrimaryCommunicationEntity(constituent, phone, bw, StringConstants.PHONE, "invalidPrimary");
+					final Phone phone = phoneService.getPrimary(touchPoint.getConstituentId());
+					maintainPrimaryCommunicationEntity(entity, phone, bw, StringConstants.PHONE, "invalidPrimary");
 				}
 				else if (StringConstants.EMAIL_CAMEL_CASE.equals(touchPoint.getEntryType())) {
-					final Email email = emailService.getPrimary(constituent.getId());
-					maintainPrimaryCommunicationEntity(constituent, email, bw, StringConstants.EMAIL, "invalidPrimary");
+					final Email email = emailService.getPrimary(touchPoint.getConstituentId());
+					maintainPrimaryCommunicationEntity(entity, email, bw, StringConstants.EMAIL, "invalidPrimary");
 				}
 			}
 		}
@@ -291,27 +305,28 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 		}
 	}
 
-	protected void maintainAllCommunicationEntities(Constituent constituent, List<? extends AbstractCommunicationEntity> entities,
+	protected void maintainAllCommunicationEntities(AbstractCustomizableEntity entity, List<? extends AbstractCommunicationEntity> communicationEntities,
 			BeanWrapper bw, String fieldName) throws BindException {
-		if (entities == null || entities.isEmpty()) {
-			addBatchErrorToEntity(constituent, "invalidCommunication", TangerineMessageAccessor.getMessage(fieldName));
+		if (communicationEntities == null || communicationEntities.isEmpty()) {
+			addBatchErrorToEntity(entity, "invalidCommunication", TangerineMessageAccessor.getMessage(fieldName));
 		}
 		else {
-			for (AbstractCommunicationEntity entity : entities) {
-				bw.setPropertyValue(fieldName, entity);
+			for (AbstractCommunicationEntity communicationEntity : communicationEntities) {
+				bw.setPropertyValue(fieldName, communicationEntity);
 				bw.setPropertyValue(StringConstants.ID, null); // reset the CommunicationHistory object's ID to null to insert into DB instead of update
 				communicationHistoryService.maintainCommunicationHistory( (CommunicationHistory) bw.getWrappedInstance());
 			}
 		}
 	}
 
-	protected void maintainPrimaryCommunicationEntity(Constituent constituent, AbstractCommunicationEntity entity,
+	protected void maintainPrimaryCommunicationEntity(AbstractCustomizableEntity entity,
+			AbstractCommunicationEntity communicationEntity,
 			BeanWrapper bw, String fieldName, String messageKey) throws BindException {
-		if (entity == null || entity.isNew()) {
-			addBatchErrorToEntity(constituent, messageKey, TangerineMessageAccessor.getMessage(fieldName));
+		if (communicationEntity == null || communicationEntity.isNew()) {
+			addBatchErrorToEntity(entity, messageKey, TangerineMessageAccessor.getMessage(fieldName));
 		}
 		else {
-			bw.setPropertyValue(fieldName, entity);
+			bw.setPropertyValue(fieldName, communicationEntity);
 			communicationHistoryService.maintainCommunicationHistory( (CommunicationHistory) bw.getWrappedInstance());
 		}
 	}

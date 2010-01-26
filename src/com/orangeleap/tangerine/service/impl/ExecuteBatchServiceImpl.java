@@ -111,17 +111,12 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	            }
 	            if (executed) {
 	                PostBatchEntry entry = new PostBatchEntry();
-		            if (batch.isForTouchPoints()) {
-						entry.setConstituentId(entity.getId());			            
-		            }
-		            else {
-			            if (entity instanceof Gift) {
-			                entry.setGiftId(entity.getId());
-			            }
-			            else if (entity instanceof AdjustedGift) {
-			                entry.setAdjustedGiftId(entity.getId());
-			            }
-		            }
+					if (entity instanceof Gift) {
+						entry.setGiftId(entity.getId());
+					}
+					else if (entity instanceof AdjustedGift) {
+						entry.setAdjustedGiftId(entity.getId());
+					}
 	                executedEntries.add(entry);
 	            }
 	            else {

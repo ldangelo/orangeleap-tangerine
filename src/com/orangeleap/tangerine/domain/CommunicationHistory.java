@@ -44,8 +44,10 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     private Constituent constituent;
     private Long constituentId; // this is used by SOAP API's so we don't have to embed an entire constituent
     private Long giftId;
+	private Long adjustedGiftId;
     private Long pledgeId;
     private Long recurringGiftId;
+	private Long batchId;
     private Address address;
     private Phone phone;
     private Email email;
@@ -57,7 +59,7 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     }
 
     public CommunicationHistory(Constituent constituent) {
-        this.constituent = constituent;
+        setConstituent(constituent);
     }
 
     public Site getSite() {
@@ -70,7 +72,9 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
 
     public void setConstituent(Constituent constituent) {
         this.constituent = constituent;
-        if (constituent != null) constituentId = constituent.getId();
+        if (constituent != null) {
+	        constituentId = constituent.getId();
+        }
     }
 
     public CommunicationHistoryType getCommunicationHistoryType() {
@@ -113,7 +117,15 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
         this.giftId = giftId;
     }
 
-    public Long getPledgeId() {
+	public Long getAdjustedGiftId() {
+		return adjustedGiftId;
+	}
+
+	public void setAdjustedGiftId(Long adjustedGiftId) {
+		this.adjustedGiftId = adjustedGiftId;
+	}
+
+	public Long getPledgeId() {
         return pledgeId;
     }
 
@@ -129,7 +141,15 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
         this.recurringGiftId = recurringGiftId;
     }
 
-    public void setEntryType(String entryType) {
+	public Long getBatchId() {
+		return batchId;
+	}
+
+	public void setBatchId(Long batchId) {
+		this.batchId = batchId;
+	}
+
+	public void setEntryType(String entryType) {
         this.entryType = entryType;
     }
 

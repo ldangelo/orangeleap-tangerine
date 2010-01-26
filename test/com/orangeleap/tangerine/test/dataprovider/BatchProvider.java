@@ -133,4 +133,92 @@ public class BatchProvider {
 
         return new Object[][] { new Object[] { batch } };
     }
+
+
+	@DataProvider(name = "setupBatchForTouchPointGiftsWithConstituentInvalidDate")
+	public static Object[][] setupBatchForTouchPointGiftsWithConstituentInvalidDate() {
+	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+	    batch.addPostBatchEntry(new PostBatchEntry(5000L));
+		batch.addUpdateField("entryType", "Note");
+		batch.addUpdateField("customFieldMap[template]", "blarg");
+		batch.addUpdateField("customFieldMap[assignedTo]", "100");
+		batch.addUpdateField("recordDate", "01/01/blee");
+		batch.addUpdateField("comments", "hi mom");
+		batch.setForTouchPoints(true);
+
+	    return new Object[][] { new Object[] { batch } };
+	}
+
+	@DataProvider(name = "setupBatchForTouchPointGiftsWithConstituentNoAddresses")
+	public static Object[][] setupBatchForTouchPointGiftsWithConstituentNoAddresses() {
+	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+	    batch.addPostBatchEntry(new PostBatchEntry(5000L));
+		batch.addUpdateField("entryType", StringConstants.MAIL_CAMEL_CASE);
+		batch.addUpdateField(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, StringConstants.ALL);
+		batch.addUpdateField("customFieldMap[template]", "blarg");
+		batch.addUpdateField("customFieldMap[assignedTo]", "100");
+		batch.addUpdateField("recordDate", "01/02/2003");
+		batch.addUpdateField("comments", "hi mom");
+		batch.setForTouchPoints(true);
+
+	    return new Object[][] { new Object[] { batch } };
+	}
+
+	@DataProvider(name = "setupBatchForTouchPointGiftsWithConstituentNoPrimaryPhone")
+	public static Object[][] setupBatchForTouchPointGiftsWithConstituentNoPrimaryPhone() {
+	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+	    batch.addPostBatchEntry(new PostBatchEntry(5000L));
+		batch.addUpdateField("entryType", StringConstants.CALL_CAMEL_CASE);
+		batch.addUpdateField(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, StringConstants.PRIMARY);
+		batch.addUpdateField("customFieldMap[template]", "blarg");
+		batch.addUpdateField("customFieldMap[assignedTo]", "100");
+		batch.addUpdateField("recordDate", "01/02/2003");
+		batch.addUpdateField("comments", "hi mom");
+		batch.setForTouchPoints(true);
+
+	    return new Object[][] { new Object[] { batch } };
+	}
+
+	@DataProvider(name = "setupBatchForTouchPointGiftsWithConstituentAllEmails")
+	public static Object[][] setupBatchForTouchPointGiftsWithConstituentAllEmails() {
+	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+	    batch.addPostBatchEntry(new PostBatchEntry(6000L));
+		batch.addUpdateField("entryType", StringConstants.EMAIL_CAMEL_CASE);
+		batch.addUpdateField(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, StringConstants.ALL);
+		batch.addUpdateField("customFieldMap[template]", "blarg");
+		batch.addUpdateField("customFieldMap[assignedTo]", "100");
+		batch.addUpdateField("recordDate", "01/02/2003");
+		batch.addUpdateField("comments", "hi mom");
+		batch.setForTouchPoints(true);
+
+	    return new Object[][] { new Object[] { batch } };
+	}
+
+	@DataProvider(name = "setupBatchForTouchPointGiftsWithConstituentPrimaryEmail")
+	public static Object[][] setupBatchForTouchPointGiftsWithConstituentPrimaryEmail() {
+	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+	    batch.addPostBatchEntry(new PostBatchEntry(7000L));
+		batch.addUpdateField("entryType", StringConstants.EMAIL_CAMEL_CASE);
+		batch.addUpdateField(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, StringConstants.PRIMARY);
+		batch.addUpdateField("customFieldMap[template]", "wow");
+		batch.addUpdateField("customFieldMap[assignedTo]", "100");
+		batch.addUpdateField("recordDate", "02/03/2004");
+		batch.addUpdateField("comments", "hi dad");
+		batch.setForTouchPoints(true);
+
+	    return new Object[][] { new Object[] { batch } };
+	}
+
+	@DataProvider(name = "setupBatchForTouchPointGiftsWithConstituentNote")
+	public static Object[][] setupBatchForTouchPointGiftsWithConstituentNote() {
+	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
+	    batch.addPostBatchEntry(new PostBatchEntry(8000L));
+		batch.addUpdateField("entryType", "Note");
+		batch.addUpdateField("customFieldMap[noteType]", "whiteboard");
+		batch.addUpdateField("recordDate", "03/04/2005");
+		batch.addUpdateField("comments", "hi kid");
+		batch.setForTouchPoints(true);
+
+	    return new Object[][] { new Object[] { batch } };
+	}
 }

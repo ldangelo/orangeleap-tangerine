@@ -40,4 +40,8 @@ public interface CommunicationHistoryService {
     List<CommunicationHistory> readAllCommunicationHistoryByConstituentId(Long constituentId, SortInfo sort, Locale locale);
 
     int readCountByConstituentId(Long constituentId);
+
+	List<CommunicationHistory> readCommunicationHistoryByBatchId(Long batchId, SortInfo sort, Locale locale);
+
+	int readCountByBatchId(Long batchId);
 }

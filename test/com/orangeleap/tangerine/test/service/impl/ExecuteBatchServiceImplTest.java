@@ -18,12 +18,14 @@
 
 package com.orangeleap.tangerine.test.service.impl;
 
+import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchEntry;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ExecuteBatchService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PicklistItemService;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +60,9 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
 
     @Autowired
     private GiftService giftService;
+
+	@Autowired
+	private CommunicationHistoryService communicationHistoryService;
 
     @Autowired
     private FieldService fieldService;
@@ -478,6 +484,215 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
             }
         }
     }
+
+	@Test(dataProvider = "setupBatchForTouchPointGiftsWithConstituentInvalidDate", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchForTouchPointErrorsA" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch" })
+	public void testExecuteBatchForTouchPointGiftsWithConstituentInvalidDate(PostBatch batch) throws Exception {
+	    batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+	    PostBatch savedBatch = executeBatchService.executeBatch(batch);
+	    Assert.assertNotNull(savedBatch);
+	    Assert.assertFalse(savedBatch.isAnErrorBatch());
+	    Assert.assertTrue(savedBatch.isExecuted());
+	    Assert.assertEquals(new Long(100L), savedBatch.getExecutedById());
+	    Assert.assertNotNull(savedBatch.getExecutedDate());
+
+	    Assert.assertFalse(savedBatch.isPosted());
+		Assert.assertTrue(savedBatch.isForTouchPoints());
+	    Assert.assertNull(savedBatch.getPostedById());
+	    Assert.assertNull(savedBatch.getPostedDate());
+	    Assert.assertNotNull(savedBatch.getErrorBatchId());
+	    Assert.assertTrue(savedBatch.getErrorBatchId() > 0);
+
+	    PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
+	    Assert.assertNotNull(errorBatch);
+	    Assert.assertTrue(errorBatch.getId() > 0);
+	    Assert.assertTrue(errorBatch.isAnErrorBatch());
+		Assert.assertTrue(errorBatch.isForTouchPoints());
+	    Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
+	    Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
+	    Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
+	    Assert.assertEquals(errorBatch.getUpdateFieldValue("entryType"), batch.getUpdateFieldValue("entryType"));
+
+	    for (PostBatchEntry entry : errorBatch.getPostBatchEntries()) {
+	        Assert.assertTrue(entry.getGiftId() == 5000L || entry.getGiftId() == 5001L || entry.getGiftId() == 5002L || entry.getGiftId() == 5003L);
+	    }
+
+	    List<Map<String, Object>> errors = postBatchService.readPostBatchEntryErrorsByBatchId(errorBatch.getId(), new SortInfo(StringConstants.GIFT_ID, StringConstants.ASC, 100, 0));
+	    Assert.assertNotNull(errors);
+	    Assert.assertFalse(errors.isEmpty());
+
+	    Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
+
+		for (int x = 5000; x < 5004; x++) {
+			Assert.assertTrue(groupedMap.keySet().contains( (long) x));
+		    Assert.assertTrue(groupedMap.get( (long) x).contains(TangerineMessageAccessor.getMessage("invalidDateField", "01/01/blee", "Date")));
+		}
+	}
+
+	@Test(dataProvider = "setupBatchForTouchPointGiftsWithConstituentNoAddresses", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchForTouchPointErrorsC" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchForTouchPointErrorsA" })
+	public void testExecuteBatchForTouchPointGiftsWithConstituentNoAddresses(PostBatch batch) throws Exception {
+		batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+		PostBatch savedBatch = executeBatchService.executeBatch(batch);
+		Assert.assertNotNull(savedBatch);
+		Assert.assertFalse(savedBatch.isAnErrorBatch());
+		Assert.assertTrue(savedBatch.isExecuted());
+		Assert.assertTrue(savedBatch.isForTouchPoints());
+		Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
+		Assert.assertNotNull(savedBatch.getExecutedDate());
+
+		Assert.assertNotNull(savedBatch.getErrorBatchId());
+		Assert.assertTrue(savedBatch.getErrorBatchId() > 0);
+
+		PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
+		Assert.assertNotNull(errorBatch);
+		Assert.assertTrue(errorBatch.getId() > 0);
+		Assert.assertTrue(errorBatch.isAnErrorBatch());
+		Assert.assertTrue(errorBatch.isForTouchPoints());
+		Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
+		Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
+		Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
+
+		List<Map<String, Object>> errors = postBatchService.readPostBatchEntryErrorsByBatchId(errorBatch.getId(), new SortInfo(StringConstants.GIFT_ID, StringConstants.ASC, 100, 0));
+		Assert.assertNotNull(errors);
+		Assert.assertFalse(errors.isEmpty());
+
+		Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
+		for (int x = 5000; x < 5004; x++) {
+			Assert.assertTrue(groupedMap.keySet().contains( (long) x));
+			Assert.assertTrue(groupedMap.get( (long) x).contains(TangerineMessageAccessor.getMessage("invalidCommunication", TangerineMessageAccessor.getMessage("address")).trim()));
+		}
+	}
+
+	@Test(dataProvider = "setupBatchForTouchPointGiftsWithConstituentNoPrimaryPhone", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchForTouchPointErrorsD" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchForTouchPointErrorsC" })
+	public void testExecuteBatchForTouchPointGiftsWithConstituentNoPrimaryPhone(PostBatch batch) throws Exception {
+		batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+		PostBatch savedBatch = executeBatchService.executeBatch(batch);
+		Assert.assertNotNull(savedBatch);
+		Assert.assertFalse(savedBatch.isAnErrorBatch());
+		Assert.assertTrue(savedBatch.isExecuted());
+		Assert.assertTrue(savedBatch.isForTouchPoints());
+		Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
+		Assert.assertNotNull(savedBatch.getExecutedDate());
+
+		Assert.assertNotNull(savedBatch.getErrorBatchId());
+		Assert.assertTrue(savedBatch.getErrorBatchId() > 0);
+
+		PostBatch errorBatch = postBatchService.readBatch(savedBatch.getErrorBatchId());
+		Assert.assertNotNull(errorBatch);
+		Assert.assertTrue(errorBatch.getId() > 0);
+		Assert.assertTrue(errorBatch.isAnErrorBatch());
+		Assert.assertTrue(errorBatch.isForTouchPoints());
+		Assert.assertFalse(errorBatch.getPostBatchEntries().isEmpty());
+		Assert.assertEquals(errorBatch.getPostBatchEntries().size(), 4);
+		Assert.assertFalse(errorBatch.getUpdateFields().isEmpty());
+
+		List<Map<String, Object>> errors = postBatchService.readPostBatchEntryErrorsByBatchId(errorBatch.getId(), new SortInfo(StringConstants.GIFT_ID, StringConstants.ASC, 100, 0));
+		Assert.assertNotNull(errors);
+		Assert.assertFalse(errors.isEmpty());
+
+		Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
+		for (int x = 5000; x < 5004; x++) {
+			Assert.assertTrue(groupedMap.keySet().contains( (long) x));
+			Assert.assertTrue(groupedMap.get( (long) x).contains(TangerineMessageAccessor.getMessage("invalidPrimary", TangerineMessageAccessor.getMessage("phone")).trim()));
+		}
+	}
+
+	@Test(dataProvider = "setupBatchForTouchPointGiftsWithConstituentAllEmails", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchForTouchPoint" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchForTouchPointErrorsD" })
+	public void testExecuteBatchForTouchPointGiftsWithConstituentAllEmails(PostBatch batch) throws Exception {
+	    batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+	    PostBatch savedBatch = executeBatchService.executeBatch(batch);
+	    Assert.assertNotNull(savedBatch);
+	    Assert.assertFalse(savedBatch.isAnErrorBatch());
+	    Assert.assertTrue(savedBatch.isExecuted());
+		Assert.assertTrue(savedBatch.isForTouchPoints());
+	    Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
+	    Assert.assertNotNull(savedBatch.getExecutedDate());
+
+	    Assert.assertFalse(savedBatch.isPosted());
+	    Assert.assertNull(savedBatch.getPostedById());
+	    Assert.assertNull(savedBatch.getPostedDate());
+
+	    Assert.assertNull(savedBatch.getErrorBatchId());
+	    List<CommunicationHistory> touchPoints = communicationHistoryService.readCommunicationHistoryByBatchId(savedBatch.getId(), new SortInfo("createDate", "desc", 100, 0), Locale.getDefault());
+	    Assert.assertNotNull(touchPoints);
+		Assert.assertFalse(touchPoints.isEmpty());
+	    for (CommunicationHistory touchPoint : touchPoints) {
+		    Assert.assertEquals(touchPoint.getBatchId(), savedBatch.getId());
+		    Assert.assertEquals(touchPoint.getEntryType(), StringConstants.EMAIL_CAMEL_CASE);
+		    Assert.assertEquals(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(touchPoint.getRecordDate()), "01/02/2003");
+		    Assert.assertEquals(touchPoint.getComments(), "hi mom");
+		    Assert.assertEquals(touchPoint.getCustomFieldValue("template"), "blarg");
+		    Assert.assertEquals(touchPoint.getCustomFieldValue("assignedTo"), "100");
+		    Assert.assertEquals(touchPoint.getConstituentId(), new Long(300L));
+		    Assert.assertTrue(touchPoint.getGiftId() >= 6000L && touchPoint.getGiftId() <= 6003L);
+		    Assert.assertTrue(touchPoint.getEmail().getId().equals(new Long(400L)) || touchPoint.getEmail().getId().equals(new Long(500L)));
+	    }
+	}
+
+	@Test(dataProvider = "setupBatchForTouchPointGiftsWithConstituentPrimaryEmail", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchForTouchPoint" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchForTouchPointErrorsD" })
+	public void testExecuteBatchForTouchPointGiftsWithConstituentPrimaryEmail(PostBatch batch) throws Exception {
+	    batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+	    PostBatch savedBatch = executeBatchService.executeBatch(batch);
+	    Assert.assertNotNull(savedBatch);
+	    Assert.assertFalse(savedBatch.isAnErrorBatch());
+	    Assert.assertTrue(savedBatch.isExecuted());
+		Assert.assertTrue(savedBatch.isForTouchPoints());
+	    Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
+	    Assert.assertNotNull(savedBatch.getExecutedDate());
+
+	    Assert.assertFalse(savedBatch.isPosted());
+	    Assert.assertNull(savedBatch.getPostedById());
+	    Assert.assertNull(savedBatch.getPostedDate());
+
+	    Assert.assertNull(savedBatch.getErrorBatchId());
+	    List<CommunicationHistory> touchPoints = communicationHistoryService.readCommunicationHistoryByBatchId(savedBatch.getId(), new SortInfo("createDate", "desc", 100, 0), Locale.getDefault());
+	    Assert.assertNotNull(touchPoints);
+		Assert.assertFalse(touchPoints.isEmpty());
+	    for (CommunicationHistory touchPoint : touchPoints) {
+		    Assert.assertEquals(touchPoint.getBatchId(), savedBatch.getId());
+		    Assert.assertEquals(touchPoint.getEntryType(), StringConstants.EMAIL_CAMEL_CASE);
+		    Assert.assertEquals(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(touchPoint.getRecordDate()), "02/03/2004");
+		    Assert.assertEquals(touchPoint.getComments(), "hi dad");
+		    Assert.assertEquals(touchPoint.getCustomFieldValue("template"), "wow");
+		    Assert.assertEquals(touchPoint.getCustomFieldValue("assignedTo"), "100");
+		    Assert.assertEquals(touchPoint.getConstituentId(), new Long(300L));
+		    Assert.assertTrue(touchPoint.getGiftId().equals(7000L) || touchPoint.getGiftId().equals(7001L));
+		    Assert.assertEquals(touchPoint.getEmail().getId(), new Long(500L));
+	    }
+	}
+
+	@Test(dataProvider = "setupBatchForTouchPointGiftsWithConstituentNote", dataProviderClass = BatchProvider.class, groups = { "testExecuteBatchForTouchPoint" }, dependsOnGroups = { "testMaintainConstituent", "testMaintainPostBatch", "testExecuteBatchForTouchPointErrorsD" })
+	public void testExecuteBatchForTouchPointGiftsWithConstituentNote(PostBatch batch) throws Exception {
+	    batch = postBatchService.maintainBatch(batch); // need to save the batch first to get an ID
+	    PostBatch savedBatch = executeBatchService.executeBatch(batch);
+	    Assert.assertNotNull(savedBatch);
+	    Assert.assertFalse(savedBatch.isAnErrorBatch());
+	    Assert.assertTrue(savedBatch.isExecuted());
+		Assert.assertTrue(savedBatch.isForTouchPoints());
+	    Assert.assertEquals(savedBatch.getExecutedById(), new Long(100L));
+	    Assert.assertNotNull(savedBatch.getExecutedDate());
+
+	    Assert.assertFalse(savedBatch.isPosted());
+	    Assert.assertNull(savedBatch.getPostedById());
+	    Assert.assertNull(savedBatch.getPostedDate());
+
+	    Assert.assertNull(savedBatch.getErrorBatchId());
+	    List<CommunicationHistory> touchPoints = communicationHistoryService.readCommunicationHistoryByBatchId(savedBatch.getId(), new SortInfo("createDate", "desc", 100, 0), Locale.getDefault());
+	    Assert.assertNotNull(touchPoints);
+		Assert.assertFalse(touchPoints.isEmpty());
+	    for (CommunicationHistory touchPoint : touchPoints) {
+		    Assert.assertEquals(touchPoint.getBatchId(), savedBatch.getId());
+		    Assert.assertEquals(touchPoint.getEntryType(), "Note");
+		    Assert.assertEquals(new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(touchPoint.getRecordDate()), "03/04/2005");
+		    Assert.assertEquals(touchPoint.getComments(), "hi kid");
+		    Assert.assertEquals(touchPoint.getCustomFieldValue("noteType"), "whiteboard");
+		    Assert.assertNull(touchPoint.getCustomFieldValue("assignedTo"));
+		    Assert.assertEquals(touchPoint.getConstituentId(), new Long(300L));
+		    Assert.assertTrue(touchPoint.getGiftId().equals(8000L) || touchPoint.getGiftId().equals(8001L));
+		    Assert.assertNull(touchPoint.getEmail());
+		    Assert.assertNull(touchPoint.getAddress());
+		    Assert.assertNull(touchPoint.getPhone());
+	    }
+	}
 
     private void setupBankProjectCodePicklists() {
         /* This assumes the customFieldMap[bank] and projectCode picklists are not defined in testData.sql */

@@ -1,17 +1,16 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.dao.AddressDao;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.type.ActivationType;
+import com.orangeleap.tangerine.util.OLLogger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class IBatisAddressDaoTest extends AbstractIBatisTest {
     
@@ -28,7 +27,8 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testMaintainAddress" }, dependsOnGroups = { "testReadAddress" })
     public void testMaintainAddress() throws Exception {
         // Insert
-        Address address = new Address(300L, "1234 Fake Dr", "New York", "NY", "20211", "USA");
+        Address address = new Address(300L, "1234 Fake Dr", "New York", "NY", "20211", "US");
+	    address.setInactive(true);
         address = addressDao.maintainEntity(address);
         assert address.getId() > 0;
         Address readAddress = addressDao.readById(address.getId());
@@ -39,14 +39,14 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert "New York".equals(readAddress.getCity());
         assert "NY".equals(readAddress.getStateProvince());
         assert "20211".equals(readAddress.getPostalCode());
-        assert "USA".equals(readAddress.getCountry());
+        assert "US".equals(readAddress.getCountry());
         assert ActivationType.permanent.equals(readAddress.getActivationStatus());
         assert readAddress.getAddressLine2() == null;
         assert readAddress.getAddressLine3() == null;
         assert readAddress.getCreateDate() != null;
         assert readAddress.getUpdateDate() != null;
         assert readAddress.isReceiveCorrespondence() == false;
-        assert readAddress.isInactive() == false;
+        Assert.assertTrue(readAddress.isInactive());
         assert readAddress.getComments() == null;
         assert readAddress.getEffectiveDate() != null;
         assert readAddress.getSeasonalStartDate() == null;
@@ -65,7 +65,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert "San Francisco".equals(readAddress.getCity());
         assert "CA".equals(readAddress.getStateProvince());
         assert "92111".equals(readAddress.getPostalCode());
-        assert "USA".equals(readAddress.getCountry());
+        assert "US".equals(readAddress.getCountry());
         assert address.getId().equals(readAddress.getId());
         assert 300L == readAddress.getConstituentId();
         assert ActivationType.permanent.equals(readAddress.getActivationStatus());
@@ -74,7 +74,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert readAddress.getCreateDate() != null;
         assert readAddress.getUpdateDate() != null;
         assert readAddress.isReceiveCorrespondence() == false;
-        assert readAddress.isInactive() == false;
+	    Assert.assertTrue(readAddress.isInactive());
         assert readAddress.getComments() == null;
         assert readAddress.getEffectiveDate() != null;
         assert readAddress.getSeasonalStartDate() == null;

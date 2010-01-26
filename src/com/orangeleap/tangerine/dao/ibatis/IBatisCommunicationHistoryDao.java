@@ -109,4 +109,29 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
         return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_COMMUNICATION_HISTORY_COUNT_BY_CONSTITUENT_ID", params);
     }
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<CommunicationHistory> readCommunicationHistoryByBatchId(Long batchId, String sortPropertyName, String direction,
+	                                                     int start, int limit, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCommunicationHistoryByBatchId: batchId = " + batchId + " sortPropertyName = " + sortPropertyName +
+	                " direction = " + direction + " start = " + start + " limit = " + limit);
+	    }
+	    Map<String, Object> params = setupSortParams(StringConstants.COMMUNICATION_HISTORY, "COMMUNICATION_HISTORY.COMMUNICATION_HISTORY_RESULT",
+	            sortPropertyName, direction, start, limit, locale);
+	    params.put(StringConstants.BATCH_ID, batchId);
+
+	    return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_COMMUNICATION_HISTORY_BY_BATCH_ID", params);
+	}
+
+	@Override
+	public int readCountByBatchId(Long batchId) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCountByBatchId: batchId = " + batchId);
+	    }
+	    Map<String,Object> params = setupParams();
+	    params.put(StringConstants.BATCH_ID, batchId);
+	    return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_COMMUNICATION_HISTORY_COUNT_BY_BATCH_ID", params);
+	}
 }

@@ -196,4 +196,21 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
         }
         return communicationHistoryDao.readCountByConstituentId(constituentId);
     }
+
+	@Override
+	public List<CommunicationHistory> readCommunicationHistoryByBatchId(Long batchId, SortInfo sort, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCommunicationHistoryByBatchId: batchId = " + batchId + " sort = " + sort);
+	    }
+	    return communicationHistoryDao.readCommunicationHistoryByBatchId(batchId, sort.getSort(), sort.getDir(), sort.getStart(),
+	            sort.getLimit(), locale);
+	}
+
+	@Override
+	public int readCountByBatchId(Long batchId) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCountByBatchId: batchId = " + batchId);
+	    }
+	    return communicationHistoryDao.readCountByBatchId(batchId);
+	}
 }

@@ -37,4 +37,9 @@ public interface CommunicationHistoryDao {
                                                          int start, int limit, Locale locale);
 
     int readCountByConstituentId(Long constituentId);
+
+	List<CommunicationHistory> readCommunicationHistoryByBatchId(Long batchId, String sortPropertyName, String direction,
+	                                                     int start, int limit, Locale locale);
+
+	int readCountByBatchId(Long batchId);
 }

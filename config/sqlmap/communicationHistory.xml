@@ -9,8 +9,10 @@
 		<result property="recordDate" column="RECORD_DATE" jdbcType="TIMESTAMP" />
 		<result property="systemGenerated" column="SYSTEM_GENERATED" jdbcType="CHAR" />
 		<result property="giftId" column="GIFT_ID" jdbcType="BIGINT" />
+		<result property="adjustedGiftId" column="ADJUSTED_GIFT_ID" jdbcType="BIGINT" />
 		<result property="pledgeId" column="PLEDGE_ID" jdbcType="BIGINT" />
 		<result property="recurringGiftId" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
+		<result property="batchId" column="BATCH_ID" jdbcType="BIGINT" />
 		<result property="comments" column="COMM_HIST_COMMENTS" jdbcType="LONGVARCHAR" />
 		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
@@ -22,7 +24,8 @@
 
     <sql id="COMMUNICATION_HISTORY_COLS_FRAGMENT">
         ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.ENTRY_TYPE, ch.CREATE_DATE as COMM_HIST_CREATE_DATE, ch.RECORD_DATE,
-        ch.SYSTEM_GENERATED, ch.UPDATE_DATE as COMM_HIST_UPDATE_DATE, ch.COMMENTS as COMM_HIST_COMMENTS, ch.GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID,
+        ch.SYSTEM_GENERATED, ch.UPDATE_DATE as COMM_HIST_UPDATE_DATE, ch.COMMENTS as COMM_HIST_COMMENTS,
+	    ch.GIFT_ID, ch.ADJUSTED_GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID, ch.BATCH_ID,
 
         <include refid="ADDRESS_COLS_FRAGMENT" />,
         <include refid="PHONE_COLS_FRAGMENT" />,
@@ -86,55 +89,80 @@
 		and ch.CONSTITUENT_ID = #constituentId#
     </select>
 
-    <select id="SELECT_LIMITED_COMMUNICATION_HISTORY_BY_CONSTITUENT_ID" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
-        select
-        <include refid="COMMUNICATION_HISTORY_COLS_FRAGMENT" />
 
-        <dynamic prepend=",">
-            <isEqual property="sortColumn" compareValue="FIELD_VALUE">
-                custFld.FIELD_VALUE
-            </isEqual>
-        </dynamic>
+	<sql id="SELECT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT_BEGIN">
+		select
+		<include refid="COMMUNICATION_HISTORY_COLS_FRAGMENT" />
 
-        from COMMUNICATION_HISTORY ch
-        inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
-        left outer join EMAIL e on ch.EMAIL_ID = e.EMAIL_ID
-        left outer join PHONE ph on ch.PHONE_ID = ph.PHONE_ID
-        left outer join ADDRESS addr on ch.ADDRESS_ID = addr.ADDRESS_ID
+		<dynamic prepend=",">
+		    <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+		        custFld.FIELD_VALUE
+		    </isEqual>
+		</dynamic>
 
-        <isNotNull property="entityType">
-            <isNotNull property="fieldName">
-                <isNotNull property="asOfDate">
-                    left outer join CUSTOM_FIELD custFld on ch.COMMUNICATION_HISTORY_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
-                        and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
-                        and custFld.FIELD_NAME = #fieldName#
-                </isNotNull>
-            </isNotNull>
-        </isNotNull>
+		from COMMUNICATION_HISTORY ch
+		inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on ch.EMAIL_ID = e.EMAIL_ID
+		left outer join PHONE ph on ch.PHONE_ID = ph.PHONE_ID
+		left outer join ADDRESS addr on ch.ADDRESS_ID = addr.ADDRESS_ID
 
-        where p.SITE_NAME = #siteName#
-        and ch.CONSTITUENT_ID = #constituentId#
-        order by
-        CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		<isNotNull property="entityType">
+		    <isNotNull property="fieldName">
+		        <isNotNull property="asOfDate">
+		            left outer join CUSTOM_FIELD custFld on ch.COMMUNICATION_HISTORY_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+		                and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+		                and custFld.FIELD_NAME = #fieldName#
+		        </isNotNull>
+		    </isNotNull>
+		</isNotNull>
+
+		where p.SITE_NAME = #siteName#
+	</sql>
+
+	<sql id="SELECT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT_END">
+		order by
+		CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
-        limit $offset$,$limit$
+		limit $offset$,$limit$
+	</sql>	
+
+	<sql id="COUNT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT">
+		select count(ch.COMMUNICATION_HISTORY_ID)
+		from COMMUNICATION_HISTORY ch
+		inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#
+	</sql>
+
+    <select id="SELECT_LIMITED_COMMUNICATION_HISTORY_BY_CONSTITUENT_ID" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
+        <include refid="SELECT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT_BEGIN" />
+        and ch.CONSTITUENT_ID = #constituentId#
+	    <include refid="SELECT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT_END" />
     </select>
 
     <select id="SELECT_COMMUNICATION_HISTORY_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">
-        select count(ch.COMMUNICATION_HISTORY_ID)
-        from COMMUNICATION_HISTORY ch
-        inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
-        where p.SITE_NAME = #siteName#
+        <include refid="COUNT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT"/>
         and ch.CONSTITUENT_ID = #constituentId#
     </select>
 
+	<select id="SELECT_LIMITED_COMMUNICATION_HISTORY_BY_BATCH_ID" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
+	    <include refid="SELECT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT_BEGIN" />
+	    and ch.BATCH_ID = #batchId#
+		<include refid="SELECT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT_END" />
+	</select>
+
+	<select id="SELECT_COMMUNICATION_HISTORY_COUNT_BY_BATCH_ID" parameterClass="map" resultClass="int">
+	    <include refid="COUNT_LIMITED_COMMUNICATION_HISTORY_FRAGMENT"/>
+		and ch.BATCH_ID = #batchId#
+	</select>
+
 	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">
 		insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, ENTRY_TYPE, CREATE_DATE,
-		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, PLEDGE_ID, RECURRING_GIFT_ID, GIFT_ID, CONSTITUENT_ID, 
+		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, PLEDGE_ID, RECURRING_GIFT_ID,
+		GIFT_ID, ADJUSTED_GIFT_ID, CONSTITUENT_ID, BATCH_ID,
 		ADDRESS_ID, PHONE_ID, EMAIL_ID, COMMENTS)
 		values (#communicationHistoryType#, #entryType#, now(),
 		#recordDate#, #systemGenerated#, now(),
-		#pledgeId#, #recurringGiftId#, #giftId#, #constituent.id#, 
+		#pledgeId#, #recurringGiftId#, #giftId#, #adjustedGiftId#, #constituent.id#, #batchId#, 
 		#address.id#, #phone.id#, #email.id#, #comments#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -152,6 +180,8 @@
 		PLEDGE_ID = #pledgeId#,
 		RECURRING_GIFT_ID = #recurringGiftId#,
 		GIFT_ID = #giftId#,
+		ADJUSTED_GIFT_ID = #adjustedGiftId#,
+		BATCH_ID = #batchId#,
 		CONSTITUENT_ID = #constituent.id#,
 		ADDRESS_ID = #address.id#, 
 		PHONE_ID = #phone.id#, 

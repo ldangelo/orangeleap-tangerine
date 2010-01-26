@@ -305,6 +305,9 @@
 		desc
 		</isNull>
 		, rg.CREATE_DATE
+		<isNull property="first">
+		desc
+		</isNull>
 		limit 1
 	</select>
 	

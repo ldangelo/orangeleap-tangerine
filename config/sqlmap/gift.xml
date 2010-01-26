@@ -143,6 +143,9 @@
 		desc
 		</isNull>
 		, g.TRANSACTION_DATE
+		<isNull property="first">
+		desc
+		</isNull>
 		limit 1
 	</select>
 	
@@ -185,6 +188,9 @@
 		desc
 		</isNull>
 		, g.TRANSACTION_DATE
+		<isNull property="first">
+		desc
+		</isNull>
 		limit 1
 	</select>
 	

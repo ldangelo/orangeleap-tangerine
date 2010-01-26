@@ -62,16 +62,16 @@ public class OrangeLeapRuleSession {
 
 		@SuppressWarnings("unchecked")
 		private void printRulesExecutionSummary() {
-			
+
 			try {
 
 				StringBuilder sb = new StringBuilder();
 				sb.append("Rules Execution Summary for "+orangeLeapRuleBase.getRuleEventNameType()+":\n");
 				List<String> summary = (List<String>)map.get(RULE_EXECUTION_SUMMARY);
 				if (summary != null) for (String s: summary) sb.append(s).append("\n");
-	
+
 				logger.info(sb.toString()); // TODO change to debug
-			
+
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -97,6 +97,7 @@ public class OrangeLeapRuleSession {
 			map.put("errorLogService", applicationContext.getBean("errorLogService"));
 			map.put("ruleHelperService", applicationContext.getBean("ruleHelperService"));
 			map.put("paymentGateway", applicationContext.getBean("paymentGateway"));
+			map.put("achGateway", applicationContext.getBean("achGateway"));
 		}
 
 }

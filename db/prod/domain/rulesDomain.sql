@@ -1349,7 +1349,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Process ach payment';
-SET @CODE_CD = 'map.paymentGateway.Process(map.gift)';
+SET @CODE_CD = 'map.achGateway.Process(map.gift)';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);

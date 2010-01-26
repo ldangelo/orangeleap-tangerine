@@ -671,6 +671,20 @@ SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_
 INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE, RULE_SEGMENT_TYPE_PARM_PICKLIST_NAME_ID) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'PICKLIST','giftStatus');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
+SET @PHRASE_CD = 'Gift has a positive amount';
+SET @CODE_CD = 'map.gift.getAmount() > 0';
+
+-- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
+
+-- Insert what segment types can be used for what event types (this is for the UI piece)
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'gift-save'),@RULE_SEGMENT_TYPE_ID);
+INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'payment-processing'),@RULE_SEGMENT_TYPE_ID);
+
+-- Insert the parameters for the condition
+
+-- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Gift distribution lines contain a designation code of ?';
 SET @CODE_CD = 'map.ruleHelperService.isDesignationCodeContainedInDistroLines(map.gift, ?) == true';
 
@@ -1105,7 +1119,7 @@ SET @PHRASE_CD = 'Add related constituent value of distribution line custom fiel
 SET @CODE_CD = 'map.ruleHelperService.addDistroLineCustomFieldConstituentValueToPickList(map.gift, ?, ?);';
 
 -- Insert code
-INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT, SITE_NAME) VALUES ('consequence',@PHRASE_CD,@CODE_CD,'metro');
 SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 
 -- Insert what segment types can be used for what event types (this is for the UI piece)
@@ -1230,11 +1244,10 @@ SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 -- Insert what segment types can be used for what event types (this is for the UI piece)
 INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT_TYPE_ID) VALUES ((SELECT RULE_EVENT_TYPE_ID FROM RULE_EVENT_TYPE WHERE RULE_EVENT_TYPE_NAME_ID = 'scheduled-daily'),@RULE_SEGMENT_TYPE_ID);
 
-
 -- *****************************************Touchpoints, Communication Consequences********************************************************
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Send email to constituent with subject of ? and using template ?';
-SET @CODE_CD = 'map.ruleHelperService.sendMail(map.constituent,map.gift,map.userHelper.getSiteOptionByName(?),map.userHelper.getSiteOptionByName(?));';
+SET @CODE_CD = 'map.ruleHelperService.sendMail(map.constituent,map.gift,?,?);';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);
@@ -1247,10 +1260,10 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 
 -- Insert the parameters for the condition
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'SITE_VARIABLE');
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 SET @RULE_SEGMENT_TYPE_PARM_SEQ = (SELECT IFNULL( (SELECT MAX(RULE_SEGMENT_TYPE_PARM_SEQ)+1 FROM RULE_SEGMENT_TYPE_PARM WHERE RULE_SEGMENT_TYPE_ID = @RULE_SEGMENT_TYPE_ID), 0));
-INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'SITE_VARIABLE');
+INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM_SEQ, RULE_SEGMENT_TYPE_PARM_TYPE) VALUES (@RULE_SEGMENT_TYPE_ID,@RULE_SEGMENT_TYPE_PARM_SEQ,'STRING');
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Send email to addresses ? with a subject of ? and using template ?';
@@ -1336,7 +1349,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Process ach payment';
-SET @CODE_CD = 'map.paymentGateway.Process(map.gift)';
+SET @CODE_CD = 'map.achGateway.Process(map.gift)';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);

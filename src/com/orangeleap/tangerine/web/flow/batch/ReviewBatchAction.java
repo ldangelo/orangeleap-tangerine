@@ -74,6 +74,7 @@ public class ReviewBatchAction extends EditBatchAction {
             dataMap.put("reviewBatchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
 	        dataMap.put("reviewCriteriaFields", batch.isForTouchPoints() ? TangerineMessageAccessor.getMessage("touchPointFields") : TangerineMessageAccessor.getMessage("batchTypeFields"));
 	        dataMap.put("hiddenBatchType", batch.getBatchType());
+	        dataMap.put("hiddenForTouchPoints", StringConstants.EMPTY + batch.isForTouchPoints());
             model.put(StringConstants.DATA, dataMap);
         }
         return model;
@@ -91,7 +92,7 @@ public class ReviewBatchAction extends EditBatchAction {
 
         for (Map.Entry<String, String> updateFieldEntry : batch.getUpdateFields().entrySet()) {
             final Map<String, Object> fieldMap = new HashMap<String, Object>();
-            String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(updateFieldEntry.getKey()).toString();
+	        String fieldDefinitionId = resolveFieldDefinitionId(batch, updateFieldEntry.getKey());
             FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
             if (fieldDef != null) {
                 fieldMap.put(StringConstants.NAME, fieldDef.getDefaultLabel());
@@ -164,7 +165,7 @@ public class ReviewBatchAction extends EditBatchAction {
         fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
         fieldList.add(fieldMap);
 
-        initBatchUpdateFields(batch, fieldList);
+		initBatchUpdateFields(batch, fieldList);
 
         fieldMap = new HashMap<String, Object>();
         fieldMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
@@ -210,31 +211,34 @@ public class ReviewBatchAction extends EditBatchAction {
                 for (Map.Entry<String, String> fieldEntry : batch.getUpdateFields().entrySet()) {
                     String key = fieldEntry.getKey();
                     // the batchType + key is the fieldDefinitionId; we need to resolve the fieldName
-                    String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(key).toString();
+                    String fieldDefinitionId = resolveFieldDefinitionId(batch, key);
                     FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
-                    String fieldName = fieldDef.getFieldName();
-                    String propertyName = fieldName;
-                    if (bw.getPropertyValue(propertyName) instanceof CustomField) {
-                        propertyName += StringConstants.DOT_VALUE;
-                    }
-                    String escapedFieldName = TangerineForm.escapeFieldName(fieldName);
+	                
+	                if (fieldDef != null) {
+						String fieldName = fieldDef.getFieldName();
+						String propertyName = fieldName;
+						if (bw.getPropertyValue(propertyName) instanceof CustomField) {
+							propertyName += StringConstants.DOT_VALUE;
+						}
+						String escapedFieldName = TangerineForm.escapeFieldName(fieldName);
 
-                    if (fieldDef.getFieldType().equals(FieldType.PICKLIST)) {   // TODO: MULTI_PICKLIST, CODE, etc?
-                        String newVal = fieldEntry.getValue();
-                        final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
-                        if (referencedPicklist != null) {
-                            for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {
-                                if (referencedItem.getItemName().equals(newVal)) {
-                                    newVal = referencedItem.getDefaultDisplayValue();
-                                }
-                            }
-                        }
-                        rowMap.put(escapedFieldName, newVal);
+						if (fieldDef.getFieldType().equals(FieldType.PICKLIST)) {   // TODO: MULTI_PICKLIST, CODE, etc?
+							String newVal = fieldEntry.getValue();
+							final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
+							if (referencedPicklist != null) {
+								for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {
+									if (referencedItem.getItemName().equals(newVal)) {
+										newVal = referencedItem.getDefaultDisplayValue();
+									}
+								}
+							}
+							rowMap.put(escapedFieldName, newVal);
 
-                    }
-                    else {
-                        rowMap.put(escapedFieldName, fieldEntry.getValue());
-                    }
+						}
+						else {
+							rowMap.put(escapedFieldName, fieldEntry.getValue());
+						}
+	                }
                 }
                 rowValues.add(rowMap);
             }

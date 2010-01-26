@@ -104,7 +104,7 @@ OrangeLeap.msgBundle = {
     noFieldUpdates: 'You did not create any Field Update Criteria.  Please create Criteria first (Step 4).',
     noTouchPointFields: 'You did not create any Touch Point Fields.  Please create Fields first (Step 4).',
     viewRowsToBeUpdated: 'View Rows To Be Updated',
-    viewGiftsConstituents: 'View Gifts & Constituents',
+    viewRowsConstituents: 'View Rows & Constituents',
     createFieldUpdateCriteria: 'Create Field Update Criteria',
     createTouchPointFields: 'Create Touch Point Fields',
     step1Title: '<span class="step"><span class="stepNum" id="step1Num">1</span><span class="stepTxt">Choose Batch Type</span>',
@@ -875,7 +875,7 @@ Ext.onReady(function() {
 
     function setupEditWizardForTouchPoints() {
 		$('#step3MsgSpan').text(msgs.followingHaveTouchPoints);
-		$('#step3Num').next('.stepTxt').text(msgs.viewGiftsConstituents);
+		$('#step3Num').next('.stepTxt').text(msgs.viewRowsConstituents);
 		$('#step4Num').next('.stepTxt').text(msgs.createTouchPointFields);
 		$('#step5Num').parents('.x-grouptabs-main').addClass('noDisplay');
     }
@@ -1005,7 +1005,7 @@ Ext.onReady(function() {
 					val = val.join(); 
 				}
 				else if (form.items.map[key].xtype == 'datefield' && ! Ext.isEmpty(val)) {
-					val = new Date(val).format('m-d-Y'); // format the date value into MM/dd/yyyy format
+					val = new Date(val).format('Y-m-d H:i:s'); // format the date value into MM/dd/yyyy format
 				}
 				saveParams['param-' + key] = val;
 			}
@@ -2643,6 +2643,9 @@ Ext.onReady(function() {
             },
             {
                 name: 'hiddenBatchType', id: 'hiddenBatchType', xtype: 'hidden'
+            },
+            {
+                name: 'hiddenForTouchPoints', id: 'hiddenForTouchPoints', xtype: 'hidden'
             }
         ]
     }, commonFormConfig));
@@ -2869,7 +2872,14 @@ Ext.onReady(function() {
         tbar: reviewStep3Toolbar,
         listeners: {
             'rowdblclick': function(grid, rowIndex, event) {
-                var thisType = Ext.getCmp('hiddenBatchType').getValue();
+                var isForTouchPoints = Ext.getCmp('hiddenForTouchPoints').getValue();
+                var thisType;
+                if (isForTouchPoints == 'true') {
+					thisType = "communicationHistory";
+                }
+                else {
+                    thisType = Ext.getCmp('hiddenBatchType').getValue();
+                }
                 var record = reviewStep3Store.getAt(rowIndex);
                 if (thisType && record) {
                     // open window to view record

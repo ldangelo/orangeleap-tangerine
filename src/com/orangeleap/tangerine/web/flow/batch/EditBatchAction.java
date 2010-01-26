@@ -43,7 +43,6 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.common.TangerineListHelper;
 import com.orangeleap.tangerine.web.customization.tag.fields.SectionFieldTag;
@@ -51,6 +50,8 @@ import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHan
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
 import com.orangeleap.tangerine.web.flow.AbstractAction;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -64,6 +65,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -191,15 +193,7 @@ public class EditBatchAction extends AbstractAction {
         batch.clearUpdateFields();
 
         for (String thisKey : enteredParams.keySet()) {
-	        String fieldDefinitionId;
-	        if (batch.isForTouchPoints()) {
-		        // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'communicationHistory.recordDate'
-		        fieldDefinitionId = new StringBuilder(StringConstants.COMMUNICATION_HISTORY).append(".").append(thisKey).toString();
-	        }
-	        else {
-				// the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
-				fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
-	        }
+	        String fieldDefinitionId = resolveFieldDefinitionId(batch, thisKey);
 	        FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
 	        if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
 		        // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
@@ -558,6 +552,9 @@ public class EditBatchAction extends AbstractAction {
 			if ( ! "address.id".equals(thisField.getFieldPropertyName()) &&
 					! "phone.id".equals(thisField.getFieldPropertyName()) &&
 			        ! "email.id".equals(thisField.getFieldPropertyName())) {
+
+				String value = batch.getUpdateFieldValue(fieldDef.getFieldName());
+
 				if (FieldType.PICKLIST.equals(fieldType)) {  // TODO: MULTI_PICKLIST, CODE, etc?
 					findPicklistData(fieldDef, model, fieldDef.getFieldName(), true);
 				}
@@ -566,7 +563,16 @@ public class EditBatchAction extends AbstractAction {
 					model.put(new StringBuilder(fieldDef.getFieldName()).append("-QueryLookup").toString(),
 							handler.resolveExtData(thisField, batch.getUpdateFieldValue(fieldDef.getFieldName())));
 				}
-				dataMap.put(fieldDef.getFieldName(), batch.getUpdateFieldValue(fieldDef.getFieldName()));
+				else if (FieldType.DATE.equals(fieldType) && StringUtils.hasText(value)) {
+					// need to reformat date from yyyy/MM/dd HH:mm:ss to MM/dd/yyyy format
+					try {
+						value = new SimpleDateFormat(StringConstants.MM_DD_YYYY_FORMAT).format(DateUtils.parseDate(value, new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1 }));
+					}
+					catch (ParseException pe) {
+						logger.warn("findTouchPointUpdateFields: could not parse date = " + value);
+					}
+				}
+				dataMap.put(fieldDef.getFieldName(), value);
 			}
 			else if (dataMap.get(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD) == null) {
 				dataMap.put(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, batch.getUpdateFieldValue(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD));
@@ -692,7 +698,7 @@ public class EditBatchAction extends AbstractAction {
 
         // the enteredParam.key/defaultDisplayValue will be the fieldDefinitionId like 'adjustedGift.status' which we need to resolve to the fieldName like 'adjustedGift.adjustedStatus'
         for (String thisKey : batch.getUpdateFields().keySet()) {
-            String fieldDefinitionId = new StringBuilder(batch.getBatchType()).append(".").append(thisKey).toString();
+	        String fieldDefinitionId = resolveFieldDefinitionId(batch, thisKey);
             FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
             if (fieldDef != null) {
                 Map<String, Object> fieldMap = new HashMap<String, Object>();
@@ -862,4 +868,9 @@ public class EditBatchAction extends AbstractAction {
         }
         return paramMap;
     }
+
+	protected String resolveFieldDefinitionId(PostBatch batch, String key) {
+		return new StringBuilder( batch.isForTouchPoints() ? StringConstants.COMMUNICATION_HISTORY : batch.getBatchType() ).
+				append(".").append(key).toString();
+	}
 }

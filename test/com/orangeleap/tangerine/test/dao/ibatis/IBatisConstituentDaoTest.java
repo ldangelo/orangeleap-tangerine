@@ -178,9 +178,9 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     public void testSearchConstituents() throws Exception {
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("firstName", "Pablo");
-        params.put("primaryAddress.addressLine1", "ACORN");
+        params.put("primaryAddress.addressLine1", "8457 ACORN");
         params.put("primaryEmail.emailAddress", "");
-    	
+
         List<Constituent> constituents = constituentDao.searchConstituents(params, "firstName", "ASC", 0, 100, Locale.US);
         assert constituents != null && ! constituents.isEmpty();
         for (Constituent constituent : constituents) {
@@ -189,7 +189,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
 
         params = new HashMap<String, Object>();
         params.put("firstName", "Pablo");
-        params.put("primaryAddress.addressLine1", "ACORN");
+        params.put("primaryAddress.addressLine1", "8457 ACORN");
         params.put("primaryEmail.emailAddress", "dog@dog.com");
 
         constituents = constituentDao.searchConstituents(params, "firstName", "ASC", 0, 100, Locale.US);
@@ -197,7 +197,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
 
         params = new HashMap<String, Object>();
         constituents = constituentDao.searchConstituents(params, "firstName", "ASC", 0, 100, Locale.US);
-        assert constituents != null && ! constituents.isEmpty();        
+        assert constituents != null && ! constituents.isEmpty();
 
         params = new HashMap<String, Object>();
         constituents = constituentDao.searchConstituents(params);
@@ -205,7 +205,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
 
         params = new HashMap<String, Object>();
         params.put("firstName", "Pablo");
-        params.put("primaryAddress.addressLine1", "ACORN");
+        params.put("primaryAddress.addressLine1", "8457 ACORN");
         params.put("primaryEmail.emailAddress", "");
 
         constituents = constituentDao.searchConstituents(params);

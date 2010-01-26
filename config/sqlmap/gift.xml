@@ -421,6 +421,9 @@
             $sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
             limit $offset$,$limit$
         </isNotNull>
+        <isNull property="sortColumn">
+        	limit 1000
+        </isNull>
     </select>
 
     <select id="SELECT_GIFTS_COUNT_BY_CONSTITUENT_ID" parameterClass="map" resultClass="int">

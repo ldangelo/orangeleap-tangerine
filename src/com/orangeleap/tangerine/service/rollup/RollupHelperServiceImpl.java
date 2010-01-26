@@ -100,11 +100,11 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 
 	private void updateRollups(List<RollupAttribute> ras, Object groupByValue) {
 		
-		Long[] range = constituentDao.getConstituentIdRange();
+		//Long[] range = constituentDao.getConstituentIdRange();
 		
 	    for (RollupAttribute ra : ras) {
 	    	
-			boolean isIterateConstituentStat = groupByValue == null && (ra.getRollupStatType().endsWith("_CONSTITUENT"));
+			//boolean isIterateConstituentStat = groupByValue == null && (ra.getRollupStatType().endsWith("_CONSTITUENT"));
 	    	
 	    	List<RollupSeriesXAttribute> rsxas = rollupService.selectRollupSeriesForAttribute(ra.getId());
 	    	for (RollupSeriesXAttribute rsxa : rsxas) {
@@ -120,13 +120,13 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 	    			rollupService.deleteRollupValuesForAttributeSeries(groupByValue, ra, rs, deleteStartDate, deleteEndDate);
 	    		}
 	    		for (RollupValue rv : rvs) {
-	    			if (isIterateConstituentStat) {
-		    			if (range[0] != null) for (long groupByRange1 = range[0]; groupByRange1 < range[1]; groupByRange1 += KEY_RANGE_INTERVAL) {
-		    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), groupByRange1, groupByRange1 + KEY_RANGE_INTERVAL - 1);
-		    			}
-	    			} else {
+//	    			if (isIterateConstituentStat) {
+//		    			if (range[0] != null) for (long groupByRange1 = range[0]; groupByRange1 < range[1]; groupByRange1 += KEY_RANGE_INTERVAL) {
+//		    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), groupByRange1, groupByRange1 + KEY_RANGE_INTERVAL - 1);
+//		    			}
+//	    			} else {
 	    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), 0L, Long.MAX_VALUE);
-	    			}
+//	    			}
 	    		}
 	    	}
 	    }

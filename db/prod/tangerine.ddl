@@ -1301,7 +1301,7 @@ CREATE TABLE `RULE_SEGMENT_TYPE` (
 `RULE_SEGMENT_TYPE_TYPE` varchar(255), -- condition or consequence
 `RULE_SEGMENT_TYPE_PHRASE` varchar(255),
 `RULE_SEGMENT_TYPE_TEXT` text,
-`SITE_NAME` varchar(255), 
+`SITE_NAME` varchar(255) default null, 
 PRIMARY KEY  (`RULE_SEGMENT_TYPE_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

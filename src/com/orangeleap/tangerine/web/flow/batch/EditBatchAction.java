@@ -197,7 +197,10 @@ public class EditBatchAction extends AbstractAction {
 	        FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
 	        if (fieldDef != null && bean.isReadableProperty(fieldDef.getFieldName())) {
 		        // the updateField key will be the fieldDefinitionId (adjustedGift.status) which will need to be resolved to the fieldName (adjustedGift.adjustedStatus)
-		        batch.addUpdateField(thisKey, enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString()); // update the batch
+		        String value = ( enteredParams.get(thisKey) == null ? null : enteredParams.get(thisKey).toString() );
+		        if ( (! batch.isForTouchPoints() && StringUtils.hasText(value)) || batch.isForTouchPoints()) {
+			        batch.addUpdateField(thisKey, value); // update the batch; allow null values only for touch point fields
+		        }
 	        }
         }
     }

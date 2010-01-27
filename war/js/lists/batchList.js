@@ -766,8 +766,16 @@ Ext.onReady(function() {
 
     function checkConditions(groupTabPanel, groupToShow, currentGroup) {
         var isValid = true;
-        
-        // First check if the current group's conditions have been fulfilled
+
+		/* If the user is currently editing the step4 Updatable Fields form, stop */
+        if (currentGroup &&
+				currentGroup.mainItem.id == 'step4Grp' &&
+				! isForTouchPoints() &&
+				step4UpdatableFieldsForm.editing) {
+			step4UpdatableFieldsForm.stopEditing();			
+		}
+
+        // Check if the current group's conditions have been fulfilled
         if (currentGroup && currentGroup.mainItem.id &&
             groupToShow && groupToShow.mainItem.id &&
             groupToShow.mainItem.id != currentGroup.mainItem.id &&
@@ -2226,6 +2234,8 @@ Ext.onReady(function() {
     var checkStep4EnableButton = function(store) {
         if (store.getCount() == 0 || ! checkFieldCriteriaValid(step4UpdatableFieldsForm)) {
             step4UpdatableFieldsForm.nextButton.disable();
+			invalidateAccessibleSteps('step4Grp');
+	        $('#step5Num').removeClass('complete');
         }
         else {
             step4UpdatableFieldsForm.nextButton.enable();
@@ -2513,7 +2523,6 @@ Ext.onReady(function() {
                  {
                      items: [{
                          id: 'step4Grp',
-                         cls: 'grp',
                          title: msgs.step4Title,
                          tabTip: msgs.step4Tip,
                          items: [ step4UpdatableFieldsForm, step4TouchPointFieldsForm ]
@@ -3542,6 +3551,7 @@ Ext.onReady(function() {
         loadMask: true,
         header: false,
         frame: false,
+		cls: 'grp',
         border: false,
         forceLayout: true,
         propertyNames: { },
@@ -3740,6 +3750,15 @@ Ext.onReady(function() {
 
     function checkConditionsForErrorBatch(groupTabPanel, groupToShow, currentGroup) {
         var isValid = true;
+
+		/* If the user is currently editing the step3 Updatable Fields error form, stop */
+        if (currentGroup &&
+				currentGroup.mainItem.id == 'step3Error' &&
+				! errorBatchWin.forTouchPoints &&
+				errorStep3UpdatableFieldsForm.editing) {
+			errorStep3UpdatableFieldsForm.stopEditing();
+		}
+
         if (currentGroup && currentGroup.mainItem.id &&
 					groupToShow && groupToShow.mainItem.id &&
 					groupToShow.mainItem.id != currentGroup.mainItem.id &&
@@ -3821,7 +3840,6 @@ Ext.onReady(function() {
                  {
                      items: [{
                          id: 'step3Error',
-                         cls: 'grp',
                          title: msgs.step3ErrorTitle,
                          tabTip: msgs.step3Tip,
                          items: [ errorStep3UpdatableFieldsForm, errorStep3TouchPointFieldsForm ]

@@ -42,6 +42,8 @@ import java.util.List;
 public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, MutableGrid, RollupValueSource  {
     private static final long serialVersionUID = 1L;
 
+	public static final String PROCESSING_TYPE_REPROCESS = "Reprocess";
+
     protected String comments;
     protected String currencyCode;
     protected String paymentType;
@@ -53,6 +55,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 	protected Address address;
 	protected Phone phone;
 	protected PaymentSource paymentSource;
+	protected String processingType; // Not persisted, used by nightly gift reprocessing 
 
 	protected List<DistributionLine> distributionLines = new ArrayList<DistributionLine>();
 
@@ -223,4 +226,12 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
                 append("checkNumber", checkNumber).append("comments", comments).
                 toString();
     }
+
+	public void setProcessingType(String processingType) {
+		this.processingType = processingType;
+	}
+
+	public String getProcessingType() {
+		return processingType;
+	}
 }

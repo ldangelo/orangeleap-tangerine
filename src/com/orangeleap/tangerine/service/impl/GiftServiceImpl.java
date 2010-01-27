@@ -52,6 +52,7 @@ import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentHistory;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.integration.NewGift;
@@ -805,6 +806,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     
 	@Override
 	public void dailyReprocessGift(Gift gift) {
+		gift.setProcessingType(AbstractPaymentInfoEntity.PROCESSING_TYPE_REPROCESS);
 		routeGift(gift);
 	}
 

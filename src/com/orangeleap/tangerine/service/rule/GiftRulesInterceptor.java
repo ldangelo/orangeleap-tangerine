@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.event.GiftEvent;
 import com.orangeleap.tangerine.event.NewGiftEvent;
@@ -57,7 +58,13 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 			workingMemory = ruleBase.newStatefulSession();
 		} else {
 			OrangeLeapRuleAgent olAgent = (OrangeLeapRuleAgent)applicationContext.getBean("OrangeLeapRuleAgent");
-			OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(RuleEventNameType.GIFT_SAVE, site, false);
+			RuleEventNameType ruleEventNameType;
+			if (AbstractPaymentInfoEntity.PROCESSING_TYPE_REPROCESS.equals(gift.getProcessingType())) {
+				ruleEventNameType = RuleEventNameType.SCHEDULED_REPROCESS_GIFT_DAILY;
+			} else {
+				ruleEventNameType = RuleEventNameType.GIFT_SAVE;
+			}
+			OrangeLeapRuleBase olRuleBase = olAgent.getOrangeLeapRuleBase(ruleEventNameType, site, false);
 			olWorkingMemory = olRuleBase.newRuleSession();
 		}
 		

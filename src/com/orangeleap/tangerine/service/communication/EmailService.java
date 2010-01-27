@@ -69,7 +69,7 @@ public class EmailService  {
 	private String repositoryUri = null;
 	private CommunicationHistoryService communicationHistoryService;
 
-	private File runReport(Site site,Map params) {
+	private File runReport(Site site,Map params,String templateName) {
 
 		File temp = null;
 		JServer jserver = new JServer();
@@ -84,7 +84,7 @@ public class EmailService  {
 
 
 			JasperPrint print = jserver.getWSClient().runReport(
-					getReportUnit(jserver, baseUri, params, site).getDescriptor(), params);
+					getReportUnit(jserver, templateName, params, site).getDescriptor(), params);
 
 			temp = File.createTempFile("orangeleap", ".pdf");
 			temp.deleteOnExit();
@@ -154,7 +154,7 @@ public class EmailService  {
 				return;
 			}
 
-			File tempFile = runReport(s,params);
+			File tempFile = runReport(s,params,templateName);
 
 			if (tempFile != null) {
 				FileSystemResource file = new FileSystemResource(tempFile);
@@ -298,12 +298,12 @@ public class EmailService  {
 		 * getTemplateName()); ch.setEntryType("Email"); ch.setRecordDate(new
 		 * Date()); ch.setSelectedEmail(e); ch.setCustomFieldValue("template",
 		 * getTemplateName());
-		 * 
+		 *
 		 * ch.setSuppressValidation(true); try {
 		 * communicationHistoryService.maintainCommunicationHistory(ch); } catch
 		 * (BindException e1) { // Should not happen when setSuppressValidation
 		 * = true; logger.error(e1); }
-		 * 
+		 *
 		 * }
 		 */
 	}

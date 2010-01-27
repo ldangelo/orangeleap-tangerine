@@ -58,7 +58,6 @@
     
 	<bean id="soapConstituentValidator" class="com.orangeleap.tangerine.ws.validation.ConstituentValidator"/>
 	<bean id="soapSaveOrUpdateConstituentRequestValidator" class="com.orangeleap.tangerine.ws.validation.SaveOrUpdateConstituentRequestValidator"/>
-	<bean id="soapSiteValidator" class="com.orangeleap.tangerine.ws.validation.SoapSiteValidator"/>	
 	<bean id="soapListValidator" class="com.orangeleap.tangerine.ws.validation.SoapListValidator"/>	
 	<bean id="validationManager" class="com.orangeleap.tangerine.ws.validation.SoapValidationManager">
 
@@ -66,7 +65,6 @@
 			<list>
 				<ref bean="soapConstituentValidator"/>
 				<ref bean="soapSaveOrUpdateConstituentRequestValidator"/>
-				<ref bean="soapSiteValidator"/>
 				<ref bean="soapListValidator"/>
 			</list>
 		</property>

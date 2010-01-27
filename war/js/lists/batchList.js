@@ -853,9 +853,6 @@ Ext.onReady(function() {
 						isValid = false;						
 					}
 				}
-				if (accessibleSteps.indexOf('step2Grp') == -1) {
-					accessibleSteps[accessibleSteps.length] = 'step2Grp';
-				}
 			}
 		}
 
@@ -2595,7 +2592,7 @@ Ext.onReady(function() {
         pickedSegmentationsCount = 0;
         $('#step2Num').removeClass('complete');
         step2Store.removeAll();
-        invalidateAccessibleSteps('step1Grp');
+        invalidateAccessibleSteps('step2Grp');
         resetEditSteps3Thru5();
     }
 
@@ -2607,7 +2604,7 @@ Ext.onReady(function() {
         step4UpdatableFieldsStore.removeAll();
         step4UpdatableFieldsForm.store.removeAll();
         step5Store.removeAll();
-        invalidateAccessibleSteps('step2Grp');
+        invalidateAccessibleSteps('step3Grp');
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

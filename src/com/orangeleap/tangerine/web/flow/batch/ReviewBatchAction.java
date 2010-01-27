@@ -33,6 +33,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,25 +98,7 @@ public class ReviewBatchAction extends EditBatchAction {
             if (fieldDef != null) {
                 fieldMap.put(StringConstants.NAME, fieldDef.getDefaultLabel());
 
-                String value = updateFieldEntry.getValue();
-
-                if (FieldType.PICKLIST.equals(fieldDef.getFieldType())) {  // TODO: MULTI_PICKLIST, CODE, etc?
-                    final Picklist picklist = picklistItemService.getPicklist(fieldDef.getFieldName());
-                    if (picklist != null) {
-                        for (PicklistItem item : picklist.getActivePicklistItems()) {
-                            if (value.equals(item.getItemName())) {
-                                value = item.getDefaultDisplayValue();
-                                break;
-                            }
-                        }
-                    }
-                }
-                else if (FieldType.DATE.equals(fieldDef.getFieldType())) {
-                    value = formatDate(value, StringConstants.MM_DD_YYYY_FORMAT); // TODO: get date format based on locale
-                }
-                else if (FieldType.DATE_TIME.equals(fieldDef.getFieldType())) {
-                    value = formatDate(value, StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_1); // TODO: get date format based on locale
-                }
+                Object value = resolveDisplayValue(fieldDef, updateFieldEntry.getValue(), true);
                 fieldMap.put(StringConstants.VALUE, value);
                 fieldList.add(fieldMap);
             }
@@ -126,7 +109,36 @@ public class ReviewBatchAction extends EditBatchAction {
         return model;
     }
 
-    private String formatDate(String value, String desiredFormat) {
+	private Object resolveDisplayValue(FieldDefinition fieldDef, Object value, boolean reformatDate) {
+		if (value != null) {
+			if (FieldType.PICKLIST.equals(fieldDef.getFieldType())) {  // TODO: MULTI_PICKLIST, CODE, etc?
+				final Picklist picklist = picklistItemService.getPicklist(fieldDef.getFieldName());
+				if (picklist != null) {
+					for (PicklistItem item : picklist.getActivePicklistItems()) {
+						if (value.equals(item.getItemName())) {
+							value = item.getDefaultDisplayValue();
+							break;
+						}
+					}
+				}
+			}
+			else if (FieldType.QUERY_LOOKUP.equals(fieldDef.getFieldType())) {
+				FieldHandler handler = fieldHandlerHelper.lookupFieldHandler(fieldDef.getFieldType());
+				value = handler.resolveDisplayValue(fieldDef, value);
+			}
+			else if (reformatDate) {
+				if (FieldType.DATE.equals(fieldDef.getFieldType())) {
+					value = formatDateToDesiredFormat(value.toString(), StringConstants.MM_DD_YYYY_FORMAT); // TODO: get date format based on locale
+				}
+				else if (FieldType.DATE_TIME.equals(fieldDef.getFieldType())) {
+					value = formatDateToDesiredFormat(value.toString(), StringConstants.MM_DD_YYYY_HH_MM_SS_FORMAT_1); // TODO: get date format based on locale
+				}
+			}
+		}
+		return value;
+	}
+
+    private String formatDateToDesiredFormat(String value, String desiredFormat) {
         try {
             Date date = DateUtils.parseDate(value, new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
                     StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,
@@ -136,7 +148,7 @@ public class ReviewBatchAction extends EditBatchAction {
         }
         catch (Exception ex) {
             if (logger.isWarnEnabled()) {
-                logger.warn("formatDate: could not parse date = " + value);
+                logger.warn("formatDateToDesiredFormat: could not parse date = " + value);
             }
         }
         return value;
@@ -221,23 +233,7 @@ public class ReviewBatchAction extends EditBatchAction {
 							propertyName += StringConstants.DOT_VALUE;
 						}
 						String escapedFieldName = TangerineForm.escapeFieldName(fieldName);
-
-						if (fieldDef.getFieldType().equals(FieldType.PICKLIST)) {   // TODO: MULTI_PICKLIST, CODE, etc?
-							String newVal = fieldEntry.getValue();
-							final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
-							if (referencedPicklist != null) {
-								for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {
-									if (referencedItem.getItemName().equals(newVal)) {
-										newVal = referencedItem.getDefaultDisplayValue();
-									}
-								}
-							}
-							rowMap.put(escapedFieldName, newVal);
-
-						}
-						else {
-							rowMap.put(escapedFieldName, fieldEntry.getValue());
-						}
+		                rowMap.put(escapedFieldName, resolveDisplayValue(fieldDef, fieldEntry.getValue(), false));
 	                }
                 }
                 rowValues.add(rowMap);

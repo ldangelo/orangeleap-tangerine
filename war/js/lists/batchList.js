@@ -137,8 +137,8 @@ OrangeLeap.msgBundle = {
     reviewStep2Title: '<span class="step"><span class="stepNum complete" id="reviewStep2">2</span><span class="stepTxt">View Field Update Criteria</span>',
     reviewStep3Title: '<span class="step"><span class="stepNum complete" id="reviewStep3">3</span><span class="stepTxt">View Updated Rows</span>',
     followingRowsModified: '<div style="text-align: center" id="reviewStep3Header"><div>The following rows were modified by this batch.</div>' + 
-                           '<div>Values displayed in the grid may not necessarily reflect the current values</div>' +
-                           '<div>Double-click a row to display in a new window</div></div>',
+                           '<div>Values displayed in the grid may not necessarily reflect the current values.</div>' +
+                           '<div>Double-click a row to display in a new window.</div></div>',
     noRowsUpdated: 'No rows were updated as part of this batch.',
 
     rowsExecutedErrors: 'The errors listed occurred during the previous execution of the batch',
@@ -1774,13 +1774,6 @@ Ext.onReady(function() {
             {
                 fieldLabel: msgs.correspondenceFor, name: 'customFieldMap[correspondenceFor]', id: 'customFieldMap[correspondenceFor]', xtype: 'combo',
                 cls: 'ea-correspondence',
-                store: new Ext.data.ArrayStore({
-                    fields: [
-                        'itemName',
-                        'displayVal'
-                    ],
-                    data: [['primary', msgs.primary], ['all', msgs.all]]
-                }),
                 displayField: 'displayVal',
                 valueField: 'itemName',
                 typeAhead: false,
@@ -3345,13 +3338,6 @@ Ext.onReady(function() {
             {
                 fieldLabel: msgs.correspondenceFor, name: 'customFieldMap[correspondenceFor]', id: 'error-customFieldMap[correspondenceFor]', xtype: 'combo',
                 cls: 'ea-correspondence',
-                store: new Ext.data.ArrayStore({
-                    fields: [
-                        'itemName',
-                        'displayVal'
-                    ],
-                    data: [['primary', msgs.primary], ['all', msgs.all]]
-                }),
                 displayField: 'displayVal',
                 valueField: 'itemName',
                 typeAhead: false,

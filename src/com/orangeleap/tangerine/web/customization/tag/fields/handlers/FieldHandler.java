@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.web.customization.tag.fields.handlers;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import org.springframework.beans.BeanWrapper;
@@ -23,6 +24,8 @@ public interface FieldHandler {
 	String resolveLabelText(PageContext pageContext, SectionField sectionField);
 
     Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue);
+
+	Object resolveDisplayValue(FieldDefinition fieldDef, Object fieldValue);
 
 	Object resolveExtData(final SectionField currentField, Object fieldValue);
 }

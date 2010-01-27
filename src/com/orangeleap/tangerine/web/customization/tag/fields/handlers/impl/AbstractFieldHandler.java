@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.ConstituentService;
@@ -15,6 +16,11 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
+import java.util.Collection;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
@@ -24,12 +30,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * User: alex lo
@@ -350,12 +350,17 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 
     @Override
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
-        Object displayValue = fieldValue;
-        if (displayValue == null) {
-            displayValue = StringConstants.EMPTY;
-        }
-        return displayValue;
+        return resolveDisplayValue(currentField.getFieldDefinition(), fieldValue);
     }
+
+	@Override
+	public Object resolveDisplayValue(FieldDefinition fieldDef, Object fieldValue) {
+	    Object displayValue = fieldValue;
+	    if (displayValue == null) {
+	        displayValue = StringConstants.EMPTY;
+	    }
+	    return displayValue;
+	}
 
 	@Override
 	public Object resolveExtData(final SectionField currentField, Object fieldValue) {

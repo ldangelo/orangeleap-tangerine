@@ -114,7 +114,7 @@ public class EditBatchAction extends AbstractAction {
     protected FieldService fieldService;
 
 	@Resource(name = "fieldHandlerHelper")
-	private FieldHandlerHelper fieldHandlerHelper;
+	protected FieldHandlerHelper fieldHandlerHelper;
 
     protected PostBatch getBatchFromFlowScope(final RequestContext flowRequestContext) {
         return (PostBatch) getFlowScopeAttribute(flowRequestContext, StringConstants.BATCH);
@@ -525,7 +525,7 @@ public class EditBatchAction extends AbstractAction {
                 if (fieldDef != null) {
 	                FieldType fieldType = fieldDef.getFieldType();
 	                if (FieldType.PICKLIST.equals(fieldType)) {  // TODO: MULTI_PICKLIST, CODE, etc?
-		                findPicklistData(fieldDef, model, item.getDefaultDisplayValue(), false);
+		                findPicklistData(fieldDef.getFieldName(), model, item.getDefaultDisplayValue(), false);
 	                }
 	                final Map<String, Object> map = new HashMap<String, Object>();
 	                map.put(StringConstants.NAME, item.getDefaultDisplayValue());
@@ -561,7 +561,7 @@ public class EditBatchAction extends AbstractAction {
 				String value = batch.getUpdateFieldValue(fieldDef.getFieldName());
 
 				if (FieldType.PICKLIST.equals(fieldType)) {  // TODO: MULTI_PICKLIST, CODE, etc?
-					findPicklistData(fieldDef, model, fieldDef.getFieldName(), true);
+					findPicklistData(fieldDef.getFieldName(), model, fieldDef.getFieldName(), true);
 				}
 				else if (FieldType.QUERY_LOOKUP.equals(fieldType)) {
 					FieldHandler handler = fieldHandlerHelper.lookupFieldHandler(fieldType);
@@ -580,14 +580,16 @@ public class EditBatchAction extends AbstractAction {
 				dataMap.put(fieldDef.getFieldName(), value);
 			}
 			else if (dataMap.get(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD) == null) {
+				// CorrespondenceFor is a Picklist TODO: what if its not?
+				findPicklistData(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, model, StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, true);
 				dataMap.put(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, batch.getUpdateFieldValue(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD));
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void findPicklistData(final FieldDefinition fieldDef, final ModelMap model, final String key, boolean addReferenceValue) {
-		final Picklist referencedPicklist = picklistItemService.getPicklist(fieldDef.getFieldName());
+	private void findPicklistData(String fieldName, final ModelMap model, final String key, boolean addReferenceValue) {
+		final Picklist referencedPicklist = picklistItemService.getPicklist(fieldName);
 		if (referencedPicklist != null) {
 			final List<Map<String, String>> referencedItemList = new ArrayList<Map<String, String>>();
 			for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {

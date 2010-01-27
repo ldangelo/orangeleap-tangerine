@@ -306,6 +306,13 @@ values ('bean:donationDate', 'checkDate', 'gift');
 
 
 /* TANGERINE-1583 */
+SET @Next_ID=(SELECT MAX(PICKLIST_ID)+1 FROM PICKLIST);
+
+INSERT INTO PICKLIST (PICKLIST_ID, PICKLIST_NAME_ID, PICKLIST_NAME, PICKLIST_DESC) VALUES (@Next_ID, 'customFieldMap[correspondenceFor]', 'customFieldMap[correspondenceFor]', 'Touch Points Correspondence For Options');
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, LONG_DESCRIPTION, ITEM_ORDER) VALUES (@Next_ID, 'primary', 'Primary', 'Primary', 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, LONG_DESCRIPTION, ITEM_ORDER) VALUES (@Next_ID, 'all', 'All', 'All', 2);
+
+
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('communicationHistory.customFieldMap[correspondenceFor]', 'communicationHistory', 'customFieldMap[correspondenceFor]', 'Correspondence For', 'PICKLIST');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.constituent.accountNumber', 'adjustedGift', 'constituent', 'Account Number', 'NUMBER');

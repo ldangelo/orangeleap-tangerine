@@ -148,6 +148,7 @@
 		    <transaction src="${basedir}/db/prod/picklists/noteTypePicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/eventPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/eventParticipationPicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/touchPointCorrespondenceForPicklist.sql"/>
 
 	     </sql>
 	</target>

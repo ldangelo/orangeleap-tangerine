@@ -20,6 +20,7 @@ package com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.look
 
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -250,20 +251,25 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 
     @Override
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
-        ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
-        Object displayValue = StringConstants.EMPTY;
-
-        if (fieldValue != null) {
-            if (NumberUtils.isDigits(fieldValue.toString()) && Long.valueOf(fieldValue.toString()) > 0 && referenceType != null) {
-                Long longId = Long.valueOf(fieldValue.toString());
-                displayValue = resolve(longId, referenceType);
-            }
-            else {
-                displayValue = fieldValue;
-            }
-        }
-        return displayValue;
+        return resolveDisplayValue(currentField.getFieldDefinition(), fieldValue);
     }
+
+	@Override
+	public Object resolveDisplayValue(FieldDefinition fieldDef, Object fieldValue) {
+		ReferenceType referenceType = fieldDef.getReferenceType();
+		Object displayValue = StringConstants.EMPTY;
+
+		if (fieldValue != null) {
+		    if (NumberUtils.isDigits(fieldValue.toString()) && Long.valueOf(fieldValue.toString()) > 0 && referenceType != null) {
+		        Long longId = Long.valueOf(fieldValue.toString());
+		        displayValue = resolve(longId, referenceType);
+		    }
+		    else {
+		        displayValue = fieldValue;
+		    }
+		}
+		return displayValue;
+	}
 
 	@Override
 	public Object resolveExtData(final SectionField currentField, Object fieldValue) {

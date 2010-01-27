@@ -214,12 +214,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         long count = 0;
         if (resolvedType != null) {
-	        final WSClient client = getClient();
+	        final Theguru theGuru = new WSClient().getTheGuru();
 	        final ObjectFactory objFactory = new ObjectFactory();
 	        final GetSegmentationCountByTypeRequest req = objFactory.createGetSegmentationCountByTypeRequest();
 
 	        req.setType(resolvedType);
-            final GetSegmentationCountByTypeResponse resp = client.getTheGuru().getSegmentationCountByType(req);
+            final GetSegmentationCountByTypeResponse resp = theGuru.getSegmentationCountByType(req);
             if (resp != null) {
                 count = resp.getCount();
             }
@@ -237,7 +237,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         final List<Segmentation> returnSegmentations = new ArrayList<Segmentation>();
         final String resolvedType = resolveGuruSegmentationType(batchType);
         if (resolvedType != null) {
-	        final WSClient client = getClient();
+	        final Theguru theGuru = new WSClient().getTheGuru();
 	        final ObjectFactory objFactory = new ObjectFactory();
 	        final GetSegmentationListByTypeRequest req = objFactory.createGetSegmentationListByTypeRequest();
             req.setType(resolvedType);
@@ -246,7 +246,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             req.setStartIndex(startIndex);
             req.setResultCount(resultCount);
 
-            GetSegmentationListByTypeResponse resp = client.getTheGuru().getSegmentationListByType(req);
+            GetSegmentationListByTypeResponse resp = theGuru.getSegmentationListByType(req);
             if (resp != null) {
                 List<com.orangeleap.theguru.client.Segmentation> wsSegmentations = resp.getSegmentation();
                 if (wsSegmentations != null) {
@@ -361,11 +361,4 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 	    batchForErrors.setForTouchPoints(originalBatch.isForTouchPoints());
         return maintainBatch(batchForErrors);
     }
-
-	private WSClient getClient() {
-		WSClient client = new WSClient();
-		client.setUserName(tangerineUserHelper.lookupUserName());
-		client.setPassword(tangerineUserHelper.lookupUserPassword());
-		return client;
-	}
 }

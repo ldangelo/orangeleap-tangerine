@@ -1,21 +1,18 @@
 package com.orangeleap.theguru.client;
 
+import com.orangeleap.common.security.CasUtil;
+import com.orangeleap.common.security.OrangeLeapAuthentication;
+import com.orangeleap.tangerine.util.ApplicationContextProvider;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
-
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.springframework.context.ApplicationContext;
-
-import com.orangeleap.tangerine.util.ApplicationContextProvider;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.common.security.*;
 
 public class WSClient extends OrangeLeapAuthentication {
 	
@@ -33,7 +30,7 @@ public class WSClient extends OrangeLeapAuthentication {
 
 		ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
 
-//		CasUtil.populateOrageLeapAuthenticationWithCasCredentials(this, "http://" + System.getProperty("jasper.host") + ":" + System.getProperty("jasper.port") + "/" + System.getProperty("contextPrefix") + "clementine/j_spring_cas_security_check");
+		CasUtil.populateOrageLeapAuthenticationWithCasCredentials(this, "http://" + System.getProperty("jasper.host") + ":" + System.getProperty("jasper.port") + "/" + System.getProperty("contextPrefix") + "clementine/j_spring_cas_security_check");
     	
         Map outProps = new HashMap();
 		Client client = org.apache.cxf.frontend.ClientProxy.getClient(guruPort);

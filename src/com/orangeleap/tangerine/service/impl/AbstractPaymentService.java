@@ -167,21 +167,21 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
         				ex.reject("paymentsource.exists","The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
         			}
-        			else if (names != null && !names.isEmpty()) {
-        				//
-        				// throw a bindexception for conflicting names
-        				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
-        				ex.reject("paymentsource.conflictingname","Payment Source Exists With Conflicting Name");
-        				throw ex;
-        			}
-        			else if (dateSources != null && !dateSources.isEmpty()) {
-        				//
-        				// throw a bindexception for credit card exists
-        				existingSource = dateSources.get(0); // should only be 1
-        				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
-        				ex.reject("paymentsource.creditcarddateexists","The entered credit card information already exists for the profile '" + existingSource.getProfile() + "' but with an expiration date of '" +		existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");;
-        				throw ex;
-        		}
+//        			else if (names != null && !names.isEmpty()) {
+//        				//
+//        				// throw a bindexception for conflicting names
+//        				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
+//        				ex.reject("paymentsource.conflictingname","Payment Source Exists With Conflicting Name");
+//        				throw ex;
+//        			}
+//        			else if (dateSources != null && !dateSources.isEmpty()) {
+//        				//
+//        				// throw a bindexception for credit card exists
+//        				existingSource = dateSources.get(0); // should only be 1
+//        				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
+//        				ex.reject("paymentsource.creditcarddateexists","The entered credit card information already exists for the profile '" + existingSource.getProfile() + "' but with an expiration date of '" +		existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");;
+//        				throw ex;
+//        		}
         		
 	            paymentSourceAware.setPaymentType(paymentSourceAware.getPaymentSource().getPaymentType());
 	            if (paymentSourceAware.getPaymentSource().isNew()) {

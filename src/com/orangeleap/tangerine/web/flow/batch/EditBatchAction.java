@@ -490,22 +490,27 @@ public class EditBatchAction extends AbstractAction {
         if (logger.isTraceEnabled()) {
             logger.trace("step4FindBatchUpdateFields:");
         }
-        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
-        determineStepToSave(flowRequestContext);
-
-        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        final ModelMap model = new ModelMap();
-
-	    if (batch.isForTouchPoints()) {
-		    findTouchPointUpdateFields(batch, model);
-	    }
-	    else {
-            findBatchUpdateFields(batch, model);
-	    }
-        
+	    final ModelMap model = findUpdateFields(flowRequestContext);
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
     }
+
+	protected ModelMap findUpdateFields(final RequestContext flowRequestContext) {
+		tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
+		determineStepToSave(flowRequestContext);
+
+		final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
+		final ModelMap model = new ModelMap();
+
+		if (batch.isForTouchPoints()) {
+			findTouchPointUpdateFields(batch, model);
+		}
+		else {
+		    findBatchUpdateFields(batch, model);
+		}
+		model.put(StringConstants.SUCCESS, Boolean.TRUE);
+		return model;
+	}
 
     @SuppressWarnings("unchecked")
     protected void findBatchUpdateFields(final PostBatch batch, final ModelMap model) {

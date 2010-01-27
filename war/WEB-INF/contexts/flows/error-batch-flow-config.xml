@@ -37,6 +37,7 @@
         <transition on="errorStep3" to="errorBatchStep3"/>
         <transition on="errorStep4" to="errorBatchStep4"/>
         <transition on="cancel" to="errorBatchCompleted"/>
+	    <transition on="save" to="errorBatchSave"/>
     </view-state>
 
     <view-state id="errorBatchStep4">

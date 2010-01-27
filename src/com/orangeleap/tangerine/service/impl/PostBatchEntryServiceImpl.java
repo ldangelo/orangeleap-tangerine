@@ -313,7 +313,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 	protected void maintainAllCommunicationEntities(AbstractCustomizableEntity entity, List<? extends AbstractCommunicationEntity> communicationEntities,
 			BeanWrapper bw, String fieldName) throws BindException {
 		if (communicationEntities == null || communicationEntities.isEmpty()) {
-			addBatchErrorToEntity(entity, "invalidCommunication", TangerineMessageAccessor.getMessage(fieldName));
+			addBatchErrorToEntity(entity, "invalidCommunication", TangerineMessageAccessor.getMessage(fieldName), (String) bw.getPropertyValue("constituent.recognitionName"));
 		}
 		else {
 			for (AbstractCommunicationEntity communicationEntity : communicationEntities) {
@@ -328,7 +328,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 			AbstractCommunicationEntity communicationEntity,
 			BeanWrapper bw, String fieldName, String messageKey) throws BindException {
 		if (communicationEntity == null || communicationEntity.isNew()) {
-			addBatchErrorToEntity(entity, messageKey, TangerineMessageAccessor.getMessage(fieldName));
+			addBatchErrorToEntity(entity, messageKey, TangerineMessageAccessor.getMessage(fieldName), (String) bw.getPropertyValue("constituent.recognitionName"));
 		}
 		else {
 			bw.setPropertyValue(fieldName, communicationEntity);

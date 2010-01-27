@@ -68,9 +68,10 @@ public class ErrorBatchAction extends EditBatchAction {
 
         if (batch != null) {
             final Map<String, String> dataMap = new HashMap<String, String>();
-            dataMap.put("errorBatchDesc", batch.getBatchDesc());
-            dataMap.put("errorBatchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
-            dataMap.put("hiddenErrorBatchType", batch.getBatchType());
+            dataMap.put("batchDesc", batch.getBatchDesc());
+            dataMap.put("batchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
+	        dataMap.put("criteriaFields", batch.isForTouchPoints() ? TangerineMessageAccessor.getMessage("touchPointFields") : TangerineMessageAccessor.getMessage("batchTypeFields"));
+	        dataMap.put("hiddenErrorBatchType", batch.getBatchType());
             model.put(StringConstants.DATA, dataMap);
         }
         return model;
@@ -138,9 +139,9 @@ public class ErrorBatchAction extends EditBatchAction {
         }
 
         Map<String, Object> fieldMap = new HashMap<String, Object>();
-        idName = TangerineForm.escapeFieldName("errorMsg");
-        fieldMap.put(StringConstants.NAME, idName);
-        fieldMap.put(StringConstants.MAPPING, idName);
+        String errorMsg = TangerineForm.escapeFieldName("errorMsg");
+        fieldMap.put(StringConstants.NAME, errorMsg);
+        fieldMap.put(StringConstants.MAPPING, errorMsg);
         fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
         fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage("errors"));
         fieldList.add(fieldMap);
@@ -172,13 +173,7 @@ public class ErrorBatchAction extends EditBatchAction {
         if (logger.isTraceEnabled()) {
             logger.trace("errorStep3:");
         }
-        tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch); // TODO: do as annotation
-        determineStepToSave(flowRequestContext);
-        final PostBatch batch = getBatchFromFlowScope(flowRequestContext);
-        final ModelMap model = new ModelMap();
-        findBatchUpdateFields(batch, model);
-        model.put(StringConstants.SUCCESS, Boolean.TRUE);
-        return model;
+	    return findUpdateFields(flowRequestContext);
     }
 
     /**

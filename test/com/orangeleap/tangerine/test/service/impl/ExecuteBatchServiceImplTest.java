@@ -559,7 +559,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
 		Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
 		for (int x = 5000; x < 5004; x++) {
 			Assert.assertTrue(groupedMap.keySet().contains( (long) x));
-			Assert.assertTrue(groupedMap.get( (long) x).contains(TangerineMessageAccessor.getMessage("invalidCommunication", TangerineMessageAccessor.getMessage("address")).trim()));
+			Assert.assertTrue(groupedMap.get( (long) x).contains(TangerineMessageAccessor.getMessage("invalidCommunication", TangerineMessageAccessor.getMessage("address"), "Mr. Howdy Doody").trim()));
 		}
 	}
 
@@ -593,7 +593,7 @@ public class ExecuteBatchServiceImplTest extends BaseTest {
 		Map<Long, Set<String>> groupedMap = groupByGiftId(errors);
 		for (int x = 5000; x < 5004; x++) {
 			Assert.assertTrue(groupedMap.keySet().contains( (long) x));
-			Assert.assertTrue(groupedMap.get( (long) x).contains(TangerineMessageAccessor.getMessage("invalidPrimary", TangerineMessageAccessor.getMessage("phone")).trim()));
+			Assert.assertTrue(groupedMap.get( (long) x).contains(TangerineMessageAccessor.getMessage("invalidPrimary", TangerineMessageAccessor.getMessage("phone"), "Mr. Howdy Doody").trim()));
 		}
 	}
 

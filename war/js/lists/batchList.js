@@ -97,7 +97,7 @@ OrangeLeap.msgBundle = {
     deletingBatch: 'Deleting Batch...',
     executingBatch: 'Executing Batch...',
     followingBeModified: 'For your reference, the following rows will be modified. Click \'Next\' to continue or \'Prev\' to change segmentations',
-    followingHaveTouchPoints: 'The following constituents will have touch points applied to them. Click \'Next\' to continue or \'Prev\' to change segmentations',
+    followingHaveTouchPoints: 'The following rows will have touch points applied to them. Click \'Next\' to continue or \'Prev\' to change segmentations',
     followingChangesApplied: 'The following changes will be applied when you execute the batch.',
     noSegmentationsFound: 'No Segmentations were found for the Type selected.  Please choose a different Type (Step 1).',
     noRowsFound: 'No rows were found for the Segmentations selected.  Please choose a different Segmentation (Step 2).',
@@ -147,7 +147,10 @@ OrangeLeap.msgBundle = {
     step2ErrorTitle: '<span class="step"><span class="stepNum complete" id="errorStep2">2</span><span class="stepTxt">View Rows To Be Updated and Errors</span>',
     step3ErrorTitle: '<span class="step"><span class="stepNum complete" id="errorStep3">3</span><span class="stepTxt">Edit Field Update Criteria</span>',
     step4ErrorTitle: '<span class="step"><span class="stepNum complete" id="errorStep4">4</span><span class="stepTxt">Confirm Changes</span>',
-    mustDoStep3Error: 'You must create Field Update Criteria (Step 3) first.'
+    editFieldUpdateCriteria: 'Edit Field Update Criteria',
+    editTouchPointFields: 'Edit Touch Point Fields',
+    mustDoStep3FieldUpdateCriteriaError: 'You must create Field Update Criteria (Step 3) first.',
+    mustDoStep3TouchPointFieldsError: 'You must create Touch Point Fields (Step 3) first.'
 };
 
 Ext.onReady(function() {
@@ -392,7 +395,7 @@ Ext.onReady(function() {
                 if (OrangeLeap.allowCreate) {
                     var rec = grid.getSelectionModel().getSelected();
                     if (rec.get('executed')) {
-                        reviewBatchId = rec.get('id');
+                        reviewBatchWin.batchID = rec.get('id');
                         showModal(reviewBatchWin);
                     }
                     else if (rec.get('currentlyExecuting')) {
@@ -401,7 +404,8 @@ Ext.onReady(function() {
                     }
                     else {
                         if (combo.getValue() == 'errors') {
-                            errorBatchId = rec.get('id');
+                            errorBatchWin.batchID = rec.get('id');
+                            errorBatchWin.forTouchPoints = rec.get('forTouchPoints');
                             showModal(errorBatchWin);
                         }
                         else {
@@ -802,7 +806,7 @@ Ext.onReady(function() {
                 }
             }
             else if (currentGroup.mainItem.id == 'step4Grp') {
-                if (! isForTouchPoints()) {
+                if ( ! isForTouchPoints()) {
 	                if (step4UpdatableFieldsForm.store.getCount() == 0 || ! checkFieldCriteriaValid(step4UpdatableFieldsForm)) {
 						isValid = false;
 						invalidateAccessibleSteps('step4Grp');
@@ -996,7 +1000,7 @@ Ext.onReady(function() {
         }
     }
 
-    function findTouchPointFields(form, saveParams) {
+    function findTouchPointFields(form, saveParams, idPrefix) {
 		var obj = form.getFieldValues();
 		if (obj) {
 			for (var key in obj) {
@@ -1004,7 +1008,7 @@ Ext.onReady(function() {
 				if (Ext.isArray(val)) {
 					val = val.join(); 
 				}
-				else if (form.items.map[key].xtype == 'datefield' && ! Ext.isEmpty(val)) {
+				else if (form.items.map[ (idPrefix ? idPrefix + key : key) ].xtype == 'datefield' && ! Ext.isEmpty(val)) {
 					val = new Date(val).format('Y-m-d H:i:s'); // format the date value into MM/dd/yyyy format
 				}
 				saveParams['param-' + key] = val;
@@ -1076,7 +1080,7 @@ Ext.onReady(function() {
 					'success': function(form, action) {
 						flowExecutionKey = action.result.flowExecutionKey;
 						accessibleSteps = action.result.accessibleSteps;
-                        toggleStep4TouchPointFields(Ext.getCmp('entryType').getValue());
+                        toggleTouchPointFields(Ext.getCmp('entryType').getValue());
 						if (touchPointFieldsValid('entryType')) {
 							step4TouchPointFieldsForm.saveButton.enable();
 						}
@@ -1679,11 +1683,6 @@ Ext.onReady(function() {
 		return ( (! isForTouchPoints()) ? 0 : 1);
     }
 
-	/* Common configuration for both step 4 edit forms */
-    var commonStep4FormConfig = {
-        buttonAlign: 'center'
-    };
-
     function showFormItem(elem, elems, index) {
         Ext.getCmp(elem.dom.id).show();
         var $elem = $('#' + OrangeLeap.escapeIdCharacters(elem.dom.id));
@@ -1701,6 +1700,7 @@ Ext.onReady(function() {
     var step4TouchPointFieldsForm = new Ext.form.FormPanel(jQuery.extend({
         formId: 'step4TouchPointFieldsForm',
         ctCls: 'wizard',
+        cls: 'batchForm',
         buttons: [
             {
                 text: msgs.previous,
@@ -1758,7 +1758,7 @@ Ext.onReady(function() {
                     'focus': OrangeLeap.extElementFocus,
                     'blur': OrangeLeap.extElementBlur,
                     'beforeselect': function(combo, record, index) {
-                        toggleStep4TouchPointFields(record.get('itemName'));
+                        toggleTouchPointFields(record.get('itemName'));
                     },
                     'change': function(combo, newVal, oldVal) {
 						if (touchPointFieldsValid('entryType')) {
@@ -1939,20 +1939,24 @@ Ext.onReady(function() {
                 }
             }
 		]        
-	}, commonStep4FormConfig, commonFormConfig));
+	}, commonFormConfig));
 
 	step4TouchPointFieldsForm.getForm().on('beforeaction', function(form, action) {
+		handleLoadTouchPointsForm(step4TouchPointFieldsForm, form, action);
+	});
+
+	function handleLoadTouchPointsForm(formPanel, basicForm, action, idPrefix) {
 		if (action.type == Ext.form.Action.Load.prototype.type) {
 			var originalHandleResponse = action.handleResponse;
 			/* Override the original Ext.form.Action.Load handleResponse function to invoke loadTouchPointFormFields function first */
 			action.handleResponse = function(response) {
-				loadTouchPointFormFields(response);
-				return originalHandleResponse.apply(step4TouchPointFieldsForm, arguments);
+				loadTouchPointFormFields(response, idPrefix);
+				return originalHandleResponse.apply(formPanel, arguments);
 			};
 		}
-	});
+	}
 
-	function toggleStep4TouchPointFields(value) {
+	function toggleTouchPointFields(value) {
 		if (value == 'Mail' || value == 'MailingLabel' || value == 'Email' || value == 'Call' || value == 'Other') {
 			Ext.select(".ea-template").each(showFormItem);
 		}
@@ -1979,11 +1983,11 @@ Ext.onReady(function() {
 		}
 	}
 
-	function loadTouchPointFormFields(response) {
+	function loadTouchPointFormFields(response, idPrefix) {
 		var obj = Ext.decode(response.responseText);
 		if (obj && obj.data) {
 			for (var key in obj.data) {
-				var cmp = Ext.getCmp(key);
+				var cmp = Ext.getCmp(idPrefix ? idPrefix + key : key);
 				if (cmp) {
 					var picklistData = obj[key + '-Picklist'];
 					if (picklistData) { // look for picklist data to update
@@ -2170,7 +2174,7 @@ Ext.onReady(function() {
         proxyLoadUpdatableFields(step4Picklists, txn);
     });
 
-    var step4UpdatableFieldsForm = new OrangeLeap.DynamicPropertyGrid(jQuery.extend({
+    var step4UpdatableFieldsForm = new OrangeLeap.DynamicPropertyGrid({
         updatableFieldsStore: step4UpdatableFieldsStore,
         id: 'step4UpdatableFieldsForm',
         width: 726,
@@ -2181,6 +2185,7 @@ Ext.onReady(function() {
         border: false,
         forceLayout: true,
         cls: 'grp',
+        buttonAlign: 'center',
         propertyNames: { },
         source: { },
         customEditors: { },
@@ -2223,7 +2228,7 @@ Ext.onReady(function() {
                 }
             }
         ]
-    }, commonStep4FormConfig));
+    });
 
     var checkStep4EnableButton = function(store) {
         if (store.getCount() == 0 || ! checkFieldCriteriaValid(step4UpdatableFieldsForm)) {
@@ -2536,18 +2541,22 @@ Ext.onReady(function() {
 
 	/* onStripMouseDown function is overridden to set the correct active tab for step 4 */ 
     editBatchWin.items.items[0].onStripMouseDown = function(e) {
+        showActiveTab(e, this, 'step4Grp', getStep4TabItemNumber);
+    };
+
+    function showActiveTab(e, tab, idToCheck, tabItemNumFunc) {
         if (e.button != 0) {
             return;
         }
         e.preventDefault();
-        var t = this.findTargets(e);
+        var t = tab.findTargets(e);
         if (t.expand) {
-            this.toggleGroup(t.el);
+            tab.toggleGroup(t.el);
         }
         else if (t.item) {
             if (t.isGroup) {
-                if (t.item.items.items[0].id == 'step4Grp') {
-	                t.item.setActiveTab(t.item.items.items[0].items.items[getStep4TabItemNumber()]);
+                if (t.item.items.items[0].id == idToCheck) {
+	                t.item.setActiveTab(t.item.items.items[0].items.items[tabItemNumFunc()]);
                 }
                 else {
 	                t.item.setActiveTab(t.item.getMainItem());
@@ -2557,7 +2566,7 @@ Ext.onReady(function() {
                 t.item.ownerCt.setActiveTab(t.item);
             }
         }
-    };
+    }
 
     var hideEditOnEscape = function(e) {
         if (e.keyCode == 27) {
@@ -2891,7 +2900,6 @@ Ext.onReady(function() {
         }
     }, commonGridPanelConfig));
 
-    var reviewBatchId = null;
     var reviewFlowExecutionKey = null;
 
     function closeReviewBatch() {
@@ -2913,7 +2921,7 @@ Ext.onReady(function() {
 
             reviewStep1Form.getForm().load({
                 'url': 'reviewBatch.htm',
-                'params': { 'batchId': reviewBatchId, '_eventId_reviewStep1': 'reviewStep1', 'execution': reviewFlowExecutionKey },
+                'params': { 'batchId': reviewBatchWin.batchID, '_eventId_reviewStep1': 'reviewStep1', 'execution': reviewFlowExecutionKey },
                 'success': function(form, action) {
                     reviewFlowExecutionKey = action.result.flowExecutionKey;
                     unmaskReviewStep1();
@@ -3062,7 +3070,7 @@ Ext.onReady(function() {
         ],
         items: [
             {
-                fieldLabel: msgs.description, name: 'errorBatchDesc', id: 'errorBatchDesc', xtype: 'textarea',
+                fieldLabel: msgs.description, name: 'batchDesc', id: 'errorBatchDesc', xtype: 'textarea',
                 maxLength: 255, height: 60, width: 500, grow: true, growMin: 60, growMax: 400,
                 listeners: {
                     'focus': OrangeLeap.extElementFocus,
@@ -3071,11 +3079,15 @@ Ext.onReady(function() {
                 }
             },
             {
-                fieldLabel: msgs.batchType, name: 'errorBatchType', id: 'errorBatchType', xtype: 'displayfield', cls: 'displayElem',
+                fieldLabel: msgs.batchType, name: 'batchType', id: 'errorBatchType', xtype: 'displayfield', cls: 'displayElem',
                 height: 60, width: 500
             },
             {
                 name: 'hiddenErrorBatchType', id: 'hiddenErrorBatchType', xtype: 'hidden'
+            },
+            {
+                fieldLabel: msgs.criteriaFields, name: 'criteriaFields', id: 'errorCriteriaFields', xtype: 'displayfield', cls: 'displayElem',
+                height: 60, width: 500
             }
         ]
     }, commonFormConfig));
@@ -3228,7 +3240,7 @@ Ext.onReady(function() {
                     var panel = errorBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(2)) {
                         var firstItem = panel.items.items[2];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
+                        firstItem.setActiveTab(firstItem.items.items[0].items.items[getErrorStep3TabItemNumber()]);
                     }
                 }
             },
@@ -3256,6 +3268,254 @@ Ext.onReady(function() {
         }
     }, commonGridPanelConfig));
 
+    var errorStep3TouchPointFieldsForm = new Ext.form.FormPanel(jQuery.extend({
+        formId: 'errorStep3TouchPointFieldsForm',
+        ctCls: 'wizard',
+        cls: 'batchForm',
+        buttons: [
+            {
+                text: msgs.previous,
+                cls: 'button',
+                ref: '../prevButton',
+                formBind: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    var panel = errorBatchWin.groupTabPanel;
+                    if (panel.setActiveGroup(1)) {
+                        var firstItem = panel.items.items[1];
+                        firstItem.setActiveTab(firstItem.items.items[0]);
+                    }
+                }
+            },
+            {
+                text: msgs.save,
+                cls: 'saveButton',
+                ref: '../saveButton',
+                formBind: true,
+                disabled: true,
+                disabledClass: 'disabledButton',
+                handler: function(button, event) {
+                    if (touchPointFieldsValid('error-entryType')) {
+	                    saveBatch('errorBatch.htm', errorFlowExecutionKey, cancelErrorBatch, 'errors', initErrorTabSaveParams('step3Error'));
+                    }
+                    else {
+	                    showErrorMsg(msgs.mustDoStep3TouchPointFieldsError);
+                    }
+                }
+            },
+            {
+                text: msgs.cancel,
+                cls: 'button',
+                ref: '../closeButton',
+                handler: function(button, event) {
+					cancelErrorBatch();
+                }
+            }
+        ],
+		items: [ // TODO: replace with dynamically created fields
+            {
+                fieldLabel: '<span class="required">*</span>' + msgs.entryType, name: 'entryType', id: 'error-entryType', xtype: 'combo',
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                typeAhead: false,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'beforeselect': function(combo, record, index) {
+                        toggleTouchPointFields(record.get('itemName'));
+                    },
+                    'change': function(combo, newVal, oldVal) {
+						if (touchPointFieldsValid('error-entryType')) {
+							errorStep3TouchPointFieldsForm.saveButton.enable();
+						}
+						else {
+							errorStep3TouchPointFieldsForm.saveButton.disable();
+						}
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.correspondenceFor, name: 'customFieldMap[correspondenceFor]', id: 'error-customFieldMap[correspondenceFor]', xtype: 'combo',
+                cls: 'ea-correspondence',
+                store: new Ext.data.ArrayStore({
+                    fields: [
+                        'itemName',
+                        'displayVal'
+                    ],
+                    data: [['primary', msgs.primary], ['all', msgs.all]]
+                }),
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                typeAhead: false,
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.noteType, name: 'customFieldMap[noteType]', id: 'error-customFieldMap[noteType]', xtype: 'combo',
+                cls: 'ea-noteType',
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                typeAhead: false,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.event, name: 'customFieldMap[event]', id: 'error-customFieldMap[event]', xtype: 'combo',
+                cls: 'ea-event',
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                typeAhead: false,
+                mode: 'local',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.eventParticipation, name: 'customFieldMap[eventParticipation]', id: 'error-customFieldMap[eventParticipation]', xtype: 'combo',
+                cls: 'ea-event',
+                displayField: 'displayVal',
+                valueField: 'itemName',
+                typeAhead: false,
+                mode: 'local',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                forceSelection: true,
+                triggerAction: 'all',
+                emptyText: ' ',
+                selectOnFocus: true,
+                minListWidth: 500,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    'change': function(field, newVal, oldVal) {
+                    },
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.eventDate, name: 'customFieldMap[eventDate]', id: 'error-customFieldMap[eventDate]', xtype: 'datefield',
+                cls: 'ea-event',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.eventLocation, name: 'customFieldMap[eventLocation]', id: 'error-customFieldMap[eventLocation]', xtype: 'textfield',
+                cls: 'ea-event',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.template, name: 'customFieldMap[template]', id: 'error-customFieldMap[template]', xtype: 'textfield',
+                hidden: true,
+                hideParent: true,
+                hideLabel: true,
+                width: 500,
+                cls: 'ea-template',
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            },
+            {
+                fieldLabel: msgs.recordDate, name: 'recordDate', id: 'error-recordDate', xtype: 'datefield',
+                width: 500,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            },
+			{
+				fieldLabel: msgs.assignedTo, name: 'customFieldMap[assignedTo]',
+				id: 'error-customFieldMap[assignedTo]',
+				fieldDef: 'communicationHistory.customFieldMap[assignedTo]',
+				width: 498,
+				xtype: 'querylookup'
+			},
+            {
+                fieldLabel: msgs.comments, name: 'comments', id: 'error-comments', xtype: 'textarea',
+                height: 60, width: 500, grow: true, growMin: 60, growMax: 400,
+                listeners: {
+                    'focus': OrangeLeap.extElementFocus,
+                    'blur': OrangeLeap.extElementBlur,
+                    scope: this
+                }
+            }
+		]
+	}, commonFormConfig));
+
+	errorStep3TouchPointFieldsForm.getForm().on('beforeaction', function(form, action) {
+		handleLoadTouchPointsForm(errorStep3TouchPointFieldsForm, form, action, 'error-');
+	});
+
     var errorStep3UpdatableFieldsStore = new Ext.data.JsonStore({
         url: 'errorBatch.htm',
         autoLoad: false,
@@ -3271,7 +3531,7 @@ Ext.onReady(function() {
         ],
         listeners: {
             'load': function(store, records, options) {
-                loadUpdatableFields(errorStep3Form, errorStep3Picklists, store, records, options);
+                loadUpdatableFields(errorStep3UpdatableFieldsForm, errorStep3Picklists, store, records, options);
                 Ext.get(findStepErrorParentId(3)).unmask();
             },
             'beforeload': function(store, options) {
@@ -3290,7 +3550,7 @@ Ext.onReady(function() {
         errorFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
         proxyLoadUpdatableFields(errorStep3Picklists, txn);
     });
-    var errorStep3Form = new OrangeLeap.DynamicPropertyGrid({
+    var errorStep3UpdatableFieldsForm = new OrangeLeap.DynamicPropertyGrid({
         width: 726,
         height: 468,
         loadMask: true,
@@ -3300,7 +3560,6 @@ Ext.onReady(function() {
         forceLayout: true,
         propertyNames: { },
         source: { },
-        viewConfig : { autoFill: true },
         updatableFieldsStore: errorStep3UpdatableFieldsStore,
         customEditors: { },
         buttons: [
@@ -3344,14 +3603,14 @@ Ext.onReady(function() {
         buttonAlign: 'center'
     });
     var checkErrorStep3EnableButton = function(store) {
-        if (store.getCount() == 0 || ! checkFieldCriteriaValid(errorStep3Form)) {
-            errorStep3Form.nextButton.disable();
+        if (store.getCount() == 0 || ! checkFieldCriteriaValid(errorStep3UpdatableFieldsForm)) {
+            errorStep3UpdatableFieldsForm.nextButton.disable();
         }
         else {
-            errorStep3Form.nextButton.enable();
+            errorStep3UpdatableFieldsForm.nextButton.enable();
         }
     };
-    errorStep3Form.store.addListener({
+    errorStep3UpdatableFieldsForm.store.addListener({
         'add': checkErrorStep3EnableButton,
         'update': checkErrorStep3EnableButton,
         'remove': checkErrorStep3EnableButton
@@ -3387,6 +3646,10 @@ Ext.onReady(function() {
     errorStep4Store.proxy.on('load', function(proxy, txn, options) {
         errorFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
+
+	function getErrorStep3TabItemNumber()  {
+		return ( (! errorBatchWin.forTouchPoints) ? 0 : 1);
+	}
 
     var errorStep4Bar = new OrangeLeap.ErrorBatchWinToolbar({
         pageSize: 50,
@@ -3453,7 +3716,7 @@ Ext.onReady(function() {
                     var panel = errorBatchWin.groupTabPanel;
                     if (panel.setActiveGroup(2)) {
                         var thisItem = panel.items.items[2];
-                        thisItem.setActiveTab(thisItem.items.items[0]);
+                        thisItem.setActiveTab(thisItem.items.items[0].items.items[getErrorStep3TabItemNumber()]);
                     }
                 }
             },
@@ -3478,7 +3741,6 @@ Ext.onReady(function() {
         ]
     }, commonGridPanelConfig, commonUnselectableRowConfig));
 
-    var errorBatchId = null;
     var errorFlowExecutionKey = null;
 
     function cancelErrorBatch() {
@@ -3493,12 +3755,23 @@ Ext.onReady(function() {
     function checkConditionsForErrorBatch(groupTabPanel, groupToShow, currentGroup) {
         var isValid = true;
         if (currentGroup && currentGroup.mainItem.id &&
-            groupToShow && groupToShow.mainItem.id &&
-            groupToShow.mainItem.id != currentGroup.mainItem.id &&
-            currentGroup.mainItem.id == 'step3Error' &&
-            (errorStep3Form.store.getCount() == 0 || ! checkFieldCriteriaValid(errorStep3Form))) {
-            isValid = false;
-            showErrorMsg(msgs.mustDoStep3Error);
+					groupToShow && groupToShow.mainItem.id &&
+					groupToShow.mainItem.id != currentGroup.mainItem.id &&
+					currentGroup.mainItem.id == 'step3Error') {
+					
+                if (errorBatchWin.forTouchPoints) {
+					if ( ! touchPointFieldsValid('error-entryType')) {
+						isValid = false;
+						showErrorMsg(msgs.mustDoStep3TouchPointFieldsError);
+					}
+				}
+                else {
+					if (errorStep3UpdatableFieldsForm.store.getCount() == 0 ||
+							! checkFieldCriteriaValid(errorStep3UpdatableFieldsForm)) {
+						isValid = false;
+						showErrorMsg(msgs.mustDoStep3FieldUpdateCriteriaError);
+					}
+                }
         }
         return isValid;
     }
@@ -3507,6 +3780,14 @@ Ext.onReady(function() {
         title: msgs.manageBatch,
         id: 'errorBatchWin',
         listeners: {
+            'show': function(win) {
+				if (win.forTouchPoints) {
+                     setupErrorWizardForTouchPoints();
+				}
+				else {
+					setupErrorWizardForFieldCriteria();
+				}
+            },
             'beforeshow': function() {
                 $(window).bind('keydown', function(e) {
                     hideErrorOnEscape(e);
@@ -3557,7 +3838,7 @@ Ext.onReady(function() {
                          cls: 'grp',
                          title: msgs.step3ErrorTitle,
                          tabTip: msgs.step3Tip,
-                         items: [ errorStep3Form ]
+                         items: [ errorStep3UpdatableFieldsForm, errorStep3TouchPointFieldsForm ]
                      }]
                  },
                  {
@@ -3573,11 +3854,26 @@ Ext.onReady(function() {
          }]
     }, commonWinConfig));
 
+	/* onStripMouseDown function is overridden to set the correct active tab for error step 3 */
+	errorBatchWin.items.items[0].onStripMouseDown = function(e) {
+		showActiveTab(e, this, 'step3Error', getErrorStep3TabItemNumber);
+	};
+
     var hideErrorOnEscape = function(e) {
         if (e.keyCode == 27) {
             errorBatchWin.hide();
         }
     };
+
+    function setupErrorWizardForTouchPoints() {
+		$('#errorStep3').next('.stepTxt').text(msgs.editTouchPointFields);
+		$('#errorStep4').parents('.x-grouptabs-main').addClass('noDisplay');
+    }
+
+    function setupErrorWizardForFieldCriteria() {
+		$('#errorStep3').next('.stepTxt').text(msgs.editFieldUpdateCriteria);
+		$('#errorStep4').parents('.x-grouptabs-main').removeClass('noDisplay');
+    }
 
     function resetErrorBatchWin() {
         // When the batchWin is hidden, clear out all set store objects, reset CSS classes, etc, for re-use for another batch
@@ -3587,30 +3883,34 @@ Ext.onReady(function() {
         errorBatchWin.groupTabPanel.activeGroup = null;
         Ext.getCmp('errorBatchDesc').setRawValue(''); // reset the batchDesc to empty string; use 'setRawValue()' to bypass form validation
         errorStep2Store.removeAll();
-        errorStep3Form.store.removeAll();
+        errorStep3UpdatableFieldsForm.store.removeAll();
         errorStep3UpdatableFieldsStore.removeAll();
         errorStep4Store.removeAll();
+        setupErrorWizardForFieldCriteria();
     }
 
-    function initErrorTabSaveParams(groupTabPanel, newGroup, currentGroup) {
+    function initErrorTabSaveParams(currentGroupId) {
         var saveParams = {};
-        if (currentGroup) {
-            if (currentGroup.mainItem.id == 'step1Error') {
-                saveParams = { 'batchDesc': Ext.getCmp('errorBatchDesc').getValue(), 'previousStep': 'step1Error' };
-            }
-            else if (currentGroup.mainItem.id == 'step2Error') {
-                // nothing to save for step2 - view only
-                saveParams = { 'previousStep': 'step2Error' };
-            }
-            else if (currentGroup.mainItem.id == 'step3Error') {
-                findUpdateFields(errorStep3Form.store, saveParams);
-                saveParams['previousStep'] = 'step3Error';
-            }
-            else if (currentGroup.mainItem.id == 'step4Error') {
-                // nothing to save for step4 - view only
-                saveParams = { 'previousStep': 'step4Error' };
-            }
-        }
+		if (currentGroupId == 'step1Error') {
+			saveParams = { 'batchDesc': Ext.getCmp('errorBatchDesc').getValue(), 'previousStep': 'step1Error' };
+		}
+		else if (currentGroupId == 'step2Error') {
+			// nothing to save for step2 - view only
+			saveParams = { 'previousStep': 'step2Error' };
+		}
+		else if (currentGroupId == 'step3Error') {
+			if ( ! errorBatchWin.forTouchPoints) {
+				findUpdateFields(errorStep3UpdatableFieldsForm.store, saveParams);
+			}
+			else {
+				findTouchPointFields(errorStep3TouchPointFieldsForm.getForm(), saveParams, 'error-');
+			}
+			saveParams['previousStep'] = 'step3Error';
+		}
+		else if (currentGroupId == 'step4Error') {
+			// nothing to save for step4 - view only
+			saveParams = { 'previousStep': 'step4Error' };
+		}
         return saveParams;
     }
 
@@ -3618,14 +3918,14 @@ Ext.onReady(function() {
         if ( ! startNum) {
             startNum = 0;
         }
-        var saveParams = initErrorTabSaveParams(groupTabPanel, newGroup, currentGroup);
+        var saveParams = (currentGroup && currentGroup.mainItem.id ? initErrorTabSaveParams(currentGroup.mainItem.id) : {} );
         var params = {};
 
         if (newGroup.mainItem.id == 'step1Error') {
             errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step1Tip);
             maskErrorStep1Form(); 
 
-            jQuery.extend(params, { 'batchId': errorBatchId, '_eventId_errorStep1': 'errorStep1', 'execution': errorFlowExecutionKey },
+            jQuery.extend(params, { 'batchId': errorBatchWin.batchID, '_eventId_errorStep1': 'errorStep1', 'execution': errorFlowExecutionKey },
                     saveParams); // copy properties from {} & saveParams to params
 
             errorStep1Form.getForm().load({
@@ -3650,7 +3950,37 @@ Ext.onReady(function() {
         }
         else if (newGroup.mainItem.id == 'step3Error') {
             jQuery.extend(params, { '_eventId_errorStep3': 'errorStep3', 'execution': errorFlowExecutionKey }, saveParams);
-            errorStep3UpdatableFieldsStore.load({ 'params': params });
+
+            if ( ! errorBatchWin.forTouchPoints) {
+                errorStep3UpdatableFieldsStore.load({ 'params': params });
+            }
+            else {
+                Ext.get(findStepErrorParentId(3)).mask(msgs.loading);
+				errorStep3TouchPointFieldsForm.getForm().load({
+					'url': 'errorBatch.htm',
+					'params': params,
+					'success': function(form, action) {
+						errorFlowExecutionKey = action.result.flowExecutionKey;
+                        toggleTouchPointFields(Ext.getCmp('error-entryType').getValue());
+						if (touchPointFieldsValid('error-entryType')) {
+							errorStep3TouchPointFieldsForm.saveButton.enable();
+						}
+						else {
+							errorStep3TouchPointFieldsForm.saveButton.disable();
+						}
+						Ext.get(findStepErrorParentId(3)).unmask();
+						setTimeout(function() {
+							OrangeLeap.extFocusFirstFormElem(errorStep3TouchPointFieldsForm.getForm());
+						}, 300);
+					},
+					'failure': function(form, action) {
+						Ext.get(findStepErrorParentId(3)).unmask();
+						Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+							buttons: Ext.MessageBox.OK,
+							msg: msgs.errorStep3 });
+					}
+				});
+            }
             errorBatchWin.setTitle(msgs.manageBatch + ": " + msgs.step3Tip);
         }
         else if (newGroup.mainItem.id == 'step4Error') {

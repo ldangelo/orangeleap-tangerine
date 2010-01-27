@@ -333,7 +333,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			logger.info("Reprocessing gifts.  Started on " + new java.util.Date());
 		
 			int totalGiftReprocessCount = giftService.getGiftReprocessCount();
-			logger.info("totalGiftReprocessCount = " + totalGiftReprocessCount);
+			logger.info(getSiteName() + " totalGiftReprocessCount = " + totalGiftReprocessCount);
 			
 			for (int start = 0; start <= totalGiftReprocessCount; start += 100) {
 	

@@ -61,6 +61,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 			RuleEventNameType ruleEventNameType;
 			if (AbstractPaymentInfoEntity.PROCESSING_TYPE_REPROCESS.equals(gift.getProcessingType())) {
 				ruleEventNameType = RuleEventNameType.SCHEDULED_REPROCESS_GIFT_DAILY;
+				gift.setProcessingType(null);
 			} else {
 				ruleEventNameType = RuleEventNameType.GIFT_SAVE;
 			}

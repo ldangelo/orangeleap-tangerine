@@ -32,10 +32,12 @@ import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.service.ws.exception.*;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.ws.schema.v2.AddCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameRequest;
 import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameResponse;
@@ -125,6 +127,12 @@ public class OrangeLeapWSV2 {
 	
 	@Autowired
 	private PaymentSourceService paymentSourceService;
+	
+	@Autowired
+	private SiteService siteService;
+	
+	@Autowired
+	private TangerineUserHelper tangerineUserHelper;
 	
 	/**
 	 * Creates a new <code>OrangeLeapWS</code> instance.
@@ -232,7 +240,7 @@ public class OrangeLeapWSV2 {
 		
 		ObjectConverter converter = new ObjectConverter();
 
-		converter.ConvertFromJAXB(p.getConstituent(), c);
+		converter.ConvertFromJAXB(p.getConstituent(), c,siteService.readSite(tangerineUserHelper.lookupUserSiteName()));
 
 		cs.maintainConstituent(c);
 
@@ -448,7 +456,7 @@ public class OrangeLeapWSV2 {
 		
 		ObjectConverter converter = new ObjectConverter();
 
-		converter.ConvertFromJAXB(request.getRecurringgift(), rg);
+		converter.ConvertFromJAXB(request.getRecurringgift(), rg,siteService.readSite(tangerineUserHelper.lookupUserSiteName()));
 
 		try {
 			recurringGiftService.maintainRecurringGift(rg);
@@ -493,7 +501,7 @@ public class OrangeLeapWSV2 {
 		
 		ObjectConverter converter = new ObjectConverter();
 
-		converter.ConvertFromJAXB(request.getPledge(), p);
+		converter.ConvertFromJAXB(request.getPledge(), p,siteService.readSite(tangerineUserHelper.lookupUserSiteName()));
 
 		try {
 			pledgeService.maintainPledge(p);
@@ -619,7 +627,7 @@ public class OrangeLeapWSV2 {
 
 			ObjectConverter converter = new ObjectConverter();
 
-			converter.ConvertFromJAXB(request.getGift(), g);
+			converter.ConvertFromJAXB(request.getGift(), g,siteService.readSite(tangerineUserHelper.lookupUserSiteName()));
 			g.setConstituent(c);
 
 			try {
@@ -863,7 +871,7 @@ public class OrangeLeapWSV2 {
 
 		if (req.getConstituentId() <= 0) throw new InvalidRequestException("Invalid constituentid in addCommunicationHistory");
 		
-		converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
+		converter.ConvertFromJAXB(req.getCommunicationHistory(), ch,siteService.readSite(tangerineUserHelper.lookupUserSiteName()));
 		ch.setConstituent(cs.readConstituentById(req.getConstituentId()));
 
 		try {
@@ -884,7 +892,7 @@ public class OrangeLeapWSV2 {
 		
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
 
-		converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
+		converter.ConvertFromJAXB(req.getCommunicationHistory(), ch,siteService.readSite(tangerineUserHelper.lookupUserSiteName()));
 
 		Iterator<Long> it = req.getConstituentId().iterator();
 		while (it.hasNext()) {
@@ -979,7 +987,7 @@ public class OrangeLeapWSV2 {
 		
 		PicklistItem item = new PicklistItem();
 		ObjectConverter converter = new ObjectConverter();
-		converter.ConvertFromJAXB(request.getPicklistitem(), item);
+		converter.ConvertFromJAXB(request.getPicklistitem(), item,siteService.readSite(tangerineUserHelper.lookupUserSiteName()));
 		
 		pl.getPicklistItems().add(item);
 		

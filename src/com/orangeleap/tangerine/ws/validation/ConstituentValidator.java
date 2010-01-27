@@ -32,10 +32,6 @@ public class ConstituentValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 		Constituent c = (Constituent) target;
 
-		//
-		// validate site information
-		validationManager.validate(c.getSite(),errors);
-		
 		if (c.getId() != null) {
 			if (c.getId() < 0)
 				errors.reject("soapInvalidConstituentId");

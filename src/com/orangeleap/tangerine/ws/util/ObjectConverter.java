@@ -19,12 +19,14 @@
 package com.orangeleap.tangerine.ws.util;
 
 import com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.integration.transformer.constituentToConstituentTransformer;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,9 +80,12 @@ public class ObjectConverter {
         Class propertyType = null;
         if (from == null) return;
         if (to == null) return;
+        
+        
         BeanWrapper bwFrom = new BeanWrapperImpl(from);
         BeanWrapper bwTo = new BeanWrapperImpl(to);
 
+       
         PropertyDescriptor[] pdFrom = bwFrom.getPropertyDescriptors();
 
         //

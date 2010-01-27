@@ -6,55 +6,6 @@
 	elementFormDefault="qualified">
 
 
-	<xs:complexType name="site">
-		<xs:annotation>
-			<xs:appinfo xml:lang="en">
-				<jxb:class>
-					<jxb:javadoc>
-						Orange Leap uses the Site object to specify which
-						"organizations" data
-						model you are accessing. For example
-						if you use
-						site.name="sandbox" you will access the data model
-						associated with
-						our sandbox. One important note is
-						that the site.name is validated
-						against the credentials that you log
-						in
-						as... So if you authenticate
-						with demo@sandbox your site
-						name must be sandbox or you will
-						receive a SoapFault.
-				</jxb:javadoc>
-				</jxb:class>
-			</xs:appinfo>
-		</xs:annotation>
-
-		<xs:attribute name="name" type="xs:string" use="required">
-			<xs:annotation>
-				<xs:appinfo>
-					<jxb:property>
-						<jxb:javadoc>
-							The name of the site that you wish to connect too.
-							This will
-							generate an Exception
-							if your authentication credentials
-							do not match your sitename.
-
-							For example if you try to connect to
-							demo@sandbox and use "demo" as
-							your site name.
-							You will receive a
-							SoapFault exception with a reason "Site name
-							does not match
-							supplied credentials"
-							</jxb:javadoc>
-					</jxb:property>
-				</xs:appinfo>
-			</xs:annotation>
-		</xs:attribute>
-	</xs:complexType>
-
     <xs:element name="Touchpoint" type="tns:communicationHistory"/>
 
 	<xs:complexType name="communicationHistory">
@@ -390,8 +341,6 @@
 					<xs:element name="transactionDate" type="xs:dateTime"
 						minOccurs="0" />
 					<xs:element name="txRefNum" type="xs:string" minOccurs="0" />
-					<xs:element name="site" type="tns:site" minOccurs="1"
-						maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -495,8 +444,6 @@
 						minOccurs="0" />
 					<xs:element name="preferredPhoneType" type="xs:string"
 						minOccurs="0" />
-					<xs:element name="site" type="tns:site" minOccurs="1"
-						maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -551,8 +498,6 @@
 						minOccurs="1" maxOccurs="1" />
 					<xs:element name="picklistDesc" type="xs:string"
 						minOccurs="1" maxOccurs="1" />
-					<xs:element name="site" type="tns:site" minOccurs="1"
-						maxOccurs="1" />
 					<xs:element name="multiselect" type="xs:boolean"
 						minOccurs="1" maxOccurs="1" />
 					<xs:element name="picklistItems" type="tns:picklistItem"

@@ -7,8 +7,11 @@ import org.springframework.webflow.test.MockRequestContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.test.BaseTest;
+import com.orangeleap.tangerine.test.dataprovider.ConstituentDataProvider;
 import com.orangeleap.tangerine.ws.schema.v2.ActivationType;
 import com.orangeleap.tangerine.ws.schema.v2.PaymentType;
 import com.orangeleap.tangerine.ws.util.v2.ObjectConverter;
@@ -22,26 +25,26 @@ public class ObjectConverterTest extends BaseTest {
         mockRequestContext = new MockRequestContext();
     }
 
-	@Test
-	public void testV2ObjectConverterFromEnum() {
+    @Test(groups = {"objectConverterTest"},dataProvider="setupCreateConstituent", dataProviderClass= ConstituentDataProvider.class)
+	public void testV2ObjectConverterFromEnum(Site site, Constituent c) {
 		com.orangeleap.tangerine.ws.schema.v2.Gift v2Gift = new com.orangeleap.tangerine.ws.schema.v2.Gift();
 		com.orangeleap.tangerine.domain.paymentInfo.Gift oleapGift = new com.orangeleap.tangerine.domain.paymentInfo.Gift();
 		ObjectConverter converter = new ObjectConverter();
 		
 		v2Gift.setPaymentType(PaymentType.CREDIT_CARD);
-		converter.ConvertFromJAXB(v2Gift, oleapGift);
+		converter.ConvertFromJAXB(v2Gift, oleapGift,site);
 		Assert.assertEquals("Credit Card", oleapGift.getPaymentType());
 		
 		com.orangeleap.tangerine.ws.schema.v2.Email v2Email = new com.orangeleap.tangerine.ws.schema.v2.Email();
 		com.orangeleap.tangerine.domain.communication.Email oleapEmail = new com.orangeleap.tangerine.domain.communication.Email();
 		
 		v2Email.setActivationStatus(ActivationType.PERMANENT);
-		converter.ConvertFromJAXB(v2Email, oleapEmail);
+		converter.ConvertFromJAXB(v2Email, oleapEmail,site);
 		Assert.assertEquals(com.orangeleap.tangerine.type.ActivationType.permanent, oleapEmail.getActivationStatus());
 	}
 
-	@Test
-	public void testV1ObjectConverterFromEnum() {
+	    @Test(groups = {"objectConverterTest"},dataProvider="setupCreateConstituent", dataProviderClass= ConstituentDataProvider.class)
+	public void testV1ObjectConverterFromEnum(Site sie, Constituent c) {
 		com.orangeleap.tangerine.ws.schema.Gift v2Gift = new com.orangeleap.tangerine.ws.schema.Gift();
 		com.orangeleap.tangerine.domain.paymentInfo.Gift oleapGift = new com.orangeleap.tangerine.domain.paymentInfo.Gift();
 		com.orangeleap.tangerine.ws.util.ObjectConverter converter = new com.orangeleap.tangerine.ws.util.ObjectConverter();
@@ -58,8 +61,8 @@ public class ObjectConverterTest extends BaseTest {
 		Assert.assertEquals(com.orangeleap.tangerine.type.ActivationType.permanent, oleapEmail.getActivationStatus());
 	}
 	
-	@Test
-	public void testV2ObjectConverterToEnum() {
+	    @Test(groups = {"objectConverterTest"},dataProvider="setupCreateConstituent", dataProviderClass= ConstituentDataProvider.class)
+	public void testV2ObjectConverterToEnum(Site s, Constituent c) {
 		com.orangeleap.tangerine.ws.schema.v2.Gift v2Gift = new com.orangeleap.tangerine.ws.schema.v2.Gift();
 		com.orangeleap.tangerine.domain.paymentInfo.Gift oleapGift = new com.orangeleap.tangerine.domain.paymentInfo.Gift();
 		ObjectConverter converter = new ObjectConverter();
@@ -81,6 +84,7 @@ public class ObjectConverterTest extends BaseTest {
 		com.orangeleap.tangerine.domain.paymentInfo.Gift oleapGift = new com.orangeleap.tangerine.domain.paymentInfo.Gift();
 		com.orangeleap.tangerine.ws.util.ObjectConverter converter = new com.orangeleap.tangerine.ws.util.ObjectConverter();
 		
+
 		oleapGift.setPaymentType("Credit Card");
 		converter.ConvertToJAXB(oleapGift,v2Gift);
 

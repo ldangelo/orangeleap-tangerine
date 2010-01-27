@@ -25,6 +25,7 @@ import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.ws.exception.InvalidRequestException;
 import com.orangeleap.tangerine.web.common.PaginatedResult;

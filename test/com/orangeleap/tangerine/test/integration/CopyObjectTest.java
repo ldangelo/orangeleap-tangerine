@@ -70,7 +70,7 @@ public class CopyObjectTest extends BaseTest
         System.out.println(jaxConstituent.getFirstName());
         assert(jaxConstituent.getFirstName() == constituent.getFirstName());
         com.orangeleap.tangerine.domain.Constituent newconstituent = new com.orangeleap.tangerine.domain.Constituent();
-        v2converter.ConvertFromJAXB(constituent,newconstituent);
+        v2converter.ConvertFromJAXB(constituent,newconstituent,site);
         assert(newconstituent.getFirstName() == constituent.getFirstName());
     }
 
@@ -92,7 +92,7 @@ public class CopyObjectTest extends BaseTest
         v2converter.ConvertToJAXB(gift,jaxbGift);
         assert(gift.getAmount() == jaxbGift.getAmount());
         Gift newgift = new Gift();
-        v2converter.ConvertFromJAXB(jaxbGift,newgift);
+        v2converter.ConvertFromJAXB(jaxbGift,newgift,site);
         assert(gift.getAmount() == jaxbGift.getAmount());
     }    
 }

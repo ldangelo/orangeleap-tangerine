@@ -19,8 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
 
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.ws.schema.v2.AbstractCustomizableEntity;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -54,13 +56,29 @@ public class ObjectConverter {
     }
     
     @SuppressWarnings("unchecked")
-	public void ConvertFromJAXB(Object from, Object to) {
+	public void ConvertFromJAXB(Object from, Object to,Site site) {
         Class propertyType = null;
         if (from == null) return;
         if (to == null) return;
         BeanWrapper bwFrom = new BeanWrapperImpl(from);
         BeanWrapper bwTo = new BeanWrapperImpl(to);
 
+        //
+        // if the to object contains a site object set it to the default site
+        try {
+        	PropertyDescriptor siteDescriptor = bwFrom.getPropertyDescriptor("site");
+        	
+        	siteDescriptor.getWriteMethod().invoke(site);
+        } catch (BeansException ex) {
+        	//
+        	// no such property
+        } catch (IllegalArgumentException e) {
+
+		} catch (IllegalAccessException e) {
+
+		} catch (InvocationTargetException e) {
+
+		}
         PropertyDescriptor[] pdFrom = bwFrom.getPropertyDescriptors();
 
         //
@@ -81,7 +99,7 @@ public class ObjectConverter {
                 if (domainClass.getName().startsWith("com.orangeleap.tangerine.domain")) {
                     if (writeMethod != null) {
                     	Object newObject = domainClass.newInstance();
-                    	ConvertFromJAXB(readMethod.invoke(from),newObject);
+                    	ConvertFromJAXB(readMethod.invoke(from),newObject,site);
                     
                     	writeMethod.invoke(to, newObject);
                     }
@@ -96,7 +114,7 @@ public class ObjectConverter {
                             Class newClass = findClass(className);
                             if (newClass != null) {
                             	Object newObject = newClass.newInstance();
-                            	ConvertFromJAXB(o, newObject);
+                            	ConvertFromJAXB(o, newObject,site);
                             	List<Object> newList = (List<Object>) pdTo.getReadMethod().invoke(to);
                             	newList.clear();
                             	newList.add(newObject);

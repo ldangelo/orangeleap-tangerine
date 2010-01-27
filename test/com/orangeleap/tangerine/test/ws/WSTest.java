@@ -16,20 +16,34 @@ import com.orangeleap.tangerine.service.ws.exception.InvalidRequestException;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.ws.schema.Site;
 import com.orangeleap.tangerine.ws.schema.v2.AddCommunicationHistoryRequest;
+import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameRequest;
+import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameResponse;
 import com.orangeleap.tangerine.ws.schema.v2.Address;
 import com.orangeleap.tangerine.ws.schema.v2.BulkAddCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.CommunicationHistory;
 import com.orangeleap.tangerine.ws.schema.v2.Constituent;
 import com.orangeleap.tangerine.ws.schema.v2.Email;
 import com.orangeleap.tangerine.ws.schema.v2.FindConstituentsRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetConstituentGiftRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetConstituentGiftResponse;
+import com.orangeleap.tangerine.ws.schema.v2.GetConstituentRecurringGiftRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetConstituentRecurringGiftResponse;
+import com.orangeleap.tangerine.ws.schema.v2.GetPickListByNameRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetPickListByNameResponse;
+import com.orangeleap.tangerine.ws.schema.v2.Gift;
 import com.orangeleap.tangerine.ws.schema.v2.PaymentSource;
 import com.orangeleap.tangerine.ws.schema.v2.PaymentType;
+import com.orangeleap.tangerine.ws.schema.v2.PicklistItem;
+import com.orangeleap.tangerine.ws.schema.v2.RecurringGift;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateConstituentRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateConstituentResponse;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateGiftRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateGiftResponse;
+import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateRecurringGiftRequest;
+import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateRecurringGiftResponse;
+import com.orangeleap.tangerine.ws.schema.v2.AbstractCustomizableEntity.CustomFieldMap;
 import com.orangeleap.theguru.client.FindConstituentsResponse;
-import com.orangeleap.theguru.client.Gift;
+
 
 public class WSTest extends BaseTest {
 	private RequestContext mockRequestContext;
@@ -54,15 +68,12 @@ public class WSTest extends BaseTest {
 			SaveOrUpdateConstituentResponse response = null;
 
 			Constituent c = new Constituent();
-			com.orangeleap.tangerine.ws.schema.v2.Site s = new com.orangeleap.tangerine.ws.schema.v2.Site();
-
-			s.setName("company1");
 
 			//
 			// Test without constituent type
 			c.setFirstName("Test");
 			c.setLastName("User");
-			c.setSite(s);
+
 			request.setConstituent(c);
 
 			try {
@@ -303,4 +314,109 @@ public class WSTest extends BaseTest {
 		Assert.assertTrue(response.getConstituent().size() > 0);
 
 	}
+	
+	@Test(groups = "soapAPITests")
+	void testAddPickListItem() {
+		String picklistname = "currencyCode";
+		int oldcount = 0;
+		
+		GetPickListByNameRequest getRequest = new GetPickListByNameRequest();
+		GetPickListByNameResponse getResponse = new GetPickListByNameResponse();
+		
+		getRequest.setName(picklistname);
+		try {
+			getResponse = constituentEndpointV2.getPickListByName(getRequest);
+		} catch (InvalidRequestException e1) {
+			Assert.assertTrue(false);
+		}
+	
+		oldcount = getResponse.getPicklist().getPicklistItems().size();
+		
+		AddPickListItemByNameRequest addRequest = new AddPickListItemByNameRequest();
+		AddPickListItemByNameResponse addResponse = new AddPickListItemByNameResponse();
+		PicklistItem item = new PicklistItem();
+		item.setItemName("junk");
+		item.setDefaultDisplayValue("Testing adding picklist Items");
+		addRequest.setPicklistitem(item);
+		addRequest.setPicklistname(picklistname);
+		
+		
+		try {
+			addResponse = constituentEndpointV2.addPickListItem(addRequest);
+		} catch (InvalidRequestException e) {
+			Assert.assertTrue(false);
+		}
+		Assert.assertTrue(addResponse.getPicklist().getPicklistItems().size() > oldcount);		
+		
+	}
+	
+	@Test(groups = "soapAPITests")
+	void testRecurringGiftAdd() 
+	{
+		SaveOrUpdateRecurringGiftRequest request = new SaveOrUpdateRecurringGiftRequest();
+		SaveOrUpdateRecurringGiftResponse response = new SaveOrUpdateRecurringGiftResponse();
+		RecurringGift rg = new RecurringGift();
+		
+		PaymentSource paySource = new PaymentSource();
+		paySource.setPaymentType(PaymentType.CREDIT_CARD);
+		paySource.setCreditCardHolderName("Leo DAngelo");
+		paySource.setCreditCardNumber("4111111111111111");
+		paySource.setCreditCardExpirationMonth(11);
+		paySource.setCreditCardExpirationYear(2011);
+		rg.setAmountPerGift(new BigDecimal(10.00));
+		rg.setPaymentSource(paySource);
+		
+		request.setConstituentId(100L);
+		request.setRecurringgift(rg);
+		
+		try {
+		response = constituentEndpointV2.maintainRecurringGift(request);
+		} catch (InvalidRequestException e1) {
+			Assert.assertTrue(false);
+		}
+		
+		Assert.assertNotNull(response.getRecurringgift());
+		Assert.assertNotNull(response.getRecurringgift().getId());		
+		Assert.assertTrue(response.getRecurringgift().getId() > 0);
+	}
+	
+	@Test(groups = "soapAPITests",dependsOnMethods="testRecurringGiftAdd")
+	void testRecurringGiftGet() {
+		GetConstituentRecurringGiftRequest request = new GetConstituentRecurringGiftRequest();
+		GetConstituentRecurringGiftResponse response = null;
+		
+		request.setConstituentId(100L);
+		
+		try {
+			response = constituentEndpointV2.getConstituentsRecurringGifts(request);
+		} catch (InvalidRequestException e1) {
+			Assert.assertTrue(false);
+		}
+		
+		//
+		// there should be a recurring gift cause we just put one in...
+		Assert.assertTrue(response.getRecurringgift().size() > 0);
+	}
+	
+	@Test(groups = "soapAPITests",dependsOnMethods="testAddGift") 
+	void testGetGift()
+	{
+		GetConstituentGiftRequest request = new GetConstituentGiftRequest();
+		GetConstituentGiftResponse response = new GetConstituentGiftResponse();
+		
+		request.setConstituentId(200L);
+		
+		try {
+			response = constituentEndpointV2.getConstituentsGifts(request);
+		} catch (InvalidRequestException e) {
+			Assert.assertTrue(false);
+		}
+		
+		Assert.assertTrue(response.getGift().size() > 0);
+		Gift g = response.getGift().get(0);
+		Assert.assertTrue(g.getDistributionLines().size() > 0);
+		CustomFieldMap map = g.getDistributionLines().get(0).getCustomFieldMap();
+//		Assert.assertTrue(map.getEntry().size() > 0);
+	}
 }
+

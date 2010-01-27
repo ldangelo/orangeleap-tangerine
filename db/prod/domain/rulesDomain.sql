@@ -1119,6 +1119,8 @@ SET @PHRASE_CD = 'Add related constituent value of distribution line custom fiel
 SET @CODE_CD = 'map.ruleHelperService.addDistroLineCustomFieldConstituentValueToPickList(map.gift, ?, ?);';
 
 -- Insert code
+INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT, SITE_NAME) VALUES ('consequence',@PHRASE_CD,@CODE_CD,'company1');
+SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT, SITE_NAME) VALUES ('consequence',@PHRASE_CD,@CODE_CD,'metro');
 SET @RULE_SEGMENT_TYPE_ID = LAST_INSERT_ID();
 

@@ -60,7 +60,7 @@ public class RuleHelperService {
 	private static PicklistItemService picklistItemService;
 	private static RollupHelperService rollupHelperService;
 
-	
+
 	public RollupHelperService getRollupHelperService() {
 		return rollupHelperService;
 	}
@@ -179,7 +179,7 @@ public class RuleHelperService {
             // For each gift
             for (Gift g : gifts) {
                 // If there is a gift in month x, add to number of matches
-                if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i)))) {
+                if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i))))) {
                     numMatches += 1;
                     if (numberOfMatches == numMatches) {
                         return true;
@@ -263,7 +263,14 @@ public class RuleHelperService {
     	List<Gift> gifts = constituent.getGifts();
 
         if ( (timeAmount == -1) || (timeUnit == null)){
-        	return gifts.size();
+            // Cycle through the gifts
+            for (Gift g : gifts) {
+                // If the gift status is paid add it to the number of matches.
+                if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID))) {
+                	numberOfMatches++;
+                }
+            }
+            return numberOfMatches;
         }
 
     	if(timeUnit.equalsIgnoreCase("FISCALYEAR") || timeUnit.equalsIgnoreCase("FISCALYEARS")){
@@ -292,7 +299,7 @@ public class RuleHelperService {
     		// For each gift
     		for (Gift g : gifts) {
     			// If there is a gift with a status of paid in month x, add to number of matches
-    			if((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i)))) {
+    			if((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i))))) {
     				numMatches += 1;
     				if(numberOfMatches == numMatches) {
     					return true;
@@ -596,7 +603,7 @@ public class RuleHelperService {
     }
 
     private static final String TODAY = "TODAY";
-    
+
     public static boolean getCustomFieldDateCompare(AbstractCustomizableEntity entity, String fieldname, String operator, String compareTo) {
 
     	try {
@@ -720,7 +727,7 @@ public class RuleHelperService {
 		}
 
 	}
-    
+
     public Constituent updateConstituentDependencies(Constituent constituent) {
     	try {
     		constituent = constituentService.maintainConstituent(constituentService.readConstituentById(constituent.getId()));

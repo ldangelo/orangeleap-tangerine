@@ -1,20 +1,10 @@
 package com.orangeleap.tangerine.test.ws;
 
-import java.math.BigDecimal;
-
-import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindException;
-import org.springframework.webflow.execution.RequestContext;
-import org.springframework.webflow.test.MockRequestContext;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.ws.OrangeLeapWSV2;
 import com.orangeleap.tangerine.service.ws.exception.InvalidRequestException;
 import com.orangeleap.tangerine.test.BaseTest;
-import com.orangeleap.tangerine.ws.schema.Site;
+import com.orangeleap.tangerine.ws.schema.v2.AbstractCustomizableEntity.CustomFieldMap;
 import com.orangeleap.tangerine.ws.schema.v2.AddCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameRequest;
 import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameResponse;
@@ -41,8 +31,14 @@ import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateGiftRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateGiftResponse;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateRecurringGiftRequest;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateRecurringGiftResponse;
-import com.orangeleap.tangerine.ws.schema.v2.AbstractCustomizableEntity.CustomFieldMap;
-import com.orangeleap.theguru.client.FindConstituentsResponse;
+import java.math.BigDecimal;
+import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindException;
+import org.springframework.webflow.execution.RequestContext;
+import org.springframework.webflow.test.MockRequestContext;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 
 public class WSTest extends BaseTest {
@@ -116,7 +112,7 @@ public class WSTest extends BaseTest {
 
 	}
 
-	@Test(groups = "soapAPITests")
+	@Test(groups = "soapAPITests", dependsOnGroups = { "testReadPaymentSource" })
 	void testAddGift() {
 		SaveOrUpdateGiftRequest request = new SaveOrUpdateGiftRequest();
 		SaveOrUpdateGiftResponse response = null;

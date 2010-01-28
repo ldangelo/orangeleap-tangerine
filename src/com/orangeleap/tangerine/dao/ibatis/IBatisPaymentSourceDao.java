@@ -139,7 +139,7 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
 	    }
 	    Map<String, Object> params = setupParams();
 	    params.put("checkAccountNumberEncrypted", checkAccountNum);
-	    params.put("checkRoutingNum", checkRoutingNum);
+	    params.put("checkRoutingNumber", checkRoutingNum);
 	    return getSqlMapClientTemplate().queryForList("SELECT_BY_CHECK_NUM", params);
 	}
 

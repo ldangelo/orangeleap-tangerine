@@ -346,7 +346,7 @@ public class WSTest extends BaseTest {
 		
 	}
 	
-	@Test(groups = "soapAPITests")
+	@Test(groups = "soapAPITests", dependsOnGroups = { "testSearchReadRecurringGifts" })
 	void testRecurringGiftAdd() 
 	{
 		SaveOrUpdateRecurringGiftRequest request = new SaveOrUpdateRecurringGiftRequest();

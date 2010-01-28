@@ -401,8 +401,10 @@ public class RuleHelperService {
      * @param templateName
      * @param selectedEmails
      */
-    public static void sendMail(String addresses, Constituent constituent, Gift gift, String subject, String templateName, List<Email> selectedEmails) {
-    	emailService.sendMail(addresses,constituent,gift,subject,templateName, null);
+    public static void sendMail(String addresses, Constituent constituent, Gift gift, String subject, String body, String templateName, List<Email> selectedEmails) {
+    	Map<String, String> map = new HashMap<String, String>();
+    	if (body != null) map.put(EmailService.EMAIL_BODY, body);
+    	emailService.sendMail(addresses,constituent,gift,subject,map,templateName, null);
     }
 
     /**
@@ -412,8 +414,10 @@ public class RuleHelperService {
      * @param subject
      * @param templateName
      */
-    public static void sendMail(Constituent p, Gift g, String subject, String templateName) {
-    	emailService.sendMail(p,  g,  null, null, new HashMap<String, String>(), subject,  templateName);
+    public static void sendMail(Constituent p, Gift g, String subject, String body, String templateName) {
+    	Map<String, String> map = new HashMap<String, String>();
+    	if (body != null) map.put(EmailService.EMAIL_BODY, body);
+    	emailService.sendMail(p,  g,  null, null, map, subject,  templateName);
     }
 
 

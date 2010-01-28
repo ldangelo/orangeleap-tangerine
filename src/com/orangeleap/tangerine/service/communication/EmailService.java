@@ -104,8 +104,8 @@ public class EmailService  {
 	}
 
 	public void sendMail(String addresses, Constituent p, Gift g,
-			String subject, String templateName, List<Email> selectedEmails) {
-		sendMail(addresses, p, g, null, null, new HashMap<String, String>(),
+			String subject, Map<String,String> map, String templateName, List<Email> selectedEmails) {
+		sendMail(addresses, p, g, null, null, map,
 				subject, templateName, selectedEmails);
 	}
 

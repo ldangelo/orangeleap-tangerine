@@ -179,7 +179,7 @@ public class RuleHelperService {
             // For each gift
             for (Gift g : gifts) {
                 // If there is a gift in month x, add to number of matches
-                if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i))))) {
+                if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getDonationDate().after(getBeginningOfMonthDate(i))) && (g.getDonationDate().before(getEndOfMonthDate(i))))) {
                     numMatches += 1;
                     if (numberOfMatches == numMatches) {
                         return true;
@@ -299,7 +299,7 @@ public class RuleHelperService {
     		// For each gift
     		for (Gift g : gifts) {
     			// If there is a gift with a status of paid in month x, add to number of matches
-    			if((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i))))) {
+    			if((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getDonationDate().after(getBeginningOfMonthDate(i))) && (g.getDonationDate().before(getEndOfMonthDate(i))))) {
     				numMatches += 1;
     				if(numberOfMatches == numMatches) {
     					return true;

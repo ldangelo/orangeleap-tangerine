@@ -93,9 +93,8 @@
           cf.ENTITY_ID = dl.DISTRO_LINE_ID
           and cf.ENTITY_TYPE = 'distributionline' 
           and cf.FIELD_NAME = #constituentReferenceCustomField#
-          and cf.FIELD_VALUE = '#constituentId#'
+          and cf.FIELD_VALUE = #constituentId#
         </isNotNull>
-		
 		where p.SITE_NAME = #siteName#
 	</sql>
 	

@@ -378,9 +378,9 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
                     " toDate = " + toDate );
         }
         Map<String, Object> params = setupParams();
-        params.put("constituentId", constituentId);
-        params.put("fromDate", fromDate);
-        params.put("toDate", toDate);
+        params.put("constituentId", ""+constituentId);
+        if (fromDate != null) params.put("fromDate", fromDate);
+        if (toDate != null) params.put("toDate", toDate);
         params.put("giftType", giftType);
         params.put("giftStatus", giftStatus);
         params.put("constituentReferenceCustomField", constituentReferenceCustomField);
@@ -394,9 +394,9 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
                     " toDate = " + toDate + " first = "+first);
         }
         Map<String, Object> params = setupParams();
-        params.put("constituentId", constituentId);
-        params.put("fromDate", fromDate);
-        params.put("toDate", toDate);
+        params.put("constituentId", ""+constituentId);
+        if (fromDate != null) params.put("fromDate", fromDate);
+        if (toDate != null) params.put("toDate", toDate);
         params.put("giftType", giftType);
         params.put("giftStatus", giftStatus);
         if (first) params.put("first", first);

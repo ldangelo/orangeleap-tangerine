@@ -7,7 +7,7 @@
 		$(function() {
 			var names = "";
 			var thisPayType = $("#paymentType").val();
-			var thisTitle = (thisPayType == "ACH" ? "ACH Holder" : "Cardholder");
+			var thisTitle = (thisPayType == "ACH" ? "ACH Holder" : (thisPayType == 'Check' ? 'Account Holder' : "Cardholder"));
 			$(".conflictingName").each(function() {
 				names += $(this).val() + ", ";
 			});

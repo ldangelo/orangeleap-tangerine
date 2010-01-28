@@ -103,11 +103,20 @@ public class EmailService  {
 		return temp;
 	}
 
+
 	public void sendMail(String addresses, Constituent p, Gift g,
 			String subject, Map<String,String> map, String templateName, List<Email> selectedEmails) {
 		sendMail(addresses, p, g, null, null, map,
 				subject, templateName, selectedEmails);
 	}
+
+	//used for old drools rules only
+	public void sendMail(String addresses, Constituent p, Gift g,
+			String subject, String templateName, List<Email> selectedEmails) {
+		sendMail(addresses, p, g, null, null, new HashMap<String, String>(),
+				subject, templateName, selectedEmails);
+	}
+
 
 	public void sendMail(String addresses, Constituent p, Gift g,
 			RecurringGift recurringGift, Pledge pledge,

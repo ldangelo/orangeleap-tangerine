@@ -17,7 +17,7 @@
 	<target name="build" depends="resolve, clean-build, setup, compile, setup-war, fork-optimization-release, wait-for-optimize-fork-finish-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a clean build including precompiling JSPs"/>
 
 	<target name="local-unit-build" depends="resolve, setup, compile, jar" description="Used ONLY for local unit test builds"/>
-	
+
 	<target name="dirty" depends="resolve, setup, compile, setup-war, fork-optimization-release, wait-for-optimize-fork-finish-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a build of only changed Java files"/>
 
 	<target name="deploy-integrated-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, fork-optimization-dev, wait-for-optimize-fork-finish-dev, build-integrated-war, copy-tangerine.properties">
@@ -56,10 +56,10 @@
             <format property="now.time" pattern="yyyyMMddkkmm"/>
         </tstamp>
 	</target>
-	
+
 	<target name="compile">
 		<mkdir dir="${classes.dir}" />
-		
+
 		<echo>Compiling with debug=${debug.compile}</echo>
 		<javac destdir="${classes.dir}" srcdir="${src.dir}" memoryInitialSize="128m" memoryMaximumSize="1024m" fork="true"
 			debug="${debug.compile}" classpathref="compile.path"/> <!-- compile.path is set in ivyBuild.xml -->
@@ -72,12 +72,12 @@
 			<schema namespace="http://www.orangeleap.com/orangeleap/schemas" file="orangeleap-types.xsd" />
 		</schemagen>
 	</target>
-	
+
 	<target name="xjc.generate">
 		<xjc schema="war/orangeleap.xsd" destdir="src" package="com.orangeleap.tangerine.ws.schema"/>
 		<xjc schema="war/orangeleapv2.xsd" destdir="src" package="com.orangeleap.tangerine.ws.schema.v2"/>
 	</target>
-			
+
 	<target name="setup-war">
 		<mkdir dir="${stage.dir}/war" />
 		<mkdir dir="${stage.dir}/war/META-INF" />
@@ -97,7 +97,7 @@
 		<replace file="${stage.dir}/war/WEB-INF/jsp/includes/footer.jsp" token="$${build.time}" value="${build.DSTAMP}.${build.TSTAMP}"/>
 	</target>
 
-	<target name="jspc"> 
+	<target name="jspc">
 		<taskdef resource="org/apache/catalina/ant/catalina.tasks">
 			<classpath>
 				<pathelement path="${compile.lib}"/>
@@ -106,14 +106,14 @@
 			</classpath>
 		</taskdef>
 
-	    <jasper validateXml="false" uriroot="${stage.dir}/war" webXmlFragment="${stage.dir}/war/WEB-INF/generated_web.xml" addWebXmlMappings="true" 
-	    	outputDir="${stage.dir}/war/WEB-INF/src" /> 
+	    <jasper validateXml="false" uriroot="${stage.dir}/war" webXmlFragment="${stage.dir}/war/WEB-INF/generated_web.xml" addWebXmlMappings="true"
+	    	outputDir="${stage.dir}/war/WEB-INF/src" />
 
 		<javac destdir="${classes.dir}" optimize="on" debug="off" memoryInitialSize="128m" memoryMaximumSize="2048m" fork="true"
 	    	failonerror="false" srcdir="${stage.dir}/war/WEB-INF/src" classpathref="compile.path"/>
 
 		<delete dir="${stage.dir}/war/WEB-INF/src" />
-	</target> 
+	</target>
 
 	<target name="jar">
 		<copy todir="${classes.dir}">
@@ -151,7 +151,7 @@
 				<include name="${app.name}.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${stage.dir}/war/WEB-INF/lib" flatten="true">
 		    <path>
 				<pathelement path="${war.lib}"/> <!-- war.lib from ivyBuild.xml -->
@@ -291,7 +291,7 @@
             failonerror="true"
             dir="${build.dir}"
             timeout="900000"
-            taskname="startAnt" maxmemory="2048m">
+            taskname="startAnt" maxmemory="1024m">
             <classpath>
                 <pathelement location="${ant.home}/lib/ant-launcher.jar"/>
             </classpath>
@@ -473,7 +473,7 @@
             <fileset dir="${stage.dir}/war/css" includes="orange-theme.css" />
             <fileset dir="${stage.dir}/war/css" includes="ext-styles.css" />
         </css-optimization>
-        
+
         <taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
             <classpath path="${compile.lib}"/>
         </taskdef>

@@ -72,6 +72,7 @@
 	<classpathentry kind="lib" path="lib/junit-4.5.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15-sources.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.7.jar"/>
 	<classpathentry kind="lib" path="lib/opencsv-1.8-sources.jar"/>
 	<classpathentry kind="lib" path="lib/opencsv-1.8.jar"/>
 	<classpathentry kind="lib" path="lib/oro-2.0.8-sources.jar"/>
@@ -173,6 +174,5 @@
 	<classpathentry kind="lib" path="lib/spring-binding-2.0.8.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-js-2.0.8.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="lib/spring-js-2.0.8.RELEASE.jar"/>
-	<classpathentry kind="lib" path="C:/dev/apps/apache-tomcat-6.0.18/lib/mysql-connector-java-5.1.11-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

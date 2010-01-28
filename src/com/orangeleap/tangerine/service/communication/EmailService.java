@@ -109,6 +109,14 @@ public class EmailService  {
 				subject, templateName, selectedEmails);
 	}
 
+	//This is used for the old drools rules
+	public void sendMail(String addresses, Constituent p, Gift g,
+			String subject, String templateName, List<Email> selectedEmails) {
+		sendMail(addresses, p, g, null, null, new HashMap<String, String>(),
+				subject, templateName, selectedEmails);
+	}
+
+
 	public void sendMail(String addresses, Constituent p, Gift g,
 			RecurringGift recurringGift, Pledge pledge,
 			Map<String, String> reportParams, String subject,

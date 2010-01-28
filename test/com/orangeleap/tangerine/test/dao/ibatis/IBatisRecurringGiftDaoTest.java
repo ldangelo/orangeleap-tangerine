@@ -141,7 +141,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         params.put("firstName", "Pablo");
         params.put("accountNumber", new Long(200));
         params.put("phoneMap[home].number", "214-113-2542");
-        params.put("addressMap[home].addressLine1", "ACORN");
+        params.put("addressMap[home].addressLine1", "8457 ACORN");
         params.put("amountPerGift", new BigDecimal(10));
         
         List<RecurringGift> recurringGifts = recurringGiftDao.searchRecurringGifts(params);

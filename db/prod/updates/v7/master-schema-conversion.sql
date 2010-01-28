@@ -198,7 +198,7 @@ ADD COLUMN (`CHECK_ACCOUNT_NUMBER` varchar(255) DEFAULT NULL),
 ADD COLUMN (`CHECK_ROUTING_NUMBER` varchar(255) DEFAULT NULL);
 
 
------ START RULES TABLES -----
+-- START RULES TABLES
 
 
 -- Contains the runnable code generated from rules tables: one live, and optionally one test version of each set of rules for each event type.
@@ -301,7 +301,7 @@ PRIMARY KEY  (`RULE_SEGMENT_PARM_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
------ END RULES TABLES -----
+--  END RULES TABLES 
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 
 

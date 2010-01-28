@@ -13,6 +13,7 @@ OrangeLeap.ListStore = Ext.extend(Ext.data.JsonStore, {
 
 OrangeLeap.msgBundle = {
     displayMsg: 'Displaying {0} - {1} of {2}',
+    noTotalDisplayMsg: 'Displaying {0} - {1}',
     emptyMsg: 'No rows to display',
     addNew: 'Add New',
     next: 'Next',
@@ -685,17 +686,22 @@ Ext.onReady(function() {
         }
     }
 
+    function commonCreateToolbarConfig(loadFunct, winId) {
+        return {
+			doLoad: function(start) {
+				var o = { }, pn = this.getParams();
+				o[pn.start] = start;
+				o[pn.limit] = this.pageSize;
+				if (this.fireEvent('beforechange', this, o) !== false) {
+					var win = Ext.getCmp(winId);
+					loadFunct(win.groupTabPanel, win.groupTabPanel.activeGroup, win.groupTabPanel.activeGroup, start);
+				}
+			}
+        };
+    }
+
     // custom toolbar for Edit Batch window to invoke loadTab - this effectively overrides what the 'refresh' button action is on the toolbar
-    OrangeLeap.EditBatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
-        doLoad: function(start) {
-            var o = { }, pn = this.getParams();
-            o[pn.start] = start;
-            o[pn.limit] = this.pageSize;
-            if (this.fireEvent('beforechange', this, o) !== false) {
-                loadTab(editBatchWin.groupTabPanel, editBatchWin.groupTabPanel.activeGroup, editBatchWin.groupTabPanel.activeGroup, start);
-            }
-        }
-    });
+    OrangeLeap.EditBatchWinToolbar = Ext.extend(Ext.PagingToolbar, commonCreateToolbarConfig(loadTab, 'editBatchWin'));
 
     var flowExecutionKey = null;
     var accessibleSteps = ['step1Grp'];
@@ -937,7 +943,14 @@ Ext.onReady(function() {
         }
     }
 
-    var step2PageSize = 20;
+    function centerToolbarText(tb) {
+        tb.el.child('.x-toolbar-right').remove();
+        var t = tb.el.child('.x-toolbar-left');
+        t.removeClass('x-toolbar-left');
+        t = tb.el.child('.x-toolbar-ct');
+        t.setStyle('width', 'auto');
+        t.wrap( {tag: 'center'} );
+    }
 
     function findPickedSegmentations() {
          // this will find the picked and not picked segmentations on this page only
@@ -1057,7 +1070,7 @@ Ext.onReady(function() {
             });
         }
         else if (newGroup.mainItem.id == 'step2Grp') {
-            var step2LoadParams = { '_eventId_step2': 'step2', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': step2PageSize, 'sort': 'lastDt', 'dir': 'DESC' };
+            var step2LoadParams = { '_eventId_step2': 'step2', 'execution': getFlowExecutionKey(), 'start': startNum, 'limit': step2Bar.pageSize, 'sort': 'lastDt', 'dir': 'DESC' };
             jQuery.extend(params, step2LoadParams, saveParams); // copy properties from step2LoadParams & saveParams to params
 
             step2Store.load({ 'params': params });
@@ -1199,6 +1212,23 @@ Ext.onReady(function() {
 				}
 			}
 		})
+    };
+
+    var commonBatchWinToolbarConfig = {
+        stateEvents: ['change'],
+        stateful: true,
+        getState: function() {
+            var config = {};
+            config.start = this.cursor;
+            return config;
+        },
+        applyState: function(state, config) {
+            if (state.start) {
+                this.cursor = state.start;
+            }
+        },
+        displayInfo: true,
+        emptyMsg: msgs.emptyMsg
     };
 
     var step1Form = new Ext.form.FormPanel(jQuery.extend({
@@ -1364,26 +1394,12 @@ Ext.onReady(function() {
         return pickedSegmentationsCount > 0;
     }
 
-    var step2Bar = new OrangeLeap.EditBatchWinToolbar({
-        pageSize: step2PageSize,
-        stateEvents: ['change'],
+    var step2Bar = new OrangeLeap.EditBatchWinToolbar(jQuery.extend({
         stateId: 'step2Bar',
-        stateful: true,
-        getState: function() {
-            var config = {};
-            config.start = this.cursor;
-            return config;
-        },
-        applyState: function(state, config) {
-            if (state.start) {
-                this.cursor = state.start;
-            }
-        },
         store: step2Store,
-        displayInfo: true,
-        displayMsg: msgs.displayMsg,
-        emptyMsg: msgs.emptyMsg
-    });
+        pageSize: 20,
+        displayMsg: msgs.displayMsg
+    }, commonBatchWinToolbarConfig));
 
     var checkColumn = new Ext.grid.CheckColumn({
         header: 'Choose?',
@@ -1575,40 +1591,19 @@ Ext.onReady(function() {
         accessibleSteps = txn.reader.jsonData.accessibleSteps;
     });
 
-    var step3Bar = new OrangeLeap.EditBatchWinToolbar({
+    var step3Bar = new OrangeLeap.EditBatchWinToolbar(jQuery.extend({
         pageSize: 50,
-        stateEvents: ['change'],
         stateId: 'step3Bar',
-        stateful: true,
-        getState: function() {
-            var config = {};
-            config.start = this.cursor;
-            return config;
-        },
-        applyState: function(state, config) {
-            if (state.start) {
-                this.cursor = state.start;
-            }
-        },
         store: step3Store,
-        displayInfo: true,
-        displayMsg: msgs.displayMsg,
-        emptyMsg: msgs.emptyMsg
-    });
+        displayMsg: msgs.displayMsg
+    }, commonBatchWinToolbarConfig));
 
     var step3Toolbar = new Ext.Toolbar({
         items: [
             '<span id=\"step3MsgSpan\">' + ( ( ! isForTouchPoints()) ? msgs.followingBeModified : msgs.followingHaveTouchPoints) + '</span>'
         ]
     });
-    step3Toolbar.on('afterlayout', function(tb){
-        tb.el.child('.x-toolbar-right').remove();
-        var t = tb.el.child('.x-toolbar-left');
-        t.removeClass('x-toolbar-left');
-        t = tb.el.child('.x-toolbar-ct');
-        t.setStyle('width', 'auto');
-        t.wrap({tag: 'center'});
-    }, null, {single: true});
+    step3Toolbar.on('afterlayout', centerToolbarText, null, {single: true});
 
     var step3Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'step3List',
@@ -2299,40 +2294,19 @@ Ext.onReady(function() {
         accessibleSteps = txn.reader.jsonData.accessibleSteps;
     });
 
-    var step5Bar = new OrangeLeap.EditBatchWinToolbar({
+    var step5Bar = new OrangeLeap.EditBatchWinToolbar(jQuery.extend({
         pageSize: 20,
-        stateEvents: ['change'],
         stateId: 'step5Bar',
-        stateful: true,
-        getState: function() {
-            var config = {};
-            config.start = this.cursor;
-            return config;
-        },
-        applyState: function(state, config) {
-            if (state.start) {
-                this.cursor = state.start;
-            }
-        },
         store: step5Store,
-        displayInfo: true,
-        displayMsg: msgs.displayMsg,
-        emptyMsg: msgs.emptyMsg
-    });
+        displayMsg: msgs.noTotalDisplayMsg
+    }, commonBatchWinToolbarConfig));
 
     var step5Toolbar = new Ext.Toolbar({
         items: [
             msgs.followingChangesApplied
         ]
     });
-    step5Toolbar.on('afterlayout', function(tb){
-        tb.el.child('.x-toolbar-right').remove();
-        var t = tb.el.child('.x-toolbar-left');
-        t.removeClass('x-toolbar-left');
-        t = tb.el.child('.x-toolbar-ct');
-        t.setStyle('width', 'auto');
-        t.wrap({tag: 'center'});
-    }, null, {single: true});
+    step5Toolbar.on('afterlayout', centerToolbarText, null, {single: true});
 
     var step5Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'step5List',
@@ -2789,51 +2763,21 @@ Ext.onReady(function() {
     });
 
     // custom toolbar for Review Batch window to invoke loadTab - this effectively overrides what the 'refresh' button action is on the toolbar
-    OrangeLeap.ReviewBatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
-        doLoad: function(start) {
-            var o = { }, pn = this.getParams();
-            o[pn.start] = start;
-            o[pn.limit] = this.pageSize;
-            if (this.fireEvent('beforechange', this, o) !== false) {
-                loadReviewTab(reviewBatchWin.groupTabPanel, reviewBatchWin.groupTabPanel.activeGroup, reviewBatchWin.groupTabPanel.activeGroup, start);
-            }
-        }
-    });
+    OrangeLeap.ReviewBatchWinToolbar = Ext.extend(Ext.PagingToolbar, commonCreateToolbarConfig(loadReviewTab, 'reviewBatchWin'));
 
-    var reviewStep3Bar = new OrangeLeap.ReviewBatchWinToolbar({
+    var reviewStep3Bar = new OrangeLeap.ReviewBatchWinToolbar(jQuery.extend({
         pageSize: 50,
-        stateEvents: ['change'],
         stateId: 'reviewStep3Bar',
-        stateful: true,
-        getState: function() {
-            var config = {};
-            config.start = this.cursor;
-            return config;
-        },
-        applyState: function(state, config) {
-            if (state.start) {
-                this.cursor = state.start;
-            }
-        },
         store: reviewStep3Store,
-        displayInfo: true,
-        displayMsg: msgs.displayMsg,
-        emptyMsg: msgs.emptyMsg
-    });
+        displayMsg: msgs.displayMsg
+    }, commonBatchWinToolbarConfig));
 
     var reviewStep3Toolbar = new Ext.Toolbar({
         items: [
             msgs.followingRowsModified
         ]
     });
-    reviewStep3Toolbar.on('afterlayout', function(tb){
-        tb.el.child('.x-toolbar-right').remove();
-        var t = tb.el.child('.x-toolbar-left');
-        t.removeClass('x-toolbar-left');
-        t = tb.el.child('.x-toolbar-ct');
-        t.setStyle('width', 'auto');
-        t.wrap({tag: 'center'});
-    }, null, {single: true});
+    reviewStep3Toolbar.on('afterlayout', centerToolbarText, null, {single: true});
 
     var reviewStep3Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'reviewStep3List',
@@ -3148,52 +3092,22 @@ Ext.onReady(function() {
         errorFlowExecutionKey = txn.reader.jsonData.flowExecutionKey; // update the flowExecutionKey generated by spring web flow
     });
 
-    // custom toolbar for Error Batch window to invoke loadTab - this effectively overrides what the 'refresh' button action is on the toolbar
-    OrangeLeap.ErrorBatchWinToolbar = Ext.extend(Ext.PagingToolbar, {
-        doLoad: function(start) {
-            var o = { }, pn = this.getParams();
-            o[pn.start] = start;
-            o[pn.limit] = this.pageSize;
-            if (this.fireEvent('beforechange', this, o) !== false) {
-                loadErrorTab(errorBatchWin.groupTabPanel, errorBatchWin.groupTabPanel.activeGroup, errorBatchWin.groupTabPanel.activeGroup, start);
-            }
-        }
-    });
+    // custom toolbar for Error Batch window to invoke loadErrorTab - this effectively overrides what the 'refresh' button action is on the toolbar
+    OrangeLeap.ErrorBatchWinToolbar = Ext.extend(Ext.PagingToolbar, commonCreateToolbarConfig(loadErrorTab, 'errorBatchWin'));
 
-    var errorStep2Bar = new OrangeLeap.ErrorBatchWinToolbar({
+    var errorStep2Bar = new OrangeLeap.ErrorBatchWinToolbar(jQuery.extend({
         pageSize: 50,
-        stateEvents: ['change'],
         stateId: 'errorStep2Bar',
-        stateful: true,
-        getState: function() {
-            var config = {};
-            config.start = this.cursor;
-            return config;
-        },
-        applyState: function(state, config) {
-            if (state.start) {
-                this.cursor = state.start;
-            }
-        },
         store: errorStep2Store,
-        displayInfo: true,
-        displayMsg: msgs.displayMsg,
-        emptyMsg: msgs.emptyMsg
-    });
+        displayMsg: msgs.displayMsg
+    }, commonBatchWinToolbarConfig));
 
     var errorStep2Toolbar = new Ext.Toolbar({
         items: [
             msgs.rowsExecutedErrors
         ]
     });
-    errorStep2Toolbar.on('afterlayout', function(tb){
-        tb.el.child('.x-toolbar-right').remove();
-        var t = tb.el.child('.x-toolbar-left');
-        t.removeClass('x-toolbar-left');
-        t = tb.el.child('.x-toolbar-ct');
-        t.setStyle('width', 'auto');
-        t.wrap({tag: 'center'});
-    }, null, {single: true});
+    errorStep2Toolbar.on('afterlayout', centerToolbarText, null, {single: true});
 
     var errorStep2Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'errorStep2List',
@@ -3644,40 +3558,19 @@ Ext.onReady(function() {
 		return ( (! errorBatchWin.forTouchPoints) ? 0 : 1);
 	}
 
-    var errorStep4Bar = new OrangeLeap.ErrorBatchWinToolbar({
+    var errorStep4Bar = new OrangeLeap.ErrorBatchWinToolbar(jQuery.extend({
         pageSize: 50,
-        stateEvents: ['change'],
         stateId: 'errorStep4Bar',
-        stateful: true,
-        getState: function() {
-            var config = {};
-            config.start = this.cursor;
-            return config;
-        },
-        applyState: function(state, config) {
-            if (state.start) {
-                this.cursor = state.start;
-            }
-        },
         store: errorStep4Store,
-        displayInfo: true,
-        displayMsg: msgs.displayMsg,
-        emptyMsg: msgs.emptyMsg
-    });
+        displayMsg: msgs.noTotalDisplayMsg
+    }, commonBatchWinToolbarConfig));
 
     var errorStep4Toolbar = new Ext.Toolbar({
         items: [
             msgs.followingChangesApplied
         ]
     });
-    errorStep4Toolbar.on('afterlayout', function(tb){
-        tb.el.child('.x-toolbar-right').remove();
-        var t = tb.el.child('.x-toolbar-left');
-        t.removeClass('x-toolbar-left');
-        t = tb.el.child('.x-toolbar-ct');
-        t.setStyle('width', 'auto');
-        t.wrap({tag: 'center'});
-    }, null, {single: true});
+    errorStep4Toolbar.on('afterlayout', centerToolbarText, null, {single: true});
 
     var errorStep4Form = new Ext.grid.GridPanel(jQuery.extend({
         stateId: 'errorStep4List',

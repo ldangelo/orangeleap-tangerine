@@ -52,6 +52,7 @@ import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
+import com.orangeleap.tangerine.service.rule.RuleHelperService;
 import com.orangeleap.tangerine.service.rule.RulesInterceptor;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 import com.orangeleap.tangerine.type.RuleObjectType;
@@ -71,6 +72,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	@Resource(name = "constituentService")
 	private ConstituentService constituentService;
 	
+	@Resource(name = "ruleHelperService")
+	private RuleHelperService ruleHelperService;
+
 	@Resource(name = "giftService")
 	private GiftService giftService;
 	
@@ -132,7 +136,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 						}
 						
 						if (resaveConstituent) {
-							constituentService.maintainConstituent(constituentService.readConstituentById(p.getId()));
+							ruleHelperService.updateConstituentDependencies(p);
 						}
 						
 

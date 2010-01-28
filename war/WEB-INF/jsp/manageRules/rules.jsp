@@ -24,7 +24,7 @@
 			<tr>
 				<td><c:out value='${rule.ruleDesc}'/> <c:if test="${!rule.ruleIsActive}">&nbsp;(Inactive)</c:if></td>
 	            <td><a href="#" onclick="window.location = 'ruleDesc.htm?ruleEventType=${ruleEventType}&id=${rule.id}' ;  " >Description / Activate</a></td>
-	            <td><a href="#" onclick="window.location = 'editRuleSegments.htm?ruleEventType=${ruleEventType}&id=${rule.id}&desc=${rule.ruleDesc}';  " >Conditions / Consequences</a></td>
+	            <td><a href="#" onclick="window.location = 'editRuleSegments.htm?ruleEventType=${ruleEventType}&id=${rule.id}';  " >Conditions / Consequences</a></td>
 	            <td><a href="#" onclick="window.location = 'revertRuleVersion.htm?ruleEventType=${ruleEventType}&id=${rule.id}';  " >Revert to Prior Version</a></td>
 	            <td><a href="#" onclick="window.location = 'rules.htm?ruleEventType=${ruleEventType}&id=${rule.id}&action=moveup';  " >Move up</a></td>
 			</tr>

@@ -12,7 +12,7 @@
 	           
 	           	<input type="hidden" id="id" name="id" value="${id}" />
            
-                <h4>Conditions and Consequences for Rule "${param.desc}"</h4><br/>
+                <h4>Conditions and Consequences for Rule "<c:out value="${desc}"/>"</h4><br/>
                 <table>
                 	<tr>
                 	<th>Condition or Consequence</th>
@@ -67,10 +67,14 @@
              <br/>
 		     <a href="#" onclick="window.location='rules.htm?ruleEventType=${ruleEventType}&id=${param.id}'; ">&laquo;Back</a>
              
+             <c:url var="url" value="/catalog" >
+  				<c:param name="Add" value="${bookId}" />
+			 </c:url>
+			 
              <script>
              	function update(ruleSegmentId, action, input) {
                  	
-                 	var parms = 'ruleEventType=${ruleEventType}&id=${param.id}&desc=${param.desc}';
+                 	var parms = 'ruleEventType=${ruleEventType}&id=${param.id}';
              		var data = parms + '&ruleSegmentId=' + ruleSegmentId + '&action=' + action;
              		if (input) data = data + '&' + $(input).serialize();
                     $.ajax({

@@ -21,7 +21,7 @@
                 </tr>
                 <tr>
                 <td>
-                <input id="desc" name="desc" value="${rule.ruleDesc}"  size="60" />
+                <input id="desc" name="desc" value="<c:out value="${rule.ruleDesc}"/>"  size="60" />
                 </td><td>
                 <input id="active" name="active" type="checkbox" value="true" <c:if test="${rule.ruleIsActive == 'true'}" >checked</c:if> /> 
                 </td>

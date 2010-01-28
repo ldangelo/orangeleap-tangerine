@@ -127,7 +127,7 @@ public class Constituent extends AbstractCommunicatorEntity implements FullTextS
         this.id = id;
         this.site = site;
     }
-    
+
     @Override
     public Set<String> getFullTextSearchKeywords() {
 		Set<String> set = new TreeSet<String>();
@@ -408,6 +408,45 @@ public class Constituent extends AbstractCommunicatorEntity implements FullTextS
         }
     }
 
+    public void removeConstituentOrganizationRoles(String role) {
+        String existingValue = getConstituentOrganizationRoles();
+
+        //
+        // if the custom field value does not contain the value
+        // we are removing simply return
+        if (existingValue.contains(role) == false) {
+            return;
+        }
+
+        //
+        // if the existing value is equal to the value we are removing
+        // then set the field value to an empty string (remove it)
+        if (existingValue.contains(StringConstants.CUSTOM_FIELD_SEPARATOR) == false) {
+            if (existingValue.compareTo(role) == 0) {
+                setConstituentOrganizationRoles(StringConstants.EMPTY);
+            }
+        } else {
+            //
+            // if the existing value is a custom-field-separator separated list of values
+            // then find the value we are removing in the string and remove it
+            // then reset the field value
+            String[] values = existingValue.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < values.length; i++) {
+                if (values[i].equals(role) == false) {
+                    sb.append(values[i]);
+                }
+
+                if (i != (values.length - 1)) {
+                    sb.append(StringConstants.CUSTOM_FIELD_SEPARATOR);
+                }
+            }
+
+            setConstituentOrganizationRoles(sb.toString());
+        }
+    }
+
     public void addConstituentOrganizationRoles(String role) {
         String existingValue = getConstituentOrganizationRoles();
         if (existingValue == null) {
@@ -629,7 +668,7 @@ public class Constituent extends AbstractCommunicatorEntity implements FullTextS
         removeCustomField(ORGANIZATION_SALES_CONTACTS);
         removeCustomField(ORGANIZATION_PUBLIC_RELATIONS_CONTACTS);
     }
-    
+
     public Long getConstituentId() { return this.getId(); }
     public void setConstituentId(Long id) { this.setId(id); }
 

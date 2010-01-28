@@ -11,7 +11,7 @@ INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_E
 INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (9,'email-scheduled-daily', 'Email Scheduled Daily');
 INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (10,'email-scheduled-weekly', 'Email Scheduled Weekly');
 INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (11,'email-scheduled-monthly', 'Email Scheduled Monthly');
-INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (12,'scheduled-reprocess-gift-daily', 'Reprocess payments');
+INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (12,'scheduled-reprocess-gift-daily', 'Nightly Payment Processes');
 
 -- RULE_SEGMENT_TYPE and RULE_SEGMENT_TYPE_PARM (code function definitions for rule text phrases)
 -- RULE_EVENT_TYPE_X_SEGMENT_TYPE (what segment types can be used for what event types)

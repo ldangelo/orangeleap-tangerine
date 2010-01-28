@@ -47,6 +47,11 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
 	public static final String AMERICAN_EXPRESS = "American Express";
 	public static final String DISCOVER = "Discover";
 
+	/**
+	 * Flag to set to true to bypass checking if this payment source is unique
+	 */
+	private boolean bypassUniqueValidation = false;
+
     private String profile;
     private String paymentType = CREDIT_CARD; // TODO: use PaymentType enum
     private String creditCardHolderName;
@@ -129,7 +134,15 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         this.phone = phone;
     }
 
-    public String getProfile() {
+	public boolean isBypassUniqueValidation() {
+		return bypassUniqueValidation;
+	}
+
+	public void setBypassUniqueValidation(boolean bypassUniqueValidation) {
+		this.bypassUniqueValidation = bypassUniqueValidation;
+	}
+
+	public String getProfile() {
         return profile;
     }
 

@@ -74,7 +74,7 @@ public class PaymentManagerFormController extends TangerineConstituentAttributes
 				formErrors.reject("errorPaymentSourceExists", new String[]{existingSource.getProfile()}, "The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
 				return mav;
 			}
-			else if (names != null && !names.isEmpty() && !"true".equals(request.getParameter("useConflictingName"))) {
+			else if (names != null && ! names.isEmpty() && ! Boolean.TRUE.toString().toLowerCase().equals(request.getParameter("useConflictingName"))) {
 				ModelAndView mav = showForm(request, response, formErrors);
 				mav.addObject("conflictingNames", names);
 				return mav;
@@ -89,6 +89,9 @@ public class PaymentManagerFormController extends TangerineConstituentAttributes
 				return mav;
 			}
 		}
+		if (Boolean.TRUE.toString().toLowerCase().equals(request.getParameter("useConflictingName"))) {
+		    source.setBypassUniqueValidation(true);
+	    }
 
 		ModelAndView mav;
 		try {

@@ -71,6 +71,10 @@ public class PaymentSourceValidator implements Validator {
         }
 
         if (source != null) {
+	        if ( ! source.isBypassUniqueValidation()) {
+	            validatePaymentSourceUnique(source, errors);
+	        }
+	        
 	        if (PaymentSource.CREDIT_CARD.equals(source.getPaymentType())) {
 		        validateCreditCard(source, errors);
 		        
@@ -126,45 +130,56 @@ public class PaymentSourceValidator implements Validator {
 		else if (PaymentSource.MASTER_CARD.equals(paymentSource.getCreditCardType())) {
 			creditType = CreditCardValidator.MASTERCARD;
 		}
-		final CreditCardValidator validator = new CreditCardValidator(creditType);
-		if ( ! validator.isValid(paymentSource.getCreditCardNumber())) {
-			errors.rejectValue("creditCardNumber", "invalidCreditCardNumber");
+		if (creditType == CreditCardValidator.NONE) {
+			errors.rejectValue("creditCardType", "unsupportedCreditCardType");
+		}
+		else {
+			final CreditCardValidator validator = new CreditCardValidator(creditType);
+			if ( ! validator.isValid(paymentSource.getCreditCardNumber())) {
+				errors.rejectValue("creditCardNumber", "invalidCreditCardNumberForType", new String[] { paymentSource.getCreditCardType() }, "Invalid Credit Card Number for Type");
+			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void validatePaymentSourceUnique(PaymentSource paymentSource, Errors errors) {
-		//
 		// check for duplicate payment sources...  If a duplicate is found then throw a BindException
-
 		Map<String, Object> sources = paymentSourceService.checkForSameConflictingPaymentSources(paymentSource);
+		if (paymentSource.isNew()) {
+			PaymentSource existingSource = (PaymentSource) sources.get("existingSource");
+			Set<String> names = (Set<String>) sources.get("names");
+			List<PaymentSource> dateSources = (List<PaymentSource>) sources.get("dates");
 
-		PaymentSource existingSource = (PaymentSource) sources.get("existingSource");
-		Set<String> names = (Set<String>) sources.get("names");
-		List<PaymentSource> dateSources = (List<PaymentSource>) sources.get("dates");
-
-		if (existingSource != null) {
-				//
-				// throw a bind exception for payment information already exists
-//				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
-//				ex.reject("paymentsource.exists","The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
+			if (existingSource != null) {
+					// throw a bind exception for payment information already exists
+				errors.reject("paymentsource.exists", "The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
 			}
-//        			else if (names != null && !names.isEmpty()) {
-//        				//
-//        				// throw a bindexception for conflicting names
-//        				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
-//        				ex.reject("paymentsource.conflictingname","Payment Source Exists With Conflicting Name");
-//        				throw ex;
-//        			}
-//        			else if (dateSources != null && !dateSources.isEmpty()) {
-//        				//
-//        				// throw a bindexception for credit card exists
-//        				existingSource = dateSources.get(0); // should only be 1
-//        				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
-//        				ex.reject("paymentsource.creditcarddateexists","The entered credit card information already exists for the profile '" + existingSource.getProfile() + "' but with an expiration date of '" +		existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");;
-//        				throw ex;
-//        		}
-
-
+			else if (names != null && !names.isEmpty()) {
+				// throw a bindexception for conflicting names
+				errors.reject("paymentsource.conflictingname", "A Payment Source Exists With a Conflicting Name");
+			}
+			else if (dateSources != null && !dateSources.isEmpty()) {
+				// throw a bindexception for credit card exists
+				existingSource = dateSources.get(0); // should only be 1
+				errors.reject("paymentsource.creditcarddateexists", "The entered credit card information already exists for the profile '" + existingSource.getProfile() +
+						"' but with an expiration date of '" +	existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");
+			}
+		}
+		else {
+			// For existing sources, update the Credit Card expiration date/month
+			List<PaymentSource> dateSources = (List<PaymentSource>) sources.get("dates");
+			if (dateSources != null && !dateSources.isEmpty()) {
+				PaymentSource existingPaymentSource = dateSources.get(0); // should be only 1
+				existingPaymentSource.setCreditCardExpirationMonth(paymentSource.getCreditCardExpirationMonth());
+				existingPaymentSource.setCreditCardExpirationYear(paymentSource.getCreditCardExpirationYear());
+				try {
+					existingPaymentSource = paymentSourceService.maintainPaymentSource(existingPaymentSource);
+				}
+				catch (Exception ex) {
+					logger.warn("validatePaymentSourceUnique: could not update paymentSource.id = " + existingPaymentSource.getId(), ex);
+				}
+				paymentSource.setId(existingPaymentSource.getId()); // change the ID to the existing PaymentSource ID
+			}
+		}
 	}
 }

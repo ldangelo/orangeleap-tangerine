@@ -418,6 +418,9 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
                         return mav;
                     }
                 }
+	            else {
+	                aware.getPaymentSource().setBypassUniqueValidation(true);
+                }
                 List<PaymentSource> dateSources = (List<PaymentSource>) conflictingSources.get("dates");
                 if (dateSources != null && !dateSources.isEmpty()) {
                     PaymentSource src = dateSources.get(0); // should only be 1

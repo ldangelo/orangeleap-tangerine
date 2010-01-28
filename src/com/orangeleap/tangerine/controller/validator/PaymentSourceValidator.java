@@ -23,13 +23,16 @@ import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.util.CalendarUtils;
 import com.orangeleap.tangerine.util.OLLogger;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.logging.Log;
+import org.apache.commons.validator.CreditCardValidator;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
-import java.util.Calendar;
-import java.util.Date;
 
 public class PaymentSourceValidator implements Validator {
 
@@ -69,6 +72,8 @@ public class PaymentSourceValidator implements Validator {
 
         if (source != null) {
 	        if (PaymentSource.CREDIT_CARD.equals(source.getPaymentType())) {
+		        validateCreditCard(source, errors);
+		        
 				Date expirationDate = source.getCreditCardExpiration();
 				Calendar today = CalendarUtils.getToday(false);
 				if (expirationDate == null || today.getTime().after(expirationDate)) {
@@ -106,4 +111,60 @@ public class PaymentSourceValidator implements Validator {
             }
         }
     }
+
+	public void validateCreditCard(PaymentSource paymentSource, Errors errors) {
+		int creditType = CreditCardValidator.NONE; // all other credit cards except Visa, Amex, Discover, and Master Card not currently supported
+		if (PaymentSource.VISA.equals(paymentSource.getCreditCardType())) {
+			creditType = CreditCardValidator.VISA;
+		}
+		else if (PaymentSource.AMERICAN_EXPRESS.equals(paymentSource.getCreditCardType())) {
+			creditType = CreditCardValidator.AMEX;
+		}
+		else if (PaymentSource.DISCOVER.equals(paymentSource.getCreditCardType())) {
+			creditType = CreditCardValidator.DISCOVER;
+		}
+		else if (PaymentSource.MASTER_CARD.equals(paymentSource.getCreditCardType())) {
+			creditType = CreditCardValidator.MASTERCARD;
+		}
+		final CreditCardValidator validator = new CreditCardValidator(creditType);
+		if ( ! validator.isValid(paymentSource.getCreditCardNumber())) {
+			errors.rejectValue("creditCardNumber", "invalidCreditCardNumber");
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void validatePaymentSourceUnique(PaymentSource paymentSource, Errors errors) {
+		//
+		// check for duplicate payment sources...  If a duplicate is found then throw a BindException
+
+		Map<String, Object> sources = paymentSourceService.checkForSameConflictingPaymentSources(paymentSource);
+
+		PaymentSource existingSource = (PaymentSource) sources.get("existingSource");
+		Set<String> names = (Set<String>) sources.get("names");
+		List<PaymentSource> dateSources = (List<PaymentSource>) sources.get("dates");
+
+		if (existingSource != null) {
+				//
+				// throw a bind exception for payment information already exists
+//				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
+//				ex.reject("paymentsource.exists","The entered payment information already exists for the profile '" + existingSource.getProfile() + "'");
+			}
+//        			else if (names != null && !names.isEmpty()) {
+//        				//
+//        				// throw a bindexception for conflicting names
+//        				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
+//        				ex.reject("paymentsource.conflictingname","Payment Source Exists With Conflicting Name");
+//        				throw ex;
+//        			}
+//        			else if (dateSources != null && !dateSources.isEmpty()) {
+//        				//
+//        				// throw a bindexception for credit card exists
+//        				existingSource = dateSources.get(0); // should only be 1
+//        				BindException ex = new BindException(paymentSourceAware,"PaymentSource");
+//        				ex.reject("paymentsource.creditcarddateexists","The entered credit card information already exists for the profile '" + existingSource.getProfile() + "' but with an expiration date of '" +		existingSource.getCreditCardExpirationMonthText() + "/" + existingSource.getCreditCardExpirationYear() + "'");;
+//        				throw ex;
+//        		}
+
+
+	}
 }

@@ -1231,33 +1231,84 @@ Ext.onReady(function() {
         emptyMsg: msgs.emptyMsg
     };
 
+    function createCommonSaveButtonConfig(isDisabled, saveHandlerFunc) {
+    	return {
+			text: msgs.save,
+			cls: 'saveButton',
+			ref: '../saveButton',
+			formBind: true,
+			disabled: isDisabled,
+			disabledClass: 'disabledButton',
+			handler: function(button, event) {
+				saveHandlerFunc();
+			}
+		};
+    }
+
+    function createCommonCancelButtonConfig(cancelFunc) {
+        return {
+			text: msgs.cancel,
+			cls: 'button',
+			ref: '../closeButton',
+			handler: function(button, event) {
+				cancelFunc();
+			}
+        };
+    }
+
+    function createCommonPrevButtonConfig(winId, groupNum, setActiveTabFunc) {
+        return {
+			text: msgs.previous,
+			cls: 'button',
+			ref: '../prevButton',
+			formBind: true,
+			disabledClass: 'disabledButton',
+			handler: function(button, event) {
+				var panel = Ext.getCmp(winId).groupTabPanel;
+				if (panel.setActiveGroup(groupNum)) {
+					var firstItem = panel.items.items[groupNum];
+					if ( ! setActiveTabFunc) {
+						firstItem.setActiveTab(firstItem.items.items[0]);
+					}
+					else {
+						setActiveTabFunc(firstItem);
+					}
+				}
+			}
+        };
+    }
+
+    function createCommonNextButtonConfig(isDisabled, winId, groupNum, callbackFunc, setActiveTabFunc) {
+        return {
+			text: msgs.next,
+			cls: 'saveButton',
+			ref: '../nextButton',
+			formBind: true,
+			disabledClass: 'disabledButton',
+			disabled: isDisabled,
+			handler: function(button, event) {
+				var panel = Ext.getCmp(winId).groupTabPanel;
+				if (panel.setActiveGroup(groupNum)) {
+					var firstItem = panel.items.items[groupNum];
+					if ( ! setActiveTabFunc) {
+						firstItem.setActiveTab(firstItem.items.items[0]);
+					}
+					else {
+						setActiveTabFunc(firstItem);
+					}
+					if (callbackFunc) {
+						callbackFunc();
+					}
+				}
+			}
+        };
+    }
+
     var step1Form = new Ext.form.FormPanel(jQuery.extend({
         formId: 'step1Form',
         buttons: [
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                disabled: true,
-                handler: function(button, event) {
-                    var panel = editBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(1)) {
-                        var firstItem = panel.items.items[1];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                        $('#step1Num').addClass('complete');
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelEditBatch();
-                }
-            }
+            createCommonNextButtonConfig(true, 'editBatchWin', 1, function() { $('#step1Num').addClass('complete'); }) ,
+            createCommonCancelButtonConfig(cancelEditBatch)
         ],
         items: [
             // Textarea for description is 1st
@@ -1449,30 +1500,8 @@ Ext.onReady(function() {
                     }
                 }
             },
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                disabled: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = editBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(2)) { // check that all required fields entered and activeGroup is actually set to 2
-                        var firstItem = panel.items.items[2];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                        $('#step2Num').addClass('complete');
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelEditBatch();
-                }
-            }
+            createCommonNextButtonConfig(true, 'editBatchWin', 2, function() { $('#step2Num').addClass('complete'); }) ,
+			createCommonCancelButtonConfig(cancelEditBatch)
         ],
         columns: [
             checkColumn,
@@ -1625,44 +1654,15 @@ Ext.onReady(function() {
             }
         ],
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = editBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(1)) {
-                        var firstItem = panel.items.items[1];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                disabled: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = editBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(3)) { // check that all required fields entered and activeGroup is actually set to 3
-                        var firstItem = panel.items.items[3];
-                        firstItem.setActiveTab(firstItem.items.items[0].items.items[getStep4TabItemNumber()]);
-                        $('#step3Num').addClass('complete');
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelEditBatch();
-                }
-            }
+            createCommonPrevButtonConfig('editBatchWin', 1),
+            createCommonNextButtonConfig(true, 'editBatchWin', 3,
+                function() {
+                    $('#step3Num').addClass('complete');
+                },
+                function(firstItem) {
+                    firstItem.setActiveTab(firstItem.items.items[0].items.items[getStep4TabItemNumber()]);
+                }),
+			createCommonCancelButtonConfig(cancelEditBatch)
         ],
         listeners: {
 			'rowdblclick': function(grid, rowIndex, event) {
@@ -1702,44 +1702,16 @@ Ext.onReady(function() {
         ctCls: 'wizard',
         cls: 'batchForm',
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = editBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(2)) { // check that all required fields entered and activeGroup is actually set to 2
-                        var firstItem = panel.items.items[2];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.save,
-                cls: 'saveButton',
-                ref: '../saveButton',
-                formBind: true,
-                disabled: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    if (touchPointFieldsValid('entryType')) {
-	                    saveBatch('doBatch.htm', getFlowExecutionKey(), cancelEditBatch, 'open', initTabSaveParams('step4Grp'));
-                    }
-                    else {
-	                    showErrorMsg(msgs.mustDoStep4TouchPointFields);
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelEditBatch();
-                }
-            }
+            createCommonPrevButtonConfig('editBatchWin', 2),
+            createCommonSaveButtonConfig(true, function() {
+				if (touchPointFieldsValid('entryType')) {
+					saveBatch('doBatch.htm', getFlowExecutionKey(), cancelEditBatch, 'open', initTabSaveParams('step4Grp'));
+				}
+				else {
+					showErrorMsg(msgs.mustDoStep4TouchPointFields);
+				}
+            }),
+			createCommonCancelButtonConfig(cancelEditBatch)
         ],
 		items: [ // TODO: replace with dynamically created fields
             {
@@ -2109,6 +2081,7 @@ Ext.onReady(function() {
         form.customEditors = newCustomEditors;
         form.customRenderers = newCustomRenderers;
         form.setSource(newSource);
+		step4UpdatableFieldsForm.nextButton.enable();
     }
 
     var step4UpdatableFieldsStore = new Ext.data.JsonStore({
@@ -2183,43 +2156,10 @@ Ext.onReady(function() {
         source: { },
         customEditors: { },
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = editBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(2)) { // check that all required fields entered and activeGroup is actually set to 2
-                        var firstItem = panel.items.items[2];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = editBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(4)) { // check that all required fields entered and activeGroup is actually set to 4
-                        var firstItem = panel.items.items[4];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                        $('#step4Num').addClass('complete');
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelEditBatch();
-                }
-            }
+            createCommonPrevButtonConfig('editBatchWin', 2),
+            createCommonNextButtonConfig(false, 'editBatchWin', 4,
+                function() { $('#step4Num').addClass('complete'); } ) ,
+			createCommonCancelButtonConfig(cancelEditBatch)
         ]
     });
 
@@ -2239,11 +2179,9 @@ Ext.onReady(function() {
         'remove': checkStep4EnableButton
     });
 
-    var step5Reader = new Ext.data.JsonReader();
-
     var step5Store = new OrangeLeap.ListStore({
         url: 'doBatch.htm',
-        reader: step5Reader,
+        reader: new Ext.data.JsonReader(),
         root: 'rows',
         totalProperty: 'totalRows',
         remoteSort: true,
@@ -2328,38 +2266,13 @@ Ext.onReady(function() {
             }
         ],
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = editBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(3)) {
-                        var thisItem = panel.items.items[3];
-                        thisItem.setActiveTab(thisItem.items.items[0].items.items[getStep4TabItemNumber()]);
-                    }
-                }
-            },
-            {
-                text: msgs.save,
-                cls: 'saveButton',
-                ref: '../saveButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    saveBatch('doBatch.htm', getFlowExecutionKey(), cancelEditBatch, 'open');
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelEditBatch();
-                }
-            }
+            createCommonPrevButtonConfig('editBatchWin', 3, function(thisItem) {
+				thisItem.setActiveTab(thisItem.items.items[0].items.items[getStep4TabItemNumber()]);
+            }),
+            createCommonSaveButtonConfig(false, function() {
+				saveBatch('doBatch.htm', getFlowExecutionKey(), cancelEditBatch, 'open');
+            }),
+			createCommonCancelButtonConfig(cancelEditBatch)
         ]
     }, commonGridPanelConfig, commonUnselectableRowConfig));
 
@@ -2588,27 +2501,8 @@ Ext.onReady(function() {
     var reviewStep1Form = new Ext.form.FormPanel(jQuery.extend({
         formId: 'reviewStep1Form',
         buttons: [
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                handler: function(button, event) {
-                    var panel = reviewBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(1)) {
-                        var firstItem = panel.items.items[1];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.close,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    closeReviewBatch();
-                }
-            }
+            createCommonNextButtonConfig(false, 'reviewBatchWin', 1) ,
+			createCommonCancelButtonConfig(closeReviewBatch)
         ],
         items: [
             {
@@ -2674,39 +2568,9 @@ Ext.onReady(function() {
             autoFill: true
         },
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                handler: function(button, event) {
-                    var panel = reviewBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(0)) {
-                        var thisItem = panel.items.items[0];
-                        thisItem.setActiveTab(thisItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                handler: function(button, event) {
-                    var panel = reviewBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(2)) {
-                        var firstItem = panel.items.items[2];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.close,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    closeReviewBatch();
-                }
-            }
+            createCommonPrevButtonConfig('reviewBatchWin', 0),
+            createCommonNextButtonConfig(false, 'reviewBatchWin', 2) ,
+			createCommonCancelButtonConfig(closeReviewBatch)
         ],
     }, commonGridPanelConfig, commonUnselectableRowConfig));
 
@@ -2800,26 +2664,8 @@ Ext.onReady(function() {
             }
         ],
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                handler: function(button, event) {
-                    var panel = reviewBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(1)) {
-                        var thisItem = panel.items.items[1];
-                        thisItem.setActiveTab(thisItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.close,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    closeReviewBatch();
-                }
-            }
+            createCommonPrevButtonConfig('reviewBatchWin', 1),
+			createCommonCancelButtonConfig(closeReviewBatch)
         ],
         tbar: reviewStep3Toolbar,
         listeners: {
@@ -2989,27 +2835,8 @@ Ext.onReady(function() {
     var errorStep1Form = new Ext.form.FormPanel(jQuery.extend({
         formId: 'errorStep1Form',
         buttons: [
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                handler: function(button, event) {
-                    var panel = errorBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(1)) {
-                        var firstItem = panel.items.items[1];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelErrorBatch(); 
-                }
-            }
+            createCommonNextButtonConfig(false, 'errorBatchWin', 1) ,
+			createCommonCancelButtonConfig(cancelErrorBatch)
         ],
         items: [
             {
@@ -3128,43 +2955,11 @@ Ext.onReady(function() {
             }
         ],
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = errorBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(0)) {
-                        var firstItem = panel.items.items[0];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                disabled: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = errorBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(2)) {
-                        var firstItem = panel.items.items[2];
-                        firstItem.setActiveTab(firstItem.items.items[0].items.items[getErrorStep3TabItemNumber()]);
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelErrorBatch();
-                }
-            }
+            createCommonPrevButtonConfig('errorBatchWin', 0),
+            createCommonNextButtonConfig(true, 'errorBatchWin', 2, null, function(firstItem) {
+				firstItem.setActiveTab(firstItem.items.items[0].items.items[getErrorStep3TabItemNumber()]);
+            }) ,
+			createCommonCancelButtonConfig(cancelErrorBatch)
         ],
         tbar: errorStep2Toolbar,
         listeners: {
@@ -3186,44 +2981,16 @@ Ext.onReady(function() {
         ctCls: 'wizard',
         cls: 'batchForm',
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = errorBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(1)) {
-                        var firstItem = panel.items.items[1];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.save,
-                cls: 'saveButton',
-                ref: '../saveButton',
-                formBind: true,
-                disabled: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    if (touchPointFieldsValid('error-entryType')) {
-	                    saveBatch('errorBatch.htm', errorFlowExecutionKey, cancelErrorBatch, 'errors', initErrorTabSaveParams('step3Error'));
-                    }
-                    else {
-	                    showErrorMsg(msgs.mustDoStep3TouchPointFieldsError);
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-					cancelErrorBatch();
-                }
-            }
+            createCommonPrevButtonConfig('errorBatchWin', 1),
+            createCommonSaveButtonConfig(true, function() {
+				if (touchPointFieldsValid('error-entryType')) {
+					saveBatch('errorBatch.htm', errorFlowExecutionKey, cancelErrorBatch, 'errors', initErrorTabSaveParams('step3Error'));
+				}
+				else {
+					showErrorMsg(msgs.mustDoStep3TouchPointFieldsError);
+				}
+            }),
+			createCommonCancelButtonConfig(cancelErrorBatch)
         ],
 		items: [ // TODO: replace with dynamically created fields
             {
@@ -3470,42 +3237,9 @@ Ext.onReady(function() {
         updatableFieldsStore: errorStep3UpdatableFieldsStore,
         customEditors: { },
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = errorBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(1)) {
-                        var firstItem = panel.items.items[1];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.next,
-                cls: 'saveButton',
-                ref: '../nextButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = errorBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(3)) {
-                        var firstItem = panel.items.items[3];
-                        firstItem.setActiveTab(firstItem.items.items[0]);
-                    }
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelErrorBatch(); 
-                }
-            }
+            createCommonPrevButtonConfig('errorBatchWin', 1),
+            createCommonNextButtonConfig(false, 'errorBatchWin', 3),
+			createCommonCancelButtonConfig(cancelErrorBatch)
         ],
         buttonAlign: 'center'
     });
@@ -3592,38 +3326,13 @@ Ext.onReady(function() {
             }
         ],
         buttons: [
-            {
-                text: msgs.previous,
-                cls: 'button',
-                ref: '../prevButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    var panel = errorBatchWin.groupTabPanel;
-                    if (panel.setActiveGroup(2)) {
-                        var thisItem = panel.items.items[2];
-                        thisItem.setActiveTab(thisItem.items.items[0].items.items[getErrorStep3TabItemNumber()]);
-                    }
-                }
-            },
-            {
-                text: msgs.save,
-                cls: 'saveButton',
-                ref: '../saveButton',
-                formBind: true,
-                disabledClass: 'disabledButton',
-                handler: function(button, event) {
-                    saveBatch('errorBatch.htm', errorFlowExecutionKey, cancelErrorBatch, 'errors');
-                }
-            },
-            {
-                text: msgs.cancel,
-                cls: 'button',
-                ref: '../closeButton',
-                handler: function(button, event) {
-                    cancelErrorBatch(); 
-                }
-            }
+            createCommonPrevButtonConfig('errorBatchWin', 2, function(thisItem) {
+				thisItem.setActiveTab(thisItem.items.items[0].items.items[getErrorStep3TabItemNumber()]);
+            }),
+            createCommonSaveButtonConfig(false, function() {
+				saveBatch('errorBatch.htm', errorFlowExecutionKey, cancelErrorBatch, 'errors');
+            }),
+			createCommonCancelButtonConfig(cancelErrorBatch)
         ]
     }, commonGridPanelConfig, commonUnselectableRowConfig));
 

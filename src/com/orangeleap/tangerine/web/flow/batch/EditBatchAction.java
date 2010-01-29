@@ -140,7 +140,7 @@ public class EditBatchAction extends AbstractAction {
         return resolvedName;
     }
 
-    private void determineStepToSave(final RequestContext flowRequestContext) {
+    protected void determineStepToSave(final RequestContext flowRequestContext) {
         final String previousStep = getRequestParameter(flowRequestContext, PREVIOUS_STEP);
         if (STEP_1_GRP.equals(previousStep)) {
             saveBatchInfo(flowRequestContext);

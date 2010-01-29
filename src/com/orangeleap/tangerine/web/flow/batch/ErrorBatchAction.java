@@ -222,7 +222,7 @@ public class ErrorBatchAction extends EditBatchAction {
         return model;
     }
 
-    private void determineStepToSave(final RequestContext flowRequestContext) {
+    protected void determineStepToSave(final RequestContext flowRequestContext) {
         final String previousStep = getRequestParameter(flowRequestContext, PREVIOUS_STEP);
         if ("step1Error".equals(previousStep)) {
             saveBatchDesc(flowRequestContext);

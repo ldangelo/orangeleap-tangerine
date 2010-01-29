@@ -892,14 +892,14 @@ Ext.onReady(function() {
 		$('#step3MsgSpan').text(msgs.followingHaveTouchPoints);
 		$('#step3Num').next('.stepTxt').text(msgs.viewRowsConstituents);
 		$('#step4Num').next('.stepTxt').text(msgs.createTouchPointFields);
-		$('#step5Num').parent().parent().parent().parent('.x-grouptabs-main').addClass('noDisplay');
+		$('li.x-grouptabs-main:has(#step5Num)').addClass('noDisplay');
     }
 
     function setupEditWizardForFieldCriteria() {
 		$('#step3MsgSpan').text(msgs.followingBeModified);
 		$('#step3Num').next('.stepTxt').text(msgs.viewRowsToBeUpdated);
 		$('#step4Num').next('.stepTxt').text(msgs.createFieldUpdateCriteria);
-		$('#step5Num').parent().parent().parent().parent('.x-grouptabs-main').removeClass('noDisplay');
+		$('li.x-grouptabs-main:has(#step5Num)').removeClass('noDisplay');
     }
 
     function maskStep1Form() {
@@ -3470,12 +3470,12 @@ Ext.onReady(function() {
 
     function setupErrorWizardForTouchPoints() {
 		$('#errorStep3').next('.stepTxt').text(msgs.editTouchPointFields);
-		$('#errorStep4').parents('.x-grouptabs-main').addClass('noDisplay');
+		$('li.x-grouptabs-main:has(#errorStep4)').addClass('noDisplay');
     }
 
     function setupErrorWizardForFieldCriteria() {
 		$('#errorStep3').next('.stepTxt').text(msgs.editFieldUpdateCriteria);
-		$('#errorStep4').parents('.x-grouptabs-main').removeClass('noDisplay');
+		$('li.x-grouptabs-main:has(#errorStep4)').removeClass('noDisplay');
     }
 
     function resetErrorBatchWin() {

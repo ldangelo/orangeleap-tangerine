@@ -219,9 +219,9 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 						propertyName += StringConstants.DOT_VALUE;
 					}
 					Class clazz = bw.getPropertyType(propertyName);
-					if (Date.class.equals(clazz)||
-								FieldType.DATE.equals(fieldDef.getFieldType()) ||
-								FieldType.DATE_TIME.equals(fieldDef.getFieldType())) {
+					if (Date.class.equals(clazz) &&
+								(FieldType.DATE.equals(fieldDef.getFieldType()) ||
+								FieldType.DATE_TIME.equals(fieldDef.getFieldType()))) {
 						try {
 							Date date = DateUtils.parseDate(updateFldEntry.getValue(), new String[] { StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_1,
 									StringConstants.YYYY_MM_DD_HH_MM_SS_FORMAT_2, StringConstants.YYYY_MM_DD_FORMAT,

@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.service.ws;
 
+
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -82,8 +83,6 @@ import com.orangeleap.tangerine.ws.util.v2.ObjectConverter;
 import com.orangeleap.tangerine.ws.validation.SoapValidationManager;
 import com.orangeleap.theguru.client.GetSegmentationByNameRequest;
 import com.orangeleap.theguru.client.GetSegmentationByNameResponse;
-import com.orangeleap.theguru.client.PaymentSource;
-import com.orangeleap.theguru.client.PaymentType;
 import com.orangeleap.theguru.client.Segmentation;
 import com.orangeleap.theguru.client.Theguru;
 import com.orangeleap.theguru.client.WSClient;
@@ -554,7 +553,10 @@ public class OrangeLeapWSV2 {
 			if ((paymentSource.getCreditCardType() == null || paymentSource.getCreditCardType().equals("")))
 				throw new InvalidRequestException(
 						"Credit Card type is required for PaymentType CREDIT_CARD");
-			if (!paymentSource.getCreditCardType().equals("Visa") && !paymentSource.getCreditCardType().equals("AMEX") && !paymentSource.getCreditCardType().equals("Master Card"))
+			if (!paymentSource.getCreditCardType().equals(com.orangeleap.tangerine.domain.PaymentSource.VISA) && 
+				!paymentSource.getCreditCardType().equals(com.orangeleap.tangerine.domain.PaymentSource.MASTER_CARD) && 
+				!paymentSource.getCreditCardType().equals(com.orangeleap.tangerine.domain.PaymentSource.AMERICAN_EXPRESS) &&
+				!paymentSource.getCreditCardType().equals(com.orangeleap.tangerine.domain.PaymentSource.DISCOVER))
 				throw new InvalidRequestException(
 						"Invalid Credit Card type for PaymentType CREDIT_CARD");
 		} else if (paymentSource.getPaymentType() == com.orangeleap.tangerine.ws.schema.v2.PaymentType.ACH) {
@@ -1007,6 +1009,7 @@ public class OrangeLeapWSV2 {
 		
 		if (request.getConstituentId() <= 0)
 			throw new InvalidRequestException("Invalid constituent id");
+	
 		
 		List<com.orangeleap.tangerine.domain.PaymentSource> sources = paymentSourceService.readAllPaymentSourcesByConstituentId(request.getConstituentId(), null, null);
 		for (com.orangeleap.tangerine.domain.PaymentSource source : sources) {
@@ -1017,4 +1020,5 @@ public class OrangeLeapWSV2 {
 		}
 		return response;
 	}
+	
 }

@@ -55,33 +55,33 @@ import edu.emory.mathcs.backport.java.util.Collections;
 @Service("reminderService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class ReminderServiceImpl extends AbstractTangerineService implements ReminderService {
-	
+
 
     protected final Log logger = OLLogger.getLog(getClass());
-    
+
     public final static String REMINDER = "reminder";
 
     @Resource(name = "scheduledItemService")
     private ScheduledItemService scheduledItemService;
-    
+
     @Resource(name = "constituentService")
     private ConstituentService constituentService;
-    
+
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
-    
+
     @Resource(name = "pledgeService")
     private PledgeService pledgeService;
-    
+
     @Resource(name = "emailSendingService")
     private EmailService emailService;
-    
+
 	@Override
 	public List<ScheduledItem> listReminders(Schedulable schedulable, Date scheduledPaymentDate) {
 		ScheduledItem scheduledPayment = locateScheduledItemByDate(schedulable, scheduledPaymentDate);
 		return scheduledItemService.readSchedule(scheduledPayment);
 	}
-	
+
 	@Override
 	public void addReminder(Schedulable schedulable, Date scheduledPaymentDate, Date reminderDate) {
 		ScheduledItem scheduledPayment = locateScheduledItemByDate(schedulable, scheduledPaymentDate);
@@ -95,7 +95,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		ScheduledItem reminder = locateScheduledItemByDate(scheduledPayment, reminderDate);
 		scheduledItemService.deleteScheduledItem(reminder);
 	}
-	
+
 	@Override
 	public void deleteReminders(Schedulable schedulable) {
 		List<ScheduledItem> scheduledPayments = scheduledItemService.readSchedule(schedulable);
@@ -131,29 +131,29 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 			generateDefaultReminders(scheduledPayment, initialReminderDays, maximumReminders, reminderIntervalDays);
 		}
 	}
-	
+
 	private void generateDefaultReminders(Schedulable schedulable, Date scheduledPaymentDate, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
 		ScheduledItem scheduledPayment = locateScheduledItemByDate(schedulable, scheduledPaymentDate);
 		generateDefaultReminders(scheduledPayment, initialReminderDays, maximumReminders, reminderIntervalDays);
 	}
-	
+
     private final static Date PAST_DATE = new Date(0);
-	
+
 	private void generateDefaultReminders(ScheduledItem scheduledPayment, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
 
 		if (maximumReminders > 100) maximumReminders = 0;
 
 		List<ScheduledItem> existingReminders = scheduledItemService.readSchedule(scheduledPayment);
-		
+
     	// Get last reminder date used
     	Date afterdate = PAST_DATE;
     	for (ScheduledItem item : existingReminders) {
     		if (item.getActualScheduledDate() != null && item.getActualScheduledDate().after(afterdate)) afterdate = item.getActualScheduledDate();
     		if (item.getOriginalScheduledDate() != null && item.getOriginalScheduledDate().after(afterdate)) afterdate = item.getOriginalScheduledDate();
     	}
-		
+
 		List<Date> datelist = getDateList(scheduledPayment, initialReminderDays, maximumReminders, reminderIntervalDays);
-		
+
 		for (Date reminderDate : datelist) {
 			if (reminderDate.after(afterdate)) {
 				ScheduledItem reminder = getReminder(scheduledPayment, reminderDate);
@@ -161,9 +161,9 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 			}
 		}
 	}
-	
+
 	private List<Date> getDateList(ScheduledItem scheduledItem, int initialReminderDays, int maximumReminders, int reminderIntervalDays) {
-		
+
 		List<Date> datelist = new ArrayList<Date>();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(scheduledItem.getActualScheduledDate());
@@ -182,22 +182,22 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		reminder.setScheduledItemType(REMINDER);
 		return reminder;
 	}
-	
+
 	@Override
 	public List<ScheduledItem> getRemindersToProcess(Date processingDate) {
-		
+
 		List<ScheduledItem> list = scheduledItemService.getAllItemsReadyToProcess("scheduleditem", REMINDER, processingDate);
 		removeDuplicatesAndCompletedPayments(list);
 		return list;
-		
+
 	}
-	
+
 	// Delete reminders if corresponding scheduled payment is completed, or more than one reminder for the same schedulePayment is ready to be sent.
 	private void removeDuplicatesAndCompletedPayments(List<ScheduledItem> list) {
-		
+
 		Collections.reverse(list); // Save only the last dated reminder instead of the first one in the case of duplicates.
 		Long lastid = null;
-		Iterator<ScheduledItem> it = list.iterator(); 
+		Iterator<ScheduledItem> it = list.iterator();
 		while (it.hasNext()) {
 			ScheduledItem item = it.next();
 			ScheduledItem scheduledPayment = scheduledItemService.readScheduledItemById(item.getSourceEntityId());
@@ -208,7 +208,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 			lastid = scheduledPayment == null ? null : scheduledPayment.getId();
 		}
 		Collections.reverse(list);
-		
+
 	}
 
 	@Override
@@ -219,10 +219,10 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		if (parentType.equals("pledge")) return pledgeService.readPledgeById(item.getSourceEntityId());
 		return null;
 	}
-	
+
 	// Parses custom fields on RecurringGift to determine if using reminders
 	public static final class ReminderInfo {
-    	
+
 		private int initialReminder = 0;
     	private int maximumReminders = 0;
     	private int reminderInterval = 0;
@@ -247,12 +247,12 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 	    		valid = false;
 	    	}
 		}
-    	
+
     	public boolean isGenerateReminders() {
-    		return 
-    		valid 
-    		&& initialReminder != 0 
-    		&& maximumReminders > 0 
+    		return
+    		valid
+    		&& initialReminder != 0
+    		&& maximumReminders > 0
     		&& ( reminderInterval > 0 || (reminderInterval == 0 && maximumReminders == 1));
     	}
 
@@ -279,24 +279,24 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		public int getReminderIntervalDays() {
 			return reminderInterval;
 		}
-		
+
 	}
-	
+
 	private static final BigDecimal DEFAULT_MIN_REMINDER_AMOUNT = new BigDecimal(1);
-	
+
 	@Override
 	public void processReminder(ScheduledItem reminder) {
-		
+
 		ScheduledItem scheduledPayment = (ScheduledItem)getParent(reminder);
-		
+
 		BigDecimal minAmount = DEFAULT_MIN_REMINDER_AMOUNT; // TODO add site or default option
 		if (scheduledPayment == null || scheduledPayment.isCompleted() || scheduledPayment.getScheduledItemAmount().compareTo(minAmount) < 0) {
 			scheduledItemService.completeItem(reminder, null, "Skipped");
 			return;
 		}
-			
+
     	Schedulable schedulable = getParent(scheduledPayment);
-    	
+
     	String status = "";
     	try {
         	if (schedulable instanceof RecurringGift) {
@@ -311,9 +311,9 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
     		logger.error("Error processing reminder " + reminder.getId(), e);
     		status = "Error";
     	}
-    	
+
 	}
-	
+
 	private void addScheduledPaymentDates(ScheduledItem scheduledPayment, Map<String, String> map) {
     	Date scheduledPaymentDate = scheduledPayment.getActualScheduledDate();
 		SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
@@ -321,7 +321,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 		map.put("ScheduledPaymentDateDDMMYYYY", sdf2.format(scheduledPaymentDate));
 	}
-	
+
 	private String processRecurringGiftReminder(RecurringGift recurringGift, ScheduledItem scheduledPayment) {
 
 		Map<String, String> map = new HashMap<String, String>();
@@ -329,21 +329,21 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		addScheduledPaymentDates(scheduledPayment, map);
 
 		map.put("GiftAmount", scheduledPayment.getScheduledItemAmount().toString());
-    	
+
 		Map<String, String> siteOptions = siteService.getSiteOptionsMap();
 		String subject = getWithDefault(siteOptions, "recurring.gift.reminder.subject", "Thank you for your commitment!");
 		String template = getWithDefault(siteOptions, "recurring.gift.reminder.template", "recurringGiftReminder");
 		String body = getWithDefault(siteOptions, "recurring.gift.reminder.body", null);
 		if (body != null) map.put(EmailService.EMAIL_BODY, body);
-		
+
 		Constituent constituent = constituentService.readConstituentById(recurringGift.getConstituentId());
 		constituent.setSite(siteService.readSite(constituent.getSite().getName()));
-		emailService.sendMail(constituent, null, recurringGift, null, map, subject, template);
-		
+		emailService.sendMail(constituent, null, recurringGift, null, map, subject, template, false);
+
 		return "Complete";
-		
+
 	}
-	
+
 	private String getWithDefault(Map<String, String> map, String key, String defaultValue) {
 		String result = map.get(key);
 		return result == null ? defaultValue : result;
@@ -356,7 +356,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		addScheduledPaymentDates(scheduledPayment, map);
 
 		map.put("GiftAmount", scheduledPayment.getScheduledItemAmount().toString());
-    	
+
 		Map<String, String> siteOptions = siteService.getSiteOptionsMap();
 		String subject = getWithDefault(siteOptions, "pledge.reminder.subject", "Thank you for your pledge!");
 		String template = getWithDefault(siteOptions, "pledge.reminder.template", "pledgeReminder");
@@ -365,10 +365,10 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 
 		Constituent constituent = constituentService.readConstituentById(pledge.getConstituentId());
 		constituent.setSite(siteService.readSite(constituent.getSite().getName()));
-		emailService.sendMail(constituent, null, null, pledge, map, subject, template);
-		
+		emailService.sendMail(constituent, null, null, pledge, map, subject, template, false);
+
 		return "Complete";
-		
+
 	}
 
 }

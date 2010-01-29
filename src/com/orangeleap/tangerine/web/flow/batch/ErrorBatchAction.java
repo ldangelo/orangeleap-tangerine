@@ -173,6 +173,8 @@ public class ErrorBatchAction extends EditBatchAction {
         if (logger.isTraceEnabled()) {
             logger.trace("errorStep3:");
         }
+	    tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch); // TODO: do as annotation
+	    determineStepToSave(flowRequestContext);
 	    return findUpdateFields(flowRequestContext);
     }
 

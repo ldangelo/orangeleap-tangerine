@@ -19,6 +19,7 @@
 package com.orangeleap.tangerine.web.common;
 
 import com.orangeleap.tangerine.controller.TangerineForm;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
@@ -129,6 +130,19 @@ public class TangerineListHelper {
                         paramMap.put(key, displayValue);
                     }
                 }
+	            /* Add the constituentId if a constituentId exists in the beanWrapper and not specified in the sectionFields */
+	            if ( ! paramMap.containsKey(StringConstants.CONSTITUENT_ID) &&  ! paramMap.containsKey(TangerineForm.escapeFieldName(StringConstants.CONSTITUENT_DOT_ID))) {
+					if ((beanWrapper.isReadableProperty(StringConstants.CONSTITUENT) && beanWrapper.getPropertyValue(StringConstants.CONSTITUENT) != null &&
+							((Constituent) beanWrapper.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
+							(beanWrapper.isReadableProperty(StringConstants.CONSTITUENT_ID) && beanWrapper.getPropertyValue(StringConstants.CONSTITUENT_ID) != null)) {
+						if (beanWrapper.isReadableProperty(StringConstants.CONSTITUENT)) {
+							paramMap.put(StringConstants.CONSTITUENT_ID, ((Constituent) beanWrapper.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+						}
+						else if (beanWrapper.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+							paramMap.put(StringConstants.CONSTITUENT_ID, beanWrapper.getPropertyValue(StringConstants.CONSTITUENT_ID));
+						}
+					}
+	            }
                 paramMapList.add(paramMap);
             }
         }

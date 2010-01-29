@@ -226,7 +226,10 @@ public class SectionFieldTag extends AbstractTag {
 
                     String gridType = isListGrid ? "List" : (StringConstants.FULLTEXT.equals(searchTypeValue) ? "FullTextSearch" : "Search");
                     sb.append("url: '").append(gridName).append(gridType).append(".json");
-                    if (isListGrid && (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID))) {
+                    if (isListGrid &&
+						((bw.isReadableProperty(StringConstants.CONSTITUENT) && bw.getPropertyValue(StringConstants.CONSTITUENT) != null &&
+					        ((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
+					        (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null))) {
                         sb.append("?constituentId=");
                         if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
                             sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
@@ -440,23 +443,18 @@ public class SectionFieldTag extends AbstractTag {
                         entitySecFldName = StringConstants.ID;
                     }
                     sb.append(entityUrl).append("?").append(entityIdKey).append("=\" + rec.get('").append(entitySecFldName).append("')");
-                    if ((bw.isReadableProperty(StringConstants.CONSTITUENT) && bw.getPropertyValue(StringConstants.CONSTITUENT) != null &&
-                            ((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
-                            (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null)) {
-                        sb.append(" + \"&constituentId=");
-                        if (isListGrid) {
-                            if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
-                                sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
-                            }
-                            else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
-                                sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
-                            }
-                            sb.append("\"");
-                        }
-                        else {
-                            sb.append("\" + rec.data['").append(TangerineForm.escapeFieldName(StringConstants.CONSTITUENT_DOT_ID)).append("']");
-                        }
-                    }
+					if (isListGrid) {
+						if ((bw.isReadableProperty(StringConstants.CONSTITUENT) && bw.getPropertyValue(StringConstants.CONSTITUENT) != null &&
+								((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
+								(bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null)) {
+							sb.append(" + \"&constituentId=\" + ");
+							writeCheckConstituentId(bw, sb);
+						}
+					}
+					else if ( ! isListGrid && (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID))) {
+						sb.append(" + \"&constituentId=\" + ");
+						sb.append("rec.get('").append(TangerineForm.escapeFieldName(StringConstants.CONSTITUENT_DOT_ID)).append("')");
+					}					
                     sb.append(";\n");
                     sb.append("}\n");
                     sb.append("},\n");
@@ -626,7 +624,9 @@ public class SectionFieldTag extends AbstractTag {
                     sb.append("remoteSort: true,\n");
                     sb.append("sortInfo: { field: 'a0', direction: '").append(getInitDirection(fields)).append("' },\n");
                     sb.append("url: '").append(gridName).append("List.json");
-                    if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+					if ((bw.isReadableProperty(StringConstants.CONSTITUENT) && bw.getPropertyValue(StringConstants.CONSTITUENT) != null &&
+					        ((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
+					        (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null)) {
                         sb.append("?constituentId=");
                         if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
                             sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
@@ -1037,17 +1037,22 @@ public class SectionFieldTag extends AbstractTag {
         if ((bw.isReadableProperty(StringConstants.CONSTITUENT) && bw.getPropertyValue(StringConstants.CONSTITUENT) != null &&
                 ((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId() != null) ||
                 (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null)) {
-            sb.append(" + \"&constituentId=");
-            if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
-                sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
-            }
-            else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
-                sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
-            }
-            sb.append("\"");
+            sb.append(" + \"&constituentId=\" + ");
+	        writeCheckConstituentId(bw, sb);
         }
         sb.append(";\n");
     }
+
+	private void writeCheckConstituentId(BeanWrapper bw, StringBuilder sb) {
+		sb.append("( ! Ext.isEmpty(rec.get(\"constituentId\")) ? rec.get(\"constituentId\") : \"");
+	    if (bw.isReadableProperty(StringConstants.CONSTITUENT)) {
+	        sb.append(((Constituent) bw.getPropertyValue(StringConstants.CONSTITUENT)).getId());
+	    }
+	    else if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+	        sb.append(bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+	    }
+	    sb.append("\")");
+	}
 
     public static String getInitDirection(List<SectionField> fields) {
         return FieldType.DATE.equals(fields.get(0).getFieldType()) ||

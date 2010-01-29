@@ -260,6 +260,13 @@ public class EmailService  {
 	}
 
 	public void sendMail(Constituent p, Gift g, String subject,
+			String templateName) {
+		sendMail(p, g, null, null, new HashMap<String, String>(), subject,
+				templateName, false);
+	}
+
+
+	public void sendMail(Constituent p, Gift g, String subject,
 			String templateName, Boolean primaryOnly) {
 		sendMail(p, g, null, null, new HashMap<String, String>(), subject,
 				templateName, primaryOnly);

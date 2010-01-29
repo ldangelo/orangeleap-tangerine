@@ -892,14 +892,14 @@ Ext.onReady(function() {
 		$('#step3MsgSpan').text(msgs.followingHaveTouchPoints);
 		$('#step3Num').next('.stepTxt').text(msgs.viewRowsConstituents);
 		$('#step4Num').next('.stepTxt').text(msgs.createTouchPointFields);
-		$('#step5Num').parents('.x-grouptabs-main').addClass('noDisplay');
+		$('#step5Num').parent().parent().parent().parent('.x-grouptabs-main').addClass('noDisplay');
     }
 
     function setupEditWizardForFieldCriteria() {
 		$('#step3MsgSpan').text(msgs.followingBeModified);
 		$('#step3Num').next('.stepTxt').text(msgs.viewRowsToBeUpdated);
 		$('#step4Num').next('.stepTxt').text(msgs.createFieldUpdateCriteria);
-		$('#step5Num').parents('.x-grouptabs-main').removeClass('noDisplay');
+		$('#step5Num').parent().parent().parent().parent('.x-grouptabs-main').removeClass('noDisplay');
     }
 
     function maskStep1Form() {

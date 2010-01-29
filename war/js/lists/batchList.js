@@ -2571,7 +2571,7 @@ Ext.onReady(function() {
             createCommonPrevButtonConfig('reviewBatchWin', 0),
             createCommonNextButtonConfig(false, 'reviewBatchWin', 2) ,
 			createCommonCancelButtonConfig(closeReviewBatch)
-        ],
+        ]
     }, commonGridPanelConfig, commonUnselectableRowConfig));
 
     var reviewStep3Store = new OrangeLeap.ListStore({

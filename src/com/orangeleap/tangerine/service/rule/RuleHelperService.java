@@ -414,10 +414,10 @@ public class RuleHelperService {
      * @param subject
      * @param templateName
      */
-    public static void sendMail(Constituent p, Gift g, String subject, String body, String templateName) {
+    public static void sendMail(Constituent p, Gift g, String subject, String body, String templateName, Boolean primaryOnly) {
     	Map<String, String> map = new HashMap<String, String>();
     	if (body != null) map.put(EmailService.EMAIL_BODY, body);
-    	emailService.sendMail(p,  g,  null, null, map, subject,  templateName);
+    	emailService.sendMail(p,  g,  null, null, map, subject,  templateName, primaryOnly);
     }
 
 

@@ -260,14 +260,14 @@ public class EmailService  {
 	}
 
 	public void sendMail(Constituent p, Gift g, String subject,
-			String templateName) {
+			String templateName, Boolean primaryOnly) {
 		sendMail(p, g, null, null, new HashMap<String, String>(), subject,
-				templateName);
+				templateName, primaryOnly);
 	}
 
 	public void sendMail(Constituent p, Gift g, RecurringGift recurringGift,
 			Pledge pledge, Map<String, String> reportParams, String subject,
-			String templateName) {
+			String templateName, Boolean primaryOnly) {
 		String strEmailAddrs = "";
 		List<Email> selectedEmails = new LinkedList<Email>();
 
@@ -280,8 +280,17 @@ public class EmailService  {
 
 		for (Email e : emailAddresses) {
 			if (e.isReceiveCorrespondence() && !e.isInactive() && e.isValid()) {
-				selectedEmails.add(e);
-				strEmailAddrs += e.getEmailAddress() + ",";
+				//check to see if the param primaryOnly is true if so only add primary email addr
+				if(primaryOnly){
+					if (e.isPrimary()){
+						selectedEmails.add(e);
+						strEmailAddrs += e.getEmailAddress() + ",";
+					}
+				}else{
+					selectedEmails.add(e);
+					strEmailAddrs += e.getEmailAddress() + ",";
+				}
+
 			}
 		}
 

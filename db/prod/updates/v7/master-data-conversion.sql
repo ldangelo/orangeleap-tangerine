@@ -18,6 +18,11 @@ UPDATE VERSION SET SCHEMA_MAJOR_VERSION = 7 WHERE COMPONENT_ID = 'ORANGE' AND CO
 
 /* TODO  add rollupAttributesDomain.sql */
 
+/* TANGERINE-1805 */
+UPDATE SECTION_FIELD SET FIELD_ORDER = 1 WHERE FIELD_DEFINITION_ID IN ('gift.idHidden', 'gift.distributionLines.customFieldMap[associatedPledgeId]',
+	'gift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]', 'adjustedGift.originalGiftId', 'adjustedGift.distributionLines.customFieldMap[associatedPledgeIdReadOnly]') AND FIELD_ORDER = 0;
+
+
 /* TANGERINE-1042 */
 SET @Next_ID=(SELECT MAX(PICKLIST_ID)+1 FROM PICKLIST);
 

@@ -3,22 +3,18 @@ package com.orangeleap.tangerine.controller.gift;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.service.PledgeService;
-import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
 public class GiftPaidController extends AbstractMutableGridFormController {
@@ -29,12 +25,6 @@ public class GiftPaidController extends AbstractMutableGridFormController {
     @Resource(name="giftService")
     protected GiftService giftService;
 
-	@Resource(name = "pledgeService")
-	protected PledgeService pledgeService;
-
-	@Resource(name = "recurringGiftService")
-	protected RecurringGiftService recurringGiftService;
-	
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
 
@@ -76,16 +66,7 @@ public class GiftPaidController extends AbstractMutableGridFormController {
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refMap = super.referenceData(request, command, errors);
 
-	    String selectedPledgeId = request.getParameter("selectedPledgeId");
-	    String selectedRecurringGiftId = request.getParameter("selectedRecurringGiftId");
-	    if (NumberUtils.isDigits(selectedPledgeId)) {
-	        Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
-	        refMap.put("associatedPledge", pledge);
-	    }
-	    else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
-	        RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
-	        refMap.put("associatedRecurringGift", recurringGift);
-	    }
+	    giftControllerHelper.addSelectedPledgeRecurringGiftRefData(request, refMap);
 
 	    TangerineForm form = (TangerineForm) command;
 		Gift gift = (Gift) form.getDomainObject();
@@ -93,12 +74,17 @@ public class GiftPaidController extends AbstractMutableGridFormController {
         return refMap;
     }
 
+	@Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        super.initBinder(request, binder);
+		giftControllerHelper.initBinderAssociations(binder);
+    }
+
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 	    TangerineForm form = (TangerineForm) command;
 	    Gift gift = (Gift) form.getDomainObject();
-	    giftService.checkAssociatedPledgeIds(gift);
-	    giftService.checkAssociatedRecurringGiftIds(gift);
+	    giftControllerHelper.checkAssociations(gift);
         giftControllerHelper.validateGiftStatusChange(gift);
 
         ModelAndView mav;
@@ -114,6 +100,7 @@ public class GiftPaidController extends AbstractMutableGridFormController {
 	    }
 	    catch (BindException domainErrors) {
 		    bindDomainErrorsToForm(request, formErrors, domainErrors, form, gift);
+		    giftControllerHelper.checkAssociations(gift);
             mav = showForm(request, formErrors, getFormView());
 	    }
         return mav;

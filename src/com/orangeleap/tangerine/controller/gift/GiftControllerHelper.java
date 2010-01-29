@@ -20,17 +20,32 @@ package com.orangeleap.tangerine.controller.gift;
 
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.PaymentType;
 import com.orangeleap.tangerine.util.StringConstants;
 
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.web.bind.ServletRequestDataBinder;
 
 public class GiftControllerHelper {
 
     @Resource(name="giftService")
     protected GiftService giftService;
 
+	@Resource(name = "pledgeService")
+	protected PledgeService pledgeService;
+
+	@Resource(name = "recurringGiftService")
+	protected RecurringGiftService recurringGiftService;
+	
     protected String giftUrl;
     protected String giftPaidUrl;
     protected String giftPostedUrl;
@@ -144,4 +159,28 @@ public class GiftControllerHelper {
             }
         }
     }
+
+	@SuppressWarnings("unchecked")
+	public void addSelectedPledgeRecurringGiftRefData(final HttpServletRequest request, final Map refMap) {
+		String selectedPledgeId = request.getParameter("selectedPledgeId");
+		String selectedRecurringGiftId = request.getParameter("selectedRecurringGiftId");
+		if (NumberUtils.isDigits(selectedPledgeId)) {
+		    Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
+		    refMap.put("associatedPledge", pledge);
+		}
+		else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
+		    RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
+		    refMap.put("associatedRecurringGift", recurringGift);
+		}
+	}
+
+    public void initBinderAssociations(ServletRequestDataBinder binder) {
+        binder.registerCustomEditor(List.class, "associatedPledgeIds", new AssociationEditor());
+        binder.registerCustomEditor(List.class, "associatedRecurringGiftIds", new AssociationEditor());
+    }
+
+	public void checkAssociations(Gift gift) {
+	    giftService.checkAssociatedPledgeIds(gift);
+	    giftService.checkAssociatedRecurringGiftIds(gift);
+	}
 }

@@ -21,45 +21,28 @@ package com.orangeleap.tangerine.controller.gift;
 import com.orangeleap.tangerine.controller.TangerineForm;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.PicklistItemService;
-import com.orangeleap.tangerine.service.PledgeService;
-import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.type.PaymentType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.type.PaymentType;
-import org.apache.commons.lang.math.NumberUtils;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
 
 public class GiftFormController extends AbstractMutableGridFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name = "pledgeService")
-    protected PledgeService pledgeService;
-
-    @Resource(name = "recurringGiftService")
-    protected RecurringGiftService recurringGiftService;
-
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
-
-	@Resource(name = "picklistItemService")
-	protected PicklistItemService picklistItemService;
 
     protected GiftControllerHelper giftControllerHelper;
 
@@ -110,7 +93,7 @@ public class GiftFormController extends AbstractMutableGridFormController {
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refMap = super.referenceData(request, command, errors);
 
-        addSelectedPledgeRecurringGiftRefData(request, refMap);
+        giftControllerHelper.addSelectedPledgeRecurringGiftRefData(request, refMap);
 	    
         TangerineForm form = (TangerineForm) command;
 	    Gift gift = (Gift) form.getDomainObject();
@@ -126,32 +109,17 @@ public class GiftFormController extends AbstractMutableGridFormController {
         return refMap;
     }
 
-	@SuppressWarnings("unchecked")
-	protected void addSelectedPledgeRecurringGiftRefData(final HttpServletRequest request, final Map refMap) {
-		String selectedPledgeId = request.getParameter("selectedPledgeId");
-		String selectedRecurringGiftId = request.getParameter("selectedRecurringGiftId");
-		if (NumberUtils.isDigits(selectedPledgeId)) {
-		    Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
-		    refMap.put("associatedPledge", pledge);
-		}
-		else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
-		    RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
-		    refMap.put("associatedRecurringGift", recurringGift);
-		}
-	}
-
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
-        binder.registerCustomEditor(List.class, "associatedPledgeIds", new AssociationEditor());
-        binder.registerCustomEditor(List.class, "associatedRecurringGiftIds", new AssociationEditor());
+		giftControllerHelper.initBinderAssociations(binder);
     }
 
 	@Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
 		TangerineForm form = (TangerineForm) command;
 		Gift gift = (Gift) form.getDomainObject();
-        checkAssociations(gift);
+        giftControllerHelper.checkAssociations(gift);
         giftControllerHelper.validateGiftStatusChange(gift);
 
         boolean saved = true;
@@ -186,14 +154,9 @@ public class GiftFormController extends AbstractMutableGridFormController {
             }
         }
         else {
-			checkAssociations(gift);
+			giftControllerHelper.checkAssociations(gift);
 			mav = showForm(request, formErrors, getFormView());
         }
         return mav;
-    }
-	
-    protected void checkAssociations(Gift gift) {
-        giftService.checkAssociatedPledgeIds(gift);
-        giftService.checkAssociatedRecurringGiftIds(gift);
     }
 }

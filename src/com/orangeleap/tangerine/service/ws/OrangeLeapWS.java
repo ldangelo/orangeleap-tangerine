@@ -812,17 +812,19 @@ public class OrangeLeapWS {
 			throw new InvalidRequestException(
 					"Invalid constituentid in getCommunicationHistory");
 
-		PaginatedResult result = communicationHistory
-				.readCommunicationHistoryByConstituent(req.getConstituentId(),
-						sortInfo);
+		List<com.orangeleap.tangerine.domain.CommunicationHistory> list = communicationHistory.readAllCommunicationHistoryByConstituentId(req.getConstituentId(), sortInfo, Locale.getDefault());
+
 		ObjectConverter converter = new ObjectConverter();
-		List<com.orangeleap.tangerine.domain.CommunicationHistory> list = result
-				.getRows();
+
 		GetCommunicationHistoryResponse response = new GetCommunicationHistoryResponse();
 
 		for (com.orangeleap.tangerine.domain.CommunicationHistory ch : list) {
 			CommunicationHistory sch = new CommunicationHistory();
-
+			
+			//
+			// we need to do this so we pull in the custom fields off of a touch point
+			ch = communicationHistory.readCommunicationHistoryById(ch.getId());
+			
 			converter.ConvertToJAXB(ch, sch);
 			response.getCommunicationHistory().add(sch);
 

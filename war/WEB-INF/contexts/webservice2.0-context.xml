@@ -47,6 +47,7 @@
 	<bean id="getConstituentByIdRequestValidator" class="com.orangeleap.tangerine.ws.validation.GetConstituentByIdRequestValidator"/>
 	<bean id="saveOrUpdateConstituentRequestValidator" class="com.orangeleap.tangerine.ws.validation.SaveOrUpdateConstituentRequestValidator"/>
 	<bean id="listValidator" class="com.orangeleap.tangerine.ws.validation.SoapListValidator"/>	
+	
 	<bean id="validationManager" class="com.orangeleap.tangerine.ws.validation.SoapValidationManager">
 		<property name="validators">
 			<list>

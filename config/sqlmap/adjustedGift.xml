@@ -212,6 +212,13 @@
         left outer join PAYMENT_SOURCE ps on ag.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
 	    inner join DISTRO_LINE dl on ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID
 
+	    <isNotNull property="constituentReferenceCustomField">
+	        inner join CUSTOM_FIELD cf on cf.ENTITY_ID = dl.DISTRO_LINE_ID
+			and cf.ENTITY_TYPE = 'distributionline'
+			and cf.FIELD_NAME = #constituentReferenceCustomField#
+			and cf.FIELD_VALUE = #constituentId#
+	    </isNotNull>
+
         <isNotNull property="entityType">
             <isNotNull property="fieldName">
                 <isNotNull property="asOfDate">
@@ -224,7 +231,11 @@
 
         where p.SITE_NAME = #siteName#
         and ag.GIFT_ID = #giftId#
-		and ag.CONSTITUENT_ID = #constituentId#
+
+	    <isNull property="constituentReferenceCustomField">
+	        and ag.CONSTITUENT_ID = #constituentId#
+	    </isNull>
+
         order by
         CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$

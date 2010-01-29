@@ -80,6 +80,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.paymentStatusReadOnly', 'adjustedGift', 'paymentStatus', 'Payment Status', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.txRefNumReadOnly', 'adjustedGift', 'txRefNum', 'Reference Number', 'wrappable', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.paymentTypeReadOnly', 'adjustedGift', 'paymentType', 'Payment Method', 'giftPayment', 'PICKLIST_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.customFieldMap[transactionDateReadOnly]', 'adjustedGift', 'customFieldMap[transactionDate]', 'Transaction Date', 'READ_ONLY_TEXT');
 
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.paymentSource.creditCardHolderNameReadOnly', 'adjustedGift', 'paymentSource', 'Cardholder Name', 'READ_ONLY_TEXT');

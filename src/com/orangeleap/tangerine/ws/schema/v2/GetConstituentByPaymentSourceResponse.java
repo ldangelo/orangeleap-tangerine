@@ -10,21 +10,21 @@ package com.orangeleap.tangerine.ws.schema.v2;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Java class for GetConstituentByPaymentSourceResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType>
+ * &lt;complexType name="GetConstituentByPaymentSourceResponse">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="constituentId" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="constituent" type="{http://www.orangeleap.com/orangeleap/services2.0/}constituent"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,28 +34,36 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "constituentId"
+@XmlType(name = "GetConstituentByPaymentSourceResponse", propOrder = {
+    "constituent"
 })
-@XmlRootElement(name = "GetConstituentPledgeRequest")
-public class GetConstituentPledgeRequest {
+public class GetConstituentByPaymentSourceResponse {
 
-    protected long constituentId;
+    @XmlElement(required = true)
+    protected Constituent constituent;
 
     /**
-     * Gets the value of the constituentId property.
+     * Gets the value of the constituent property.
      * 
+     * @return
+     *     possible object is
+     *     {@link Constituent }
+     *     
      */
-    public long getConstituentId() {
-        return constituentId;
+    public Constituent getConstituent() {
+        return constituent;
     }
 
     /**
-     * Sets the value of the constituentId property.
+     * Sets the value of the constituent property.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link Constituent }
+     *     
      */
-    public void setConstituentId(long value) {
-        this.constituentId = value;
+    public void setConstituent(Constituent value) {
+        this.constituent = value;
     }
 
 }

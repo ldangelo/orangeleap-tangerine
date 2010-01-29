@@ -21,6 +21,8 @@ import org.springframework.validation.BindException;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 
+import com.orangeleap.tangerine.dao.PaymentSourceDao;
+import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.AddressService;
@@ -54,6 +56,8 @@ import com.orangeleap.tangerine.ws.schema.v2.GetCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetCommunicationHistoryResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetConstituentByIdRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetConstituentByIdResponse;
+import com.orangeleap.tangerine.ws.schema.v2.GetConstituentByPaymentSourceRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetConstituentByPaymentSourceResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetConstituentGiftRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetConstituentGiftResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetConstituentPledgeRequest;
@@ -67,6 +71,7 @@ import com.orangeleap.tangerine.ws.schema.v2.GetPickListByNameResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListsRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListsResponse;
 import com.orangeleap.tangerine.ws.schema.v2.Gift;
+import com.orangeleap.tangerine.ws.schema.v2.PaymentType;
 import com.orangeleap.tangerine.ws.schema.v2.Pledge;
 import com.orangeleap.tangerine.ws.schema.v2.RecurringGift;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateConstituentRequest;
@@ -132,6 +137,9 @@ public class OrangeLeapWSV2 {
 	
 	@Autowired
 	private TangerineUserHelper tangerineUserHelper;
+
+	@Resource(name = "paymentSourceDAO")
+	private PaymentSourceDao    paymentSourceDao;
 	
 	/**
 	 * Creates a new <code>OrangeLeapWS</code> instance.
@@ -1021,4 +1029,26 @@ public class OrangeLeapWSV2 {
 		return response;
 	}
 	
+	@PayloadRoot(localPart = "GetConstituentByPaymentSourceRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
+	public GetConstituentByPaymentSourceResponse getConstituentByPaymentSource(GetConstituentByPaymentSourceRequest request) throws InvalidRequestException {
+		GetConstituentByPaymentSourceResponse response = new GetConstituentByPaymentSourceResponse();
+		
+		ObjectConverter converter = new ObjectConverter();
+		List<com.orangeleap.tangerine.domain.PaymentSource> source = null;
+		
+		//
+		// now see if there is a constituent for this payment source
+		if (request.getPaymentsource().getPaymentType() == PaymentType.CREDIT_CARD)
+			source = paymentSourceDao.readExistingCreditCards(request.getPaymentsource().getCreditCardNumber());
+		else if (request.getPaymentsource().getPaymentType() == PaymentType.ACH)
+			source = paymentSourceDao.readExistingAchAccounts(request.getPaymentsource().getAchAccountNumber(), request.getPaymentsource().getAchRoutingNumber());
+
+		if (source.size() > 0 ) {
+			Constituent c = new Constituent();
+			converter.ConvertToJAXB(source.get(0).getConstituent(), c);
+		} else {
+			throw new InvalidRequestException("Payment source not found.");
+		}
+		return response;
+	}
 }

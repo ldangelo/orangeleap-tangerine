@@ -20,8 +20,8 @@
 		<result property="createDate" column="PLEDGE_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
 		<result property="frequency" column="FREQUENCY" jdbcType="VARCHAR" />
-		<result property="pledgeCancelDate" column="PLEDGE_CANCEL_DATE"	jdbcType="TIMESTAMP" />
-		<result property="pledgeCancelReason" column="PLEDGE_CANCEL_REASON"	jdbcType="VARCHAR" />
+		<result property="cancelDate" column="PLEDGE_CANCEL_DATE" jdbcType="TIMESTAMP" />
+		<result property="cancelReason" column="PLEDGE_CANCEL_REASON" jdbcType="VARCHAR" />
 		<result property="projectedDate" column="PROJECTED_DATE" jdbcType="TIMESTAMP" />
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="PLEDGE_UPDATE_DATE" jdbcType="TIMESTAMP" />
@@ -191,8 +191,8 @@
 		START_DATE,	PLEDGE_STATUS, UPDATE_DATE, CONSTITUENT_ID)
 		values (#amountPerGift#, #amountTotal#, #amountPaid#, #amountRemaining#, #currencyCode#, 
 		#comments#, now(), #endDate#,
-		#frequency#,  #pledgeCancelDate#,
-		#pledgeCancelReason#, #pledgeDate#,	#projectedDate#, #recurring#, 
+		#frequency#,  #cancelDate#,
+		#cancelReason#, #pledgeDate#,	#projectedDate#, #recurring#,
 		#startDate#, #pledgeStatus#, now(), #constituent.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -210,8 +210,8 @@
 		CURRENCY_CODE = #currencyCode#,
 		END_DATE = #endDate#,
 		FREQUENCY = #frequency#,
-		PLEDGE_CANCEL_DATE = #pledgeCancelDate#,
-		PLEDGE_CANCEL_REASON = #pledgeCancelReason#,
+		PLEDGE_CANCEL_DATE = #cancelDate#,
+		PLEDGE_CANCEL_REASON = #cancelReason#,
 		PLEDGE_DATE = #pledgeDate#,
 		PLEDGE_STATUS = #pledgeStatus#,
 		PROJECTED_DATE = #projectedDate#,

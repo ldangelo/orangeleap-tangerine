@@ -34,15 +34,13 @@ public class Pledge extends Commitment implements Schedulable {
     private static final long serialVersionUID = 1L;
 
     private Date pledgeDate = Calendar.getInstance().getTime();
-    private Date pledgeCancelDate;
-    private String pledgeCancelReason;
-    private String pledgeStatus = STATUS_PENDING;
+	private String pledgeStatus = STATUS_PENDING;
     private boolean recurring = false;
     private Date projectedDate;
     private BigDecimal amountPaid;
     private BigDecimal amountRemaining;
 
-    public Pledge() {
+	public Pledge() {
     }
 
     public Pledge(Long id) {
@@ -87,23 +85,7 @@ public class Pledge extends Commitment implements Schedulable {
         return pledgeDate;
     }
 
-    public void setPledgeCancelDate(Date pledgeCancelDate) {
-        this.pledgeCancelDate = pledgeCancelDate;
-    }
-
-    public Date getPledgeCancelDate() {
-        return pledgeCancelDate;
-    }
-
-    public void setPledgeCancelReason(String pledgeCancelReason) {
-        this.pledgeCancelReason = pledgeCancelReason;
-    }
-
-    public String getPledgeCancelReason() {
-        return pledgeCancelReason;
-    }
-
-    @Override
+	@Override
     public BigDecimal getAmountPaid() {
         return amountPaid;
     }

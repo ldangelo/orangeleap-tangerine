@@ -82,3 +82,8 @@ values ('bean:donationDate', 'checkDate', 'gift');
 INSERT INTO `ENTITY_DEFAULT` (`DEFAULT_VALUE`,`ENTITY_FIELD_NAME`,`ENTITY_TYPE`)
 VALUES ('now:', 'customFieldMap[eventDate]', 'communicationHistory');
 
+INSERT INTO `ENTITY_DEFAULT` (`DEFAULT_VALUE`,`ENTITY_FIELD_NAME`,`ENTITY_TYPE`)
+VALUES ('now:', 'cancelDate', 'recurringGift');
+
+INSERT INTO `ENTITY_DEFAULT` (`DEFAULT_VALUE`,`ENTITY_FIELD_NAME`,`ENTITY_TYPE`)
+VALUES ('now:', 'cancelDate', 'pledge');

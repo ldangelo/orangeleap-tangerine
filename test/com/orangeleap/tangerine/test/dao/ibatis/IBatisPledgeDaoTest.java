@@ -101,8 +101,8 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         //assert readPledge.getEndDate() == null;
         //assert readPledge.getFrequency() == null;
         assert readPledge.getPledgeDate() != null;
-        assert readPledge.getPledgeCancelDate() == null;
-        assert readPledge.getPledgeCancelReason() == null;
+        assert readPledge.getCancelDate() == null;
+        assert readPledge.getCancelReason() == null;
         assert Pledge.STATUS_PENDING.equals(readPledge.getPledgeStatus());
         assert readPledge.getCreateDate() != null;
         assert readPledge.getUpdateDate() != null;
@@ -132,8 +132,8 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
 //        assert readPledge.getEndDate() == null;
 //        assert readPledge.getFrequency() == null;
         assert readPledge.getPledgeDate() != null;
-        assert readPledge.getPledgeCancelDate() == null;
-        assert readPledge.getPledgeCancelReason() == null;
+        assert readPledge.getCancelDate() == null;
+        assert readPledge.getCancelReason() == null;
         assert Pledge.STATUS_PENDING.equals(readPledge.getPledgeStatus());
         assert readPledge.getCreateDate() != null;
         assert readPledge.getUpdateDate() != null;
@@ -186,8 +186,8 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         //assert pledge.getEndDate() == null;
         //assert pledge.getFrequency() == null;
         assert pledge.getPledgeDate() == null;
-        assert pledge.getPledgeCancelDate() == null;
-        assert pledge.getPledgeCancelReason() == null;
+        assert pledge.getCancelDate() == null;
+        assert pledge.getCancelReason() == null;
         assert pledge.getCreateDate() == null;
         assert pledge.getUpdateDate() == null;
         assert pledge.getProjectedDate() == null;

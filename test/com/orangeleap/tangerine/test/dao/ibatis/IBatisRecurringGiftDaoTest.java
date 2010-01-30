@@ -87,6 +87,8 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_EXPIRED);
         recurringGift.setAmountPerGift(new BigDecimal(2));
         recurringGift.setConstituent(new Constituent(300L, new Site("company1")));
+	    recurringGift.setCancelDate(sdf.parse("02/02/2009 14:44"));
+	    recurringGift.setCancelReason("Just Because");
 
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
         assert recurringGift.getId() > 0;
@@ -100,6 +102,8 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert sdf.parse("01/01/2009 12:00").equals(readRecurringGift.getNextRunDate());
         assert 2 == readRecurringGift.getAmountPerGift().intValue();
         assert RecurringGift.STATUS_EXPIRED.equals(readRecurringGift.getRecurringGiftStatus());
+	    Assert.assertEquals(recurringGift.getCancelDate(), readRecurringGift.getCancelDate());
+	    Assert.assertEquals(recurringGift.getCancelReason(), readRecurringGift.getCancelReason());
         assert readRecurringGift.getConstituent() != null && readRecurringGift.getConstituent().getId() == 300L;
         Constituent constituent = readRecurringGift.getConstituent();
         IBatisConstituentDaoTest.testConstituentId300(constituent);
@@ -113,6 +117,8 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         readRecurringGift = readRecurringGifts.get(0);
         assert recurringGift.getId().equals(readRecurringGift.getId());
         assert sdf.parse("10/01/1970 08:00").equals(readRecurringGift.getNextRunDate());
+	    Assert.assertEquals(recurringGift.getCancelDate(), readRecurringGift.getCancelDate());
+	    Assert.assertEquals(recurringGift.getCancelReason(), readRecurringGift.getCancelReason());
         assert 2 == readRecurringGift.getAmountPerGift().intValue();
         assert RecurringGift.STATUS_EXPIRED.equals(readRecurringGift.getRecurringGiftStatus());
         assert readRecurringGift.getConstituent() != null && readRecurringGift.getConstituent().getId() == 300L;

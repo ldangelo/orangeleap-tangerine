@@ -18,21 +18,17 @@
 
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import com.orangeleap.tangerine.type.CommitmentType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlType;
-
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.joda.time.Weeks;
 import org.springframework.core.style.ToStringCreator;
-
-import com.orangeleap.tangerine.type.CommitmentType;
-import com.orangeleap.tangerine.util.StringConstants;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public abstract class Commitment extends AbstractPaymentInfoEntity {  
 
@@ -64,8 +60,10 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     protected String frequency;
     private List<Gift> gifts;
     private List<Long> associatedGiftIds;
-    
-    public Commitment() { 
+	protected Date cancelDate;
+	protected String cancelReason;
+
+	public Commitment() {
         super();
     }
 
@@ -173,7 +171,21 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
         this.frequency = frequency;
     }
 
+	public void setCancelDate(Date cancelDate) {
+	    this.cancelDate = cancelDate;
+	}
 
+	public Date getCancelDate() {
+	    return cancelDate;
+	}
+
+	public void setCancelReason(String cancelReason) {
+	    this.cancelReason = cancelReason;
+	}
+
+	public String getCancelReason() {
+	    return cancelReason;
+	}
 
     public List<Gift> getGifts() {
         if (gifts == null) {

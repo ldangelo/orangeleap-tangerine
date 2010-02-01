@@ -1,7 +1,0 @@
-SET AUTOCOMMIT = 0;
-
-
-UPDATE PAGE_ACCESS SET ROLE = 'ROLE_SUPER_ADMIN' WHERE PAGE_TYPE IN ('siteSettings', 'logView', 'manageDashboard');
-
-
-COMMIT;

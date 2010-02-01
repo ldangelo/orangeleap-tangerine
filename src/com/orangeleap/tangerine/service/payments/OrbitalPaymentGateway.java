@@ -166,17 +166,53 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             if (logger.isErrorEnabled()) {
                 logger.error("Unable to initialize request object.");
             }
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(ie.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException e) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         } catch (FieldNotFoundException fnfe) {
             if (logger.isErrorEnabled()) {
                 logger.error("Unable to find XML field in template.");
                 logger.error(fnfe.getMessage());
             }
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(fnfe.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException e) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("General: " + e.getMessage());
             }
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(e.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException be) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         }
 
@@ -336,17 +372,53 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             if (logger.isErrorEnabled()) {
                 logger.error("Unable to initialize request object.");
             }
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(ie.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException e) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         } catch (FieldNotFoundException fnfe) {
             if (logger.isErrorEnabled()) {
                 logger.error("Unable to find XML field in template.");
                 logger.error(fnfe.getMessage());
             }
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(fnfe.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException e) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error(e.getMessage());
             }
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(e.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException be) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         }
 
@@ -444,17 +516,53 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             if (logger.isErrorEnabled()) {
                 logger.error("Unable to initialize request object.");
             }
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(ie.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException e) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         } catch (FieldNotFoundException fnfe) {
             if (logger.isErrorEnabled()) {
                 logger.error("Unable to find XML field in template.");
                 logger.error(fnfe.getMessage());
             }
+            gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(fnfe.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException e) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error(e.getMessage());
             }
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(e.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException be) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         }
 

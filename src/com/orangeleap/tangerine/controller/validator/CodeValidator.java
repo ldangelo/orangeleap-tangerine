@@ -142,7 +142,7 @@ public class CodeValidator implements Validator {
     
     public boolean hasOtherCode(String key, BeanWrapper beanWrapper) {
         boolean hasOtherCode = false;
-        String keyOther = AbstractFieldHandler.resolvedUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, key);
+        String keyOther = AbstractFieldHandler.resolveUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, key);
         if (logger.isDebugEnabled()) {
             logger.debug("hasOtherCode: keyOther = " + keyOther);
         }

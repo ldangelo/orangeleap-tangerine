@@ -167,7 +167,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	    return StringEscapeUtils.escapeHtml(escVal);
 	}
 	
-	public String resolvedEscapedPrefixedFieldName(String prefix, String aFieldName) {
+	public String resolveEscapedPrefixedFieldName(String prefix, String aFieldName) {
 	    String prefixedFieldName = null;
 
 	    boolean endsInValue = false;
@@ -198,7 +198,7 @@ public abstract class AbstractFieldHandler implements FieldHandler {
 	    return prefixedFieldName;
 	}
 
-    public static String resolvedUnescapedPrefixedFieldName(String prefix, String aFieldName) {
+    public static String resolveUnescapedPrefixedFieldName(String prefix, String aFieldName) {
         String prefixedFieldName = null;
 
         boolean endsInValue = false;
@@ -207,17 +207,26 @@ public abstract class AbstractFieldHandler implements FieldHandler {
             endsInValue = true;
         }
 
-        int startBracketIndex = aFieldName.lastIndexOf(TangerineForm.START_BRACKET);
+	    // check for a name like customFieldMap[foo] and change to customFieldMap[other_foo], or customFieldMap[individual.foo] to customFieldMap[individual.other_foo]
+        int startBracketIndex = aFieldName.lastIndexOf('[');
         if (startBracketIndex > -1) {
-            int periodIndex = aFieldName.indexOf(TangerineForm.DOT, startBracketIndex);
+            int periodIndex = aFieldName.indexOf('.', startBracketIndex);
             if (periodIndex > -1) {
-                prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + TangerineForm.DOT.length())).
-                        append(prefix).append(aFieldName.substring(periodIndex + TangerineForm.DOT.length(), aFieldName.length())).toString();
+                prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + 1)).
+                        append(prefix).append(aFieldName.substring(periodIndex + 1, aFieldName.length())).toString();
             }
             else {
-                prefixedFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + TangerineForm.START_BRACKET.length())).
-                        append(prefix).append(aFieldName.substring(startBracketIndex + TangerineForm.START_BRACKET.length(), aFieldName.length())).toString();
+                prefixedFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + 1)).
+                        append(prefix).append(aFieldName.substring(startBracketIndex + 1, aFieldName.length())).toString();
             }
+        }
+	    else {
+	        // check for a name like distributionLines.foo and change to distributionLines.other_foo
+	        int periodIndex = aFieldName.indexOf('.');
+	        if (periodIndex > -1) {
+		        prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + 1)).
+		                append(prefix).append(aFieldName.substring(periodIndex + 1, aFieldName.length())).toString();
+	        }
         }
         if (prefixedFieldName == null) {
             prefixedFieldName = new StringBuilder(prefix).append(aFieldName).toString();
@@ -229,11 +238,11 @@ public abstract class AbstractFieldHandler implements FieldHandler {
     }
 
 	public String resolveOtherFormFieldName(String formFieldName) {
-		return resolvedEscapedPrefixedFieldName(StringConstants.OTHER_PREFIX, formFieldName);
+		return resolveEscapedPrefixedFieldName(StringConstants.OTHER_PREFIX, formFieldName);
 	}
 
 	public String resolveAdditionalFormFieldName(String formFieldName) {
-		return resolvedEscapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, formFieldName);
+		return resolveEscapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, formFieldName);
 	}
 
 	public String resolveEntityAttributes(SectionField currentField) {

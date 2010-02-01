@@ -71,5 +71,13 @@ public enum FieldType {
     SELECTION_DISPLAY,
 	EMAIL,
     ENCRYPTED,
-    ENCRYPTED_DISPLAY,
+    ENCRYPTED_DISPLAY;
+
+	public static boolean supportsOtherValue(FieldType fieldType) {
+		return QUERY_LOOKUP_OTHER.equals(fieldType) || CODE_OTHER.equals(fieldType);
+	}
+
+	public static boolean supportsAdditionalValues(FieldType fieldType) {
+		return MULTI_PICKLIST_ADDITIONAL.equals(fieldType) || MULTI_CODE_ADDITIONAL.equals(fieldType);
+	}
 }

@@ -18,34 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-
 import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
@@ -90,6 +62,29 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Resource;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
 @Service("constituentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -350,7 +345,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituent;
     }
 
-
     @Override
     public Constituent readConstituentByAccountNumber(String accountNumber) {
         if (logger.isTraceEnabled()) {
@@ -423,41 +417,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
         return constituentDao.readAllConstituentsByAccountRange(fromId, toId);
     }
-
-	@Override
-	public List<Constituent> readConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds, SortInfo sortInfo, Locale locale) {
-	    if (logger.isTraceEnabled()) {
-	        logger.trace("readConstituentsByGiftSegmentationReportIds: reportIds = " + reportIds);
-	    }
-	    return constituentDao.readConstituentsByGiftSegmentationReportIds(reportIds, sortInfo.getSort(), sortInfo.getDir(),
-			    sortInfo.getStart(), sortInfo.getLimit(), locale);
-	}
-
-	@Override
-	public int readCountConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds) {
-	    if (logger.isTraceEnabled()) {
-	        logger.trace("readCountConstituentsByGiftSegmentationReportIds: reportIds = " + reportIds);
-	    }
-	    return constituentDao.readCountConstituentsByGiftSegmentationReportIds(reportIds);
-	}
-
-	@Override
-	public List<Constituent> readConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds, SortInfo sortInfo, Locale locale) {
-	    if (logger.isTraceEnabled()) {
-	        logger.trace("readConstituentsByAdjustedGiftSegmentationReportIds: reportIds = " + reportIds);
-	    }
-		return constituentDao.readConstituentsByAdjustedGiftSegmentationReportIds(reportIds, sortInfo.getSort(), sortInfo.getDir(),
-				sortInfo.getStart(), sortInfo.getLimit(), locale);
-	}
-
-	@Override
-	public int readCountConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds) {
-	    if (logger.isTraceEnabled()) {
-	        logger.trace("readCountConstituentsByAdjustedGiftSegmentationReportIds: reportIds = " + reportIds);
-	    }
-	    return constituentDao.readCountConstituentsByAdjustedGiftSegmentationReportIds(reportIds);
-	}
-
+	
     @Override
     public Constituent createDefaultConstituent() {
         if (logger.isTraceEnabled()) {

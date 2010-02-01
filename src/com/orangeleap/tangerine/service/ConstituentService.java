@@ -80,12 +80,4 @@ public interface ConstituentService {
 			Constituent p, PicklistItemService plis);
 
 	public List<Constituent> readAllUpdatedConstituentsBySite(SortInfo sortInfo, Locale locale, int recentDays);
-	
-	List<Constituent> readConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds, SortInfo sortInfo, Locale locale);
-
-	int readCountConstituentsByAdjustedGiftSegmentationReportIds(final Set<Long> reportIds);
-
-	List<Constituent> readConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds, SortInfo sortInfo, Locale locale);
-
-	int readCountConstituentsByGiftSegmentationReportIds(final Set<Long> reportIds);
 }

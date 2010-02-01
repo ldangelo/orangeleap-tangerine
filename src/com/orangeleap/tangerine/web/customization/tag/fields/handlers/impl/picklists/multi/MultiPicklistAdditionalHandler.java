@@ -105,7 +105,7 @@ public class MultiPicklistAdditionalHandler extends MultiPicklistHandler {
     @Override
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object displayValue = super.resolveDisplayValue(request, beanWrapper, currentField, fieldValue);
-        String additionalFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, currentField.getFieldPropertyName());
+        String additionalFieldName = resolveUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, currentField.getFieldPropertyName());
 
         Object additionalFieldValue = null;
         if (beanWrapper.isReadableProperty(additionalFieldName)) {

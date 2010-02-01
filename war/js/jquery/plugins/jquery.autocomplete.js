@@ -201,7 +201,7 @@ $.Autocompleter = function(input, options) {
 				}
 			}
 			if( typeof fn == "function" ) fn(result);
-			else $input.trigger("result", result && [result.data, result.value]);
+			else $input.trigger("result", result && [result.data, result.value, $input]);
 		}
 		$.each(trimWords($input.val()), function(i, value) {
 			request(value, findValueCallback, findValueCallback);
@@ -250,7 +250,7 @@ $.Autocompleter = function(input, options) {
 			$('#' + realValueInputId).val(selected.data[2].replace("&nbsp;", ""));
 		}
 		hideResultsNow();
-		$input.trigger("result", [selected.data, selected.value]);
+		$input.trigger("result", [selected.data, selected.value, $input]);
 		return true;
 	}
 	

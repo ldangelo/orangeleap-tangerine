@@ -36,25 +36,24 @@ public class CodeOtherHandler extends CodeHandler {
 	@Override
 	protected Object getCodeDisplayValue(SectionDefinition sectionDefinition, SectionField currentField,
 	                                  TangerineForm form, String formFieldName, Object fieldValue) {
-		Object displayValue;
-		if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
+		String otherFormFieldName = resolveOtherFormFieldName(formFieldName);
+		Object displayValue = form.getFieldValueFromUnescapedFieldName(otherFormFieldName);
+
+		/* If there's an 'other' value, use that as the displayValue; otherwise use the regular fieldValue */
+		if (displayValue == null || ! StringUtils.hasText(displayValue.toString())) {
 			displayValue = super.getCodeDisplayValue(sectionDefinition, currentField, form, formFieldName, fieldValue);
-		}
-		else {
-			String otherFormFieldName = resolveOtherFormFieldName(formFieldName);
-			displayValue = form.getFieldValueFromUnescapedFieldName(otherFormFieldName);
 		}
 		return displayValue;
 	}
 
-    @Override
+	@Override
     public Object resolveDisplayValue(HttpServletRequest request, BeanWrapper beanWrapper, SectionField currentField, Object fieldValue) {
         Object displayValue;
         if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
             displayValue = super.resolveDisplayValue(request, beanWrapper, currentField, fieldValue);
         }
         else {
-            String otherFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, currentField.getFieldPropertyName());
+            String otherFieldName = resolveUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, currentField.getFieldPropertyName());
             displayValue = beanWrapper.getPropertyValue(otherFieldName);
             if (displayValue instanceof CustomField) {
                 displayValue = ((CustomField) displayValue).getValue();

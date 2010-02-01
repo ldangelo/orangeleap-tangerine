@@ -26,7 +26,7 @@ public class QueryLookupOtherHandler extends QueryLookupHandler {
 		                  Object fieldValue, StringBuilder sb) {
 		Object otherFieldValue = null;
 		if (fieldValue != null && StringUtils.hasText(fieldValue.toString())) {
-			super.createOptionText(request, currentField, form, formFieldName, fieldValue, sb);
+			otherFieldValue = super.createOptionText(request, currentField, form, formFieldName, fieldValue, sb);
 		}
 		else {
 			String otherFormFieldName = resolveOtherFormFieldName(formFieldName);
@@ -58,7 +58,7 @@ public class QueryLookupOtherHandler extends QueryLookupHandler {
             displayValue = super.resolveDisplayValue(request, beanWrapper, currentField, fieldValue);
         }
         else {
-            String otherFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, currentField.getFieldPropertyName());
+            String otherFieldName = resolveUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, currentField.getFieldPropertyName());
             Object otherFieldValue = beanWrapper.getPropertyValue(otherFieldName);
             if (otherFieldValue instanceof CustomField) {
                 otherFieldValue = ((CustomField) otherFieldValue).getValue();

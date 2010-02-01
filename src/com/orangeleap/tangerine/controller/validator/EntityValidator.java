@@ -36,21 +36,13 @@ import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.AES;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.Validator;
-
-import javax.annotation.Resource;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.impl.AbstractFieldHandler;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -60,6 +52,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Resource;
+import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
 
 public class EntityValidator implements Validator {
 
@@ -124,7 +125,6 @@ public class EntityValidator implements Validator {
         }
         
         AbstractEntity entity = (AbstractEntity) target;
-        Map<String, String> fieldLabelMap = entity.getFieldLabelMap();
 
         // used as a cache to prevent having to use reflection if the value has already been read
         Map<String, Object> fieldValueMap = new HashMap<String, Object>();
@@ -134,12 +134,12 @@ public class EntityValidator implements Validator {
         // first, validate required fields
         if (!entity.isSuppressValidationForRequired()) {
             Map<String, FieldRequired> unresolvedRequiredFieldMap = siteService.readRequiredFields(pageType, tangerineUserHelper.lookupUserRoles());
-            validateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+            validateRequiredFields(entity, errors, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
         }
 
         // next, validate custom validation (regex)  
         Map<String, FieldValidation> validationMap = siteService.readFieldValidations(pageType, tangerineUserHelper.lookupUserRoles());
-        validateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet, validationMap);
+        validateRegex(entity, errors, fieldValueMap, errorSet, validationMap);
     }
     
     protected void validateSubEntities(Object target, Errors errors) {
@@ -218,7 +218,7 @@ public class EntityValidator implements Validator {
     }
 
     @SuppressWarnings("unchecked")
-    protected void validateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
+    protected void validateRequiredFields(AbstractEntity entity, Errors errors, 
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldRequired> unresolvedRequiredFieldMap) {
         Map<String, FieldRequired> requiredFieldMap = resolveFieldNames(entity, unresolvedRequiredFieldMap);
@@ -231,22 +231,22 @@ public class EntityValidator implements Validator {
 
                 if (!conditionsMet) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug(key + " validation doesn't apply:  conditions not met");
+                        logger.debug(key + " validation doesn't apply: conditions not met");
                     }
                     continue;
                 }
                 if (errorSet.contains(key)) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug(key + " validation:  error already exists so don't add another one");
+                        logger.debug(key + " validation: error already exists so don't add another one");
                     }
                     continue;
                 }
-                String propertyString = getPropertyString(key, entity, fieldValueMap);
+                String propertyValueAsString = getPropertyValueAsString(key, entity, fieldValueMap);
                 boolean required = fieldRequired.isRequired();
 
-                if ((required && StringUtils.isEmpty(propertyString)) && !errorSet.contains(key)) {
-                    String errorKey = key.replaceAll("\\[\\d+\\]", StringConstants.EMPTY);
-                    errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(errorKey) }, "no message provided for the validation error: fieldRequiredFailure");
+                if ((required && StringUtils.isEmpty(propertyValueAsString)) && !errorSet.contains(key)) {
+	                String errorKey = removeGridIndex(key);
+                    errors.rejectValue(key, "fieldRequiredFailure", new String[] { entity.getFieldLabelMap().get(errorKey) }, "no message provided for the validation error: fieldRequiredFailure");
                     errorSet.add(key);
                 }
             }
@@ -260,22 +260,26 @@ public class EntityValidator implements Validator {
                 logger.trace("areFieldConditionsMet: key = " + key + ", condition - dependent = " + fieldCondition.getDependentFieldDefinition().getFieldName() + ", dependent secondary = " + (fieldCondition.getDependentSecondaryFieldDefinition() == null ? "null" : fieldCondition.getDependentSecondaryFieldDefinition().getFieldName())
                         + ", dependent value = " + fieldCondition.getValue());
                 String gridIndex = findGridIndex(key);
-                StringBuilder dependentKey = new StringBuilder(fieldCondition.getDependentFieldDefinition().getFieldName());
+
+                StringBuilder dependentKey = new StringBuilder(fieldCondition.getDependentFieldDefinition().getFieldName()); // the dependentKey DOES include the gridIndex, if any
                 if (gridIndex != null) {
                     dependentKey.append(gridIndex);
                 }
                 if (fieldCondition.getDependentSecondaryFieldDefinition() != null) {
                     dependentKey.append(".").append(fieldCondition.getDependentSecondaryFieldDefinition().getFieldName());
                 }
-                Object dependentProperty = getProperty(dependentKey.toString(), entity, fieldValueMap);
+                Object dependentPropertyValue = getPropertyValue(dependentKey.toString(), entity, fieldValueMap);
+	            dependentPropertyValue = checkOtherAdditionalValues(entity, dependentPropertyValue,
+			            dependentKey.toString(), fieldValueMap);
+
                 if (fieldCondition.getValue() == null) {
-                    if (dependentProperty != null) {
+                    if (dependentPropertyValue != null) {
                         conditionsMet = false;
                     }
                 }
                 else {
-                    List fcValues = Arrays.asList(fieldCondition.getValue().split("\\|"));
-                    if (dependentProperty == null || (!"!null".equals(fieldCondition.getValue()) && !fcValues.contains(dependentProperty.toString()))) {
+                    List<String> conditionValues = Arrays.asList(fieldCondition.getValue().split("\\|"));
+                    if (dependentPropertyValue == null || ( ! "!null".equals(fieldCondition.getValue()) && ! containsConditionValue(conditionValues, dependentPropertyValue)) ) {
                         conditionsMet = false;
                     }
                 }
@@ -285,7 +289,7 @@ public class EntityValidator implements Validator {
     }
 
     @SuppressWarnings("unchecked")
-    protected void validateRegex(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap,
+    protected void validateRegex(AbstractEntity entity, Errors errors, Map<String, Object> fieldValueMap,
                                  Set<String> errorSet, Map<String, FieldValidation> unresolvedValidationMap) {
         Map<String, FieldValidation> validationMap = resolveFieldNames(entity, unresolvedValidationMap);
         if (validationMap != null && !validationMap.isEmpty()) {
@@ -306,61 +310,80 @@ public class EntityValidator implements Validator {
                     }
                     continue;
                 }
-                String propertyString = getPropertyString(key, entity, fieldValueMap);
+                String propertyValueAsString = getPropertyValueAsString(key, entity, fieldValueMap);
                 String regex = validation.getRegex();
-                boolean valid;
+                boolean valid = false;
 
-                if (propertyString.isEmpty()) {
+                if (propertyValueAsString.isEmpty()) {
                 	// 'required' is validated in validateRequiredFields()
                 	valid = true;
                 }
                 else {
-                	if (regex.startsWith(EXTENSIONS)) {
-                		valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(EXTENSIONS.length()));
-                	}
-                	else {
-                		valid = propertyString.matches(regex);
-                	}
+	                if (propertyValueAsString.indexOf(StringConstants.CUSTOM_FIELD_SEPARATOR) > -1) {
+		                String[] theseValues = propertyValueAsString.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
+		                for (String thisVal : theseValues) {
+			                valid = checkRegExvalid(thisVal, regex);
+			                if ( ! valid) {
+				                propertyValueAsString = thisVal; // thisVal is the one value in the concatenated string that is not valid
+				                break;
+			                }
+		                }
+	                }
+	                else {
+		                valid = checkRegExvalid(propertyValueAsString, regex);
+	                }
                 }
                 
-                if (!valid && !errorSet.contains(key)) {
-                    String errorKey = key.replaceAll("\\[\\d+\\]", StringConstants.EMPTY);
+                if ( ! valid && ! errorSet.contains(key)) {
+                    String errorKey = removeGridIndex(key);
 
-                    propertyString = entity.isEncryptedFieldType(key) ? AES.mask(propertyString) : propertyString; // For encrypted values, make sure to not display the decrypted value but the mask instead
+                    propertyValueAsString = entity.isEncryptedFieldType(key) ? AES.mask(propertyValueAsString) : propertyValueAsString; // For encrypted values, make sure to not display the decrypted value but the mask instead
 
-                    errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(errorKey),
-                            propertyString }, "no message provided for the validation error: fieldValidationFailure");
+                    errors.rejectValue(key, "fieldValidationFailure", new String[] { entity.getFieldLabelMap().get(errorKey),
+                            propertyValueAsString }, "no message provided for the validation error: fieldValidationFailure");
                 }
             }
         }
     }
 
-    protected Object getProperty(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
-        Object property = fieldValueMap.get(key);
-        if (property == null) {
+	private boolean checkRegExvalid(String value, String regex) {
+		boolean valid;
+		if (regex.startsWith(EXTENSIONS)) {
+			valid = new ExtendedValidationSupport().validate(value, regex.substring(EXTENSIONS.length()));
+		}
+		else {
+			valid = value.matches(regex);
+		}
+		return valid;
+	}
+
+    protected Object getPropertyValue(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
+        Object propertyValue = fieldValueMap.get(key);
+        if (propertyValue == null) {
             BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(entity);
             if (beanWrapper.isReadableProperty(key)) {
-                property = beanWrapper.getPropertyValue(key);
-                if (property instanceof CustomField) {
-                    property = ((CustomField) property).getValue();
+                propertyValue = beanWrapper.getPropertyValue(key);
+                if (propertyValue instanceof CustomField) {
+                    propertyValue = ((CustomField) propertyValue).getValue();
                 }
-                if (entity.isEncryptedFieldType(key) && property != null) {
+                if (entity.isEncryptedFieldType(key) && propertyValue != null) {
                     try {
-                        property = AES.decrypt(property.toString());
+                        propertyValue = AES.decrypt(propertyValue.toString());
                     }
                     catch (Exception ex) {
-                        logger.warn("getProperty: could not decrypt property = " + key + " value = " + AES.mask(property.toString()));
+                        logger.warn("getPropertyValue: could not decrypt propertyName = " + key + " value = " + AES.mask(propertyValue.toString()));
                     }
                 }
-                fieldValueMap.put(key, property);
+                fieldValueMap.put(key, propertyValue);
             }
         }
-        return property;
+        return propertyValue;
     }
 
-    protected String getPropertyString(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
-        Object property = getProperty(key, entity, fieldValueMap);
-        return property == null ? StringConstants.EMPTY : property.toString();
+    protected String getPropertyValueAsString(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
+        Object propertyValue = getPropertyValue(key, entity, fieldValueMap);
+		propertyValue = checkOtherAdditionalValues(entity, propertyValue, key, fieldValueMap);
+        return propertyValue == null ? StringConstants.EMPTY : propertyValue.toString();
     }
 
 	protected boolean isNew(AbstractEntity entity) {
@@ -378,5 +401,67 @@ public class EntityValidator implements Validator {
 		    }
 		}
 		return s;
+	}
+
+	protected String removeGridIndex(String key) {
+		return key.replaceAll("\\[\\d+\\]", StringConstants.EMPTY);
+	}
+
+	private Object checkOtherAdditionalValues(AbstractEntity entity, Object propertyValue, String key, Map<String, Object> fieldValueMap) {
+		String gridIndex = findGridIndex(key);
+		String fieldTypeKey = removeGridIndex(key); // the fieldTypeKey doesn't include the gridIndex, if any
+		FieldType thisFieldType = entity.getFieldTypeMap().get(fieldTypeKey).getFieldType();
+
+		/* Use the 'other' value if the propertyValue is null or empty string */
+		if (FieldType.supportsOtherValue(thisFieldType) &&
+				(propertyValue == null || StringUtils.isEmpty(propertyValue.toString())) ) {
+
+			String otherKey = AbstractFieldHandler.resolveUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, fieldTypeKey);
+
+			if (gridIndex != null) {
+				// put back the grid index to get the other/additional property value
+				otherKey = otherKey.replaceFirst("\\.", gridIndex + ".");
+			}
+			propertyValue = getPropertyValue(otherKey, entity, fieldValueMap);
+		}
+		/* Append the 'additional' value to the propertyValue (if not null or empty string) */
+		else if (FieldType.supportsAdditionalValues(thisFieldType)) {
+
+			String additionalKey = AbstractFieldHandler.resolveUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, fieldTypeKey);
+
+			if (gridIndex != null) {
+				// put back the grid index to get the other/additional property value
+				additionalKey = additionalKey.replaceFirst("\\.", gridIndex + ".");
+			}
+			Object additionalValue = getPropertyValue(additionalKey, entity, fieldValueMap);
+			if (propertyValue != null && ! StringUtils.isEmpty(propertyValue.toString()) &&
+					additionalValue != null && ! StringUtils.isEmpty(additionalValue.toString())) {
+				propertyValue = new StringBuilder(propertyValue.toString()).append(StringConstants.CUSTOM_FIELD_SEPARATOR).append(additionalValue).toString(); 
+			}
+			else if ( additionalValue != null && ! StringUtils.isEmpty(additionalValue.toString()) && 
+						(propertyValue == null || StringUtils.isEmpty(propertyValue.toString())) ) {
+				propertyValue = additionalValue;
+			}
+		}
+		return propertyValue;
+	}
+
+	private boolean containsConditionValue(List<String> conditionValues, Object dependentPropertyValue) {
+		boolean hasConditionValue = false;
+		if (dependentPropertyValue != null) {
+			if (dependentPropertyValue.toString().indexOf(StringConstants.CUSTOM_FIELD_SEPARATOR) > -1) {
+				String[] allVals = dependentPropertyValue.toString().split(StringConstants.CUSTOM_FIELD_SEPARATOR);
+				for (String thisValue : allVals) {
+					if (conditionValues.contains(thisValue)) {
+						hasConditionValue = true;
+						break;
+					}
+				}
+			}
+			else {
+				hasConditionValue = conditionValues.contains(dependentPropertyValue.toString());
+			}
+		}
+		return hasConditionValue;
 	}
 }

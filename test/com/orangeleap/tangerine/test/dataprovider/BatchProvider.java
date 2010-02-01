@@ -214,6 +214,7 @@ public class BatchProvider {
 	    PostBatch batch = new PostBatch("This batch description for gifts", StringConstants.GIFT);
 	    batch.addPostBatchEntry(new PostBatchEntry(8000L));
 		batch.addUpdateField("entryType", "Note");
+		batch.addUpdateField("customFieldMap[rank]", "15");
 		batch.addUpdateField("customFieldMap[noteType]", "whiteboard");
 		batch.addUpdateField("recordDate", "03/04/2005");
 		batch.addUpdateField("comments", "hi kid");

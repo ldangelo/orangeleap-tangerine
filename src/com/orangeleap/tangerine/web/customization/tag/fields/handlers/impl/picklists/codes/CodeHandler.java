@@ -49,16 +49,16 @@ public class CodeHandler extends AbstractFieldHandler {
 		picklistItemService = (PicklistItemService) applicationContext.getBean("picklistItemService");
 	}
 
-    protected Object resolveItemNameIfRequired(SectionDefinition sectionDefinition, SectionField currentField,
-	                                     TangerineForm form, Object itemName) {
-        String picklistNameId = resolveCodeLookupName(sectionDefinition, currentField, form);
-        if (itemName == null && isFieldRequired(currentField)) {
-            Picklist picklist = picklistItemService.getPicklist(picklistNameId);
+    protected Object resolveFieldValueIfRequired(SectionDefinition sectionDefinition, SectionField currentField,
+		    TangerineForm form, Object fieldValue) {
+        if (fieldValue == null && isFieldRequired(currentField)) {
+	        String picklistNameId = resolveCodeLookupName(sectionDefinition, currentField, form);
+	        Picklist picklist = picklistItemService.getPicklist(picklistNameId);
             if (picklist != null && ! picklist.getActivePicklistItems().isEmpty()) {
-                itemName = picklist.getActivePicklistItems().get(0).getItemName();
+                fieldValue = picklist.getActivePicklistItems().get(0).getItemName();
             }
         }
-        return itemName;
+        return fieldValue;
     }
 
 	protected String resolveCodeValue(String picklistNameId, Object itemName) {
@@ -77,7 +77,7 @@ public class CodeHandler extends AbstractFieldHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                       SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                       TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-        fieldValue = resolveItemNameIfRequired(sectionDefinition, currentField, form, fieldValue);
+        fieldValue = resolveFieldValueIfRequired(sectionDefinition, currentField, form, fieldValue);
 		createLookupWrapperBegin(sb);
 		createDisplayInput(request, pageContext, sectionDefinition, currentField, form, formFieldName, fieldValue, sb);
 		createHiddenInput(formFieldName, fieldValue, sb);

@@ -912,15 +912,16 @@ var Lookup = {
 	
 	codeAutoComplete: function($elem) {
 		$elem.autocomplete("codeHelper.htm?view=autoComplete&type=" + $elem.attr("codeType"), {
-			delay:10,
-			minChars:0,
-			max:20,
+			delay: 10,
+			minChars: 0,
+			max: 20,
 			formatItem: Lookup.formatItem,
 			showValueAndDesc: true,
 			displayValuePrefix: { hidden: "hidden-", display: "display-" },
 			hideDescription: true,
-			loadingClass:""//,
+			loadingClass: ''
 		});
+		$elem.result(this.codeAutoCompleteCallback);
 	},
 		
 	formatItem: function(row) {
@@ -930,9 +931,8 @@ var Lookup = {
 		return thisCode + thisDesc;
 	},
 		
-	codeAutoCompleteCallback: function(itemSelected, $input) {
+	codeAutoCompleteCallback: function(resultObj, data, val, $input) {
 		$("#" + $input.attr("otherFieldId")).val("");
-		$input.siblings("input:hidden").val(itemSelected.selectValue);
 	},
 	
 	loadCodePopup: function(elem, showOtherField) {

@@ -48,7 +48,7 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
 	protected void doHandler(HttpServletRequest request, HttpServletResponse response, PageContext pageContext,
 	                      SectionDefinition sectionDefinition, List<SectionField> sectionFields, SectionField currentField,
 	                      TangerineForm form, String formFieldName, Object fieldValue, StringBuilder sb) {
-        fieldValue = resolveItemNameIfRequired(sectionDefinition, currentField, form, fieldValue);
+        fieldValue = resolveFieldValueIfRequired(sectionDefinition, currentField, form, fieldValue);
 		createTop(request, pageContext, formFieldName, sb);
 		createContainerBegin(request, pageContext, formFieldName, sb);
 		createMultiCodeBegin(currentField, sb);
@@ -181,7 +181,7 @@ public class MultiCodeAdditionalHandler extends CodeHandler {
                 displayValues.add(displayValue);
             }
         }
-        String additionalFieldName = resolvedUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, currentField.getFieldPropertyName());
+        String additionalFieldName = resolveUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, currentField.getFieldPropertyName());
         Object additionalFieldValue = beanWrapper.getPropertyValue(additionalFieldName);
         if (additionalFieldValue instanceof CustomField) {
             additionalFieldValue = ((CustomField) additionalFieldValue).getValue();

@@ -38,10 +38,10 @@ public class EntityValidatorTest extends BaseTest {
     }
 
     @Test(dataProvider = "setupEntityValidatorRequiredFieldsNoConditions", dataProviderClass = EntityValidatorDataProvider.class)
-    public void testValidateRequiredFieldsNoConditions(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
+    public void testValidateRequiredFieldsNoConditions(AbstractEntity entity, Errors errors,
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldRequired> unresolvedRequiredFieldMap) throws Exception {
-        invokeValidateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+        invokeValidateRequiredFields(entity, errors, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
         Assert.assertTrue(errors.hasFieldErrors("amount"));
         Assert.assertTrue(errors.hasFieldErrors("address.addressLine1"));
         Assert.assertFalse(errors.hasFieldErrors("phone.number"));
@@ -53,10 +53,10 @@ public class EntityValidatorTest extends BaseTest {
     }
 
     @Test(dataProvider = "setupEntityValidatorRequiredFieldsHasConditions", dataProviderClass = EntityValidatorDataProvider.class)
-    public void testValidateRequiredFieldsHasConditions(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
+    public void testValidateRequiredFieldsHasConditions(AbstractEntity entity, Errors errors,
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldRequired> unresolvedRequiredFieldMap) throws Exception {
-        invokeValidateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+        invokeValidateRequiredFields(entity, errors, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
         Assert.assertTrue(errors.hasFieldErrors("amount"));
         Assert.assertTrue(errors.hasFieldErrors("address.addressLine1"));
         Assert.assertFalse(errors.hasFieldErrors("phone.number"));
@@ -73,21 +73,64 @@ public class EntityValidatorTest extends BaseTest {
         Assert.assertTrue(errors.hasFieldErrors("customFieldMap[checkRoutingNumber]"));
     }
 
-    private Object invokeValidateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
+	@Test(dataProvider = "setupEntityValidatorRequiredOtherFieldsNoConditionsGrid", dataProviderClass = EntityValidatorDataProvider.class)
+	public void testValidatorRequiredOtherFieldsNoConditionsGrid(AbstractEntity entity, Errors errors,
+	                                      Map<String, Object> fieldValueMap, Set<String> errorSet,
+	                                      Map<String, FieldRequired> unresolvedRequiredFieldMap) throws Exception {
+	    invokeValidateRequiredFields(entity, errors, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+	    Assert.assertFalse(errors.hasFieldErrors("distributionLines[0].motivationCode"));
+	    Assert.assertFalse(errors.hasFieldErrors("distributionLines[1].motivationCode"));
+	    Assert.assertTrue(errors.hasFieldErrors("distributionLines[2].motivationCode"));
+	}
+
+	@Test(dataProvider = "setupEntityValidatorRequiredOtherFieldsNoConditions", dataProviderClass = EntityValidatorDataProvider.class)
+	public void testValidatorRequiredOtherFieldsNoConditions(AbstractEntity entity, Errors errors,
+	                                      Map<String, Object> fieldValueMap, Set<String> errorSet,
+	                                      Map<String, FieldRequired> unresolvedRequiredFieldMap) throws Exception {
+	    invokeValidateRequiredFields(entity, errors, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+		Assert.assertFalse(errors.hasFieldErrors("customFieldMap[abba]"));
+		Assert.assertFalse(errors.hasFieldErrors("customFieldMap[dude]"));
+		Assert.assertTrue(errors.hasFieldErrors("customFieldMap[mom]"));
+	}
+
+	@Test(dataProvider = "setupEntityValidatorRequiredAdditionalFieldsHasConditions", dataProviderClass = EntityValidatorDataProvider.class)
+	public void testValidatorRequiredAdditionalFieldsHasConditions(AbstractEntity entity, Errors errors,
+	                                      Map<String, Object> fieldValueMap, Set<String> errorSet,
+	                                      Map<String, FieldRequired> unresolvedRequiredFieldMap) throws Exception {
+	    invokeValidateRequiredFields(entity, errors, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+		Assert.assertTrue(errors.hasFieldErrors("customFieldMap[mom]"));
+		Assert.assertTrue(errors.hasFieldErrors("customFieldMap[dad]"));
+		Assert.assertFalse(errors.hasFieldErrors("customFieldMap[kid]"));
+	}
+
+	@Test(dataProvider = "setupEntityValidatorRequiredAdditionalGridFieldsHasConditions", dataProviderClass = EntityValidatorDataProvider.class)
+	public void testValidatorRequiredAdditionalGridFieldsHasConditions(AbstractEntity entity, Errors errors,
+	                                      Map<String, Object> fieldValueMap, Set<String> errorSet,
+	                                      Map<String, FieldRequired> unresolvedRequiredFieldMap) throws Exception {
+	    invokeValidateRequiredFields(entity, errors, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+		Assert.assertFalse(errors.hasFieldErrors("distributionLines[0].customFieldMap[mom]"));
+		Assert.assertFalse(errors.hasFieldErrors("distributionLines[0].customFieldMap[dad]"));
+		Assert.assertFalse(errors.hasFieldErrors("distributionLines[0].customFieldMap[kid]"));
+		Assert.assertTrue(errors.hasFieldErrors("distributionLines[1].customFieldMap[mom]"));
+		Assert.assertTrue(errors.hasFieldErrors("distributionLines[1].customFieldMap[dad]"));
+		Assert.assertFalse(errors.hasFieldErrors("distributionLines[1].customFieldMap[kid]"));
+	}
+
+    private Object invokeValidateRequiredFields(AbstractEntity entity, Errors errors,
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldRequired> unresolvedRequiredFieldMap) throws Exception {
         EntityValidator entityValidator = new EntityValidator();
         Method method = entityValidator.getClass().getDeclaredMethod("validateRequiredFields", AbstractEntity.class,
-                Errors.class, Map.class, Map.class, Set.class, Map.class);
+                Errors.class, Map.class, Set.class, Map.class);
         method.setAccessible(true);
-        return method.invoke(entityValidator, entity, errors, fieldLabelMap, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
+        return method.invoke(entityValidator, entity, errors, fieldValueMap, errorSet, unresolvedRequiredFieldMap);
     }
 
     @Test(dataProvider = "setupEntityValidatorRegexpFieldsNoConditions", dataProviderClass = EntityValidatorDataProvider.class)
-    public void testValidateRegexNoConditions(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
+    public void testValidateRegexNoConditions(AbstractEntity entity, Errors errors,
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldValidation> unresolvedValidationMap) throws Exception {
-        invokeValidateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet, unresolvedValidationMap);
+        invokeValidateRegex(entity, errors, fieldValueMap, errorSet, unresolvedValidationMap);
         Assert.assertTrue(errors.hasFieldErrors("customFieldMap[companyCost]"));
         Assert.assertFalse(errors.hasFieldErrors("customFieldMap[clientCost]"));
         Assert.assertTrue(errors.hasFieldErrors("distributionLines[0].customFieldMap[dueDate]"));
@@ -98,10 +141,10 @@ public class EntityValidatorTest extends BaseTest {
     }
 
     @Test(dataProvider = "setupEntityValidatorRegexpFieldsHasConditions", dataProviderClass = EntityValidatorDataProvider.class)
-    public void testValidateRegexHasConditions(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
+    public void testValidateRegexHasConditions(AbstractEntity entity, Errors errors,
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldValidation> unresolvedValidationMap) throws Exception {
-        invokeValidateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet, unresolvedValidationMap);
+        invokeValidateRegex(entity, errors, fieldValueMap, errorSet, unresolvedValidationMap);
         Assert.assertTrue(errors.hasFieldErrors("customFieldMap[companyCost]"));
         Assert.assertTrue(errors.hasFieldErrors("customFieldMap[clientCost]"));
         Assert.assertFalse(errors.hasFieldErrors("customFieldMap[employeeCost]"));
@@ -112,13 +155,38 @@ public class EntityValidatorTest extends BaseTest {
         Assert.assertFalse(errors.hasFieldErrors("customFieldMap[checkNumber2]"));
     }
 
-    private Object invokeValidateRegex(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap,
+	@Test(dataProvider = "setupEntityValidatorRegexpOtherAdditionalFieldsNoConditions", dataProviderClass = EntityValidatorDataProvider.class)
+	public void testValidatorRegexpOtherAdditionalFieldsNoConditions(AbstractEntity entity, Errors errors,
+	                                      Map<String, Object> fieldValueMap, Set<String> errorSet,
+	                                      Map<String, FieldValidation> unresolvedValidationMap) throws Exception {
+	    invokeValidateRegex(entity, errors, fieldValueMap, errorSet, unresolvedValidationMap);
+	    Assert.assertTrue(errors.hasFieldErrors("customFieldMap[companyCost]"));
+	    Assert.assertFalse(errors.hasFieldErrors("customFieldMap[clientCost]"));
+	    Assert.assertTrue(errors.hasFieldErrors("distributionLines[0].customFieldMap[dueDate]"));
+	    Assert.assertFalse(errors.hasFieldErrors("distributionLines[1].customFieldMap[dueDate]"));
+	    Assert.assertTrue(errors.hasFieldErrors("distributionLines[2].customFieldMap[dueDate]"));
+	}
+
+	@Test(dataProvider = "setupEntityValidatorRegexpOtherAdditionalFieldsHasConditions", dataProviderClass = EntityValidatorDataProvider.class)
+	public void testValidatorRegexpOtherAdditionalFieldsHasConditions(AbstractEntity entity, Errors errors,
+	                                      Map<String, Object> fieldValueMap, Set<String> errorSet,
+	                                      Map<String, FieldValidation> unresolvedValidationMap) throws Exception {
+	    invokeValidateRegex(entity, errors, fieldValueMap, errorSet, unresolvedValidationMap);
+	    Assert.assertTrue(errors.hasFieldErrors("customFieldMap[clientCost]"));
+	    Assert.assertTrue(errors.hasFieldErrors("customFieldMap[employeeCost]"));
+		Assert.assertFalse(errors.hasFieldErrors("customFieldMap[moraleCost]"));
+	    Assert.assertFalse(errors.hasFieldErrors("distributionLines[0].customFieldMap[dueDate]"));
+	    Assert.assertFalse(errors.hasFieldErrors("distributionLines[1].customFieldMap[dueDate]"));
+	    Assert.assertTrue(errors.hasFieldErrors("distributionLines[2].customFieldMap[dogDate]"));
+	}
+
+    private Object invokeValidateRegex(AbstractEntity entity, Errors errors,
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldValidation> unresolvedValidationMap) throws Exception {
         EntityValidator entityValidator = new EntityValidator();
         Method method = entityValidator.getClass().getDeclaredMethod("validateRegex", AbstractEntity.class,
-                Errors.class, Map.class, Map.class, Set.class, Map.class);
+                Errors.class, Map.class, Set.class, Map.class);
         method.setAccessible(true);
-        return method.invoke(entityValidator, entity, errors, fieldLabelMap, fieldValueMap, errorSet, unresolvedValidationMap);
+        return method.invoke(entityValidator, entity, errors, fieldValueMap, errorSet, unresolvedValidationMap);
     }
 }

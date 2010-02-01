@@ -33,7 +33,7 @@ public class TangerineAuthenticationHelper implements AuthenticationHelper  {
 		if (token.getDetails() == null) {
 			token.setDetails(new TangerineAuthenticationDetails());
 		}
-		tangerineSessionInformationFilter.loadTangerineDetails(token);
+
 
 		//
 		// let's switch schema's here since we know we have authenticated....
@@ -41,6 +41,8 @@ public class TangerineAuthenticationHelper implements AuthenticationHelper  {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		String sitename = username.substring(username.indexOf('@') + 1);
 		schema.use(sitename);
+
+		tangerineSessionInformationFilter.loadTangerineDetails(token);
 	}
 
 	public SqlMapClient getSqlMapClient() {

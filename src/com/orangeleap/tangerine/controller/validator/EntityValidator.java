@@ -31,6 +31,7 @@ import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldCondition;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
@@ -410,37 +411,40 @@ public class EntityValidator implements Validator {
 	private Object checkOtherAdditionalValues(AbstractEntity entity, Object propertyValue, String key, Map<String, Object> fieldValueMap) {
 		String gridIndex = findGridIndex(key);
 		String fieldTypeKey = removeGridIndex(key); // the fieldTypeKey doesn't include the gridIndex, if any
-		FieldType thisFieldType = entity.getFieldTypeMap().get(fieldTypeKey).getFieldType();
+		FieldDefinition fieldDef = entity.getFieldTypeMap().get(fieldTypeKey);
+		if (fieldDef != null) {
+			FieldType thisFieldType = entity.getFieldTypeMap().get(fieldTypeKey).getFieldType();
 
-		/* Use the 'other' value if the propertyValue is null or empty string */
-		if (FieldType.supportsOtherValue(thisFieldType) &&
-				(propertyValue == null || StringUtils.isEmpty(propertyValue.toString())) ) {
+			/* Use the 'other' value if the propertyValue is null or empty string */
+			if (FieldType.supportsOtherValue(thisFieldType) &&
+					(propertyValue == null || StringUtils.isEmpty(propertyValue.toString())) ) {
 
-			String otherKey = AbstractFieldHandler.resolveUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, fieldTypeKey);
+				String otherKey = AbstractFieldHandler.resolveUnescapedPrefixedFieldName(StringConstants.OTHER_PREFIX, fieldTypeKey);
 
-			if (gridIndex != null) {
-				// put back the grid index to get the other/additional property value
-				otherKey = otherKey.replaceFirst("\\.", gridIndex + ".");
+				if (gridIndex != null) {
+					// put back the grid index to get the other/additional property value
+					otherKey = otherKey.replaceFirst("\\.", gridIndex + ".");
+				}
+				propertyValue = getPropertyValue(otherKey, entity, fieldValueMap);
 			}
-			propertyValue = getPropertyValue(otherKey, entity, fieldValueMap);
-		}
-		/* Append the 'additional' value to the propertyValue (if not null or empty string) */
-		else if (FieldType.supportsAdditionalValues(thisFieldType)) {
+			/* Append the 'additional' value to the propertyValue (if not null or empty string) */
+			else if (FieldType.supportsAdditionalValues(thisFieldType)) {
 
-			String additionalKey = AbstractFieldHandler.resolveUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, fieldTypeKey);
+				String additionalKey = AbstractFieldHandler.resolveUnescapedPrefixedFieldName(StringConstants.ADDITIONAL_PREFIX, fieldTypeKey);
 
-			if (gridIndex != null) {
-				// put back the grid index to get the other/additional property value
-				additionalKey = additionalKey.replaceFirst("\\.", gridIndex + ".");
-			}
-			Object additionalValue = getPropertyValue(additionalKey, entity, fieldValueMap);
-			if (propertyValue != null && ! StringUtils.isEmpty(propertyValue.toString()) &&
-					additionalValue != null && ! StringUtils.isEmpty(additionalValue.toString())) {
-				propertyValue = new StringBuilder(propertyValue.toString()).append(StringConstants.CUSTOM_FIELD_SEPARATOR).append(additionalValue).toString(); 
-			}
-			else if ( additionalValue != null && ! StringUtils.isEmpty(additionalValue.toString()) && 
-						(propertyValue == null || StringUtils.isEmpty(propertyValue.toString())) ) {
-				propertyValue = additionalValue;
+				if (gridIndex != null) {
+					// put back the grid index to get the other/additional property value
+					additionalKey = additionalKey.replaceFirst("\\.", gridIndex + ".");
+				}
+				Object additionalValue = getPropertyValue(additionalKey, entity, fieldValueMap);
+				if (propertyValue != null && ! StringUtils.isEmpty(propertyValue.toString()) &&
+						additionalValue != null && ! StringUtils.isEmpty(additionalValue.toString())) {
+					propertyValue = new StringBuilder(propertyValue.toString()).append(StringConstants.CUSTOM_FIELD_SEPARATOR).append(additionalValue).toString();
+				}
+				else if ( additionalValue != null && ! StringUtils.isEmpty(additionalValue.toString()) &&
+							(propertyValue == null || StringUtils.isEmpty(propertyValue.toString())) ) {
+					propertyValue = additionalValue;
+				}
 			}
 		}
 		return propertyValue;

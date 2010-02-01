@@ -32,8 +32,24 @@ public class CustomFieldRequest {
     private String relateToField;
     private String referenceConstituentType;
 
+	public CustomFieldRequest() { }
 
-    public void setLabel(String label) {
+	/**
+	 * Copies all properties (except entityType) from another request to this request 
+	 * @param otherRequest the other request to copy from
+	 */
+	public CustomFieldRequest(CustomFieldRequest otherRequest) {
+		setLabel(otherRequest.getLabel());
+		setConstituentType(otherRequest.getConstituentType());
+		setFieldName(otherRequest.getFieldName());
+		setFieldType(otherRequest.getFieldType());
+		setValidationType(otherRequest.getValidationType());
+		setRegex(otherRequest.getRegex());
+		setRelateToField(otherRequest.getRelateToField());
+		setReferenceConstituentType(otherRequest.getReferenceConstituentType());
+	}
+
+	public void setLabel(String label) {
         this.label = label;
     }
 

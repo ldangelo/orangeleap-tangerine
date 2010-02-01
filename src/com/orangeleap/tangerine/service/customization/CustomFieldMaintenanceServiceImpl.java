@@ -144,29 +144,36 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             addSectionFieldsAndValidations(postedPage, customFieldRequest, readOnlyFieldDefinition, site);
 
         }
-        
+
+	    if (hasCombinedDistroLinesPage(customFieldRequest.getEntityType())) {
+	        PageType combinedDistroLinesPage = PageType.giftCombinedDistributionLines;
+	        addSectionFieldsAndValidations(combinedDistroLinesPage, customFieldRequest, fieldDefinition, site);
+	    }
+
+	    updateTheGuru(customFieldRequest);
+
         if (hasAdjustmentPage(customFieldRequest.getEntityType())) {
+	        CustomFieldRequest adjustedFieldRequest = new CustomFieldRequest(customFieldRequest);
+	        adjustedFieldRequest.setEntityType(EntityType.adjustedGift.name());
             String pageName = StringUtils.capitalize(sPageType);
 
+	        FieldDefinition adjustedGiftFieldDef = getFieldDefinition(false, false, adjustedFieldRequest, site);
+	        pageCustomizationService.maintainFieldDefinition(adjustedGiftFieldDef);
+
+	        FieldDefinition readOnlyAdjustedGiftFieldDef = getFieldDefinition(true, false, adjustedFieldRequest, site);
+	        pageCustomizationService.maintainFieldDefinition(readOnlyAdjustedGiftFieldDef);
+
             PageType adjustedPage = PageType.valueOf("adjusted" + pageName);
-            addSectionFieldsAndValidations(adjustedPage, customFieldRequest, fieldDefinition, site);
+            addSectionFieldsAndValidations(adjustedPage, adjustedFieldRequest, adjustedGiftFieldDef, site);
 
             PageType adjustedPaidPage = PageType.valueOf("adjusted" + pageName + "Paid");
-            addSectionFieldsAndValidations(adjustedPaidPage, customFieldRequest, readOnlyFieldDefinition, site);
+            addSectionFieldsAndValidations(adjustedPaidPage, adjustedFieldRequest, readOnlyAdjustedGiftFieldDef, site);
 
             PageType adjustedPostedPage = PageType.valueOf("adjusted" + pageName + "Posted");
-            addSectionFieldsAndValidations(adjustedPostedPage, customFieldRequest, readOnlyFieldDefinition, site);
-            
+            addSectionFieldsAndValidations(adjustedPostedPage, adjustedFieldRequest, readOnlyAdjustedGiftFieldDef, site);
+
+	        updateTheGuru(adjustedFieldRequest);
         }
-        
-        if (hasCombinedDistroLinesPage(customFieldRequest.getEntityType())) {
-
-            PageType combinedDistroLinesPage = PageType.giftCombinedDistributionLines;
-            addSectionFieldsAndValidations(combinedDistroLinesPage, customFieldRequest, fieldDefinition, site);
-            
-        }        
-
-        updateTheGuru(customFieldRequest);
 
         // Flush section/field definition cache for all tomcat instances
         pageCustomizationCache.removeAll();

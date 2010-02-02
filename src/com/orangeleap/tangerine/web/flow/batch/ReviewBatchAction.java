@@ -71,7 +71,7 @@ public class ReviewBatchAction extends EditBatchAction {
         model.put(StringConstants.SUCCESS, Boolean.TRUE);
         if (batch != null) {
             final Map<String, String> dataMap = new HashMap<String, String>();
-            dataMap.put("reviewBatchDesc", batch.getBatchDesc());
+            dataMap.put("reviewBatchDesc", (String) escapeStringValues(batch.getBatchDesc()));
             dataMap.put("reviewBatchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
 	        dataMap.put("reviewCriteriaFields", batch.isForTouchPoints() ? TangerineMessageAccessor.getMessage("touchPointFields") : TangerineMessageAccessor.getMessage("batchTypeFields"));
 	        dataMap.put("hiddenBatchType", batch.getBatchType());
@@ -96,10 +96,10 @@ public class ReviewBatchAction extends EditBatchAction {
 	        String fieldDefinitionId = resolveFieldDefinitionId(batch, updateFieldEntry.getKey());
             FieldDefinition fieldDef = fieldService.resolveFieldDefinition(fieldDefinitionId);
             if (fieldDef != null) {
-                fieldMap.put(StringConstants.NAME, fieldDef.getDefaultLabel());
+                fieldMap.put(StringConstants.NAME, escapeStringValues(fieldDef.getDefaultLabel()));
 
                 Object value = resolveDisplayValue(fieldDef, updateFieldEntry.getValue(), true);
-                fieldMap.put(StringConstants.VALUE, value);
+                fieldMap.put(StringConstants.VALUE, escapeStringValues(value));
                 fieldList.add(fieldMap);
             }
         }
@@ -124,7 +124,7 @@ public class ReviewBatchAction extends EditBatchAction {
 			}
 			else if (FieldType.QUERY_LOOKUP.equals(fieldDef.getFieldType())) {
 				FieldHandler handler = fieldHandlerHelper.lookupFieldHandler(fieldDef.getFieldType());
-				value = handler.resolveDisplayValue(fieldDef, value);
+				value = handler.resolveDisplayValue(fieldDef, escapeStringValues(value));
 			}
 			else if (reformatDate) {
 				if (FieldType.DATE.equals(fieldDef.getFieldType())) {
@@ -174,7 +174,7 @@ public class ReviewBatchAction extends EditBatchAction {
         fieldMap.put(StringConstants.NAME, StringConstants.ID);
         fieldMap.put(StringConstants.MAPPING, StringConstants.ID);
         fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
+        fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.ID)));
         fieldList.add(fieldMap);
 
 		initBatchUpdateFields(batch, fieldList);
@@ -183,7 +183,7 @@ public class ReviewBatchAction extends EditBatchAction {
         fieldMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
         fieldMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
         fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID));
+        fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID)));
         fieldList.add(fieldMap);
 
         metaDataMap.put(StringConstants.FIELDS, fieldList);
@@ -233,7 +233,7 @@ public class ReviewBatchAction extends EditBatchAction {
 							propertyName += StringConstants.DOT_VALUE;
 						}
 						String escapedFieldName = TangerineForm.escapeFieldName(fieldName);
-		                rowMap.put(escapedFieldName, resolveDisplayValue(fieldDef, fieldEntry.getValue(), false));
+		                rowMap.put(escapedFieldName, escapeStringValues(resolveDisplayValue(fieldDef, fieldEntry.getValue(), false)));
 	                }
                 }
                 rowValues.add(rowMap);

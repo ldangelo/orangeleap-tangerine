@@ -40,6 +40,7 @@ import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -119,6 +120,13 @@ public class EditBatchAction extends AbstractAction {
     protected PostBatch getBatchFromFlowScope(final RequestContext flowRequestContext) {
         return (PostBatch) getFlowScopeAttribute(flowRequestContext, StringConstants.BATCH);
     }
+
+	protected Object escapeStringValues(Object value) {
+		if (value != null && value instanceof String) {
+			value = HttpUtil.escapeDoubleQuoteReturns(value.toString());
+		}
+		return value;
+	}
     
     private String resolveSegmentationFieldName(String key) {
         String resolvedName = key;
@@ -238,7 +246,7 @@ public class EditBatchAction extends AbstractAction {
             // add only the PostBatch to the view scope and remove from the returnMap
             setFlowScopeAttribute(flowRequestContext, batch, StringConstants.BATCH);
         }
-        dataMap.put(StringConstants.BATCH_DESC, batch.getBatchDesc());
+        dataMap.put(StringConstants.BATCH_DESC, (String) escapeStringValues(batch.getBatchDesc()));
         dataMap.put(StringConstants.BATCH_TYPE, batch.getBatchType());
 	    dataMap.put(StringConstants.CRITERIA_FIELDS, batch.isForTouchPoints() ? StringConstants.TOUCH_POINT : StringConstants.NOT_TOUCH_POINT);
 
@@ -366,7 +374,7 @@ public class EditBatchAction extends AbstractAction {
             fieldMap.put(StringConstants.MAPPING, escapedFieldName);
             String extType = ExtTypeHandler.findExtDataType(bw.getPropertyType(sectionFld.getFieldPropertyName()));
             fieldMap.put(StringConstants.TYPE, extType);
-            fieldMap.put(StringConstants.HEADER, sectionFld.getFieldDefinition().getDefaultLabel());
+            fieldMap.put(StringConstants.HEADER, escapeStringValues(sectionFld.getFieldDefinition().getDefaultLabel()));
 
             if (StringConstants.DATE.equals(extType)) {
                 String format;
@@ -424,7 +432,7 @@ public class EditBatchAction extends AbstractAction {
         idMap.put(StringConstants.NAME, StringConstants.ID);
         idMap.put(StringConstants.MAPPING, StringConstants.ID);
         idMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-        idMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
+        idMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.ID)));
         fieldList.add(idMap);
 
         if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
@@ -432,7 +440,7 @@ public class EditBatchAction extends AbstractAction {
             constituentIdMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
             constituentIdMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
             constituentIdMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
-            constituentIdMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID));
+            constituentIdMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID)));
             fieldList.add(constituentIdMap);
         }
     }
@@ -531,12 +539,12 @@ public class EditBatchAction extends AbstractAction {
 		                findPicklistData(fieldDef.getFieldName(), model, item.getDefaultDisplayValue(), false);
 	                }
 	                final Map<String, Object> map = new HashMap<String, Object>();
-	                map.put(StringConstants.NAME, item.getDefaultDisplayValue());
-	                map.put("desc", fieldDef.getDefaultLabel());
+	                map.put(StringConstants.NAME, escapeStringValues(item.getDefaultDisplayValue()));
+	                map.put("desc", escapeStringValues(fieldDef.getDefaultLabel()));
 	                map.put(StringConstants.TYPE, fieldType.name().toLowerCase());
 
 	                String updateFieldValue = batch.getUpdateFieldValue(item.getDefaultDisplayValue());
-	                map.put(StringConstants.VALUE, updateFieldValue != null ? updateFieldValue : StringConstants.EMPTY);
+	                map.put(StringConstants.VALUE, updateFieldValue != null ? escapeStringValues(updateFieldValue) : StringConstants.EMPTY);
                     map.put(StringConstants.SELECTED, batch.getUpdateFieldValue(item.getDefaultDisplayValue()) != null);
                     returnList.add(map);
                 }
@@ -580,12 +588,12 @@ public class EditBatchAction extends AbstractAction {
 						logger.warn("findTouchPointUpdateFields: could not parse date = " + value);
 					}
 				}
-				dataMap.put(fieldDef.getFieldName(), value);
+				dataMap.put(fieldDef.getFieldName(), (String) escapeStringValues(value));
 			}
 			else if (dataMap.get(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD) == null) {
 				// CorrespondenceFor is a Picklist TODO: what if its not?
 				findPicklistData(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, model, StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, true);
-				dataMap.put(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, batch.getUpdateFieldValue(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD));
+				dataMap.put(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD, (String) escapeStringValues(batch.getUpdateFieldValue(StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD)));
 			}
 		}
 	}
@@ -597,10 +605,10 @@ public class EditBatchAction extends AbstractAction {
 			final List<Map<String, String>> referencedItemList = new ArrayList<Map<String, String>>();
 			for (PicklistItem referencedItem : referencedPicklist.getActivePicklistItems()) {
 				final Map<String, String> referencedItemMap = new HashMap<String, String>();
-				referencedItemMap.put("itemName", referencedItem.getItemName());
-				referencedItemMap.put("displayVal", referencedItem.getDefaultDisplayValue());
+				referencedItemMap.put("itemName", (String) escapeStringValues(referencedItem.getItemName()));
+				referencedItemMap.put("displayVal", (String) escapeStringValues(referencedItem.getDefaultDisplayValue()));
 				if (addReferenceValue) {
-					referencedItemMap.put("refVal", referencedItem.getReferenceValue());
+					referencedItemMap.put("refVal", (String) escapeStringValues(referencedItem.getReferenceValue()));
 				}
 				referencedItemList.add(referencedItemMap);
 			}
@@ -674,14 +682,14 @@ public class EditBatchAction extends AbstractAction {
         fieldMap.put(StringConstants.NAME, StringConstants.TYPE);
         fieldMap.put(StringConstants.MAPPING, StringConstants.TYPE);
         fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.TYPE));
+        fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.TYPE)));
         fieldList.add(fieldMap);
 
         fieldMap = new HashMap<String, Object>();
         fieldMap.put(StringConstants.NAME, StringConstants.DISPLAYED_ID);
         fieldMap.put(StringConstants.MAPPING, StringConstants.DISPLAYED_ID);
         fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
+        fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.ID)));
         fieldList.add(fieldMap);
 
         initBatchUpdateFields(batch, fieldList);
@@ -728,7 +736,7 @@ public class EditBatchAction extends AbstractAction {
                     extType = ExtTypeHandler.findExtDataType(bean.getPropertyType(propertyName));
                 }
                 fieldMap.put(StringConstants.TYPE, extType);
-                fieldMap.put(StringConstants.HEADER, fieldDef.getDefaultLabel());
+                fieldMap.put(StringConstants.HEADER, escapeStringValues(fieldDef.getDefaultLabel()));
 
                 if (ExtTypeHandler.EXT_DATE.equals(extType)) {
                     String format;
@@ -787,13 +795,13 @@ public class EditBatchAction extends AbstractAction {
                                 }
                             }
                         }
-                        oldRowMap.put(escapedFieldName, oldVal);
-                        newRowMap.put(escapedFieldName, newVal);
+                        oldRowMap.put(escapedFieldName, escapeStringValues(oldVal));
+                        newRowMap.put(escapedFieldName, escapeStringValues(newVal));
 
                     }
                     else {
-                        oldRowMap.put(escapedFieldName, bw.getPropertyValue(propertyName));
-                        newRowMap.put(escapedFieldName, fieldEntry.getValue());
+                        oldRowMap.put(escapedFieldName, escapeStringValues(bw.getPropertyValue(propertyName)));
+                        newRowMap.put(escapedFieldName, escapeStringValues(fieldEntry.getValue()));
                     }
                 }
                 rowValues.add(oldRowMap); // 1 row for the old value

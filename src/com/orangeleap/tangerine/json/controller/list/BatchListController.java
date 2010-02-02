@@ -22,19 +22,11 @@ import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.ExtTypeHandler;
-import org.apache.commons.collections.set.UnmodifiableSet;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -42,6 +34,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.collections.set.UnmodifiableSet;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class BatchListController extends TangerineJsonListController {
@@ -130,7 +130,13 @@ public class BatchListController extends TangerineJsonListController {
                         map.put(thisFieldName, TangerineMessageAccessor.getMessage((String) bean.getPropertyValue(thisFieldName)));
                     }
                     else {
-                        map.put(thisFieldName, bean.getPropertyValue(thisFieldName));
+	                    Object val = bean.getPropertyValue(thisFieldName);
+	                    if (val != null && val instanceof String) {
+		                    map.put(thisFieldName, HttpUtil.escapeDoubleQuoteReturns(val.toString()));
+	                    }
+	                    else {
+                            map.put(thisFieldName, val);
+	                    }
                     }
                 }
             }

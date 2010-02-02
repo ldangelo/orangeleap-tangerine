@@ -68,7 +68,7 @@ public class ErrorBatchAction extends EditBatchAction {
 
         if (batch != null) {
             final Map<String, String> dataMap = new HashMap<String, String>();
-            dataMap.put("batchDesc", batch.getBatchDesc());
+            dataMap.put("batchDesc", (String) escapeStringValues(batch.getBatchDesc()));
             dataMap.put("batchType", TangerineMessageAccessor.getMessage(batch.getBatchType()));
 	        dataMap.put("criteriaFields", batch.isForTouchPoints() ? TangerineMessageAccessor.getMessage("touchPointFields") : TangerineMessageAccessor.getMessage("batchTypeFields"));
 	        dataMap.put("hiddenErrorBatchType", batch.getBatchType());
@@ -134,7 +134,7 @@ public class ErrorBatchAction extends EditBatchAction {
             fieldMap.put(StringConstants.NAME, idName);
             fieldMap.put(StringConstants.MAPPING, idName);
             fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-            fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.ID));
+            fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.ID)));
             fieldList.add(fieldMap);
         }
 
@@ -143,7 +143,7 @@ public class ErrorBatchAction extends EditBatchAction {
         fieldMap.put(StringConstants.NAME, errorMsg);
         fieldMap.put(StringConstants.MAPPING, errorMsg);
         fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
-        fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage("errors"));
+        fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage("errors")));
         fieldList.add(fieldMap);
 
         if (constituentIdName != null) {
@@ -151,7 +151,7 @@ public class ErrorBatchAction extends EditBatchAction {
             fieldMap.put(StringConstants.NAME, constituentIdName);
             fieldMap.put(StringConstants.MAPPING, constituentIdName);
             fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-            fieldMap.put(StringConstants.HEADER, TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID));
+            fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID)));
             fieldList.add(fieldMap);
         }
 

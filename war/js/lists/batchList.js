@@ -314,15 +314,6 @@ Ext.onReady(function() {
     });
     combo.on('select', function(comboBox, record, index) {
         var showBatchStatusVal = comboBox.getValue();
-
-        if (OrangeLeap.allowCreate) {
-            if (showBatchStatusVal !== 'open') {
-                grid.addButton.disable();
-            }
-            else {
-                grid.addButton.enable();
-            }
-        }
         var state = store.getSortState();
         if (state) {
             state.field = showBatchStatusVal == 'executed' ? 'executedDate' : 'createDate';
@@ -453,7 +444,7 @@ Ext.onReady(function() {
         toolbar.addSeparator();
         toolbar.addSpacer();
         toolbar.addButton({ text: msgs.addNew, tooltip: msgs.addNewBatch,
-            iconCls:'add', id: 'addButton', ref: '../addButton', disabled: prevShowBatchStatus != 'open',
+            iconCls:'add', id: 'addButton', ref: '../addButton',
             handler: function() {
                 editBatchWin.batchID = null;
                 editBatchWin.forTouchPoints = false;
@@ -2283,6 +2274,9 @@ Ext.onReady(function() {
             method: 'POST',
             params: saveParams,
             success: function(response, options) {
+                if (combo.getValue() != batchStatusToShow) {
+                    combo.setValue(batchStatusToShow);
+                }
                 var responseText = response.responseText;
                 // reload the main batch window to see the new batch
                 store.reload({

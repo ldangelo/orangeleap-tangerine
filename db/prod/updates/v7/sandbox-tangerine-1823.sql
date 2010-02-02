@@ -36,8 +36,6 @@ INSERT INTO sandbox.SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, F
 SELECT SECTION_DEFINITION_ID, 'communicationHistory.customFieldMap[subjectLine]', 10112 
 FROM sandbox.SECTION_DEFINITION WHERE PAGE_TYPE = 'communicationHistoryView' AND SECTION_NAME = 'communicationHistory';
 
-INSERT INTO sandbox.PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER)
-SELECT PICKLIST_ID, '2dialogemail', '2Dialog Email', 'li:has(.ea-2dialogemail)', 10 
-FROM sandbox.PICKLIST WHERE PICKLIST_NAME_ID = 'entryType' AND PICKLIST_NAME = 'entryType';
+UPDATE sandbox.PICKLIST_ITEM SET REFERENCE_VALUE = 'li:has(.ea-2dialogemail)' WHERE ITEM_NAME = '2dialogemail' AND DEFAULT_DISPLAY_VALUE = '2Dialog Email';
 
 COMMIT;

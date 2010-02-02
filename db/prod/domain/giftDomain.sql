@@ -84,6 +84,9 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.customFieldMap[additionalInfo]', 'gift', 'customFieldMap[additionalInfo]', 'Additional Info', 'giftPayment', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.customFieldMap[additionalInfoReadOnly]', 'gift', 'customFieldMap[additionalInfo]', 'Additional Info', 'giftPayment', 'READ_ONLY_TEXT');
 
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.customFieldMap[OtherPayMethod]', 'gift', 'customFieldMap[OtherPayMethod]', 'Other Payment Method', 'OtherPayMethod', 'PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.customFieldMap[OtherPayMethodReadOnly]', 'gift', 'customFieldMap[OtherPayMethod]', 'Other Payment Method', 'OtherPayMethod', 'PICKLIST_DISPLAY');
+
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.address.id', 'gift', 'address', 'Billing Address', 'address', 'ADDRESS_PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('gift.address.customFieldMap[addressType]', 'gift', 'address', 'Address Type', 'address,newAddress', 'MULTI_PICKLIST');

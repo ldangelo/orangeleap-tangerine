@@ -33,6 +33,10 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.paymentSource.checkAccountNumberReadOnly', 'adjustedGift', 'paymentSource', 'Account Number', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.paymentSource.checkRoutingNumberReadOnly', 'adjustedGift', 'paymentSource', 'Routing Number', 'READ_ONLY_TEXT');
 
+-- Other
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.customFieldMap[OtherPayMethod]', 'adjustedGift', 'customFieldMap[OtherPayMethod]', 'Other Payment Method', 'OtherPayMethod', 'PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.customFieldMap[OtherPayMethodReadOnly]', 'adjustedGift', 'customFieldMap[OtherPayMethod]', 'Other Payment Method', 'OtherPayMethod', 'PICKLIST_DISPLAY');
+
 -- Address
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.address.id', 'adjustedGift', 'address', 'Billing Address', 'address', 'EXISTING_ADDRESS_PICKLIST');
 

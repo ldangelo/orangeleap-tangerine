@@ -64,8 +64,11 @@ public class SchemaServiceImpl extends AbstractTangerineService implements Schem
     	EXCLUDE_LIST.add("mysql");
     	EXCLUDE_LIST.add("information_schema");
     	EXCLUDE_LIST.add("test");
+    	
     	EXCLUDE_LIST.add("jasperserver");
     	EXCLUDE_LIST.add("theguru");
+    	EXCLUDE_LIST.add("orangeleap");
+    	EXCLUDE_LIST.add("orangeleaptest");
     }
 
     @Override

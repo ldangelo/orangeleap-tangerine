@@ -160,9 +160,17 @@ Ext.onReady(function() {
     var msgs = OrangeLeap.msgBundle;
 
     Ext.Ajax.on('requestexception', function(conn, response, options) {
-        Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
-            buttons: Ext.MessageBox.OK,
-            msg: msgs.errorAjax });
+        // only show if the window is not unloading
+        if ( ! unloading) {
+			Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+				buttons: Ext.MessageBox.OK,
+				msg: msgs.errorAjax});
+        }
+    });
+
+    var unloading = false;
+    $(window).bind('beforeunload', function(event) {
+		unloading = true;
     });
 
     var batchReader = new Ext.data.JsonReader();
@@ -523,10 +531,10 @@ Ext.onReady(function() {
                                         success: function(response, options) {
                                             Ext.get('batchList').unmask();
                                             var returnObj = Ext.decode(response.responseText);
-                                            if ( ! returnObj) {
+                                            if ( ! returnObj && ! unloading) {
                                                 Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
                                                     buttons: Ext.MessageBox.OK,
-                                                    msg: msgs.errorBatchExecute });
+                                                    msg: msgs.errorBatchExecute});
                                             }
                                             else {
                                                 if (returnObj.hasBatchErrors) {
@@ -566,10 +574,12 @@ Ext.onReady(function() {
                                             }
                                         },
                                         failure: function(response, options) {
-                                            Ext.get('batchList').unmask();
-                                            Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
-                                                buttons: Ext.MessageBox.OK,
-                                                msg: msgs.errorBatchExecute });
+                                            if ( ! unloading) {
+                                                Ext.get('batchList').unmask();
+												Ext.MessageBox.show({ title: msgs.error, icon: Ext.MessageBox.ERROR,
+													buttons: Ext.MessageBox.OK,
+													msg: msgs.errorBatchExecute});
+											}
                                         }
                                     });
                                 }

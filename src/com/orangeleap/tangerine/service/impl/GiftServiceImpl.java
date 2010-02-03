@@ -137,7 +137,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public Gift maintainGift(Gift gift) throws BindException {
-    	
+
         boolean reentrant = RulesStack.push(MAINTAIN_METHOD);
         try {
             if (logger.isTraceEnabled()) {
@@ -149,20 +149,20 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             long t0 = System.currentTimeMillis(); // start counting after validated
 
             setDefaultDates(gift);
-            
+
             Gift oldGift = null;
             if (!gift.isNew()) oldGift = giftDao.readGiftById(gift.getId());
-            
+
             gift = saveAuditGift(gift);
 
-            
+
             // this needs to go last because we need the gift in the database
             // in order for rules to work properly.
             if (!reentrant) {
-                
+
             	routeGift(gift);
             	Gift newGift = giftDao.readGiftById(gift.getId());
-            	
+
             	if ( logPaymentHistory(oldGift, newGift) ) {
             		paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
             	}
@@ -170,7 +170,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                 long t1 = System.currentTimeMillis();
                 orangeleapJmxNotificationBean.incrementStat(this.getSiteName(), "maintainGiftTime", (t1-t0));
                 orangeleapJmxNotificationBean.incrementStatCount(this.getSiteName(), "maintainGiftCount");
-            	
+
             }
 
             return gift;
@@ -179,27 +179,27 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             RulesStack.pop(MAINTAIN_METHOD);
         }
     }
-    
+
     private boolean logPaymentHistory(Gift oldGift, Gift newGift) {
-    	
+
     	if (newGift == null) return false;
- 
+
     	if (oldGift == null) {
     		return logByStatus(newGift);
     	}
-    	
+
     	boolean statusChanged = !StringUtils.equals(newGift.getGiftStatus(), oldGift.getGiftStatus());
     	boolean txRefNumChanged = !StringUtils.equals(newGift.getTxRefNum(), oldGift.getTxRefNum());
-    	
+
     	if ( statusChanged || txRefNumChanged ) {
     		return logByStatus(newGift);
     	}
-    	
+
     	return false;
     }
-    
+
     private boolean logByStatus(Gift gift) {
-    	return "Paid".equals(gift.getGiftStatus()) 
+    	return "Paid".equals(gift.getGiftStatus())
 		|| ("Not Paid".equals(gift.getGiftStatus()) && "Declined".equals(gift.getPaymentStatus()));
     }
 
@@ -231,8 +231,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         Gift originalGift = null;
         if (!gift.isNew()) {
             originalGift = giftDao.readGiftById(gift.getId());
-        } 
-        
+        }
+
         gift = giftDao.maintainGift(gift);
         updateAdjustedAmount(gift);
         pledgeService.updatePledgeForGift(originalGift, gift);
@@ -241,7 +241,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         updateRollups(gift);
         return gift;
     }
-    
+
     private void updateRollups(Gift gift) {
         rollupHelperService.updateRollupsForConstituentRollupValueSource(gift);
         for (DistributionLine dl : gift.getDistributionLines()) {
@@ -257,17 +257,17 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         	}
         }
     }
-    
+
     @Override
     public void updateAdjustedAmount(Gift gift) {
     	BigDecimal giftamt = gift.getAmount();
     	if (giftamt == null) giftamt = new BigDecimal("0.00");
     	BigDecimal adjamt = adjustedGiftService.findCurrentTotalPaidAdjustedAmount(gift.getId());
-    	
+
     	BigDecimal total = giftamt.add(adjamt);
-    	
+
     	gift.setAdjustedAmount(total);
-    	
+
     	if (gift.getDistributionLines() != null && gift.getDistributionLines().size() > 0) {
         	BigDecimal deductibleAmount = null;
 	    	for (DistributionLine dl : gift.getDistributionLines()) {
@@ -281,10 +281,10 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	    	}
     		if (deductibleAmount != null) gift.setDeductibleAmount(deductibleAmount);
     	}
-    	
+
     	giftDao.maintainGift(gift);
     }
-    
+
     private void setDefaultDates(Gift gift) {
         if (gift.getId() == null) {
             Calendar transCal = Calendar.getInstance();
@@ -292,7 +292,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
     }
 
-    private final static String EDIT_METHOD = "GiftServiceImpl.editGift";
 
     // Used for update only.
     @Override
@@ -305,7 +304,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public Gift editGift(Gift gift, boolean doValidateDistributionLines) throws BindException {
-        boolean reentrant = RulesStack.push(EDIT_METHOD);
+        boolean reentrant = RulesStack.push(MAINTAIN_METHOD);
         try {
             if (logger.isTraceEnabled()) {
                 logger.trace("editGift: giftId = " + gift.getId());
@@ -321,7 +320,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             if (!reentrant) {
                 routeGift(gift);
             	Gift newGift = giftDao.readGiftById(gift.getId());
-            	
+
             	if ( logPaymentHistory(oldGift, newGift) ) {
             		paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
             	}
@@ -330,7 +329,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             return gift;
         }
         finally {
-            RulesStack.pop(EDIT_METHOD);
+            RulesStack.pop(MAINTAIN_METHOD);
         }
     }
 
@@ -365,7 +364,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     private void routeGift(Gift gift) {
 
     	boolean wasRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
-    	
+
         RulesStack.push(ROUTE_METHOD);
         try {
 
@@ -382,9 +381,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         finally {
             RulesStack.pop(ROUTE_METHOD);
         }
-        
+
     	boolean isRollbackOnly = OLLogger.isCurrentTransactionMarkedRollbackOnly(context);
-    	
+
     	if (!wasRollbackOnly && isRollbackOnly) {
     		logger.error("Rules processing caused transaction rollback for gift "+gift.getId());
     	}
@@ -803,7 +802,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         return giftDao.readGiftDistroLinesCountByConstituentId(constituentId, constituentReferenceCustomField);
     }
-    
+
 	@Override
 	public void dailyReprocessGift(Gift gift) {
 		gift.setProcessingType(AbstractPaymentInfoEntity.PROCESSING_TYPE_REPROCESS);
@@ -813,7 +812,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	@Override
 	public int getGiftReprocessCount() {
 		SortInfo sortInfo = new SortInfo();
-		sortInfo.setSort("id"); 
+		sortInfo.setSort("id");
 		return (int)giftDao.readGiftsToReprocess(sortInfo).getRowCount();
 	}
 

@@ -18,13 +18,15 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.dao.VersionDao;
-import com.orangeleap.tangerine.service.VersionService;
-import com.orangeleap.tangerine.util.OLLogger;
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import com.orangeleap.tangerine.dao.VersionDao;
+import com.orangeleap.tangerine.domain.Version;
+import com.orangeleap.tangerine.service.VersionService;
+import com.orangeleap.tangerine.util.OLLogger;
 
 @Service("versionService")
 public class VersionServiceImpl extends AbstractTangerineService implements VersionService {
@@ -45,7 +47,8 @@ public class VersionServiceImpl extends AbstractTangerineService implements Vers
 
         String message = "";
         try {
-            int majorVersion = versionDao.selectVersion(ORANGE_ID).getMajorVersion();
+        	Version version = versionDao.selectVersion(ORANGE_ID);
+            int majorVersion = version == null ? 0 : version.getMajorVersion();
             if (majorVersion == OrangeLeapSchemaVersion.ORANGE_SCHEMA_MAJOR_VERSION) {
                 logger.debug("Schema version successfully checked.");
                 return;

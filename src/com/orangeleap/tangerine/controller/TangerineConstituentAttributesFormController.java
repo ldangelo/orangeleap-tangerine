@@ -27,6 +27,7 @@ import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.PhoneService;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.type.EntityType;
@@ -404,8 +405,8 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 
     @SuppressWarnings("unchecked")
     @Override
-    protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        if (isFormSubmission(request) && !errors.hasErrors() && bindPaymentSource && ((TangerineForm) command).getDomainObject() instanceof PaymentSourceAware) {
+    protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException formErrors) throws Exception {
+        if (isFormSubmission(request) && !formErrors.hasErrors() && bindPaymentSource && ((TangerineForm) command).getDomainObject() instanceof PaymentSourceAware) {
             PaymentSourceAware aware = (PaymentSourceAware) ((TangerineForm) command).getDomainObject();
             if (aware.getPaymentSource() != null && aware.getPaymentSource().isNew()) {
                 Map<String, Object> conflictingSources = paymentSourceService.checkForSameConflictingPaymentSources(aware);
@@ -413,7 +414,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
                 if (!"true".equals(useConflictingName)) {
                     Set<String> nameSources = (Set<String>) conflictingSources.get("names");
                     if (nameSources != null && !nameSources.isEmpty()) {
-                        ModelAndView mav = showForm(request, response, errors);
+                        ModelAndView mav = showForm(request, response, formErrors);
                         mav.addObject("conflictingNames", nameSources);
                         return mav;
                     }
@@ -424,14 +425,24 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
                 List<PaymentSource> dateSources = (List<PaymentSource>) conflictingSources.get("dates");
                 if (dateSources != null && !dateSources.isEmpty()) {
                     PaymentSource src = dateSources.get(0); // should only be 1
+	                siteService.readFieldInfo(PageType.findByUrl(request.getServletPath()),
+			                tangerineUserHelper.lookupUserRoles(), request.getLocale(), src); // populate the fieldLabelMap so that validation will occur
+
                     src.setCreditCardExpirationMonth(aware.getPaymentSource().getCreditCardExpirationMonth());
                     src.setCreditCardExpirationYear(aware.getPaymentSource().getCreditCardExpirationYear());
-	                paymentSourceService.maintainPaymentSource(src);
+	                
+	                try {
+		                paymentSourceService.maintainPaymentSource(src);
+	                }
+	                catch (BindException domainErrors) {
+		                bindDomainErrorsToForm(formErrors, domainErrors);
+		                return showForm(request, formErrors, getFormView());
+	                }
                     aware.setPaymentSource(src);
                 }
             }
         }
-        return super.processFormSubmission(request, response, command, errors);
+        return super.processFormSubmission(request, response, command, formErrors);
     }
 
     protected void clearPaymentSourceFields(AbstractEntity entity) {

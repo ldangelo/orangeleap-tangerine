@@ -125,7 +125,8 @@ public class RollupHelperServiceImpl extends AbstractTangerineService implements
 //		    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), groupByRange1, groupByRange1 + KEY_RANGE_INTERVAL - 1);
 //		    			}
 //	    			} else {
-	    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), 0L, Long.MAX_VALUE);
+	    				// It appears some of the fields like onBehalfOf can have non-numeric values so the range idea wont work.
+	    				rollupService.insertRollupDimensionValues(groupByValue, ra, rs, rv.getStartDate(), rv.getEndDate(), -1L, Long.MAX_VALUE);
 //	    			}
 	    		}
 	    	}

@@ -150,6 +150,11 @@
 			<transaction src="${basedir}/db/prod/picklists/eventParticipationPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/touchPointCorrespondenceForPicklist.sql"/>
 
+
+		    <!-- ************** THE FOLLOWING SQL SCRIPT MUST BE LAST ******************************* -->
+		    <transaction src="${basedir}/db/prod/picklists/picklistNullDateCleanup.sql"/>
+		    <!-- ************************************************************************************ -->
+
 	     </sql>
 	</target>
 

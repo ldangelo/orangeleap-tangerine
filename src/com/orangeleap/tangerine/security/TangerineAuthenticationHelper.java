@@ -7,7 +7,7 @@ import org.springframework.security.providers.UsernamePasswordAuthenticationToke
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.common.security.OrangeLeapAuthenticationProvider.AuthenticationHelper;
 import com.orangeleap.tangerine.dao.ibatis.IBatisSchemaDao;
-
+import com.orangeleap.tangerine.security.TangerineSessionInformationFilter;
 /*
  * Used for non-CAS auth to populate user details 
  */

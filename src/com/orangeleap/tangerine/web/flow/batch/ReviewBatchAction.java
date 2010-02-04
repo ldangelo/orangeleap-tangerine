@@ -179,12 +179,17 @@ public class ReviewBatchAction extends EditBatchAction {
 
 		initBatchUpdateFields(batch, fieldList);
 
-        fieldMap = new HashMap<String, Object>();
-        fieldMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
-        fieldMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
-        fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-        fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID)));
-        fieldList.add(fieldMap);
+	    if (batch.isForTouchPoints() ||
+			    ( ! batch.isForTouchPoints() && ! StringConstants.CONSTITUENT.equals(batch.getBatchType()) &&
+	            (bean.isReadableProperty(StringConstants.CONSTITUENT) ||
+			            bean.isReadableProperty(StringConstants.CONSTITUENT_ID)) )) {
+			fieldMap = new HashMap<String, Object>();
+			fieldMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
+			fieldMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
+			fieldMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
+			fieldMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID)));
+			fieldList.add(fieldMap);
+	    }
 
         metaDataMap.put(StringConstants.FIELDS, fieldList);
         model.put(StringConstants.META_DATA, metaDataMap);
@@ -212,13 +217,29 @@ public class ReviewBatchAction extends EditBatchAction {
 					totalRows = adjustedGiftIds.size();
 				}
 			}
+			else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+				Set<Long> constituentIds = batch.getEntryConstituentIds();
+				if ( ! constituentIds.isEmpty()) {
+					entities = constituentService.readLimitedConstituentsByIds(constituentIds, sortInfo, getRequest(flowRequestContext).getLocale());
+					totalRows = constituentIds.size();
+				}
+			}
 	    }
         if (entities != null && ! entities.isEmpty()) {
             for (AbstractCustomizableEntity entity : entities) {
                 final BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
                 final Map<String, Object> rowMap = new HashMap<String, Object>();
                 rowMap.put(StringConstants.ID, bw.getPropertyValue(StringConstants.ID));
-                rowMap.put(StringConstants.CONSTITUENT_ID, bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+
+	            if (batch.isForTouchPoints() ||
+			            ( ! batch.isForTouchPoints() && ! StringConstants.CONSTITUENT.equals(batch.getBatchType())) ) {
+					if (bean.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
+						rowMap.put(StringConstants.CONSTITUENT_ID, bw.getPropertyValue(StringConstants.CONSTITUENT_ID));
+					}
+					else if (bean.isReadableProperty(StringConstants.CONSTITUENT_DOT_ID)) {
+						rowMap.put(StringConstants.CONSTITUENT_ID, bw.getPropertyValue(StringConstants.CONSTITUENT_DOT_ID));
+					}
+	            }
 
                 for (Map.Entry<String, String> fieldEntry : batch.getUpdateFields().entrySet()) {
                     String key = fieldEntry.getKey();
@@ -238,7 +259,9 @@ public class ReviewBatchAction extends EditBatchAction {
                 }
                 rowValues.add(rowMap);
             }
-            addConstituentIdsToRows(rowValues, entities);
+	        if ( ! StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+	            addConstituentIdsToRows(rowValues, entities);
+	        }
         }
         model.put(StringConstants.ROWS, rowValues);
         model.put(StringConstants.TOTAL_ROWS, totalRows);

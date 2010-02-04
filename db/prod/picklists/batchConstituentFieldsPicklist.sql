@@ -1,22 +1,3 @@
-/*
-SQLyog Job Agent Version 8.14 n2 Copyright(c) Webyog Softworks Pvt. Ltd. All Rights Reserved.
-
-MySQL - 5.1.35-community
-*********************************************************************
-*/
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-/* SYNC DB : company1 */
-SET AUTOCOMMIT = 0;
-
-
-/* Schema versions now match release versions  */
-UPDATE VERSION SET SCHEMA_MAJOR_VERSION = 8 WHERE COMPONENT_ID = 'ORANGE' AND COMPONENT_DESC = 'Orange Leap';
-
-/* TANGERINE-1807 */
 SET @Next_ID=(SELECT MAX(PICKLIST_ID)+1 FROM PICKLIST);
 
 INSERT INTO PICKLIST (PICKLIST_ID, PICKLIST_NAME_ID, PICKLIST_NAME, PICKLIST_DESC) VALUES (@Next_ID, 'constituentBatchFields', 'constituentBatchFields', 'Updatable Constituent Batch Fields');
@@ -44,12 +25,3 @@ INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, LONG_D
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, LONG_DESCRIPTION, ITEM_ORDER) VALUES (@Next_ID, 'customFieldMap[organization.onlineMatchingGiftForm]', 'customFieldMap[organization.onlineMatchingGiftForm]', 'Matching Gift Form', 22);
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, LONG_DESCRIPTION, ITEM_ORDER) VALUES (@Next_ID, 'customFieldMap[organization.programStartMonth]', 'customFieldMap[organization.programStartMonth]', 'Program Start Month', 23);
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, LONG_DESCRIPTION, ITEM_ORDER) VALUES (@Next_ID, 'customFieldMap[organization.procedureForRequestingMatch]', 'customFieldMap[organization.procedureForRequestingMatch]', 'Procedure for Requesting Match', 24);
-
-
-
-COMMIT;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-

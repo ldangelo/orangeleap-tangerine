@@ -30,6 +30,7 @@ import com.orangeleap.tangerine.service.PostBatchEntryService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.HttpUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
@@ -182,8 +183,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             for (Segmentation segmentation : segmentations) {
                 Map<String, Object> returnMap = new HashMap<String, Object>();
                 returnMap.put(StringConstants.ID, segmentation.getId());
-                returnMap.put(StringConstants.NAME, segmentation.getName());
-                returnMap.put("desc", segmentation.getDescription());
+                returnMap.put(StringConstants.NAME, HttpUtil.escapeDoubleQuoteReturns(segmentation.getName()));
+                returnMap.put("desc", HttpUtil.escapeDoubleQuoteReturns(segmentation.getDescription()));
                 returnMap.put("count", segmentation.getCount());
                 returnMap.put("lastDt", segmentation.getLastRunDate() == null ? null : sdf.format(segmentation.getLastRunDate()));
                 returnMap.put("lastUser", segmentation.getLastRunByUser());
@@ -201,6 +202,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
         else if (StringConstants.ADJUSTED_GIFT.equals(batchType)) {
             resolvedType = StringConstants.ADJUSTED_GIFT_SEGMENTATION;
+        }
+        else if (StringConstants.CONSTITUENT.equals(batchType)) {
+            resolvedType = StringConstants.CONSTITUENT_SEGMENTATION;
         }
         return resolvedType;
     }

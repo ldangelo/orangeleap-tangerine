@@ -99,12 +99,16 @@ public class ErrorBatchAction extends EditBatchAction {
         final Map<String, String> sortInfoMap = new HashMap<String, String>();
         if ( ! StringUtils.hasText(sortInfo.getSort()) ||
                 (StringConstants.GIFT.equals(batch.getBatchType()) && ( ! sortInfo.getSort().equals(StringConstants.GIFT_ID) && ! sortInfo.getSort().equals("errorMsg"))) ||
-                (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType()) && ( ! sortInfo.getSort().equals(StringConstants.ADJUSTED_GIFT_ID) && ! sortInfo.getSort().equals("errorMsg")))) {
+                (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType()) && ( ! sortInfo.getSort().equals(StringConstants.ADJUSTED_GIFT_ID) && ! sortInfo.getSort().equals("errorMsg"))) ||
+		        (StringConstants.CONSTITUENT.equals(batch.getBatchType()) && ( ! sortInfo.getSort().equals(StringConstants.CONSTITUENT_ID) && ! sortInfo.getSort().equals("errorMsg"))) ) {
             if (StringConstants.GIFT.equals(batch.getBatchType())) {
                 sortInfo.setSort(StringConstants.GIFT_ID);
             }
             else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
                 sortInfo.setSort(StringConstants.ADJUSTED_GIFT_ID);
+            }
+            else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+                sortInfo.setSort(StringConstants.CONSTITUENT_ID);
             }
             sortInfo.setDir(StringConstants.ASC);
         }
@@ -206,12 +210,17 @@ public class ErrorBatchAction extends EditBatchAction {
         if (StringConstants.GIFT.equals(batch.getBatchType())) {
             final Set<Long> giftIds = batch.getEntryGiftIds();
             rows = giftService.readLimitedGiftsByIds(giftIds, sortInfo, getRequest(flowRequestContext).getLocale());
-            totalRows = giftIds.size() * 2;
+            totalRows = giftIds.size();
         }
         else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
             final Set<Long> adjustedGiftIds = batch.getEntryAdjustedGiftIds();
             rows = adjustedGiftService.readLimitedAdjustedGiftsByIds(adjustedGiftIds, sortInfo, getRequest(flowRequestContext).getLocale());
-            totalRows = adjustedGiftIds.size() * 2;
+            totalRows = adjustedGiftIds.size();
+        }
+        else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+            final Set<Long> constituentIds = batch.getEntryConstituentIds();
+            rows = constituentService.readLimitedConstituentsByIds(constituentIds, sortInfo, getRequest(flowRequestContext).getLocale());
+            totalRows = constituentIds.size();
         }
         contrastUpdatedValues(batch, rows, rowValues, batch.getUpdateFields());
 

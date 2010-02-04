@@ -62,6 +62,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -71,7 +72,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.event.DebugAgendaEventListener;
@@ -345,6 +345,23 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituent;
     }
 
+	@Override
+	public List<Constituent> readConstituentsByIds(Set<Long> ids) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readConstituentsByIds: ids = " + ids);
+	    }
+	    return constituentDao.readConstituentsByIds(new ArrayList<Long>(ids));
+	}
+
+	@Override
+	public List<Constituent> readLimitedConstituentsByIds(Set<Long> constituentIds, SortInfo sortInfo, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readLimitedConstituentsByIds: constituentIds = " + constituentIds + " sortInfo = " + sortInfo);
+	    }
+	    return constituentDao.readLimitedConstituentsByIds(constituentIds, sortInfo.getSort(), sortInfo.getDir(), sortInfo.getStart(),
+                sortInfo.getLimit(), locale);
+	}
+
     @Override
     public Constituent readConstituentByAccountNumber(String accountNumber) {
         if (logger.isTraceEnabled()) {
@@ -450,6 +467,31 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         constituentDao.maintainConstituent(constituent);
     }
 
+	@Override
+	public List<Constituent> readConstituentsBySegmentationReportIds(final Set<Long> reportIds, SortInfo sort, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readConstituentsBySegmentationReportIds: reportIds = " + reportIds + " sort = " + sort);
+	    }
+	    return constituentDao.readConstituentsBySegmentationReportIds(reportIds, sort.getSort(), sort.getDir(), sort.getStart(),
+	            sort.getLimit(), locale);
+	}
+
+	@Override
+	public int readCountConstituentsBySegmentationReportIds(final Set<Long> reportIds) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCountConstituentsBySegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    return constituentDao.readCountConstituentsBySegmentationReportIds(reportIds);
+	}
+
+	@Override
+	public List<Constituent> readAllConstituentsBySegmentationReportIds(final Set<Long> reportIds) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readAllConstituentsBySegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    return constituentDao.readAllConstituentsBySegmentationReportIds(reportIds);
+	}
+	
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Constituent> readAllConstituentsBySite() {

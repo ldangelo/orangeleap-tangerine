@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Map;
 
 public interface PostBatchEntryService {
-    boolean executeBatchEntry(PostBatch batch, AbstractCustomizableEntity entity) throws BindException;
+    boolean executeBatchEntry(PostBatch batch, AbstractCustomizableEntity entity) throws Exception;
 
     void clearBatchErrorsInEntity(AbstractCustomizableEntity entity);
 

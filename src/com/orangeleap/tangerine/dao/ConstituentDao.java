@@ -61,4 +61,14 @@ public interface ConstituentDao {
     public Long[] getConstituentIdRange();
     
 	public void setConstituentFlags();
+
+	List<Constituent> readConstituentsBySegmentationReportIds(Set<Long> reportIds, String sortPropertyName, String direction,
+	                                                     int start, int limit, Locale locale);
+
+	int readCountConstituentsBySegmentationReportIds(Set<Long> reportIds);
+
+	List<Constituent> readAllConstituentsBySegmentationReportIds(Set<Long> reportIds);
+
+	List<Constituent> readLimitedConstituentsByIds(Set<Long> constituentIds, String sortPropertyName, String direction,
+	                                                     int start, int limit, Locale locale);
 }

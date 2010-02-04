@@ -205,13 +205,67 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
 		return constituents;
 	}
 
-    // Notes on mysql fulltext index:
-    //
-    // Words are broken up at non-alphanumeric chars (except underscore and apostrophe)
-    // To get any matches, there must be at least 3 records in the db since any search term that matches over a certain percentage of the rows is excluded.
-    // There are about 500 common 'stop' words that are never indexed.
-    // The result potentially contains rows that match any of the words in the search string, unless the words are prefixed by + (must have) or - (must not have).
-    // See also: http://dev.mysql.com/tech-resources/articles/full-text-revealed.html
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Constituent> readConstituentsBySegmentationReportIds(final Set<Long> reportIds, String sortPropertyName, String direction,
+	                                                     int start, int limit, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readConstituentsBySegmentationReportIds: reportIds = " + reportIds + " sortPropertyName = " + sortPropertyName +
+	                " direction = " + direction + " start = " + start + " limit = " + limit);
+	    }
+	    Map<String, Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_RESULT",
+	            sortPropertyName, direction, start, limit, locale);
+	    params.put("reportIds", new ArrayList<Long>(reportIds));
+
+	    return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENTS_BY_SEGMENTATION_REPORT_ID", params);
+	}
+
+	@Override
+	public int readCountConstituentsBySegmentationReportIds(final Set<Long> reportIds) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readCountConstituentsBySegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    Map<String,Object> params = setupParams();
+	    params.put("reportIds", new ArrayList<Long>(reportIds));
+	    return (Integer) getSqlMapClientTemplate().queryForObject("COUNT_CONSTITUENTS_BY_SEGMENTATION_REPORT_ID", params);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Constituent> readAllConstituentsBySegmentationReportIds(final Set<Long> reportIds) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readAllConstituentsBySegmentationReportIds: reportIds = " + reportIds);
+	    }
+	    final Map<String, Object> params = setupParams();
+	    params.put("reportIds", new ArrayList<Long>(reportIds));
+
+	    return getSqlMapClientTemplate().queryForList("SELECT_ALL_CONSTITUENTS_BY_SEGMENTATION_REPORT_ID", params);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Constituent> readLimitedConstituentsByIds(Set<Long> constituentIds, String sortPropertyName, String direction,
+	                                                     int start, int limit, Locale locale) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("readLimitedConstituentsByIds: constituentIds = " + constituentIds + " sortPropertyName = " + sortPropertyName +
+	                " direction = " + direction + " start = " + start + " limit = " + limit);
+	    }
+	    Map<String, Object> params = setupSortParams(StringConstants.CONSTITUENT, "CONSTITUENT.CONSTITUENT_RESULT",
+	            sortPropertyName, direction, start, limit, locale);
+	    params.put("constituentIds", new ArrayList<Long>(constituentIds));
+
+	    return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_CONSTITUENT_IDS", params);
+	}
+
+	/**
+	 * Notes on mysql fulltext index:
+     *
+     * Words are broken up at non-alphanumeric chars (except underscore and apostrophe)
+     * To get any matches, there must be at least 3 records in the db since any search term that matches over a certain percentage of the rows is excluded.
+     * There are about 500 common 'stop' words that are never indexed.
+     * The result potentially contains rows that match any of the words in the search string, unless the words are prefixed by + (must have) or - (must not have).
+     * See also: http://dev.mysql.com/tech-resources/articles/full-text-revealed.html
+	 */
     @SuppressWarnings("unchecked")
 	@Override
     public List<Constituent> fullTextSearchConstituents(String searchText) {

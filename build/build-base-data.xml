@@ -145,6 +145,7 @@
             <transaction src="${basedir}/db/prod/picklists/sourcePicklist.sql"/>
             <transaction src="${basedir}/db/prod/picklists/batchGiftFieldsPicklist.sql"/>
             <transaction src="${basedir}/db/prod/picklists/batchAdjustedGiftFieldsPicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/batchConstituentFieldsPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/noteTypePicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/eventPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/eventParticipationPicklist.sql"/>

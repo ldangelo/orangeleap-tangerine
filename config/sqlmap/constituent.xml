@@ -68,14 +68,29 @@
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>
 	</select>
 
-<!--
-    <select id="SELECT_CONSTITUENTS_BY_SEGMENTATION_RESULT_ID" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+    <select id="SELECT_CONSTITUENTS_BY_SEGMENTATION_REPORT_ID" resultMap="CONSTITUENT_RESULT" parameterClass="map">
         select
         <include refid="CONSTITUENT_COLS_FRAGMENT" />
+
+	    <dynamic prepend=",">
+	        <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+	            custFld.FIELD_VALUE
+	        </isEqual>
+	    </dynamic>
 
         FROM CONSTITUENT p
         inner join THEGURU_SEGMENTATION_RESULT res on p.CONSTITUENT_ID = res.ENTITY_ID
 
+	    <isNotNull property="entityType">
+	        <isNotNull property="fieldName">
+	            <isNotNull property="asOfDate">
+	                left outer join CUSTOM_FIELD custFld on p.CONSTITUENT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+	                    and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+	                    and custFld.FIELD_NAME = #fieldName#
+	            </isNotNull>
+	        </isNotNull>
+	    </isNotNull>
+	    
         where p.SITE_NAME = #siteName#
         and res.REPORT_ID in
         <iterate property="reportIds" conjunction="," open="(" close=")">
@@ -86,8 +101,67 @@
 		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
         limit $offset$,$limit$
     </select>
--->
-    
+
+	<select id="COUNT_CONSTITUENTS_BY_SEGMENTATION_REPORT_ID" resultClass="int" parameterClass="map">
+	    select count(p.CONSTITUENT_ID)
+
+		FROM CONSTITUENT p
+		inner join THEGURU_SEGMENTATION_RESULT res on p.CONSTITUENT_ID = res.ENTITY_ID
+
+	    where p.SITE_NAME = #siteName#
+	    and res.REPORT_ID in
+	    <iterate property="reportIds" conjunction="," open="(" close=")">
+	        #reportIds[]#
+	    </iterate>
+	</select>
+
+	<select id="SELECT_ALL_CONSTITUENTS_BY_SEGMENTATION_REPORT_ID" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+	    select
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />
+
+		FROM CONSTITUENT p
+		inner join THEGURU_SEGMENTATION_RESULT res on p.CONSTITUENT_ID = res.ENTITY_ID
+
+	    where p.SITE_NAME = #siteName#
+	    and res.REPORT_ID in
+	    <iterate property="reportIds" conjunction="," open="(" close=")">
+	        #reportIds[]#
+	    </iterate>
+	</select>
+
+	<select id="SELECT_LIMITED_CONSTITUENTS_BY_CONSTITUENT_IDS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+	    select
+	    <include refid="CONSTITUENT_COLS_FRAGMENT" />
+
+	    <dynamic prepend=",">
+	        <isEqual property="sortColumn" compareValue="FIELD_VALUE">
+	            custFld.FIELD_VALUE
+	        </isEqual>
+	    </dynamic>
+
+		FROM CONSTITUENT p
+
+	    <isNotNull property="entityType">
+	        <isNotNull property="fieldName">
+	            <isNotNull property="asOfDate">
+	                left outer join CUSTOM_FIELD custFld on p.CONSTITUENT_ID = custFld.ENTITY_ID and custFld.ENTITY_TYPE = #entityType#
+	                    and DATE(#asOfDate#) &gt;= custFld.START_DATE and DATE(#asOfDate#) &lt;= custFld.END_DATE
+	                    and custFld.FIELD_NAME = #fieldName#
+	            </isNotNull>
+	        </isNotNull>
+	    </isNotNull>
+
+	    where p.SITE_NAME = #siteName#
+	    and p.CONSTITUENT_ID in
+	    <iterate property="constituentIds" conjunction="," open="(" close=")">
+	        #constituentIds[]#
+	    </iterate>
+	    order by
+	    CASE WHEN IFNULL($sortColumn$,'')='' THEN 1 ELSE 0 END ASC,
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
+	    limit $offset$,$limit$
+	</select>
+
     <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
         SELECT
 

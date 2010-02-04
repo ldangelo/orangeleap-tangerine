@@ -24,6 +24,7 @@ OrangeLeap.msgBundle = {
     gift: 'Gift',
     name: 'Name',
     adjustedGift: 'Adjusted Gift',
+    constituent: 'Constituent',
     showOpenBatches: 'Show Open Batches',
     showExecutedBatches: 'Show Executed Batches',
     showBatchesWithErrors: 'Show Batches with Errors',
@@ -1330,7 +1331,7 @@ Ext.onReady(function() {
                         'value',
                         'desc'
                     ],
-                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift]] 
+                    data: [['gift', msgs.gift], ['adjustedGift', msgs.adjustedGift], ['constituent', msgs.constituent]] 
                 }),
                 displayField: 'desc',
                 valueField: 'value',

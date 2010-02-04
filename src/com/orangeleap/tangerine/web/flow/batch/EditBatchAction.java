@@ -349,24 +349,41 @@ public class EditBatchAction extends AbstractAction {
         final Map<String, Object> metaDataMap = tangerineListHelper.initMetaData(sort.getStart(), sort.getLimit());
         metaDataMap.put(StringConstants.LIMIT, sort.getLimit());
 
-	    final String pageType;
-	    if (batch.isForTouchPoints()) {
+	    String pageType = null;
+	    if ( ! batch.isForTouchPoints() || StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+		    pageType = batch.getBatchType() + "List";
+	    }
+	    else if (batch.isForTouchPoints()) {
 		    if (StringConstants.GIFT.equals(batch.getBatchType())) {
 		        pageType = "batchGiftConstituentList";
 		    }
-		    else {
+		    else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
 			    pageType = "batchAdjustedGiftConstituentList";
 		    }
 	    }
-	    else {
-		    pageType = batch.getBatchType() + "List";
-	    }
+
         final List<SectionField> allFields = tangerineListHelper.findSectionFields(pageType);
 
         final BeanWrapper bw = createDefaultEntity(batch);
         final List<Map<String, Object>> fieldList = new ArrayList<Map<String, Object>>();
 
-        addIdConstituentIdFields(fieldList, bw);
+	    final Map<String, Object> idMap = new HashMap<String, Object>();
+	    idMap.put(StringConstants.NAME, StringConstants.ID);
+	    idMap.put(StringConstants.MAPPING, StringConstants.ID);
+	    idMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
+	    idMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.ID)));
+	    fieldList.add(idMap);
+
+	    if ( ! StringConstants.CONSTITUENT.equals(batch.getBatchType()) &&
+			    (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) ) {
+	        final Map<String, Object> constituentIdMap = new HashMap<String, Object>();
+	        constituentIdMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
+	        constituentIdMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
+	        constituentIdMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
+	        constituentIdMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID)));
+	        fieldList.add(constituentIdMap);
+	    }
+
         for (SectionField sectionFld : allFields) {
             final Map<String, Object> fieldMap = new HashMap<String, Object>();
             String escapedFieldName = TangerineForm.escapeFieldName(sectionFld.getFieldPropertyName());
@@ -409,6 +426,8 @@ public class EditBatchAction extends AbstractAction {
         if ( ! reportIds.isEmpty()) {
 	        sort.setSort(TangerineForm.unescapeFieldName(sort.getSort())); // unescape for the DB
 	        if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+		        totalRows = constituentService.readCountConstituentsBySegmentationReportIds(reportIds);
+		        rowObjects = constituentService.readConstituentsBySegmentationReportIds(reportIds, sort, request.getLocale());
 	        }
             else if (StringConstants.GIFT.equals(batch.getBatchType())) {
                 totalRows = giftService.readCountGiftsBySegmentationReportIds(reportIds);
@@ -423,46 +442,30 @@ public class EditBatchAction extends AbstractAction {
 
         List<Map<String, Object>> rowList = new ArrayList<Map<String, Object>>();
         tangerineListHelper.addListFieldsToMap(request, allFields, rowObjects, rowList, false, false); // this needs to be 'allFields' to include the 'id' property
-        addConstituentIdsToRows(rowList, rowObjects);
+	    if ( ! StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+            addConstituentIdsToRows(rowList, rowObjects);
+	    }
         model.put(StringConstants.ROWS, rowList);
-    }
-
-    protected void addIdConstituentIdFields(final List<Map<String, Object>> fieldList, final BeanWrapper bw) {
-        final Map<String, Object> idMap = new HashMap<String, Object>();
-        idMap.put(StringConstants.NAME, StringConstants.ID);
-        idMap.put(StringConstants.MAPPING, StringConstants.ID);
-        idMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_INT);
-        idMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.ID)));
-        fieldList.add(idMap);
-
-        if (bw.isReadableProperty(StringConstants.CONSTITUENT) || bw.isReadableProperty(StringConstants.CONSTITUENT_ID)) {
-            final Map<String, Object> constituentIdMap = new HashMap<String, Object>();
-            constituentIdMap.put(StringConstants.NAME, StringConstants.CONSTITUENT_ID);
-            constituentIdMap.put(StringConstants.MAPPING, StringConstants.CONSTITUENT_ID);
-            constituentIdMap.put(StringConstants.TYPE, ExtTypeHandler.EXT_STRING);
-            constituentIdMap.put(StringConstants.HEADER, escapeStringValues(TangerineMessageAccessor.getMessage(StringConstants.CONSTITUENT_ID)));
-            fieldList.add(constituentIdMap);
-        }
     }
 
     protected void addConstituentIdsToRows(final List<Map<String, Object>> rowList, final List rows) {
         for (Map<String, Object> objectMap : rowList) {
             Long id = (Long) objectMap.get(StringConstants.ID);
             for (Object thisRow : rows) {
-                BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(thisRow);
-                if (bw.isReadableProperty(StringConstants.ID) && ((Long) bw.getPropertyValue(StringConstants.ID)).equals(id)) {
-                    Long constituentId = null;
-                    if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null) {
-                        constituentId = (Long) bw.getPropertyValue(StringConstants.CONSTITUENT_ID);
-                    }
-                    else if (bw.isReadableProperty(StringConstants.CONSTITUENT_DOT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_DOT_ID) != null) {
-                        constituentId = (Long) bw.getPropertyValue(StringConstants.CONSTITUENT_DOT_ID); 
-                    }
-                    if (constituentId != null) {
-                        objectMap.put(StringConstants.CONSTITUENT_ID, constituentId);
-                        break;
-                    }
-                }
+				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(thisRow);
+				if (bw.isReadableProperty(StringConstants.ID) && ((Long) bw.getPropertyValue(StringConstants.ID)).equals(id)) {
+					Long constituentId = null;
+					if (bw.isReadableProperty(StringConstants.CONSTITUENT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_ID) != null) {
+						constituentId = (Long) bw.getPropertyValue(StringConstants.CONSTITUENT_ID);
+					}
+					else if (bw.isReadableProperty(StringConstants.CONSTITUENT_DOT_ID) && bw.getPropertyValue(StringConstants.CONSTITUENT_DOT_ID) != null) {
+						constituentId = (Long) bw.getPropertyValue(StringConstants.CONSTITUENT_DOT_ID);
+					}
+					if (constituentId != null) {
+						objectMap.put(StringConstants.CONSTITUENT_ID, constituentId);
+						break;
+					}
+				}
             }
         }
     }
@@ -653,6 +656,11 @@ public class EditBatchAction extends AbstractAction {
             rows = adjustedGiftService.readAdjustedGiftsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
             totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(segmentationReportIds);
         }
+	    else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+		    rows = constituentService.readConstituentsBySegmentationReportIds(segmentationReportIds, sortInfo, request.getLocale());
+		    totalRows = constituentService.readCountConstituentsBySegmentationReportIds(segmentationReportIds);
+	    }
+
         contrastUpdatedValues(batch, rows, rowValues, batch.getUpdateFields());
 
         model.put(StringConstants.ROWS, rowValues);
@@ -861,6 +869,9 @@ public class EditBatchAction extends AbstractAction {
         }
         else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType()) && ! batch.getEntrySegmentationIds().isEmpty()) {
             totalRows = adjustedGiftService.readCountAdjustedGiftsBySegmentationReportIds(batch.getEntrySegmentationIds());
+        }
+        else if (StringConstants.CONSTITUENT.equals(batch.getBatchType()) && ! batch.getEntrySegmentationIds().isEmpty()) {
+            totalRows = constituentService.readCountConstituentsBySegmentationReportIds(batch.getEntrySegmentationIds());
         }
         if (accessibleSteps.contains(STEP_3_GRP) && totalRows > 0) {
             accessibleSteps.add(STEP_4_GRP);

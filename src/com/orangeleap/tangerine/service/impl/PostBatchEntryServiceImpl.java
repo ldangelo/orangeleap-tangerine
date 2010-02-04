@@ -21,6 +21,7 @@ package com.orangeleap.tangerine.service.impl;
 import com.orangeleap.tangerine.dao.JournalDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Journal;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.Postable;
@@ -38,6 +39,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PhoneService;
@@ -88,6 +90,9 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
     @Resource(name = "picklistItemService")
     private PicklistItemService picklistItemService;
 
+	@Resource(name = "constituentService")
+	private ConstituentService constituentService;
+
     @Resource(name = "giftService")
     private GiftService giftService;
 
@@ -110,7 +115,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
     private JournalDao journalDao;
 
     @Override
-    public boolean executeBatchEntry(PostBatch batch, AbstractCustomizableEntity entity) throws BindException {
+    public boolean executeBatchEntry(PostBatch batch, AbstractCustomizableEntity entity) throws Exception {
         if (logger.isTraceEnabled()) {
             logger.trace("executeBatchEntry: batchId = " + batch.getId() + " entityType = " + entity.getType() + " entityId = " + entity.getId());
         }
@@ -133,6 +138,9 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 			    else {
 				    touchPoint.setAdjustedGiftId(entity.getId());
 			    }
+		    }
+		    else if (entity instanceof Constituent) {
+			    touchPoint = new CommunicationHistory((Constituent) entity);
 		    }
 		    else {
 			    touchPoint = new CommunicationHistory();
@@ -169,6 +177,10 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 						Gift gift = giftService.readGiftById(adjustedGift.getOriginalGiftId());
 						createJournalEntries(gift, adjustedGift, batch);
 					}
+				}
+				else if (entity instanceof Constituent) {
+					Constituent constituent = (Constituent) entity;
+					entity = constituentService.maintainConstituent(constituent);
 				}
 				executed = true;
 			}

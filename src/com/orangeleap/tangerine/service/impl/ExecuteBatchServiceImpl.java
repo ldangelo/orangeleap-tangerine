@@ -88,12 +88,21 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 			}
 		}
 		else if (StringConstants.ADJUSTED_GIFT.equals(batch.getBatchType())) {
-			// Get by giftIds if segmentationIds do not exist
+			// Get by adjustedGiftIds if segmentationIds do not exist
 			if ( ! segmentationIds.isEmpty()) {
 				entries = adjustedGiftService.readAllAdjustedGiftsBySegmentationReportIds(segmentationIds);
 			}
 			else {
 				entries = adjustedGiftService.readAdjustedGiftsByIds(batch.getEntryAdjustedGiftIds());
+			}
+		}
+		else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+			// Get by constituentIds if segmentationIds do not exist
+			if ( ! segmentationIds.isEmpty()) {
+				entries = constituentService.readAllConstituentsBySegmentationReportIds(segmentationIds);
+			}
+			else {
+				entries = constituentService.readConstituentsByIds(batch.getEntryConstituentIds());
 			}
 		}
 
@@ -116,6 +125,9 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 					}
 					else if (entity instanceof AdjustedGift) {
 						entry.setAdjustedGiftId(entity.getId());
+					}
+					else if (entity instanceof Constituent) {
+						entry.setConstituentId(entity.getId());
 					}
 	                executedEntries.add(entry);
 	            }

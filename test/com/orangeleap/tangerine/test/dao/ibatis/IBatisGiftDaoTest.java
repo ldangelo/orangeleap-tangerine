@@ -458,6 +458,35 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         Assert.assertFalse(gifts.isEmpty());
     }
 
+	@Test(groups = { "testReadGift" })
+	public void testReadGiftDistroLinesByConstituentId() throws Exception {
+		List<Gift> gifts = giftDao.readGiftDistroLinesByConstituentId(100L, "onBehalfOf", "amount", StringConstants.ASC, 0, 1000, Locale.getDefault());
+		Assert.assertEquals(gifts.size(), 3);
+		for (Gift gift : gifts) {
+			if (300L == gift.getId()) {
+				Assert.assertEquals(gift.getConstituent().getId(), new Long(200L));
+			}
+			else if (5001L == gift.getId()) {
+				Assert.assertEquals(gift.getConstituent().getId(), new Long(300L));
+			}
+			else {
+				Assert.assertTrue("Unknown ID = " + gift.getId(), false);
+			}
+		}
+		gifts = giftDao.readGiftDistroLinesByConstituentId(300L, "onBehalfOf", "amount", StringConstants.ASC, 0, 1000, Locale.getDefault());
+		Assert.assertEquals(gifts.size(), 1);
+		for (Gift gift : gifts) {
+			Assert.assertEquals(gift.getId(), new Long(300L));
+			Assert.assertEquals(gift.getConstituent().getId(), new Long(200L));
+		}
+		gifts = giftDao.readGiftDistroLinesByConstituentId(200L, "onBehalfOf", "amount", StringConstants.ASC, 0, 1000, Locale.getDefault());
+		Assert.assertEquals(gifts.size(), 1);
+		for (Gift gift : gifts) {
+			Assert.assertEquals(gift.getId(), new Long(5002));
+			Assert.assertEquals(gift.getConstituent().getId(), new Long(300L));
+		}
+	}
+
     @Test(groups = { "testAnalyze" })
     public void testAnalyzeMajorDonor() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy kk:mm");

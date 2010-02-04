@@ -8,17 +8,20 @@
 	<property file="${commonBuild.dir}/commonBuild.properties"/>
 	<property name="build.env" value="dev"/>
 
+	<taskdef classpath="/Users/ldangelo/Development/i3sp-build/jar/com.i3sp.build.jar" resource="com/i3sp/ant/Taskdefs.properties"/>
+
+
 
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
 	  <classpath>
-	    <fileset dir="${basedir}/lib" includes="jaxb-xjc-2.1.12.jar" />
-	    <fileset dir="${basedir}/lib" includes="jaxb-impl-2.1.12.jar" />	  	
+	    <fileset dir="${axis-lib.classpath}" includes="jaxb-xjc-2.1.7.jar" />
+	    <fileset dir="${axis-lib.classpath}" includes="jaxb-impl-2.1.7.jar" />	  	
 	  </classpath>
 	</taskdef>
 
 	<taskdef name="schemagen" classname="com.sun.tools.jxc.SchemaGenTask">
 	  <classpath>
-	    <fileset dir="${basedir}/lib" includes="*.jar" />
+	    <fileset dir="${axis-lib.classpath}" includes="*.jar" />
 	  </classpath>
 	</taskdef>
 
@@ -28,8 +31,30 @@
 		</classpath>
 	</taskdef>
 
+
+<target name="mungejar">
+  <path id="all.jars">
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+  <property name="all-jars" refid="all.jars"/>
+</target>
+
+<target name="prj.el" depends="mungejar">
+  <echo>${all-jars}</echo>
+  <jdeproject prjel="${basedir}/prj.el"
+	      srcdirs="${basedir}/src"
+	      classdir="${basedir}/build/stage/classes-jar"
+	      classpath="${all-jars}" />
+</target>
+
 	<target name="1. Deploy Exploded War" description="Deploys the exploded war.">
 		<antcall target="deploy-exploded-war" />
+	</target>
+	
+	<target name="deploy-war">
+		<antcall target="deploy-integrated-war" />
 	</target>
 
 	<target name="2. Deploy War" description="Deploys the unexploded war.">

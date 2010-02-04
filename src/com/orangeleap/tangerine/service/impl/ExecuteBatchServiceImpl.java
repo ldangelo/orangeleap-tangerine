@@ -35,11 +35,15 @@ import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
+import org.springframework.context.support.AbstractMessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 
 // Does not extend base class to avoid getting a transactional attribute
 @Service("executeBatchService")
@@ -64,6 +68,9 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 
 	@Resource(name = "tangerineUserHelper")
 	protected TangerineUserHelper tangerineUserHelper;
+
+	@Resource(name = "messageSource")
+	protected AbstractMessageSource messageSource;
 
 	// Non-transactional method
 	@Override
@@ -116,7 +123,8 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	            }
 	            catch (Exception e) {
 	                executed = false;
-	                logger.warn("executeBatch: exception occurred during saving of entity", e);
+		            logger.warn("executeBatch: exception occurred during saving of entity", e);
+		            entity.addCustomFieldValue(StringConstants.BATCH_ERROR, resolveErrorMsg(e));
 	            }
 	            if (executed) {
 	                PostBatchEntry entry = new PostBatchEntry();
@@ -183,5 +191,30 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	        }
 	    }
 	    return entry;
+	}
+
+	private String resolveErrorMsg(Exception e) {
+		String errorMsg = null;
+		if (e instanceof BindException) {
+			List errors = ((BindException)e).getAllErrors();
+			for (Object thisError : errors) {
+				if (thisError instanceof ObjectError) {
+					ObjectError objError = (ObjectError) thisError;
+					String message = messageSource.getMessage(objError.getCode(), objError.getArguments(), Locale.getDefault());
+					if (StringUtils.hasText(message)) {
+						if (errorMsg != null) {
+							errorMsg = new StringBuilder(errorMsg).append(" ").append(message).toString();
+						}
+						else {
+							errorMsg = message;
+						}
+					}
+				}
+			}
+		}
+		if (errorMsg == null) {
+			errorMsg = e.getMessage();
+		}
+		return errorMsg;
 	}
 }

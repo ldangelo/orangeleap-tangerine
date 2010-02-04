@@ -51,7 +51,8 @@
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 
-	<resultMap id="GIFT_DISTRO_LINES_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
+	<resultMap id="GIFT_DISTRO_LINES_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="aliasId" extends="MIN_GIFT_RESULT_NO_DISTRO_LINES">
+		<result property="aliasId" column="GIFT_ALIAS_ID" />
         <result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
         <result property="phone" resultMap="PHONE.PHONE_RESULT" />
         <result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
@@ -328,8 +329,9 @@
     </select>
 
     <select id="SELECT_LIMITED_GIFT_DISTRO_LINES_BY_CONSTITUENT_ID" resultMap="GIFT_DISTRO_LINES_RESULT" parameterClass="map">
-        select
-        <include refid="GIFT_COLS_FRAGMENT" />,
+	    select
+        @rownum:=@rownum+1 AS GIFT_ALIAS_ID,
+	    <include refid="GIFT_COLS_FRAGMENT" />,
         <include refid="CONSTITUENT_COLS_FRAGMENT" />,
         <include refid="ADDRESS_COLS_FRAGMENT" />,
         <include refid="PHONE_COLS_FRAGMENT" />,
@@ -342,7 +344,7 @@
             </isEqual>
         </dynamic>
 
-        from GIFT g
+        from (SELECT @rownum:=0) rowCounter, GIFT g
 		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
         left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
         left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID

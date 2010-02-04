@@ -531,6 +531,78 @@ public class RuleHelperService {
         return totalDonations;
     }
 
+    /**
+     * Takes a constituent and returns true if a they have made a one time donation amount in the specified
+     * range over a specific time interval.
+     * (i.e. Gave between $1000 and $2000 over past 6 MONTHS/1 YEAR/2 FISCALYEARS etc.)
+     * If the timeAmount and timeUnit are -1/-1/null then it will evaluate all gifts a constituent has given.
+     * If the maxAmount is -1 then it will evaluate all gifts a constituent has given.
+     * @param constituent
+     * @param minAmount
+     * @param maxAmount
+     * @param timeAmount
+     * @param timeUnits
+     * @return
+     *
+     */
+    public static Boolean oneTimeDonationPerTimeFrame(Constituent constituent, BigDecimal minAmount, BigDecimal maxAmount, int timeAmount, String timeUnit ) {
+    	Boolean oneTimeDonationMade = false;
+        int fiscalYearStartingMonth = -1;
+    	List<Gift> gifts = constituent.getGifts();
+
+    	//one time donation made is greater than x (gift >= minAmount)
+        if ( maxAmount == null && ((timeAmount == -1) || (timeUnit == null))){
+        	Iterator<Gift> itGifts = gifts.iterator();
+        	while (itGifts.hasNext()) {
+    			Gift gift = (Gift)itGifts.next();
+    			if (StringUtils.equals(gift.getGiftStatus(),Gift.STATUS_PAID) && gift.getAmount().compareTo(minAmount) >= 0)
+    				oneTimeDonationMade = true;
+    		}
+        	return oneTimeDonationMade;
+        //one time donation made is between x and y (minAmount <= gift >= maxAmount)
+        }else if ( timeAmount == -1 || timeUnit == null){
+        	Iterator<Gift> itGifts = gifts.iterator();
+        	while (itGifts.hasNext()) {
+    			Gift gift = (Gift)itGifts.next();
+    			if (StringUtils.equals(gift.getGiftStatus(),Gift.STATUS_PAID) && (gift.getAmount().compareTo(minAmount) >= 0 && gift.getAmount().compareTo(maxAmount) <= 0))
+    				oneTimeDonationMade = true;
+    		}
+        	return oneTimeDonationMade;
+        //one time donation made is greater than x dollars and within the specific time frame (minAmount <= gift )
+        }else if (maxAmount == null && ( timeAmount != -1 && timeUnit != null)){
+        	if(timeUnit.equalsIgnoreCase("FISCALYEAR") || timeUnit.equalsIgnoreCase("FISCALYEARS")){
+        		fiscalYearStartingMonth = Integer.parseInt(userHelper.getSiteOptionByName("fiscal.year.starting.month"));
+        	}
+
+            // Cycle through the gifts
+            for (Gift g : gifts) {
+                // If there is a gift given after the beginning date add it to the running total.
+                if ((g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
+        			if (StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && g.getAmount().compareTo(minAmount) >= 0)
+        				oneTimeDonationMade = true;
+                }
+            }
+            return oneTimeDonationMade;
+        //one time donation made is between x and y dollars and within the specific time frame (minAmount <= gift >= maxAmount)
+        }else if (maxAmount != null && timeAmount != -1 && timeUnit != null){
+        	if(timeUnit.equalsIgnoreCase("FISCALYEAR") || timeUnit.equalsIgnoreCase("FISCALYEARS")){
+        		fiscalYearStartingMonth = Integer.parseInt(userHelper.getSiteOptionByName("fiscal.year.starting.month"));
+        	}
+
+            // Cycle through the gifts
+            for (Gift g : gifts) {
+                // If there is a gift given after the beginning date add it to the running total.
+                if ((g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
+        			if (StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getAmount().compareTo(minAmount) >= 0 && g.getAmount().compareTo(maxAmount) <= 0))
+        				oneTimeDonationMade = true;               }
+            }
+            return oneTimeDonationMade;
+        }
+
+        return false;
+
+    }
+
     // Date d1 before d2
     public static BigDecimal age(Date d1, Date d2) {
         Calendar cal1 = Calendar.getInstance();

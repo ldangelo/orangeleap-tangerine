@@ -934,7 +934,7 @@ INSERT INTO RULE_EVENT_TYPE_X_RULE_SEGMENT_TYPE (RULE_EVENT_TYPE_ID,RULE_SEGMENT
 -- Insert the parameters for the condition
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent has not received a ? letter';
+SET @PHRASE_CD = 'Constituents touch point history does not have a ? letter associated with this gift';
 SET @CODE_CD = 'map.constituentService.hasReceivedCommunication(map.constituent,map.gift,?) == false';
 
 -- Insert code
@@ -951,7 +951,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------
-SET @PHRASE_CD = 'Constituent has not received a ? letter over the past ? ?';
+SET @PHRASE_CD = 'Constituents touch point history does not have a ? letter associated with this gift in the past ? ?';
 SET @CODE_CD = 'map.constituentService.hasReceivedCommunication(map.constituent.getId(),?,?,?) == false';
 
 -- Insert code

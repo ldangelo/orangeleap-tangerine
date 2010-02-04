@@ -117,7 +117,7 @@ public class ErrorBatchAction extends EditBatchAction {
         metaDataMap.put(StringConstants.SORT_INFO, sortInfoMap);
 
         final List<Map<String, Object>> rowList = postBatchService.readPostBatchEntryErrorsByBatchId(batch.getId(), sortInfo);
-        addUniqueSequenceAsId(rowList);
+        addUniqueSequenceAsIdEscapeErrorMsg(rowList);
         final int totalRows = postBatchService.countPostBatchEntryErrorsByBatchId(batch.getId());
 
         // Fields
@@ -249,10 +249,11 @@ public class ErrorBatchAction extends EditBatchAction {
         }
     }
 
-    private void addUniqueSequenceAsId(final List<Map<String, Object>> rowList) {
+    private void addUniqueSequenceAsIdEscapeErrorMsg(final List<Map<String, Object>> rowList) {
         for (int x = 0; x < rowList.size(); x++) {
             final Map<String, Object> rowMap = rowList.get(x);
             rowMap.put(StringConstants.ID, x);
+	        rowMap.put(TangerineForm.escapeFieldName("errorMsg"), escapeStringValues(rowMap.get(TangerineForm.escapeFieldName("errorMsg"))));
         }
     }
 }

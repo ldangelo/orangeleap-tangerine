@@ -16,50 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.controller.validator;
+package com.orangeleap.tangerine.service.validator;
 
-import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.domain.AddressAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
-import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.Errors;
 
-public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
+public class AddressValidator extends AbstractCommunicationValidator<Address> {
 
-    /**
-     * Logger for this class and subclasses
-     */
+    /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return Phone.class.equals(clazz);
+        return Address.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        logger.trace("in PhoneValidator");
-        validatePhone(target, errors);
+        logger.trace("in AddressValidator");
+        validateAddress(target, errors);
     }
 
-    public void validatePhone(Object target, Errors errors) {
-        Phone phone = null;
+    public void validateAddress(Object target, Errors errors) {
+        Address address = null;
         String inPath = errors.getNestedPath();
-        if (target instanceof Phone) {
-            phone = (Phone) target;
-        }
-        else if (target instanceof PhoneAware) {
-            phone = ((PhoneAware) target).getPhone();
-            errors.setNestedPath("phone");
+        if (target instanceof Address) {
+            address = (Address) target;
+        } 
+        else if (target instanceof AddressAware) {
+            address = ((AddressAware) target).getAddress();
+            errors.setNestedPath("address");
         }
         else if (target instanceof AbstractCommunicatorEntity) {
-            phone = ((AbstractCommunicatorEntity) target).getPrimaryPhone();
-            errors.setNestedPath("primaryPhone");
+            address = ((AbstractCommunicatorEntity) target).getPrimaryAddress();
+            errors.setNestedPath("primaryAddress");
         }
 
-        validateDates(phone, errors);
+        validateDates(address, errors);
         errors.setNestedPath(inPath);
     }
 }

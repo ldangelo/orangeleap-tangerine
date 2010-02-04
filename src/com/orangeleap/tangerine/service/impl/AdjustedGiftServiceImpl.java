@@ -1,8 +1,8 @@
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.AdjustedDistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.service.validator.AdjustedDistributionLinesValidator;
+import com.orangeleap.tangerine.service.validator.CodeValidator;
+import com.orangeleap.tangerine.service.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.AdjustedGiftDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.Constituent;

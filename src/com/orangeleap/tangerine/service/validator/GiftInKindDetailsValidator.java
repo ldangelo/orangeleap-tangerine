@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.controller.validator;
+package com.orangeleap.tangerine.service.validator;
 
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;

@@ -1,6 +1,6 @@
-package com.orangeleap.tangerine.test.controller.validator;
+package com.orangeleap.tangerine.test.service.validator;
 
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.service.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;

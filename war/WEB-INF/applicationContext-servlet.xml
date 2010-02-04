@@ -66,7 +66,7 @@
         <property name="commandName" value="user"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.PasswordChange"/>
         <property name="validator">
-            <bean class="com.orangeleap.tangerine.controller.validator.PasswordChangeValidator"/>
+            <bean class="com.orangeleap.tangerine.service.validator.PasswordChangeValidator"/>
         </property>
         <property name="formView" value="account" />
         <property name="successView" value="account" />

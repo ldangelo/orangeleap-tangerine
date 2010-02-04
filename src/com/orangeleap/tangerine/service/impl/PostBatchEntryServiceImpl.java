@@ -148,7 +148,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 		    touchPoint.setBatchId(batch.getId());
 		    updateEntityFields(batch, touchPoint, entity, StringConstants.COMMUNICATION_HISTORY, StringConstants.CORRESPONDENCE_FOR_CUSTOM_FIELD);
 		    if ( ! hasBatchErrorsInEntity(entity)) {
-			    touchPoint.setSuppressValidation(true);
+//			    touchPoint.setSuppressValidation(true);
 			    maintainCorrespondenceForTouchPoints(batch, touchPoint, entity);
 			    executed = true;
 		    }
@@ -161,7 +161,7 @@ public class PostBatchEntryServiceImpl extends AbstractTangerineService implemen
 				updateEntityFields(batch, entity, entity, batch.getBatchType(), StringConstants.POSTED_DATE);
 			}
 			if ( ! hasBatchErrorsInEntity(entity)) {
-				entity.setSuppressValidation(true);
+//				entity.setSuppressValidation(true);
 
 				if (entity instanceof Gift) {
 					Gift gift = (Gift) entity;

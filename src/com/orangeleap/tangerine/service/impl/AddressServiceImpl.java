@@ -18,8 +18,8 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.AddressValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.service.validator.AddressValidator;
+import com.orangeleap.tangerine.service.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.AddressDao;
 import com.orangeleap.tangerine.dao.CommunicationDao;
 import com.orangeleap.tangerine.domain.communication.Address;

@@ -12,7 +12,7 @@
 		<property name="validators">
 			<list>
 	            <ref bean="commitmentValidator"/>
-	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.service.validator.EntityValidator">
 			        <property name="pageType" value="membership"/>
 	            </bean>
 			</list>
@@ -36,7 +36,7 @@
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Commitment"/>
 		<property name="validator">
-            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+            <bean class="com.orangeleap.tangerine.service.validator.EntityValidator">
 		        <property name="pageType" value="membershipView"/>
             </bean>
         </property>

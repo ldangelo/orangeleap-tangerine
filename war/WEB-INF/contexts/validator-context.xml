@@ -6,74 +6,74 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
 
-	<bean id="constituentValidator" class="com.orangeleap.tangerine.controller.validator.ConstituentValidator" />
+	<bean id="constituentValidator" class="com.orangeleap.tangerine.service.validator.ConstituentValidator" />
 
-	<bean id="addressValidator" class="com.orangeleap.tangerine.controller.validator.AddressValidator" />
+	<bean id="addressValidator" class="com.orangeleap.tangerine.service.validator.AddressValidator" />
 
-	<bean id="phoneValidator" class="com.orangeleap.tangerine.controller.validator.PhoneValidator" />
+	<bean id="phoneValidator" class="com.orangeleap.tangerine.service.validator.PhoneValidator" />
 
-	<bean id="emailValidator" class="com.orangeleap.tangerine.controller.validator.EmailValidator" />
+	<bean id="emailValidator" class="com.orangeleap.tangerine.service.validator.EmailValidator" />
 
-	<bean id="recurringGiftValidator" class="com.orangeleap.tangerine.controller.validator.RecurringGiftValidator" />
+	<bean id="recurringGiftValidator" class="com.orangeleap.tangerine.service.validator.RecurringGiftValidator" />
 
-	<bean id="pledgeValidator" class="com.orangeleap.tangerine.controller.validator.PledgeValidator" />
+	<bean id="pledgeValidator" class="com.orangeleap.tangerine.service.validator.PledgeValidator" />
 	
-	<bean id="distributionLinesValidator" class="com.orangeleap.tangerine.controller.validator.DistributionLinesValidator" />
+	<bean id="distributionLinesValidator" class="com.orangeleap.tangerine.service.validator.DistributionLinesValidator" />
 
-	<bean id="adjustedDistributionLinesValidator" class="com.orangeleap.tangerine.controller.validator.AdjustedDistributionLinesValidator" />
+	<bean id="adjustedDistributionLinesValidator" class="com.orangeleap.tangerine.service.validator.AdjustedDistributionLinesValidator" />
 
-	<bean id="giftInKindDetailsValidator" class="com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator" />
+	<bean id="giftInKindDetailsValidator" class="com.orangeleap.tangerine.service.validator.GiftInKindDetailsValidator" />
 
-	<bean id="codeValidator" class="com.orangeleap.tangerine.controller.validator.CodeValidator">
+	<bean id="codeValidator" class="com.orangeleap.tangerine.service.validator.CodeValidator">
         <property name="picklistItemService" ref="picklistItemService" />
         <property name="tangerineUserHelper" ref="tangerineUserHelper" />
 	</bean>
 
-	<bean id="paymentSourceValidator" class="com.orangeleap.tangerine.controller.validator.PaymentSourceValidator">
+	<bean id="paymentSourceValidator" class="com.orangeleap.tangerine.service.validator.PaymentSourceValidator">
         <property name="paymentSourceService" ref="paymentSourceService" />
 	</bean>
 
-    <bean id="constituentEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="constituentEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
          <property name="pageType" value="constituent"/>
 	</bean>
 	
-    <bean id="giftEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="giftEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
          <property name="pageType" value="gift"/>
 	</bean>
 
-    <bean id="giftInKindEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="giftInKindEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
          <property name="pageType" value="giftInKind"/>
 	</bean>
 
-    <bean id="pledgeEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="pledgeEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
          <property name="pageType" value="pledge"/>
 	</bean>
 
-    <bean id="recurringGiftEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="recurringGiftEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
          <property name="pageType" value="recurringGift"/>
 	</bean>
 
-    <bean id="communicationHistoryEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="communicationHistoryEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
          <property name="pageType" value="communicationHistory"/>
 	</bean>
 
-	<bean id="adjustedGiftEntityValidator" class="com.orangeleap.tangerine.controller.validator.AdjustedGiftEntityValidator">
+	<bean id="adjustedGiftEntityValidator" class="com.orangeleap.tangerine.service.validator.AdjustedGiftEntityValidator">
 	     <property name="pageType" value="adjustedGift"/>
 	</bean>
 
-	<bean id="paymentManagerEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+	<bean id="paymentManagerEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
 		<property name="pageType" value="paymentManager"/>
 	</bean>
 	
-    <bean id="addressManagerEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="addressManagerEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
         <property name="pageType" value="addressManager"/>
     </bean>
 
-    <bean id="phoneManagerEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="phoneManagerEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
         <property name="pageType" value="phoneManager"/>
     </bean>
 
-    <bean id="emailManagerEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+    <bean id="emailManagerEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
         <property name="pageType" value="emailManager"/>
     </bean>
 

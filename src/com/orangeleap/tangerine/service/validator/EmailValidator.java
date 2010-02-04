@@ -16,16 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.orangeleap.tangerine.controller.validator;
+package com.orangeleap.tangerine.service.validator;
 
-import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.EmailAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
-import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.logging.Log;
 import org.springframework.validation.Errors;
 
-public class AddressValidator extends AbstractCommunicationValidator<Address> {
+public class EmailValidator extends AbstractCommunicationValidator<Email> {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -33,31 +33,30 @@ public class AddressValidator extends AbstractCommunicationValidator<Address> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return Address.class.equals(clazz);
+        return Email.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        logger.trace("in AddressValidator");
-        validateAddress(target, errors);
+        logger.trace("in EmailValidator");
+        validateEmail(target, errors);
     }
-
-    public void validateAddress(Object target, Errors errors) {
-        Address address = null;
-        String inPath = errors.getNestedPath();
-        if (target instanceof Address) {
-            address = (Address) target;
-        } 
-        else if (target instanceof AddressAware) {
-            address = ((AddressAware) target).getAddress();
-            errors.setNestedPath("address");
-        }
+    
+    public void validateEmail(Object target, Errors errors) {
+    	Email email = null;
+    	String inPath = errors.getNestedPath();
+    	if (target instanceof Email) {
+    		email = (Email) target;
+    	} 
+    	else if (target instanceof EmailAware) {
+    		email = ((EmailAware) target).getEmail();
+    		errors.setNestedPath("email");
+    	}
         else if (target instanceof AbstractCommunicatorEntity) {
-            address = ((AbstractCommunicatorEntity) target).getPrimaryAddress();
-            errors.setNestedPath("primaryAddress");
+            email = ((AbstractCommunicatorEntity) target).getPrimaryEmail();
+            errors.setNestedPath("primaryEmail");
         }
-
-        validateDates(address, errors);
-        errors.setNestedPath(inPath);
+    	validateDates(email, errors);
+    	errors.setNestedPath(inPath);
     }
 }

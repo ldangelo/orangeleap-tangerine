@@ -34,7 +34,6 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -66,7 +65,7 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
     protected AuditService auditService;
 
     @Resource(name = "communicationHistoryEntityValidator")
-    protected EntityValidator entityValidator;
+    protected com.orangeleap.tangerine.service.validator.EntityValidator entityValidator;
 
     private ApplicationContext context;
 

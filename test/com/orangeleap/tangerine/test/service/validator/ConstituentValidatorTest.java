@@ -1,11 +1,11 @@
-package com.orangeleap.tangerine.test.controller.validator;
+package com.orangeleap.tangerine.test.service.validator;
 
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.BindException;
 import org.testng.annotations.Test;
 
-import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
+import com.orangeleap.tangerine.service.validator.ConstituentValidator;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.util.StringConstants;

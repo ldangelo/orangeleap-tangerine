@@ -159,7 +159,7 @@
 	<!--
 	- The message source for this context, loaded from localized message files in the classpath (first) and then the database
 	-->
-    <bean id="messageSource" class="com.orangeleap.tangerine.controller.validator.TangerineMessageSource">
+    <bean id="messageSource" class="com.orangeleap.tangerine.util.TangerineMessageSource">
         <property name="messageService" ref="messageService"/>
         <property name="bundleMessageSource" ref="bundleMessageSource"/>
 	</bean>

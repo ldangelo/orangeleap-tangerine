@@ -41,10 +41,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.PledgeValidator;
+import com.orangeleap.tangerine.service.validator.CodeValidator;
+import com.orangeleap.tangerine.service.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -77,10 +75,10 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     private PledgeDao pledgeDao;
 
 	@Resource(name="pledgeValidator")
-	protected PledgeValidator pledgeValidator;
+	protected com.orangeleap.tangerine.service.validator.PledgeValidator pledgeValidator;
 
     @Resource(name="pledgeEntityValidator")
-    protected EntityValidator entityValidator;
+    protected com.orangeleap.tangerine.service.validator.EntityValidator entityValidator;
     
 	@Resource(name = "rollupHelperService")
 	private RollupHelperService rollupHelperService;

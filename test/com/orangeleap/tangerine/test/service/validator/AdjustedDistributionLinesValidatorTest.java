@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.test.controller.validator;
+package com.orangeleap.tangerine.test.service.validator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.orangeleap.tangerine.controller.validator.AdjustedDistributionLinesValidator;
+import com.orangeleap.tangerine.service.validator.AdjustedDistributionLinesValidator;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
@@ -19,7 +19,7 @@ import com.orangeleap.tangerine.test.BaseTest;
 
 public class AdjustedDistributionLinesValidatorTest extends BaseTest {
 
-    private AdjustedDistributionLinesValidator validator;
+    private com.orangeleap.tangerine.service.validator.AdjustedDistributionLinesValidator validator;
     private BindException errors;
     private Mockery mockery;
     private List<DistributionLine> lines;

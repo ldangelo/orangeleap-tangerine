@@ -18,8 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.PaymentSourceValidator;
 import com.orangeleap.tangerine.dao.PaymentSourceDao;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
@@ -53,10 +51,10 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     private PaymentSourceDao paymentSourceDao;
 
 	@Resource(name = "paymentManagerEntityValidator")
-	private EntityValidator entityValidator;
+	private com.orangeleap.tangerine.service.validator.EntityValidator entityValidator;
 
 	@Resource(name = "paymentSourceValidator")
-	private PaymentSourceValidator paymentSourceValidator;
+	private com.orangeleap.tangerine.service.validator.PaymentSourceValidator paymentSourceValidator;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})

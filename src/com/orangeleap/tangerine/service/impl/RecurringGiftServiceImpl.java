@@ -43,10 +43,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.RecurringGiftValidator;
+import com.orangeleap.tangerine.service.validator.RecurringGiftValidator;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -86,16 +83,16 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 	protected RecurringGiftValidator recurringGiftValidator;
 
     @Resource(name = "recurringGiftEntityValidator")
-    protected EntityValidator entityValidator;
+    protected com.orangeleap.tangerine.service.validator.EntityValidator entityValidator;
     
 	@Resource(name = "rollupHelperService")
 	private RollupHelperService rollupHelperService;
 
     @Resource(name = "codeValidator")
-    protected CodeValidator codeValidator;
+    protected com.orangeleap.tangerine.service.validator.CodeValidator codeValidator;
 
     @Resource(name = "distributionLinesValidator")
-    protected DistributionLinesValidator distributionLinesValidator;
+    protected com.orangeleap.tangerine.service.validator.DistributionLinesValidator distributionLinesValidator;
     
     @Resource(name = "scheduledItemService")
     private ScheduledItemService scheduledItemService;

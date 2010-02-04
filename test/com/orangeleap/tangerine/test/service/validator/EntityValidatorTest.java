@@ -1,6 +1,6 @@
-package com.orangeleap.tangerine.test.controller.validator;
+package com.orangeleap.tangerine.test.service.validator;
 
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.service.validator.EntityValidator;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
@@ -31,7 +31,7 @@ public class EntityValidatorTest extends BaseTest {
     }
 
     private Object invokeResolveFieldNames(AbstractEntity entity, Map unresolvedFieldMap) throws Exception {
-        EntityValidator entityValidator = new EntityValidator();
+        com.orangeleap.tangerine.service.validator.EntityValidator entityValidator = new com.orangeleap.tangerine.service.validator.EntityValidator();
         Method method = entityValidator.getClass().getDeclaredMethod("resolveFieldNames", AbstractEntity.class, Map.class);
         method.setAccessible(true);
         return method.invoke(entityValidator, entity, unresolvedFieldMap);
@@ -119,7 +119,7 @@ public class EntityValidatorTest extends BaseTest {
     private Object invokeValidateRequiredFields(AbstractEntity entity, Errors errors,
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldRequired> unresolvedRequiredFieldMap) throws Exception {
-        EntityValidator entityValidator = new EntityValidator();
+        com.orangeleap.tangerine.service.validator.EntityValidator entityValidator = new EntityValidator();
         Method method = entityValidator.getClass().getDeclaredMethod("validateRequiredFields", AbstractEntity.class,
                 Errors.class, Map.class, Set.class, Map.class);
         method.setAccessible(true);
@@ -183,7 +183,7 @@ public class EntityValidatorTest extends BaseTest {
     private Object invokeValidateRegex(AbstractEntity entity, Errors errors,
                                           Map<String, Object> fieldValueMap, Set<String> errorSet,
                                           Map<String, FieldValidation> unresolvedValidationMap) throws Exception {
-        EntityValidator entityValidator = new EntityValidator();
+        com.orangeleap.tangerine.service.validator.EntityValidator entityValidator = new com.orangeleap.tangerine.service.validator.EntityValidator();
         Method method = entityValidator.getClass().getDeclaredMethod("validateRegex", AbstractEntity.class,
                 Errors.class, Map.class, Set.class, Map.class);
         method.setAccessible(true);

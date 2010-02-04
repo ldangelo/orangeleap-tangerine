@@ -18,8 +18,7 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.EmailValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.service.validator.EmailValidator;
 import com.orangeleap.tangerine.dao.CommunicationDao;
 import com.orangeleap.tangerine.dao.EmailDao;
 import com.orangeleap.tangerine.domain.communication.Email;
@@ -54,7 +53,7 @@ public class EmailServiceImpl extends AbstractCommunicationService<Email> implem
     private EmailValidator emailValidator;
 
     @Resource(name = "emailManagerEntityValidator")
-    private EntityValidator entityValidator;
+    private com.orangeleap.tangerine.service.validator.EntityValidator entityValidator;
     
     @Override
     protected CommunicationDao<Email> getDao() {

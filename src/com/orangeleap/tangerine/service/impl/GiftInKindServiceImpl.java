@@ -32,9 +32,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator;
+import com.orangeleap.tangerine.service.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -67,10 +65,10 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     protected EntityValidator entityValidator;
 
     @Resource(name="codeValidator")
-    protected CodeValidator codeValidator;
+    protected com.orangeleap.tangerine.service.validator.CodeValidator codeValidator;
 
     @Resource(name="giftInKindDetailsValidator")
-    protected GiftInKindDetailsValidator giftInKindDetailsValidator;
+    protected com.orangeleap.tangerine.service.validator.GiftInKindDetailsValidator giftInKindDetailsValidator;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})

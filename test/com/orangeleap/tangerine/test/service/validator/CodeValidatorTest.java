@@ -1,6 +1,6 @@
-package com.orangeleap.tangerine.test.controller.validator;
+package com.orangeleap.tangerine.test.service.validator;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.service.validator.CodeValidator;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;

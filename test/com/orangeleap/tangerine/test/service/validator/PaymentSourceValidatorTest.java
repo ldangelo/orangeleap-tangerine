@@ -1,6 +1,5 @@
-package com.orangeleap.tangerine.test.controller.validator;
+package com.orangeleap.tangerine.test.service.validator;
 
-import com.orangeleap.tangerine.controller.validator.PaymentSourceValidator;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.service.PaymentSourceService;
@@ -22,7 +21,7 @@ import org.testng.annotations.Test;
 
 public class PaymentSourceValidatorTest extends BaseTest {
 
-    private PaymentSourceValidator validator;
+    private com.orangeleap.tangerine.service.validator.PaymentSourceValidator validator;
     private PaymentSource source;
     private BindException errors;
     private Mockery mockery;
@@ -38,7 +37,7 @@ public class PaymentSourceValidatorTest extends BaseTest {
     @BeforeMethod
     public void setupMocks() throws BindException {
         mockery = new Mockery();
-        validator = new PaymentSourceValidator();
+        validator = new com.orangeleap.tangerine.service.validator.PaymentSourceValidator();
 
         source = new PaymentSource();
         final Constituent constituent = new Constituent();

@@ -1,6 +1,6 @@
-package com.orangeleap.tangerine.test.controller.validator;
+package com.orangeleap.tangerine.test.service.validator;
 
-import com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator;
+import com.orangeleap.tangerine.service.validator.GiftInKindDetailsValidator;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.test.BaseTest;

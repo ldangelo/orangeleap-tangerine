@@ -18,8 +18,6 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.EntitySearchDao;
 import com.orangeleap.tangerine.dao.GiftDao;
@@ -99,10 +97,10 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     private ErrorLogService errorLogService;
 
     @Resource(name = "constituentEntityValidator")
-    protected EntityValidator entityValidator;
+    protected com.orangeleap.tangerine.service.validator.EntityValidator entityValidator;
 
     @Resource(name = "constituentValidator")
-    protected ConstituentValidator constituentValidator;
+    protected com.orangeleap.tangerine.service.validator.ConstituentValidator constituentValidator;
 
     @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;

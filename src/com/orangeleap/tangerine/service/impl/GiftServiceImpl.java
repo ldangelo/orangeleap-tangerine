@@ -45,9 +45,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.service.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.service.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -116,7 +115,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     protected EntityValidator entityValidator;
 
     @Resource(name = "codeValidator")
-    protected CodeValidator codeValidator;
+    protected com.orangeleap.tangerine.service.validator.CodeValidator codeValidator;
 
     @Resource(name = "distributionLinesValidator")
     protected DistributionLinesValidator distributionLinesValidator;

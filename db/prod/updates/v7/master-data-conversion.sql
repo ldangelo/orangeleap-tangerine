@@ -521,10 +521,10 @@ INSERT INTO `ENTITY_DEFAULT` (`DEFAULT_VALUE`,`ENTITY_FIELD_NAME`,`ENTITY_TYPE`)
 VALUES ('now:', 'cancelDate', 'pledge');
 
 UPDATE PICKLIST_ITEM SET REFERENCE_VALUE = 'li:has(#cancelDate),li:has(#cancelReason)'
-WHERE ITEM_NAME = 'Cancelled' AND REFERENCE_VALUE = 'li:has(#pledgeCancelDate),li:has(#pledgeCancelReason)' AND PICKLIST_ID = (SELECT PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'pledgeStatus' AND PICKLIST_NAME = 'pledgeStatus');
+WHERE ITEM_NAME = 'Cancelled' AND REFERENCE_VALUE = 'li:has(#pledgeCancelDate),li:has(#pledgeCancelReason)' AND PICKLIST_ID IN (SELECT PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'pledgeStatus' AND PICKLIST_NAME = 'pledgeStatus');
 
 UPDATE PICKLIST_ITEM SET REFERENCE_VALUE = 'li:has(#cancelDate),li:has(#cancelReason)'
-WHERE ITEM_NAME = 'Cancelled' AND PICKLIST_ID = (SELECT PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'recurringGiftStatus' AND PICKLIST_NAME = 'recurringGiftStatus');
+WHERE ITEM_NAME = 'Cancelled' AND PICKLIST_ID IN (SELECT PICKLIST_ID FROM PICKLIST WHERE PICKLIST_NAME_ID = 'recurringGiftStatus' AND PICKLIST_NAME = 'recurringGiftStatus');
 
 
 /* TANGERINE-1448 */

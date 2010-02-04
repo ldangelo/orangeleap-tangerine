@@ -950,5 +950,17 @@
 			<xs:element name="paymentsources" type="tns:paymentSource" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		</xs:complexType>
+		
+		<xs:complexType name="GetConstituentByPaymentSourceRequest">
+			<xs:sequence>
+				<xs:element name="paymentsource" type="tns:paymentSource"/>
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="GetConstituentByPaymentSourceResponse">
+			<xs:sequence>
+				<xs:element name="constituent" type="tns:constituent"/>
+			</xs:sequence>
+		</xs:complexType>
 </xs:schema>
         

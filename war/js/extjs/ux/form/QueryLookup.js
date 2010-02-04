@@ -28,7 +28,7 @@ OrangeLeap.QueryLookup = Ext.extend(Ext.form.Field, {
 			'<input type="hidden" name="{name}" id="{id}" value="{value}" />',
 			'<div class="queryLookupOption noDisplay clone">',
 				'<span>',
-					'<a target="_blank" href=""/>',
+					'<a target="_blank" href=""></a>',
 				'</span>',
 				'<a class="deleteOption" onclick="Lookup.deleteOption(this)" href="javascript:void(0)">',
 					'<img title="Remove This Option" alt="Remove This Option" src="images/icons/deleteRow.png"/>',

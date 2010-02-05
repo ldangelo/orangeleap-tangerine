@@ -229,7 +229,6 @@ public class EditBatchAction extends AbstractAction {
         final ModelMap model = new ModelMap();
         PostBatch batch = getBatchFromFlowScope(flowRequestContext);
 
-        model.put(StringConstants.SUCCESS, Boolean.TRUE);
         final Map<String, String> dataMap = new HashMap<String, String>();
         model.put(StringConstants.DATA, dataMap);
 
@@ -250,6 +249,7 @@ public class EditBatchAction extends AbstractAction {
         dataMap.put(StringConstants.BATCH_TYPE, batch.getBatchType());
 	    dataMap.put(StringConstants.CRITERIA_FIELDS, batch.isForTouchPoints() ? StringConstants.TOUCH_POINT : StringConstants.NOT_TOUCH_POINT);
 
+	    model.put(StringConstants.SUCCESS, Boolean.TRUE);
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
     }
@@ -314,6 +314,7 @@ public class EditBatchAction extends AbstractAction {
                 sortInfo.getStart(), sortInfo.getLimit()));
         model.put(StringConstants.TOTAL_ROWS, postBatchService.findTotalSegmentations(batch.getBatchType())); 
 
+	    model.put(StringConstants.SUCCESS, Boolean.TRUE);
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
         return model;
     }
@@ -509,6 +510,7 @@ public class EditBatchAction extends AbstractAction {
         return model;
     }
 
+	@SuppressWarnings("unchecked")
 	protected ModelMap findUpdateFields(final RequestContext flowRequestContext) {
 		tangerineListHelper.checkAccess(getRequest(flowRequestContext), PageType.createBatch);
 		determineStepToSave(flowRequestContext);
@@ -666,6 +668,7 @@ public class EditBatchAction extends AbstractAction {
         model.put(StringConstants.ROWS, rowValues);
         model.put(StringConstants.TOTAL_ROWS, totalRows);
 
+	    model.put(StringConstants.SUCCESS, Boolean.TRUE);
         model.put(ACCESSIBLE_STEPS, determineAccessibleSteps(flowRequestContext));
 
 	    if (wasDisplayedId) {

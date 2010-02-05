@@ -265,6 +265,7 @@ public class ReviewBatchAction extends EditBatchAction {
         }
         model.put(StringConstants.ROWS, rowValues);
         model.put(StringConstants.TOTAL_ROWS, totalRows);
+	    model.put(StringConstants.SUCCESS, Boolean.TRUE);
         return model;
     }
 }

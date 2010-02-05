@@ -32,7 +32,7 @@
     </resultMap>
 
     <sql id="CONSTITUENT_COLS_FRAGMENT">
-    	p.CONSTITUENT_ID AS CONSTITUENT_CONSTITUENT_ID, 
+    	p.CONSTITUENT_ID AS CONSTITUENT_CONSTITUENT_ID,
 		p.CONSTITUENT_TYPE, p.CREATE_DATE as CONSTITUENT_CREATE_DATE,
 	    p.FIRST_NAME as CONSTITUENT_FIRST_NAME, p.LAST_NAME as CONSTITUENT_LAST_NAME, p.LEGAL_NAME as CONSTITUENT_LEGAL_NAME,
 		p.LOGIN_ID as CONSTITUENT_LOGIN_ID, p.MARITAL_STATUS as CONSTITUENT_MARITAL_STATUS,
@@ -43,27 +43,27 @@
 	    p.RECENT_GIFT as CONSTITUENT_RECENT_GIFT,
 		p.UPDATE_DATE as CONSTITUENT_UPDATE_DATE, p.ACCOUNT_NUMBER as CONSTITUENT_ACCOUNT_NUMBER, p.SITE_NAME
     </sql>
-    
+
 	<sql id="SELECT_CONSTITUENT_FRAGMENT">
-		select 
+		select
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>
 		from CONSTITUENT p
 		where p.SITE_NAME = #siteName#
 	</sql>
-	
+
 	<select id="SELECT_CONSTITUENT_BY_IDS_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
-		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
-		and p.CONSTITUENT_ID in 
+		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>
+		and p.CONSTITUENT_ID in
 		<iterate property="constituentIds" conjunction="," open="(" close=")">
 			#constituentIds[]#
 		</iterate>
 	</select>
-	
+
 	<select id="SELECT_CONSTITUENT_BY_ACCOUNT_NUMBER" resultMap="CONSTITUENT_RESULT" parameterClass="map">
-		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
-		and p.ACCOUNT_NUMBER = #accountNumber# 
+		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>
+		and p.ACCOUNT_NUMBER = #accountNumber#
 	</select>
-	
+
 	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>
 	</select>
@@ -90,7 +90,7 @@
 	            </isNotNull>
 	        </isNotNull>
 	    </isNotNull>
-	    
+
         where p.SITE_NAME = #siteName#
         and res.REPORT_ID in
         <iterate property="reportIds" conjunction="," open="(" close=")">
@@ -167,15 +167,15 @@
 
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
         ISDONORTYPE(p.CONSTITUENT_ID, 'majorDonor') AS majorDonor, ISDONORTYPE(p.CONSTITUENT_ID, 'lapsedDonor') AS lapsedDonor
-        
+
         <dynamic prepend=",">
             <isEqual property="sortColumn" compareValue="FIELD_VALUE">
                 custFld.FIELD_VALUE
             </isEqual>
         </dynamic>
-                
+
         FROM CONSTITUENT p
-        
+
         <isNotNull property="entityType">
             <isNotNull property="fieldName">
                 <isNotNull property="asOfDate">
@@ -186,12 +186,12 @@
             </isNotNull>
         </isNotNull>
 
-        WHERE 
+        WHERE
         	p.SITE_NAME = #siteName#
         <isNotNull property="recentDays" >
-       		and p.UPDATE_DATE &gt;= now() - #recentDays#
+       		and p.UPDATE_DATE &gt;= DATE_SUB(CURDATE(),INTERVAL #recentDays# DAY)
         </isNotNull>
-        
+
         ORDER BY
 
         <isNotEqual property="sortColumn" compareValue="majorDonor">
@@ -203,17 +203,17 @@
         $sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$
         limit $offset$,$limit$
     </select>
-    
+
     <select id="SELECT_LIMITED_CONSTITUENTS_BY_ID_RANGE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
         select
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>
         from CONSTITUENT p
         where p.SITE_NAME = #siteName#
-        and p.ACCOUNT_NUMBER &gt;= #fromId# and p.ACCOUNT_NUMBER &lt;= #toId# 
+        and p.ACCOUNT_NUMBER &gt;= #fromId# and p.ACCOUNT_NUMBER &lt;= #toId#
         order by p.ACCOUNT_NUMBER
         limit 5001
     </select>
-    
+
     <select id="SELECT_CONSTITUENT_COUNT_BY_SITE" parameterClass="string" resultClass="int">
         select count(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #value#
     </select>
@@ -227,7 +227,7 @@
     </select>
 
 	<select id="SELECT_CONSTITUENT_BY_LOGIN_ID_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
-		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
+		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>
 		and p.LOGIN_ID = #loginId#
 	</select>
 
@@ -297,7 +297,7 @@
 
 	<update id="UPDATE_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Constituent">
 		update CONSTITUENT
-		set 
+		set
 		CONSTITUENT_TYPE = #constituentType#,
 		FIRST_NAME = #firstName#,
 		LAST_NAME = #lastName#,
@@ -311,7 +311,7 @@
 		RECOGNITION_NAME = #recognitionName#,
 		SUFFIX = #suffix#,
 		TITLE = #title#,
-		BYPASS_DUPLICATE = #byPassDuplicateDetection#, 
+		BYPASS_DUPLICATE = #byPassDuplicateDetection#,
 		RECENT_GIFT = #recentGift#,
 		ACCOUNT_NUMBER = #accountNumber#,
 		UPDATE_DATE = now()
@@ -320,56 +320,56 @@
 
 	<statement id="SELECT_CONSTITUENT_BY_FIND_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 	    select
-		<include refid="CONSTITUENT_COLS_FRAGMENT"/> 
+		<include refid="CONSTITUENT_COLS_FRAGMENT"/>
 		from CONSTITUENT p
-		where 
+		where
 		p.SITE_NAME = #siteName#
-		<isNotNull property="ignoreIds"> 
-	       and p.CONSTITUENT_ID not in 
+		<isNotNull property="ignoreIds">
+	       and p.CONSTITUENT_ID not in
 		   <iterate property="ignoreIds" conjunction="," open="(" close=")">
 		      #ignoreIds[]#
 		   </iterate>
 		</isNotNull>
-		<isNotNull property="stringParams"> 
+		<isNotNull property="stringParams">
 		   <iterate property="stringParams" conjunction="and" open="and" close="">
 		   p.$stringParams[].key$ = #stringParams[].value#
 		   </iterate>
 		</isNotNull>
-		<isNotNull property="nonStringParams"> 
+		<isNotNull property="nonStringParams">
 		   <iterate property="nonStringParams" conjunction="and" open="and" close="">
 		   p.$nonStringParams[].key$ = #nonStringParams[].value#
 		   </iterate>
 		</isNotNull>
-		<isNotNull property="phoneParams"> 
+		<isNotNull property="phoneParams">
 		   and exists (
-		    select * from PHONE ph where 
+		    select * from PHONE ph where
 		    ph.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="phoneParams" conjunction="and" open="and" close="">
 		    ph.$phoneParams[].key$ = #phoneParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>
-		<isNotNull property="addressParams"> 
+		<isNotNull property="addressParams">
 		   and exists (
-		    select * from ADDRESS saddr where 
+		    select * from ADDRESS saddr where
 		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="addressParams" conjunction="and" open="and" close="">
 		    saddr.$addressParams[].key$ = #addressParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>
-		<isNotNull property="emailParams"> 
+		<isNotNull property="emailParams">
 		   and exists (
-		    select * from EMAIL e where 
+		    select * from EMAIL e where
 		    e.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="emailParams" conjunction="and" open="and" close="">
 		    e.$emailParams[].key$ = #emailParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>
-		<isNotNull property="customParams"> 
+		<isNotNull property="customParams">
 		   and exists (
-		    select * from CUSTOM_FIELD cf where 
+		    select * from CUSTOM_FIELD cf where
 		    cf.ENTITY_ID = p.CONSTITUENT_ID
 		    and cf.ENTITY_TYPE = 'constituent'
 		    <iterate property="customParams" conjunction="and" open="and" close="">
@@ -377,12 +377,12 @@
 		    </iterate>
 		   )
 		</isNotNull>
-		<isNotNull property="additionalWhere"> 
+		<isNotNull property="additionalWhere">
 			and $additionalWhere$
 		</isNotNull>
 		limit 200
 	</statement>
-	
+
 	<select id="SET_CONSTITUENT_FLAGS">
 		select SET_CONSTITUENT_FLAGS();
 	</select>

@@ -1380,7 +1380,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Send email to constituent with subject of ? body of ? and using template ?';
-SET @CODE_CD = 'map.ruleHelperService.sendMail(map.constituent,map.gift,?,?,?);';
+SET @CODE_CD = 'map.ruleHelperService.sendMail(map.constituent,map.gift,?,?,?,false);';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('consequence',@PHRASE_CD,@CODE_CD);

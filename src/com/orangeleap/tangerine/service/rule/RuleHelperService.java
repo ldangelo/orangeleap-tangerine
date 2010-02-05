@@ -352,28 +352,30 @@ public class RuleHelperService {
            		params.put(criteria, p.getAccountNumber().ToString().substring(0,numCharactersToMatch));
 		*/
 			//Primary Email Info
-           if ( criteria.equalsIgnoreCase("emailAddress") && p.getPrimaryEmail().getEmailAddress() != null){
+           if ( criteria.equalsIgnoreCase("emailAddress") && p.getPrimaryEmail() != null && p.getPrimaryEmail().getEmailAddress() != null){
            		params.put("primaryEmail." + criteria, p.getPrimaryEmail().getEmailAddress().substring(0, ((numCharactersToMatch > p.getPrimaryEmail().getEmailAddress().length()) ? p.getPrimaryEmail().getEmailAddress().length() : numCharactersToMatch)));
          		paramCount++;
          	}
 
 			//Primary Address Info
-            if ( criteria.equalsIgnoreCase("addressLine1") && p.getPrimaryAddress().getAddressLine1() != null){
-           		params.put("primaryAddress." + criteria, p.getPrimaryAddress().getAddressLine1().substring(0, ((numCharactersToMatch > p.getPrimaryAddress().getAddressLine1().length()) ? p.getPrimaryAddress().getAddressLine1().length() : numCharactersToMatch)));
-           		paramCount++;
-           	}
-            if ( criteria.equalsIgnoreCase("stateProvince") && p.getPrimaryAddress().getStateProvince() != null){
-           		params.put("primaryAddress." + criteria, p.getPrimaryAddress().getStateProvince().substring(0, ((numCharactersToMatch > p.getPrimaryAddress().getStateProvince().length()) ? p.getPrimaryAddress().getStateProvince().length() : numCharactersToMatch)));
-           		paramCount++;
-           	}
-            if ( criteria.equalsIgnoreCase("city") && p.getPrimaryAddress().getCity() != null){
-           		params.put("primaryAddress." + criteria, p.getPrimaryAddress().getCity().substring(0, ((numCharactersToMatch > p.getPrimaryAddress().getCity().length()) ? p.getPrimaryAddress().getCity().length() : numCharactersToMatch)));
-           		paramCount++;
-           	}
-            if ( criteria.equalsIgnoreCase("postalCode") && p.getPrimaryAddress().getPostalCode() != null){
-           		params.put("primaryAddress." + criteria, p.getPrimaryAddress().getPostalCode().substring(0, ((numCharactersToMatch > p.getPrimaryAddress().getPostalCode().length()) ? p.getPrimaryAddress().getPostalCode().length() : numCharactersToMatch)));
-           		paramCount++;
-           	}
+           if  (p.getPrimaryAddress() != null){
+               if ( criteria.equalsIgnoreCase("addressLine1") && p.getPrimaryAddress().getAddressLine1() != null){
+              		params.put("primaryAddress." + criteria, p.getPrimaryAddress().getAddressLine1().substring(0, ((numCharactersToMatch > p.getPrimaryAddress().getAddressLine1().length()) ? p.getPrimaryAddress().getAddressLine1().length() : numCharactersToMatch)));
+              		paramCount++;
+              	}
+               if ( criteria.equalsIgnoreCase("stateProvince") && p.getPrimaryAddress().getStateProvince() != null){
+              		params.put("primaryAddress." + criteria, p.getPrimaryAddress().getStateProvince().substring(0, ((numCharactersToMatch > p.getPrimaryAddress().getStateProvince().length()) ? p.getPrimaryAddress().getStateProvince().length() : numCharactersToMatch)));
+              		paramCount++;
+              	}
+               if ( criteria.equalsIgnoreCase("city") && p.getPrimaryAddress().getCity() != null){
+              		params.put("primaryAddress." + criteria, p.getPrimaryAddress().getCity().substring(0, ((numCharactersToMatch > p.getPrimaryAddress().getCity().length()) ? p.getPrimaryAddress().getCity().length() : numCharactersToMatch)));
+              		paramCount++;
+              	}
+               if ( criteria.equalsIgnoreCase("postalCode") && p.getPrimaryAddress().getPostalCode() != null){
+              		params.put("primaryAddress." + criteria, p.getPrimaryAddress().getPostalCode().substring(0, ((numCharactersToMatch > p.getPrimaryAddress().getPostalCode().length()) ? p.getPrimaryAddress().getPostalCode().length() : numCharactersToMatch)));
+              		paramCount++;
+              	}
+           }
 		}
 
 		List<Constituent> constituents = null;

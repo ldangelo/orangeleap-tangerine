@@ -38,18 +38,19 @@ import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.OLLogger;
 
 
+
 public class EchexPaymentGateway implements ACHPaymentGateway {
     private CheckService checkService = null;
 	private static final Log logger = OLLogger.getLog(EchexPaymentGateway.class);
 	private ApplicationContext applicationContext;
 	private OrangeleapJmxNotificationBean orangeleapJmxNotificationBean;
 
-	
+
     public void setCheckService(CheckService s)
     {
     	checkService = s;
     }
-    
+
     public CheckService getCheckService()
     {
     	return checkService;
@@ -59,10 +60,10 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
     private Batch getTestBatch(Site s) {
 //        Batch batch = checkService.createBatch(853,11229,5000,"Orange Leap");
         Batch batch = checkService.createBatch(s.getAchSiteNumber(),s.getAchMerchantId(),s.getAchRuleNumber(),s.getAchCompanyName());
-        
+
         if (s.isAchTestMode())
         	batch.isTest(true);
-        
+
         batch.setFileNumber(1);
 
         return batch;
@@ -72,22 +73,43 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 	@Override
 	public void Process(Gift g) {
 			if (g.getPaymentType().compareTo("ACH") != 0) return;
-			
+			Batch batch = null;
 
 			//
 			// make sure the site information is loaded
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
 			g.getConstituent().setSite(ss.readSite(g.getConstituent().getSite().getName()));
-			
-			Batch batch = getTestBatch(ss.readSite(g.getSite().getName()));
-	        Detail detail = new Detail();
-	        detail.setDateTime(g.getDonationDate());
-            if (g.getPaymentSource() != null) {
-	            detail.setAccountNumber(g.getPaymentSource().getAchRoutingNumber()+g.getPaymentSource().getAchAccountNumber());
-            }
-	        detail.setCheckAmount(g.getAmount());
-	        detail.setTransactionNumber(g.getId().intValue());
-	        batch.setDetail(detail);
+
+			try{
+				batch = getTestBatch(ss.readSite(g.getSite().getName()));
+		        Detail detail = new Detail();
+		        detail.setDateTime(g.getDonationDate());
+	            if (g.getPaymentSource() != null) {
+		            detail.setAccountNumber(g.getPaymentSource().getAchRoutingNumber()+g.getPaymentSource().getAchAccountNumber());
+	            }
+		        detail.setCheckAmount(g.getAmount());
+		        detail.setTransactionNumber(g.getId().intValue());
+		        batch.setDetail(detail);
+
+	        } catch (Exception e) {
+	            if (logger.isErrorEnabled()) {
+	                logger.error("General: " + e.getMessage());
+	            }
+	        	g.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+	            g.setPaymentMessage(e.getMessage());
+	            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+	            g.setSuppressValidation(true);
+	            try {
+	                gs.maintainGift(g);
+	            } catch (BindException be) {
+	                // Should not happen with suppressValidation = true.
+	                logger.error(e);
+	            }
+
+	            return;
+	        }
+
 
 	        Response response = null;
 
@@ -105,9 +127,9 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 	    			g.setGiftStatus("Not Paid");
 	    			g.setPaymentStatus("Declined");
 	    			g.setPaymentMessage(response.getMessage());
-//	    			g.setComments(response.getMessage());	    			
+//	    			g.setComments(response.getMessage());
 	            }
-	            
+
 	            orangeleapJmxNotificationBean.incrementStatCount(g.getSite().getName(), OrangeleapJmxNotificationBean.ACH);
 	        	orangeleapJmxNotificationBean.setStat(g.getSite().getName(), OrangeleapJmxNotificationBean.ECHEX_PAYMENT_STATUS, OrangeleapJmxNotificationBean.OK);
 
@@ -119,8 +141,8 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
             	orangeleapJmxNotificationBean.publishNotification(OrangeleapJmxNotificationBean.ECHEX_PAYMENT_ERROR, ""+exception.getMessage());
             	orangeleapJmxNotificationBean.setStat(g.getSite().getName(), OrangeleapJmxNotificationBean.ECHEX_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
 	        }
-	        
-	        
+
+
 	        GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
 	        g.setSuppressValidation(true);

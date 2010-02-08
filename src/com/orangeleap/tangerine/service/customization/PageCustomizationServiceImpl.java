@@ -187,7 +187,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         Iterator<SectionField> it = returnFields.iterator();
         while (it.hasNext()) {
         	SectionField sf = it.next();
-        	if (ZERO.equals(sf.getFieldOrder())) {
+        	if (!readAll && ZERO.equals(sf.getFieldOrder())) {
         		it.remove();
         	}
         }

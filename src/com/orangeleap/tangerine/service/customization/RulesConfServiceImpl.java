@@ -414,7 +414,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
         if (rules == null || rules.size() == 0) return "";
         List<RuleVersion> versions = rules.get(0).getRuleVersions();
         if (versions == null || versions.size() < 2) return "";
-        return versions.get(1).getUpdatedBy();
+        return versions.get(versions.size()-2).getUpdatedBy();
 	}
 	
 	private static RuleEventNameType getRuleEventNameType(String ruleEventTypeNameId) {

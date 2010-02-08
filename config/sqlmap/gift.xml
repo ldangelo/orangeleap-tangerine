@@ -408,8 +408,8 @@
         and g.GIFT_TYPE != 'GIFT_IN_KIND'
 
         <isNotEmpty property="searchTerms">
-            <iterate property="searchTerms" prepend="HAVING" conjunction="AND">
-                $searchTerms[].columnName$ $searchTerms[].columnClause$ #searchTerms[].columnValue#
+            <iterate property="searchTerms"  >
+                and $searchTerms[].columnName$ $searchTerms[].columnClause$ #searchTerms[].columnValue#
             </iterate>
         </isNotEmpty>
         <isNotNull property="sortColumn">

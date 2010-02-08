@@ -130,7 +130,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
                 if (beanWrapper.isReadableProperty(propertyName) && beanPropertyColumnMap.get(propertyName) != null &&
                         entry.getValue() != null && StringUtils.hasText(entry.getValue().toString())) {
                     Map<String,Object> searchColumnMap = new HashMap<String,Object>();
-                    searchColumnMap.put("columnName", beanPropertyColumnMap.get(propertyName));
+                    searchColumnMap.put("columnName", translateColumnName(beanPropertyColumnMap.get(propertyName)));
                     boolean useLike = String.class.equals(beanWrapper.getPropertyType(propertyName));
                     searchColumnMap.put("columnClause", useLike ? "LIKE" : "=");
 //                    if (parametersStartWith) {
@@ -149,6 +149,23 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
         return searchColumnList;
     }
 
+    private String translateColumnName(String name) {
+    	
+    	if (name == null) return null;
+    	
+		int i = name.indexOf("_");
+		
+    	if (name.startsWith("GIFT_")) {
+    		return "g." + name.substring(i+1);
+    	}
+    	
+    	if (name.startsWith("CONSTITUENT_")) {
+    		return "p." + name.substring(i+1);
+    	}
+    	
+    	return name;
+    }
+    
     // Ensures literal parameter value is one word to avoid SQL injection.
     // This should be used on all passed parameters that use the literal $ syntax, unless the value is safely system-generated.
     public static String oneWord(String literalDollarParameterValue) {

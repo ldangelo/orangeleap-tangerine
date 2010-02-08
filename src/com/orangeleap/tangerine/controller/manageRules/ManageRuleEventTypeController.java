@@ -90,7 +90,7 @@ public class ManageRuleEventTypeController extends SimpleFormController {
         List<RuleEventTypeDisplay> types = new ArrayList<RuleEventTypeDisplay>();
         List<RuleEventType> eventTypes = ruleEventTypeDao.readAllRuleEventTypes();
         for (RuleEventType type: eventTypes) {
-        	types.add(new RuleEventTypeDisplay(type, rulesConfService.getLastPublishedDate(type.getRuleEventTypeNameId())));
+        	types.add(new RuleEventTypeDisplay(type, rulesConfService.getLastPublishedDate(type.getRuleEventTypeNameId()), rulesConfService.getLastPublishedBy(type.getRuleEventTypeNameId())));
         }
         mav.addObject("ruleEventTypes", types);
         mav.addObject("message", message);
@@ -101,10 +101,12 @@ public class ManageRuleEventTypeController extends SimpleFormController {
 		private String ruleEventTypeNameId;
     	private String ruleEventTypeDesc;
     	private Date lastPublishedDate;
-    	public RuleEventTypeDisplay(RuleEventType ruleEventType, Date lastPublishedDate) {
+    	private String lastPublishedBy;
+    	public RuleEventTypeDisplay(RuleEventType ruleEventType, Date lastPublishedDate, String lastPublishedBy) {
     		this.setRuleEventTypeNameId(ruleEventType.getRuleEventTypeNameId());
     		this.setRuleEventTypeDesc(ruleEventType.getRuleEventTypeDesc());
     		this.setLastPublishedDate(lastPublishedDate);
+    		this.setLastPublishedBy(lastPublishedBy);
     	}
     	public void setRuleEventTypeNameId(String ruleEventTypeNameId) {
 			this.ruleEventTypeNameId = ruleEventTypeNameId;
@@ -123,6 +125,12 @@ public class ManageRuleEventTypeController extends SimpleFormController {
 		}
 		public Date getLastPublishedDate() {
 			return lastPublishedDate;
+		}
+		public void setLastPublishedBy(String lastPublishedBy) {
+			this.lastPublishedBy = lastPublishedBy;
+		}
+		public String getLastPublishedBy() {
+			return lastPublishedBy;
 		}
     }
 

@@ -40,4 +40,6 @@ public interface RulesConfService {
 
 	public void clearCache();
 
+	public String getLastPublishedBy(String ruleEventTypeNameId);
+
 }

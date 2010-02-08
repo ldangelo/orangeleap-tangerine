@@ -19,6 +19,7 @@
                 <td><a href="#" onclick="window.location = 'rules.htm?ruleEventType=${ruleEventType.ruleEventTypeNameId}';  ">Edit Rules</a></td>
                 <td><a href="#"  onclick="window.location = 'ruleEventTypes.htm?action=publish&ruleEventType=${ruleEventType.ruleEventTypeNameId}';" >Publish Rules</a></td>
                 <td>Published Date: <c:out value="${ruleEventType.lastPublishedDate}"/></td>
+                <td>By: <c:out value="${ruleEventType.lastPublishedBy}"/></td>
                 </tr>
           	    </c:forEach>
           	    </table>

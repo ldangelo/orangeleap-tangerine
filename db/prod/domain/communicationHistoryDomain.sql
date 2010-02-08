@@ -35,10 +35,30 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
-('communicationHistory.customFieldMap[packageMotiveCode]', 'communicationHistory', 'customFieldMap[packageMotiveCode]', 'Package Motive Code', '2dialogemail', 'TEXT');
+('communicationHistory.customFieldMap[packageMotiveCode]', 'communicationHistory', 'customFieldMap[packageMotiveCode]', 'Package Motive Code', '2dialogemail,2dialogMessageResponseGroup,2dialogLinkResponseGroup,2dialogActionResponseGroup', 'TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
-('communicationHistory.customFieldMap[packageName]', 'communicationHistory', 'customFieldMap[packageName]', 'Package Name', '2dialogemail', 'TEXT');
+('communicationHistory.customFieldMap[packageName]', 'communicationHistory', 'customFieldMap[packageName]', 'Package Name', '2dialogemail,2dialogMessageResponseGroup,2dialogLinkResponseGroup,2dialogActionResponseGroup', 'TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
 ('communicationHistory.customFieldMap[subjectLine]', 'communicationHistory', 'customFieldMap[subjectLine]', 'Subject Line', '2dialogemail', 'TEXT');
+
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
+('communicationHistory.customFieldMap[messageResponseCategory]', 'communicationHistory', 'customFieldMap[messageResponseCategory]', 'Message Response Category', '2dialogMessageResponseGroup', 'TEXT');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
+('communicationHistory.customFieldMap[linkResponseCategory]', 'communicationHistory', 'customFieldMap[linkResponseCategory]', 'Link Response Category', '2dialogLinkResponseGroup', 'TEXT');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
+('communicationHistory.customFieldMap[actionResponseCategory]', 'communicationHistory', 'customFieldMap[actionResponseCategory]', 'Action Response Category', '2dialogActionResponseGroup', 'TEXT');
+
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
+('communicationHistory.customFieldMap[membershipName]', 'communicationHistory', 'customFieldMap[membershipName]', 'Membership Name', '2dialogMembershipDetails', 'TEXT');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
+('communicationHistory.customFieldMap[membershipType]', 'communicationHistory', 'customFieldMap[membershipType]', 'Membership Type', '2dialogMembershipDetails', 'TEXT');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES
+('communicationHistory.customFieldMap[memberStatusChange]', 'communicationHistory', 'customFieldMap[memberStatusChange]', 'Member Status Change', '2dialogMembershipDetails', 'TEXT');

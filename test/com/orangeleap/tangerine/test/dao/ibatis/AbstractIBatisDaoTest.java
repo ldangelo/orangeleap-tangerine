@@ -16,7 +16,7 @@ public class AbstractIBatisDaoTest extends AbstractIBatisTest {
 
         Assert.assertNotNull(map);
         Assert.assertTrue(map.containsKey("id"));
-        Assert.assertTrue("GIFT_ID".equals(map.get("id")));
+        Assert.assertTrue("GIFT_GIFT_ID".equals(map.get("id")));
         Assert.assertTrue(map.containsKey("donationDate"));
         Assert.assertTrue("GIFT_DONATION_DATE".equals(map.get("donationDate")));
         Assert.assertTrue(map.containsKey("paymentSource.creditCardHolderName"));

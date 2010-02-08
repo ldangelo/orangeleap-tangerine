@@ -4,7 +4,7 @@
 
 	<resultMap id="CONSTITUENT_RESULT" class="com.orangeleap.tangerine.domain.Constituent" groupBy="id">
 		<result property="id" column="CONSTITUENT_CONSTITUENT_ID" jdbcType="BIGINT" />
-		<result property="constituentType" column="CONSTITUENT_TYPE" jdbcType="VARCHAR" />
+		<result property="constituentType" column="CONSTITUENT_CONSTITUENT_TYPE" jdbcType="VARCHAR" />
 		<result property="createDate" column="CONSTITUENT_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="firstName" column="CONSTITUENT_FIRST_NAME" jdbcType="VARCHAR" />
 		<result property="lastName" column="CONSTITUENT_LAST_NAME" jdbcType="VARCHAR" />
@@ -33,7 +33,7 @@
 
     <sql id="CONSTITUENT_COLS_FRAGMENT">
     	p.CONSTITUENT_ID AS CONSTITUENT_CONSTITUENT_ID,
-		p.CONSTITUENT_TYPE, p.CREATE_DATE as CONSTITUENT_CREATE_DATE,
+		p.CONSTITUENT_TYPE as CONSTITUENT_CONSTITUENT_TYPE, p.CREATE_DATE as CONSTITUENT_CREATE_DATE,
 	    p.FIRST_NAME as CONSTITUENT_FIRST_NAME, p.LAST_NAME as CONSTITUENT_LAST_NAME, p.LEGAL_NAME as CONSTITUENT_LEGAL_NAME,
 		p.LOGIN_ID as CONSTITUENT_LOGIN_ID, p.MARITAL_STATUS as CONSTITUENT_MARITAL_STATUS,
 	    p.MIDDLE_NAME as CONSTITUENT_MIDDLE_NAME, p.NAICS_CODE as CONSTITUENT_NAICS_CODE,

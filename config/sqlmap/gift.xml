@@ -4,9 +4,9 @@
 
 	<!-- Note: NO groupBy in base map -->
 	<resultMap id="MIN_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift">
-		<result property="id" column="GIFT_ID" jdbcType="BIGINT" />
-		<result property="giftStatus" column="GIFT_STATUS" jdbcType="VARCHAR" />
-		<result property="giftType" column="GIFT_TYPE" jdbcType="VARCHAR" />
+		<result property="id" column="GIFT_GIFT_ID" jdbcType="BIGINT" />
+		<result property="giftStatus" column="GIFT_GIFT_STATUS" jdbcType="VARCHAR" />
+		<result property="giftType" column="GIFT_GIFT_TYPE" jdbcType="VARCHAR" />
 		<result property="amount" column="GIFT_AMOUNT" jdbcType="DECIMAL" />
 		<result property="adjustedAmount" column="GIFT_ADJUSTED_AMOUNT" jdbcType="DECIMAL" />
 		<result property="authCode" column="GIFT_AUTH_CODE" jdbcType="VARCHAR" />
@@ -60,7 +60,8 @@
 	</resultMap>
 
 	<sql id="GIFT_COLS_FRAGMENT">
-		g.GIFT_ID, g.GIFT_STATUS, g.GIFT_TYPE, g.AMOUNT as GIFT_AMOUNT, g.ADJUSTED_AMOUNT as GIFT_ADJUSTED_AMOUNT, g.AUTH_CODE as GIFT_AUTH_CODE, g.AVS_MESSAGE as GIFT_AVS_MESSAGE,  
+		g.GIFT_ID as GIFT_GIFT_ID, g.GIFT_STATUS as GIFT_GIFT_STATUS, g.GIFT_TYPE as GIFT_GIFT_TYPE,
+		g.AMOUNT as GIFT_AMOUNT, g.ADJUSTED_AMOUNT as GIFT_ADJUSTED_AMOUNT, g.AUTH_CODE as GIFT_AUTH_CODE, g.AVS_MESSAGE as GIFT_AVS_MESSAGE,  
 		g.CHECK_NUMBER as GIFT_CHECK_NUMBER, g.CHECK_DATE as GIFT_CHECK_DATE, 
 		g.COMMENTS as GIFT_COMMENTS, g.CURRENCY_CODE as GIFT_CURRENCY_CODE,
 		g.DEDUCTIBLE_AMOUNT as GIFT_DEDUCTIBLE_AMOUNT, g.DONATION_DATE as GIFT_DONATION_DATE, g.ENTRY_TYPE as GIFT_ENTRY_TYPE,
@@ -70,11 +71,6 @@
 		g.UPDATE_DATE as GIFT_UPDATE_DATE, g.CREATE_DATE as GIFT_CREATE_DATE
 	</sql>
 	
-	<sql id="GIFT_COLS_CHILD_IDS_FRAGMENT">
-		<include refid="GIFT_COLS_FRAGMENT"/>,
-		g.CONSTITUENT_ID, g.ADDRESS_ID, g.PHONE_ID, g.PAYMENT_SOURCE_ID
-	</sql>
-
 	<sql id="GIFT_QUERY_FRAGMENT">
 		select
 		<include refid="GIFT_COLS_FRAGMENT" />,

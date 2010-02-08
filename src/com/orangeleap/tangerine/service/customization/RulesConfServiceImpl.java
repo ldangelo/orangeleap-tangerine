@@ -413,8 +413,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
         List<Rule> rules = ruleDao.readByRuleEventTypeNameId(ruleEventTypeNameId);
         if (rules == null || rules.size() == 0) return "";
         List<RuleVersion> versions = rules.get(0).getRuleVersions();
-        if (versions == null || versions.size() == 0) return "";
-        return versions.get(0).getUpdatedBy();
+        if (versions == null || versions.size() < 2) return "";
+        return versions.get(1).getUpdatedBy();
 	}
 	
 	private static RuleEventNameType getRuleEventNameType(String ruleEventTypeNameId) {

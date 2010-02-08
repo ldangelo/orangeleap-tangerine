@@ -792,11 +792,12 @@ public class RuleHelperService {
 				if (relatedConstituent != null){
 					PicklistItem pli = new PicklistItem();
 					pli.setPicklistId(picklistItemService.getPicklist(picklist).getId());
-					pli.setItemName(relatedConstituent.getAccountNumber().toString());
+					pli.setItemName(relatedConstituent.getAccountNumber() + "-" + relatedConstituent.getFullName().replaceAll(" ", "").toLowerCase());
+					pli.setItemOrder(pl.getPicklistItems().size() + 1);
 					pli.setInactive(false);
-					pli.setLongDescription(relatedConstituent.getFullName() + " - " + relatedConstituent.getAccountNumber());
-					pli.setDefaultDisplayValue(relatedConstituent.getFullName() + " - " + relatedConstituent.getAccountNumber());
-					pli.setDetail(relatedConstituent.getFullName() + " - " + relatedConstituent.getAccountNumber());
+					pli.setLongDescription(null);
+					pli.setDefaultDisplayValue(relatedConstituent.getAccountNumber() + " - " + relatedConstituent.getFullName());
+					pli.setDetail(null);
 					pl.getPicklistItems().add(pli);
 					picklistItemService.maintainPicklist(pl);
 				}

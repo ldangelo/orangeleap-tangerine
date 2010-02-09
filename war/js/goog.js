@@ -20,14 +20,7 @@ function checkDashboard() {
 		 Ext.Ajax.request({ url: 'dashboardItemsData.json',
 			 success: function(resp) {
 				var itemsData = Ext.decode(resp.responseText).itemsData;
-				var dashboard = $('#dashboard');
-
-				var table = document.createElement("table");
-				table.id = 'dashboard-content';
-				table.style.visibility = 'hidden';
-				dashboard.get(0).appendChild(table);
-
-				var tr;
+                var html = '<table id="dashboard-content">';
 
 				function Rss(itemData, elemId) {
 					try {
@@ -38,12 +31,8 @@ function checkDashboard() {
 								var $container = $('#' + elemId);
 								for (var i = 0; i < result.feed.entries.length; i++) {
 									var entry = result.feed.entries[i];
-									var para = document.createElement("p");
-									var div = document.createElement("a");
-									div.innerHTML = entry.title + " &raquo;";
-									$(div).attr("href", entry.link);
-									para.appendChild(div);
-									$container.get(0).appendChild(para);
+									var rHtml = '<p><a href="' + entry.link + '">' + entry.title + '&raquo;</a></p>';
+									$container.get(0).innerHTML = rHtml;
 								}
 							}
 						});
@@ -57,13 +46,8 @@ function checkDashboard() {
 					try {
 						var url = itemData.url;
 						url = url.replace(/amp;/g, "");
-						var div = document.createElement("iframe");
-						$(div).attr("src",url);
-						$(div).attr("width","350");
-						$(div).attr("height","220");
-						$(div).attr("scrolling","no");
-						$(div).attr("frameborder","0");
-						$('#' + elemId).get(0).appendChild(div);
+						var iHtml = '<iframe src="' + url + '" width="350" height="220" scrolling="no" frameborder="0"></iframe>';
+						$('#' + elemId).get(0).innerHTML = iHtml;
 					}
 					catch (e) { }
 				}
@@ -71,13 +55,8 @@ function checkDashboard() {
 				function Text(itemData, elemId) {
 					try {
 						var url = itemData.url;
-						var div = document.createElement("div");
-						$(div).html(Ext.util.Format.htmlDecode(url));
-						$(div).attr("width","350");
-						$(div).attr("height","220");
-						$(div).attr("scrolling","no");
-						$(div).attr("frameborder","0");
-						$('#' + elemId).get(0).appendChild(div);
+						var tHtml = '<div style="overflow: visible; width: 350px; height: 220px; border: 0;">' + Ext.util.Format.htmlDecode(url) + '</div>';
+						$('#' + elemId).get(0).innerHTML = tHtml;
 					}
 					catch (e) {
 
@@ -107,47 +86,43 @@ function checkDashboard() {
 
 				for (var j = 0; j < itemsData.length; j++) {
 					if (j % 2 == 0) {
-						tr = document.createElement("tr");
-						table.appendChild(tr);
+						html += '<tr>';
 					}
-					var td = document.createElement("td");
-					td.align='left';
-					td.valign='top';
-					td.style["vertical-align"]='top';
-					tr.appendChild(td);
+					html += '<td>';
 
 					var itemData = itemsData[j];
 
-					var h5 = document.createElement("h5");
-					h5.innerHTML = itemData.title + '&nbsp;&nbsp;';
-					td.appendChild(h5);
+					html += '<h5>' + itemData.title + '</h5>';
+					html += '<div id="';
 
-					var elem = document.createElement("div");
-					td.appendChild(elem);
-
-					var $elem = $(elem);
 					if (itemData.graphType === 'Rss') {
 						var thisId = 'rssDiv' + j;
-						$elem.attr('id', thisId);
+						html += thisId;
 						new Rss(itemData, thisId);
 					}
 					if (itemData.graphType === 'IFrame') {
 						var thisId = 'iframeDiv' + j;
-						$elem.attr('id', thisId);
+						html += thisId;
 						new Iframe(itemData, thisId);
 					}
 					if (itemData.graphType === 'Text') {
 						var thisId = 'textDiv' + j;
-						$elem.attr('id', thisId);
+						html += thisId;
 						new Text(itemData, thisId);
 					}
 					if (itemData.graphType === 'Guru') {
 						var thisId = 'guruDiv' + j;
-						$elem.attr('id', thisId);
+						html += thisId;
 						new Guru(itemData, thisId);
 					}
+					html += '"></div>';
+					html += '</td>';
+					if (j % 2 == 1) {
+						html += '</tr>';
+					}
 				}
-				table.style.visibility = 'visible';
+				var $dashboard = $('#dashboard');
+				$dashboard.get(0).innerHTML = html;
 			}
 		 });
 	}

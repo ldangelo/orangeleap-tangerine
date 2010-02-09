@@ -86,7 +86,7 @@ function checkDashboard() {
 						url = url.replace(/amp;/g, "");
 
 						jQuery.ajaxQueue({
-							url: url,
+							url: url + '?a=' + new Date().UTC(),
 							type: 'POST',
 							success: function(data) {
 								if (data) {

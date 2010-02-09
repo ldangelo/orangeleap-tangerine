@@ -38,6 +38,7 @@ public class OrangeLeapRuleSession {
 		        if (!reentrant) {
 					try {
 
+						long t0 = System.currentTimeMillis();
 						logger.debug("Executing dynamic ruleset for "+orangeLeapRuleBase.getRuleEventNameType());
 
 						map.put(RULE_EXECUTION_SUMMARY, new ArrayList<String>());
@@ -45,6 +46,9 @@ public class OrangeLeapRuleSession {
 
 						RulesConfService rulesConfService = (RulesConfService)orangeLeapRuleBase.getApplicationContext().getBean("rulesConfService");
 						rulesConfService.fireRulesEvent(orangeLeapRuleBase.getRuleEventNameType(), orangeLeapRuleBase.isTestMode(), map);
+
+						long t1 = System.currentTimeMillis();
+						logger.debug("Ruleset for "+orangeLeapRuleBase.getRuleEventNameType() + " took " + ((t1-t0)/1000f) + " sec.");
 
 					} catch (OrangeLeapConsequenceRuntimeException e) {
 						throw e;

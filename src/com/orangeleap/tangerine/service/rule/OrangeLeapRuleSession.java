@@ -53,7 +53,7 @@ public class OrangeLeapRuleSession {
 					} catch (OrangeLeapConsequenceRuntimeException e) {
 						throw e;
 					} catch (Exception e) {
-						logger.error(e.getMessage());
+						logger.error(e.getMessage(), e);
 						throw new RuntimeException(e);
 					}
 		        }

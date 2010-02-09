@@ -48,7 +48,9 @@ function checkDashboard() {
 							}
 						});
 					}
-					catch (e) { }
+					catch (e) {
+
+					}
 				}
 
 				function iframe(itemData, elemId) {
@@ -77,7 +79,9 @@ function checkDashboard() {
 						$(div).attr("frameborder","0");
 						$('#' + elemId).get(0).appendChild(div);
 					}
-					catch (e) { }
+					catch (e) {
+
+					}
 				}
 
 				function guru(itemData, elemId) {
@@ -85,9 +89,10 @@ function checkDashboard() {
 						var url = '/' + contextPrefix + 'jasperserver/fileview/fileview/Reports/' + OrangeLeap.thisSiteName + '/Content_files/' + itemData.url + '.html_files/img_0_0_0';
 						url = url.replace(/amp;/g, "");
 
-						jQuery.ajaxQueue({
+						jQuery.ajaxq('guruQueue', {
 							url: url,
-//							type: 'POST',
+							type: 'POST',
+							cache: false,
 							success: function(data) {
 								if (data) {
 									$('#' + elemId).get(0).innerHTML = '<img src="' + url + '"></img>';
@@ -95,7 +100,9 @@ function checkDashboard() {
 							}
 						});
 					}
-					catch (e) { }
+					catch (e) {
+					
+					}
 				}
 
 				for (var j = 0; j < itemsData.length; j++) {

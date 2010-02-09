@@ -29,7 +29,7 @@ function checkDashboard() {
 
 				var tr;
 
-				function rss(itemData, elemId) {
+				function Rss(itemData, elemId) {
 					try {
 						var feed = new google.feeds.Feed(itemData.url);
 						feed.setNumEntries(6);
@@ -53,7 +53,7 @@ function checkDashboard() {
 					}
 				}
 
-				function iframe(itemData, elemId) {
+				function Iframe(itemData, elemId) {
 					try {
 						var url = itemData.url;
 						url = url.replace(/amp;/g, "");
@@ -68,7 +68,7 @@ function checkDashboard() {
 					catch (e) { }
 				}
 
-				function text(itemData, elemId) {
+				function Text(itemData, elemId) {
 					try {
 						var url = itemData.url;
 						var div = document.createElement("div");
@@ -84,7 +84,7 @@ function checkDashboard() {
 					}
 				}
 
-				function guru(itemData, elemId) {
+				function Guru(itemData, elemId) {
 					try {
 						var url = '/' + contextPrefix + 'jasperserver/fileview/fileview/Reports/' + OrangeLeap.thisSiteName + '/Content_files/' + itemData.url + '.html_files/img_0_0_0';
 						url = url.replace(/amp;/g, "");
@@ -127,20 +127,24 @@ function checkDashboard() {
 
 					var $elem = $(elem);
 					if (itemData.graphType === 'Rss') {
-						$elem.attr('id', 'rssDiv');
-						rss(itemData, 'rssDiv');
+						var thisId = 'rssDiv' + j;
+						$elem.attr('id', thisId);
+						new Rss(itemData, thisId);
 					}
 					if (itemData.graphType === 'IFrame') {
-						$elem.attr('id', 'iframeDiv');
-						iframe(itemData, 'iframeDiv');
+						var thisId = 'iframeDiv' + j;
+						$elem.attr('id', thisId);
+						new Iframe(itemData, thisId);
 					}
 					if (itemData.graphType === 'Text') {
-						$elem.attr('id', 'textDiv');
-						text(itemData, 'textDiv');
+						var thisId = 'textDiv' + j;
+						$elem.attr('id', thisId);
+						new Text(itemData, thisId);
 					}
 					if (itemData.graphType === 'Guru') {
-						$elem.attr('id', 'guruDiv');
-						guru(itemData, 'guruDiv');
+						var thisId = 'guruDiv' + j;
+						$elem.attr('id', thisId);
+						new Guru(itemData, thisId);
 					}
 				}
 				table.style.visibility = 'visible';

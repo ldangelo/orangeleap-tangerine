@@ -74,10 +74,23 @@ public enum FieldType {
     ENCRYPTED_DISPLAY;
 
 	public static boolean supportsOtherValue(FieldType fieldType) {
-		return QUERY_LOOKUP_OTHER.equals(fieldType) || CODE_OTHER.equals(fieldType);
+		return QUERY_LOOKUP_OTHER.equals(fieldType) || CODE_OTHER.equals(fieldType) || CODE_OTHER_DISPLAY.equals(fieldType);
 	}
 
 	public static boolean supportsAdditionalValues(FieldType fieldType) {
-		return MULTI_PICKLIST_ADDITIONAL.equals(fieldType) || MULTI_CODE_ADDITIONAL.equals(fieldType);
+		return MULTI_PICKLIST_ADDITIONAL.equals(fieldType) || MULTI_CODE_ADDITIONAL.equals(fieldType) || MULTI_PICKLIST_ADDITIONAL_DISPLAY.equals(fieldType);
+	}
+
+	public static boolean hasPicklistItems(FieldType fieldType) {
+		return CODE.equals(fieldType) ||
+			CODE_OTHER.equals(fieldType) ||
+			MULTI_CODE_ADDITIONAL.equals(fieldType) ||
+			CODE_OTHER_DISPLAY.equals(fieldType) ||
+			PICKLIST.equals(fieldType) ||
+			PICKLIST_DISPLAY.equals(fieldType) ||
+			MULTI_PICKLIST.equals(fieldType) ||
+			MULTI_PICKLIST_ADDITIONAL.equals(fieldType) ||
+			MULTI_PICKLIST_DISPLAY.equals(fieldType) ||
+			MULTI_PICKLIST_ADDITIONAL_DISPLAY.equals(fieldType);
 	}
 }

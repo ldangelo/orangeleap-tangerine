@@ -85,15 +85,21 @@ function checkDashboard() {
 						var url = '/' + contextPrefix + 'jasperserver/fileview/fileview/Reports/' + OrangeLeap.thisSiteName + '/Content_files/' + itemData.url + '.html_files/img_0_0_0';
 						url = url.replace(/amp;/g, "");
 
-						jQuery.ajaxQueue({
-							url: url + '?a=' + new Date().UTC(),
-							type: 'POST',
-							success: function(data) {
-								if (data) {
-									$('#' + elemId).get(0).innerHTML = '<img src="' + url + '"></img>';
-								}
+						$.post(url, function(data) {
+							if (data) {
+								$('#' + elemId).get(0).innerHTML = '<img src="' + url + '"></img>';
 							}
 						});
+
+//						jQuery.ajaxQueue({
+//							url: url,
+//							type: 'POST',
+//							success: function(data) {
+//								if (data) {
+//									$('#' + elemId).get(0).innerHTML = '<img src="' + url + '"></img>';
+//								}
+//							}
+//						});
 					}
 					catch (e) { }
 				}

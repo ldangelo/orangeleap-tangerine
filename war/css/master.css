@@ -119,6 +119,8 @@ p.enterNew {
 div.errorDiv { font-size: 1.2em; font-family: arial; padding-top: 15px; } 
 /* input field borders are #7f9db9 by default in firefox */
 
+#dashboard-content tr td { vertical-align: top; }
+
 /* Used in ExtJS forms to space out entries */
 div.spaced { padding-bottom: 10px; }
 div.x-grid3-row { cursor: pointer; }

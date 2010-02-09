@@ -87,6 +87,7 @@ function checkDashboard() {
 
 						jQuery.ajaxQueue({
 							url: url,
+							type: 'POST',
 							success: function(data) {
 								$('#' + elemId).get(0).innerHTML = '<img src="' + url + '"></img>';
 							}

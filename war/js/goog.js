@@ -89,7 +89,9 @@ function checkDashboard() {
 							url: url,
 							type: 'POST',
 							success: function(data) {
-								$('#' + elemId).get(0).innerHTML = '<img src="' + url + '"></img>';
+								if (data) {
+									$('#' + elemId).get(0).innerHTML = '<img src="' + url + '"></img>';
+								}
 							}
 						});
 					}

@@ -250,6 +250,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
 			script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule Event ["+rulesEventType.getType()+"]\");\n"); 
 			script.append("boolean b;\n"); 
 			script.append("boolean lastb;\n\n"); 
+			script.append("long t0;\n\n"); 
 
     		List<Rule> rules = ruleDao.readByRuleEventTypeNameId(rulesEventType.getType());
 	    	for (Rule rule: rules) {
@@ -260,7 +261,8 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     				script.append("// ").append(desc).append("\n");
     				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"------------------------------------------------\");\n"); 
     				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule: \\\""+desc+"\\\"\");\n"); 
-  
+    				script.append("t0 = System.currentTimeMillis();\n"); 
+
     				List<String> conditions = new ArrayList<String>();
 	    			List<String> conditionstext = new ArrayList<String>();
 	    			List<String> consequences = new ArrayList<String>();
@@ -305,6 +307,7 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     				}
     				script.append("} \n");
     				
+    				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"Rule time: \" + ((System.currentTimeMillis() - t0)/1000f) + \" sec.\");\n"); 
     				script.append("map."+OrangeLeapRuleSession.RULE_EXECUTION_SUMMARY+".add(\"------------------------------------------------\");\n"); 
     				script.append("\n");
 	    		}

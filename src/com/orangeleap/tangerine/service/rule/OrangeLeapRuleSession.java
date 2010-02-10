@@ -71,10 +71,10 @@ public class OrangeLeapRuleSession {
 			try {
 
 				StringBuilder sb = new StringBuilder();
-				sb.append("Rules Execution Summary for "+orangeLeapRuleBase.getRuleEventNameType()+":\n");
+				sb.append("Rules Execution Summary for ["+orangeLeapRuleBase.getSiteName()+"] "+orangeLeapRuleBase.getRuleEventNameType()+":\n");
 				List<String> summary = (List<String>)map.get(RULE_EXECUTION_SUMMARY);
 				if (summary != null) for (String s: summary) sb.append(s).append("\n");
-				sb.append("Time: "+time+" sec.\n");
+				sb.append("Total time: "+time+" sec.\n");
 
 				logger.debug(sb.toString()); 
 

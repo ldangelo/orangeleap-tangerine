@@ -30,6 +30,8 @@ public class OrangeLeapRuleSession {
 		}
 
 		public void executeRules() {
+			
+			float time = 0f;
 
 			// Re-entrancy check will not execute the same event's rules again within that event's rule processing
 			String operation = "OrangeLeapRuleSession.executeRules() " + orangeLeapRuleBase.getRuleEventNameType();
@@ -39,7 +41,6 @@ public class OrangeLeapRuleSession {
 					try {
 
 						long t0 = System.currentTimeMillis();
-						logger.debug("Executing dynamic ruleset for "+orangeLeapRuleBase.getRuleEventNameType());
 
 						map.put(RULE_EXECUTION_SUMMARY, new ArrayList<String>());
 						addServicesToMap();
@@ -48,7 +49,7 @@ public class OrangeLeapRuleSession {
 						rulesConfService.fireRulesEvent(orangeLeapRuleBase.getRuleEventNameType(), orangeLeapRuleBase.isTestMode(), map);
 
 						long t1 = System.currentTimeMillis();
-						logger.debug("Ruleset for "+orangeLeapRuleBase.getRuleEventNameType() + " took " + ((t1-t0)/1000f) + " sec.");
+						time = (t1-t0)/1000f;
 
 					} catch (OrangeLeapConsequenceRuntimeException e) {
 						throw e;
@@ -58,14 +59,14 @@ public class OrangeLeapRuleSession {
 					}
 		        }
 	        } finally {
-	        	printRulesExecutionSummary();
+	        	printRulesExecutionSummary(time);
 	        	RulesStack.pop(operation);
 	        }
 
 		}
 
 		@SuppressWarnings("unchecked")
-		private void printRulesExecutionSummary() {
+		private void printRulesExecutionSummary(float time) {
 
 			try {
 
@@ -73,6 +74,7 @@ public class OrangeLeapRuleSession {
 				sb.append("Rules Execution Summary for "+orangeLeapRuleBase.getRuleEventNameType()+":\n");
 				List<String> summary = (List<String>)map.get(RULE_EXECUTION_SUMMARY);
 				if (summary != null) for (String s: summary) sb.append(s).append("\n");
+				sb.append("Time: "+time+" sec.\n");
 
 				logger.debug(sb.toString()); 
 

@@ -29,11 +29,12 @@ function checkDashboard() {
 						feed.load(function(result) {
 							if (!result.error) {
 								var $container = $('#' + elemId);
+								var rHtml = '';
 								for (var i = 0; i < result.feed.entries.length; i++) {
 									var entry = result.feed.entries[i];
-									var rHtml = '<p><a href="' + entry.link + '">' + entry.title + '&raquo;</a></p>';
-									$container.get(0).innerHTML = rHtml;
+									rHtml += '<p><a href="' + entry.link + '">' + entry.title + '&raquo;</a></p>';
 								}
+								$container.get(0).innerHTML = rHtml;
 							}
 						});
 					}

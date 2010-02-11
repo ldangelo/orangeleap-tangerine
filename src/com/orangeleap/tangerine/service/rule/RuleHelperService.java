@@ -237,7 +237,7 @@ public class RuleHelperService {
     	    } else {
     	        // Fiscal Year end is before today
     	        fiscalYearEnd.add(Calendar.YEAR,-(number - 1));
-    	        // System.out.println("Begin Date = " + fiscalYearEnd.getTime() );
+    	        //System.out.println("Begin Date = " + fiscalYearEnd.getTime() );
     	        return fiscalYearEnd.getTime();
             }
     	}
@@ -281,7 +281,7 @@ public class RuleHelperService {
         // Cycle through the gifts
         for (Gift g : gifts) {
             // If there is a gift given after the beginning date  and it has a gift status of paid add it to the number of matches.
-            if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
+            if ((StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getDonationDate().equals(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)) || g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth))))) {
             	numberOfMatches++;
             }
         }
@@ -526,7 +526,7 @@ public class RuleHelperService {
         // Cycle through the gifts
         for (Gift g : gifts) {
             // If there is a gift given after the beginning date add it to the running total.
-            if ((g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
+            if (g.getDonationDate().equals(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)) || g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth))) {
     			if (StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID))
     				totalDonations = totalDonations.add(g.getAmount());
             }
@@ -580,7 +580,7 @@ public class RuleHelperService {
             // Cycle through the gifts
             for (Gift g : gifts) {
                 // If there is a gift given after the beginning date add it to the running total.
-                if ((g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
+                if (((g.getDonationDate().equals(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)) || g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth))))) {
         			if (StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && g.getAmount().compareTo(minAmount) >= 0)
         				oneTimeDonationMade = true;
                 }
@@ -595,7 +595,7 @@ public class RuleHelperService {
             // Cycle through the gifts
             for (Gift g : gifts) {
                 // If there is a gift given after the beginning date add it to the running total.
-                if ((g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)))) {
+                if (((g.getDonationDate().equals(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth)) || g.getDonationDate().after(getBeginDate(timeAmount, timeUnit, fiscalYearStartingMonth))))) {
         			if (StringUtils.equals(g.getGiftStatus(),Gift.STATUS_PAID) && (g.getAmount().compareTo(minAmount) >= 0 && g.getAmount().compareTo(maxAmount) <= 0))
         				oneTimeDonationMade = true;               }
             }
@@ -805,7 +805,8 @@ public class RuleHelperService {
 					}
 				}
 			}
-		}
+		}else
+			logger.error(picklist + " is not a valid picklist id name");
 
 	}
 

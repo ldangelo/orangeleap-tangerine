@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerinePagedListHolder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,18 +77,13 @@ public class RelationshipQueryLookupController extends SimpleFormController {
 		        if (StringUtils.hasText(request.getParameter(StringConstants.FULLTEXT))) {
 		            parameters.put(StringConstants.FULLTEXT, request.getParameter(StringConstants.FULLTEXT));
 		        }
-
-		        final String fieldDef = request.getParameter(StringConstants.FIELD_DEF);
-		        if (StringConstants.INDIVIDUAL.equals(fieldDef)) {
-			        parameters.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'individual' ");
-		        }
-		        else if (StringConstants.ORGANIZATION.equals(searchOption)) {
-			        parameters.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'organization' ");
-		        }
 	        }
 
-            final List<Constituent> constituents = constituentService.searchConstituents(parameters);
+            List<Constituent> constituents = constituentService.searchConstituents(parameters);
             if (constituents != null) {
+	            if (StringConstants.FULLTEXT.equals(searchOption)) {
+		            constituents = filterConstituents(constituents, request.getParameter(StringConstants.FIELD_DEF));
+	            }
                 sortPaginate(request, constituents);
             }
         }
@@ -105,4 +101,19 @@ public class RelationshipQueryLookupController extends SimpleFormController {
 	    pagedListHolder.doSort(objects, StringConstants.ACCOUNT_NUMBER, "displayValue");
         request.setAttribute("results", objects);
     }
+
+	protected List<Constituent> filterConstituents(List<Constituent> constituents, String constituentType) {
+		final List<Constituent> filteredConstituents = new ArrayList<Constituent>();
+		if (StringConstants.INDIVIDUAL.equals(constituentType) || StringConstants.ORGANIZATION.equals(constituentType)) {
+			for (Constituent thisConstituent : constituents) {
+				if (thisConstituent.getConstituentType().equals(constituentType)) {
+					filteredConstituents.add(thisConstituent);
+				}
+			}
+		}
+		else {
+			filteredConstituents.addAll(constituents);
+		}
+		return filteredConstituents;
+	}
 }

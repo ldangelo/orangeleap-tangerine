@@ -18,6 +18,7 @@
 
 package com.orangeleap.tangerine.controller.lookup;
 
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
@@ -85,9 +86,7 @@ public class QueryLookupController extends SimpleFormController {
 
     protected List executeQueryLookup(HttpServletRequest request, String fieldDef) {
 		Map<String, String> queryParams = findQueryParams(request);
-		List objects = queryLookupService.executeQueryLookup(fieldDef, queryParams);
-        request.setAttribute("objects", objects);
-        return objects;
+		return queryLookupService.executeQueryLookup(fieldDef, queryParams);
     }
 
     protected QueryLookup doQueryLookup(HttpServletRequest request, String fieldDef) {
@@ -218,6 +217,11 @@ public class QueryLookupController extends SimpleFormController {
 	    final Boolean sortAscending = Boolean.TRUE;
 	    final List<SectionField> sectionFields = findSectionFields(QUERY_LOOKUP, queryLookup);
 	    if (queryLookup.getEntityType() == EntityType.constituent) {
+		    if (StringConstants.FULLTEXT.equals(getParameter(request, "searchOption"))) {
+			    // filter constituents first for individual or organization, if necessary
+			    objects = filterConstituents(objects, sectionFields);
+		    }
+
 		    TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder();
 		    pagedListHolder.doSort(objects, StringConstants.ACCOUNT_NUMBER, "displayValue");
 	    }
@@ -266,15 +270,52 @@ public class QueryLookupController extends SimpleFormController {
         request.setAttribute("results", results);
     }
 
+	protected List<Constituent> filterConstituents(List<Constituent> constituents, List<SectionField> sectionFields) {
+		final List<Constituent> filteredConstituents = new ArrayList<Constituent>();
+		final boolean hasIndividual = hasIndividualField(sectionFields);
+		final boolean hasOrganization = hasOrganizationField(sectionFields);
+
+		if (hasIndividual && ! hasOrganization) {
+			for (Constituent thisConstituent : constituents) {
+				if (thisConstituent.getConstituentType().equals(StringConstants.INDIVIDUAL)) {
+					filteredConstituents.add(thisConstituent);
+				}
+			}
+		}
+		else if (hasOrganization & ! hasIndividual) {
+			for (Constituent thisConstituent : constituents) {
+				if (thisConstituent.getConstituentType().equals(StringConstants.ORGANIZATION)) {
+					filteredConstituents.add(thisConstituent);
+				}
+			}
+		}
+		else {
+			filteredConstituents.addAll(constituents);
+		}
+		return filteredConstituents;
+	}
+
 	protected boolean hasAccountNumberField(final List<SectionField> sectionFields) {
-		boolean hasAcctNum = false;
+		return hasSectionField(sectionFields, StringConstants.ACCOUNT_NUMBER);
+	}
+
+	protected boolean hasIndividualField(final List<SectionField> sectionFields) {
+		return hasSectionField(sectionFields, StringConstants.LAST_NAME);
+	}
+
+	protected boolean hasOrganizationField(final List<SectionField> sectionFields) {
+		return hasSectionField(sectionFields, StringConstants.ORGANIZATION_NAME);
+	}
+
+	protected boolean hasSectionField(final List<SectionField> sectionFields, String fieldName) {
+		boolean hasField = false;
 		for (SectionField field : sectionFields) {
-			if (StringConstants.ACCOUNT_NUMBER.equals(field.getFieldPropertyName())) {
-				hasAcctNum = true;
+			if (fieldName.equals(field.getFieldPropertyName())) {
+				hasField = true;
 				break;
 			}
 		}
-		return hasAcctNum;
+		return hasField;
 	}
 
     protected String getParameter(HttpServletRequest request, String parameterName) {

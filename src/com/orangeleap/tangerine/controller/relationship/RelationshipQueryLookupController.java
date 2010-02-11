@@ -18,25 +18,24 @@
 
 package com.orangeleap.tangerine.controller.relationship;
 
+import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerinePagedListHolder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
-import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class RelationshipQueryLookupController extends SimpleFormController {
 
@@ -45,8 +44,8 @@ public class RelationshipQueryLookupController extends SimpleFormController {
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name = "relationshipService")
-    protected RelationshipService relationshipService;
+    @Resource(name = "constituentService")
+    protected ConstituentService constituentService;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -61,12 +60,35 @@ public class RelationshipQueryLookupController extends SimpleFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         String searchOption = request.getParameter(StringConstants.SEARCH_OPTION);
         if (StringUtils.hasText(searchOption)) {
-            String searchValue = request.getParameter(searchOption);
-            String fieldDef = request.getParameter(StringConstants.FIELD_DEF);
+	        final Map<String, Object> parameters = new HashMap<String, Object>();
+	        if (StringConstants.INDIVIDUAL.equals(searchOption)) {
+		        parameters.put(StringConstants.ACCOUNT_NUMBER, request.getParameter(StringConstants.ACCOUNT_NUMBER));
+		        parameters.put(StringConstants.LAST_NAME, request.getParameter(StringConstants.LAST_NAME));
+		        parameters.put(StringConstants.FIRST_NAME, request.getParameter(StringConstants.FIRST_NAME));
+		        parameters.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'individual' ");
+	        }
+	        else if (StringConstants.ORGANIZATION.equals(searchOption)) {
+		        parameters.put(StringConstants.ACCOUNT_NUMBER, request.getParameter(StringConstants.ACCOUNT_NUMBER));
+		        parameters.put(StringConstants.ORGANIZATION_NAME, request.getParameter(StringConstants.ORGANIZATION_NAME));
+		        parameters.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'organization' ");
+	        }
+	        else if (StringConstants.FULLTEXT.equals(searchOption)) {
+		        if (StringUtils.hasText(request.getParameter(StringConstants.FULLTEXT))) {
+		            parameters.put(StringConstants.FULLTEXT, request.getParameter(StringConstants.FULLTEXT));
+		        }
 
-            List<Constituent> constituents = relationshipService.executeRelationshipQueryLookup(fieldDef, searchOption, searchValue);
+		        final String fieldDef = request.getParameter(StringConstants.FIELD_DEF);
+		        if (StringConstants.INDIVIDUAL.equals(fieldDef)) {
+			        parameters.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'individual' ");
+		        }
+		        else if (StringConstants.ORGANIZATION.equals(searchOption)) {
+			        parameters.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'organization' ");
+		        }
+	        }
+
+            final List<Constituent> constituents = constituentService.searchConstituents(parameters);
             if (constituents != null) {
-                sortPaginate(request, constituents, searchOption);
+                sortPaginate(request, constituents);
             }
         }
         return new ModelAndView(super.getSuccessView());
@@ -78,10 +100,9 @@ public class RelationshipQueryLookupController extends SimpleFormController {
     }
 
     @SuppressWarnings("unchecked")
-    protected void sortPaginate(HttpServletRequest request, List objects, String searchOption) {
-        MutableSortDefinition sortDef = new MutableSortDefinition(searchOption, true, Boolean.TRUE);
-        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(objects, sortDef);
-        pagedListHolder.resort();
-        request.setAttribute("results", pagedListHolder.getSource());
+    protected void sortPaginate(HttpServletRequest request, List objects) {
+	    TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder();
+	    pagedListHolder.doSort(objects, StringConstants.ACCOUNT_NUMBER, "displayValue");
+        request.setAttribute("results", objects);
     }
 }

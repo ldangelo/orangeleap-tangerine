@@ -49,9 +49,7 @@ public interface RelationshipService {
 
     public void maintainCustomFieldsByConstituentAndFieldDefinition(Long constituentId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) throws ConstituentValidationException;
 
-    public List<Constituent> executeRelationshipQueryLookup(String fieldType, String searchOption, String searchValue);
-
-    public String isIndividualOrganizationRelationship(String fieldDefinitionId);
+	public String isIndividualOrganizationRelationship(String fieldDefinitionId);
 
     public Map<String, Object> readRelationshipFieldDefinitions(String constituentId);
 

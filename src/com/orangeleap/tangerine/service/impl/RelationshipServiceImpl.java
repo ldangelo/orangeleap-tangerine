@@ -21,7 +21,6 @@ package com.orangeleap.tangerine.service.impl;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.CustomFieldDao;
 import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.customization.CustomField;
@@ -968,25 +967,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
         return true;
     }
 
-    @Override
-    public List<Constituent> executeRelationshipQueryLookup(String fieldType, String searchOption, String searchValue) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("executeRelationshipQueryLookup: fieldType = " + fieldType + " searchOption = " + searchOption + " searchValue = " + searchValue);
-        }
-        List<Constituent> constituents = null;
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put(searchOption, searchValue);
-
-        if (StringConstants.INDIVIDUAL.equals(fieldType)) {
-            params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'individual' ");
-        } else if (StringConstants.ORGANIZATION.equals(fieldType)) {
-            params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'organization' ");
-        }
-        constituents = constituentDao.searchConstituents(params);
-        return constituents;
-    }
-
-    @Override
+	@Override
     public String isIndividualOrganizationRelationship(String fieldDefinitionId) {
         if (logger.isTraceEnabled()) {
             logger.trace("isIndividualOrganizationRelationship: fieldDefinitionId = " + fieldDefinitionId);

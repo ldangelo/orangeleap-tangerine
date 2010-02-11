@@ -70,8 +70,9 @@ public class RelationshipsController extends SimpleFormController {
 
         List<FieldRelationshipForm> relationships = new ArrayList<FieldRelationshipForm>();
         for (FieldDefinition thisField : fields) {
-        	
-        	if (!relationshipApplies(attrs, thisField)) continue;
+        	if ( ! relationshipApplies(attrs, thisField)) {
+		        continue;
+	        }
         	
             FieldRelationshipForm fieldRelationshipForm = new FieldRelationshipForm();
             relationships.add(fieldRelationshipForm);
@@ -84,7 +85,7 @@ public class RelationshipsController extends SimpleFormController {
 
             if (masterFieldDefinitionId != null) {
                 CustomFieldRelationship customFieldRelationship = customFieldRelationshipService.readByFieldDefinitionId(masterFieldDefinitionId);
-                if (customFieldRelationship != null && customFieldRelationship.getCustomFieldMap().isEmpty() == false) {
+                if (customFieldRelationship != null && ! customFieldRelationship.getCustomFieldMap().isEmpty()) {
                     fieldRelationshipForm.setHasRelationshipCustomizations(true);
 
                     Iterator<CustomField> it = customFieldRelationship.getCustomFieldMap().values().iterator();
@@ -99,7 +100,8 @@ public class RelationshipsController extends SimpleFormController {
                         defaultRelationshipCustomizations.put(name, defaultValue);
                     }
                     fieldRelationshipForm.setDefaultRelationshipCustomizations(defaultRelationshipCustomizations);
-                } else {
+                }
+                else {
                     fieldRelationshipForm.setHasRelationshipCustomizations(false);
                 }
             }
@@ -139,15 +141,17 @@ public class RelationshipsController extends SimpleFormController {
             List<CustomField> existingCustomFields = relationshipService.readCustomFieldsByConstituentAndFieldName(constituentId, fieldName);
 
             Map<String, String> fieldValidationErrors = relationshipService.validateConstituentRelationshipCustomFields(constituentId, newRelationshipCustomFields, fieldRelationshipForm.getFieldDefinitionId());
-            if (fieldValidationErrors != null && fieldValidationErrors.isEmpty() == false) {
+            if (fieldValidationErrors != null && ! fieldValidationErrors.isEmpty()) {
                 validationErrors.putAll(fieldValidationErrors);
-            } else {
+            }
+            else {
                 relationshipService.maintainRelationshipCustomFields(constituentId, fieldRelationshipForm.getFieldDefinitionId(), existingCustomFields, newRelationshipCustomFields, fieldRelationshipForm.getMasterFieldDefinitionId());
             }
         }
         if (validationErrors.isEmpty()) {
             return new ModelAndView(getSuccessView() + "?" + StringConstants.CONSTITUENT_ID + "=" + constituentId + "&" + StringConstants.SAVED_EQUALS_TRUE);
-        } else {
+        }
+        else {
             validationErrors = repopulateRelationshipsFromRequest(customFieldMap, relationships, validationErrors);
             ModelAndView mav = showForm(request, response, errors);
             mav.addObject("validationErrors", validationErrors);

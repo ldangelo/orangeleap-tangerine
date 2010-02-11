@@ -46,7 +46,7 @@
                                             <c:set value="javascript:void(0)" var="entityLink" scope="page" />
                                         </c:otherwise>
                                     </c:choose>
-                                    <li id="<c:out value='${myId}'/>-li">
+                                    <li id="<c:out value='${myId}'/>-li" title='<c:out value='${requestScope.selectedIds.names[status.index]}'/>'>
                                         <input type="checkbox" name="option${counter}" id="${myId}" title="<spring:message code='clickToSelect'/>" displayvalue="<c:out value='${requestScope.selectedIds.names[status.index]}'/>" />
                                         <c:out value='${requestScope.selectedIds.names[status.index]}'/>
                                         <a href="<c:out value='${entityLink}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>

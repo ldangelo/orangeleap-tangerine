@@ -47,15 +47,15 @@
 .jqmOverlay { background-color: #000; }
 
 input#searchText { padding-right:20px; height:20px; }
-input.showWait { background-image:url(../images/indicator.gif); background-position: right center; background-repeat: no-repeat; }
+input.showWait { background-image: url(../images/indicator.gif); background-position: right center; background-repeat: no-repeat; }
 input#otherOptionText { width: 307px; }
 table.multiSelect { text-align: left; margin: auto; padding: 20px 14px 0; width: 100%; }
 table.multiSelect thead th { text-align: left; background: #DCDCDC url(../images/glossyGray.png) repeat-x scroll left top; padding-left: 2px; border-color: #DCDCDC; border-style: solid; border-width: 1px; line-height: 25px; border-right: 1px solid gray; }
 table.multiSelect thead th.spacer, table.multiSelect tbody td.spacer { width: 30px; min-width: 30px; max-width: 30px; background-color: #FFF; background-image: url(none); border: 0; }
-table.multiSelect tbody td { min-width: 13em; border-color: #D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; border-top: 0; vertical-align: top; }
+table.multiSelect tbody td { min-width: 13em; max-width: 18em; border-color: #D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; border-top: 0; vertical-align: top; overflow-x: hidden; }
 table.multiSelect tbody ul { list-style-image:none; list-style-position:outside; list-style-type:none; }
 table.multiSelect tbody ul, table.multiSelect tbody ul ol { padding-left: 0; margin-left: 0; }
-div.modalContent ul.queryUl, table.multiSelect tbody ul { max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; } 
+div.modalContent ul.queryUl, table.multiSelect tbody ul { max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; }
 table.multiSelect tbody ul { height: 15em; margin: 0; }
 table.multiSelect tbody ul li input[type=checkbox] { cursor: pointer; }
 table.multiSelect tbody ul li, div.modalContent ul.queryUl li { font-size: 1.1em; border-bottom:1px solid #FFF; color: #000; line-height: 25px; border-bottom: 1px solid #EEE; white-space: normal; padding-right: 25px; vertical-align: middle; }

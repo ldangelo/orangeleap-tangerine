@@ -33,6 +33,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -806,6 +807,133 @@ public class RuleHelperService {
 		}
 
 	}
+
+    public static boolean hasProfileType(Constituent constituent, String profileType) {
+
+    	if (constituent.isOrganization()){
+    		if (constituent.getConstituentOrganizationRoles() != null && constituent.getConstituentOrganizationRoles().contains(profileType)){
+    			return true;
+    		}else
+    			return false;
+    	}else{
+    		if (constituent.getConstituentIndividualRoles() != null && constituent.getConstituentIndividualRoles().contains(profileType)){
+        		return true;
+    		}else
+    			return false;
+    	}
+
+	}
+
+    public static void addProfileType(Constituent constituent, String profileType) {
+
+    	if (constituent.isOrganization()){
+    		if (constituent.getConstituentOrganizationRoles() == null || constituent.getConstituentOrganizationRoles().indexOf(profileType) == -1){
+    			constituent.addConstituentOrganizationRoles(profileType);
+    			try {
+    				constituentService.maintainConstituent(constituent);
+    			} catch (ConstituentValidationException e) {
+    				logger.error(e);
+    				e.printStackTrace();
+    			} catch (BindException e) {
+    				logger.error(e);
+    				e.printStackTrace();
+    			}
+    		}
+    	}else{
+    		if (constituent.getConstituentIndividualRoles() == null || constituent.getConstituentIndividualRoles().indexOf(profileType) == -1 ){
+        		constituent.addConstituentIndividualRoles(profileType);
+        		try {
+    				constituentService.maintainConstituent(constituent);
+    			} catch (ConstituentValidationException e) {
+    				logger.error(e);
+    				e.printStackTrace();
+    			} catch (BindException e) {
+    				logger.error(e);
+    				e.printStackTrace();
+    			}
+
+    		}
+    	}
+
+	}
+
+    public static void removeProfileType(Constituent constituent, String profileType) {
+
+    	if (constituent.isOrganization()){
+    		if (constituent.getConstituentOrganizationRoles() != null && constituent.getConstituentOrganizationRoles().indexOf(profileType) != -1){
+    			constituent.removeConstituentOrganizationRoles(profileType);
+    			try {
+    				constituentService.maintainConstituent(constituent);
+    			} catch (ConstituentValidationException e) {
+    				logger.error(e);
+    				e.printStackTrace();
+    			} catch (BindException e) {
+    				logger.error(e);
+    				e.printStackTrace();
+    			}
+    		}
+    	}else{
+    		if (constituent.getConstituentIndividualRoles() != null && constituent.getConstituentIndividualRoles().indexOf(profileType) != -1){
+        		constituent.removeConstituentIndividualRoles(profileType);
+        		try {
+    				constituentService.maintainConstituent(constituent);
+    			} catch (ConstituentValidationException e) {
+    				logger.error(e);
+    				e.printStackTrace();
+    			} catch (BindException e) {
+    				logger.error(e);
+    				e.printStackTrace();
+    			}
+
+    		}
+    	}
+
+	}
+
+    public static boolean hasDonorProfile(Constituent constituent, String donorProfile) {
+
+		if (constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES) != null && constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES).contains(donorProfile)){
+			return true;
+		}else
+			return false;
+
+	}
+
+    public static void addDonorProfile(Constituent constituent, String donorProfile) {
+
+		if (constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES) == null || !constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES).contains(donorProfile) ){
+			constituent.addCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES,donorProfile);
+    		try {
+				constituentService.maintainConstituent(constituent);
+			} catch (ConstituentValidationException e) {
+				logger.error(e);
+				e.printStackTrace();
+			} catch (BindException e) {
+				logger.error(e);
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+    public static void removeDonorProfile(Constituent constituent, String donorProfile) {
+
+		if (constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES) != null && constituent.getCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES).contains(donorProfile)){
+			constituent.removeCustomFieldValue(com.orangeleap.tangerine.domain.Constituent.DONOR_PROFILES,donorProfile);
+    		try {
+				constituentService.maintainConstituent(constituent);
+			} catch (ConstituentValidationException e) {
+				logger.error(e);
+				e.printStackTrace();
+			} catch (BindException e) {
+				logger.error(e);
+				e.printStackTrace();
+			}
+    	}
+
+	}
+
+
 
     public Constituent updateConstituentDependencies(Constituent constituent) {
     	try {

@@ -354,7 +354,7 @@ INSERT INTO RULE_SEGMENT_TYPE_PARM (RULE_SEGMENT_TYPE_ID, RULE_SEGMENT_TYPE_PARM
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 SET @PHRASE_CD = 'Constituent has not donated at least ? gifts in the past ? ?';
-SET @CODE_CD = '? <= map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, ?.intValue(), ?) ';
+SET @CODE_CD = '? >= map.ruleHelperService.numberOfDonationsMadePerTimeFrame(map.constituent, ?.intValue(), ?) ';
 
 -- Insert code
 INSERT INTO RULE_SEGMENT_TYPE (RULE_SEGMENT_TYPE_TYPE, RULE_SEGMENT_TYPE_PHRASE, RULE_SEGMENT_TYPE_TEXT) VALUES ('condition',@PHRASE_CD,@CODE_CD);

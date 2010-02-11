@@ -608,9 +608,8 @@ public class OrangeLeapWS {
 	@PayloadRoot(localPart = "GetConstituentGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
 	public GetConstituentGiftResponse getConstituentsGifts(
 			GetConstituentGiftRequest request) {
-		SortInfo sort = new SortInfo();
 
-		List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = giftService.readGiftDistroLinesByConstituentId(request.getConstituentId(), null, sort, Locale.US);
+		List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = giftService.readMonetaryGifts(request.getConstituentId());
 
 		GetConstituentGiftResponse response = new GetConstituentGiftResponse();
 		ObjectConverter converter = new ObjectConverter();

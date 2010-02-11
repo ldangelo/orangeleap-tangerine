@@ -787,22 +787,23 @@ public class RuleHelperService {
 		List<DistributionLine> distroLines = g.getDistributionLines();
 		Picklist pl = picklistItemService.getPicklist(picklist);
 
-		for (DistributionLine distroLine : distroLines ){
-			if (distroLine.getCustomFieldValue(customField) != null){
-				Constituent relatedConstituent = constituentService.readConstituentById(Long.parseLong(distroLine.getCustomFieldValue(customField)));
-				if (relatedConstituent != null){
-					PicklistItem pli = new PicklistItem();
-					pli.setPicklistId(picklistItemService.getPicklist(picklist).getId());
-					pli.setItemName(relatedConstituent.getAccountNumber() + "-" + relatedConstituent.getFullName().replaceAll(" ", "").toLowerCase());
-					pli.setItemOrder(pl.getPicklistItems().size() + 1);
-					pli.setInactive(false);
-					pli.setLongDescription(null);
-					pli.setDefaultDisplayValue(relatedConstituent.getAccountNumber() + " - " + relatedConstituent.getFullName());
-					pli.setDetail(null);
-					pl.getPicklistItems().add(pli);
-					picklistItemService.maintainPicklist(pl);
+		if (pl != null){
+			for (DistributionLine distroLine : distroLines ){
+				if (distroLine.getCustomFieldValue(customField) != null){
+					Constituent relatedConstituent = constituentService.readConstituentById(Long.parseLong(distroLine.getCustomFieldValue(customField)));
+					if (relatedConstituent != null){
+						PicklistItem pli = new PicklistItem();
+						pli.setPicklistId(picklistItemService.getPicklist(picklist).getId());
+						pli.setItemName(relatedConstituent.getAccountNumber() + "-" + relatedConstituent.getFullName().replaceAll(" ", "").toLowerCase());
+						pli.setItemOrder(pl.getPicklistItems().size() + 1);
+						pli.setInactive(false);
+						pli.setLongDescription(null);
+						pli.setDefaultDisplayValue(relatedConstituent.getAccountNumber() + " - " + relatedConstituent.getFullName());
+						pli.setDetail(null);
+						pl.getPicklistItems().add(pli);
+						picklistItemService.maintainPicklist(pl);
+					}
 				}
-
 			}
 		}
 

@@ -77,6 +77,11 @@ public final class StringConstants {
     public static final String COMMUNICATION_HISTORY_ID = "communicationHistoryId";
     public static final String SELECTED_COMMUNICATION_HISTORY = "selectedcommunicationHistory";
 
+    public static final String BACKGROUND = "background";
+    public static final String BACKGROUNDS = "backgrounds";
+    public static final String BACKGROUND_ID = "backgroundId";
+    public static final String SELECTED_BACKGROUND = "selectedbackground";
+
     public static final String COMMUNICATION_PREFERENCES = "communicationPreferences";
     public static final String COMMUNICATION_OPT_IN_PREFERENCES = "communicationOptInPreferences";
     public static final String OPT_IN = "Opt In";

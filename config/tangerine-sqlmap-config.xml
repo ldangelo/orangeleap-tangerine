@@ -70,4 +70,6 @@
     <sqlMap resource="sqlmap/ruleEventTypeXRuleSegmentType.xml"/>
     <sqlMap resource="sqlmap/ruleEventType.xml"/>
 
+    <sqlMap resource="sqlmap/background.xml"/>
+    
 </sqlMapConfig>

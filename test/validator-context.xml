@@ -58,6 +58,10 @@
          <property name="pageType" value="communicationHistory"/>
 	</bean>
 
+    <bean id="backgroundEntityValidator" class="com.orangeleap.tangerine.service.validator.EntityValidator">
+         <property name="pageType" value="background"/>
+	</bean>
+
 	<bean id="adjustedGiftEntityValidator" class="com.orangeleap.tangerine.service.validator.AdjustedGiftEntityValidator">
 	     <property name="pageType" value="adjustedGift"/>
 	</bean>

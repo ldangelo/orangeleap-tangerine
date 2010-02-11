@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BACKGROUND">
+
+    <resultMap id="BACKGROUND_RESULT" class="com.orangeleap.tangerine.domain.Background">
+        <result property="id" column="BACKGROUND_BACKGROUND_ID" />
+        <result property="comments" column="BACKGROUND_COMMENTS" />
+        <result property="backgroundType" column="BACKGROUND_BACKGROUND_TYPE" />
+        <result property="entryType" column="BACKGROUND_ENTRY_TYPE" />
+        <result property="createDate" column="BACKGROUND_CREATE_DATE" />
+        <result property="updateDate" column="BACKGROUND_UPDATE_DATE" />
+        <result property="constituentId" column="BACKGROUND_CONSTITUENT_ID" />
+    </resultMap>
+
+    <sql id="BACKGROUND_COLS_FRAGMENT">
+        background.BACKGROUND_ID as BACKGROUND_BACKGROUND_ID,
+        background.COMMENTS as BACKGROUND_COMMENTS,
+        background.BACKGROUND_TYPE as BACKGROUND_BACKGROUND_TYPE,
+        background.ENTRY_TYPE as BACKGROUND_ENTRY_TYPE,
+        background.CREATE_DATE as BACKGROUND_CREATE_DATE,
+        background.UPDATE_DATE as BACKGROUND_UPDATE_DATE,
+        background.CONSTITUENT_ID as BACKGROUND_CONSTITUENT_ID    
+    </sql>
+
+    <sql id="SELECT_BACKGROUND_FRAGMENT">
+        select 
+        <include refid="BACKGROUND_COLS_FRAGMENT"/>
+        from BACKGROUND background 
+        where background.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="SELECT_BACKGROUND_BY_ID" resultMap="BACKGROUND_RESULT" parameterClass="map" >
+        <include refid="SELECT_BACKGROUND_FRAGMENT"/>
+        and background.BACKGROUND_ID = #id#
+    </select>
+    
+    <select id="SELECT_BACKGROUND_BY_CONSTITUENT_ID" resultMap="BACKGROUND_RESULT" parameterClass="map" >
+        <include refid="SELECT_BACKGROUND_FRAGMENT"/>
+        and background.CONSTITUENT_ID = #id#
+    </select>
+    
+    <select id="SELECT_BACKGROUND_COUNT_BY_CONSTITUENT_ID" resultClass="int" parameterClass="map" >
+        select count(*) from BACKGROUND background 
+        where background.SITE_NAME = #siteName#
+        and background.CONSTITUENT_ID = #id#
+    </select>
+    
+
+    <insert id="INSERT_BACKGROUND" parameterClass="com.orangeleap.tangerine.domain.Background">
+        insert into BACKGROUND (
+        	BACKGROUND_ID,
+        	COMMENTS,
+        	BACKGROUND_TYPE,
+        	ENTRY_TYPE,
+        	CREATE_DATE,
+        	UPDATE_DATE,
+        	CONSTITUENT_ID        )
+        values (
+        	#id# ,
+        	#comments# ,
+        	#backgroundType# ,
+        	#entryType# ,
+        	now(),
+        	now(),
+        	#constituentId#         )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_BACKGROUND" parameterClass="com.orangeleap.tangerine.domain.Background">
+        update BACKGROUND
+        SET 
+        	BACKGROUND_ID = #id# ,
+        	COMMENTS = #comments# ,
+        	BACKGROUND_TYPE = #backgroundType# ,
+        	ENTRY_TYPE = #entryType# ,
+        	UPDATE_DATE = now(),
+        	CONSTITUENT_ID = #constituentId#         
+        where BACKGROUND_ID = #id#
+    </update>
+
+</sqlMap>
+

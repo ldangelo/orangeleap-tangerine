@@ -94,7 +94,11 @@ public enum PageType {
     logView("/logView.htm"),
     screenDefinition("/screenDefinition.htm"),
     manageRules("/manageRules.htm"),
-    manageDashboard("/manageDashboard.htm");
+    manageDashboard("/manageDashboard.htm"),
+    background("/background.htm"),
+    backgroundList("/backgroundList.htm"),
+    backgroundView("/backgroundView.htm")
+    ;
 
     private String pageName;
 

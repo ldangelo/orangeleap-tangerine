@@ -37,6 +37,7 @@
     <select id="SELECT_BACKGROUND_BY_CONSTITUENT_ID" resultMap="BACKGROUND_RESULT" parameterClass="map" >
         <include refid="SELECT_BACKGROUND_FRAGMENT"/>
         and background.CONSTITUENT_ID = #id#
+        order by background.BACKGROUND_ID
     </select>
     
     <select id="SELECT_BACKGROUND_COUNT_BY_CONSTITUENT_ID" resultClass="int" parameterClass="map" >

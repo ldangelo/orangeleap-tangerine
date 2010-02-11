@@ -25,6 +25,7 @@ import groovy.lang.GroovyObject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,6 +160,32 @@ public class RulesConfServiceImpl extends AbstractTangerineService implements Ru
     		copyRuleSegment(segment, newRuleVersion);
     	}
     }
+    
+	@Override
+	public void cloneRule(Rule oldrule, long seqno) {
+		
+		Rule newRule = new Rule();
+    	BeanUtils.copyProperties(oldrule, newRule);
+    	newRule.setId(0L);
+    	newRule.setRuleDesc("Copy of " + newRule.getRuleDesc());
+    	newRule.setRuleVersions(new ArrayList<RuleVersion>());
+    	newRule.setRuleIsActive(false);
+    	newRule = ruleDao.maintainRule(newRule);
+    	
+    	RuleVersion newRuleVersion = new RuleVersion();
+    	RuleVersion oldRuleVersion = oldrule.getRuleVersions().get(oldrule.getRuleVersions().size()-1); // copy latest version
+    	BeanUtils.copyProperties(oldRuleVersion, newRuleVersion);
+    	newRuleVersion.setRuleVersionSeq(0L);
+    	newRuleVersion.setId(0L);
+    	newRuleVersion.setRuleId(newRule.getId());
+    	newRuleVersion = ruleVersionDao.maintainRuleVersion(newRuleVersion);
+    	
+    	List<RuleSegment> segments = ruleSegmentDao.readRuleSegmentsByRuleVersionId(oldRuleVersion.getId());
+    	for (RuleSegment segment: segments) {
+    		copyRuleSegment(segment, newRuleVersion);
+    	}
+    	
+	}
     
     private void copyRuleSegment(RuleSegment oldRuleSegment, RuleVersion newRuleVersion) {
     	RuleSegment newRuleSegment = new RuleSegment();

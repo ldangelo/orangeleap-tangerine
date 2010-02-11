@@ -50,6 +50,7 @@ public class ManageRuleController extends SimpleFormController {
     private RulesConfService rulesConfService;
     
     private static final String MOVEUP = "moveup";
+    private static final String COPY = "copy";
 
     @SuppressWarnings("unchecked")
 	@Override
@@ -73,6 +74,18 @@ public class ManageRuleController extends SimpleFormController {
         			rule.setRuleSeq(lastseq);
         			ruleDao.maintainRule(rules.get(i-1));
         			ruleDao.maintainRule(rule);
+        		}
+        	}
+        } else if (COPY.equals(action)) {
+        	Long ruleId = new Long(id);
+        	List<Rule> rules = getSelectionList(request);
+        	
+        	for (int i = 0; i < rules.size(); i++) {
+        		Rule rule = rules.get(i);
+        		if (rule.getId().equals(ruleId)) {
+        			Long lastseq = rules.get(rules.size()-1).getRuleSeq();
+        			rulesConfService.cloneRule(rule, lastseq + 1);
+        			break;
         		}
         	}
         }

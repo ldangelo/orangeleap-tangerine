@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.orangeleap.tangerine.domain.customization.rule.Rule;
 import com.orangeleap.tangerine.domain.customization.rule.RuleSegmentType;
 import com.orangeleap.tangerine.type.RuleEventNameType;
 
@@ -41,5 +42,7 @@ public interface RulesConfService {
 	public void clearCache();
 
 	public String getLastPublishedBy(String ruleEventTypeNameId);
+
+	public void cloneRule(Rule rule, long seqno);
 
 }

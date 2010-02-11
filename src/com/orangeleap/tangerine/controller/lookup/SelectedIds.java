@@ -42,12 +42,14 @@ public class SelectedIds {
         if (idsString == null) {
             this.ids = UnmodifiableList.decorate(new ArrayList<String>(0));
             this.names = UnmodifiableList.decorate(new ArrayList<String>(0));
-        } else {
+        }
+        else {
             String[] nameIdPair = StringUtils.delimitedListToStringArray(idsString, "^");
             if (nameIdPair == null || nameIdPair.length == 0) {
                 this.ids = UnmodifiableList.decorate(new ArrayList<String>(0));
                 this.names = UnmodifiableList.decorate(new ArrayList<String>(0));
-            } else {
+            }
+            else {
                 this.names = new ArrayList<String>();
                 this.ids = new ArrayList<String>();
                 for (String nameId : nameIdPair) {

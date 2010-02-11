@@ -14,15 +14,7 @@
 	<div class="modalContent">
 		<form method="POST" action="multiQueryLookup.htm" id="multiQueryLookupForm">
             <div class="modalSearch">
-                <label for="searchText"><spring:message code="searchBy"/></label>
-                <select name="searchOption" id="searchOption">
-                    <c:forEach var="fldMap" items="${requestScope.fieldMap}" varStatus="status">
-                        <option value="<c:out value='${fldMap.key}'/>"><c:out value='${fldMap.value}'/></option>
-                    </c:forEach>
-                </select>
-                <input type="hidden" name="fieldDef" id="fieldDef" value="<c:out value='${fieldDef}'/>" />
-                <input type="text" value="" id="searchText" name="searchText"/>
-                <input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="button" />
+				<%@ include file="queryLookupForm.jsp"%>
             </div>
             <div id="multiQueryLookupNoResultsDiv" class="noDisplay noResults"><spring:message code="searchNoResults"/></div>
             <table cellspacing="0" class="multiSelect noDisplay" id="multiQueryLookupResultsTable">

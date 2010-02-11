@@ -28,4 +28,6 @@ public interface QueryLookupService {
     public QueryLookup readQueryLookup(String fieldDefinitionId);
 
     public List<Object> executeQueryLookup(String fieldDefinitionId, Map<String, String> params);
+
+	boolean isSupportedConstituentFieldName(String fieldName);
 }

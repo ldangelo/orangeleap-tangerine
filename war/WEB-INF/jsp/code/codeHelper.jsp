@@ -14,13 +14,12 @@
 	<div class="modalContent">
 		<form method="POST" action="codeHelper.htm" id="codeHelperLookup" class="codeForm">
 	        <div class="modalSearch">
-	        	<label for="searchText"><spring:message code="searchBy"/></label>
 	        	<select name="searchOption" id="searchOption">
 					<option value="value"><spring:message code="shortDisplayName"/></option>
 					<option value="description"><spring:message code="longDisplayName"/></option>
 				</select>        	
 				<input type="hidden" name="type" value="<c:out value='${param.type}'/>" id="type" />
-	        	<input type="text" value="" id="searchText" name="searchText"/>
+	        	<input type="text" id="searchText" name="searchText" value="<spring:message code="enterValue"/>" defaultValue="<spring:message code="enterValue"/>" class="defaultText"/>
 	        	<input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="button" />
 	        </div>
 			<div id="queryResultsDiv">

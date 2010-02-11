@@ -24,14 +24,23 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.QueryLookupService;
 import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
 import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandler;
+import com.orangeleap.tangerine.web.customization.tag.fields.handlers.FieldHandlerHelper;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -43,15 +52,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.HtmlUtils;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+/**
+ * Only accountNumber, firstName, lastName, and organizationName are supported query field names for query lookups.
+ */
 public class QueryLookupController extends SimpleFormController {
 
     /**
@@ -65,24 +68,24 @@ public class QueryLookupController extends SimpleFormController {
     @Resource(name = "pageCustomizationService")
     protected PageCustomizationService pageCustomizationService;
 
+	@Resource(name = "messageService")
+	protected MessageService messageService;
+	
     @Resource(name = "tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
-
-    @Resource(name = "messageService")
-    protected MessageService messageService;
 
     @Resource(name = "fieldHandlerHelper")
     private FieldHandlerHelper fieldHandlerHelper;
 
     private static final String QUERY_LOOKUP = "queryLookup";
 
-    protected String findFieldDef(HttpServletRequest request) {
+	protected String findFieldDef(HttpServletRequest request) {
         return getParameter(request, "fieldDef");
     }
 
-    protected List<Object> executeQueryLookup(HttpServletRequest request, String fieldDef) {
-        Map<String, String> queryParams = findQueryParams(request);
-        List<Object> objects = queryLookupService.executeQueryLookup(fieldDef, queryParams);
+    protected List executeQueryLookup(HttpServletRequest request, String fieldDef) {
+		Map<String, String> queryParams = findQueryParams(request);
+		List objects = queryLookupService.executeQueryLookup(fieldDef, queryParams);
         request.setAttribute("objects", objects);
         return objects;
     }
@@ -93,20 +96,20 @@ public class QueryLookupController extends SimpleFormController {
         return queryLookup;
     }
 
-    protected void performQuery(HttpServletRequest request, HttpServletResponse response) {
+    protected void performQuery(HttpServletRequest request) {
         String fieldDef = findFieldDef(request);
 
         QueryLookup queryLookup = doQueryLookup(request, fieldDef);
         if (logger.isDebugEnabled()) {
             logger.debug("performQuery: fieldDef = " + fieldDef);
         }
-        List<Object> objects = executeQueryLookup(request, fieldDef);
+        List objects = executeQueryLookup(request, fieldDef);
         sortPaginate(request, objects, queryLookup);
     }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        performQuery(request, response);
+        performQuery(request);
         return new ModelAndView(super.getSuccessView());
     }
 
@@ -118,7 +121,12 @@ public class QueryLookupController extends SimpleFormController {
         if (logger.isDebugEnabled()) {
             logger.debug("showForm: fieldDef = " + fieldDef);
         }
-        request.setAttribute("fieldMap", findLookupSectionFields(request, QUERY_LOOKUP, queryLookup));
+	    final Map<String, String> fieldMap = findLookupSectionFields(request, QUERY_LOOKUP, queryLookup);
+        request.setAttribute("fieldMap", fieldMap);
+	    if (queryLookup.getEntityType() == EntityType.constituent) {
+	        request.setAttribute("forIndividuals", fieldMap.containsKey(StringConstants.LAST_NAME));
+		    request.setAttribute("forOrganizations", fieldMap.containsKey(StringConstants.ORGANIZATION_NAME));
+	    }
         request.setAttribute("fieldDef", fieldDef);
         request.setAttribute("showOtherField", Boolean.valueOf(request.getParameter("showOtherField")));
         return super.showForm(request, response, errors, controlModel);
@@ -130,7 +138,19 @@ public class QueryLookupController extends SimpleFormController {
         Map<String, String> fieldMap = new ListOrderedMap();
         if (sectionFields != null) {
             for (SectionField field : sectionFields) {
-                fieldMap.put(getFieldPropertyName(field), getFieldLabel(request, field));
+	            if (queryLookup.getEntityType() == EntityType.constituent) {
+					if (queryLookupService.isSupportedConstituentFieldName(field.getFieldPropertyName())) {
+						fieldMap.put(getFieldPropertyName(field), getFieldLabel(request, field));
+					}
+					else {
+						if (logger.isWarnEnabled()) {
+							logger.warn("findLookupSectionFields: unsupported query lookup section field = " + field.getFieldPropertyName());
+						}
+					}
+	            }
+	            else {
+		            fieldMap.put(getFieldPropertyName(field), getFieldLabel(request, field));
+	            }
             }
         }
         return fieldMap;
@@ -182,8 +202,8 @@ public class QueryLookupController extends SimpleFormController {
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
             String param = enu.nextElement();
-            String paramValue = getParameter(request, param);
-            queryParams.put(param, paramValue);
+			String paramValue = getParameter(request, param);
+			queryParams.put(param, paramValue);
         }
         return queryParams;
     }
@@ -194,28 +214,38 @@ public class QueryLookupController extends SimpleFormController {
      * @param queryLookup
      */
     @SuppressWarnings("unchecked")
-    protected void sortPaginate(HttpServletRequest request, List<Object> objects, QueryLookup queryLookup) {
-        String searchOption = getParameter(request, "searchOption");
-        if (searchOption == null) {
-            searchOption = queryLookup.getQueryLookupParams().get(0).getName();
-        }
+    protected void sortPaginate(HttpServletRequest request, List objects, QueryLookup queryLookup) {
+	    final Boolean sortAscending = Boolean.TRUE;
+	    final List<SectionField> sectionFields = findSectionFields(QUERY_LOOKUP, queryLookup);
+	    if (queryLookup.getEntityType() == EntityType.constituent) {
+		    TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder();
+		    pagedListHolder.doSort(objects, StringConstants.ACCOUNT_NUMBER, "displayValue");
+	    }
+	    else {
+			String searchOption = getParameter(request, "searchOption");
+			if (searchOption == null) {
+				searchOption = queryLookup.getQueryLookupParams().get(0).getName();
+			}
 
-        Boolean sortAscending = Boolean.TRUE;
-        MutableSortDefinition sortDef = new MutableSortDefinition(searchOption, true, sortAscending);
-        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(objects, sortDef);
-        pagedListHolder.resort();
+			MutableSortDefinition sortDef = new MutableSortDefinition(searchOption, true, sortAscending);
+			TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(objects, sortDef);
+			pagedListHolder.resort();
+	    }
 
-        List<Object> sortedList = pagedListHolder.getSource();
-        List<SectionField> sectionFields = findSectionFields(QUERY_LOOKUP, queryLookup);
-        List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
 
-        for (Object obj : sortedList) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(obj);
+        for (final Object obj : objects) {
+            final Map<String, Object> map = new HashMap<String, Object>();
+            final BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(obj);
             map.put(StringConstants.ID, beanWrapper.getPropertyValue(StringConstants.ID));
             map.put(StringConstants.ENTITY_NAME, StringUtils.uncapitalize(beanWrapper.getWrappedClass().getSimpleName()));
 
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder acctNameSb = new StringBuilder();
+	        final StringBuilder nameSb = new StringBuilder();
+	        if (queryLookup.getEntityType() == EntityType.constituent && ! hasAccountNumberField(sectionFields)) {
+		        acctNameSb.append(beanWrapper.getPropertyValue(StringConstants.ACCOUNT_NUMBER)).append(" - ");
+	        }
+
             for (SectionField field : sectionFields) {
                 String fieldPropertyName = getFieldPropertyName(field);
                 if (beanWrapper.isReadableProperty(fieldPropertyName)) {
@@ -224,18 +254,31 @@ public class QueryLookupController extends SimpleFormController {
                     if (fieldHandler != null) {
                         Object displayValue = fieldHandler.resolveDisplayValue(request, beanWrapper, field, fieldValue);
                         if (displayValue != null) {
-                            sb.append(displayValue).append(" ");
+                            acctNameSb.append(displayValue).append(" ");
+	                        nameSb.append(displayValue).append(" ");
                         }
                     }
 
                 }
             }
-            map.put("displayValue", sb.toString());
+            map.put("displayValue", nameSb.toString());
+	        map.put("accountName", acctNameSb.toString());
             results.add(map);
         }
 
         request.setAttribute("results", results);
     }
+
+	protected boolean hasAccountNumberField(final List<SectionField> sectionFields) {
+		boolean hasAcctNum = false;
+		for (SectionField field : sectionFields) {
+			if (StringConstants.ACCOUNT_NUMBER.equals(field.getFieldPropertyName())) {
+				hasAcctNum = true;
+				break;
+			}
+		}
+		return hasAcctNum;
+	}
 
     protected String getParameter(HttpServletRequest request, String parameterName) {
         return StringUtils.trimToNull(HtmlUtils.htmlUnescape(request.getParameter(parameterName)));

@@ -14,20 +14,15 @@
 	<div class="modalContent">
 		<form method="POST" action="queryLookup.htm" id="queryLookupForm">
             <div class="modalSearch">
-                <label for="searchText"><spring:message code="searchBy"/></label>
-                <select name="searchOption" id="searchOption">
-                    <c:set var="allLabelText" value="" scope="page"/>
-                    <c:forEach var="fldMap" items="${requestScope.fieldMap}" varStatus="status">
-                        <option value="<c:out value='${fldMap.key}'/>"><c:out value='${fldMap.value}'/></option>
-                        <c:set var="allLabelText" value="${allLabelText} ${fldMap.value}," scope="page"/>
-                    </c:forEach>
-                </select>
-                <input type="hidden" name="fieldDef" id="fieldDef" value="<c:out value='${fieldDef}'/>" />
-                <input type="text" value="" id="searchText" name="searchText"/>
-                <input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="button" />
+				<c:set var="allLabelText" value="" scope="page"/>
+				<%@ include file="queryLookupForm.jsp"%>
             </div>
             <div class="noDisplay" id="queryResultsDiv">
             </div>
+			<c:set var="allLabelText" value="" scope="page"/>
+			<c:forEach var="fldMap" items="${requestScope.fieldMap}">
+				<c:set var="allLabelText" value="${allLabelText} ${fldMap.value}," scope="page"/>
+			</c:forEach>
             <c:if test="${showOtherField}">
                 <div class="otherOptionDiv">
                     <label for="otherOptionText"><spring:message code='orEnter'/></label>

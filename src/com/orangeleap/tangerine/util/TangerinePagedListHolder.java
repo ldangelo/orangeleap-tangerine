@@ -26,6 +26,7 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.beans.support.SortDefinition;
 
 import java.util.List;
+import org.springframework.util.comparator.CompoundComparator;
 
 @SuppressWarnings("serial")
 public class TangerinePagedListHolder extends PagedListHolder {
@@ -35,7 +36,9 @@ public class TangerinePagedListHolder extends PagedListHolder {
      */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @SuppressWarnings("unchecked")
+	public TangerinePagedListHolder() { }
+
+	@SuppressWarnings("unchecked")
     public TangerinePagedListHolder(List list, MutableSortDefinition sortDef) {
         super(list, sortDef);
     }
@@ -46,4 +49,16 @@ public class TangerinePagedListHolder extends PagedListHolder {
         NaturalOrderBeanOrMapComparator comparator = new NaturalOrderBeanOrMapComparator(sort);
         Collections.sort(source, comparator);
     }
+
+	public void doSort(List source, String... fields) {
+		setSource(source);
+		CompoundComparator compoundComparator = new CompoundComparator();
+		for (String thisField : fields) {
+			MutableSortDefinition definition = new MutableSortDefinition(thisField, true, Boolean.TRUE);
+			NaturalOrderBeanOrMapComparator comparator = new NaturalOrderBeanOrMapComparator(definition);
+			compoundComparator.addComparator(comparator, true);
+		}
+		Collections.sort(source, compoundComparator);
+		setPage(0);
+	}
 }

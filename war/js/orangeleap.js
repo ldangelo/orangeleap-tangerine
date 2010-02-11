@@ -949,6 +949,7 @@ var Lookup = {
 			data: "type=" + lookupType + "&showOtherField=" + showOtherField,
 			success: function(html){
 				$("#dialog").html(html);
+				Lookup.commonBindings();
 				Lookup.singleCommonBindings();
 				Lookup.singleCodeLookupBindings();
 				Lookup.clickEventHandler();
@@ -969,6 +970,7 @@ var Lookup = {
 			data: "type=" + lookup + "&" + queryString,
 			success: function(html){
 				$("#dialog").html(html);
+				Lookup.commonBindings();
 				Lookup.multiCommonBindings();
 				Lookup.multiCodeLookupBindings();
 				Lookup.clickEventHandler();
@@ -1017,7 +1019,9 @@ var Lookup = {
 	},
 	
 	getSingleCodeData: function() {
-		return { view: "resultsOnly", type: $("div.modalSearch input#type").val() };
+		var obj = { view: "resultsOnly", type: $("div.modalSearch input#type").val() };
+		obj[$("#searchOption").val()] = Lookup.checkCodeValue();
+		return obj;
 	},
 	
 	getMultiCodeData: function() {
@@ -1028,7 +1032,18 @@ var Lookup = {
 		if (selectedCodesStr.length > 0) {
 			selectedCodesStr = selectedCodesStr.substring(0, selectedCodesStr.length - 1); // remove the last customFieldSeparator
 		}
-		return { view: "resultsOnly", type: $("div.modalSearch input#type").val(), selectedCodes: selectedCodesStr };
+		var obj = { view: "resultsOnly", type: $("div.modalSearch input#type").val(), selectedCodes: selectedCodesStr };
+		obj[$("#searchOption").val()] = Lookup.checkCodeValue();
+		return obj;
+	},
+
+	checkCodeValue: function() {
+		var $searchTextElem = $("#searchText");
+		var val = $searchTextElem.val();
+		if (val == $searchTextElem.attr('defaultValue')) {
+			val = '';
+		}
+		return val;
 	},
 	
 	useSingleCode: function() {
@@ -1159,6 +1174,7 @@ var Lookup = {
 			var $dialogElem = $("#dialog");
 			if ($dialogElem) {
 				$dialogElem.html(html);
+				Lookup.commonBindings();
 				Lookup.singleCommonBindings();
 				Lookup.queryLookupBindings();
 				$dialogElem.jqmShow();
@@ -1169,19 +1185,8 @@ var Lookup = {
 	loadRelationshipQueryLookup: function(elem) {
 		this.loadQueryLookup(elem, null, "relationshipQueryLookup.htm");
 	},
-	
-	singleCommonBindings: function() {
-		$("div.modalContent input#cancelButton", $("#dialog")).bind("click", function() {
-			$("#dialog").jqmHide();					
-		});
-		$("div.modalContent form", $("#dialog")).bind("submit", function() {
-			return false;
-		});
-		$("div.modalContent").keydown(function(event) {
-			if (event.keyCode == 27) {
-				$("#dialog").jqmHide();					
-			}
-		});
+
+	commonBindings: function() {
 		$("input.defaultText", $("#dialog")).bind("focus", function() {
 			var $elem = $(this);
 			if ($elem.val() == $elem.attr("defaultValue")) {
@@ -1196,9 +1201,23 @@ var Lookup = {
 				$elem.val($elem.attr("defaultValue"));
 			}
 		});
-		$("input.defaultText", $("#dialog")).bind("keyup", function(event) {
+		$("div.otherOptionDiv input.defaultText", $("#dialog")).bind("keyup", function(event) {
 			if (event.keyCode == 13) { // return key
 				$("div.modalContent input#doneButton", $("#dialog")).click();
+			}
+		});
+	},
+	
+	singleCommonBindings: function() {
+		$("div.modalContent input#cancelButton", $("#dialog")).bind("click", function() {
+			$("#dialog").jqmHide();					
+		});
+		$("div.modalContent form", $("#dialog")).bind("submit", function() {
+			return false;
+		});
+		$("div.modalContent").keydown(function(event) {
+			if (event.keyCode == 27) {
+				$("#dialog").jqmHide();					
 			}
 		});
 	},
@@ -1208,7 +1227,7 @@ var Lookup = {
 			Lookup.useQueryLookup();
 			$("#dialog").jqmHide();	
 		});
-		$("#queryLookupForm #searchText").bind("keyup", function(event) {
+		$("#queryLookupForm input[type=text]").bind("keyup", function(event) {
 			if (event.keyCode == 13) { // return key
 				Lookup.doQuery(Lookup.getQueryData);
 			}
@@ -1217,9 +1236,43 @@ var Lookup = {
 			Lookup.doQuery(Lookup.getQueryData);
 		});		
 	},
-	
+
+	getQueryFormCriteria: function(formId, obj) {
+		var $form = $(formId);
+		var thisVal = $form.find('#searchOption').val();
+		obj['searchOption'] = thisVal;
+		if (thisVal == 'fullText') {
+			var $textField = $form.find('#fullText');
+			var thisVal = $textField.val();
+			if (thisVal == $textField.attr('defaultValue')) {
+				thisVal =  '';  // use empty string if no value entered
+			}
+			obj['fullText'] = thisVal;
+		}
+		else {
+			var $acctNumElem = $form.find('#accountNumber');
+			var acctNumVal = $acctNumElem.val();
+			if (acctNumVal != $acctNumElem.attr('defaultValue')) {
+				obj['accountNumber'] = acctNumVal;
+			}
+
+			var fieldClass = thisVal + 'Entry';
+			$form.find('.' + fieldClass).each(function() {
+				var $elem = $(this);
+				var thisVal = $elem.val();
+				if (thisVal != $elem.attr('defaultValue')) {
+					obj[$elem.attr('name')] = thisVal;
+				}
+			});		
+		}
+		return obj;
+	},
+
 	getQueryData: function() {
-		return { view: "resultsOnly", fieldDef: $("div.modalSearch input#fieldDef").val(), searchOption: $("#searchOption").val() };
+		var obj = { view: "resultsOnly",
+			fieldDef: $("div.modalSearch input#fieldDef").val()
+		};
+		return Lookup.getQueryFormCriteria('#queryLookupForm', obj);
 	},
 	
 	clickEventHandler: function() {
@@ -1243,10 +1296,9 @@ var Lookup = {
 	},
 	
 	doQuery: function(dataFunction) {
-		var queryString = $("#searchOption").val() + "=" + escape($("#searchText").val());
 		var url = $("div.modalContent form").attr("action");
 		Lookup.showWaitIndicator();
-		$("#queryResultsDiv").load(url + "?" + queryString, dataFunction(), function() {
+		$("#queryResultsDiv").load(url, dataFunction(), function() {
 			Lookup.hideWaitIndicator();
 			Lookup.clickEventHandler();
 		});
@@ -1263,15 +1315,15 @@ var Lookup = {
 			data: queryString + "&fieldDef=" + fieldDef,
 			success: function(html){
 				$("#dialog").html(html);
+				Lookup.commonBindings();
 				Lookup.multiCommonBindings();
 				Lookup.multiQueryLookupBindings();
 				$("#dialog").jqmShow();
 			}
 		});
 	},
-	
+
 	loadTreeView: function(elem) {
-		
 		var $elem = $(elem);
 		var fieldDef = $elem.attr("fieldDef");
 		var constituentId = $elem.attr("constituentId");
@@ -1305,7 +1357,6 @@ var Lookup = {
 		
 	    tree.render();
 	    tree.root.expand();
-	    
 	},
 	
 	/* For previously selected options, create a query string from the attribute 'selectedIds' on each text box.  The queryString is the format selectedIds=selectedName|selectedId^selectedName|selectedId2^... */
@@ -1331,6 +1382,7 @@ var Lookup = {
 			data: queryString + "&showAdditionalField=" + showAdditionalField,
 			success: function(html){
 				$("#dialog").html(html);
+				Lookup.commonBindings();
 				Lookup.multiCommonBindings();
 				Lookup.multiPicklistBindings();
 				$("#dialog").jqmShow();
@@ -1446,7 +1498,7 @@ var Lookup = {
 		else {
 			var $optionElem = $("div.modalContent input#otherOptionText");
 			var typedVal = $optionElem.val();
-			if (typedVal != $optionElem.attr("defaultValue")) {
+			if (typedVal != $optionElem.attr("defaultValue") && ! Ext.isEmpty(typedVal)) {
 				Lookup.lookupCaller.children("div.queryLookupOption").remove();
 				Lookup.lookupCaller.parent().children(":hidden").eq(0).val(""); // reset the corresponding field to nothing
 				var $cloned = Lookup.lookupCaller.parent().find("div.clone").clone(true);
@@ -1478,18 +1530,21 @@ var Lookup = {
 		if (selectedIdsStr.length > 0) {
 			selectedIdsStr = selectedIdsStr.substring(0, selectedIdsStr.length - 1); // remove the last '^'
 		}
-		return { fieldDef: $("#fieldDef").val(), selectedIds: selectedIdsStr, searchOption: $("#searchOption").val() };
+		var obj = {
+			fieldDef: $("#fieldDef").val(),
+			selectedIds: selectedIdsStr
+		};
+		return Lookup.getQueryFormCriteria('#multiQueryLookupForm', obj);
 	},	
 	
 	doMultiQuery: function(dataFunction) {
-		var queryString = $("#searchOption").val() + "=" + escape($("#searchText").val());
 		var url = $("div.modalContent form").attr("action");
 		Lookup.showWaitIndicator();
-		$("#availableOptions").load(url + "?" + queryString, dataFunction(), Lookup.hideWaitIndicator);
+		$("#availableOptions").load(url, dataFunction(), Lookup.hideWaitIndicator);
 	},
 	
 	multiQueryLookupBindings: function() {		
-		$("#multiQueryLookupForm #searchText").bind("keyup", function(event) {
+		$("#multiQueryLookupForm input[type=text]").bind("keyup", function(event) {
 			if (event.keyCode == 13) { // return key
 				Lookup.doMultiQuery(Lookup.getMultiQueryData);
 			}
@@ -1507,7 +1562,7 @@ var Lookup = {
 				var thisId = $chkboxElem.attr("id");
 				idsStr += thisId + OrangeLeap.customFieldSeparator;
 				ids[ids.length] = thisId;
-				names[names.length] = $.trim($chkboxElem.parent("li").text());
+				names[names.length] = $.trim($chkboxElem.attr('displayValue'));
 				hrefs[hrefs.length] = $chkboxElem.siblings("a[href]").attr("href");
 			});
 			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing customFieldSeparator
@@ -1651,11 +1706,11 @@ var Lookup = {
 	},
 	
 	showWaitIndicator: function() {
-		$("#searchText", "form").addClass("showWait");
+		$("div.modalSearch input[type=text]:visible:last", "div.modalContent form").addClass("showWait");
 	},
 	
 	hideWaitIndicator: function() {
-		$("#searchText", "form").removeClass("showWait");
+		$("div.modalSearch input[type=text]:visible:last", "div.modalContent form").removeClass("showWait");
 	}
 };
 var MultiSelect = {

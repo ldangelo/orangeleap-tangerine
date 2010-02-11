@@ -38,6 +38,7 @@
 	     	<transaction src="${basedir}/db/prod/domain/cacheGroupDomain.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/rollupAttributesDomain.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/rulesDomain.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/backgroundDomain.sql"/>
 
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>
@@ -84,6 +85,9 @@
 	     	<transaction src="${basedir}/db/prod/pages/communicationHistoryList.sql"/>
 		    <transaction src="${basedir}/db/prod/pages/communicationHistoryView.sql"/>
 		    <transaction src="${basedir}/db/prod/pages/giftCombinedDistributionLines.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/background.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/backgroundList.sql"/>
+		    <transaction src="${basedir}/db/prod/pages/backgroundView.sql"/>
 
 	     	<!-- Query Lookups -->
 	     	<transaction src="${basedir}/db/prod/domain/queryLookupDomain.sql"/>
@@ -150,6 +154,7 @@
 			<transaction src="${basedir}/db/prod/picklists/eventPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/eventParticipationPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/touchPointCorrespondenceForPicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/backgroundTypePicklist.sql"/>
 
 
 		    <!-- ************** THE FOLLOWING SQL SCRIPT MUST BE LAST ******************************* -->

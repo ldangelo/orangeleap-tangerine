@@ -171,6 +171,7 @@
 	<target name="build-exploded-war">
 		<delete file="${stage.dir}/${war.name}.war" failonerror="false" />
 		<mkdir dir="${stage.dir}/${war.name}.war" />
+		<copy file="${src.dir}/log4j.properties" todir="${stage.dir}/war/WEB-INF/classes"/>
 		<copy todir="${stage.dir}/${war.name}.war">
 			<fileset dir="${stage.dir}/war">
 				<include name="**/*.*" />

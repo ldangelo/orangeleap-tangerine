@@ -17,7 +17,7 @@
 				<%@ include file="queryLookupForm.jsp"%>
             </div>
             <div id="multiQueryLookupNoResultsDiv" class="noDisplay noResults"><spring:message code="searchNoResults"/></div>
-            <table cellspacing="0" class="multiSelect noDisplay" id="multiQueryLookupResultsTable">
+            <table cellspacing="0" class="multiSelect" id="multiQueryLookupResultsTable">
                 <thead>
                     <tr>
                         <th><input type="checkbox" title="<spring:message code='selectAllOptions'/>" selection="available" id="availableAll"/><strong><spring:message code='available'/></strong></th>

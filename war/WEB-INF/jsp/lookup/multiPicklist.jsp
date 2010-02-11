@@ -27,7 +27,7 @@
 							<ul id="availableOptions">
 								<c:forEach items="${requestScope.picklistOptions}" var="option">
 									<c:if test="${!option.selected}">		 
-										<li id="<c:out value='${option.code}'/>-li">
+										<li id="<c:out value='${option.code}'/>-li" title='<c:out value="${option.displayValue}"/>'>
 											<input type="checkbox" name="<c:out value='${option.code}'/>" id="<c:out value='${option.code}'/>" reference="<c:out value='${option.reference}'/>"></input> <c:out value="${option.displayValue}"/>
 										</li>
 									</c:if>
@@ -39,7 +39,7 @@
 			                <ul id="selectedOptions">
 								<c:forEach items="${requestScope.picklistOptions}" var="option">
 									<c:if test="${option.selected}">		 
-										<li id="<c:out value='${option.code}'/>-li">
+										<li id="<c:out value='${option.code}'/>-li" title='<c:out value="${option.displayValue}"/>'>
 											<input type="checkbox" name="<c:out value='${option.code}'/>" id="<c:out value='${option.code}'/>" reference="<c:out value='${option.reference}'/>"></input> <c:out value="${option.displayValue}"/>
 										</li>
 									</c:if>

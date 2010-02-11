@@ -70,7 +70,7 @@ public class QueryLookupHandler extends AbstractFieldHandler {
 	            logger.warn("resolve: Could not find constituent for ID = " + id);
 	        }
 	        else {
-	            val = constituent.getDisplayValue();
+	            val = new StringBuilder(constituent.getAccountNumber().toString()).append(" - ").append(constituent.getDisplayValue()).toString();
 	        }
 	    }
 	    else if (referenceType == ReferenceType.pledge) {

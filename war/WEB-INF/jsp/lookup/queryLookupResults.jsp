@@ -19,7 +19,7 @@
                 </c:choose>
                 <li id="<c:out value='${row["id"]}'/>-li">
                     <input type="radio" name="option" id="${row['id']}" title="<spring:message code='clickToSelect'/>" value="<c:out value='${row["id"]}'/>" displayvalue="<c:out value='${row["displayValue"]}'/>" />
-                    <c:out value="${row['accountName']}"/> <a href="<c:out value='${entityLink}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
+                    <c:out value="${row['displayValue']}"/> <a href="<c:out value='${entityLink}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
                 </li>
                 <c:remove var="entityLink" scope="page" />
             </c:forEach>

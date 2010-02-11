@@ -23,7 +23,7 @@
                 </c:choose>
                 <li id="<c:out value='${row["id"]}'/>-li">
                     <input type="checkbox" name="option${counter}" id="${row['id']}" title="<spring:message code='clickToSelect'/>" displayvalue="<c:out value='${row["displayValue"]}'/>" />
-                    <c:out value="${row['accountName']}"/> 
+                    <c:out value="${row['displayValue']}"/> 
                     <a href="<c:out value='${entityLink}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
                 </li>
                 <c:remove var="entityLink" scope="page" />

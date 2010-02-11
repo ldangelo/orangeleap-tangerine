@@ -241,7 +241,6 @@ public class QueryLookupController extends SimpleFormController {
             map.put(StringConstants.ENTITY_NAME, StringUtils.uncapitalize(beanWrapper.getWrappedClass().getSimpleName()));
 
             final StringBuilder acctNameSb = new StringBuilder();
-	        final StringBuilder nameSb = new StringBuilder();
 	        if (queryLookup.getEntityType() == EntityType.constituent && ! hasAccountNumberField(sectionFields)) {
 		        acctNameSb.append(beanWrapper.getPropertyValue(StringConstants.ACCOUNT_NUMBER)).append(" - ");
 	        }
@@ -255,14 +254,12 @@ public class QueryLookupController extends SimpleFormController {
                         Object displayValue = fieldHandler.resolveDisplayValue(request, beanWrapper, field, fieldValue);
                         if (displayValue != null) {
                             acctNameSb.append(displayValue).append(" ");
-	                        nameSb.append(displayValue).append(" ");
                         }
                     }
 
                 }
             }
-            map.put("displayValue", nameSb.toString());
-	        map.put("accountName", acctNameSb.toString());
+            map.put("displayValue", acctNameSb.toString());
             results.add(map);
         }
 

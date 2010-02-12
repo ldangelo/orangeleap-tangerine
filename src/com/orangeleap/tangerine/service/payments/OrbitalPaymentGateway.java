@@ -176,7 +176,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 
             if (gift.getPaymentSource() != null && gift.getPaymentSource().getCreditCardSecurityCode() != null &&
                     !gift.getPaymentSource().getCreditCardSecurityCode().equals(StringConstants.EMPTY)) {
-                request.setFieldValue("CardVerifyNumber", gift.getPaymentSource().getCreditCardSecurityCode().toString());
+                request.setFieldValue("CardSecVal", gift.getPaymentSource().getCreditCardSecurityCode().toString());
             }
 
             if (logger.isInfoEnabled()) {

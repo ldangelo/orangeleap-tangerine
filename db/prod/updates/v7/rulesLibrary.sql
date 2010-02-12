@@ -1,3 +1,9 @@
+-- This script will DELETE ALL RULES and recreate the DSL.
+-- This file should not be modified after the initial push of V7 code and database
+-- upgrades/conversions.  If you need to add/delete/modify the DSL look for the
+-- rulsLibraryUpdate.sql in the update folder for the current version we are on.
+-- (example v7.1/rulesLibraryUpdate.sql)
+
 SET foreign_key_checks = 0;
 
 TRUNCATE TABLE RULE;

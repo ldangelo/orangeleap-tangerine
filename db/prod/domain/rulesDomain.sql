@@ -1,3 +1,10 @@
+-- This script will create the rules DSL.
+-- Any modifications to this file will also need to be made in the appropriate
+-- update script file as well.  If you are adding/deleting/modifing the DSL look for the
+-- rulsLibraryUpdate.sql in the update folder for the current version we are on.
+-- (example v7.1/rulesLibraryUpdate.sql)
+
+
 -- RULE_EVENT_TYPE (code entry points for rules)
 
 INSERT INTO RULE_EVENT_TYPE (RULE_EVENT_TYPE_ID, RULE_EVENT_TYPE_NAME_ID, RULE_EVENT_TYPE_DESC) VALUES (1,'constituent-save', 'Save Constituent');

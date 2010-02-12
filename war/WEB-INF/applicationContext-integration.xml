@@ -31,21 +31,22 @@
 			http://www.springframework.org/schema/integration/stream	http://www.springframework.org/schema/integration/stream/spring-integration-stream-1.0.xsd
 			http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
 
+<!--
     <amq:broker useJmx="true" persistent="false">
         <amq:transportConnectors>
             <amq:transportConnector uri="tcp://localhost:0"/>
         </amq:transportConnectors>
-    </amq:broker>
+    </amq:broker> 
+-->
+    <amq:connectionFactory id="connectionFactory" brokerURL="discovery:(multicast://default)?initialReconnectDelay=100"/>
 
-    <amq:connectionFactory id="connectionFactory" brokerURL="vm://localhost"/>
 
-
-    <beans:bean id="Company1GiftDestination" class="org.apache.activemq.command.ActiveMQQueue">
-        <beans:constructor-arg value="queue.orangeleap.tangerine.company1.gift"/>
+    <beans:bean id="GiftDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <beans:constructor-arg value="queue.orangeleap.tangerine.gift"/>
     </beans:bean>
 
-    <beans:bean id="Company1ConstituentDestination" class="org.apache.activemq.command.ActiveMQTopic">
-        <beans:constructor-arg value="queue.orangeleap.tangerine.company1.constituent"/>
+    <beans:bean id="ConstituentDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <beans:constructor-arg value="queue.orangeleap.tangerine.constituent"/>
     </beans:bean>
 
     <gateway id="newConstituent" service-interface="com.orangeleap.tangerine.integration.NewConstituent"/>
@@ -120,10 +121,10 @@
         </beans:constructor-arg>
     </beans:bean>
 
-    <transformer input-channel="constituent_marshalling_transformer" output-channel="constituent_route_channel"
+    <transformer input-channel="constituent_marshalling_transformer" output-channel="constituent_jms_channel"
                  ref="marshallingTransformer">
     </transformer>
-    <transformer input-channel="gift_marshalling_transformer" output-channel="gift_route_channel"
+    <transformer input-channel="gift_marshalling_transformer" output-channel="gift_jms_channel"
                  ref="marshallingTransformer"/>
 
     <beans:bean id="AbstractRulesInterceptor" class="com.orangeleap.tangerine.service.rule.RulesInterceptor"
@@ -158,7 +159,7 @@
     </si-xml:xpath-router>
 -->
 
-
+<!--
     <beans:bean id="constituentJMSRouter" class="org.springframework.integration.endpoint.EventDrivenConsumer">
         <beans:constructor-arg ref="constituent_route_channel"/>
         <beans:constructor-arg>
@@ -200,11 +201,11 @@
             </beans:bean>
         </beans:constructor-arg>
     </beans:bean>
-
-    <jms:outbound-channel-adapter id="Company1ConstituentJms" channel="constituent_jms_channel"
-                                  destination="Company1ConstituentDestination"/>
-    <jms:outbound-channel-adapter id="Company1GiftJms" channel="gift_jms_channel"
-                                  destination="Company1GiftDestination"/>
+-->
+    <jms:outbound-channel-adapter id="ConstituentJms" channel="constituent_jms_channel"
+                                  destination="ConstituentDestination"/>
+    <jms:outbound-channel-adapter id="GiftJms" channel="gift_jms_channel"
+                                  destination="GiftDestination"/>
 
     <poller id="poller" default="true">
         <interval-trigger interval="1000"/>

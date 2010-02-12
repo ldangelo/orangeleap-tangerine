@@ -32,6 +32,8 @@ No menus are included.
 		</div>
 		<%@ include file="/WEB-INF/jsp/includes/modal.jsp" %>
 		<decorator:getProperty property="scripts"/>
+		<script type="text/javascript" src="js/sidebar.js"></script>
+		<script type="text/javascript" src="js/history.js"></script>
 		<c:if test="${requestScope.loadGoogle}">
 			<%@ include file="/WEB-INF/jsp/includes/googleScripts.jsp" %>
 		</c:if>

@@ -133,6 +133,9 @@ public class ErrorBatchAction extends EditBatchAction {
             idName = TangerineForm.escapeFieldName(StringConstants.ADJUSTED_GIFT_ID);
             constituentIdName = "adjustedGiftConstituentId";
         }
+        else if (StringConstants.CONSTITUENT.equals(batch.getBatchType())) {
+            idName = TangerineForm.escapeFieldName(StringConstants.CONSTITUENT_ID);
+        }
         if (idName != null) {
             Map<String, Object> fieldMap = new HashMap<String, Object>();
             fieldMap.put(StringConstants.NAME, idName);

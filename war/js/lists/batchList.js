@@ -460,6 +460,7 @@ Ext.onReady(function() {
                 showModal(editBatchWin);
             }
         });
+        toolbar.doLayout();
     }
 
     var sortDir = 'DESC';
@@ -2083,7 +2084,6 @@ Ext.onReady(function() {
         form.customEditors = newCustomEditors;
         form.customRenderers = newCustomRenderers;
         form.setSource(newSource);
-		step4UpdatableFieldsForm.nextButton.enable();
     }
 
     var step4UpdatableFieldsStore = new Ext.data.JsonStore({
@@ -2974,7 +2974,8 @@ Ext.onReady(function() {
                 if (batchType && record) {
                     // open window to view record
                     var thisUrl = batchType + '.htm?' + batchType + 'Id=' + record.get(batchType + 'Id') +
-                                          (record.get(batchType + 'ConstituentId') ? '&constituentId=' + record.get(batchType + 'ConstituentId') : '');
+                                          (batchType == 'constituent' ? '' :
+                                          (record.get(batchType + 'ConstituentId') ? '&constituentId=' + record.get(batchType + 'ConstituentId') : ''));
                     window.open(thisUrl, batchType + 'Win');
                 }
             }

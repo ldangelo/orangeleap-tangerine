@@ -123,8 +123,10 @@ public class ExecuteBatchServiceImpl implements ExecuteBatchService {
 	            }
 	            catch (Exception e) {
 	                executed = false;
-		            logger.warn("executeBatch: exception occurred during saving of entity", e);
-		            entity.addCustomFieldValue(StringConstants.BATCH_ERROR, resolveErrorMsg(e));
+		            if ( ! (e instanceof PostBatchEntryServiceImpl.PostBatchUpdateException)) {
+			            logger.warn("executeBatch: exception occurred during saving of entity", e);
+			            entity.addCustomFieldValue(StringConstants.BATCH_ERROR, resolveErrorMsg(e));
+		            }
 	            }
 	            if (executed) {
 	                PostBatchEntry entry = new PostBatchEntry();

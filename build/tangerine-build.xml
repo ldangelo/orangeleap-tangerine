@@ -443,8 +443,8 @@
         <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="tangerine.css.min.css" value="tangerine${now.time}.css.min.css"/>
         <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="tangerine.js.ycomp.js" value="tangerine${now.time}.js.ycomp.js"/>
         <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/admin.jsp" token="tangerine-admin.js.ycomp.js" value="tangerine-admin${now.time}.js.ycomp.js"/>
-        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="sidebar.js" value="sidebar${now.time}.js"/>
-        <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="history.js" value="history${now.time}.js"/>
+        <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/basic.jsp" token="sidebar.js" value="sidebar${now.time}.js"/>
+        <replace file="${stage.dir}/war/WEB-INF/jsp/decorators/basic.jsp" token="history.js" value="history${now.time}.js"/>
         <replace file="${stage.dir}/war/WEB-INF/jsp/includes/headContent.jsp" token="orangeleap.js" value="orangeleap${now.time}.js"/>
 
         <css-optimization

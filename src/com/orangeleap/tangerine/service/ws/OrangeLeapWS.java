@@ -780,9 +780,6 @@ public class OrangeLeapWS {
 			throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
 
-		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
-
-		converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
 
 		Iterator<Long> it = req.getConstituentId().iterator();
 		while (it.hasNext()) {
@@ -790,6 +787,10 @@ public class OrangeLeapWS {
 			if (Id <= 0)
 				throw new InvalidRequestException(
 						"Invalid constituentid in BulkAddCommunicationHistory");
+			com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
+
+			converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
+
 			ch.setConstituent(cs.readConstituentById(Id));
 
 			try {

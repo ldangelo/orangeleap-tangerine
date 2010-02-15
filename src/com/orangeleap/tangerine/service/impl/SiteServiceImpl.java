@@ -18,34 +18,7 @@
 
 package com.orangeleap.tangerine.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.validator.GenericValidator;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.security.Authentication;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-
+import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.dao.SiteOptionDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -71,6 +44,7 @@ import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.MessageResourceType;
@@ -78,6 +52,33 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.annotation.Resource;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
 
 @Service("siteService")
 public class SiteServiceImpl extends AbstractTangerineService implements SiteService {
@@ -106,11 +107,17 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     @Resource(name = "siteOptionDAO")
     private SiteOptionDao siteOptionDao;
 
+	@Resource(name = "cacheGroupDAO")
+	private CacheGroupDao cacheGroupDao;
+	
     @Resource(name = "versionService")
     private VersionService versionService;
 
     @Resource(name = "tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
+
+	@Resource(name = "entityDefaultCache")
+	private Cache entityDefaultCache;
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -435,22 +442,40 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 		return readEntityDefaultByTypeName(thisFieldDef.getEntityType(), thisFieldDef.getFieldName());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public EntityDefault readEntityDefaultByTypeName(EntityType entityType, String fieldName) {
 		if (logger.isTraceEnabled()) {
 		    logger.trace("readEntityDefaultByTypeName: entityType = " + entityType + " fieldName = " + fieldName);
 		}
-		return siteDao.readEntityDefaultByTypeName(entityType, fieldName);
+		EntityDefault entityDefault = null;
+		final List<EntityDefault> defaults = readEntityDefaults(entityType);
+		if (defaults != null) {
+			entityDefault = findEntityDefaultByFieldName(defaults, fieldName);
+		}
+		return entityDefault;
+	}
+
+	private EntityDefault findEntityDefaultByFieldName(List<EntityDefault> defaults, String fieldName) {
+		EntityDefault thisDefault = null;
+		for (EntityDefault aDefault : defaults) {
+			if (aDefault != null && aDefault.getEntityFieldName().equals(fieldName)) {
+				thisDefault = aDefault;
+				break;
+			}
+		}
+		return thisDefault;
 	}
 
 	@Override
 	public void setEntityDefaults(AbstractEntity entity, EntityType entityType) {
 		BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(entity);
-
-		List<EntityDefault> defaults = siteDao.readEntityDefaults(entityType);
+		List<EntityDefault> defaults = readEntityDefaults(entityType);
 		if (defaults != null && !defaults.isEmpty()) {
 			for (EntityDefault aDefault : defaults) {
-				getDefaultValue(aDefault, beanWrapper, aDefault.getEntityFieldName());
+				if (aDefault != null) {
+					getDefaultValue(aDefault, beanWrapper, aDefault.getEntityFieldName());
+				}
 			}
 		}
 	}
@@ -463,13 +488,61 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         return readEntityDefaults(null);
     }
 
+	@SuppressWarnings("unchecked")
     @Override
     public List<EntityDefault> readEntityDefaults(EntityType entityType) {
         if (logger.isTraceEnabled()) {
             logger.trace("readEntityDefaults: entityType = " + entityType);
         }
-        return siteDao.readEntityDefaults(entityType);
+	    String key = tangerineUserHelper.lookupUserSiteName();
+	    Element element = entityDefaultCache.get(key);
+		Map<EntityType, List<EntityDefault>> entityDefaultMap;
+		
+		if (element == null) {
+		    entityDefaultMap = groupEntityDefaults();
+		    entityDefaultCache.put(new Element(key, entityDefaultMap));
+	    }
+	    else {
+		    entityDefaultMap = (Map<EntityType, List<EntityDefault>>) element.getValue();
+	    }
+
+		List<EntityDefault> defaults;
+		if (entityType == null) {
+			defaults = appendDefaults(entityDefaultMap);
+		}
+		else {
+			defaults = entityDefaultMap.get(entityType);
+		}
+	    return defaults;
     }
+
+	private Map<EntityType, List<EntityDefault>> groupEntityDefaults() {
+		Map<EntityType, List<EntityDefault>> defaultMap = new HashMap<EntityType, List<EntityDefault>>();
+
+		List<EntityDefault> defaults = siteDao.readEntityDefaults(null);
+		if (defaults != null) {
+			for (EntityDefault aDefault : defaults) {
+				List<EntityDefault> groupedDefaults = defaultMap.get(EntityType.valueOf(aDefault.getEntityType()));
+				if (groupedDefaults == null) {
+					groupedDefaults = new ArrayList<EntityDefault>();
+					defaultMap.put(EntityType.valueOf(aDefault.getEntityType()), groupedDefaults);
+				}
+				groupedDefaults.add(aDefault);
+			}
+		}
+
+		return defaultMap;
+	}
+
+	private List<EntityDefault> appendDefaults(Map<EntityType, List<EntityDefault>> entityDefaultMap) {
+		List<EntityDefault> allDefaults = new ArrayList<EntityDefault>();
+		if (entityDefaultMap != null) {
+			for (List<EntityDefault> entityDefaults : entityDefaultMap.values()) {
+				allDefaults.addAll(entityDefaults);
+			}
+		}
+		return allDefaults;
+	}
 
     @Override
     public Map<String, FieldDefinition> readFieldTypes(PageType pageType, List<String> roles) {
@@ -565,6 +638,10 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 	@Transactional(propagation = Propagation.REQUIRED)
     public void updateEntityDefault(EntityDefault entityDefault) {
         siteDao.updateEntityDefault(entityDefault);
+
+	    // Flush entityDefault cache for all tomcat instances
+	    entityDefaultCache.removeAll();
+	    cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.ENTITY_DEFAULT);
     }
  
     @Override

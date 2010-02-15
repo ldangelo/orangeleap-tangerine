@@ -121,4 +121,15 @@
            memoryStoreEvictionPolicy="LRU"
             />
 
+	<cache name="entityDefaultCache"
+	       maxElementsInMemory="500"
+	       eternal="false"
+	       overflowToDisk="true"
+	       diskSpoolBufferSizeMB="10"
+	       timeToIdleSeconds="7200"
+	       timeToLiveSeconds="21600"
+	       diskExpiryThreadIntervalSeconds="600"
+	       memoryStoreEvictionPolicy="LRU"
+	        />
+
 </ehcache>

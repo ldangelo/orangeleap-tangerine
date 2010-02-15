@@ -68,6 +68,7 @@ public class CacheGroupFilter extends OncePerRequestFilter {
             Cache pageCustomizationCache = (Cache) getBean(request, "pageCustomizationCache");
             Cache messageResourceCache = (Cache) getBean(request, "messageResourceCache");
             Cache ruleGeneratedCodeCache = (Cache) getBean(request, "ruleGeneratedCodeCache");
+	        Cache entityDefaultCache = (Cache) getBean(request, "entityDefaultCache");
             // Add others here...
 
 
@@ -92,6 +93,10 @@ public class CacheGroupFilter extends OncePerRequestFilter {
                                 logger.debug("Update detected, clearing MESSAGE_RESOURCE cache.");
                                 messageResourceCache.removeAll();
                             }
+	                        if (key.equals(CacheGroupType.ENTITY_DEFAULT.toString())) {
+		                        logger.debug("Update detected, clearing ENTITY_DEFAULT cache.");
+		                        entityDefaultCache.removeAll();
+	                        }
                             if (key.equals(CacheGroupType.RULE_GENERATED_CODE.toString())) {
                                 logger.debug("Update detected, clearing RULE_GENERATED_CODE cache.");
                                 ruleGeneratedCodeCache.removeAll();

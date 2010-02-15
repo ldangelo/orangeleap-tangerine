@@ -150,6 +150,12 @@
           p:cacheName="picklistCache"
           />
 
+	<bean id="entityDefaultCache"
+	      class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+	      p:cacheManager-ref="cacheManager"
+	      p:cacheName="entityDefaultCache"
+	      />
+
     <bean id="ruleGeneratedCodeCache"
           class="org.springframework.cache.ehcache.EhCacheFactoryBean"
           p:cacheManager-ref="cacheManager"

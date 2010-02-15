@@ -5,6 +5,11 @@
 	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.0"
 	elementFormDefault="qualified">
 
+	<xs:complexType name="site">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
 
     <xs:element name="Touchpoint" type="tns:communicationHistory"/>
 
@@ -341,6 +346,9 @@
 					<xs:element name="transactionDate" type="xs:dateTime"
 						minOccurs="0" />
 					<xs:element name="txRefNum" type="xs:string" minOccurs="0" />
+					<xs:element name="site" type="tns:site" minOccurs="0"
+						maxOccurs="0" />
+
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -444,6 +452,8 @@
 						minOccurs="0" />
 					<xs:element name="preferredPhoneType" type="xs:string"
 						minOccurs="0" />
+					<xs:element name="site" type="tns:site" minOccurs="0"
+						maxOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

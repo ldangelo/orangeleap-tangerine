@@ -50,11 +50,11 @@
 	By default Topic's don't 'persist'.  We will use the configuration within activemq to convert 'topic' messages into 'queue' messages
     -->
     <beans:bean id="GiftDestination" class="org.apache.activemq.command.ActiveMQTopic">
-        <beans:constructor-arg value="orangeleap.tangerine.gift"/>
+        <beans:constructor-arg value="outbound.orangeleap.tangerine.gift"/>
     </beans:bean>
 
     <beans:bean id="ConstituentDestination" class="org.apache.activemq.command.ActiveMQTopic">
-        <beans:constructor-arg value="orangeleap.tangerine.constituent"/>
+        <beans:constructor-arg value="outbound.orangeleap.tangerine.constituent"/>
     </beans:bean>
 
     <gateway id="newConstituent" service-interface="com.orangeleap.tangerine.integration.NewConstituent"/>

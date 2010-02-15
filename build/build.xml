@@ -42,7 +42,6 @@
 </target>
 
 <target name="prj.el" depends="mungejar">
-  <echo>${all-jars}</echo>
   <jdeproject prjel="${basedir}/prj.el"
 	      srcdirs="${basedir}/src"
 	      classdir="${basedir}/build/stage/classes-jar"

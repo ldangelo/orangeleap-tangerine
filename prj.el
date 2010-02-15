@@ -16,7 +16,7 @@
  '(jde-ant-enable-find nil)
  '(jde-ant-read-target t)
  '(jde-ant-home "/usr/share/ant")
- '(jde-ant-invocation-method (quote ("Ant Server")))
+ '(jde-ant-invocation-method (quote ("Java")))
  ;; Set name for your make program: ant or maybe maven?
  '(jde-build-function (quote (jde-ant-build)))
  '(jde-db-option-connect-socket (quote (nil "8000")))

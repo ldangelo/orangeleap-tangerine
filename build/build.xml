@@ -77,6 +77,14 @@
 		<antcall target="4. Start Tomcat - Debug Mode" />
 	</target>
 
+	<target name="stop-tomcat">
+		<antcall target="5. Stop Tomcat" />
+	</target>
+
+	<target name="generate-java-from-xsd">
+		<antcall target="9.6 Generate Java From XSD" />
+	</target>
+
 	<target name="4. Start Tomcat - Debug Mode">
 	    <java jar="${appserver.home}/bin/bootstrap.jar" fork="true">
             <jvmarg value="-Xshare:off"/>

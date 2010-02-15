@@ -40,7 +40,7 @@ public class DistanceUtil {
 					zip.longitude = Double.parseDouble(line.substring(147-1, 157-1).trim());
 					map.put(zipcode, zip);
 				} catch (Exception e) {
-					logger.debug("zcta parsing - "+e.getMessage()+": "+line);
+					logger.debug("zcta parsing - "+e.getMessage()+": "+line);  // disregard lines missing geocodes
 				}
 			}
 		} finally {

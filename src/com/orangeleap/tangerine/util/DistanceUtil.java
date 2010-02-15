@@ -32,18 +32,24 @@ public class DistanceUtil {
 			while (true) {
 				String line = bin.readLine();
 				if (line == null || line.trim().length() == 0) break;
-				String zipcode = line.substring(3-1, 3+5-1);
-				Zip zip = new Zip();
-				zip.zip = zipcode;
-				zip.latitude = Double.parseDouble(line.substring(137-1, 146-1).trim());
-				zip.longitude = Double.parseDouble(line.substring(147-1, 157-1).trim());
-				map.put(zipcode, zip);
+				try {
+					String zipcode = line.substring(3-1, 3+5-1);
+					Zip zip = new Zip();
+					zip.zip = zipcode;
+					zip.latitude = Double.parseDouble(line.substring(137-1, 146-1).trim());
+					zip.longitude = Double.parseDouble(line.substring(147-1, 157-1).trim());
+					map.put(zipcode, zip);
+				} catch (Exception e) {
+					logger.debug("zcta parsing - "+e.getMessage()+": "+line);
+				}
 			}
 		} finally {
 			fin.close();
 		}
 		return map;
 	}
+	
+	public static void main(String[] args) {}
 
 	private static Map<String, Zip> ZIPS;
 	static {

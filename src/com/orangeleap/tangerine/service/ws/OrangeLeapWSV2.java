@@ -1,25 +1,8 @@
 package com.orangeleap.tangerine.service.ws;
 
 
-import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
-import javax.annotation.Resource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.providers.ldap.LdapAuthenticationProvider;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-import org.springframework.ws.server.endpoint.annotation.Endpoint;
-import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 
 import com.orangeleap.tangerine.dao.PaymentSourceDao;
 import com.orangeleap.tangerine.domain.PaymentSource;
@@ -37,19 +20,23 @@ import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.service.ws.exception.*;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.tangerine.ws.schema.v2.AddCommunicationHistoryResponse;
+import com.orangeleap.tangerine.ws.schema.v2.BulkAddCommunicationHistoryResponse;
 import com.orangeleap.tangerine.ws.schema.v2.AddCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameRequest;
 import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemByNameResponse;
 import com.orangeleap.tangerine.ws.schema.v2.AddPickListItemResponse;
+import com.orangeleap.tangerine.ws.schema.v2.Address;
 import com.orangeleap.tangerine.ws.schema.v2.BulkAddCommunicationHistoryRequest;
 import com.orangeleap.tangerine.ws.schema.v2.CommunicationHistory;
 import com.orangeleap.tangerine.ws.schema.v2.Constituent;
 import com.orangeleap.tangerine.ws.schema.v2.CreateDefaultConstituentRequest;
 import com.orangeleap.tangerine.ws.schema.v2.CreateDefaultConstituentResponse;
+import com.orangeleap.tangerine.ws.schema.v2.Email;
 import com.orangeleap.tangerine.ws.schema.v2.FindConstituentsRequest;
 import com.orangeleap.tangerine.ws.schema.v2.FindConstituentsResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetCommunicationHistoryRequest;
@@ -70,8 +57,16 @@ import com.orangeleap.tangerine.ws.schema.v2.GetPickListByNameRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListByNameResponse;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListsRequest;
 import com.orangeleap.tangerine.ws.schema.v2.GetPickListsResponse;
+import com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByIdRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetSegmentationByIdResponse;
+import com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListByTypeRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListByTypeResponse;
+import com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListRequest;
+import com.orangeleap.tangerine.ws.schema.v2.GetSegmentationListResponse;
 import com.orangeleap.tangerine.ws.schema.v2.Gift;
+import com.orangeleap.tangerine.ws.schema.v2.ObjectFactory;
 import com.orangeleap.tangerine.ws.schema.v2.PaymentType;
+import com.orangeleap.tangerine.ws.schema.v2.Phone;
 import com.orangeleap.tangerine.ws.schema.v2.Pledge;
 import com.orangeleap.tangerine.ws.schema.v2.RecurringGift;
 import com.orangeleap.tangerine.ws.schema.v2.SaveOrUpdateConstituentRequest;
@@ -91,6 +86,23 @@ import com.orangeleap.theguru.client.GetSegmentationByNameResponse;
 import com.orangeleap.theguru.client.Segmentation;
 import com.orangeleap.theguru.client.Theguru;
 import com.orangeleap.theguru.client.WSClient;
+import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import javax.annotation.Resource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.providers.ldap.LdapAuthenticationProvider;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 
 @Endpoint
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -872,9 +884,9 @@ public class OrangeLeapWSV2 {
 	}
 
 	@PayloadRoot(localPart = "AddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
-	public void addCommunicationHistory(AddCommunicationHistoryRequest req) throws InvalidRequestException {
+	public AddCommunicationHistoryResponse addCommunicationHistory(AddCommunicationHistoryRequest req) throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
-
+		AddCommunicationHistoryResponse response = new AddCommunicationHistoryResponse();
 		validationManager.validate(req);
 		
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
@@ -885,18 +897,22 @@ public class OrangeLeapWSV2 {
 		ch.setConstituent(cs.readConstituentById(req.getConstituentId()));
 
 		try {
-			communicationHistory.maintainCommunicationHistory(ch);
+		    ch = communicationHistory.maintainCommunicationHistory(ch);
+		    CommunicationHistory rch = new CommunicationHistory();
+		    converter.ConvertToJAXB(ch, rch);
+		    response.setCommunicationHistory(rch);
 		} catch (BindException ex) {
 			logger.error(ex.getMessage());
 			throw new InvalidRequestException(ex.getMessage());
 		}
-
+		return response;
 	}
 
 	@PayloadRoot(localPart = "BulkAddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")
-	public void bulkAddCommunicationHistory(
+	public BulkAddCommunicationHistoryResponse bulkAddCommunicationHistory(
 			BulkAddCommunicationHistoryRequest req) throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
+		BulkAddCommunicationHistoryResponse response = new BulkAddCommunicationHistoryResponse();
 
 		validationManager.validate(req);
 		
@@ -911,12 +927,15 @@ public class OrangeLeapWSV2 {
 			ch.setConstituent(cs.readConstituentById(Id));
 
 			try {
-				communicationHistory.maintainCommunicationHistory(ch);
+			    ch = communicationHistory.maintainCommunicationHistory(ch);
+			    CommunicationHistory rch = new CommunicationHistory();
+			    converter.ConvertToJAXB(ch, rch);
 			} catch (BindException ex) {
 				logger.error(ex.getMessage());
 				throw new InvalidRequestException(ex.getMessage());
 			}
 		}
+		return response;
 	}
 
 	@PayloadRoot(localPart = "GetCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services2.0/")

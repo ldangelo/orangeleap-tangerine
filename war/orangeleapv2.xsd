@@ -812,6 +812,15 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="AddCommunicationHistoryResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="communicationHistory" type="tns:communicationHistory"
+					minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="BulkAddCommunicationHistoryRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -819,6 +828,14 @@
 					minOccurs="1" maxOccurs="unbounded" />
 				<xs:element name="communicationHistory" type="tns:communicationHistory"
 					minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="BulkAddCommunicationHistoryResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="dummy" type="xs:long"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

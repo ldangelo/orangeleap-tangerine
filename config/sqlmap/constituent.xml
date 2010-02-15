@@ -410,7 +410,7 @@
 	</select>
 	
 	<update id="SET_CONSTITUENT_UPDATE_DATE" parameterClass="map">
-		update CONSTITUENT set UPDATE_DATE = now() where CONSTITUTENT_ID = #id#
+		update CONSTITUENT set UPDATE_DATE = now() where CONSTITUENT_ID = #id#
 	</update>
 
 </sqlMap>

@@ -581,6 +581,19 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             	orangeleapJmxNotificationBean.publishNotification(OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_ERROR, ""+tex.getMessage());
             	orangeleapJmxNotificationBean.setStat(gift.getSite().getName(), OrangeleapJmxNotificationBean.ORBITAL_PAYMENT_STATUS, OrangeleapJmxNotificationBean.ERROR);
             }
+
+        	gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+            gift.setPaymentMessage(tex.getMessage());
+            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+            gift.setSuppressValidation(true);
+            try {
+                gs.maintainGift(gift);
+            } catch (BindException e) {
+                // Should not happen with suppressValidation = true.
+                logger.error(e);
+            }
+
             return;
         }
 

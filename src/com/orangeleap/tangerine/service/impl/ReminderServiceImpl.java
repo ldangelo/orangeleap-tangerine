@@ -290,7 +290,7 @@ public class ReminderServiceImpl extends AbstractTangerineService implements Rem
 		ScheduledItem scheduledPayment = (ScheduledItem)getParent(reminder);
 
 		BigDecimal minAmount = DEFAULT_MIN_REMINDER_AMOUNT; // TODO add site or default option
-		if (scheduledPayment == null || scheduledPayment.isCompleted() || scheduledPayment.getScheduledItemAmount().compareTo(minAmount) < 0) {
+		if (scheduledPayment == null || scheduledPayment.isCompleted() || scheduledPayment.getScheduledItemAmount() == null || scheduledPayment.getScheduledItemAmount().compareTo(minAmount) < 0) {
 			scheduledItemService.completeItem(reminder, null, "Skipped");
 			return;
 		}

@@ -161,6 +161,7 @@
 
 	<target name="build-integrated-war">
 		<copy file="${src.dir}/log4j.properties" todir="${stage.dir}/war/WEB-INF/classes"/>
+		<copy file="${src.dir}/zcta.txt" todir="${stage.dir}/war/WEB-INF/classes"/>
 
 		<war destfile="${stage.dir}/${war.name}.war" basedir="${stage.dir}/war">
 			<include name="**/*.*" />
@@ -172,6 +173,7 @@
 		<delete file="${stage.dir}/${war.name}.war" failonerror="false" />
 		<mkdir dir="${stage.dir}/${war.name}.war" />
 		<copy file="${src.dir}/log4j.properties" todir="${stage.dir}/war/WEB-INF/classes"/>
+		<copy file="${src.dir}/zcta.txt" todir="${stage.dir}/war/WEB-INF/classes"/>
 		<copy todir="${stage.dir}/${war.name}.war">
 			<fileset dir="${stage.dir}/war">
 				<include name="**/*.*" />

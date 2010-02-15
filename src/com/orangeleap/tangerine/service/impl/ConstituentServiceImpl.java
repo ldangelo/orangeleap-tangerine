@@ -721,5 +721,12 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	logger.info("setConstituentFlags took " + (t1-t0)/1000f + " sec.");
     }
 
+
+    // Set update_date for constituent to today to trigger nightly rules / rollup processing.
+	@Override
+	public void currentUpdateDateForConstituent(Long constituentId) {
+		constituentDao.currentUpdateDateForConstituent(constituentId);
+	}
+
     
 }

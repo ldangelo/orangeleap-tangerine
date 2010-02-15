@@ -90,4 +90,6 @@ public interface ConstituentService {
 	List<Constituent> readConstituentsByIds(Set<Long> ids);
 
 	List<Constituent> readLimitedConstituentsByIds(Set<Long> constituentIds, SortInfo sortInfo, Locale locale);
+
+	public void currentUpdateDateForConstituent(Long long1);
 }

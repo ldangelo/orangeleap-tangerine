@@ -45,8 +45,6 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.service.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.service.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.Constituent;
@@ -56,6 +54,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.integration.NewGift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
@@ -65,6 +64,8 @@ import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.rollup.RollupHelperService;
+import com.orangeleap.tangerine.service.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.service.validator.EntityValidator;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
@@ -86,6 +87,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     @Resource(name = "pledgeService")
     private PledgeService pledgeService;
+
+    @Resource(name = "constituentService")
+    private ConstituentService constituentService;
 
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
@@ -242,13 +246,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     private void updateRollups(Gift gift) {
-        rollupHelperService.updateRollupsForConstituentRollupValueSource(gift);
+    	Long id = gift.getConstituentId();
+    	if (id == null) id = gift.getConstituent().getId();
+    	constituentService.currentUpdateDateForConstituent(id);
         for (DistributionLine dl : gift.getDistributionLines()) {
         	if (dl != null) {
         		String refid = dl.getCustomFieldValue("onBehalfOf");
         		if (refid != null) {
         			try {
-        				rollupHelperService.refreshByConstituent(new Long(refid));
+        		    	constituentService.currentUpdateDateForConstituent(new Long(refid));
         			} catch (Exception e) {
         				logger.error(e);
         			}

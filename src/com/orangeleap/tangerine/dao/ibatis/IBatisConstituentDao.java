@@ -18,25 +18,32 @@
 
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.EntitySearch;
+import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.DistanceUtil;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Corresponds to the CONSTITUENT tables
@@ -295,4 +302,26 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         }
         getSqlMapClientTemplate().queryForObject("SET_CONSTITUENT_FLAGS");
 	}
+
+	@Override
+	public void currentUpdateDateForConstituent(Long constituentId) {
+    	Map<String, Object> params = setupParams();
+    	params.put("id", constituentId);
+		getSqlMapClientTemplate().update("SET_CONSTITUENT_UPDATE_DATE", params);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Constituent> getConstituentsWithinMilesOfConstituent(
+			Constituent constituent, int miles) {
+		List<Constituent> result = new ArrayList<Constituent>();
+		Address address = constituent.getPrimaryAddress();
+		if (address == null) return result;
+		List<String> zips = DistanceUtil.getZipsWithinMilesOfZip(address.getPostalCode(), miles);
+		if (zips.size() == 0) return result;
+    	Map<String, Object> params = setupParams();
+    	params.put("zips", zips);
+	    return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENTS_BY_ZIP", params);
+	}
+	
 }

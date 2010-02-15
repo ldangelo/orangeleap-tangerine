@@ -280,6 +280,28 @@
     </select>
 
 
+    <select id="SELECT_CONSTITUENT_BY_POSTAL_CODE" resultMap="CONSTITUENT_SEARCH_RESULT" parameterClass="map">
+        select
+
+        <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
+        <include refid="ADDRESS_COLS_FRAGMENT" />,
+        <include refid="PHONE_COLS_FRAGMENT" />,
+        <include refid="EMAIL_COLS_FRAGMENT" />
+
+        from CONSTITUENT p
+        left outer join PHONE ph on p.CONSTITUENT_ID = ph.CONSTITUENT_ID and ph.IS_PRIMARY = 1
+        left outer join ADDRESS addr on p.CONSTITUENT_ID = addr.CONSTITUENT_ID and addr.IS_PRIMARY = 1
+        left outer join EMAIL e on p.CONSTITUENT_ID = e.CONSTITUENT_ID and e.IS_PRIMARY = 1
+        where p.SITE_NAME = #siteName#
+		and addr.POSTAL_CODE in (
+            <iterate property="zips" conjunction=",">
+                $zips[]$
+            </iterate>
+		)
+		order by addr.POSTAL_CODE, p.CONSTITUENT_ID
+		limit 500
+	</select>
+
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Constituent">
 		insert into CONSTITUENT (
 		CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME, BYPASS_DUPLICATE, RECENT_GIFT,
@@ -386,5 +408,9 @@
 	<select id="SET_CONSTITUENT_FLAGS">
 		select SET_CONSTITUENT_FLAGS();
 	</select>
+	
+	<update id="SET_CONSTITUENT_UPDATE_DATE" parameterClass="map">
+		update CONSTITUENT set UPDATE_DATE = now() where CONSTITUTENT_ID = #id#
+	</update>
 
 </sqlMap>

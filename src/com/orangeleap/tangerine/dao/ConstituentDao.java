@@ -71,4 +71,9 @@ public interface ConstituentDao {
 
 	List<Constituent> readLimitedConstituentsByIds(Set<Long> constituentIds, String sortPropertyName, String direction,
 	                                                     int start, int limit, Locale locale);
+
+	public void currentUpdateDateForConstituent(Long constituentId);
+	
+	public List<Constituent> getConstituentsWithinMilesOfConstituent(Constituent constituent, int miles);
+	
 }

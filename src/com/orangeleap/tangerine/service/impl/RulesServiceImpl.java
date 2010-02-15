@@ -49,6 +49,7 @@ import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RulesService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.communication.MailService;
+import com.orangeleap.tangerine.service.rollup.RollupHelperService;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleBase;
 import com.orangeleap.tangerine.service.rule.OrangeLeapRuleSession;
@@ -74,6 +75,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	
 	@Resource(name = "ruleHelperService")
 	private RuleHelperService ruleHelperService;
+	
+	@Resource(name = "rollupHelperService")
+	private RollupHelperService rollupHelperService;
 
 	@Resource(name = "giftService")
 	private GiftService giftService;
@@ -95,7 +99,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	private static String SUPPRESS_GIFT_REPROCESS = "suppress.gift.reprocess";
 	
 
-	public void executeRules(String schedule, Date compareDate) {
+	private void executeRules(String schedule, Date compareDate) {
 
 		long time = System.currentTimeMillis();
 		try {
@@ -137,8 +141,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 						
 						if (resaveConstituent) {
 							ruleHelperService.updateConstituentDependencies(p);
+						} else {
+							rollupHelperService.refreshByConstituent(p.getId());
 						}
-						
 
 					} catch (Throwable t) {
 						t.printStackTrace();

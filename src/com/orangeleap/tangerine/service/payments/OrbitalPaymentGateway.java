@@ -23,6 +23,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
 
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ErrorLogService;
@@ -99,7 +100,26 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             //
             // make sure the site information is loaded
             SiteService ss = (SiteService) applicationContext.getBean("siteService");
-            gift.getConstituent().setSite(ss.readSite(gift.getConstituent().getSite().getName()));
+			Site site = ss.readSite(gift.getConstituent().getSite().getName());
+			if (site.getMerchantBin() == null || site.getMerchantNumber() == null || site.getMerchantTerminalId() == null){
+	            if (logger.isErrorEnabled()) {
+	                logger.error("General: " + "Some or all of the Merchant Site Settings are null.");
+	            }
+	            gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+	        	gift.setPaymentMessage("Payment not processed: Merchant Site Settings are null. ");
+	            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+	            gift.setSuppressValidation(true);
+	            try {
+	                gs.maintainGift(gift);
+	            } catch (BindException be) {
+	                // Should not happen with suppressValidation = true.
+	                logger.error(be);
+	            }
+
+	            return;
+			}
+			gift.getConstituent().setSite(site);
 
             //
             // Create the request
@@ -306,7 +326,26 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             //
             // make sure the site information is loaded
             SiteService ss = (SiteService) applicationContext.getBean("siteService");
-            gift.getConstituent().setSite(ss.readSite(gift.getConstituent().getSite().getName()));
+			Site site = ss.readSite(gift.getConstituent().getSite().getName());
+			if (site.getMerchantBin() == null || site.getMerchantNumber() == null || site.getMerchantTerminalId() == null){
+	            if (logger.isErrorEnabled()) {
+	                logger.error("General: " + "Some or all of the Merchant Site Settings are null.");
+	            }
+	            gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+	        	gift.setPaymentMessage("Payment not processed: Merchant Site Settings are null. ");
+	            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+	            gift.setSuppressValidation(true);
+	            try {
+	                gs.maintainGift(gift);
+	            } catch (BindException be) {
+	                // Should not happen with suppressValidation = true.
+	                logger.error(be);
+	            }
+
+	            return;
+			}
+			gift.getConstituent().setSite(site);
 
             //
             // Create the request
@@ -484,7 +523,26 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
             //
             // make sure the site information is loaded
             SiteService ss = (SiteService) applicationContext.getBean("siteService");
-            gift.getConstituent().setSite(ss.readSite(gift.getConstituent().getSite().getName()));
+			Site site = ss.readSite(gift.getConstituent().getSite().getName());
+			if (site.getMerchantBin() == null || site.getMerchantNumber() == null || site.getMerchantTerminalId() == null){
+	            if (logger.isErrorEnabled()) {
+	                logger.error("General: " + "Some or all of the Merchant Site Settings are null.");
+	            }
+	            gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+	        	gift.setPaymentMessage("Payment not processed: Merchant Site Settings are null. ");
+	            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+	            gift.setSuppressValidation(true);
+	            try {
+	                gs.maintainGift(gift);
+	            } catch (BindException be) {
+	                // Should not happen with suppressValidation = true.
+	                logger.error(be);
+	            }
+
+	            return;
+			}
+			gift.getConstituent().setSite(site);
 
             //
             // Create the request

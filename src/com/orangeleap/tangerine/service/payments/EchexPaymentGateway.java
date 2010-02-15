@@ -78,7 +78,28 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 			//
 			// make sure the site information is loaded
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
-			g.getConstituent().setSite(ss.readSite(g.getConstituent().getSite().getName()));
+			Site site = ss.readSite(g.getConstituent().getSite().getName());
+			if (site.getAchMerchantId() == null || site.getAchCompanyName() == null || site.getAchRuleNumber() == null
+					|| site.getAchSiteNumber() == null || site.getAchTestMode() == null){
+	            if (logger.isErrorEnabled()) {
+	                logger.error("General: " + "Some or all of the ACH Site Settings are null.");
+	            }
+	        	g.setPaymentStatus(Gift.PAY_STATUS_ERROR);
+	            g.setPaymentMessage("Payment not processed: ACH Site Settings are null. ");
+	            GiftService gs = (GiftService) applicationContext.getBean("giftService");
+
+	            g.setSuppressValidation(true);
+	            try {
+	                gs.maintainGift(g);
+	            } catch (BindException be) {
+	                // Should not happen with suppressValidation = true.
+	                logger.error(be);
+	            }
+
+	            return;
+			}
+			g.getConstituent().setSite(site);
+
 
 			try{
 				batch = getTestBatch(ss.readSite(g.getSite().getName()));

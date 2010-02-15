@@ -973,9 +973,9 @@
 		</xs:complexType>
 		
 		<xs:complexType name="GetPaymentSourcesByConstituentIdResponse">
-		<xs:sequence>
-			<xs:element name="paymentsources" type="tns:paymentSource" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
+		  <xs:sequence>
+		    <xs:element name="paymentsources" type="tns:paymentSource" minOccurs="0" maxOccurs="unbounded"/>
+		  </xs:sequence>
 		</xs:complexType>
 		
 		<xs:complexType name="GetConstituentByPaymentSourceRequest">

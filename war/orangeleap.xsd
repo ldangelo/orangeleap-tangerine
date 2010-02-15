@@ -28,9 +28,9 @@
 					<xs:element name="recurringGiftId" type="xs:long"
 						minOccurs="0" />
 					<xs:element name="systemGenerated" type="xs:boolean" />
-					<xs:element name="address" type="tns:address"/>
-					<xs:element name="phone" type="tns:phone"/>
-					<xs:element name="email" type="tns:email"/>
+					<xs:element name="address" type="tns:address" minOccurs="0"/>
+					<xs:element name="phone" type="tns:phone" minOccurs="0"/>
+					<xs:element name="email" type="tns:email" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -692,6 +692,15 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="AddCommunicationHistoryResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="communicationHistory" type="tns:communicationHistory"
+					minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="BulkAddCommunicationHistoryRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -699,6 +708,14 @@
 					minOccurs="1" maxOccurs="unbounded" />
 				<xs:element name="communicationHistory" type="tns:communicationHistory"
 					minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="BulkAddCommunicationHistoryResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="dummy" type="xs:long"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

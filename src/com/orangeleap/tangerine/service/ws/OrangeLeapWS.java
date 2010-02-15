@@ -752,10 +752,10 @@ public class OrangeLeapWS {
 	}
 
 	@PayloadRoot(localPart = "AddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-	public void addCommunicationHistory(AddCommunicationHistoryRequest req)
+	public AddCommunicationHistoryResponse addCommunicationHistory(AddCommunicationHistoryRequest req)
 			throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
-
+		AddCommunicationHistoryResponse response = new AddCommunicationHistoryResponse();
 		com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
 
 		if (req.getConstituentId() <= 0)
@@ -766,20 +766,23 @@ public class OrangeLeapWS {
 		ch.setConstituent(cs.readConstituentById(req.getConstituentId()));
 
 		try {
-			communicationHistory.maintainCommunicationHistory(ch);
+			ch = communicationHistory.maintainCommunicationHistory(ch);
+			CommunicationHistory rch = new CommunicationHistory();
+			converter.ConvertToJAXB(ch, rch);
+			response.setCommunicationHistory(rch);
 		} catch (BindException ex) {
 			logger.error(ex.getMessage());
 			throw new InvalidRequestException(ex.getMessage());
 		}
-
+		return response;
 	}
 
 	@PayloadRoot(localPart = "BulkAddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
-	public void bulkAddCommunicationHistory(
+	public BulkAddCommunicationHistoryResponse bulkAddCommunicationHistory(
 			BulkAddCommunicationHistoryRequest req)
 			throws InvalidRequestException {
 		ObjectConverter converter = new ObjectConverter();
-
+		BulkAddCommunicationHistoryResponse response = new BulkAddCommunicationHistoryResponse();
 
 		Iterator<Long> it = req.getConstituentId().iterator();
 		while (it.hasNext()) {
@@ -800,6 +803,7 @@ public class OrangeLeapWS {
 				throw new InvalidRequestException(ex.getMessage());
 			}
 		}
+		return response;
 	}
 
 	@PayloadRoot(localPart = "GetCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")

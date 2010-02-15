@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 
 public class DistanceUtil {
 	
-	// Used to determine distance between zip codes, given census data for zips in zcta.txt
+	// Used to determine distance between zip codes, given census data for zips in zcta5.txt
 	// http://www.census.gov/geo/www/gazetteer/places2k.html#zcta
 	
     protected static final Log logger = OLLogger.getLog(DistanceUtil.class);
@@ -26,18 +26,18 @@ public class DistanceUtil {
 	
 	private static Map<String, Zip> loadData() throws IOException {
 		Map<String, Zip> map = new HashMap<String, Zip>();
-		InputStream fin = DistanceUtil.class.getClassLoader().getResourceAsStream("zcta.txt"); 
+		InputStream fin = DistanceUtil.class.getClassLoader().getResourceAsStream("zcta5.txt"); 
 		BufferedReader bin = new BufferedReader(new InputStreamReader(fin));
 		try {
 			while (true) {
 				String line = bin.readLine();
 				if (line == null || line.trim().length() == 0) break;
 				try {
-					String zipcode = line.substring(3-1, 3+5-1);
+					String zipcode = line.substring(3-1, 3-1+5);
 					Zip zip = new Zip();
 					zip.zip = zipcode;
-					zip.latitude = Double.parseDouble(line.substring(137-1, 146-1).trim());
-					zip.longitude = Double.parseDouble(line.substring(147-1, 157-1).trim());
+					zip.latitude = Double.parseDouble(line.substring(137-1, 146).trim());
+					zip.longitude = Double.parseDouble(line.substring(147-1, 157).trim());
 					map.put(zipcode, zip);
 				} catch (Exception e) {
 					logger.debug("zcta parsing - "+e.getMessage()+": "+line);  // disregard lines missing geocodes
@@ -57,7 +57,7 @@ public class DistanceUtil {
 			ZIPS = loadData();
 		} catch (Exception e) {
 			ZIPS = new HashMap<String, Zip>();
-			logger.fatal("Unable to load zip code data from zcta.txt: " + e);
+			logger.fatal("Unable to load zip code data from zcta5.txt: " + e);
 		}
 	}
 
@@ -66,7 +66,9 @@ public class DistanceUtil {
 		Zip source = ZIPS.get(zipcode);
 		if (source != null) {
 			for (Zip zip: ZIPS.values()) {
-				if (distance(source, zip) < miles) result.add(zip.zip);
+				if (source.zip.equals(zip.zip) || distance(source, zip) < miles) {
+					result.add(zip.zip);
+				}
 			}
 		} else {
 			logger.debug("Zip code not in zcta data: "+zipcode);
@@ -75,7 +77,7 @@ public class DistanceUtil {
 	}
 
 	private static double distance(Zip zip1, Zip zip2) {
-		return distance(zip1.latitude, zip1.longitude, zip2.latitude, zip2.latitude);
+		return distance(zip1.latitude, zip1.longitude, zip2.latitude, zip2.longitude);
 	}
 
 	private static final double EARTH_RADIUS_MILES = 3956.087107103049;
@@ -83,18 +85,18 @@ public class DistanceUtil {
 	// Haversine formula returns distance in miles
 	public static double distance(double lat1, double long1, double lat2, double long2) {
 		
-		lat1 = (lat1 / 180d) * Math.PI;
-		long1 = (long1 / 180d) * Math.PI;
-		lat2 = (lat2 / 180d) * Math.PI;
-		long2 = (long2 / 180d) * Math.PI;
+		lat1 = lat1 * Math.PI / 180d;
+		long1 = long1 * Math.PI / 180d;
+		lat2 = lat2 * Math.PI / 180d;
+		long2 = long2 * Math.PI / 180d;
 		
-		double distance = EARTH_RADIUS_MILES * 2 * Math.asin(
+		double distance = EARTH_RADIUS_MILES * 2 * Math.asin(Math.min(1,
 			Math.sqrt(
 				Math.pow(Math.sin((lat1-lat2) / 2d), 2)	+
 				Math.cos(lat1) * Math.cos(lat2) *
 				Math.pow(Math.sin((long1-long2) / 2d), 2)
 			)
-		);
+		));
 		
 		return distance;
 	}

@@ -321,7 +321,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
 		if (zips.size() == 0) return result;
     	Map<String, Object> params = setupParams();
     	params.put("zips", zips);
-	    return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENTS_BY_ZIP", params);
+	    return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_POSTAL_CODE", params);
 	}
 	
 }

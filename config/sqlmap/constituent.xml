@@ -295,7 +295,7 @@
         where p.SITE_NAME = #siteName#
 		and addr.POSTAL_CODE in (
             <iterate property="zips" conjunction=",">
-                $zips[]$
+                '$zips[]$'
             </iterate>
 		)
 		order by addr.POSTAL_CODE, p.CONSTITUENT_ID

@@ -1,6 +1,0 @@
-SET AUTOCOMMIT = 0;
-
-DELETE from PICKLIST_ITEM where ITEM_NAME in ('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER')
-and PICKLIST_ID in (SELECT PICKLIST_ID from PICKLIST where PICKLIST_NAME_ID = 'customFieldMap[communicationPreferences]');
-
-COMMIT;

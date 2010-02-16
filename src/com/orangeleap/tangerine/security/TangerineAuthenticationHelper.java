@@ -8,6 +8,8 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.common.security.OrangeLeapAuthenticationProvider.AuthenticationHelper;
 import com.orangeleap.tangerine.dao.ibatis.IBatisSchemaDao;
 import com.orangeleap.tangerine.security.TangerineSessionInformationFilter;
+import org.apache.log4j.MDC;
+
 /*
  * Used for non-CAS auth to populate user details 
  */
@@ -41,6 +43,9 @@ public class TangerineAuthenticationHelper implements AuthenticationHelper  {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		String sitename = username.substring(username.indexOf('@') + 1);
 		schema.use(sitename);
+		
+		MDC.put("username", username);
+		MDC.put("sitename", sitename);
 
 		tangerineSessionInformationFilter.loadTangerineDetails(token);
 	}

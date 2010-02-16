@@ -33,6 +33,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.orangeleap.tangerine.service.OrangeleapJmxNotificationBean;
+import org.apache.log4j.MDC;
+
 
 public class TangerineDataSource implements DataSource, ApplicationContextAware {
 
@@ -87,6 +89,7 @@ public class TangerineDataSource implements DataSource, ApplicationContextAware 
         String siteName = tangerineUserHelper.lookupUserSiteName();
         boolean hasSite = siteName != null && siteName.trim().length() > 0;
         if (hasSite) {
+   	    MDC.put("sitename", siteName);
             //logger.debug("getConnection() called for site " + siteName);
         }
 

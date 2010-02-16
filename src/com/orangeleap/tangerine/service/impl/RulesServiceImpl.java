@@ -159,7 +159,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		resetRecalcSiteOption();
 		
 		long time2 = System.currentTimeMillis();
-		logger.info("Rules Processing Took: " + (time2 - time) + " ms.  Complete on " + new java.util.Date());
+		logger.info("Rules Processing took: " + ((time2 - time)/1000f/60) + " min.  Complete on " + new java.util.Date());
 	}
 
 	private void resetRecalcSiteOption() {
@@ -260,8 +260,8 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			t.printStackTrace();
 		}
 		long time2 = System.currentTimeMillis();
-		logger.info("Rules Processing for " + schedule + "Took: " + (time2 - time)
-				+ " ms.  Complete on " + new java.util.Date());
+		logger.info("Rules Processing for " + schedule + " took: " + ((time2 - time)/1000f/60)
+				+ " min.  Complete on " + new java.util.Date());
 	}
 
 	private boolean taskValidForSite(String filter) {
@@ -368,7 +368,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		}
 		
 		long time2 = System.currentTimeMillis();
-		logger.info("Gift reprocessing Took: " + (time2 - time) + " ms.  Complete on " + new java.util.Date());
+		logger.info("Gift reprocessing took: " + ((time2 - time)/1000f/60) + " min.  Complete on " + new java.util.Date());
 	}
 
 }

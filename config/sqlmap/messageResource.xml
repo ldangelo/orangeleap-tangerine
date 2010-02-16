@@ -16,6 +16,10 @@
 		<result property="site" resultMap="MESSAGE.MESSAGE_SITE_NAME_RESULT"/>
 	</resultMap>
 
+	<select id="READ_ALL_MESSAGES" resultMap="MESSAGE" parameterClass="map">
+		select MESSAGE_RESOURCE_ID, LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE, SITE_NAME
+		from MESSAGE_RESOURCE
+	</select>
 
 	<select id="READ_MESSAGE_BY_ID" resultMap="MESSAGE" parameterClass="map">
 		select MESSAGE_RESOURCE_ID, LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE,

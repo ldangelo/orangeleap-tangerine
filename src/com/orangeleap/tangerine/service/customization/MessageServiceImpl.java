@@ -19,17 +19,21 @@
 package com.orangeleap.tangerine.service.customization;
 
 import com.orangeleap.tangerine.dao.MessageDao;
+import com.orangeleap.tangerine.domain.customization.MessageResource;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import javax.annotation.Resource;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.Locale;
+import org.springframework.util.StringUtils;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -48,37 +52,56 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private TangerineUserHelper tangerineUserHelper;
 
+	@SuppressWarnings("unchecked")
     @Override
     public String lookupMessage(MessageResourceType messageResourceType, String messageKey, Locale language) {
         if (logger.isTraceEnabled()) {
             logger.trace("lookupMessage: messageResourceType = " + messageResourceType + " messageKey = " + messageKey + " language = " + language);
         }
+	    final String key = tangerineUserHelper.lookupUserSiteName();
+		Map<String, MessageResource> messageResourceMap;
+		final Element element = messageResourceCache.get(key);
 
-        String key = buildKey(messageResourceType, messageKey, language);
-        Element ele = messageResourceCache.get(key);
-        String msg = null;
+		if (element == null) {
+		    messageResourceMap = loadAllMessageResources();
+		    messageResourceCache.put(new Element(key, messageResourceMap));
+	    }
+	    else {
+		    messageResourceMap = (Map<String, MessageResource>) element.getValue();
+	    }
+		final MessageResource messageResource = messageResourceMap.get(getResourceKey(messageResourceType, messageKey, language));
 
-        if (ele == null) {
-            msg = messageDao.readMessage(messageResourceType, messageKey, language);
-            // use the String "<NULL>" to represent null
-            msg = (msg == null ? "<NULL>" : msg);
-            ele = new Element(key, msg);
-            messageResourceCache.put(ele);
-        } else {
-            msg = (String) ele.getValue();
-        }
-
-        // if we substituted a real null with the <NULL> token, change it back to a real null
-        return (msg.equals("<NULL>") ? null : msg);
+		String messageText = null;
+		if (messageResource != null) {
+			messageText = messageResource.getMessageValue();
+		}
+		return messageText;
     }
 
-    private String buildKey(MessageResourceType type, String key, Locale locale) {
+	public Map<String, MessageResource> loadAllMessageResources() {
+		final Map<String, MessageResource> resourceMap = new HashMap<String, MessageResource>();
+		List<MessageResource> resources = messageDao.readAllMessages();
+		if (resources != null) {
+			for (MessageResource thisResource : resources) {
+				String key = getResourceKey(thisResource.getMessageResourceType(), thisResource.getMessageKey(), thisResource.getLocale());
+				if (resourceMap.get(key) != null) {
+					MessageResource existingResource = resourceMap.get(key);
 
-        String site = tangerineUserHelper.lookupUserSiteName();
-        site = (site == null ? "DEFAULT" : site);
-        StringBuilder builder = new StringBuilder(site);
-        builder.append(".").append(type.name()).append(".").append(key).append(".").append(locale.getDisplayLanguage());
+					// Only replace the existingResource if there is no site name and thisResource has a site name
+					if (thisResource.getSite() != null && StringUtils.hasText(thisResource.getSite().getName()) &&
+							(existingResource.getSite() == null || ! StringUtils.hasText(existingResource.getSite().getName()))) {
+						resourceMap.put(key, thisResource);
+					}
+				}
+				else {
+					resourceMap.put(key, thisResource);
+				}
+			}
+		}
+		return resourceMap;
+	}
 
-        return builder.toString();
-    }
+	private String getResourceKey(MessageResourceType type, String messageKey, Locale locale) {
+		return new StringBuilder(type.name()).append(".").append(messageKey).append(".").append(locale.toString()).toString();
+	}
 }

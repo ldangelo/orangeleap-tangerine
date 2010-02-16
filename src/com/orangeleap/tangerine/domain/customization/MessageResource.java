@@ -38,7 +38,19 @@ public class MessageResource implements GeneratedId, Serializable {
     private String messageValue;
 
     public Locale getLocale() {
-        return new Locale(languageAbbreviation);
+	    Locale locale = null;
+
+	    // Test for en_US format and split in 2 
+	    if (languageAbbreviation != null && languageAbbreviation.indexOf('_') > -1) {
+		    String[] languageCountry = languageAbbreviation.split("_");
+		    if (languageCountry != null && languageCountry.length == 2) {
+			    locale = new Locale(languageCountry[0], languageCountry[1]);
+		    }
+	    }
+	    if (locale == null) {
+		    locale = new Locale(languageAbbreviation);
+	    }
+        return locale; 
     }
 
     public void setLocale(Locale locale) {

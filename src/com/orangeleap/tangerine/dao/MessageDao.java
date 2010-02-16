@@ -18,10 +18,15 @@
 
 package com.orangeleap.tangerine.dao;
 
+import com.orangeleap.tangerine.domain.customization.MessageResource;
 import com.orangeleap.tangerine.type.MessageResourceType;
 
+import java.util.List;
 import java.util.Locale;
 
 public interface MessageDao {
+
     public String readMessage(MessageResourceType messageResourceType, String messageKey, Locale locale);
+
+	List<MessageResource> readAllMessages();
 }
